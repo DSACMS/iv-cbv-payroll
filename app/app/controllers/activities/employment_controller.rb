@@ -6,7 +6,7 @@ class Activities::EmploymentController < Activities::BaseController
   def create
     @employment_activity = @flow.employment_activities.new(employment_activity_params)
     if @employment_activity.save
-      redirect_to activities_flow_root_path
+      redirect_to edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: 0)
     else
       render :new, status: :unprocessable_content
     end

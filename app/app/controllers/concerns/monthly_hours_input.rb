@@ -9,15 +9,11 @@ module MonthlyHoursInput
   end
 
   def update
-    if params[:no_hours] == "1"
-      @activity_month.hours = 0
-    else
-      @activity_month.hours = params.require(activity_month_param_key).permit(:hours)[:hours].to_i
-    end
+    assign_hours_submission_values
 
     if !valid_hours_submission?
       @error = true
-      @activity_month.errors.add(:hours, I18n.t("#{hours_input_t_scope}.field_error"))
+      add_hours_submission_errors
       render :edit, status: :unprocessable_content
       return
     end
@@ -37,6 +33,22 @@ module MonthlyHoursInput
   end
 
   private
+
+  def assign_hours_submission_values
+    if params[:no_hours] == "1"
+      @activity_month.hours = 0
+    else
+      @activity_month.hours = hours_submission_params[:hours].to_i
+    end
+  end
+
+  def hours_submission_params
+    params.require(activity_month_param_key).permit(:hours)
+  end
+
+  def add_hours_submission_errors
+    @activity_month.errors.add(:hours, I18n.t("#{hours_input_t_scope}.field_error"))
+  end
 
   def set_hours_input_vars
     @months = progress_calculator.reporting_months
@@ -71,11 +83,16 @@ module MonthlyHoursInput
     after_activity_path
   end
 
-  # Subclasses must implement:
-  # - hours_input_activity      → the parent activity record
-  # - activity_month_param_key  → e.g. :volunteering_activity_month
-  # - hours_input_path(month_index) → route helper for hours_input GET
-  # - activity_display_name     → name shown in heading (org name, program name, etc.)
-  # - hours_input_t_scope       → translation scope string
-  # - hours_input_completed_path (optional) → override to redirect somewhere other than after_activity_path
+  # Including controllers must implement:
+  # - hours_input_activity              → parent activity record
+  # - activity_month_param_key           → e.g. :volunteering_activity_month
+  # - hours_input_path(month_index)      → route helper for hours_input GET
+  # - activity_display_name              → name shown in heading (org name, program name, etc.)
+  # - hours_input_t_scope                → translation scope string
+  # - hours_input_completed_path         → (optional) override to redirect elsewhere after completion
+  #
+  # Optional overrides for activity types that need more than hours (e.g. gross_income):
+  # - assign_hours_submission_values     → set @activity_month from params (default: hours only)
+  # - hours_submission_params            → permitted params (default: :hours)
+  # - add_hours_submission_errors        → add validation errors (default: single :hours error)
 end

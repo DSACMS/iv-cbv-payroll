@@ -1,4 +1,9 @@
 class EmploymentActivity < Activity
+  include HasActivityMonths
+
+  has_many :employment_activity_months, dependent: :destroy
+  has_activity_months :employment_activity_months
+
   # No date column -- skip the inherited date validation from Activity
   def date_within_reporting_window; end
 
