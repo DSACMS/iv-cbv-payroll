@@ -90,9 +90,10 @@
              .with_content(t("activities.submit.pdf.hours")) %>
     <% end %>
     <% @work_programs_activities.each do |activity| %>
+      <% total_hours = activity.job_training_activity_months.sum(:hours) %>
       <%= table.with_row activity.program_name.presence || not_provided,
                          activity.organization_address.presence || not_provided,
-                         activity.hours || 0 %>
+                         total_hours %>
     <% end %>
   <% end %>
 <% else %>
