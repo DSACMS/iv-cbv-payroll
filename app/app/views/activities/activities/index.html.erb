@@ -14,7 +14,13 @@
 <% end %>
 
 <% if activity_type_enabled?(:employment) %>
-  <% employment_card_data = employment_cards(@employment_payroll_accounts || [], @persisted_report, @flow.reporting_window_range) %>
+  <% persisted_report = @persisted_report; employment_activities = @employment_activities %>
+  <% employment_card_data = combined_employment_card_data(
+    reporting_range: @flow.reporting_window_range,
+    payroll_accounts: @employment_payroll_accounts,
+    persisted_report:,
+    employment_activities:
+  ) %>
   <%= render "activities/activities/activity_section",
         activity_type: "employment",
         section_title: t("activities.employment.title"),
@@ -33,7 +39,7 @@
           <% end %>
         <% end %>
         <% card.with_footer do %>
-          <%= link_to t("activities.hub.edit"), activities_flow_income_payment_details_path(user: { account_id: card_data[:payroll_account].aggregator_account_id }), class: "usa-link" %>
+          <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
         <% end %>
       <% end %>
     <% end %>
