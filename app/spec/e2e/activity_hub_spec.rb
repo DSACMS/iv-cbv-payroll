@@ -94,6 +94,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     )
     attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
     click_button I18n.t("activities.document_uploads.new.continue")
+    verify_page(page, title: I18n.t("activities.work_programs.review.title", program_name: "Resume Workshop"))
+    click_button I18n.t("activities.work_programs.review.save")
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Resume Workshop"
 

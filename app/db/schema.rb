@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_27_141000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -206,6 +206,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
 
   create_table "job_training_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
+    t.text "additional_comments"
     t.string "city"
     t.string "contact_email"
     t.string "contact_name"

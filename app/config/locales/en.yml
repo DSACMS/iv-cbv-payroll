@@ -343,6 +343,22 @@ en:
         month_indicator: Month %{current} / %{total}
         no_hours_checkbox: No work program hours with %{organization} in %{month}
         title: Work program hours
+      review:
+        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_title: Additional comments (optional)
+        address: Address
+        contact_email: Contact email
+        contact_name: Contact name
+        contact_phone: Contact phone number
+        description: Review all the information you've added for %{program_name} before adding it to your Community Engagement Report.
+        edit: Edit
+        hours_section: Work program hours
+        organization_info: Work program information
+        organization_name: Organization or provider name
+        program_name: Program name
+        save: Save and add to my report
+        title: Review your work program information for %{program_name}
+        work_program_hours: Work program hours
       title: Work programs
   activity_flow_progress_indicator:
     description: We calculate your community engagement from the activities you add to your report.

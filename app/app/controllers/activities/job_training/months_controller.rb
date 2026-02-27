@@ -30,6 +30,10 @@ class Activities::JobTraining::MonthsController < Activities::BaseController
   end
 
   def hours_input_completed_path
-    new_activities_flow_job_training_document_upload_path(job_training_id: @job_training_activity.id, from_edit: params[:from_edit].presence)
+    if params[:from_review].present?
+      review_activities_flow_job_training_path(id: @job_training_activity, from_edit: params[:from_edit].presence)
+    else
+      new_activities_flow_job_training_document_upload_path(job_training_id: @job_training_activity.id, from_edit: params[:from_edit].presence)
+    end
   end
 end
