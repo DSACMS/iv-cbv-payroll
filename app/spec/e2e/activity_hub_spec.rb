@@ -73,8 +73,6 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Resume Workshop"
 
-    add_self_attested_employment_activity
-
     # Verify that the hub has the Community Service activity
     expect(page).to have_content I18n.t("activities.hub.title")
     expect(page).to have_content "Helping Hands"
@@ -107,24 +105,6 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     # /activities/success
     verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
-  end
-
-  def add_self_attested_employment_activity
-    within("[data-activity-type='employment']") { click_button I18n.t("activities.hub.add") }
-    verify_page(page, title: I18n.t("cbv.employer_searches.show.activity_flow.header"))
-    visit new_activities_flow_income_employment_path
-    verify_page(page, title: I18n.t("activities.employment_info.title"))
-    fill_in I18n.t("activities.employment_info.employer_name"), with: "Gainesville Wrecking"
-    fill_in I18n.t("activities.employment_info.street_address"), with: "942 W Harlan Ave"
-    fill_in I18n.t("activities.employment_info.city"), with: "Gainesville"
-    fill_in I18n.t("activities.employment_info.state"), with: "Florida"
-    find(".usa-combo-box__list-option", text: "Florida (FL)").click
-    fill_in I18n.t("activities.employment_info.zip_code"), with: "32611"
-    fill_in I18n.t("activities.employment_info.contact_name"), with: "Donny Spears"
-    fill_in I18n.t("activities.employment_info.contact_email"), with: "donny@gainesvillewrecking.com"
-    fill_in I18n.t("activities.employment_info.contact_phone_number"), with: "(415) 344-8009"
-    click_button I18n.t("activities.employment_info.continue")
-    verify_page(page, title: I18n.t("activities.hub.title"))
   end
 
   it "completes the generic flow for the income activity" do

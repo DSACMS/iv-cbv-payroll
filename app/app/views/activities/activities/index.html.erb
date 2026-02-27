@@ -15,13 +15,12 @@
 
 <% if activity_type_enabled?(:employment) %>
   <% employment_card_data = employment_cards(@employment_payroll_accounts || [], @persisted_report, @flow.reporting_window_range) %>
-  <% all_employment_cards = employment_card_data + @self_attested_employment_activities.to_a %>
   <%= render "activities/activities/activity_section",
         activity_type: "employment",
         section_title: t("activities.employment.title"),
         add_path: activities_flow_income_employer_search_path,
         empty_message: t("activities.hub.empty.employment"),
-        cards: all_employment_cards do %>
+        cards: employment_card_data do %>
     <% employment_card_data.each do |card_data| %>
       <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
         <% card.with_body do %>
@@ -35,13 +34,6 @@
         <% end %>
         <% card.with_footer do %>
           <%= link_to t("activities.hub.edit"), activities_flow_income_payment_details_path(user: { account_id: card_data[:payroll_account].aggregator_account_id }), class: "usa-link" %>
-        <% end %>
-      <% end %>
-    <% end %>
-    <% @self_attested_employment_activities.each do |activity| %>
-      <%= render(Uswds::Card.new(heading_text: activity.employer_name, heading_level: 3, class: "activity-hub-card")) do |card| %>
-        <% card.with_footer do %>
-          <%= link_to t("activities.hub.edit"), review_activities_flow_income_employment_path(id: activity, from_edit: 1), class: "usa-link" %>
         <% end %>
       <% end %>
     <% end %>
