@@ -8,12 +8,15 @@ class Activity < ApplicationRecord
   validate :date_within_reporting_window
 
   def date=(value)
+    return unless has_attribute?(:date)
+
     self[:date] = DateFormatter.parse(value)
   end
 
   private
 
   def date_within_reporting_window
+    return unless has_attribute?(:date)
     return if date.blank? || activity_flow.blank?
 
     unless activity_flow.reporting_window_range.cover?(date)

@@ -212,8 +212,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
     t.string "contact_phone_number"
     t.datetime "created_at", null: false
     t.string "data_source", default: "self_attested", null: false
-    t.date "date"
-    t.integer "hours"
     t.string "organization_address"
     t.string "organization_name"
     t.string "program_name"
@@ -223,6 +221,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
     t.datetime "updated_at", null: false
     t.string "zip_code"
     t.index ["activity_flow_id"], name: "index_job_training_activities_on_activity_flow_id"
+  end
+
+  create_table "job_training_activity_months", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "hours", default: 0, null: false
+    t.bigint "job_training_activity_id", null: false
+    t.date "month", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_training_activity_id"], name: "index_job_training_activity_months_on_job_training_activity_id"
   end
 
   create_table "nsc_enrollment_terms", force: :cascade do |t|
@@ -449,6 +456,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
   add_foreign_key "employment_activities", "activity_flows"
   add_foreign_key "employment_activity_months", "employment_activities"
   add_foreign_key "job_training_activities", "activity_flows"
+  add_foreign_key "job_training_activity_months", "job_training_activities"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

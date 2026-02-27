@@ -1,4 +1,7 @@
-<% content_for :title, t("activities.work_programs.title") %>
+<% content_for :title, t(".title") %>
 
-<h1><%= t("activities.work_programs.title") %></h1>
+<h1><%= t(".title") %></h1>
+<p>
+  <%= t(".description", agency_acronym: agency_translation("shared.agency_acronym")) %>
+</p>
 <%= render "form", job_training_activity: @job_training_activity %>

@@ -95,7 +95,7 @@
 <% end %>
 
 <% if activity_type_enabled?(:work_programs) %>
-  <% work_programs_card_data = self_attestation_cards(@work_programs_activities, name_field: :program_name) %>
+  <% work_programs_card_data = work_program_cards(@work_programs_activities) %>
   <%= render "activities/activities/activity_section",
         activity_type: "work_programs",
         section_title: t("activities.work_programs.title"),
