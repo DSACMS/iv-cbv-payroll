@@ -99,6 +99,11 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     add_self_attested_employment_activity
 
+    # Verify that the hub has the self-attested Employment activity
+    expect(page).to have_content "Gainesville Wrecking"
+    expect(page).to have_content I18n.t("activities.hub.cards.gross_income", amount: "$500.00")
+    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 40)
+
     # Verify that the hub has the Community Service activity
     expect(page).to have_content I18n.t("activities.hub.title")
     expect(page).to have_content "Helping Hands"
