@@ -70,6 +70,12 @@ tr td:first-child {
   }
 }
 
+@include at-media-max('mobile-lg') {
+  .mobile-text-center {
+    text-align: center;
+  }
+}
+
 // Activity Hub progress/activities divider
 .activity-hub-divider {
   margin-left: 0;
