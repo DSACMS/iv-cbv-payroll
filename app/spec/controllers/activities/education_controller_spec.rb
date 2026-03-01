@@ -10,6 +10,8 @@ RSpec.describe Activities::EducationController, type: :controller do
     create(
       :activity_flow,
       education_activities_count: 0,
+      volunteering_activities_count: 0,
+      job_training_activities_count: 0,
       with_identity: true
     )
   }
@@ -19,9 +21,9 @@ RSpec.describe Activities::EducationController, type: :controller do
     session[:flow_type] = :activity
   end
 
-  describe "GET #new" do
+  describe "GET #verify" do
     it "renders the user's details" do
-      get :new
+      get :verify
 
       expect(response.body).to have_content(activity_flow.identity.first_name)
       expect(response.body).to have_content(activity_flow.identity.last_name)
@@ -48,7 +50,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to have_http_status(:ok)
     end
 
-    context "when the EducationActivity sync found no enrollments" do
+    context "when the EducationActivity has no enrollments" do
       before do
         education_activity.update(status: :no_enrollments)
         allow(controller).to receive(:testing_synchronization_page?)
@@ -86,6 +88,34 @@ RSpec.describe Activities::EducationController, type: :controller do
       it "redirects to the edit page" do
         get :show, params: { id: education_activity.id }
 
+        expect(response).to redirect_to(edit_activities_flow_education_path)
+      end
+    end
+
+    context "when the EducationActivity sync failed" do
+      before do
+        education_activity.update(status: :failed)
+        allow(controller).to receive(:testing_synchronization_page?)
+          .and_return(false)
+      end
+
+      it "redirects to the error page" do
+        get :show, params: { id: education_activity.id }
+
+        expect(response).to redirect_to(activities_flow_education_error_path)
+      end
+    end
+
+    context "when the EducationActivity has succeeded" do
+      before do
+        education_activity.update(status: :succeeded)
+        allow(controller).to receive(:testing_synchronization_page?)
+          .and_return(false)
+      end
+
+      it "redirects to the edit page" do
+        get :show, params: { id: education_activity.id }
+
         expect(response).to redirect_to(edit_activities_flow_education_path(id: education_activity.id))
       end
     end
@@ -96,9 +126,18 @@ RSpec.describe Activities::EducationController, type: :controller do
       get :error
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to have_content("Enter education manually")
-      expect(response.body).to have_content("Retry student verification")
-      expect(response.body).to have_link("Retry student verification", href: new_activities_flow_education_path)
+      expect(response.body).to have_content(I18n.t("activities.education.error.enter_manually_button"))
+      expect(response.body).to have_content(I18n.t("activities.education.error.retry_button"))
+      expect(response.body).to have_link(I18n.t("activities.education.error.enter_manually_button"), href: new_activities_flow_education_path)
+    end
+  end
+
+  describe "GET #new" do
+    it "renders the self-attestation education form" do
+      get :new
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to have_content(I18n.t("activities.education.new.title"))
     end
   end
 

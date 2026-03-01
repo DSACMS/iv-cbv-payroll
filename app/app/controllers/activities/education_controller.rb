@@ -3,7 +3,7 @@ class Activities::EducationController < Activities::BaseController
   ARTIFICIAL_DELAY = 7.seconds
   INDICATOR_COUNT = 3
 
-  def new
+  def verify
     @identity = current_identity!
   end
 
