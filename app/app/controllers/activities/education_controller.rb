@@ -73,6 +73,10 @@ class Activities::EducationController < Activities::BaseController
     end
   end
 
+  def new
+    @education_activity = @flow.education_activities.new
+  end
+
   def error
   end
 

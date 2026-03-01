@@ -78,34 +78,6 @@ RSpec.describe Activities::EducationController, type: :controller do
       end
     end
 
-    context "when the EducationActivity sync succeeded" do
-      before do
-        education_activity.update(status: :succeeded)
-        allow(controller).to receive(:testing_synchronization_page?)
-          .and_return(false)
-      end
-
-      it "redirects to the edit page" do
-        get :show, params: { id: education_activity.id }
-
-        expect(response).to redirect_to(edit_activities_flow_education_path)
-      end
-    end
-
-    context "when the EducationActivity sync failed" do
-      before do
-        education_activity.update(status: :failed)
-        allow(controller).to receive(:testing_synchronization_page?)
-          .and_return(false)
-      end
-
-      it "redirects to the error page" do
-        get :show, params: { id: education_activity.id }
-
-        expect(response).to redirect_to(activities_flow_education_error_path)
-      end
-    end
-
     context "when the EducationActivity has succeeded" do
       before do
         education_activity.update(status: :succeeded)
