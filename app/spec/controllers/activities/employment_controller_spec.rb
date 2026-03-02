@@ -39,6 +39,18 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     end
   end
 
+  describe "GET #edit" do
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "renders the employment info form" do
+      get :edit, params: { id: employment_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("activities.employment_info.edit_title"))
+      expect(response.body).to include(I18n.t("activities.employment_info.employer_name"))
+    end
+  end
+
   describe "POST #create" do
     let(:employment_attributes) { attributes_for(:employment_activity).except(:activity_flow) }
     let(:employment_params) { { employment_activity: employment_attributes } }

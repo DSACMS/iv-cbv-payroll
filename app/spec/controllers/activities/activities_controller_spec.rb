@@ -114,4 +114,29 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
   end
+
+  context "when self-attested employment activities are added" do
+    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
+
+    before do
+      employment_activity = create(:employment_activity, activity_flow: current_flow, employer_name: "Gainesville Wrecking")
+      create(
+        :employment_activity_month,
+        employment_activity: employment_activity,
+        month: current_flow.reporting_months.first.beginning_of_month,
+        gross_income: 500,
+        hours: 40
+      )
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "shows current flow employment activities" do
+      expect(assigns(:employment_activities)).to match_array(current_flow.employment_activities)
+      expect(response.body).to include("Gainesville Wrecking")
+      expect(response.body).to include(I18n.t("activities.hub.cards.gross_income", amount: "$500.00"))
+      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 40))
+    end
+  end
 end

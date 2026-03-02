@@ -76,7 +76,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     edit_links = all("a", text: I18n.t("activities.hub.edit"))
     edit_links.first.click
 
-    verify_page(page, title: I18n.t("activities.employment_edit.title"))
+    verify_page(page, title: I18n.t("activities.employment_info.edit_title"))
     fill_in I18n.t("activities.employment_info.employer_name"), with: "Updated Employer"
     fill_in I18n.t("activities.employment_info.street_address"), with: "123 New Street"
     fill_in I18n.t("activities.employment_info.city"), with: "Tampa"

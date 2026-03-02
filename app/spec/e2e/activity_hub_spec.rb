@@ -97,6 +97,13 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Resume Workshop"
 
+    add_self_attested_employment_activity
+
+    # Verify that the hub has the self-attested Employment activity
+    expect(page).to have_content "Gainesville Wrecking"
+    expect(page).to have_content I18n.t("activities.hub.cards.gross_income", amount: "$500.00")
+    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 40)
+
     # Verify that the hub has the Community Service activity
     expect(page).to have_content I18n.t("activities.hub.title")
     expect(page).to have_content "Helping Hands"
@@ -159,6 +166,10 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(month, format: :month_year)), with: "40"
       click_button I18n.t("activities.employment.hours_input.continue")
     end
+
+    # Review page
+    verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: employer_name))
+    click_button I18n.t("activities.employment.review.save")
 
     verify_page(page, title: I18n.t("activities.hub.title"))
   end

@@ -15,6 +15,9 @@ class Activities::EmploymentController < Activities::BaseController
     end
   end
 
+  def edit
+  end
+
   def update
     if @employment_activity.update(employment_activity_params)
       redirect_to review_activities_flow_income_employment_path(id: @employment_activity, from_edit: 1)

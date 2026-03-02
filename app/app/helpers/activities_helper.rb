@@ -28,8 +28,34 @@ module ActivitiesHelper
           }
         end
 
-      { name: employer_name, months: months, payroll_account: account }
+      {
+        name: employer_name,
+        months: months,
+        edit_path: activities_flow_income_payment_details_path(user: { account_id: account.aggregator_account_id })
+      }
     end
+  end
+
+  def employment_activity_cards(activities)
+    activities.map do |activity|
+      months = activity.employment_activity_months.order(:month).map do |month|
+        {
+          month: month.month,
+          gross_earnings: month.gross_income * 100,
+          hours: month.hours
+        }
+      end
+      {
+        name: activity.employer_name,
+        months: months,
+        edit_path: edit_activities_flow_income_employment_path(id: activity.id)
+      }
+    end
+  end
+
+  def combined_employment_card_data(reporting_range:, payroll_accounts:, persisted_report:, employment_activities:)
+    employment_cards(payroll_accounts || [], persisted_report, reporting_range) +
+      employment_activity_cards(employment_activities || [])
   end
 
   def education_cards(activities, reporting_months)
