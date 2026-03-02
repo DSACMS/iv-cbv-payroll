@@ -9,7 +9,6 @@ class Activities::EducationController < Activities::BaseController
 
   def create
     @education_activity = @flow.education_activities.create
-
     NscSynchronizationJob.perform_later(@education_activity.id)
 
     redirect_to activities_flow_education_path(id: @education_activity.id)
@@ -21,8 +20,12 @@ class Activities::EducationController < Activities::BaseController
 
     set_completed_indicators
 
-    unless @education_activity.sync_unknown? || testing_synchronization_page?
+    if @education_activity.sync_failed? || @education_activity.sync_no_enrollments?
+      redirect_to activities_flow_education_error_path
+    elsif @education_activity.sync_succeeded? && !testing_synchronization_page?
       redirect_to edit_activities_flow_education_path(id: params[:id])
+    else
+      # sync is still in progress — render the polling page
     end
   end
 
@@ -61,8 +64,8 @@ class Activities::EducationController < Activities::BaseController
 
     if @education_activity.sync_unknown?
       render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
-    elsif @education_activity.sync_failed?
-      render turbo_stream: turbo_stream.action(:redirect, activities_flow_error_path)
+    elsif @education_activity.sync_failed? || @education_activity.sync_no_enrollments?
+      render turbo_stream: turbo_stream.action(:redirect, activities_flow_education_error_path)
     elsif @wait_time < ARTIFICIAL_DELAY && !testing_synchronization_page?
       render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
     else

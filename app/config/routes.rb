@@ -77,10 +77,10 @@ Rails.application.routes.draw do
         end
       end
 
+      get "/education/error", to: "education#error", as: :education_error
       resources :education, only: %i[new create show update edit destroy], controller: "education" do
         patch "sync", to: "education#sync", as: :sync
       end
-      get "/education/error", to: "education#error", as: :education_error
 
       # Tokenized links
       get "start/:token", to: "entries#show", as: :start, token: /[^\/]+/

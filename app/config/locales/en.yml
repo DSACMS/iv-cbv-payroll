@@ -146,15 +146,13 @@ en:
         enrollment_information: Enrollment information
         enrollment_information_multiple: 'Enrollment status: %{school_name}'
         header: Review your student enrollment details
-        no_records_found:
-          heading: No enrollment record found
-          message: We couldn't find any enrollment records for the information you provided. You can go back and try again or add your education activity manually.
-          return_button: Return
       error:
-        back_button: Back to Activities
-        error_description: There was an error retrieving your education information. Please try again later.
-        error_heading: Unable to retrieve education information.
-        header: Error
+        description: 'We were unable to verify your student status with National Student Clearinghouse. To continue, you can:'
+        enter_manually_button: Enter education manually
+        header: We couldn't verify your student enrollment
+        option_enter_manually: Enter your education information manually
+        option_retry: Re-try verifying your student status with the National Student Clearinghouse
+        retry_button: Retry student verification
       error_no_data: No education information available
       errors:
         unexpected: An unexpected error occurred. Please try again.

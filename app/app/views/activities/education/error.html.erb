@@ -4,13 +4,18 @@
   <%= t(".header") %>
 </h1>
 
-<div class="usa-alert usa-alert--error margin-y-3" role="alert">
-  <div class="usa-alert__body">
-    <h2 class="usa-alert__heading"><%= t(".error_heading") %></h2>
-    <p class="usa-alert__text">
-    <%= t(".error_description") %>
-    </p>
-  </div>
-</div>
+<p>
+  <%= t(".description") %>
+</p>
 
-<%= link_to t(".back_button"), activities_flow_root_path, class: "usa-button" %>
+<ol>
+  <li><%= t(".option_enter_manually") %></li>
+  <li><%= t(".option_retry") %></li>
+</ol>
+
+<nav class="margin-top-5">
+  <%= link_to t(".enter_manually_button"), "#", class: "usa-button" %>
+  <div class="margin-top-2 mobile-text-center">
+    <%= link_to t(".retry_button"), new_activities_flow_education_path, class: "usa-button usa-button--unstyled" %>
+  </div>
+</nav>
