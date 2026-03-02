@@ -47,6 +47,10 @@ RUN apt-get update -qq && \
       gir1.2-glib-2.0 \
       # CVE-2025-68973 \
       dirmngr \
+      # CVE-2025-11411 \
+      libunbound8 \
+      # CVE-2025-14831 CVE-2025-9820 \
+      libgnutls-dane0t64 libgnutls-openssl27t64 libgnutls28-dev libgnutls30t64 \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -176,11 +180,13 @@ RUN apt-get update -qq && \
         && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Remove base rexml for GHSA-4xqq-m2hx-25v8
-RUN gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 debug && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rss && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 rexml && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.3.0 net-imap || true
+# Remove base gems for security vulnerabilities
+# GHSA-4xqq-m2hx-25v8, GHSA-c2f4-jgmc-q2r5, GHSA-j4pr-3wm6-xx2r
+RUN gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 debug && \
+    gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 rss && \
+    gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 rexml && \
+    gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 uri && \
+    gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 net-imap || true
 
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/
