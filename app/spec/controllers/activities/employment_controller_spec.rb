@@ -90,7 +90,9 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
   describe "ensure_review_ready guard" do
     context "when employer_name is blank" do
-      let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow, employer_name: "") }
+      let(:employment_activity) do
+        create(:employment_activity, activity_flow: activity_flow).tap { |ea| ea.update_column(:employer_name, "") }
+      end
 
       it "redirects to the employer info edit form" do
         get :review, params: { id: employment_activity.id }

@@ -215,6 +215,7 @@ en:
       contact_section_title: Employer contact information
       continue: Continue
       employer_name: Employer or business name
+      employer_name_error: Add your employer or business name
       employer_name_hint: If you work for yourself, enter "Self-employed"
       employer_section_title: Employer or business information
       self_employed: I'm self-employed

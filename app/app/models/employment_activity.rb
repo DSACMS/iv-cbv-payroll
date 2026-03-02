@@ -4,6 +4,8 @@ class EmploymentActivity < Activity
   has_many :employment_activity_months, dependent: :destroy
   has_activity_months :employment_activity_months
 
+  validates :employer_name, presence: { message: I18n.t("activities.employment_info.employer_name_error") }
+
   # No date column -- skip the inherited date validation from Activity
   def date_within_reporting_window; end
 
