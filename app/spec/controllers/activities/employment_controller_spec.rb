@@ -88,8 +88,54 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     end
   end
 
+  describe "ensure_review_ready guard" do
+    context "when employer_name is blank" do
+      let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow, employer_name: "") }
+
+      it "redirects to the employer info edit form" do
+        get :review, params: { id: employment_activity.id }
+
+        expect(response).to redirect_to(edit_activities_flow_income_employment_path(employment_activity))
+      end
+    end
+
+    context "when a month record is missing" do
+      let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+      it "redirects to the first missing month's hours input" do
+        get :review, params: { id: employment_activity.id }
+
+        expect(response).to redirect_to(
+          edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 0)
+        )
+      end
+    end
+
+    context "when all data is present" do
+      let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+      before do
+        activity_flow.reporting_months.each do |month|
+          create(:employment_activity_month, employment_activity: employment_activity, month: month.beginning_of_month, hours: 10, gross_income: 100)
+        end
+      end
+
+      it "renders the review page" do
+        get :review, params: { id: employment_activity.id }
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
   describe "GET #review" do
     let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    before do
+      activity_flow.reporting_months.each do |month|
+        create(:employment_activity_month, employment_activity: employment_activity, month: month.beginning_of_month, hours: 25, gross_income: 500)
+      end
+    end
 
     it "renders the review page" do
       get :review, params: { id: employment_activity.id }
@@ -99,8 +145,6 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     end
 
     it "displays employment activity months" do
-      create(:employment_activity_month, employment_activity: employment_activity, month: activity_flow.reporting_months.first, hours: 25, gross_income: 500)
-
       get :review, params: { id: employment_activity.id }
 
       expect(response.body).to include("25")
@@ -110,6 +154,12 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
   describe "PATCH #save_review" do
     let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    before do
+      activity_flow.reporting_months.each do |month|
+        create(:employment_activity_month, employment_activity: employment_activity, month: month.beginning_of_month, hours: 10, gross_income: 100)
+      end
+    end
 
     it "saves additional comments and redirects to the hub" do
       patch :save_review, params: { id: employment_activity.id, employment_activity: { additional_comments: "Some notes" } }
