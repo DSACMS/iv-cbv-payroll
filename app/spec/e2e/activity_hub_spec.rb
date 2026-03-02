@@ -200,7 +200,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       end
 
       # Wait for Argyle modal to disappear
-      find_all("div[id*=\"argyle-link-root\"]", visible: :all, maximum: 0, minimum: nil, wait: 30)
+      expect(page).to have_no_css("div[id*='argyle-link-root']", visible: :all, wait: 30)
     end
     # /activities/income/synchronizations
     verify_page(page, title: I18n.t("cbv.synchronizations.show.activity_flow.header"), wait: 15)
@@ -238,9 +238,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     end
     performing_active_jobs do
       click_button I18n.t("activities.education.new.continue")
-      verify_page(page, title: I18n.t("activities.education.show.header")) # /activities/education/123 (loading page)
+      verify_page(page, title: I18n.t("activities.education.error.header"), wait: 10) # /activities/education/error
     end
-    verify_page(page, title: I18n.t("activities.education.error.header"), wait: 10) # /activities/education/error
     expect(page).to have_content I18n.t("activities.education.error.enter_manually_button")
     expect(page).to have_content I18n.t("activities.education.error.retry_button")
 

@@ -42,7 +42,7 @@ RSpec.describe "e2e CBV flow test", :js, type: :feature do
       end
 
       # Wait for Argyle modal to disappear
-      find_all("div[id*=\"argyle-link-root\"]", visible: :all, maximum: 0, minimum: nil, wait: 30)
+      expect(page).to have_no_css("div[id*='argyle-link-root']", visible: :all, wait: 30)
     end
 
     # /cbv/synchronizations
