@@ -1,6 +1,27 @@
 require "rails_helper"
 
 RSpec.describe EducationActivity do
+  describe "validations" do
+    let(:activity_flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
+
+    context "when self_attested" do
+      it "is invalid without a school name" do
+        activity = described_class.new(activity_flow: activity_flow, data_source: :self_attested, school_name: nil)
+
+        expect(activity).not_to be_valid
+        expect(activity.errors[:school_name]).to include("Enter the school or program name.")
+      end
+    end
+
+    context "when validated" do
+      it "is valid without a school name" do
+        activity = build(:education_activity, activity_flow: activity_flow, data_source: :validated, school_name: nil)
+
+        expect(activity).to be_valid
+      end
+    end
+  end
+
   describe "#progress_hours_for_month" do
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
     let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }

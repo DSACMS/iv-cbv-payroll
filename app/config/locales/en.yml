@@ -57,6 +57,10 @@ en:
               invalid_format: Enter an email address in the correct format, like name@example.com
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
+        education_activity:
+          attributes:
+            school_name:
+              blank: Enter the school or program name.
         job_training_activity:
           attributes:
             organization_name:
