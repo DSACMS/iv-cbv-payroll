@@ -197,6 +197,9 @@ en:
         contact_phone: Employer contact phone number
         description: Review all the information you've added for %{employer_name} before adding it to your Community Engagement Report.
         employer_info: Employer information
+        gross_income: Gross income
+        hours_and_income: Hours and income
+        hours_worked: Hours worked
         name: Name
         save: Save and add to my report
         title: Review your employment information for %{employer_name}

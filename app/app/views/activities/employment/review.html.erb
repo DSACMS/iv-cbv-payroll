@@ -21,6 +21,38 @@
   { label: t("activities.employment.review.contact_phone"), value: @employment_activity.contact_phone_number }
 ])) %>
 
+<h2><%= t("activities.employment.review.hours_and_income") %></h2>
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
+  <% @employment_activity.employment_activity_months.order(:month).each_with_index do |activity_month, index| %>
+    <%= table.with_row(class_names: "subheader-row") do |row| %>
+      <%= row.with_data_cell(is_header: true, colspan: 2) do %>
+        <div class="display-flex flex-justify">
+          <span><%= I18n.l(activity_month.month, format: :month) %></span>
+          <%= link_to t("activities.community_service.review.edit"),
+                edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence),
+                class: "usa-link" %>
+        </div>
+      <% end %>
+    <% end %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.employment.review.gross_income") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        $<%= activity_month.gross_income %>
+      <% end %>
+    <% end %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.employment.review.hours_worked") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= activity_month.hours %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
 <%= form_with model: @employment_activity,
       url: save_review_activities_flow_income_employment_path(id: @employment_activity, from_edit: params[:from_edit].presence),
       method: :patch,
