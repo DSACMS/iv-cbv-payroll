@@ -4,9 +4,6 @@ IV CBV Payroll is supported by a dedicated team of individuals fulfilling variou
 
 ## Project Members
 
-<!-- TODO: Who are the points of contact in your project who are responsible/accountable for the project? This can often be an engineering or design manager or leader, who may or may not be the primary maintainers of the project.
-
-Roles to include, but not limited to: Project Owner, Technical Lead, Developers/Contributors, Community Manager, Security Team, Policy Advisor, Contracting Officer's Representative, Compliance Officer, Procurement Officer -->
 
 | Role   | Name    | Affiliation    |
 | :----- | :------ | :------------- |
@@ -15,7 +12,7 @@ Roles to include, but not limited to: Project Owner, Technical Lead, Developers/
 | Designer | Seth Owings | CMS |
 | Software Engineer | Jake Shilling | CMS |
 | Software Engineer | Imhotep Benjamin | CMS |
-| Software Engineer | Jan Vorisek | CMS |
+| Software Engineer | Jan | CMS |
 | Contracting Officer's Representative | Mark DeZalia | CMS |
 | Product Manager | Allyse Parekh | CMS |
 | Designer | Paul Gehrig | Nava |
@@ -23,7 +20,7 @@ Roles to include, but not limited to: Project Owner, Technical Lead, Developers/
 | Software Engineer | Daphne Gold | Nava |
 | Software Engineer | Tim Miller | Nava |
 | Software Engineer | Ben Calegari | Nava |
-| Open Source Lead | Nočnica (Nica) Mellifera | Nava |
+| Open Source Lead/Community Manager | Nočnica Mellifera | Nava |
 
 See [CODEOWNERS.md](.github/CODEOWNERS.md) for a list of those responsible for the code and documentation in this repository.
 
@@ -31,19 +28,16 @@ See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on 
 
 ### Core Team
 
-<!-- TODO: List the individuals who are members of the core team. What groups/domains are they a part of? Does your project have domains/areas that are maintained by specific people? List @USERNAMES directly, or any @ALIASES for groups/teams. -->
-
 - @tdooner (Tom Dooner)
 - @daphnegold (Daphne Gold)
 - @millerti (Tim Miller)
 - @bencalegari (Ben Calegari)
 - @j-shilling (Jake Shilling)
 - @imhben (Imhotep Benjamin)
-- @dx-gov (Jan Vorisek)
+- @dx-gov (Jan)
 
 ### Maintainers
 
-<!-- TODO: List the individuals who are the maintainers. What groups/domains are maintainers a part of? Does your project have domains/areas that are maintained by specific people? List @USERNAMES directly, or any @ALIASES for groups/teams. -->
 
 - @tdooner (Tom Dooner)
 - @daphnegold  (Daphne Gold)
@@ -51,7 +45,7 @@ See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on 
 - @bencalegari (Ben Calegari)
 - @j-shilling (Jake Shilling)
 - @imhben (Imhotep Benjamin)
-- @dx-gov (Jan Vorisek)
+- @dx-gov (Jan)
 
 ### Contributors
 
@@ -134,7 +128,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 - Reviewing at least 2 PRs per 3 months, especially PRs that involve specific parts of the project.
 - Mentoring new contributors.
 - Writing and refactoring submitted PRs.
-- Participating in IVaaS maintainer activities.
+- Participating in Emmy maintainer activities.
 - Proposing contributions to strategy and policy of the project.
 - Participating in, and leading, community discussions.
 - Mentoring other Maintainers.
@@ -152,7 +146,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 #### Additional privileges:
 - Approve PRs to their specific domain of the project.
 - Represent the project in public as a Maintainer in line with the COMMUNICATIONS.md policy.
-- Communicate with the IVaaS team on behalf of the project.
+- Communicate with the Emmy team on behalf of the project.
 - Other privileges defined by the community in the future.
 
 #### Process of becoming a Maintainer
@@ -163,26 +157,8 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 
 Members of the Core Team are federal employees or contractors who contribute to this project as part of their formal work duties. They serve as the main point of contact for development activity in the repository and have the same privileges and responsibilities as maintainers and codeowners.
 
-## Alumni
 
-**Description:** Alumni are established contributors or maintainers who have stepped away from the project for periods longer than 6 months. Contributors or maintainers may also wish to become alumni by voluntarily stepping down. Alumni have no further responsibilities to the project and we thank them for their contributions.
-
-#### Responsibilities:
-- None.
-
-#### Requirements:
-- Must have had contributor or maintainer status.
-
-#### Privileges:
-- Will be added to the alumni list in the COMMUNITY.md file.
-
-#### Process of becoming an Alumni
-1. Any current maintainer may become an alumni, by meeting the requirements, and opening a PR against the root of the iv-cbv-payroll adding the themselves in the alumni list in the COMMUNITY.md file.
-    1. If and when commitment levels change, contributors can file an issue using the contributor_ladder.md issue template, and send a PR to the COMMUNITY.md file indicating their updated status.
-2. At least 2 current Maintainers must then approve and merge the PR.
-
-
-## IV CBV Payroll Open Source Community Guidelines
+## Emmy Open Source Community Guidelines
 
 This document contains principles and guidelines for participating in the IV CBV Payroll open source community.
 
@@ -191,7 +167,7 @@ This document contains principles and guidelines for participating in the IV CBV
 These principles guide our data, product, and process decisions, architecture, and approach.
 
 - Open means transparent and participatory.
-- We take a modular and modern approach to software development.
+- We take a modular and modern approach to software development. Adopters of Emmy should be able to adopt the full experience with UI, or just an API component.
 - We build open-source software and open-source process.
 - We value ease of implementation.
 - Fostering community includes building capacity and making our software and processes accessible to participants with diverse backgrounds and skillsets.
@@ -204,7 +180,7 @@ All community members are expected to adhere to our [Code of Conduct](CODE_OF_CO
 
 Information on contributing to this repository is available in our [Contributing file](CONTRIBUTING.md).
 
-When participating in IV CBV Payroll open source community conversations and spaces, we ask individuals to follow the following guidelines:
+When participating in Emmy open source community conversations and spaces, we ask individuals to follow the following guidelines:
 
 - When joining a conversation for the first time, please introduce yourself by providing a brief intro that includes:
   - your related organization (if applicable)
