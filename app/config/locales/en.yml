@@ -241,6 +241,7 @@ en:
       save: Save changes
       title: Add activities to your Community Engagement report
     job_training:
+      edit_title: Edit Work Program Activity
       form:
         city: City
         contact_email: Contact email
