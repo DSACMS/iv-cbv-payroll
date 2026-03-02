@@ -76,4 +76,58 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(activity.data_source).to eq("self_attested")
     end
   end
+
+  describe "PATCH #update" do
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "updates the activity and redirects to review page" do
+      patch :update, params: { id: employment_activity.id, employment_activity: { employer_name: "Updated Corp" } }
+
+      expect(employment_activity.reload.employer_name).to eq("Updated Corp")
+      expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1))
+    end
+  end
+
+  describe "GET #review" do
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "renders the review page" do
+      get :review, params: { id: employment_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(employment_activity.employer_name)
+    end
+
+    it "displays employment activity months" do
+      create(:employment_activity_month, employment_activity: employment_activity, month: activity_flow.reporting_months.first, hours: 25, gross_income: 500)
+
+      get :review, params: { id: employment_activity.id }
+
+      expect(response.body).to include("25")
+      expect(response.body).to include("500")
+    end
+  end
+
+  describe "PATCH #save_review" do
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "saves additional comments and redirects to the hub" do
+      patch :save_review, params: { id: employment_activity.id, employment_activity: { additional_comments: "Some notes" } }
+
+      expect(employment_activity.reload.additional_comments).to eq("Some notes")
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+  end
+
+  describe "DELETE #destroy" do
+    let!(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "deletes the activity and redirects to the hub" do
+      expect do
+        delete :destroy, params: { id: employment_activity.id }
+      end.to change(activity_flow.employment_activities, :count).by(-1)
+
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+  end
 end
