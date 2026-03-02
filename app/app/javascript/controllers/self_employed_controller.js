@@ -4,7 +4,10 @@ export default class extends Controller {
   static targets = ["checkbox", "contactName", "contactEmail", "contactPhone"]
 
   connect() {
-    this.toggle()
+    const isChecked = this.checkboxTarget.checked
+    this.contactNameTarget.disabled = isChecked
+    this.contactEmailTarget.disabled = isChecked
+    this.contactPhoneTarget.disabled = isChecked
   }
 
   toggle() {

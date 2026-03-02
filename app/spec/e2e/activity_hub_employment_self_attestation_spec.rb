@@ -11,7 +11,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     end
   end
 
-  it "supports editing an employment activity through the full flow" do # rubocop:disable RSpec/ExampleLength
+  it "supports editing an employment activity through the full flow" do # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
     visit URI(root_url).request_uri
     visit activities_flow_entry_path(client_agency_id: "sandbox")
     click_link I18n.t("activities.entries.show.continue")
@@ -77,6 +77,16 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     edit_links.first.click
 
     verify_page(page, title: I18n.t("activities.employment_info.edit_title"))
+
+    # Verify all fields are pre-populated with previously entered values
+    expect(find_field(I18n.t("activities.employment_info.employer_name")).value).to eq "Gainesville Wrecking"
+    expect(find_field(I18n.t("activities.employment_info.street_address")).value).to eq "942 W Harlan Ave"
+    expect(find_field(I18n.t("activities.employment_info.city")).value).to eq "Gainesville"
+    expect(find_field(I18n.t("activities.employment_info.zip_code")).value).to eq "32611"
+    expect(find_field(I18n.t("activities.employment_info.contact_name")).value).to eq "Donny Spears"
+    expect(find_field(I18n.t("activities.employment_info.contact_email")).value).to eq "donny@gainesvillewrecking.com"
+    expect(find_field(I18n.t("activities.employment_info.contact_phone_number")).value).to eq "(415) 344-8009"
+
     fill_in I18n.t("activities.employment_info.employer_name"), with: "Updated Employer"
     fill_in I18n.t("activities.employment_info.street_address"), with: "123 New Street"
     fill_in I18n.t("activities.employment_info.city"), with: "Tampa"
