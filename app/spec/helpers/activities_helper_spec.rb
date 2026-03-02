@@ -1,73 +1,83 @@
 require "rails_helper"
 
 RSpec.describe ActivitiesHelper do
-  describe "#self_attestation_cards" do
+  describe "#community_service_cards" do
     let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
-    let(:first_month) { flow.reporting_window_range.begin }
+    let(:first_month) { flow.reporting_window_range.begin.beginning_of_month }
 
     context "with community service activities" do
       it "returns one card per activity" do
-        create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 5, date: first_month)
-        create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 10, date: first_month + 5.days)
+        activity_1 = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        activity_2 = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity_1, month: first_month, hours: 5)
+        create(:volunteering_activity_month, volunteering_activity: activity_2, month: first_month + 1.month, hours: 10)
 
-        result = helper.self_attestation_cards(flow.volunteering_activities, name_field: :organization_name)
+        result = helper.community_service_cards(flow.volunteering_activities)
 
         expect(result.length).to eq(2)
         expect(result.map { |c| c[:name] }).to all(eq("Food Pantry"))
       end
 
       it "includes the activity's name and hours" do
-        create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 5, date: first_month)
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 5)
 
-        result = helper.self_attestation_cards(flow.volunteering_activities, name_field: :organization_name)
+        result = helper.community_service_cards(flow.volunteering_activities)
 
         expect(result.first[:name]).to eq("Food Pantry")
         expect(result.first[:months].first[:hours]).to eq(5)
-        expect(result.first[:months].first[:month]).to eq(first_month.beginning_of_month)
+        expect(result.first[:months].first[:month]).to eq(first_month)
       end
 
       it "returns the activity object for edit links" do
-        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 5, date: first_month)
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 5)
 
-        result = helper.self_attestation_cards(flow.volunteering_activities, name_field: :organization_name)
+        result = helper.community_service_cards(flow.volunteering_activities)
 
         expect(result.first[:activity]).to eq(activity)
       end
 
       it "returns empty array for empty input" do
-        result = helper.self_attestation_cards([], name_field: :organization_name)
+        result = helper.community_service_cards([])
 
         expect(result).to eq([])
       end
 
-      it "returns empty months for activities with nil dates" do
-        activity = build(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", hours: 5)
-        activity.date = nil
-        activity.save(validate: false)
+      it "returns empty months for activities with no monthly entries" do
+        create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
 
-        result = helper.self_attestation_cards(flow.volunteering_activities.reload, name_field: :organization_name)
+        result = helper.community_service_cards(flow.volunteering_activities.reload)
 
         expect(result.first[:months]).to be_empty
       end
     end
+  end
 
-    context "with work program activities" do
-      it "uses program_name as card name" do
-        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main", hours: 5, date: first_month)
+  describe "#work_program_cards" do
+    let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+    let(:first_month) { flow.reporting_months.first.beginning_of_month }
 
-        result = helper.self_attestation_cards(flow.job_training_activities, name_field: :program_name)
+    it "uses program_name as card name" do
+      activity = create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main")
+      create(:job_training_activity_month, job_training_activity: activity, month: first_month, hours: 5)
 
-        expect(result.first[:name]).to eq("Career Prep")
-      end
+      result = helper.work_program_cards(flow.job_training_activities)
 
-      it "returns one card per activity even with same program name" do
-        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main", hours: 5, date: first_month + 1.day)
-        create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main", hours: 8, date: first_month + 3.days)
+      expect(result.first[:name]).to eq("Career Prep")
+      expect(result.first[:months].first[:hours]).to eq(5)
+      expect(result.first[:months].first[:month]).to eq(first_month)
+    end
 
-        result = helper.self_attestation_cards(flow.job_training_activities, name_field: :program_name)
+    it "returns one card per activity even with same program name" do
+      activity_1 = create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main")
+      activity_2 = create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main")
+      create(:job_training_activity_month, job_training_activity: activity_1, month: first_month, hours: 5)
+      create(:job_training_activity_month, job_training_activity: activity_2, month: first_month + 1.month, hours: 8)
 
-        expect(result.length).to eq(2)
-      end
+      result = helper.work_program_cards(flow.job_training_activities)
+
+      expect(result.length).to eq(2)
     end
   end
 

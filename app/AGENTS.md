@@ -38,6 +38,7 @@ When developing on the Rails app, ensure you are always in the `app` subdirector
 - We use standard Rails i18n with a few process customizations.
 - Put all strings in the `config/locales/en.yml`.
 - When adding a new English string, add it to *only* the English file (`en.yml`). Do not add translations to the `es.yml` file unless asked.
+- Prefer relative I18n keys in views and partials (for example `t(".title")`) instead of repeated absolute key paths.
 
 ## Commit & Pull Request Guidelines
 - Follow history: brief sentence-case subject with issue/PR reference when available (e.g., `Add timeout page title`).

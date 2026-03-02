@@ -13,8 +13,18 @@ FactoryBot.define do
     contact_name { "Casey Doe" }
     contact_email { "casey@example.com" }
 
-    after(:build) do |activity|
-      activity.date ||= activity.activity_flow.reporting_window_range.end
+    transient do
+      date { activity_flow.reporting_window_range.end }
+      hours { nil }
+    end
+
+    after(:create) do |activity, evaluator|
+      next if evaluator.hours.nil?
+
+      create(:job_training_activity_month,
+        job_training_activity: activity,
+        month: evaluator.date.beginning_of_month,
+        hours: evaluator.hours)
     end
   end
 end

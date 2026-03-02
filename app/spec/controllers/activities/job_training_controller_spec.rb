@@ -39,7 +39,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       }
     end
 
-    it "creates a job training activity and redirects to document upload" do
+    it "creates a job training activity and redirects to the first month screen" do
       expect do
         post :create, params: job_training_params
       end.to change(activity_flow.job_training_activities, :count).by(1)
@@ -48,28 +48,28 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       expect(JobTrainingActivity.last.program_name).to eq("Resume Workshop")
       expect(JobTrainingActivity.last.activity_flow).to eq(activity_flow)
       created_activity = activity_flow.job_training_activities.order(:id).last
-      expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: created_activity.id))
+      expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: created_activity.id, id: 0))
     end
 
-    it "redirects to document upload when total hours are below the threshold" do
+    it "redirects to month 0 when total hours are below the threshold" do
       create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Local Food Bank", hours: 78)
 
       post :create, params: job_training_params
 
       created_activity = activity_flow.job_training_activities.order(:id).last
-      expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: created_activity.id))
+      expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: created_activity.id, id: 0))
     end
 
-    it "redirects to document upload when threshold met but only via self-attested data" do
+    it "redirects to month 0 when threshold met but only via self-attested data" do
       create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Local Food Bank", hours: 79)
 
       post :create, params: job_training_params
 
       created_activity = activity_flow.job_training_activities.order(:id).last
-      expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: created_activity.id))
+      expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: created_activity.id, id: 0))
     end
 
-    it "redirects to document upload when threshold is met via validated data" do
+    it "redirects to month 0 when threshold is met via validated data" do
       result = ActivityFlowProgressCalculator::OverallResult.new(
         total_hours: 80,
         meets_requirements: true,
@@ -80,7 +80,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       post :create, params: job_training_params
 
       created_activity = activity_flow.job_training_activities.order(:id).last
-      expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: created_activity.id))
+      expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: created_activity.id, id: 0))
     end
   end
 
@@ -98,11 +98,11 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
   describe "PATCH #update" do
     let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow) }
 
-    it "updates the activity and redirects to document upload" do
+    it "updates the activity and redirects to month 0 in edit mode" do
       patch :update, params: { id: job_training_activity.id, job_training_activity: { contact_name: "Taylor Smith" } }
 
       expect(job_training_activity.reload.contact_name).to eq("Taylor Smith")
-      expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: job_training_activity.id))
+      expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: job_training_activity.id, id: 0, from_edit: 1))
     end
   end
 

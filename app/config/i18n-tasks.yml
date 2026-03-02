@@ -144,6 +144,7 @@ ignore_missing:
     - "components.enrollment_term_table_component.*"
     - "activity_flow_progress_indicator.*"
     - "activerecord.errors.models.volunteering_activity_month.*" # Self attestation hours entry error messages
+    - "activerecord.errors.models.job_training_activity_month.*" # Self attestation hours entry error messages
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
@@ -162,6 +163,7 @@ ignore_unused:
     - "cbv.submits.show.pdf.client.agency_id_number" #dynamically looked up translations
     - "cbv.submits.show.pdf.shared.additional_jobs_to_report" #dynamically used when applicant does not supply additional jobs
     - "cbv.submits.show.pdf.shared.additional_jobs_to_report_html" #dynamically used when applicant supplies additional jobs
+    - "activities.employment.hours_input.*" # scope passed as t_scope in shared _hours_input partial
 
 csv:
   # see: https://github.com/glebm/i18n-tasks/wiki/Custom-CSV-import-and-export-tasks

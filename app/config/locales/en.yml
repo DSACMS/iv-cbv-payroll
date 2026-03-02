@@ -63,12 +63,15 @@ en:
               invalid_format: Language must be either English (en) or Spanish (es).
         job_training_activity:
           attributes:
-            date:
-              outside_reporting_window: must be within %{range}
             organization_name:
               blank: Enter the organization or provider name.
             program_name:
               blank: Enter the program name.
+        job_training_activity_month:
+          attributes:
+            hours:
+              greater_than_or_equal_to: Hours must be 0 or more
+              not_an_integer: Hours must be a whole number
         volunteering_activity:
           attributes:
             date:
@@ -171,6 +174,20 @@ en:
       title: Education
     employment:
       account_id: Account ID
+      hours_input:
+        continue: Continue
+        error_body: You need to add income and hours for at least one month to continue
+        error_body_multi_month: You need to add income and hours for at least one month to continue
+        error_heading: No employment information added
+        field_error_hours: Add hours for at least one month
+        field_error_income: Add income for at least one month
+        gross_income_hint: How much you made before taxes
+        gross_income_label: "%{month} gross income"
+        heading: Add your %{month} hours and income for %{organization}
+        hours_label: "%{month} hours worked"
+        month_indicator: Month %{current} / %{total}
+        no_hours_checkbox: No %{month} income from %{organization}
+        title: Employment hours and income
       review:
         additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
         additional_comments_title: Additional comments (optional)
@@ -318,17 +335,28 @@ en:
       description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
       employment:
         employer: Employer
+      job_training:
+        header: Work Program information
+        hours_attended: Hours attended
+        month: Month
+        organization_address: Organization address
+        program_name: Program name
       legal_agreement: Legal agreement
       submit: Submit to %{agency_name}
       title: Review and submit your %{benefit} Community Engagement report
-      work_programs:
-        header: Work Program information
       your_details: Your details
     work_programs:
-      date: Date
-      hours: Hours attended
-      organization_address: Organization address
-      program_name: Program name
+      hours_input:
+        continue: Continue
+        error_body: You need to add work program hours to continue.
+        error_body_multi_month: You need to add work program hours for at least one month to continue.
+        error_heading: No hours entered
+        field_error: Add hours for at least one month
+        heading: Add your %{month} work program hours for %{organization}
+        hours_label: "%{month} work program hours"
+        month_indicator: Month %{current} / %{total}
+        no_hours_checkbox: No work program hours with %{organization} in %{month}
+        title: Work program hours
       title: Work programs
   activity_flow_progress_indicator:
     description: We calculate your community engagement from the activities you add to your report.
