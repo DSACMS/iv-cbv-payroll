@@ -98,6 +98,19 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(employment_activity.reload.employer_name).to eq("Updated Corp")
       expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1))
     end
+
+    it "sets contact fields to N/A when self-employed is checked" do
+      patch :update, params: {
+        id: employment_activity.id,
+        employment_activity: { is_self_employed: true, contact_name: "N/A", contact_email: "N/A", contact_phone_number: "N/A" }
+      }
+
+      employment_activity.reload
+      expect(employment_activity.is_self_employed).to be true
+      expect(employment_activity.contact_name).to eq("N/A")
+      expect(employment_activity.contact_email).to eq("N/A")
+      expect(employment_activity.contact_phone_number).to eq("N/A")
+    end
   end
 
   describe "ensure_review_ready guard" do

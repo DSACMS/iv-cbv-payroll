@@ -5,17 +5,12 @@ export default class extends Controller {
 
   connect() {
     const isChecked = this.checkboxTarget.checked
-    this.contactNameTarget.disabled = isChecked
-    this.contactEmailTarget.disabled = isChecked
-    this.contactPhoneTarget.disabled = isChecked
+    this.setContactFieldsReadonly(isChecked)
   }
 
   toggle() {
     const isChecked = this.checkboxTarget.checked
-
-    this.contactNameTarget.disabled = isChecked
-    this.contactEmailTarget.disabled = isChecked
-    this.contactPhoneTarget.disabled = isChecked
+    this.setContactFieldsReadonly(isChecked)
 
     if (isChecked) {
       this.contactNameTarget.value = "N/A"
@@ -26,5 +21,13 @@ export default class extends Controller {
       this.contactEmailTarget.value = ""
       this.contactPhoneTarget.value = ""
     }
+  }
+
+  setContactFieldsReadonly(readonly) {
+    const targets = [this.contactNameTarget, this.contactEmailTarget, this.contactPhoneTarget]
+    targets.forEach((target) => {
+      target.readOnly = readonly
+      target.classList.toggle("usa-input--disabled", readonly)
+    })
   }
 }

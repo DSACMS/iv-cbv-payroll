@@ -52,6 +52,10 @@ $mobile-navbar-height: 4rem;
 .pointer-events-none {
   pointer-events: none;
 }
+.usa-input--disabled {
+  opacity: 0.5;
+  background-color: color("base-lightest");
+}
 
 tr td:first-child {
   font-weight: bold;
