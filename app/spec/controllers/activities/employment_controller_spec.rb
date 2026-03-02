@@ -39,6 +39,18 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     end
   end
 
+  describe "GET #edit" do
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "renders the employment info form" do
+      get :edit, params: { id: employment_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("activities.employment_info.edit_title"))
+      expect(response.body).to include(I18n.t("activities.employment_info.employer_name"))
+    end
+  end
+
   describe "POST #create" do
     let(:employment_attributes) { attributes_for(:employment_activity).except(:activity_flow) }
     let(:employment_params) { { employment_activity: employment_attributes } }
@@ -74,6 +86,22 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
       activity = activity_flow.employment_activities.last
       expect(activity.data_source).to eq("self_attested")
+    end
+  end
+
+  describe "PATCH #update" do
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "updates the employment activity and redirects to the first month page from edit flow" do
+      patch :update, params: {
+        id: employment_activity.id,
+        employment_activity: { employer_name: "Updated Employer" }
+      }
+
+      expect(response).to redirect_to(
+        edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 0, from_edit: 1)
+      )
+      expect(employment_activity.reload.employer_name).to eq("Updated Employer")
     end
   end
 end

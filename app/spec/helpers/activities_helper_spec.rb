@@ -171,6 +171,14 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:name]).to eq("ACME Corp")
     end
 
+    it "includes edit path to payment details" do
+      result = helper.employment_cards([ payroll_account ], mock_report, reporting_range)
+
+      expect(result.first[:edit_path]).to eq(
+        helper.activities_flow_income_payment_details_path(user: { account_id: account_id })
+      )
+    end
+
     it "returns monthly gross earnings in cents and combined hours" do
       result = helper.employment_cards([ payroll_account ], mock_report, reporting_range)
 
@@ -199,6 +207,68 @@ RSpec.describe ActivitiesHelper do
       result = helper.employment_cards([ payroll_account ], mock_report, reporting_range)
 
       expect(result.first[:months]).to be_empty
+    end
+  end
+
+  describe "#employment_activity_cards" do
+    let(:flow) { create(:activity_flow, reporting_window_months: 2, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+    let(:activity) { create(:employment_activity, activity_flow: flow, employer_name: "Gainesville Wrecking") }
+    let(:first_month) { flow.reporting_months.first.beginning_of_month }
+    let(:second_month) { flow.reporting_months.second.beginning_of_month }
+
+    before do
+      create(:employment_activity_month, employment_activity: activity, month: first_month, gross_income: 500, hours: 40)
+      create(:employment_activity_month, employment_activity: activity, month: second_month, gross_income: 300, hours: 20)
+    end
+
+    it "returns card data with employer name, month entries, and edit path" do
+      result = helper.employment_activity_cards([ activity ])
+
+      expect(result.first[:name]).to eq("Gainesville Wrecking")
+      expect(result.first[:edit_path]).to eq(
+        helper.edit_activities_flow_income_employment_path(id: activity.id)
+      )
+      expect(result.first[:months]).to contain_exactly(
+        { month: first_month, gross_earnings: 50000, hours: 40 },
+        { month: second_month, gross_earnings: 30000, hours: 20 }
+      )
+    end
+
+    it "returns empty months when no monthly entries exist" do
+      activity.employment_activity_months.destroy_all
+
+      result = helper.employment_activity_cards([ activity ])
+      expect(result.first[:months]).to eq([])
+    end
+  end
+
+  describe "#combined_employment_card_data" do
+    let(:flow) { create(:activity_flow, reporting_window_months: 1, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+    let(:reporting_range) { flow.reporting_window_range }
+    let(:account_id) { "test-account-123" }
+    let(:payroll_account) { build(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: account_id) }
+    let(:employment_activity) { create(:employment_activity, activity_flow: flow, employer_name: "Gainesville Wrecking") }
+    let(:mock_report) do
+      instance_double(Aggregators::AggregatorReports::AggregatorReport).tap do |report|
+        account_report = double(employment: double(employer_name: "ACME Corp"))
+        allow(report).to receive(:find_account_report).with(account_id).and_return(account_report)
+        allow(report).to receive(:summarize_by_month).and_return({ account_id => {} })
+      end
+    end
+
+    before do
+      create(:employment_activity_month, employment_activity:, month: flow.reporting_months.first.beginning_of_month, gross_income: 500, hours: 40)
+    end
+
+    it "combines payroll and self-attested employment cards" do
+      result = helper.combined_employment_card_data(
+        reporting_range: reporting_range,
+        payroll_accounts: [ payroll_account ],
+        persisted_report: mock_report,
+        employment_activities: [ employment_activity ]
+      )
+
+      expect(result.map { |card| card[:name] }).to contain_exactly("ACME Corp", "Gainesville Wrecking")
     end
   end
 end

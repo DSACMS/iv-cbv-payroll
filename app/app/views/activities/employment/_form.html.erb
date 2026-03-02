@@ -1,4 +1,4 @@
-<%= uswds_form_with(model: employment_activity, url: activities_flow_income_employment_index_path) do |f| %>
+<%= uswds_form_with(model: employment_activity, url: employment_activity.persisted? ? activities_flow_income_employment_path(id: employment_activity.id) : activities_flow_income_employment_index_path) do |f| %>
   <h2><%= t("activities.employment_info.employer_section_title") %></h2>
   <%= f.text_field :employer_name,
         label: t("activities.employment_info.employer_name"),
