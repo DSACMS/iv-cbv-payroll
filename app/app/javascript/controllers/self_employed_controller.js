@@ -12,11 +12,7 @@ export default class extends Controller {
     const isChecked = this.checkboxTarget.checked
     this.setContactFieldsReadonly(isChecked)
 
-    if (isChecked) {
-      this.contactNameTarget.value = "N/A"
-      this.contactEmailTarget.value = "N/A"
-      this.contactPhoneTarget.value = "N/A"
-    } else {
+    if (!isChecked) {
       this.contactNameTarget.value = ""
       this.contactEmailTarget.value = ""
       this.contactPhoneTarget.value = ""
@@ -28,6 +24,7 @@ export default class extends Controller {
     targets.forEach((target) => {
       target.readOnly = readonly
       target.classList.toggle("usa-input--disabled", readonly)
+      if (readonly) target.value = "N/A"
     })
   }
 }
