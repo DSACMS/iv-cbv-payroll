@@ -57,7 +57,7 @@ RSpec.describe ActivityFlow, type: :model do
     end
 
     it "returns a formatted display string" do
-      expect(flow.reporting_window_display).to eq("January 2025 - February 2025")
+      expect(flow.reporting_window_display).to eq("January - February 2025")
     end
 
     describe "#within_reporting_window?" do
