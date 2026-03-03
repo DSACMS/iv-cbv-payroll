@@ -16,7 +16,7 @@ class CbvApplicant < ApplicationRecord
   self.inheritance_column = "client_agency_id"
 
   def self.sti_name
-    # "CbvApplicant::AzDes" => "az_des"
+    # "CbvApplicant::LaLdh" => "la_ldh"
     name.demodulize.underscore
   end
 
@@ -109,14 +109,6 @@ class CbvApplicant < ApplicationRecord
   def is_applicant_attribute_required?(attribute)
     get_required_applicant_attributes
     .include?(attribute)
-  end
-
-  # Override this in a subclass based on the indexing data.
-  #
-  # This returns an array of names the agency gave us expecting to need
-  # income verification.
-  def agency_expected_names
-    []
   end
 
   private

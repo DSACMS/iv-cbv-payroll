@@ -14,7 +14,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
       @cbv_flow.touch(:transmitted_at)
 
       track_transmitted_event(CbvFlow.find(cbv_flow_id), aggregator_report.paystubs)
-      enqueue_agency_name_matching_job(CbvFlow.find(cbv_flow_id))
     end
   end
 
@@ -35,12 +34,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
     else
       raise "Unsupported transmission method: #{@current_agency.transmission_method}"
     end
-  end
-
-  def enqueue_agency_name_matching_job(cbv_flow)
-    return unless cbv_flow.cbv_applicant.agency_expected_names.any?
-
-    MatchAgencyNamesJob.perform_later(cbv_flow.id)
   end
 
   def track_transmitted_event(cbv_flow, payments)

@@ -60,18 +60,13 @@ class WeeklyReportMailer < ApplicationMailer
     base_fields = {
       started_at: flow&.created_at,
       transmitted_at: flow&.transmitted_at,
-      completed_at: flow&.consented_to_authorized_use_at
+      completed_at: flow&.consented_to_authorized_use_at,
+      invited_at: invitation&.created_at
     }
 
     case client_agency_id
     when "la_ldh"
       base_fields.merge(case_number: applicant.case_number)
-    when "az_des"
-      base_fields.merge(
-        case_number: applicant.case_number,
-        email_address: invitation&.email_address,
-        invited_at: invitation&.created_at
-      )
     else
       base_fields
     end
