@@ -46,7 +46,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         employment_activity_month: { gross_income: 339, hours: 45 }
       }
 
-      expect(response).to redirect_to(activities_flow_root_path)
+      expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity))
       month = employment_activity.activity_months.last
       expect(month.gross_income).to eq(339)
       expect(month.hours).to eq(45)

@@ -169,8 +169,13 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       click_button I18n.t("activities.employment.hours_input.continue")
     end
 
+    # Review page
+    verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: employer_name))
+    click_button I18n.t("activities.employment.review.save")
+
     verify_page(page, title: I18n.t("activities.hub.title"))
   end
+
 
   it "completes the generic flow for the income activity" do
     visit URI(root_url).request_uri

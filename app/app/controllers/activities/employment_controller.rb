@@ -1,5 +1,6 @@
 class Activities::EmploymentController < Activities::BaseController
-  before_action :set_employment_activity, only: %i[edit update]
+  before_action :set_employment_activity, only: %i[edit update review save_review]
+  before_action :ensure_review_ready, only: %i[review save_review]
 
   def new
     @employment_activity = @flow.employment_activities.new
@@ -19,16 +20,45 @@ class Activities::EmploymentController < Activities::BaseController
 
   def update
     if @employment_activity.update(employment_activity_params)
-      redirect_to edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: 0, from_edit: 1)
+      redirect_to review_activities_flow_income_employment_path(id: @employment_activity, from_edit: 1)
     else
       render :edit, status: :unprocessable_content
     end
   end
 
+  def review
+  end
+
+  def save_review
+    @employment_activity.update(review_params)
+    redirect_to after_activity_path
+  end
+
   private
+
+  def ensure_review_ready
+    if @employment_activity.employer_name.blank?
+      redirect_to edit_activities_flow_income_employment_path(@employment_activity)
+      return
+    end
+
+    reporting_months = @flow.reporting_months
+    reporting_months.each_with_index do |month, index|
+      unless @employment_activity.employment_activity_months.exists?(month: month.beginning_of_month)
+        redirect_to edit_activities_flow_income_employment_month_path(
+          employment_id: @employment_activity, id: index
+        )
+        return
+      end
+    end
+  end
 
   def set_employment_activity
     @employment_activity = @flow.employment_activities.find(params[:id])
+  end
+
+  def review_params
+    params.require(:employment_activity).permit(:additional_comments)
   end
 
   def employment_activity_params

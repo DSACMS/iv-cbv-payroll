@@ -33,5 +33,6 @@
           data: { "self-employed-target": "contactPhone" } %>
   </div>
 
-  <%= f.submit t("activities.employment_info.continue") %>
+  <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t("activities.employment_info.continue") %>
+  <%= f.submit submit_label %>
 <% end %>

@@ -169,6 +169,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_141000) do
 
   create_table "employment_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
+    t.text "additional_comments"
     t.string "city"
     t.string "contact_email"
     t.string "contact_name"

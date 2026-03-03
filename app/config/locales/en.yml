@@ -182,6 +182,21 @@ en:
         month_indicator: Month %{current} / %{total}
         no_hours_checkbox: No %{month} income from %{organization}
         title: Employment hours and income
+      review:
+        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_title: Additional comments (optional)
+        address: Address
+        contact_email: Employer contact email
+        contact_name: Employer contact name
+        contact_phone: Employer contact phone number
+        description: Review all the information you've added for %{employer_name} before adding it to your Community Engagement Report.
+        employer_info: Employer information
+        gross_income: Gross income
+        hours_and_income: Hours and income
+        hours_worked: Hours worked
+        name: Name
+        save: Save and add to my report
+        title: Review your employment information for %{employer_name}
       synchronization_status: Status
       title: Employment
     employment_info:
@@ -193,6 +208,7 @@ en:
       continue: Continue
       edit_title: Edit Employment Activity
       employer_name: Employer or business name
+      employer_name_error: Add your employer or business name
       employer_name_hint: If you work for yourself, enter "Self-employed"
       employer_section_title: Employer or business information
       self_employed: I'm self-employed
