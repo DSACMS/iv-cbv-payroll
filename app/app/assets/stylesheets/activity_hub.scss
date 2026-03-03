@@ -4,11 +4,12 @@
 // Activity Hub two-column layout
 // Figma spec: 320px progress | units(8) | 1px divider | units(8) | activities (flex)
 .activity-hub-columns {
-  padding-top: units(4);
+  padding-top: units(1);
   padding-bottom: units(4);
 
   @include at-media("tablet") {
     display: flex;
+    padding-top: units(4);
   }
 }
 
@@ -34,6 +35,9 @@
 
 // Mobile-only horizontal divider between progress and cards
 .activity-hub-mobile-divider {
+  border: none;
+  border-top: 1px solid color("base-lighter");
+
   @include at-media("tablet") {
     display: none;
   }
