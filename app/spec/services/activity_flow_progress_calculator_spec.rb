@@ -312,6 +312,86 @@ RSpec.describe ActivityFlowProgressCalculator do
           end
         end
       end
+
+      context "with self-attested employment" do
+        let(:flow) { create(:activity_flow, reporting_window_months: 1) }
+        let(:first_month) { flow.reporting_window_range.begin }
+        let(:progress) { described_class.new(flow).overall_result }
+
+        it "includes self-attested employment hours in total hours" do
+          activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp")
+          create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 40, gross_income: 500)
+
+          expect(progress.total_hours).to eq(40)
+        end
+
+        it "includes self-attested employment hours in monthly results" do
+          activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp")
+          create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 50, gross_income: 500)
+
+          monthly_results = described_class.new(flow).monthly_results
+          first_result = monthly_results.find { |r| r.month == first_month }
+
+          expect(first_result.total_hours).to eq(50)
+        end
+
+        it "meets requirements when self-attested earnings reach threshold" do
+          activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp")
+          create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 10, gross_income: 580)
+
+          expect(progress.meets_requirements).to be(true)
+        end
+
+        it "does not meet requirements when self-attested earnings are below threshold" do
+          activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp")
+          create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 10, gross_income: 579)
+
+          expect(progress.meets_requirements).to be(false)
+        end
+
+        it "does not count self-attested employment toward meets_routing_requirements" do
+          activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp")
+          create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 80, gross_income: 600)
+
+          expect(progress.meets_routing_requirements).to be(false)
+        end
+
+        it "combines self-attested employment with volunteering hours" do
+          activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp")
+          create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 40, gross_income: 200)
+
+          vol_activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+          create(:volunteering_activity_month, volunteering_activity: vol_activity, month: first_month, hours: 40)
+
+          expect(progress.total_hours).to eq(80)
+          expect(progress.meets_requirements).to be(true)
+        end
+
+        it "combines self-attested employment with job training hours" do
+          activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp")
+          create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 40, gross_income: 200)
+
+          create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 40, date: first_month)
+
+          expect(progress.total_hours).to eq(80)
+          expect(progress.meets_requirements).to be(true)
+        end
+
+        it "combines self-attested employment with payroll employment" do
+          # Self-attested
+          activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp")
+          create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 40, gross_income: 200)
+
+          # Payroll
+          payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "test-account-456")
+          create(:activity_flow_monthly_summary,
+            activity_flow: flow, payroll_account: payroll_account,
+            month: first_month.beginning_of_month, total_w2_hours: 40.0)
+
+          expect(progress.total_hours).to eq(80)
+          expect(progress.meets_requirements).to be(true)
+        end
+      end
     end
   end
 
