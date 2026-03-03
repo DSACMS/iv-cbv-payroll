@@ -227,7 +227,7 @@ en:
         gross_income: 'Gross income: %{amount}'
         hours: 'Hours: %{count}'
         not_enrolled: Not enrolled
-      description: "%{agency_name} needs you to report your Community Engagement for %{reporting_window}."
+      description_html: "<strong>Reporting period:</strong> %{reporting_window}"
       edit: Edit
       empty:
         community_service: No community service added
