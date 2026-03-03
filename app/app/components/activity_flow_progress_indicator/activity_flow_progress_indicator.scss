@@ -1,10 +1,8 @@
 @forward "uswds";
 @use "uswds" as *;
 
-$progress-bar-max-width: 30rem;
-
 .activity-flow-progress-indicator {
-  margin: units(2) 0 units(4);
+  margin: units(2) 0 0;
 }
 
 .activity-flow-progress-indicator__progress-bar {
@@ -14,10 +12,6 @@ $progress-bar-max-width: 30rem;
   display: block;
   height: 1rem;
   width: 100%;
-
-  @include at-media("tablet") {
-    width: $progress-bar-max-width;
-  }
 
   &::before {
     background-color: color("primary-vivid");
@@ -42,10 +36,6 @@ $progress-bar-max-width: 30rem;
   font-weight: bold;
   justify-content: space-between;
   margin-top: units(1);
-
-  @include at-media("tablet") {
-    width: $progress-bar-max-width;
-  }
 }
 
 .activity-flow-progress-indicator__progress-amount {
