@@ -14,10 +14,6 @@ en:
               blank: Enter the client's last name.
             snap_application_date:
               invalid_date: Enter today's date or the date you contacted the client.
-        cbv_applicant/az_des:
-          attributes:
-            case_number:
-              blank: Enter the client's case number.
         cbv_applicant/la_ldh:
           attributes:
             case_number:
@@ -146,15 +142,13 @@ en:
         enrollment_information: Enrollment information
         enrollment_information_multiple: 'Enrollment status: %{school_name}'
         header: Review your student enrollment details
-        no_records_found:
-          heading: No enrollment record found
-          message: We couldn't find any enrollment records for the information you provided. You can go back and try again or add your education activity manually.
-          return_button: Return
       error:
-        back_button: Back to Activities
-        error_description: There was an error retrieving your education information. Please try again later.
-        error_heading: Unable to retrieve education information.
-        header: Error
+        description: 'We were unable to verify your student status with National Student Clearinghouse. To continue, you can:'
+        enter_manually_button: Enter education manually
+        header: We couldn't verify your student enrollment
+        option_enter_manually: Enter your education information manually
+        option_retry: Re-try verifying your student status with the National Student Clearinghouse
+        retry_button: Retry student verification
       error_no_data: No education information available
       errors:
         unexpected: An unexpected error occurred. Please try again.
@@ -241,6 +235,7 @@ en:
       save: Save changes
       title: Add activities to your Community Engagement report
     job_training:
+      document_upload_suggestion_text_html: "<ul><li>Signed statement on organization letterhead verifying hours</li><li>Signed monthly log of participation</li><li>Program tuition receipt</li></ul>"
       edit_title: Edit Work Program Activity
       form:
         city: City
@@ -345,6 +340,22 @@ en:
         month_indicator: Month %{current} / %{total}
         no_hours_checkbox: No work program hours with %{organization} in %{month}
         title: Work program hours
+      review:
+        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_title: Additional comments (optional)
+        address: Address
+        contact_email: Contact email
+        contact_name: Contact name
+        contact_phone: Contact phone number
+        description: Review all the information you've added for %{program_name} before adding it to your Community Engagement Report.
+        edit: Edit
+        hours_section: Work program hours
+        organization_info: Work program information
+        organization_name: Organization or provider name
+        program_name: Program name
+        save: Save and add to my report
+        title: Review your work program information for %{program_name}
+        work_program_hours: Work program hours
       title: Work programs
   activity_flow_progress_indicator:
     description: We calculate your community engagement from the activities you add to your report.
@@ -667,7 +678,6 @@ en:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date: SNAP application or recertification interview date
         consent_checkbox_label_html:
-          az_des: Check this box to affirm under penalty of perjury that the information provided by you is true and complete to the best of your knowledge.<ul class="margin-y-2"><li>You agree to tell %{agency_acronym} about:<ul><li>any other income not included in this report,</li><li>or any errors found in the information gathered with this tool.</li></ul></li><li>You understand that providing accurate and complete information is your responsibility.</li><li>Any false or missing information may result in:<ul><li>an overpayment, which you must repay to %{agency_acronym},</li><li>or program disqualification.</li></ul></li></ul>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
           default: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the %{agency_full_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized %{agency_acronym} personnel.'
         legal_header: Legal agreement
         none_found: We didn't find any payments from this employer.
@@ -675,7 +685,6 @@ en:
         page_header: Submit your income report
         pdf:
           agency_header_name:
-            az_des: Department of Economic Security
             la_ldh: Department of Health
             nh_dhhs: Test Agency
             sandbox: Test Agency
@@ -963,24 +972,20 @@ en:
       title: Your session has timed out
   shared:
     agency_acronym:
-      az_des: DES/FAA
       la_ldh: LDH
       nh_dhhs: TA
       sandbox: TA
     agency_full_name:
-      az_des: Department of Economic Security/Family Assistance Administration
       la_ldh: Louisiana Department of Health
       nh_dhhs: Test Agency
       sandbox: Test Agency
     app_name:
-      az_des: MyFamilyBenefits
       nh_dhhs: TAApp
       sandbox: TAApp
     banner:
       lock: Lock
       locked_padlock: A locked padlock
     benefit:
-      az_des: Nutrition Assistance
       la_ldh: Medicaid
       nh_dhhs: Medicaid
       sandbox: Medicaid
@@ -989,7 +994,6 @@ en:
     header:
       aria_label: Main navigation
       cbv_flow_title:
-        az_des: Department of Economic Security
         la_ldh: Department of Health
         nh_dhhs: Test Agency
         sandbox: Test Agency
@@ -997,7 +1001,6 @@ en:
       help: Help
       log_out: Log out
       preheader:
-        az_des: A website in partnership with the Arizona Department of Economic Security.
         default: A website in partnership with Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health
       primary: Primary navigation
@@ -1020,7 +1023,6 @@ en:
       ninety_days: 90 days
       six_months: 6 months
     reporting_purpose:
-      az_des: Mid Approval Contact form
       la_ldh: benefits
       nh_dhhs: benefits
       sandbox: benefits

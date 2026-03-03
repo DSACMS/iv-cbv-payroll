@@ -69,7 +69,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
     end
 
     it "formats the agency name in the confirmation code" do
-      activity_flow.cbv_applicant.update!(client_agency_id: "az_des")
+      activity_flow.cbv_applicant.update!(client_agency_id: "la_ldh")
       expect(activity_flow.confirmation_code).to be_nil
 
       patch :update, params: { activity_flow: { consent_to_submit: "1" } }

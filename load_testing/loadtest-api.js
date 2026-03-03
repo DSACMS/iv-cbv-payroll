@@ -40,10 +40,9 @@ export default function () {
     };
     const payload = {
         language: "en",
-        client_agency_id: "az_des",
+        client_agency_id: "sandbox",
         agency_partner_metadata: {
             case_number: "443322",
-            income_changes: []
         }
     };
 

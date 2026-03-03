@@ -4,52 +4,33 @@
   <%= t(".header") %>
 </h1>
 
-<% if @education_activity.sync_no_enrollments? %>
-  <div class="usa-alert usa-alert--warning">
-    <div class="usa-alert__body">
-      <h2 class="usa-alert__heading">
-        <%= t(".no_records_found.heading") %>
-      </h2>
-      <p class="usa-alert__text">
-      <%= t(".no_records_found.message") %>
-      </p>
-    </div>
-  </div>
+<p>
+  <%= t(".description_html", reporting_window: @flow.reporting_window_display, agency_acronym: agency_translation("shared.agency_acronym")) %>
+</p>
 
-  <div class="margin-top-4">
-    <%= link_to t(".no_records_found.return_button"), activities_flow_root_path, class: "usa-button" %>
-  </div>
+<% has_multiple_enrollments = @education_activity.nsc_enrollment_terms.size > 1 %>
+<% unless has_multiple_enrollments %>
+  <h2>
+    <%= t(".enrollment_information") %>
+  </h2>
 <% end %>
 
-<% if @education_activity.sync_succeeded? %>
-  <p>
-    <%= t(".description_html", reporting_window: @flow.reporting_window_display, agency_acronym: agency_translation("shared.agency_acronym")) %>
-  </p>
-
-  <% has_multiple_enrollments = @education_activity.nsc_enrollment_terms.size > 1 %>
-  <% unless has_multiple_enrollments %>
+<% @education_activity.nsc_enrollment_terms.each do |enrollment_term| %>
+  <% if has_multiple_enrollments %>
     <h2>
-      <%= t(".enrollment_information") %>
+      <%= t(".enrollment_information_multiple", school_name: enrollment_term.school_name.titlecase) %>
     </h2>
   <% end %>
 
-  <% @education_activity.nsc_enrollment_terms.each do |enrollment_term| %>
-    <% if has_multiple_enrollments %>
-      <h2>
-        <%= t(".enrollment_information_multiple", school_name: enrollment_term.school_name.titlecase) %>
-      </h2>
-    <% end %>
-
-    <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
-  <% end %>
-
-  <div class="usa-form-group margin-top-5">
-    <%= form_with model: @education_activity, url: activities_flow_education_path(id: @education_activity.id), class: "usa-form usa-form--large" do |form| %>
-      <h2><%= t(".additional_information_header") %></h2>
-      <%= form.label :additional_comments, t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")), class: "usa-label" %>
-      <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
-
-      <%= form.submit t(".continue"), class: "usa-button usa-button--primary" %>
-    <% end %>
-  </div>
+  <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
 <% end %>
+
+<div class="usa-form-group margin-top-5">
+  <%= form_with model: @education_activity, url: activities_flow_education_path(id: @education_activity.id), class: "usa-form usa-form--large" do |form| %>
+    <h2><%= t(".additional_information_header") %></h2>
+    <%= form.label :additional_comments, t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")), class: "usa-label" %>
+    <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
+
+    <%= form.submit t(".continue"), class: "usa-button usa-button--primary" %>
+  <% end %>
+</div>
