@@ -2,7 +2,7 @@
 @use "uswds" as *;
 
 // Activity Hub two-column layout
-// Figma spec: 320px progress | 60px | 1px divider | 60px | 584px activities (total 1024px)
+// Figma spec: 320px progress | units(8) | 1px divider | units(8) | activities (flex)
 .activity-hub-columns {
   padding-top: units(4);
   padding-bottom: units(4);
@@ -25,10 +25,10 @@
 .activity-hub-columns__activities {
   @include at-media("tablet") {
     flex: 1;
-    // Figma: 60px space before divider line, 60px space after
-    margin-left: 3.75rem; // 60px
+    // units(8) = 64px space before divider line, 64px space after
+    margin-left: units(8);
     border-left: 1px solid color("base-lighter");
-    padding-left: 3.75rem; // 60px
+    padding-left: units(8);
   }
 }
 
