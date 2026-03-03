@@ -131,6 +131,7 @@ queue:
   password: <%= ENV.fetch("DB_PASS") { nil } %>
   port: <%= ENV.fetch("DB_PORT") { 5432 } %>
   host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  schema_search_path: <%= ENV.fetch("DB_SCHEMA", "app") %>
   aws_rds_iam_auth_token_generator: default
 
 production:
@@ -140,6 +141,7 @@ production:
   password: <%= ENV.fetch("DB_PASS") { nil } %>
   port: <%= ENV.fetch("DB_PORT") { 5432 } %>
   host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  schema_search_path: <%= ENV.fetch("DB_SCHEMA", "app") %>
   aws_rds_iam_auth_token_generator: default
 ci:
   <<: *default

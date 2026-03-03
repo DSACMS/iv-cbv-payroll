@@ -6,8 +6,7 @@
 # 2. Run the "db-migrate" command in the container as a new task
 #
 # Optional parameters:
-#   --workspace - Terraform workspace to use (e.g. "p-1234" for PR environments).
-#     If not specified, uses the default workspace.
+#   --workspace <name> – Terraform workspace to select (for PR environments)
 #
 # Positional parameters:
 #   app_name (required) – the name of subdirectory of /infra that holds the
@@ -19,7 +18,6 @@
 
 set -euo pipefail
 
-# Parse optional parameters
 workspace=""
 while :; do
   case "${1:-}" in
@@ -67,14 +65,23 @@ fi
 migrator_role_arn=$(terraform -chdir="infra/${app_name}/service" output -raw migrator_role_arn)
 
 echo
-echo "::group::Step 1. Update task definition without updating service"
 
-TF_CLI_ARGS_apply="-input=false -auto-approve -var=image_tag=${image_tag}
-  -target=module.service.aws_ecs_task_definition.app
-  -target=module.service.aws_iam_role_policy.task_executor" \
-  make infra-update-app-service APP_NAME="${app_name}" ENVIRONMENT="${environment}"
+if [ -n "${workspace}" ]; then
+  # For PR environments, the task definition was already updated by the caller's
+  # terraform apply, so skip the targeted apply (which would reinitialize terraform
+  # and reset the workspace).
+  echo "Skipping task definition update (already applied in workspace ${workspace})"
+else
+  echo "::group::Step 1. Update task definition without updating service"
 
-echo "::endgroup::"
+  TF_CLI_ARGS_apply="-input=false -auto-approve -var=image_tag=${image_tag}
+    -target=module.service.aws_ecs_task_definition.app
+    -target=module.service.aws_iam_role_policy.task_executor" \
+    make infra-update-app-service APP_NAME="${app_name}" ENVIRONMENT="${environment}"
+
+  echo "::endgroup::"
+fi
+
 echo
 echo 'Step 2. Run "db-migrate" command'
 

@@ -34,7 +34,7 @@ echo "::group::Run database migrations"
 ./bin/run-database-migrations --workspace "${workspace}" "${app_name}" "${image_tag}" "${environment}"
 echo "::endgroup::"
 
-# Re-select workspace after run-command reinitializes terraform
+# Re-select workspace after run-database-migrations reinitializes terraform
 terraform -chdir="infra/${app_name}/service" workspace select "${workspace}"
 
 cluster_name="$(terraform -chdir="infra/$app_name/service" output -raw service_cluster_name)"

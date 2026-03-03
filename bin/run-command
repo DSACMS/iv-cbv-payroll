@@ -10,6 +10,7 @@
 #     e.g. '[{ "name" : "DB_USER", "value" : "migrator" }]'
 #   --task_role_arn - the IAM role ARN that the task should assume. Overrides the
 #     task role specified in the task definition.
+#   --workspace - Terraform workspace to select (for PR environments)
 #
 # Positional parameters:
 #   app_name (required) - the name of subdirectory of /infra that holds the
