@@ -91,7 +91,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       get :edit, params: { id: job_training_activity.id }
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.job_training.new.title"))
+      expect(response.body).to include(I18n.t("activities.job_training.edit_title"))
     end
   end
 
