@@ -57,6 +57,7 @@
 
 // Activity Hub section header with inline Add button
 .activity-hub-section-header {
+  gap: units(3);
   margin-bottom: units(2.5);
 
   form {
