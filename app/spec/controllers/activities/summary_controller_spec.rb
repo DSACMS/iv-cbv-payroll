@@ -77,6 +77,39 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(second_month.hours.to_s)
     end
 
+    it "renders work program details and monthly hours in the summary table" do
+      activity_flow.update!(reporting_window_months: 2)
+
+      activity = create(
+        :job_training_activity,
+        activity_flow: activity_flow,
+        organization_name: "Habitat for Humanity",
+        program_name: "Resume and Skills Program",
+        street_address: "942 W Harlan Ave",
+        city: "Gainesville",
+        state: "Florida",
+        zip_code: "32601",
+        contact_name: "Donny Murphy",
+        contact_email: "donny@habitat.com",
+        contact_phone_number: "555-0100"
+      )
+      first_month = create(:job_training_activity_month, job_training_activity: activity, month: activity_flow.reporting_months.first, hours: 45)
+      second_month = create(:job_training_activity_month, job_training_activity: activity, month: activity_flow.reporting_months.second, hours: 12)
+
+      get :show
+
+      expect(response.body).to include(activity.organization_name)
+      expect(response.body).to include(activity.program_name)
+      expect(response.body).to include(activity.formatted_address)
+      expect(response.body).to include(activity.contact_name)
+      expect(response.body).to include(activity.contact_email)
+      expect(response.body).to include(activity.contact_phone_number)
+      expect(response.body).to include(I18n.l(first_month.month, format: :month))
+      expect(response.body).to include(I18n.l(second_month.month, format: :month))
+      expect(response.body).to include(first_month.hours.to_s)
+      expect(response.body).to include(second_month.hours.to_s)
+    end
+
     context "with payroll accounts" do
       it "includes synced payroll accounts in all_activities list" do
         payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow)
