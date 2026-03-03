@@ -195,16 +195,4 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
   end
-
-  describe "DELETE #destroy" do
-    let!(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
-
-    it "deletes the activity and redirects to the hub" do
-      expect do
-        delete :destroy, params: { id: employment_activity.id }
-      end.to change(activity_flow.employment_activities, :count).by(-1)
-
-      expect(response).to redirect_to(activities_flow_root_path)
-    end
-  end
 end

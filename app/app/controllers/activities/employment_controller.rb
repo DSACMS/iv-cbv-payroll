@@ -1,5 +1,5 @@
 class Activities::EmploymentController < Activities::BaseController
-  before_action :set_employment_activity, only: %i[edit update destroy review save_review]
+  before_action :set_employment_activity, only: %i[edit update review save_review]
   before_action :ensure_review_ready, only: %i[review save_review]
 
   def new
@@ -32,12 +32,6 @@ class Activities::EmploymentController < Activities::BaseController
   def save_review
     @employment_activity.update(review_params)
     redirect_to after_activity_path
-  end
-
-  def destroy
-    @employment_activity.destroy
-
-    redirect_to activities_flow_root_path
   end
 
   private
