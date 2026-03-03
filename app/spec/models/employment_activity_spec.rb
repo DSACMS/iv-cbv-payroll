@@ -15,18 +15,18 @@ RSpec.describe EmploymentActivity, type: :model do
   end
 
   describe "self-employed contact information" do
-    let(:placeholder) { "N/A" }
-
-    it "stores placeholder when self-employed" do
+    it "clears contact fields when self-employed" do
       activity = create(:employment_activity,
         is_self_employed: true,
-        contact_name: placeholder,
-        contact_email: placeholder,
-        contact_phone_number: placeholder
+        contact_name: "N/A",
+        contact_email: "N/A",
+        contact_phone_number: "N/A"
       )
 
       expect(activity.is_self_employed).to be true
-      expect(activity.contact_name).to eq(placeholder)
+      expect(activity.contact_name).to be_nil
+      expect(activity.contact_email).to be_nil
+      expect(activity.contact_phone_number).to be_nil
     end
   end
 

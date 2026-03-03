@@ -96,7 +96,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     fill_in I18n.t("activities.employment_info.contact_name"), with: "Jane Smith"
     fill_in I18n.t("activities.employment_info.contact_email"), with: "jane@updatedemployer.com"
     fill_in I18n.t("activities.employment_info.contact_phone_number"), with: "(555) 123-4567"
-    click_button I18n.t("activities.employment_info.continue")
+    click_button I18n.t("activities.hub.save")
 
     # Review page (edit flow — button should say "Save changes")
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Updated Employer"))
