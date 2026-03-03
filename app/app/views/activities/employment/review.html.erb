@@ -39,7 +39,7 @@
         <%= t("activities.employment.review.gross_income") %>
       <% end %>
       <%= row.with_data_cell do %>
-        $<%= activity_month.gross_income %>
+        <%= number_to_currency(activity_month.gross_income) %>
       <% end %>
     <% end %>
     <%= table.with_row do |row| %>
