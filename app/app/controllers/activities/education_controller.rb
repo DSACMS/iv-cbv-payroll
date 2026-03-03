@@ -8,10 +8,15 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def create
-    @education_activity = @flow.education_activities.create
-    NscSynchronizationJob.perform_later(@education_activity.id)
-
-    redirect_to activities_flow_education_path(id: @education_activity.id)
+    # TODO: Remove manual branch once FFS-3814 (self-attested info page) is merged.
+    if params[:manual]
+      @education_activity = @flow.education_activities.create(data_source: :self_attested)
+      redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0)
+    else
+      @education_activity = @flow.education_activities.create
+      NscSynchronizationJob.perform_later(@education_activity.id)
+      redirect_to activities_flow_education_path(id: @education_activity.id)
+    end
   end
 
   def show
