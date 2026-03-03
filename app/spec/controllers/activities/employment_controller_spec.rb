@@ -71,14 +71,16 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(activity).to have_attributes(employment_attributes)
     end
 
-    it "stores the self-employed flag" do
+    it "stores the self-employed flag and clears contact fields" do
       post :create, params: employment_params.deep_merge(
         employment_activity: { is_self_employed: true, contact_name: "N/A", contact_email: "N/A", contact_phone_number: "N/A" }
       )
 
       activity = activity_flow.employment_activities.last
       expect(activity.is_self_employed).to be true
-      expect(activity.contact_name).to eq("N/A")
+      expect(activity.contact_name).to be_nil
+      expect(activity.contact_email).to be_nil
+      expect(activity.contact_phone_number).to be_nil
     end
 
     it "sets data_source to self_attested by default" do
@@ -99,7 +101,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1))
     end
 
-    it "sets contact fields to N/A when self-employed is checked" do
+    it "clears contact fields when self-employed is checked" do
       patch :update, params: {
         id: employment_activity.id,
         employment_activity: { is_self_employed: true, contact_name: "N/A", contact_email: "N/A", contact_phone_number: "N/A" }
@@ -107,9 +109,9 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
       employment_activity.reload
       expect(employment_activity.is_self_employed).to be true
-      expect(employment_activity.contact_name).to eq("N/A")
-      expect(employment_activity.contact_email).to eq("N/A")
-      expect(employment_activity.contact_phone_number).to eq("N/A")
+      expect(employment_activity.contact_name).to be_nil
+      expect(employment_activity.contact_email).to be_nil
+      expect(employment_activity.contact_phone_number).to be_nil
     end
   end
 
