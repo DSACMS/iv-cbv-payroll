@@ -63,6 +63,11 @@ Rails.application.routes.draw do
       resources :job_training, only: %i[new create edit update destroy], controller: "job_training" do
         resources :document_uploads, only: %i[new create], controller: "/activities/document_uploads"
         resources :months, only: %i[edit update], controller: "job_training/months"
+
+        member do
+          get :review
+          patch :save_review
+        end
       end
       resource :summary, only: %i[show], controller: "summary"
       resource :submit, only: %i[show update], controller: "submit", format: %i[html pdf]
