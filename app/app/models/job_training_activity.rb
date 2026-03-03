@@ -21,4 +21,8 @@ class JobTrainingActivity < Activity
 
     I18n.t("shared.hours", count: month_record.hours) if month_record
   end
+
+  def document_upload_suggestion_text
+    I18n.t("activities.job_training.document_upload_suggestion_text_html")
+  end
 end

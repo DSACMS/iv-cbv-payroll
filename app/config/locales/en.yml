@@ -239,6 +239,7 @@ en:
       save: Save changes
       title: Add activities to your Community Engagement report
     job_training:
+      document_upload_suggestion_text_html: "<ul><li>Signed statement on organization letterhead verifying hours</li><li>Signed monthly log of participation</li><li>Program tuition receipt</li></ul>"
       form:
         city: City
         contact_email: Contact email
