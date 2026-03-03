@@ -152,6 +152,19 @@ en:
       error_no_data: No education information available
       errors:
         unexpected: An unexpected error occurred. Please try again.
+      hours_input:
+        continue: Continue
+        description: "%{agency_acronym} needs your community engagement for %{reporting_window}. Add the total number of credit hours you were taking."
+        description_multi_month: "%{agency_acronym} needs your community engagement for %{reporting_window}. If you were enrolled as a student in %{month}, add the number of credit hours you were taking."
+        error_body: You need to add credit hours to continue.
+        error_body_multi_month: You need to add credit hours for at least one month to continue.
+        error_heading: No hours entered
+        field_error: Add hours for at least one month
+        heading: Add your %{month} credit hours for %{organization}
+        hours_label: "%{month} credit hours"
+        month_indicator: Month %{current} / %{total}
+        no_hours_checkbox: I didn't take any credit hours at %{organization} this term
+        title: Credit hours
       new:
         continue: Verify enrollment
         date_of_birth: Date of birth

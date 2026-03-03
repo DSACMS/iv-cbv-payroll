@@ -14,7 +14,8 @@
 </ol>
 
 <nav class="margin-top-5">
-  <%= link_to t(".enter_manually_button"), "#", class: "usa-button" %>
+  <%# TODO: Replace with link to self-attested info page once FFS-3814 is merged. %>
+  <%= button_to t(".enter_manually_button"), activities_flow_education_index_path(manual: true), class: "usa-button" %>
   <div class="margin-top-2 mobile-text-center">
     <%= link_to t(".retry_button"), new_activities_flow_education_path, class: "usa-button usa-button--unstyled" %>
   </div>

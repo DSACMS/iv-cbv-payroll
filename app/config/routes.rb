@@ -80,6 +80,7 @@ Rails.application.routes.draw do
       get "/education/error", to: "education#error", as: :education_error
       resources :education, only: %i[new create show update edit destroy], controller: "education" do
         patch "sync", to: "education#sync", as: :sync
+        resources :months, only: %i[edit update], controller: "education/months"
       end
 
       # Tokenized links
