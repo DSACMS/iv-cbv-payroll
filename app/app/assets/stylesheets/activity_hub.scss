@@ -15,7 +15,7 @@
 .activity-hub-columns__progress {
   @include at-media("tablet") {
     width: 320px;
-    flex-shrink: 0;
+    min-width: 0;
     position: sticky;
     top: units(2);
     align-self: flex-start;
