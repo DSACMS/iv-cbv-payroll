@@ -1,0 +1,69 @@
+<% content_for :title, t("activities.employment.review.title", employer_name: @employment_activity.employer_name) %>
+
+<h1>
+  <%= t("activities.employment.review.title", employer_name: @employment_activity.employer_name) %>
+</h1>
+<p>
+  <%= t("activities.employment.review.description", employer_name: @employment_activity.employer_name) %>
+</p>
+
+<div class="display-flex flex-justify flex-align-center">
+  <h2 class="margin-y-0"><%= t("activities.employment.review.employer_info") %></h2>
+  <%= link_to t("activities.hub.edit"),
+        edit_activities_flow_income_employment_path(id: @employment_activity, from_review: 1, from_edit: params[:from_edit].presence),
+        class: "usa-link" %>
+</div>
+<%= render(ContactInfoReviewTableComponent.new(rows: [
+  { label: t("activities.employment.review.name"), value: @employment_activity.employer_name },
+  { label: t("activities.employment.review.address"), value: @employment_activity.formatted_address },
+  { label: t("activities.employment.review.contact_name"), value: @employment_activity.contact_name },
+  { label: t("activities.employment.review.contact_email"), value: @employment_activity.contact_email },
+  { label: t("activities.employment.review.contact_phone"), value: @employment_activity.contact_phone_number }
+])) %>
+
+<h2><%= t("activities.employment.review.hours_and_income") %></h2>
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
+  <% @employment_activity.employment_activity_months.order(:month).each_with_index do |activity_month, index| %>
+    <%= table.with_row(class_names: "subheader-row") do |row| %>
+      <%= row.with_data_cell(is_header: true, colspan: 2) do %>
+        <div class="display-flex flex-justify">
+          <span><%= I18n.l(activity_month.month, format: :month) %></span>
+          <%= link_to t("activities.community_service.review.edit"),
+                edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence),
+                class: "usa-link" %>
+        </div>
+      <% end %>
+    <% end %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.employment.review.gross_income") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= number_to_currency(activity_month.gross_income) %>
+      <% end %>
+    <% end %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.employment.review.hours_worked") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= activity_month.hours %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= form_with model: @employment_activity,
+      url: save_review_activities_flow_income_employment_path(id: @employment_activity, from_edit: params[:from_edit].presence),
+      method: :patch,
+      class: "usa-form usa-form--large" do |form| %>
+  <h2><%= t("activities.employment.review.additional_comments_title") %></h2>
+  <%= form.label :additional_comments,
+        t("activities.employment.review.additional_comments_description",
+          agency_name: agency_translation("shared.agency_full_name")),
+        class: "usa-label" %>
+  <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
+
+  <% submit_label = params[:from_edit].present? ? t("activities.hub.save") : t("activities.employment.review.save") %>
+  <%= form.submit submit_label, class: "usa-button usa-button--primary" %>
+<% end %>

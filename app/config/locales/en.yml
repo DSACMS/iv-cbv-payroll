@@ -57,6 +57,10 @@ en:
               invalid_format: Enter an email address in the correct format, like name@example.com
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
+        education_activity:
+          attributes:
+            school_name:
+              blank: Enter the school or program name.
         job_training_activity:
           attributes:
             organization_name:
@@ -112,7 +116,7 @@ en:
         coordinator_email: Coordinator's email
         coordinator_name: Coordinator's name
         coordinator_phone: Coordinator's phone number
-        description: Review all the information you've added for %{organization_name} before adding it to your Community Engagement Report.
+        description: Review all the information you've added for %{organization_name} before adding it to your community engagement report.
         edit: Edit
         hours_section: Community service hours
         name: Name
@@ -123,6 +127,7 @@ en:
       street_address: Street address
       street_address_line_2: Street address line 2
       title: Community service
+      title_singular: Community Service
       zip_code: Zip code
     document_uploads:
       new:
@@ -166,12 +171,20 @@ en:
         no_hours_checkbox: I didn't take any credit hours at %{organization} in %{month}
         title: Credit hours
       new:
-        continue: Verify enrollment
-        date_of_birth: Date of birth
-        description: We use National Student Clearinghouse to verify that you are a student. This is a trusted third-party data source.
-        first_name: First name
-        header: Let's verify your student enrollment
-        last_name: Last name
+        city: City
+        contact_email: Contact email
+        contact_name: School contact name
+        contact_phone_number: Contact phone number
+        contact_section_title: School contact information
+        continue: Continue
+        school_name: School or program name
+        school_name_hint: Enter the full and official name
+        school_section_title: School information
+        state: State
+        street_address: Street address
+        street_address_line_2: Street address line 2
+        title: Tell us about your school or program
+        zip_code: Zip code
       show:
         enrollment_dates: Enrollment dates
         enrollment_status: Enrollment status
@@ -179,6 +192,14 @@ en:
         header: We're gathering your details from National Student Clearinghouse
         school_or_program: School or program
       title: Education
+      title_singular: Education
+      verify:
+        continue: Verify enrollment
+        date_of_birth: Date of birth
+        description: We use National Student Clearinghouse to verify that you are a student. This is a trusted third-party data source.
+        first_name: First name
+        header: Let's verify your student enrollment
+        last_name: Last name
     employment:
       account_id: Account ID
       hours_input:
@@ -195,8 +216,24 @@ en:
         month_indicator: Month %{current} / %{total}
         no_hours_checkbox: No %{month} income from %{organization}
         title: Employment hours and income
+      review:
+        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_title: Additional comments (optional)
+        address: Address
+        contact_email: Employer contact email
+        contact_name: Employer contact name
+        contact_phone: Employer contact phone number
+        description: Review all the information you've added for %{employer_name} before adding it to your Community Engagement Report.
+        employer_info: Employer information
+        gross_income: Gross income
+        hours_and_income: Hours and income
+        hours_worked: Hours worked
+        name: Name
+        save: Save and add to my report
+        title: Review your employment information for %{employer_name}
       synchronization_status: Status
       title: Employment
+      title_singular: Employment
     employment_info:
       city: City
       contact_email: Employer contact email
@@ -206,6 +243,7 @@ en:
       continue: Continue
       edit_title: Edit Employment Activity
       employer_name: Employer or business name
+      employer_name_error: Add your employer or business name
       employer_name_hint: If you work for yourself, enter "Self-employed"
       employer_section_title: Employer or business information
       self_employed: I'm self-employed
@@ -236,7 +274,7 @@ en:
         gross_income: 'Gross income: %{amount}'
         hours: 'Hours: %{count}'
         not_enrolled: Not enrolled
-      description: "%{agency_name} needs you to report your Community Engagement for %{reporting_window}."
+      description_html: "<strong>Reporting period:</strong> %{reporting_window}"
       edit: Edit
       empty:
         community_service: No community service added
@@ -246,9 +284,10 @@ en:
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit
       save: Save changes
-      title: Add activities to your Community Engagement report
+      title: Add activities to your community engagement report
     job_training:
       document_upload_suggestion_text_html: "<ul><li>Signed statement on organization letterhead verifying hours</li><li>Signed monthly log of participation</li><li>Program tuition receipt</li></ul>"
+      edit_title: Edit Work Program Activity
       form:
         city: City
         contact_email: Contact email
@@ -300,14 +339,14 @@ en:
         total_hours: Total hours reported
         work_programs_count: Work program activities
         work_programs_section: Work program and education
-      title: Submit your Medicaid Community Engagement report
+      title: Submit your Medicaid community engagement report
     success:
       show:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
         done_for_now: You're done for now. %{agency_full_name} will review your information and contact you if needed.
         download_pdf: Download my report
         survey: Take the 3 question survey
-        title: Your Community Engagement report was successfully sent to %{agency_acronym}
+        title: Your community engagement report was successfully sent to %{agency_acronym}
         whats_next: What's next?
         whats_next_1_li_1: We recommend saving your report for your records.
         whats_next_1_title: Download your report for your records.
@@ -331,15 +370,17 @@ en:
       employment:
         employer: Employer
       job_training:
-        header: Work Program information
-        hours_attended: Hours attended
+        address: Address
+        contact_email: Contact email
+        contact_name: Contact name
+        contact_phone: Contact phone
         month: Month
-        organization_address: Organization address
+        organization_provider_name: Organization/Provider name
         program_name: Program name
+        work_program_hours: Work program hours
       legal_agreement: Legal agreement
       submit: Submit to %{agency_name}
-      title: Review and submit your %{benefit} Community Engagement report
-      your_details: Your details
+      title: Review and submit your %{benefit} community engagement report
     work_programs:
       hours_input:
         continue: Continue
@@ -352,7 +393,24 @@ en:
         month_indicator: Month %{current} / %{total}
         no_hours_checkbox: No work program hours with %{organization} in %{month}
         title: Work program hours
+      review:
+        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_title: Additional comments (optional)
+        address: Address
+        contact_email: Contact email
+        contact_name: Contact name
+        contact_phone: Contact phone number
+        description: Review all the information you've added for %{program_name} before adding it to your Community Engagement Report.
+        edit: Edit
+        hours_section: Work program hours
+        organization_info: Work program information
+        organization_name: Organization or provider name
+        program_name: Program name
+        save: Save and add to my report
+        title: Review your work program information for %{program_name}
+        work_program_hours: Work program hours
       title: Work programs
+      title_singular: Work Program
   activity_flow_progress_indicator:
     description: We calculate your community engagement from the activities you add to your report.
     description_complete: "%{agency_full_name} will determine your final eligibility based on the activities you’ve added to your report."

@@ -91,7 +91,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       get :edit, params: { id: job_training_activity.id }
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.job_training.new.title"))
+      expect(response.body).to include(I18n.t("activities.job_training.edit_title"))
     end
   end
 
@@ -103,6 +103,28 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
       expect(job_training_activity.reload.contact_name).to eq("Taylor Smith")
       expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: job_training_activity.id, id: 0, from_edit: 1))
+    end
+  end
+
+  describe "GET #review" do
+    let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow) }
+
+    it "renders the review page" do
+      get :review, params: { id: job_training_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(job_training_activity.program_name)
+    end
+  end
+
+  describe "PATCH #save_review" do
+    let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow) }
+
+    it "saves additional comments and redirects to the hub" do
+      patch :save_review, params: { id: job_training_activity.id, job_training_activity: { additional_comments: "Some notes" } }
+
+      expect(job_training_activity.reload.additional_comments).to eq("Some notes")
+      expect(response).to redirect_to(activities_flow_root_path)
     end
   end
 

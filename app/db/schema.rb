@@ -159,11 +159,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_03_120000) do
   create_table "education_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
     t.text "additional_comments"
+    t.string "city"
+    t.string "contact_email"
+    t.string "contact_name"
+    t.string "contact_phone_number"
     t.datetime "created_at", null: false
     t.integer "credit_hours"
     t.string "data_source", default: "validated", null: false
+    t.string "school_name"
+    t.string "state"
     t.string "status", default: "unknown"
+    t.string "street_address"
+    t.string "street_address_line_2"
     t.datetime "updated_at", null: false
+    t.string "zip_code"
     t.index ["activity_flow_id"], name: "index_education_activities_on_activity_flow_id"
   end
 
@@ -178,6 +187,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_03_120000) do
 
   create_table "employment_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
+    t.text "additional_comments"
     t.string "city"
     t.string "contact_email"
     t.string "contact_name"
@@ -215,6 +225,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_03_120000) do
 
   create_table "job_training_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
+    t.text "additional_comments"
     t.string "city"
     t.string "contact_email"
     t.string "contact_name"

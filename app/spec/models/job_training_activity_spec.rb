@@ -45,4 +45,36 @@ RSpec.describe JobTrainingActivity, type: :model do
       expect(activity.document_upload_months_to_verify).to eq([])
     end
   end
+
+  describe "#formatted_address" do
+    let(:base_address_attrs) do
+      { street_address: "123 Main St", city: "Springfield", state: "IL", zip_code: "62701" }
+    end
+
+    it "joins street, city, state, and zip into a single line" do
+      activity = create(:job_training_activity, base_address_attrs)
+
+      expect(activity.formatted_address).to eq("123 Main St, Springfield, IL 62701")
+    end
+
+    it "includes street_address_line_2 when present" do
+      activity = create(:job_training_activity, base_address_attrs.merge(street_address_line_2: "Suite 200"))
+
+      expect(activity.formatted_address).to eq("123 Main St, Suite 200, Springfield, IL 62701")
+    end
+
+    it "falls back to organization_address when structured fields are blank" do
+      activity = create(
+        :job_training_activity,
+        street_address: nil,
+        street_address_line_2: nil,
+        city: nil,
+        state: nil,
+        zip_code: nil,
+        organization_address: "Legacy Address"
+      )
+
+      expect(activity.formatted_address).to eq("Legacy Address")
+    end
+  end
 end

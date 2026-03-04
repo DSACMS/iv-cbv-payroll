@@ -7,6 +7,12 @@ class JobTrainingActivity < Activity
   has_many :job_training_activity_months, dependent: :destroy
   has_activity_months :job_training_activity_months
 
+  def formatted_address
+    locality = [ city, state ].compact_blank.join(", ")
+    locality_zip = [ locality, zip_code ].compact_blank.join(" ")
+    [ street_address, street_address_line_2, locality_zip ].compact_blank.join(", ").presence || organization_address.presence
+  end
+
   def document_upload_object_title
     program_name
   end

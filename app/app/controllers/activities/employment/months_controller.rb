@@ -57,7 +57,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def hours_input_completed_path
-    activities_flow_root_path
+    review_activities_flow_income_employment_path(id: @employment_activity)
   end
 
   def valid_hours_submission?

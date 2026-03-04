@@ -63,6 +63,11 @@ Rails.application.routes.draw do
       resources :job_training, only: %i[new create edit update destroy], controller: "job_training" do
         resources :document_uploads, only: %i[new create], controller: "/activities/document_uploads"
         resources :months, only: %i[edit update], controller: "job_training/months"
+
+        member do
+          get :review
+          patch :save_review
+        end
       end
       resource :summary, only: %i[show], controller: "summary"
       resource :submit, only: %i[show update], controller: "submit", format: %i[html pdf]
@@ -72,13 +77,20 @@ Rails.application.routes.draw do
         resource :synchronizations, only: %i[show update], controller: "/cbv/synchronizations"
         resource :synchronization_failures, only: %i[show], controller: "/cbv/synchronization_failures"
         resource :payment_details, only: %i[show update], controller: "/cbv/payment_details"
-        resources :employment, only: %i[new create edit update], controller: "employment" do
+        resources :employment, only: %i[new create edit update], controller: "/activities/employment" do
           resources :months, only: %i[edit update], controller: "employment/months"
+          member do
+            get :review
+            patch :save_review
+          end
         end
       end
 
       get "/education/error", to: "education#error", as: :education_error
       resources :education, only: %i[new create show update edit destroy], controller: "education" do
+        collection do
+          get :verify
+        end
         patch "sync", to: "education#sync", as: :sync
         resources :months, only: %i[edit update], controller: "education/months"
       end

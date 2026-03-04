@@ -1,0 +1,12 @@
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-org-table")) do |table| %>
+  <% @rows.each do |row_data| %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= row_data[:label] %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= display_value(row_data[:value]) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

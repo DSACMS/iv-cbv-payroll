@@ -26,7 +26,11 @@
 <% @all_activities.each_with_index do |activity_data, index| %>
   <section>
     <h2>
-      <% activity_type_label = t("activities.#{activity_data[:type]}.title") %>
+      <%# i18n-tasks-use t("activities.education.title_singular") %>
+      <%# i18n-tasks-use t("activities.employment.title_singular") %>
+      <%# i18n-tasks-use t("activities.community_service.title_singular") %>
+      <%# i18n-tasks-use t("activities.work_programs.title_singular") %>
+      <% activity_type_label = t("activities.#{activity_data[:type]}.title_singular") %>
       <% if @all_activities.size > 1 %>
         <%= t("activities.summary.activity_header_numbered",
               number: index + 1,
