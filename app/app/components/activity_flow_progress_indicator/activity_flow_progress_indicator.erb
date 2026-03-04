@@ -35,8 +35,13 @@
 
   <% monthly_calculation_results.each do |monthly_result| %>
     <div class="activity-flow-progress-indicator__progress-bar
-                <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-bar--complete<% end %>"
-        data-percent="<%= percent_complete(monthly_result) %>">
+      <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-bar--complete<% end %>"
+    >
+      <div class="activity-flow-progress-indicator__progress-bar-fill
+        <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-bar-fill--complete<% end %>"
+         style="width: <%= percent_complete(monthly_result) %>%"
+      >
+      </div>
     </div>
 
     <p class="activity-flow-progress-indicator__progress-amount-container">

@@ -13,21 +13,18 @@
   height: units(2);
   width: 100%;
 
-  &::before {
-    background-color: color("primary-vivid");
-    content: "";
-    display: block;
-    height: 100%;
-    width: attr(data-percent %);
-  }
-
   &--complete {
     border-color: color("success-dark");
     background-color: color("success-dark");
+  }
+}
 
-    &::before {
-      background-color: color("success-dark");
-    }
+.activity-flow-progress-indicator__progress-bar-fill {
+  background-color: color("primary-vivid");
+  height: 100%;
+
+  &--complete {
+    background-color: color("success-dark");
   }
 }
 
