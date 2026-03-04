@@ -65,6 +65,18 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(I18n.t("activities.hub.empty.work_programs"))
       expect(response.body).not_to include(I18n.t("activities.hub.review_and_submit"))
     end
+
+    it "renders the progress indicator even with no hours" do
+      expect(response.body).to include("activity-flow-progress-indicator")
+    end
+
+    it "renders the two-column container" do
+      expect(response.body).to include("activity-hub-columns")
+    end
+
+    it "does not render the horizontal divider" do
+      expect(response.body).not_to include("activity-hub-divider")
+    end
   end
 
   context "when at least one activity is added" do

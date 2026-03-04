@@ -116,7 +116,7 @@ en:
         coordinator_email: Coordinator's email
         coordinator_name: Coordinator's name
         coordinator_phone: Coordinator's phone number
-        description: Review all the information you've added for %{organization_name} before adding it to your Community Engagement Report.
+        description: Review all the information you've added for %{organization_name} before adding it to your community engagement report.
         edit: Edit
         hours_section: Community service hours
         name: Name
@@ -179,6 +179,7 @@ en:
         header: We're gathering your details from National Student Clearinghouse
         school_or_program: School or program
       title: Education
+      title_singular: Education
       verify:
         continue: Verify enrollment
         date_of_birth: Date of birth
@@ -186,7 +187,6 @@ en:
         first_name: First name
         header: Let's verify your student enrollment
         last_name: Last name
-      title_singular: Education
     employment:
       account_id: Account ID
       hours_input:
@@ -261,7 +261,7 @@ en:
         gross_income: 'Gross income: %{amount}'
         hours: 'Hours: %{count}'
         not_enrolled: Not enrolled
-      description: "%{agency_name} needs you to report your Community Engagement for %{reporting_window}."
+      description_html: "<strong>Reporting period:</strong> %{reporting_window}"
       edit: Edit
       empty:
         community_service: No community service added
@@ -271,7 +271,7 @@ en:
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit
       save: Save changes
-      title: Add activities to your Community Engagement report
+      title: Add activities to your community engagement report
     job_training:
       document_upload_suggestion_text_html: "<ul><li>Signed statement on organization letterhead verifying hours</li><li>Signed monthly log of participation</li><li>Program tuition receipt</li></ul>"
       edit_title: Edit Work Program Activity
@@ -326,14 +326,14 @@ en:
         total_hours: Total hours reported
         work_programs_count: Work program activities
         work_programs_section: Work program and education
-      title: Submit your Medicaid Community Engagement report
+      title: Submit your Medicaid community engagement report
     success:
       show:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
         done_for_now: You're done for now. %{agency_full_name} will review your information and contact you if needed.
         download_pdf: Download my report
         survey: Take the 3 question survey
-        title: Your Community Engagement report was successfully sent to %{agency_acronym}
+        title: Your community engagement report was successfully sent to %{agency_acronym}
         whats_next: What's next?
         whats_next_1_li_1: We recommend saving your report for your records.
         whats_next_1_title: Download your report for your records.
@@ -367,7 +367,7 @@ en:
         work_program_hours: Work program hours
       legal_agreement: Legal agreement
       submit: Submit to %{agency_name}
-      title: Review and submit your %{benefit} Community Engagement report
+      title: Review and submit your %{benefit} community engagement report
     work_programs:
       hours_input:
         continue: Continue

@@ -2,6 +2,7 @@
 @forward "uswds-settings.scss";
 @forward "uswds";
 @forward "uswds-overrides.scss";
+@forward "activity_hub.scss";
 @forward "cbv.scss";
 
 /* Import styling from ViewComponents */
