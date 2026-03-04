@@ -51,7 +51,7 @@ class DemoLauncherController < ApplicationController
 
   def build_cbv_tokenized_url(client_agency_id, overrides)
     user = User.find_or_create_by(
-      email: "ffs-eng+#{client_agency_id}@navapbc.com",
+      email: "demolauncher+#{client_agency_id}@navapbc.com",
       client_agency_id: client_agency_id
     )
     user.update(is_service_account: true)
