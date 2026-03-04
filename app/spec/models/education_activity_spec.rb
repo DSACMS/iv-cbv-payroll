@@ -22,6 +22,33 @@ RSpec.describe EducationActivity do
     end
   end
 
+  describe "#document_upload_suggestion_text" do
+    it "returns education-specific suggested documents" do
+      activity = build(:education_activity, school_name: "University of Illinois")
+
+      expect(activity.document_upload_suggestion_text).to include("Copy of class schedule for the current term")
+    end
+  end
+
+  describe "#document_upload_months_to_verify" do
+    it "returns months from education_activity_months when present" do
+      activity_flow = create(:activity_flow, reporting_window_months: 2, education_activities_count: 0)
+      activity = create(:education_activity, activity_flow: activity_flow, data_source: :self_attested, school_name: "Test U")
+      first_month = activity.activity_flow.reporting_months.first.beginning_of_month
+      second_month = activity.activity_flow.reporting_months.second.beginning_of_month
+      create(:education_activity_month, education_activity: activity, month: first_month, hours: 6)
+      create(:education_activity_month, education_activity: activity, month: second_month, hours: 12)
+
+      expect(activity.document_upload_months_to_verify).to eq([ first_month, second_month ])
+    end
+
+    it "returns an empty list when no education_activity_months exist" do
+      activity = create(:education_activity)
+
+      expect(activity.document_upload_months_to_verify).to eq([])
+    end
+  end
+
   describe "#progress_hours_for_month" do
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
     let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }

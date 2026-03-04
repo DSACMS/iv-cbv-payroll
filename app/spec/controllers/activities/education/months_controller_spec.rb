@@ -36,10 +36,10 @@ RSpec.describe Activities::Education::MonthsController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "redirects to the hub when hours are valid" do
+    it "redirects to the document upload page when hours are valid" do
       patch :update, params: { education_id: education_activity.id, id: 0, education_activity_month: { hours: 12 } }
 
-      expect(response).to redirect_to(activities_flow_root_path)
+      expect(response).to redirect_to(new_activities_flow_education_document_upload_path(education_id: education_activity.id))
     end
 
     it "returns an error on a single-month flow when no-hours checkbox is selected" do
@@ -80,7 +80,7 @@ RSpec.describe Activities::Education::MonthsController, type: :controller do
 
         patch :update, params: { education_id: education_activity.id, id: 2, no_hours: "1" }
 
-        expect(response).to redirect_to(activities_flow_root_path)
+        expect(response).to redirect_to(new_activities_flow_education_document_upload_path(education_id: education_activity.id))
       end
     end
   end
