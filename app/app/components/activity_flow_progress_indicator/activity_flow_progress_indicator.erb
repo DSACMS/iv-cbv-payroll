@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <p class="activity-flow-progress-indicator__progress-amount-container">
+    <div class="activity-flow-progress-indicator__progress-amount-container">
       <span>
         <% if multi_month? %>
           <% if monthly_result.meets_requirements %>
@@ -70,6 +70,6 @@
         /
         <%= completion_threshold %> <%= t(".hours") %>
       </span>
-    </p>
+    </div>
   <% end %>
 </div>

@@ -29,10 +29,13 @@
 }
 
 .activity-flow-progress-indicator__progress-amount-container {
+  @include u-font("sans", "sm");
+
   display: flex;
   font-weight: bold;
   justify-content: space-between;
-  margin-top: units(1);
+  line-height: 1.6;
+  margin: units(1) 0 units(2);
 }
 
 .activity-flow-progress-indicator__progress-amount {
