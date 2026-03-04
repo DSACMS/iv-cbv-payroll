@@ -7,13 +7,25 @@
     configuration.
   <% end %>
   <%= form_with(url: "/demo", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "demo-launcher" }) do |f| %>
-    <input type="hidden" name="flow_type" value="activity">
     <h2>Behavior</h2>
+    <%= render DemoLauncher::SettingComponent.new(title: "Flow type", hint: "Select which Emmy flow to launch.") do %>
+      <div class="usa-radio">
+        <input class="usa-radio__input usa-radio__input--tile" type="radio" name="flow_type" id="flow_type_activity" value="activity" checked data-action="demo-launcher#selectFlowType">
+        <label class="usa-radio__label" for="flow_type_activity">Emmy CE</label>
+      </div>
+      <div class="usa-radio">
+        <input class="usa-radio__input usa-radio__input--tile" type="radio" name="flow_type" id="flow_type_cbv" value="cbv" data-action="demo-launcher#selectFlowType">
+        <label class="usa-radio__label" for="flow_type_cbv">Emmy Income</label>
+      </div>
+    <% end %>
     <%= render DemoLauncher::SettingComponent.new(title: "Agency", hint: "Specify the agency the flow will use.") do %>
       <select class="usa-select" name="client_agency_id" id="client_agency_id">
-        <option value="sandbox" selected>sandbox</option>
+        <% Rails.application.config.client_agencies.client_agency_ids.each do |agency_id| %>
+          <option value="<%= agency_id %>" <%= "selected" if agency_id == "sandbox" %>><%= agency_id %></option>
+        <% end %>
       </select>
     <% end %>
+    <div data-demo-launcher-target="ceOnly">
     <%= render DemoLauncher::SettingComponent.new(title: "Reporting window", hint: "Specify the type of flow you want to create. This determines the number of months in the reporting window.") do %>
       <div class="usa-radio">
         <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_application" value="application" <%= "checked" unless params[:reporting_window] == "renewal" %> data-action="demo-launcher#selectWindow">
@@ -44,6 +56,7 @@
         <span>months</span>
       </div>
     <% end %>
+    </div>
     <%= render DemoLauncher::SettingComponent.new(title: "Session timeout", hint: "Specify the number of minutes it should take for the session to time out. Note: the warning modal appears 5 min before timeout, so use 6 or higher to avoid an immediate warning.") do %>
       <div class="demo-launcher__inline-field">
         <input class="usa-input usa-input--sm" type="number" name="demo_timeout"
@@ -62,6 +75,7 @@
         Generic flow
       </button>
     </div>
+    <div data-demo-launcher-target="ceOnly">
     <%= render DemoLauncher::SettingComponent.new(title: "NSC Test Scenarios", hint: "Test the NSC education verification integration with pre-configured users. Each user demonstrates a different enrollment scenario.") do %>
       <div class="demo-launcher__scenarios">
         <button type="submit" name="nsc_test_user" value="lynette" formtarget="_blank" class="usa-button demo-launcher__scenario-button">
@@ -82,5 +96,6 @@
         </button>
       </div>
     <% end %>
+    </div>
   <% end %>
 </div>
