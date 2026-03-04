@@ -9,7 +9,7 @@ RSpec.describe EducationActivity do
         activity = described_class.new(activity_flow: activity_flow, data_source: :self_attested, school_name: nil)
 
         expect(activity).not_to be_valid
-        expect(activity.errors[:school_name]).to include("Enter the school or program name.")
+        expect(activity.errors[:school_name]).to include(I18n.t("activerecord.errors.models.education_activity.attributes.school_name.blank"))
       end
     end
 

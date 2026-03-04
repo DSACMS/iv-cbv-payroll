@@ -32,12 +32,30 @@ RSpec.describe Activities::EducationController, type: :controller do
   end
 
   describe "POST #create" do
-    it "creates a new EducationActivity and redirects to #show" do
+    it "creates a validated EducationActivity and redirects to #show" do
       expect { post :create }
         .to change(EducationActivity, :count)
         .by(1)
 
+      expect(EducationActivity.last.data_source).to eq("validated")
       expect(response).to redirect_to(activities_flow_education_path(id: EducationActivity.last.id))
+    end
+
+    it "creates a self-attested EducationActivity and redirects to after_activity_path" do
+      expect {
+        post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
+      }.to change(EducationActivity, :count).by(1)
+
+      activity = EducationActivity.last
+      expect(activity.data_source).to eq("self_attested")
+      expect(activity.school_name).to eq("Test University")
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "re-renders the form when self-attested params are invalid" do
+      post :create, params: { education_activity: { school_name: "" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
