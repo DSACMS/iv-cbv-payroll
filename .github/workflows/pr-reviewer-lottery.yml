@@ -5,6 +5,7 @@ on:
 
 jobs:
   reviewer-lottery:
+    if: github.actor != 'dependabot[bot]'
     name: Add random reviewer via Reviewer Lottery
     runs-on: ubuntu-latest
     permissions:

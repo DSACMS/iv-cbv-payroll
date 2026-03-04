@@ -1,6 +1,6 @@
-This might not stay up to date, but a convenient start if you need to run SFTP tests end to end. Why it's not checked in as a ruby file:
+This is out of date since we removed AZ DES configuration, but it's a convenient start if you need to run SFTP tests end to end.
 
-```
+```ruby
 # Load a bunch of test stuff to make this easier
 require 'factory_bot'
 FactoryBot.find_definitions

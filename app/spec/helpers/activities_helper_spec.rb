@@ -29,13 +29,15 @@ RSpec.describe ActivitiesHelper do
         expect(result.first[:months].first[:month]).to eq(first_month)
       end
 
-      it "returns the activity object for edit links" do
+      it "includes edit path to community service edit" do
         activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
         create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 5)
 
         result = helper.community_service_cards(flow.volunteering_activities)
 
-        expect(result.first[:activity]).to eq(activity)
+        expect(result.first[:edit_path]).to eq(
+          helper.edit_activities_flow_community_service_path(id: activity.id)
+        )
       end
 
       it "returns empty array for empty input" do
@@ -78,6 +80,17 @@ RSpec.describe ActivitiesHelper do
       result = helper.work_program_cards(flow.job_training_activities)
 
       expect(result.length).to eq(2)
+    end
+
+    it "includes edit path to job training edit" do
+      activity = create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main")
+      create(:job_training_activity_month, job_training_activity: activity, month: first_month, hours: 5)
+
+      result = helper.work_program_cards(flow.job_training_activities)
+
+      expect(result.first[:edit_path]).to eq(
+        helper.edit_activities_flow_job_training_path(id: activity.id)
+      )
     end
   end
 
@@ -140,6 +153,17 @@ RSpec.describe ActivitiesHelper do
 
       months = result.first[:months].map { |m| m[:month] }
       expect(months).to eq(months.sort.reverse)
+    end
+
+    it "includes edit path to education edit" do
+      activity = create(:education_activity, activity_flow: flow, credit_hours: 12)
+      create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", term_begin: first_month, term_end: second_month.end_of_month)
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      expect(result.first[:edit_path]).to eq(
+        helper.edit_activities_flow_education_path(id: activity.id)
+      )
     end
   end
 

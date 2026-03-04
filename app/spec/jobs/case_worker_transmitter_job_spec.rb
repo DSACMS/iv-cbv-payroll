@@ -21,7 +21,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   let(:current_time) { DateTime.parse('2024-06-18 00:00:00') }
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
   let(:fake_event_logger) { instance_double(GenericEventTracker, track: nil) }
-  let(:mocked_client_logo_path) { "des_logo.png" }
+  let(:mocked_client_logo_path) { "ldh_logo.svg" }
 
   let(:cbv_flow) do
     create(:cbv_flow,
@@ -63,17 +63,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
           flow_started_seconds_ago: 10.minutes.to_i,
           account_count: cbv_flow.fully_synced_payroll_accounts.count
         ))
-    end
-  end
-
-  shared_examples "enqueues match agency names job for agency with expected names" do
-    context "when the CbvApplicant has agency_expected_names" do
-      let(:cbv_applicant) { create(:cbv_applicant, :az_des, created_at: current_time, case_number: "ABC1234") }
-
-      it "enqueues a MatchAgencyNamesJob" do
-        expect { described_class.new.perform(cbv_flow.id) }
-          .to have_enqueued_job(MatchAgencyNamesJob)
-      end
     end
   end
 
@@ -128,14 +117,13 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
-      it_behaves_like "enqueues match agency names job for agency with expected names"
     end
 
     context "when transmission method is sftp" do
       let(:user) { create(:user, email: "test@test.com") }
       let(:sftp_double) { instance_double(SftpGateway) }
       let(:transmission_method) { "sftp" }
-      let(:mocked_client_id) { "az_des" }
+      let(:mocked_client_id) { "sandbox" }
       let(:transmission_method_configuration) { {
         "user" => "user",
         "password" => "password",
@@ -155,16 +143,15 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
         agency_id_number = cbv_applicant.agency_id_number
         beacon_id = cbv_applicant.beacon_id
 
-        cbv_flow.update!(confirmation_code: "AZDES001", consented_to_authorized_use_at: now)
-        cbv_flow.cbv_applicant.update!(case_number: "01000", client_agency_id: "az_des", beacon_id: beacon_id, agency_id_number: agency_id_number)
+        cbv_flow.update!(confirmation_code: "SANDBOX001", consented_to_authorized_use_at: now)
+        cbv_flow.cbv_applicant.update!(case_number: "01000", client_agency_id: "sandbox", beacon_id: beacon_id, agency_id_number: agency_id_number)
 
-        expect(sftp_double).to receive(:upload_data).with(anything, /test\/CBVPilot_00001000_20250101_ConfAZDES001.pdf/)
+        expect(sftp_double).to receive(:upload_data).with(anything, /test\/CBVPilot_20250101_ConfSANDBOX001.pdf/)
 
         expect { described_class.new.perform(cbv_flow.id) }.to change { cbv_flow.reload.transmitted_at }
       end
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
-      it_behaves_like "enqueues match agency names job for agency with expected names"
     end
 
     context "when transmission method is encrypted_s3" do
@@ -222,7 +209,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
-      it_behaves_like "enqueues match agency names job for agency with expected names"
     end
 
     context "when transmission method is json" do
@@ -239,7 +225,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
-      it_behaves_like "enqueues match agency names job for agency with expected names"
     end
 
     context "when transmission method is #{Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD}" do
@@ -259,7 +244,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
-      it_behaves_like "enqueues match agency names job for agency with expected names"
     end
 
     context "when transmission method is json_and_pdf" do
@@ -279,7 +263,6 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
-      it_behaves_like "enqueues match agency names job for agency with expected names"
     end
   end
 end

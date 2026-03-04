@@ -15,46 +15,6 @@ FactoryBot.define do
       client_agency_id { "sandbox" }
     end
 
-    trait :az_des do
-      client_agency_id { "az_des" }
-      first_name { nil }
-      middle_name { nil }
-      last_name { nil }
-
-      case_number do
-        # TODO: Determine actual AZ DES case number format.
-        8.times.map { rand(10) }.join
-      end
-
-      income_changes do
-        [
-          {
-            change_index: 1,
-            change_type: "Start",
-            member_name: "Mark Scout",
-            employer_name: "Walmart",
-            effective_date: "2025-03-01",
-            date_of_first_check: "2025-03-15",
-            gross_amount_of_first_check: "600.00",
-            gross_amount_per_check: "600.00",
-            hourly_rate: "18.00",
-            frequency: "Every Two Weeks",
-            hours_per_week: "35",
-            overtime: false,
-            bonus: false,
-            change_will_continue: false
-          },
-          {
-            change_index: 2,
-            change_type: "Stop",
-            member_name: "Mark Scout",
-            employer_name: "Target",
-            effective_date: "2025-02-20"
-          }
-        ]
-      end
-    end
-
     trait :la_ldh do
       client_agency_id { "la_ldh" }
 

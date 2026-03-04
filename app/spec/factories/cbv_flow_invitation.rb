@@ -13,12 +13,6 @@ FactoryBot.define do
       cbv_applicant { create(:cbv_applicant, :sandbox) }
     end
 
-    trait :az_des do
-      client_agency_id { "az_des" }
-
-      cbv_applicant { create(:cbv_applicant, :az_des) }
-    end
-
     trait :la_ldh do
       client_agency_id { "la_ldh" }
 

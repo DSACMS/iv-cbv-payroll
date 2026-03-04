@@ -1,0 +1,128 @@
+@forward "uswds";
+@use "uswds" as *;
+
+// Activity Hub two-column layout
+// Figma spec: 320px progress | units(8) | 1px divider | units(8) | activities (flex)
+.activity-hub-columns {
+  padding-top: units(1);
+  padding-bottom: units(4);
+
+  @include at-media("tablet") {
+    display: flex;
+    padding-top: units(4);
+  }
+}
+
+.activity-hub-columns__progress {
+  @include at-media("tablet") {
+    width: 320px;
+    min-width: 0;
+    position: sticky;
+    top: units(2);
+    align-self: flex-start;
+  }
+}
+
+.activity-hub-columns__activities {
+  @include at-media("tablet") {
+    flex: 1;
+    // units(8) = 64px space before divider line, 64px space after
+    margin-left: units(8);
+    border-left: 1px solid color("base-lighter");
+    padding-left: units(8);
+  }
+}
+
+// Mobile-only horizontal divider between progress and cards
+.activity-hub-mobile-divider {
+  border: none;
+  border-top: 1px solid color("base-lighter");
+
+  @include at-media("tablet") {
+    display: none;
+  }
+}
+
+// Figma spec: 48px (spacing/6) gap between activity sections on desktop
+.activity-hub-columns__activities > section {
+  @include at-media("tablet") {
+    margin-top: units(6);
+    margin-bottom: 0;
+
+    &:first-child {
+      margin-top: units(2) !important; // 16px — align with progress indicator top margin
+    }
+  }
+}
+
+// Activity Hub section header with inline Add button
+.activity-hub-section-header {
+  gap: units(3);
+  margin-bottom: units(2.5);
+
+  form {
+    margin: 0;
+  }
+
+  .usa-button {
+    margin: 0;
+  }
+}
+
+// Activity Hub card overrides
+.activity-hub-card {
+  padding-left: 0;
+  padding-right: 0;
+
+  .usa-card__container {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .usa-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid color("base-lighter");
+
+    .usa-card__heading {
+      margin: 0;
+    }
+
+    .usa-link {
+      margin-top: 0;
+    }
+  }
+}
+
+// Activity Hub month details responsive layout
+.activity-month-details {
+  border-bottom: 1px solid color("base-lighter");
+  padding: units(1.5) 0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @include at-media("tablet") {
+    display: flex;
+    align-items: flex-start;
+  }
+}
+
+.activity-month-details__month {
+  padding: units(1) 0;
+
+  @include at-media("tablet") {
+    width: 172px;
+    flex-shrink: 0;
+    padding: units(2);
+  }
+}
+
+.activity-month-details__data {
+  @include at-media("tablet") {
+    flex: 1;
+    padding: units(2);
+  }
+}

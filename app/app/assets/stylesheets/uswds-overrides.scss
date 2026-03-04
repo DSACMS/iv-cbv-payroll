@@ -52,6 +52,10 @@ $mobile-navbar-height: 4rem;
 .pointer-events-none {
   pointer-events: none;
 }
+.usa-input--disabled {
+  opacity: 0.5;
+  background-color: color("base-lightest");
+}
 
 tr td:first-child {
   font-weight: bold;
@@ -73,100 +77,5 @@ tr td:first-child {
 @include at-media-max('mobile-lg') {
   .mobile-text-center {
     text-align: center;
-  }
-}
-
-// Activity Hub progress/activities divider
-.activity-hub-divider {
-  margin-left: 0;
-
-  @include at-media("tablet") {
-    max-width: 30rem;
-  }
-}
-
-// Activity Hub section header with inline Add button
-.activity-hub-section-header {
-  margin-bottom: units(2.5);
-
-  @include at-media("tablet") {
-    max-width: 30rem;
-  }
-
-  form {
-    margin: 0;
-  }
-
-  .usa-button {
-    margin: 0;
-  }
-}
-
-// Activity Hub empty state
-.activity-hub-empty-state {
-  @include at-media("tablet") {
-    max-width: 30rem;
-  }
-}
-
-// Activity Hub card overrides
-.activity-hub-card {
-  padding-left: 0;
-  padding-right: 0;
-
-  @include at-media("tablet") {
-    max-width: 30rem;
-  }
-
-  .usa-card__container {
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  .usa-card__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 2px solid color("base-lighter");
-
-    .usa-card__heading {
-      margin: 0;
-    }
-
-    .usa-link {
-      margin-top: 0;
-    }
-  }
-}
-
-// Activity Hub month details responsive layout
-.activity-month-details {
-  border-bottom: 1px solid color("base-lighter");
-  padding: units(1.5) 0;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  @include at-media("tablet") {
-    display: flex;
-    align-items: flex-start;
-  }
-}
-
-.activity-month-details__month {
-  padding: units(1) 0;
-
-  @include at-media("tablet") {
-    width: 172px;
-    flex-shrink: 0;
-    padding: units(2);
-  }
-}
-
-.activity-month-details__data {
-  @include at-media("tablet") {
-    flex: 1;
-    padding: units(2);
   }
 }
