@@ -70,7 +70,7 @@ module ActivitiesHelper
             credit_hours: overlapping ? activity.credit_hours.to_i : 0
           }
         end
-        { name: school_name, months: months, activity: activity }
+        { name: school_name, months: months, edit_path: edit_activities_flow_education_path(id: activity.id) }
       end
     end
   end
@@ -80,7 +80,11 @@ module ActivitiesHelper
       months = activity.volunteering_activity_months.order(:month).map do |vam|
         { month: vam.month, hours: vam.hours }
       end
-      { name: activity.organization_name, months: months, activity: activity }
+      {
+        name: activity.organization_name,
+        months: months,
+        edit_path: edit_activities_flow_community_service_path(id: activity.id)
+      }
     end
   end
 
@@ -89,7 +93,11 @@ module ActivitiesHelper
       months = activity.job_training_activity_months.order(:month).map do |activity_month|
         { month: activity_month.month, hours: activity_month.hours }
       end
-      { name: activity.program_name, months: months, activity: activity }
+      {
+        name: activity.program_name,
+        months: months,
+        edit_path: edit_activities_flow_job_training_path(id: activity.id)
+      }
     end
   end
 

@@ -12,6 +12,7 @@ class ActivityFlowProgressCalculator
     @volunteering_activities = activity_flow.volunteering_activities
     @job_training_activities = activity_flow.job_training_activities
     @education_activities = activity_flow.education_activities
+    @employment_activities = activity_flow.employment_activities
   end
 
   def overall_result
@@ -94,31 +95,51 @@ class ActivityFlowProgressCalculator
   def employment_hours_for_month(month_start)
     month_key = month_start.strftime("%Y-%m")
 
-    monthly_summaries.sum do |_account_id, months|
+    payroll_hours = monthly_summaries.sum do |_account_id, months|
       month_data = months[month_key]
       next 0 unless month_data
 
       month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f
     end
+
+    payroll_hours + self_attested_employment_hours_for_month(month_start)
   end
 
   def total_employment_hours
-    monthly_summaries.sum do |_account_id, months|
+    payroll_hours = monthly_summaries.sum do |_account_id, months|
       months.sum do |_month_key, month_data|
         month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f
       end
     end
+
+    payroll_hours + reporting_months.sum { |month_start| self_attested_employment_hours_for_month(month_start) }
   end
 
   def earnings_for_month(month_start)
     month_key = month_start.strftime("%Y-%m")
 
-    monthly_summaries.sum do |_account_id, months|
+    payroll_earnings = monthly_summaries.sum do |_account_id, months|
       month_data = months[month_key]
       next 0 unless month_data
 
       month_data[:accrued_gross_earnings].to_i
     end
+
+    payroll_earnings + self_attested_employment_earnings_for_month(month_start)
+  end
+
+  def self_attested_employment_hours_for_month(month_start)
+    @employment_activities.sum do |activity|
+      activity.employment_activity_months.where(month: month_start.beginning_of_month).sum(:hours)
+    end
+  end
+
+  def self_attested_employment_earnings_for_month(month_start)
+    dollars = @employment_activities.sum do |activity|
+      activity.employment_activity_months.where(month: month_start.beginning_of_month).sum(:gross_income)
+    end
+
+    dollars * 100
   end
 
   def validated_hours_for_month(month_start)

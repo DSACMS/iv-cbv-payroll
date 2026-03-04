@@ -8,10 +8,16 @@
 </p>
 
 <h2><%= t("activities.community_service.review.organization_info") %></h2>
-<%= render(CommunityServiceReviewTableComponent.new(volunteering_activity: @volunteering_activity)) %>
+<%= render(ContactInfoReviewTableComponent.new(rows: [
+  { label: t("activities.community_service.review.name"), value: @volunteering_activity.organization_name },
+  { label: t("activities.community_service.review.address"), value: ContactInfoReviewTableComponent.formatted_address(@volunteering_activity) },
+  { label: t("activities.community_service.review.coordinator_name"), value: @volunteering_activity.coordinator_name },
+  { label: t("activities.community_service.review.coordinator_email"), value: @volunteering_activity.coordinator_email },
+  { label: t("activities.community_service.review.coordinator_phone"), value: @volunteering_activity.coordinator_phone_number }
+])) %>
 
 <h2><%= t("activities.community_service.review.hours_section") %></h2>
-<%= render(TableComponent.new(is_responsive: true, class_names: "cs-review-hours-table")) do |table| %>
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
   <% @volunteering_activity.volunteering_activity_months.order(:month).each_with_index do |activity_month, index| %>
     <%= table.with_row(class_names: "subheader-row") do |row| %>
       <%= row.with_data_cell(is_header: true, colspan: 2) do %>

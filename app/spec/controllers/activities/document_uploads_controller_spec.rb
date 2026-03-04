@@ -82,12 +82,12 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response).to redirect_to(review_activities_flow_community_service_path(id: volunteering_activity))
     end
 
-    it "redirects to hub for job training" do
+    it "redirects to review for job training when no upload params are provided" do
       job_training_activity = create(:job_training_activity, activity_flow: activity_flow)
 
       post :create, params: { job_training_id: job_training_activity.id }
 
-      expect(response).to redirect_to(activities_flow_root_path)
+      expect(response).to redirect_to(review_activities_flow_job_training_path(id: job_training_activity))
     end
 
     it "renders new when the update fails" do

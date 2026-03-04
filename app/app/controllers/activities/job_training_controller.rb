@@ -1,5 +1,5 @@
 class Activities::JobTrainingController < Activities::BaseController
-  before_action :set_job_training_activity, only: %i[edit update destroy]
+  before_action :set_job_training_activity, only: %i[edit update destroy review save_review]
 
   def new
     @job_training_activity = @flow.job_training_activities.new
@@ -22,6 +22,14 @@ class Activities::JobTrainingController < Activities::BaseController
     end
   end
 
+  def review
+  end
+
+  def save_review
+    @job_training_activity.update(review_params)
+    redirect_to after_activity_path
+  end
+
   def destroy
     @job_training_activity.destroy
 
@@ -32,6 +40,10 @@ class Activities::JobTrainingController < Activities::BaseController
 
   def set_job_training_activity
     @job_training_activity = @flow.job_training_activities.find(params[:id])
+  end
+
+  def review_params
+    params.require(:job_training_activity).permit(:additional_comments)
   end
 
   def job_training_activity_params

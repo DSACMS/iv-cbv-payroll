@@ -6,7 +6,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
 
   let(:now) { DateTime.new(2024, 9, 9, 9, 0, 0, "-04:00") }
   let(:invitation_sent_at) { now - 5.days }
-  let(:client_agency_id) { "la_ldh" }
+  let(:client_agency_id) { "sandbox" }
   let(:cbv_flow_invitation) { nil }
   let(:cbv_flow) do
     create(
@@ -92,6 +92,8 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     end
 
     context "LA LDH" do
+      let(:client_agency_id) { "la_ldh" }
+
       it "renders the CSV data with LA-specific columns" do
         expect(mail.attachments.first.filename).to eq("weekly_report_20240902-20240908.csv")
         expect(mail.attachments.first.content_type).to start_with('text/csv')
@@ -100,7 +102,8 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
           "case_number" => cbv_flow.cbv_applicant.case_number,
           "started_at" => "2024-09-04 13:15:00 UTC",
           "transmitted_at" => "2024-09-04 13:30:00 UTC",
-          "completed_at" => "2024-09-04 13:30:00 UTC"
+          "completed_at" => "2024-09-04 13:30:00 UTC",
+          "invited_at" => nil
         )
         expect(parsed_csv.length).to eq(1)
       end
@@ -108,24 +111,26 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
   end
 
   context "for invitation flows" do
-    let(:client_agency_id) { "az_des" }
-    let(:cbv_flow_invitation) { create(:cbv_flow_invitation, :az_des, created_at: invitation_sent_at) }
-
-    before do
-      az_config = double(
-        id: "az_des",
+    let(:client_agency_id) { "sandbox" }
+    let(:cbv_flow_invitation) { create(:cbv_flow_invitation, :sandbox, created_at: invitation_sent_at) }
+    let(:config) do
+      double(
+        id: "sandbox",
         weekly_report: {
-          "recipient" => "test@azdes.gov",
+          "recipient" => "test@example.com",
           "report_variant" => "invitations"
         }
       )
+    end
+
+    before do
       allow_any_instance_of(described_class).to receive(:client_agency_config).and_return({
-        "az_des" => az_config
+        "sandbox" => config
       })
     end
 
     it "includes incomplete flows" do
-      incomplete_invitation = create(:cbv_flow_invitation, :az_des, created_at: invitation_sent_at)
+      incomplete_invitation = create(:cbv_flow_invitation, :sandbox, created_at: invitation_sent_at)
       create(:cbv_flow, :invited, :with_pinwheel_account,
         created_at: invitation_sent_at,
         cbv_flow_invitation: incomplete_invitation)
@@ -136,7 +141,7 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
     end
 
     it "includes unused invitations" do
-      create(:cbv_flow_invitation, :az_des, created_at: invitation_sent_at)
+      create(:cbv_flow_invitation, :sandbox, created_at: invitation_sent_at)
 
       expect(parsed_csv.length).to eq(2)
       unused_record = parsed_csv.find { |row| row["started_at"].blank? }
@@ -158,20 +163,6 @@ RSpec.describe WeeklyReportMailer, type: :mailer do
       expect(flows[1]["invited_at"]).to eq("2024-09-04 13:00:00 UTC")
       expect(flows[0]["started_at"]).to eq("2024-09-04 13:15:00 UTC")
       expect(flows[1]["started_at"]).to eq("2024-09-04 14:00:00 UTC")
-    end
-
-    context "AZ DES" do
-      it "renders the CSV data with AZ-specific columns" do
-        expect(parsed_csv[0]).to match(
-          "case_number" => cbv_flow.cbv_applicant.case_number,
-          "started_at" => "2024-09-04 13:15:00 UTC",
-          "transmitted_at" => "2024-09-04 13:30:00 UTC",
-          "completed_at" => "2024-09-04 13:30:00 UTC",
-          "email_address" => "test@example.com",
-          "invited_at" => "2024-09-04 13:00:00 UTC"
-        )
-        expect(parsed_csv.length).to eq(1)
-      end
     end
   end
 end

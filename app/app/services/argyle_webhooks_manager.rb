@@ -6,11 +6,11 @@
 # configured AZ DES to use the production Argyle configuration and need to set
 # up the webhooks, we could run:
 #
-#   a = ArgyleWebhooksManager.new("az_des")
+#   a = ArgyleWebhooksManager.new("sandbox")
 #   a.create_subscriptions_if_necessary(ENV["DOMAIN_NAME"], "production")
 #
 # The webhooks will be registered based on the Argyle environment specified in the
-# "az_des" configuration in client-agency-config.yml.
+# "sandbox" agency configuration in client-agency-config.yml.
 class ArgyleWebhooksManager
   def initialize(agency_id: "sandbox", logger: Rails.logger)
     @agency_config = Rails.application.config.client_agencies[agency_id]
