@@ -10,6 +10,8 @@ RSpec.describe Activities::EducationController, type: :controller do
     create(
       :activity_flow,
       education_activities_count: 0,
+      volunteering_activities_count: 0,
+      job_training_activities_count: 0,
       with_identity: true
     )
   }
@@ -19,9 +21,9 @@ RSpec.describe Activities::EducationController, type: :controller do
     session[:flow_type] = :activity
   end
 
-  describe "GET #new" do
+  describe "GET #verify" do
     it "renders the user's details" do
-      get :new
+      get :verify
 
       expect(response.body).to have_content(activity_flow.identity.first_name)
       expect(response.body).to have_content(activity_flow.identity.last_name)
@@ -30,12 +32,30 @@ RSpec.describe Activities::EducationController, type: :controller do
   end
 
   describe "POST #create" do
-    it "creates a new EducationActivity and redirects to #show" do
+    it "creates a validated EducationActivity and redirects to #show" do
       expect { post :create }
         .to change(EducationActivity, :count)
         .by(1)
 
+      expect(EducationActivity.last.data_source).to eq("validated")
       expect(response).to redirect_to(activities_flow_education_path(id: EducationActivity.last.id))
+    end
+
+    it "creates a self-attested EducationActivity and redirects to after_activity_path" do
+      expect {
+        post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
+      }.to change(EducationActivity, :count).by(1)
+
+      activity = EducationActivity.last
+      expect(activity.data_source).to eq("self_attested")
+      expect(activity.school_name).to eq("Test University")
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "re-renders the form when self-attested params are invalid" do
+      post :create, params: { education_activity: { school_name: "" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
@@ -48,7 +68,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to have_http_status(:ok)
     end
 
-    context "when the EducationActivity sync found no enrollments" do
+    context "when the EducationActivity has no enrollments" do
       before do
         education_activity.update(status: :no_enrollments)
         allow(controller).to receive(:testing_synchronization_page?)
@@ -76,7 +96,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       end
     end
 
-    context "when the EducationActivity sync succeeded" do
+    context "when the EducationActivity has succeeded" do
       before do
         education_activity.update(status: :succeeded)
         allow(controller).to receive(:testing_synchronization_page?)
@@ -96,9 +116,18 @@ RSpec.describe Activities::EducationController, type: :controller do
       get :error
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to have_content("Enter education manually")
-      expect(response.body).to have_content("Retry student verification")
-      expect(response.body).to have_link("Retry student verification", href: new_activities_flow_education_path)
+      expect(response.body).to have_content(I18n.t("activities.education.error.enter_manually_button"))
+      expect(response.body).to have_content(I18n.t("activities.education.error.retry_button"))
+      expect(response.body).to have_link(I18n.t("activities.education.error.enter_manually_button"), href: new_activities_flow_education_path)
+    end
+  end
+
+  describe "GET #new" do
+    it "renders the self-attestation education form" do
+      get :new
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to have_content(I18n.t("activities.education.new.title"))
     end
   end
 

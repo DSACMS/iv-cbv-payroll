@@ -57,7 +57,7 @@
       <%= render "activities/activities/activity_section",
             activity_type: "education",
             section_title: t("activities.education.title"),
-            add_path: new_activities_flow_education_path,
+            add_path: verify_activities_flow_education_index_path,
             empty_message: t("activities.hub.empty.education"),
             cards: education_card_data do %>
         <% education_card_data.each do |card_data| %>

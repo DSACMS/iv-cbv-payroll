@@ -3,15 +3,24 @@ class Activities::EducationController < Activities::BaseController
   ARTIFICIAL_DELAY = 7.seconds
   INDICATOR_COUNT = 3
 
-  def new
+  def verify
     @identity = current_identity!
   end
 
   def create
-    @education_activity = @flow.education_activities.create
-    NscSynchronizationJob.perform_later(@education_activity.id)
-
-    redirect_to activities_flow_education_path(id: @education_activity.id)
+    if params[:education_activity]
+      @education_activity = @flow.education_activities.new(self_attested_education_params)
+      @education_activity.data_source = :self_attested
+      if @education_activity.save
+        redirect_to after_activity_path
+      else
+        render :new, status: :unprocessable_content
+      end
+    else
+      @education_activity = @flow.education_activities.create
+      NscSynchronizationJob.perform_later(@education_activity.id)
+      redirect_to activities_flow_education_path(id: @education_activity.id)
+    end
   end
 
   def show
@@ -73,6 +82,10 @@ class Activities::EducationController < Activities::BaseController
     end
   end
 
+  def new
+    @education_activity = @flow.education_activities.new
+  end
+
   def error
   end
 
@@ -86,6 +99,14 @@ class Activities::EducationController < Activities::BaseController
         :additional_comments,
         :credit_hours
       )
+  end
+
+  def self_attested_education_params
+    params.require(:education_activity).permit(
+      :school_name, :street_address, :street_address_line_2,
+      :city, :state, :zip_code,
+      :contact_name, :contact_email, :contact_phone_number
+    )
   end
 
   def set_completed_indicators

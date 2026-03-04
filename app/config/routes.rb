@@ -88,6 +88,9 @@ Rails.application.routes.draw do
 
       get "/education/error", to: "education#error", as: :education_error
       resources :education, only: %i[new create show update edit destroy], controller: "education" do
+        collection do
+          get :verify
+        end
         patch "sync", to: "education#sync", as: :sync
       end
 
