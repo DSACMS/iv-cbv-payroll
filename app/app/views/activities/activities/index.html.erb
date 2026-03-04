@@ -72,7 +72,7 @@
               <% end %>
             <% end %>
             <% card.with_footer do %>
-              <%= link_to t("activities.hub.edit"), edit_activities_flow_education_path(id: card_data[:activity].id), class: "usa-link" %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
             <% end %>
           <% end %>
         <% end %>
@@ -98,7 +98,7 @@
               <% end %>
             <% end %>
             <% card.with_footer do %>
-              <%= link_to t("activities.hub.edit"), edit_activities_flow_community_service_path(id: card_data[:activity].id), class: "usa-link" %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
             <% end %>
           <% end %>
         <% end %>
@@ -124,7 +124,7 @@
               <% end %>
             <% end %>
             <% card.with_footer do %>
-              <%= link_to t("activities.hub.edit"), edit_activities_flow_job_training_path(id: card_data[:activity].id), class: "usa-link" %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
             <% end %>
           <% end %>
         <% end %>
