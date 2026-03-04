@@ -18,10 +18,6 @@ class EducationActivity < ApplicationRecord
     failed: "failed"
   }, default: :unknown, prefix: :sync
 
-  def school_name
-    read_attribute(:school_name) || nsc_enrollment_terms.first&.school_name
-  end
-
   def progress_hours_for_month(month_start)
     return 0 unless sync_succeeded?
 
