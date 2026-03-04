@@ -163,7 +163,7 @@ en:
         heading: Add your %{month} credit hours for %{organization}
         hours_label: "%{month} credit hours"
         month_indicator: Month %{current} / %{total}
-        no_hours_checkbox: I didn't take any credit hours at %{organization} this term
+        no_hours_checkbox: I didn't take any credit hours at %{organization} in %{month}
         title: Credit hours
       new:
         continue: Verify enrollment
