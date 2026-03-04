@@ -207,7 +207,7 @@ RSpec.describe DemoLauncherController, type: :controller do
             .and change(CbvApplicant, :count).by(1)
 
           user = User.last
-          expect(user.email).to eq("ffs-eng+sandbox@navapbc.com")
+          expect(user.email).to eq("demolauncher+sandbox@navapbc.com")
           expect(user.is_service_account).to be true
 
           applicant = CbvApplicant.last
