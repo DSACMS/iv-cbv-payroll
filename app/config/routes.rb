@@ -93,6 +93,7 @@ Rails.application.routes.draw do
         end
         patch "sync", to: "education#sync", as: :sync
         resources :months, only: %i[edit update], controller: "education/months"
+        resources :document_uploads, only: %i[new create], controller: "/activities/document_uploads"
       end
 
       # Tokenized links

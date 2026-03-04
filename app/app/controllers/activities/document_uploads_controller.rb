@@ -30,6 +30,8 @@ class Activities::DocumentUploadsController < Activities::BaseController
                   @flow.volunteering_activities.find(params[:community_service_id])
                 elsif params[:job_training_id]
                   @flow.job_training_activities.find(params[:job_training_id])
+                elsif params[:education_id]
+                  @flow.education_activities.find(params[:education_id])
                 else
                   raise <<~ERROR
                     No activity param matched in DocumentUploadsController#set_activity.
@@ -48,6 +50,8 @@ class Activities::DocumentUploadsController < Activities::BaseController
       review_activities_flow_community_service_path(id: @activity, from_edit: params[:from_edit].presence)
     elsif params[:job_training_id]
       review_activities_flow_job_training_path(id: @activity, from_edit: params[:from_edit].presence)
+    elsif params[:education_id]
+      super
     else
       super
     end
@@ -58,6 +62,8 @@ class Activities::DocumentUploadsController < Activities::BaseController
       activities_flow_community_service_document_uploads_path(from_edit: params[:from_edit].presence)
     elsif params[:job_training_id]
       activities_flow_job_training_document_uploads_path(from_edit: params[:from_edit].presence)
+    elsif params[:education_id]
+      activities_flow_education_document_uploads_path(from_edit: params[:from_edit].presence)
     else
       raise <<~ERROR
         No activity param matched in DocumentUploadsController#upload_path.

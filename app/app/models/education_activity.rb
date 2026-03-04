@@ -1,5 +1,6 @@
 class EducationActivity < ApplicationRecord
   include HasActivityMonths
+  include DocumentUploadable
 
   belongs_to :activity_flow
   has_many :nsc_enrollment_terms, dependent: :destroy
@@ -26,5 +27,24 @@ class EducationActivity < ApplicationRecord
     return 0 unless terms_for_month.all? { |term| term.half_time_or_above? }
 
     ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
+  end
+
+  def document_upload_object_title
+    school_name
+  end
+
+  def document_upload_months_to_verify
+    education_activity_months.map(&:month)
+  end
+
+  def document_upload_details_for_month(month)
+    activity_month = education_activity_months
+      .find { |activity_month| activity_month.month == month }
+
+    I18n.t("shared.hours", count: activity_month.hours) if activity_month
+  end
+
+  def document_upload_suggestion_text
+    I18n.t("activities.education.document_upload_suggestion_text_html")
   end
 end

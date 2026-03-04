@@ -139,6 +139,7 @@ en:
         suggestion_title: Suggested documents
         title: Upload supporting documents for %{name}
     education:
+      document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information that you’d like %{agency_acronym} to know. For example, the credit hours you are taking.
