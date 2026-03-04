@@ -41,7 +41,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to redirect_to(activities_flow_education_path(id: EducationActivity.last.id))
     end
 
-    it "creates a self-attested EducationActivity and redirects to after_activity_path" do
+    it "creates a self-attested EducationActivity and redirects to month 0" do
       expect {
         post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
       }.to change(EducationActivity, :count).by(1)
@@ -49,7 +49,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       activity = EducationActivity.last
       expect(activity.data_source).to eq("self_attested")
       expect(activity.school_name).to eq("Test University")
-      expect(response).to redirect_to(activities_flow_root_path)
+      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: activity.id, id: 0))
     end
 
     it "re-renders the form when self-attested params are invalid" do

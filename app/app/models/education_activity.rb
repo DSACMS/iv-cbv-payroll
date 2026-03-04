@@ -19,9 +19,7 @@ class EducationActivity < ApplicationRecord
   }, default: :unknown, prefix: :sync
 
   def school_name
-    # TODO: Once FFS-3814 migration lands, self_attested activities will have
-    # school_name as a column. Remove the fallback then.
-    read_attribute(:school_name) || nsc_enrollment_terms.first&.school_name || (self_attested? ? "My School" : nil)
+    read_attribute(:school_name) || nsc_enrollment_terms.first&.school_name
   end
 
   def progress_hours_for_month(month_start)
