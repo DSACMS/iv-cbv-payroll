@@ -240,7 +240,7 @@ en:
         credit_hours: 'Credit hours: %{amount}'
         enrollment_status: 'Enrollment status: %{status}'
         gross_income: 'Gross income: %{amount}'
-        hours: 'Hours: %{count}'
+        hours: 'Community engagement hours: %{count}'
         not_enrolled: Not enrolled
       description_html: "<strong>Reporting period:</strong> %{reporting_window}"
       edit: Edit

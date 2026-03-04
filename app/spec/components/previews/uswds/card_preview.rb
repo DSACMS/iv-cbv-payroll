@@ -71,7 +71,7 @@ module Uswds
           tag.div(class: "activity-month-details__data") do
             safe_join([
               tag.p("Gross income: #{gross_income}", class: "margin-y-0"),
-              tag.p("Hours: #{hours}", class: "margin-y-0")
+              tag.p("Community engagement hours: #{hours}", class: "margin-y-0")
             ])
           end
         ])
@@ -83,7 +83,7 @@ module Uswds
         safe_join([
           tag.div(tag.strong(month), class: "activity-month-details__month"),
           tag.div(class: "activity-month-details__data") do
-            tag.p("Hours: #{hours}", class: "margin-y-0")
+            tag.p("Community engagement hours: #{hours}", class: "margin-y-0")
           end
         ])
       end
