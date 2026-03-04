@@ -92,6 +92,7 @@ Rails.application.routes.draw do
           get :verify
         end
         patch "sync", to: "education#sync", as: :sync
+        resources :months, only: %i[edit update], controller: "education/months"
       end
 
       # Tokenized links

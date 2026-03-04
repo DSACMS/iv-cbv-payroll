@@ -176,6 +176,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_03_120000) do
     t.index ["activity_flow_id"], name: "index_education_activities_on_activity_flow_id"
   end
 
+  create_table "education_activity_months", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "education_activity_id", null: false
+    t.integer "hours", default: 0, null: false
+    t.date "month", null: false
+    t.datetime "updated_at", null: false
+    t.index ["education_activity_id"], name: "index_education_activity_months_on_education_activity_id"
+  end
+
   create_table "employment_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
     t.text "additional_comments"
@@ -464,6 +473,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_03_120000) do
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "education_activities", "activity_flows"
+  add_foreign_key "education_activity_months", "education_activities"
   add_foreign_key "employment_activities", "activity_flows"
   add_foreign_key "employment_activity_months", "employment_activities"
   add_foreign_key "job_training_activities", "activity_flows"

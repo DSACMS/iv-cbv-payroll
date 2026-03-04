@@ -12,7 +12,7 @@ class Activities::EducationController < Activities::BaseController
       @education_activity = @flow.education_activities.new(self_attested_education_params)
       @education_activity.data_source = :self_attested
       if @education_activity.save
-        redirect_to after_activity_path
+        redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0)
       else
         render :new, status: :unprocessable_content
       end
