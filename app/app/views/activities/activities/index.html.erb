@@ -34,17 +34,21 @@
             cards: employment_card_data do %>
         <% employment_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+            <% card.with_header do %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+            <% end %>
             <% card.with_body do %>
               <% card_data[:months].each do |month_data| %>
-                <div class="margin-bottom-2">
-                  <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
-                  <p class="margin-y-0"><%= t("activities.hub.cards.gross_income", amount: number_to_currency(month_data[:gross_earnings] / 100.0)) %></p>
-                  <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                <div class="activity-month-details">
+                  <div class="activity-month-details__month">
+                    <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
+                  </div>
+                  <div class="activity-month-details__data">
+                    <p class="margin-y-0"><%= t("activities.hub.cards.gross_income", amount: number_to_currency(month_data[:gross_earnings] / 100.0)) %></p>
+                    <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                  </div>
                 </div>
               <% end %>
-            <% end %>
-            <% card.with_footer do %>
-              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
             <% end %>
           <% end %>
         <% end %>
@@ -62,17 +66,21 @@
             cards: education_card_data do %>
         <% education_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+            <% card.with_header do %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+            <% end %>
             <% card.with_body do %>
               <% card_data[:months].each do |month_data| %>
-                <div class="margin-bottom-2">
-                  <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
-                  <p class="margin-y-0"><%= t("activities.hub.cards.enrollment_status", status: month_data[:enrollment_status]) %></p>
-                  <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
+                <div class="activity-month-details">
+                  <div class="activity-month-details__month">
+                    <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
+                  </div>
+                  <div class="activity-month-details__data">
+                    <p class="margin-y-0"><%= t("activities.hub.cards.enrollment_status", status: month_data[:enrollment_status]) %></p>
+                    <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
+                  </div>
                 </div>
               <% end %>
-            <% end %>
-            <% card.with_footer do %>
-              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
             <% end %>
           <% end %>
         <% end %>
@@ -89,16 +97,20 @@
             cards: community_service_card_data do %>
         <% community_service_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+            <% card.with_header do %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+            <% end %>
             <% card.with_body do %>
               <% card_data[:months].each do |month_data| %>
-                <div class="margin-bottom-2">
-                  <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
-                  <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                <div class="activity-month-details">
+                  <div class="activity-month-details__month">
+                    <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
+                  </div>
+                  <div class="activity-month-details__data">
+                    <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                  </div>
                 </div>
               <% end %>
-            <% end %>
-            <% card.with_footer do %>
-              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
             <% end %>
           <% end %>
         <% end %>
@@ -115,16 +127,20 @@
             cards: work_programs_card_data do %>
         <% work_programs_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+            <% card.with_header do %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+            <% end %>
             <% card.with_body do %>
               <% card_data[:months].each do |month_data| %>
-                <div class="margin-bottom-2">
-                  <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
-                  <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                <div class="activity-month-details">
+                  <div class="activity-month-details__month">
+                    <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
+                  </div>
+                  <div class="activity-month-details__data">
+                    <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                  </div>
                 </div>
               <% end %>
-            <% end %>
-            <% card.with_footer do %>
-              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
             <% end %>
           <% end %>
         <% end %>

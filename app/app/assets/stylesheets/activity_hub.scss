@@ -78,4 +78,51 @@
     margin-left: 0;
     margin-right: 0;
   }
+
+  .usa-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid color("base-lighter");
+
+    .usa-card__heading {
+      margin: 0;
+    }
+
+    .usa-link {
+      margin-top: 0;
+    }
+  }
+}
+
+// Activity Hub month details responsive layout
+.activity-month-details {
+  border-bottom: 1px solid color("base-lighter");
+  padding: units(1.5) 0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @include at-media("tablet") {
+    display: flex;
+    align-items: flex-start;
+  }
+}
+
+.activity-month-details__month {
+  padding: units(1) 0;
+
+  @include at-media("tablet") {
+    width: 172px;
+    flex-shrink: 0;
+    padding: units(2);
+  }
+}
+
+.activity-month-details__data {
+  @include at-media("tablet") {
+    flex: 1;
+    padding: units(2);
+  }
 }

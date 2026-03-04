@@ -11,7 +11,8 @@ module Uswds
     end
 
     def community_service
-      render(Uswds::Card.new(heading_text: "Community Service")) do |card|
+      render(Uswds::Card.new(heading_text: "Community Service", class: "activity-hub-card")) do |card|
+        card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
         card.with_body do
           safe_join([
             hours_month_section("January 2026", "20"),
@@ -19,12 +20,12 @@ module Uswds
             hours_month_section("November 2025", "18")
           ])
         end
-        card.with_footer { tag.a("Edit", href: "#") }
       end
     end
 
     def work_program
-      render(Uswds::Card.new(heading_text: "Work Program")) do |card|
+      render(Uswds::Card.new(heading_text: "Work Program", class: "activity-hub-card")) do |card|
+        card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
         card.with_body do
           safe_join([
             hours_month_section("January 2026", "20"),
@@ -32,12 +33,12 @@ module Uswds
             hours_month_section("November 2025", "18")
           ])
         end
-        card.with_footer { tag.a("Edit", href: "#") }
       end
     end
 
     def employment
-      render(Uswds::Card.new(heading_text: "Employment")) do |card|
+      render(Uswds::Card.new(heading_text: "Employment", class: "activity-hub-card")) do |card|
+        card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
         card.with_body do
           safe_join([
             employment_month_section("January 2026", "$2,400", "160"),
@@ -45,12 +46,12 @@ module Uswds
             employment_month_section("November 2025", "$2,100", "145")
           ])
         end
-        card.with_footer { tag.a("Edit", href: "#") }
       end
     end
 
     def education
-      render(Uswds::Card.new(heading_text: "Education")) do |card|
+      render(Uswds::Card.new(heading_text: "Education", class: "activity-hub-card")) do |card|
+        card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
         card.with_body do
           safe_join([
             month_section("January 2026", "Enrolled", "12"),
@@ -58,37 +59,46 @@ module Uswds
             month_section("November 2025", "Not enrolled", "0")
           ])
         end
-        card.with_footer { tag.a("Edit", href: "#") }
       end
     end
 
     private
 
     def employment_month_section(month, gross_income, hours)
-      tag.div(class: "margin-bottom-2") do
+      tag.div(class: "activity-month-details") do
         safe_join([
-          tag.p(tag.strong(month), class: "margin-y-0"),
-          tag.p("Gross income: #{gross_income}", class: "margin-y-0"),
-          tag.p("Hours: #{hours}", class: "margin-y-0")
+          tag.div(tag.strong(month), class: "activity-month-details__month"),
+          tag.div(class: "activity-month-details__data") do
+            safe_join([
+              tag.p("Gross income: #{gross_income}", class: "margin-y-0"),
+              tag.p("Community engagement hours: #{hours}", class: "margin-y-0")
+            ])
+          end
         ])
       end
     end
 
     def hours_month_section(month, hours)
-      tag.div(class: "margin-bottom-2") do
+      tag.div(class: "activity-month-details") do
         safe_join([
-          tag.p(tag.strong(month), class: "margin-y-0"),
-          tag.p("Hours: #{hours}", class: "margin-y-0")
+          tag.div(tag.strong(month), class: "activity-month-details__month"),
+          tag.div(class: "activity-month-details__data") do
+            tag.p("Community engagement hours: #{hours}", class: "margin-y-0")
+          end
         ])
       end
     end
 
     def month_section(month, status, hours)
-      tag.div(class: "margin-bottom-2") do
+      tag.div(class: "activity-month-details") do
         safe_join([
-          tag.p(tag.strong(month), class: "margin-y-0"),
-          tag.p("Enrollment status: #{status}", class: "margin-y-0"),
-          tag.p("Credit hours: #{hours}", class: "margin-y-0")
+          tag.div(tag.strong(month), class: "activity-month-details__month"),
+          tag.div(class: "activity-month-details__data") do
+            safe_join([
+              tag.p("Enrollment status: #{status}", class: "margin-y-0"),
+              tag.p("Credit hours: #{hours}", class: "margin-y-0")
+            ])
+          end
         ])
       end
     end
