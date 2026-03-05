@@ -1,0 +1,32 @@
+@forward "uswds";
+@use "uswds" as *;
+
+.spoke-heading {
+  align-items: center;
+  background-color: white;
+  border-bottom: 1px solid color("base-lighter");
+  display: flex;
+  justify-content: space-between;
+  padding: units(1.5);
+}
+
+.spoke-heading__title {
+  font-size: size("heading", 8);
+}
+
+.spoke-heading__exit-link {
+  align-items: center;
+  display: flex;
+  gap: units(0.5);
+}
+
+.back-nav {
+  padding: units(2) units(3);
+}
+
+.back-nav__link {
+  align-items: center;
+  display: inline-flex;
+  gap: units(0.5);
+  text-decoration: none;
+}

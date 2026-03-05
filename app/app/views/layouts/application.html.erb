@@ -14,6 +14,7 @@
       <a class="usa-skipnav" href="#main-content"><%= t("shared.skip_link") %></a>
       <%= render "application/header" %>
       <main id="main-content">
+        <%= yield :activity_flow_header %>
         <section class="grid-container usa-section">
           <% if ENV["SITE_ALERT_ENABLED"] == "true" %>
             <%= render Uswds::Alert.new(type: ENV["SITE_ALERT_TYPE"] || :info, heading: get_site_alert_title, class: "margin-bottom-4") do %>

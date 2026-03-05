@@ -1,8 +1,10 @@
-<%= render ActivityFlowHeaderComponent.new(
-  title: t("activities.community_service.title_singular"),
-  exit_url: activities_flow_root_path,
-  back_url: @back_url
-) %>
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.community_service.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: @back_url
+  ) %>
+<% end %>
 
 <% from_review = params[:from_review].present? %>
 <% from_edit = params[:from_edit].present? %>
