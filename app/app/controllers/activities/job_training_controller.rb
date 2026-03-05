@@ -1,5 +1,6 @@
 class Activities::JobTrainingController < Activities::BaseController
   before_action :set_job_training_activity, only: %i[edit update destroy review save_review]
+  before_action :set_back_url, only: %i[review]
 
   def new
     @job_training_activity = @flow.job_training_activities.new
@@ -37,6 +38,13 @@ class Activities::JobTrainingController < Activities::BaseController
   end
 
   private
+
+  def set_back_url
+    @back_url = new_activities_flow_job_training_document_upload_path(
+      job_training_id: @job_training_activity,
+      from_edit: params[:from_edit].presence
+    )
+  end
 
   def set_job_training_activity
     @job_training_activity = @flow.job_training_activities.find(params[:id])
