@@ -35,6 +35,10 @@ class Activities::Education::MonthsController < Activities::BaseController
   end
 
   def hours_input_completed_path
-    new_activities_flow_education_document_upload_path(education_id: @education_activity.id, from_edit: params[:from_edit].presence)
+    if params[:from_review].present?
+      review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence)
+    else
+      new_activities_flow_education_document_upload_path(education_id: @education_activity.id, from_edit: params[:from_edit].presence)
+    end
   end
 end

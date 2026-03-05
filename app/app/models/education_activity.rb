@@ -2,6 +2,8 @@ class EducationActivity < ApplicationRecord
   include HasActivityMonths
   include DocumentUploadable
 
+  CREDIT_HOUR_CE_MULTIPLIER = 4
+
   belongs_to :activity_flow
   has_many :nsc_enrollment_terms, dependent: :destroy
   has_many :education_activity_months, dependent: :destroy
@@ -19,14 +21,8 @@ class EducationActivity < ApplicationRecord
     failed: "failed"
   }, default: :unknown, prefix: :sync
 
-  def progress_hours_for_month(month_start)
-    return 0 unless sync_succeeded?
-
-    terms_for_month = nsc_enrollment_terms.select { |term| term.overlaps_month?(month_start) }
-    return 0 if terms_for_month.empty?
-    return 0 unless terms_for_month.all? { |term| term.half_time_or_above? }
-
-    ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
+  def community_engagement_hours(credit_hours)
+    credit_hours.to_i * CREDIT_HOUR_CE_MULTIPLIER
   end
 
   def document_upload_object_title
@@ -46,5 +42,15 @@ class EducationActivity < ApplicationRecord
 
   def document_upload_suggestion_text
     I18n.t("activities.education.document_upload_suggestion_text_html")
+  end
+
+  def progress_hours_for_month(month_start)
+    return 0 unless sync_succeeded?
+
+    terms_for_month = nsc_enrollment_terms.select { |term| term.overlaps_month?(month_start) }
+    return 0 if terms_for_month.empty?
+    return 0 unless terms_for_month.all? { |term| term.half_time_or_above? }
+
+    ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
   end
 end
