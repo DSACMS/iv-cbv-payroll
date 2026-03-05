@@ -3,7 +3,22 @@ class Activities::JobTraining::MonthsController < Activities::BaseController
 
   include MonthlyHoursInput
 
+  before_action :set_back_url, only: %i[edit update]
+
   private
+
+  def set_back_url
+    @back_url = if params[:from_review].present?
+                  review_activities_flow_job_training_path(
+                    id: @job_training_activity,
+                    from_edit: params[:from_edit].presence
+                  )
+                elsif @month_index > 0
+                  hours_input_path(@month_index - 1, from_edit: params[:from_edit].presence)
+                else
+                  edit_activities_flow_job_training_path(id: @job_training_activity)
+                end
+  end
 
   def set_job_training_activity
     @job_training_activity = @flow.job_training_activities.find(params[:job_training_id])

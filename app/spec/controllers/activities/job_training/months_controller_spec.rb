@@ -32,6 +32,8 @@ RSpec.describe Activities::JobTraining::MonthsController, type: :controller do
       patch :update, params: { job_training_id: job_training_activity.id, id: 0, no_hours: "1" }
 
       expect(response).to have_http_status(:unprocessable_content)
+      expect(assigns(:back_url)).to be_present
+      expect(response.body).to include("back-nav")
     end
 
     context "with multiple reporting months" do
