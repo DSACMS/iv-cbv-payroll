@@ -16,7 +16,7 @@ RSpec.describe ActivityFlowHeaderComponent, type: :component do
 
   it "renders the Exit link" do
     render_inline(component)
-    expect(page).to have_text(I18n.t("activity_flow_header_component.exit"))
+    expect(page).to have_text(I18n.t("activities.activity_header_component.exit"))
   end
 
   it "sets the exit URL as a Stimulus value on the wrapper" do
@@ -27,10 +27,10 @@ RSpec.describe ActivityFlowHeaderComponent, type: :component do
   it "renders the exit confirmation modal" do
     render_inline(component)
     expect(page).to have_css("#exit-confirmation-modal")
-    expect(page).to have_text(I18n.t("activity_flow_header_component.modal.heading"))
-    expect(page).to have_text(I18n.t("activity_flow_header_component.modal.body"))
-    expect(page).to have_text(I18n.t("activity_flow_header_component.modal.back_button"))
-    expect(page).to have_text(I18n.t("activity_flow_header_component.modal.exit_link"))
+    expect(page).to have_text(I18n.t("activities.activity_header_component.modal.heading"))
+    expect(page).to have_text(I18n.t("activities.activity_header_component.modal.body"))
+    expect(page).to have_text(I18n.t("activities.activity_header_component.modal.back_button"))
+    expect(page).to have_text(I18n.t("activities.activity_header_component.modal.exit_link"))
   end
 
   it "does not render back-nav when back_url is nil" do
@@ -44,7 +44,7 @@ RSpec.describe ActivityFlowHeaderComponent, type: :component do
     it "renders the Back link" do
       render_inline(component)
       expect(page).to have_css(".back-nav")
-      expect(page).to have_link(I18n.t("activity_flow_header_component.back"), href: "/previous")
+      expect(page).to have_link(I18n.t("activities.activity_header_component.back"), href: "/previous")
     end
   end
 end

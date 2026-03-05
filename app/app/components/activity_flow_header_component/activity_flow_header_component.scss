@@ -1,6 +1,12 @@
 @forward "uswds";
 @use "uswds" as *;
 
+.activity-flow-header {
+  position: sticky;
+  top: 0;
+  z-index: z-index(400);
+}
+
 .spoke-heading {
   background-color: white;
   border-bottom: 1px solid color("base-lighter");
@@ -36,7 +42,15 @@
 }
 
 .back-nav {
-  padding: units(2) units(3);
+  padding: units(2) units(1.5);
+
+  @include at-media("tablet") {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 64rem;
+    padding-left: units(4);
+    padding-right: units(4);
+  }
 }
 
 .back-nav__link {

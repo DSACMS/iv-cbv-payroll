@@ -1,4 +1,5 @@
-<div data-controller="activity-flow-header"
+<div class="activity-flow-header"
+     data-controller="activity-flow-header"
      data-activity-flow-header-exit-url-value="<%= exit_url %>">
 
   <%# Spoke-heading bar %>
@@ -9,25 +10,13 @@
          data-action="click->activity-flow-header#handleExit"
          data-activity-flow-header-target="exitButton"
          class="spoke-heading__exit-link">
-        <%= t("activity_flow_header_component.exit") %>
+        <%= t("activities.activity_header_component.exit") %>
         <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
           <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#close") %>"></use>
         </svg>
       </a>
     </div>
   </div>
-
-  <%# Back-nav row (optional) %>
-  <% if back_url %>
-    <div class="back-nav">
-      <%= link_to back_url, class: "back-nav__link" do %>
-        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#navigate_before") %>"></use>
-        </svg>
-        <%= t("activity_flow_header_component.back") %>
-      <% end %>
-    </div>
-  <% end %>
 
   <%# Exit confirmation modal (always in DOM, hidden until triggered) %>
   <div class="usa-modal"
@@ -37,20 +26,20 @@
     <div class="usa-modal__content">
       <div class="usa-modal__main">
         <h2 class="usa-modal__heading" id="exit-modal-heading">
-          <%= t("activity_flow_header_component.modal.heading") %>
+          <%= t("activities.activity_header_component.modal.heading") %>
         </h2>
         <p id="exit-modal-description">
-          <%= t("activity_flow_header_component.modal.body") %>
+          <%= t("activities.activity_header_component.modal.body") %>
         </p>
         <div class="usa-modal__footer">
           <ul class="usa-button-group">
             <li class="usa-button-group__item">
               <button type="button" class="usa-button" data-close-modal>
-                <%= t("activity_flow_header_component.modal.back_button") %>
+                <%= t("activities.activity_header_component.modal.back_button") %>
               </button>
             </li>
             <li class="usa-button-group__item">
-              <%= link_to t("activity_flow_header_component.modal.exit_link"),
+              <%= link_to t("activities.activity_header_component.modal.exit_link"),
                     exit_url,
                     class: "usa-button usa-button--unstyled padding-105 text-center" %>
             </li>
@@ -77,3 +66,15 @@
   </button>
 
 </div>
+
+<%# Back-nav row (optional) %>
+<% if back_url %>
+  <div class="back-nav">
+    <%= link_to back_url, class: "back-nav__link" do %>
+      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+        <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#navigate_before") %>"></use>
+      </svg>
+      <%= t("activities.activity_header_component.back") %>
+    <% end %>
+  </div>
+<% end %>
