@@ -1,11 +1,18 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["monthButtons", "monthsInput"]
+  static targets = ["monthButtons", "monthsInput", "ceOnly"]
 
   connect() {
-    const selected = this.element.querySelector("input[name=reporting_window]:checked")
-    if (selected) this.applyWindow(selected.value)
+    const selectedFlow = this.element.querySelector("input[name=flow_type]:checked")
+    if (selectedFlow) this.applyFlowType(selectedFlow.value)
+
+    const selectedWindow = this.element.querySelector("input[name=reporting_window]:checked")
+    if (selectedWindow) this.applyWindow(selectedWindow.value)
+  }
+
+  selectFlowType(event) {
+    this.applyFlowType(event.currentTarget.value)
   }
 
   selectWindow(event) {
@@ -19,6 +26,16 @@ export default class extends Controller {
   }
 
   // private
+
+  applyFlowType(value) {
+    if (value === "cbv") {
+      this.ceOnlyTargets.forEach((el) => (el.hidden = true))
+    } else {
+      this.ceOnlyTargets.forEach((el) => (el.hidden = false))
+      const selectedWindow = this.element.querySelector("input[name=reporting_window]:checked")
+      if (selectedWindow) this.applyWindow(selectedWindow.value)
+    }
+  }
 
   applyWindow(value) {
     if (value === "renewal") {

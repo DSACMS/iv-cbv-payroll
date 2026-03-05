@@ -4,7 +4,7 @@ RSpec.describe ApplicationJob do
   describe "#with_error_reporting" do
     class TestJob < ApplicationJob
       def perform
-        puts "running"
+        Rails.logger.info "running"
         raise StandardError, "failed"
       end
     end

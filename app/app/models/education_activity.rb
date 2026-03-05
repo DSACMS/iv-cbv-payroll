@@ -1,6 +1,12 @@
 class EducationActivity < ApplicationRecord
+  include HasActivityMonths
+
   belongs_to :activity_flow
   has_many :nsc_enrollment_terms, dependent: :destroy
+  has_many :education_activity_months, dependent: :destroy
+  has_activity_months :education_activity_months
+
+  validates :school_name, presence: true, if: :self_attested?
 
   enum :data_source, { self_attested: "self_attested", validated: "validated" }, default: :validated
 

@@ -244,7 +244,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       click_button I18n.t("activities.hub.add")
     end
     performing_active_jobs do
-      click_button I18n.t("activities.education.new.continue")
+      click_button I18n.t("activities.education.verify.continue")
       verify_page(page, title: I18n.t("activities.education.error.header"), wait: 10) # /activities/education/error
     end
     expect(page).to have_content I18n.t("activities.education.error.enter_manually_button")

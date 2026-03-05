@@ -140,6 +140,7 @@ ignore_missing:
     - "activities.*"
     - "cbv.*.activity_flow.*" # ActivityFlow copy overrides in controllers/views from CBV flow
     - "activerecord.errors.models.job_training_activity.*"
+    - "activerecord.errors.models.education_activity.*"
     - "activerecord.errors.models.volunteering_activity.*"
     - "components.enrollment_term_table_component.*"
     - "activity_flow_progress_indicator.*"

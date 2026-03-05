@@ -1,0 +1,35 @@
+<% content_for :title, t(".header") %>
+
+<h1>
+  <%= t(".header") %>
+</h1>
+<p>
+  <%= t(".description") %>
+</p>
+
+<div class="cbv-field-value-list">
+  <h2 class="cbv-field-value-list__label">
+    <%= t(".first_name") %>
+  </h2>
+  <p class="cbv-field-value-list__value">
+    <%= @identity.first_name %>
+  </p>
+
+  <h2 class="cbv-field-value-list__label">
+    <%= t(".last_name") %>
+  </h2>
+  <p class="cbv-field-value-list__value">
+    <%= @identity.last_name %>
+  </p>
+
+  <h2 class="cbv-field-value-list__label">
+    <%= t(".date_of_birth") %>
+  </h2>
+  <p class="cbv-field-value-list__value">
+    <%= format_date(@identity.date_of_birth) %>
+  </p>
+</div>
+
+<nav class="margin-top-5">
+  <%= button_to t(".continue"), activities_flow_education_index_path, method: :post, class: "usa-button" %>
+</nav>

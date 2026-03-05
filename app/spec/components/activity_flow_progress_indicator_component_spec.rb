@@ -43,11 +43,11 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     )
   end
 
-  it "adds the percent complete as a data attribute" do
+  it "adds the percent complete as a style attribute" do
     render_inline(component)
 
-    progress = page.find(:css, ".activity-flow-progress-indicator__progress-bar")
-    expect(progress["data-percent"]).to eq("50.0")
+    progress = page.find(:css, ".activity-flow-progress-indicator__progress-bar-fill")
+    expect(progress["style"]).to eq("width: 50.0%")
   end
 
   it "does not show the 'months completed' message" do
@@ -62,8 +62,8 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     it "caps the percentage complete at 100" do
       render_inline(component)
 
-      progress = page.find(:css, ".activity-flow-progress-indicator__progress-bar")
-      expect(progress["data-percent"]).to eq("100")
+      progress = page.find(:css, ".activity-flow-progress-indicator__progress-bar-fill")
+      expect(progress["style"]).to eq("width: 100%")
     end
 
     it "displays a success icon" do

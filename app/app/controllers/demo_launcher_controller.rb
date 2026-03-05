@@ -6,13 +6,24 @@ class DemoLauncherController < ApplicationController
   end
 
   def create
+    flow_type = params[:flow_type]
     client_agency_id = params[:client_agency_id]
     launch_type = params[:launch_type]
     nsc_test_user = params[:nsc_test_user]
 
-    overrides = params.permit(:reporting_window, :reporting_window_months, :demo_timeout).select { |_, v| v.present? }
+    overrides = if flow_type == "cbv"
+                  params.permit(:demo_timeout).select { |_, v| v.present? }
+                else
+                  params.permit(:reporting_window, :reporting_window_months, :demo_timeout).select { |_, v| v.present? }
+                end
 
-    url = if launch_type == "generic"
+    url = if flow_type == "cbv"
+            if launch_type == "generic"
+              build_cbv_generic_url(client_agency_id, overrides)
+            else
+              build_cbv_tokenized_url(client_agency_id, overrides)
+            end
+          elsif launch_type == "generic"
             build_generic_url(client_agency_id, overrides)
           elsif nsc_test_user.present?
             build_nsc_test_user_url(nsc_test_user, client_agency_id, overrides)
@@ -27,6 +38,47 @@ class DemoLauncherController < ApplicationController
 
   def session_timeout_enabled?
     false
+  end
+
+  def build_cbv_generic_url(client_agency_id, overrides)
+    Rails.application.routes.url_helpers.cbv_flow_new_url(
+      client_agency_id: client_agency_id,
+      host: request.host_with_port,
+      protocol: request.protocol,
+      **overrides
+    )
+  end
+
+  def build_cbv_tokenized_url(client_agency_id, overrides)
+    user = User.find_or_create_by(
+      email: "demolauncher+#{client_agency_id}@navapbc.com",
+      client_agency_id: client_agency_id
+    )
+    user.update(is_service_account: true)
+
+    invitation = CbvFlowInvitation.create!(
+      user: user,
+      client_agency_id: client_agency_id,
+      language: "en",
+      email_address: user.email,
+      cbv_applicant_attributes: {
+        first_name: "Demo",
+        last_name: "User",
+        client_agency_id: client_agency_id,
+        case_number: "demo-#{SecureRandom.hex(4)}",
+        snap_application_date: Date.today
+      }
+    )
+    url = invitation.to_url
+    uri = URI.parse(url)
+    uri.scheme = request.scheme
+    uri.host = request.host
+    uri.port = request.port
+    existing_params = URI.decode_www_form(uri.query || "")
+    existing_params << [ "client_agency_id", client_agency_id ]
+    overrides.to_h.each { |k, v| existing_params << [ k, v ] }
+    uri.query = URI.encode_www_form(existing_params)
+    uri.to_s
   end
 
   def build_generic_url(client_agency_id, overrides)

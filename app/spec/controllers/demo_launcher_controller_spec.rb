@@ -97,6 +97,126 @@ RSpec.describe DemoLauncherController, type: :controller do
       end
     end
 
+    context "with CBV flow type" do
+      context "with a generic launch" do
+        it "redirects to the CBV generic link" do
+          post :create, params: {
+            flow_type: "cbv",
+            client_agency_id: "sandbox",
+            launch_type: "generic"
+          }
+          expect(response).to redirect_to(%r{/cbv/links/sandbox})
+        end
+
+        it "includes override params in the URL" do
+          post :create, params: {
+            flow_type: "cbv",
+            client_agency_id: "sandbox",
+            launch_type: "generic",
+            demo_timeout: "10"
+          }
+          location = response.location
+          expect(location).to include("demo_timeout=10")
+        end
+
+        it "filters out reporting_window params" do
+          post :create, params: {
+            flow_type: "cbv",
+            client_agency_id: "sandbox",
+            launch_type: "generic",
+            reporting_window: "application",
+            reporting_window_months: "6",
+            demo_timeout: "10"
+          }
+          location = response.location
+          expect(location).not_to include("reporting_window")
+          expect(location).not_to include("reporting_window_months")
+          expect(location).to include("demo_timeout=10")
+        end
+      end
+
+      context "with a tokenized launch" do
+        it "creates a CbvFlowInvitation and redirects to its URL" do
+          expect {
+            post :create, params: {
+              flow_type: "cbv",
+              client_agency_id: "sandbox",
+              launch_type: "tokenized"
+            }
+          }.to change(CbvFlowInvitation, :count).by(1)
+
+          invitation = CbvFlowInvitation.last
+          expect(invitation.client_agency_id).to eq("sandbox")
+          expect(response).to redirect_to(%r{/start/#{invitation.auth_token}})
+        end
+
+        it "includes client_agency_id in the redirect URL" do
+          post :create, params: {
+            flow_type: "cbv",
+            client_agency_id: "nh_dhhs",
+            launch_type: "tokenized"
+          }
+          location = response.location
+          expect(location).to include("client_agency_id=nh_dhhs")
+        end
+
+        it "uses the request host in the redirect URL" do
+          post :create, params: {
+            flow_type: "cbv",
+            client_agency_id: "sandbox",
+            launch_type: "tokenized"
+          }
+          location = response.location
+          expect(location).to start_with("http://test.host")
+        end
+
+        it "includes override params in the URL" do
+          post :create, params: {
+            flow_type: "cbv",
+            client_agency_id: "sandbox",
+            launch_type: "tokenized",
+            demo_timeout: "15"
+          }
+          location = response.location
+          expect(location).to include("demo_timeout=15")
+        end
+
+        it "filters out reporting_window params" do
+          post :create, params: {
+            flow_type: "cbv",
+            client_agency_id: "sandbox",
+            launch_type: "tokenized",
+            reporting_window: "renewal",
+            reporting_window_months: "3",
+            demo_timeout: "15"
+          }
+          location = response.location
+          expect(location).not_to include("reporting_window")
+          expect(location).not_to include("reporting_window_months")
+          expect(location).to include("demo_timeout=15")
+        end
+
+        it "creates a User and CbvApplicant" do
+          expect {
+            post :create, params: {
+              flow_type: "cbv",
+              client_agency_id: "sandbox",
+              launch_type: "tokenized"
+            }
+          }.to change(User, :count).by(1)
+            .and change(CbvApplicant, :count).by(1)
+
+          user = User.last
+          expect(user.email).to eq("demolauncher+sandbox@navapbc.com")
+          expect(user.is_service_account).to be true
+
+          applicant = CbvApplicant.last
+          expect(applicant.first_name).to eq("Demo")
+          expect(applicant.last_name).to eq("User")
+        end
+      end
+    end
+
     context "with an NSC test user" do
       shared_examples "creates CbvApplicant with correct data" do |user_key, first_name, last_name, dob|
         it "creates a CbvApplicant with #{first_name}'s data" do
