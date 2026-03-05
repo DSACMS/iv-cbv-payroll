@@ -2,12 +2,23 @@
 @use "uswds" as *;
 
 .spoke-heading {
-  align-items: center;
   background-color: white;
   border-bottom: 1px solid color("base-lighter");
+}
+
+.spoke-heading__inner {
+  align-items: center;
   display: flex;
   justify-content: space-between;
   padding: units(1.5);
+
+  @include at-media("tablet") {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 64rem;
+    padding-left: units(4);
+    padding-right: units(4);
+  }
 }
 
 .spoke-heading__title {
@@ -18,6 +29,10 @@
   align-items: center;
   display: flex;
   gap: units(0.5);
+
+  @include at-media("tablet") {
+    padding-right: 1rem;
+  }
 }
 
 .back-nav {

@@ -3,16 +3,18 @@
 
   <%# Spoke-heading bar %>
   <div class="spoke-heading">
-    <span class="spoke-heading__title text-bold"><%= title %></span>
-    <a href="<%= exit_url %>"
-       data-action="click->activity-flow-header#handleExit"
-       data-activity-flow-header-target="exitButton"
-       class="spoke-heading__exit-link">
-      <%= t("activity_flow_header_component.exit") %>
-      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-        <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#close") %>"></use>
-      </svg>
-    </a>
+    <div class="spoke-heading__inner">
+      <span class="spoke-heading__title text-bold"><%= title %></span>
+      <a href="<%= exit_url %>"
+         data-action="click->activity-flow-header#handleExit"
+         data-activity-flow-header-target="exitButton"
+         class="spoke-heading__exit-link">
+        <%= t("activity_flow_header_component.exit") %>
+        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#close") %>"></use>
+        </svg>
+      </a>
+    </div>
   </div>
 
   <%# Back-nav row (optional) %>
