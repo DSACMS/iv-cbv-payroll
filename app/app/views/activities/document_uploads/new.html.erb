@@ -61,7 +61,7 @@
   <%= render(AccordionComponent.new(id: "document-upload-suggestions")) do |accordion| %>
     <% accordion.with_title { t(".suggestion_title") } %>
     <% accordion.with_accordion_item do %>
-      <%= @activity.document_upload_suggestion_text.html_safe %>
+      <%= @activity.document_upload_suggestion_text %>
     <% end %>
   <% end %>
   <%= f.submit t(".continue") %>
