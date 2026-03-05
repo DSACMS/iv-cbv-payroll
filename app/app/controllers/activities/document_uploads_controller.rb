@@ -1,5 +1,6 @@
 class Activities::DocumentUploadsController < Activities::BaseController
   before_action :set_activity
+  before_action :set_back_url, only: %i[new]
 
   helper_method :upload_path
 
@@ -23,6 +24,17 @@ class Activities::DocumentUploadsController < Activities::BaseController
 
   def document_upload_params
     params.expect(activity: [ { document_uploads: [] } ])
+  end
+
+  def set_back_url
+    if params[:community_service_id]
+      last_month_index = progress_calculator.reporting_months.length - 1
+      @back_url = edit_activities_flow_community_service_month_path(
+        community_service_id: @activity,
+        id: last_month_index,
+        from_edit: params[:from_edit].presence
+      )
+    end
   end
 
   def set_activity

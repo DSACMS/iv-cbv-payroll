@@ -6,4 +6,5 @@
 @forward "cbv.scss";
 
 /* Import styling from ViewComponents */
-@forward "../../components/activity_flow_progress_indicator/activity_flow_progress_indicator.scss"
+@forward "../../components/activity_flow_progress_indicator/activity_flow_progress_indicator.scss";
+@forward "../../components/activity_flow_header_component/activity_flow_header_component.scss";

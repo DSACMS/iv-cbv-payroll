@@ -1,0 +1,61 @@
+@forward "uswds";
+@use "uswds" as *;
+
+.activity-flow-header {
+  position: sticky;
+  top: 0;
+  z-index: z-index(400);
+}
+
+.activity-header-title {
+  background-color: white;
+  border-bottom: 1px solid color("base-lighter");
+}
+
+.activity-header-title__inner {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: units(1.5);
+
+  @include at-media("tablet") {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 64rem;
+    padding-left: units(4);
+    padding-right: units(4);
+  }
+}
+
+.activity-header-title__text {
+  font-size: size("heading", 8);
+}
+
+.activity-header-title__exit-link {
+  align-items: center;
+  display: flex;
+  gap: units(0.5);
+
+  @include at-media("tablet") {
+    padding-right: 1rem;
+  }
+}
+
+.back-nav {
+  padding: units(2) units(1.5);
+
+  @include at-media("tablet") {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 64rem;
+    padding-left: units(4);
+    padding-right: units(4);
+  }
+}
+
+.back-nav__link {
+  align-items: center;
+  display: inline-flex;
+  gap: units(0.5);
+  text-decoration: none;
+}

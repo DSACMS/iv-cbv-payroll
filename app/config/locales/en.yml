@@ -82,6 +82,14 @@ en:
               greater_than_or_equal_to: Hours must be 0 or more
               not_an_integer: Hours must be a whole number
   activities:
+    activity_header_component:
+      back: Back
+      exit: Exit
+      modal:
+        back_button: Back
+        body: Your progress adding this activity will not be saved.
+        exit_link: Exit without saving
+        heading: Are you sure you want to exit?
     community_service:
       city: City
       continue: Continue
@@ -127,7 +135,7 @@ en:
       street_address: Street address
       street_address_line_2: Street address line 2
       title: Community service
-      title_singular: Community Service
+      title_singular: Community service
       zip_code: Zip code
     document_uploads:
       new:

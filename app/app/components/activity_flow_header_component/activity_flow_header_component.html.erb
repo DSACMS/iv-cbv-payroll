@@ -1,0 +1,77 @@
+<div class="activity-flow-header"
+     data-controller="activity-flow-header"
+     data-activity-flow-header-exit-url-value="<%= exit_url %>">
+
+  <div class="activity-header-title">
+    <div class="activity-header-title__inner">
+      <span class="activity-header-title__text text-bold"><%= title %></span>
+      <a href="<%= exit_url %>"
+         data-action="click->activity-flow-header#handleExit"
+         data-activity-flow-header-target="exitButton"
+         class="activity-header-title__exit-link">
+        <%= t("activities.activity_header_component.exit") %>
+        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#close") %>"></use>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="usa-modal"
+       id="exit-confirmation-modal"
+       aria-labelledby="exit-modal-heading"
+       aria-describedby="exit-modal-description">
+    <div class="usa-modal__content">
+      <div class="usa-modal__main">
+        <h2 class="usa-modal__heading" id="exit-modal-heading">
+          <%= t("activities.activity_header_component.modal.heading") %>
+        </h2>
+        <p id="exit-modal-description">
+          <%= t("activities.activity_header_component.modal.body") %>
+        </p>
+        <div class="usa-modal__footer">
+          <ul class="usa-button-group">
+            <li class="usa-button-group__item">
+              <button type="button" class="usa-button" data-close-modal>
+                <%= t("activities.activity_header_component.modal.back_button") %>
+              </button>
+            </li>
+            <li class="usa-button-group__item">
+              <%= link_to t("activities.activity_header_component.modal.exit_link"),
+                    exit_url,
+                    class: "usa-button usa-button--unstyled padding-105 text-center" %>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button type="button"
+              class="usa-button usa-modal__close"
+              aria-label="Close this window"
+              data-close-modal>
+        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#close") %>"></use>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <%# Hidden trigger button for USWDS modal JS %>
+  <button
+    aria-controls="exit-confirmation-modal"
+    data-open-modal
+    class="display-none"
+    id="open-exit-modal-button">
+  </button>
+
+</div>
+
+<% if back_url %>
+  <div class="back-nav">
+    <%= link_to back_url, class: "back-nav__link" do %>
+      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+        <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#navigate_before") %>"></use>
+      </svg>
+      <%= t("activities.activity_header_component.back") %>
+    <% end %>
+  </div>
+<% end %>

@@ -1,5 +1,6 @@
 class Activities::VolunteeringController < Activities::BaseController
   before_action :set_volunteering_activity, only: %i[edit update destroy review save_review]
+  before_action :set_back_url, only: %i[review]
 
   def new
     @volunteering_activity = @flow.volunteering_activities.new
@@ -37,6 +38,13 @@ class Activities::VolunteeringController < Activities::BaseController
   end
 
   private
+
+  def set_back_url
+    @back_url = new_activities_flow_community_service_document_upload_path(
+      community_service_id: @volunteering_activity,
+      from_edit: params[:from_edit].presence
+    )
+  end
 
   def set_volunteering_activity
     @volunteering_activity = @flow.volunteering_activities.find(params[:id])

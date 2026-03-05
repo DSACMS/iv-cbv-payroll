@@ -1,5 +1,13 @@
 <% content_for :title, t("activities.community_service.review.title", organization_name: @volunteering_activity.organization_name) %>
 
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.community_service.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: @back_url
+  ) %>
+<% end %>
+
 <h1>
   <%= t("activities.community_service.review.title", organization_name: @volunteering_activity.organization_name) %>
 </h1>
