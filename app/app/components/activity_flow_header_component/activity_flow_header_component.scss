@@ -7,12 +7,12 @@
   z-index: z-index(400);
 }
 
-.spoke-heading {
+.activity-header-title {
   background-color: white;
   border-bottom: 1px solid color("base-lighter");
 }
 
-.spoke-heading__inner {
+.activity-header-title__inner {
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -27,11 +27,11 @@
   }
 }
 
-.spoke-heading__title {
+.activity-header-title__text {
   font-size: size("heading", 8);
 }
 
-.spoke-heading__exit-link {
+.activity-header-title__exit-link {
   align-items: center;
   display: flex;
   gap: units(0.5);

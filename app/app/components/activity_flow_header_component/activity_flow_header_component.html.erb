@@ -2,14 +2,13 @@
      data-controller="activity-flow-header"
      data-activity-flow-header-exit-url-value="<%= exit_url %>">
 
-  <%# Spoke-heading bar %>
-  <div class="spoke-heading">
-    <div class="spoke-heading__inner">
-      <span class="spoke-heading__title text-bold"><%= title %></span>
+  <div class="activity-header-title">
+    <div class="activity-header-title__inner">
+      <span class="activity-header-title__text text-bold"><%= title %></span>
       <a href="<%= exit_url %>"
          data-action="click->activity-flow-header#handleExit"
          data-activity-flow-header-target="exitButton"
-         class="spoke-heading__exit-link">
+         class="activity-header-title__exit-link">
         <%= t("activities.activity_header_component.exit") %>
         <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
           <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#close") %>"></use>
@@ -18,7 +17,6 @@
     </div>
   </div>
 
-  <%# Exit confirmation modal (always in DOM, hidden until triggered) %>
   <div class="usa-modal"
        id="exit-confirmation-modal"
        aria-labelledby="exit-modal-heading"
@@ -67,7 +65,6 @@
 
 </div>
 
-<%# Back-nav row (optional) %>
 <% if back_url %>
   <div class="back-nav">
     <%= link_to back_url, class: "back-nav__link" do %>
