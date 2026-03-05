@@ -101,7 +101,7 @@ module ApplicationHelper
     options[:data] ||= {}
     options[:data][:turbo_frame] = "_top"
 
-    turbo_frame_tag(model) do
+    turbo_frame_tag(model, target: "_top") do
       form_with(model: model, scope: scope, url: url, format: format, **options, &block)
     end
   end

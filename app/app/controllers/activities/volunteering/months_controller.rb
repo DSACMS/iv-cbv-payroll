@@ -3,7 +3,7 @@ class Activities::Volunteering::MonthsController < Activities::BaseController
 
   include MonthlyHoursInput
 
-  before_action :set_back_url, only: %i[edit]
+  before_action :set_back_url, only: %i[edit update]
 
   private
 
