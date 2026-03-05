@@ -1044,6 +1044,9 @@ en:
       la_ldh: Medicaid
       nh_dhhs: Medicaid
       sandbox: Medicaid
+    credit_hours:
+      one: "%{count} credit hour"
+      other: "%{count} credit hours"
     footer:
       feedback: Share feedback
     header:

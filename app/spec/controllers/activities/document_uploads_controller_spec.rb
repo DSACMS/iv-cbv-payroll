@@ -67,7 +67,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: "University of Illinois"))
-      expect(response.body).to include(I18n.t("shared.hours", count: 15))
+      expect(response.body).to include(I18n.t("shared.credit_hours", count: 15))
       expect(response.body).to include(activities_flow_education_document_uploads_path)
     end
   end
