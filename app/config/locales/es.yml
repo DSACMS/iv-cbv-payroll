@@ -618,7 +618,7 @@ es:
       sandbox: TA
     agency_full_name:
       la_ldh: Departamento de Salud de Luisiana
-      nh_dhhs: Agencia de pruebas
+      nh_dhhs: Agencia de pruebas de New Hampshire
       sandbox: Agencia de pruebas
     app_name:
       nh_dhhs: TAApp
@@ -636,7 +636,7 @@ es:
       aria_label: Menú principal
       cbv_flow_title:
         la_ldh: Departamento de Salud
-        nh_dhhs: Agencia de pruebas
+        nh_dhhs: Agencia de pruebas de New Hampshire
         sandbox: Agencia de pruebas
       close: Cerrar
       help: Ayuda

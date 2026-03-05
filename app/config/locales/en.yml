@@ -1031,7 +1031,7 @@ en:
       sandbox: TA
     agency_full_name:
       la_ldh: Louisiana Department of Health
-      nh_dhhs: Test Agency
+      nh_dhhs: New Hampshire Test Agency
       sandbox: Test Agency
     app_name:
       nh_dhhs: TAApp
@@ -1049,7 +1049,7 @@ en:
       aria_label: Main navigation
       cbv_flow_title:
         la_ldh: Department of Health
-        nh_dhhs: Test Agency
+        nh_dhhs: New Hampshire Test Agency
         sandbox: Test Agency
       close: Close
       help: Help
