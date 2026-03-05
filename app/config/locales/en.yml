@@ -379,6 +379,14 @@ en:
         work_program_hours: Work program hours
       title: Work programs
       title_singular: Work Program
+  activity_flow_header_component:
+    back: Back
+    exit: Exit
+    modal:
+      back_button: Back
+      body: Your progress adding this activity will not be saved.
+      exit_link: Exit without saving
+      heading: Are you sure you want to exit?
   activity_flow_progress_indicator:
     description: We calculate your community engagement from the activities you add to your report.
     description_complete: "%{agency_full_name} will determine your final eligibility based on the activities you’ve added to your report."
