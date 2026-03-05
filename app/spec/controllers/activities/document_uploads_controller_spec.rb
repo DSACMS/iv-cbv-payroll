@@ -53,6 +53,23 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("shared.hours", count: 10))
       expect(response.body).to include(activities_flow_job_training_document_uploads_path)
     end
+
+    it "renders the upload form for an education activity" do
+      education_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :self_attested,
+        school_name: "University of Illinois"
+      )
+      create(:education_activity_month, education_activity: education_activity, hours: 15)
+
+      get :new, params: { education_id: education_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: "University of Illinois"))
+      expect(response.body).to include(I18n.t("shared.credit_hours", count: 15))
+      expect(response.body).to include(activities_flow_education_document_uploads_path)
+    end
   end
 
   describe "POST #create" do

@@ -33,4 +33,8 @@ class Activities::Education::MonthsController < Activities::BaseController
   def hours_input_t_scope
     "activities.education.hours_input"
   end
+
+  def hours_input_completed_path
+    new_activities_flow_education_document_upload_path(education_id: @education_activity.id, from_edit: params[:from_edit].presence)
+  end
 end

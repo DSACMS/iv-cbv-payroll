@@ -137,6 +137,7 @@ ignore_missing:
     # LA wind down content
     - "pages.home.pilot_ended.la_ldh.*"
     # Activity Hub flow pages/models
+    - "shared.credit_hours*"
     - "activities.*"
     - "cbv.*.activity_flow.*" # ActivityFlow copy overrides in controllers/views from CBV flow
     - "activerecord.errors.models.job_training_activity.*"
