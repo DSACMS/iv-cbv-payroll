@@ -1,6 +1,8 @@
 <div class="activity-flow-header"
      data-controller="activity-flow-header"
-     data-activity-flow-header-exit-url-value="<%= exit_url %>">
+     data-activity-flow-header-exit-url-value="<%= exit_url %>"
+     data-activity-flow-header-back-url-value="<%= back_url %>"
+     data-activity-flow-header-always-confirm-value="<%= always_confirm %>">
 
   <div class="activity-header-title">
     <div class="activity-header-title__inner">
@@ -37,9 +39,11 @@
               </button>
             </li>
             <li class="usa-button-group__item">
-              <%= link_to t("activities.activity_header_component.modal.exit_link"),
-                    exit_url,
-                    class: "usa-button usa-button--unstyled padding-105 text-center" %>
+              <button type="button"
+                      class="usa-button usa-button--unstyled padding-105 text-center"
+                      data-action="click->activity-flow-header#confirmExit">
+                <%= t("activities.activity_header_component.modal.exit_link") %>
+              </button>
             </li>
           </ul>
         </div>
@@ -67,7 +71,7 @@
 
 <% if back_url %>
   <div class="back-nav">
-    <%= link_to back_url, class: "back-nav__link" do %>
+    <%= link_to back_url, class: "back-nav__link", data: { action: "click->activity-flow-header#handleBack" } do %>
       <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
         <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#navigate_before") %>"></use>
       </svg>
