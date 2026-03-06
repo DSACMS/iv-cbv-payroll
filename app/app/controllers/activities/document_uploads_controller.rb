@@ -63,7 +63,7 @@ class Activities::DocumentUploadsController < Activities::BaseController
     elsif params[:job_training_id]
       review_activities_flow_job_training_path(id: @activity, from_edit: params[:from_edit].presence)
     elsif params[:education_id]
-      super
+      review_activities_flow_education_path(id: @activity, from_edit: params[:from_edit].presence)
     else
       super
     end

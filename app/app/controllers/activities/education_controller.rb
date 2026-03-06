@@ -86,10 +86,24 @@ class Activities::EducationController < Activities::BaseController
     @education_activity = @flow.education_activities.new
   end
 
+  def review
+    @education_activity = @flow.education_activities.find(params[:id])
+  end
+
+  def save_review
+    @education_activity = @flow.education_activities.find(params[:id])
+    @education_activity.update(review_params)
+    redirect_to after_activity_path
+  end
+
   def error
   end
 
   private
+
+  def review_params
+    params.require(:education_activity).permit(:additional_comments)
+  end
 
   def education_params
     params
