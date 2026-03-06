@@ -18,7 +18,7 @@ export default class extends Controller {
     })
 
     this._boundHandlePopState = this._handlePopState.bind(this)
-    window.addEventListener("popstate", this._boundHandlePopState)
+    window.addEventListener("popstate", this._boundHandlePopState, true)
 
     this._boundBeforeUnload = this._handleBeforeUnload.bind(this)
     window.addEventListener("beforeunload", this._boundBeforeUnload)
@@ -41,7 +41,7 @@ export default class extends Controller {
     })
     this._listeners = []
 
-    window.removeEventListener("popstate", this._boundHandlePopState)
+    window.removeEventListener("popstate", this._boundHandlePopState, true)
     window.removeEventListener("beforeunload", this._boundBeforeUnload)
     document.removeEventListener("turbo:before-render", this._boundBlockTurboRender)
     document.removeEventListener("click", this._boundHandleDocumentClick)
@@ -85,8 +85,10 @@ export default class extends Controller {
   }
 
   _handlePopState(event) {
-    // Sentinel was popped — we're now on the original entry
     if (this._sentinelActive && !(event.state && event.state._activityFlowSentinel)) {
+      // Prevent Turbo Drive from processing this popstate as a restoration visit
+      event.stopImmediatePropagation()
+
       if (this._shouldConfirm()) {
         // Re-push sentinel and show modal
         this._blockingNavigation = true
@@ -94,13 +96,13 @@ export default class extends Controller {
         this._pendingNavigation = () => {
           this._blockingNavigation = false
           this._sentinelActive = false
-          window.location.href = this.exitUrlValue
+          window.location.href = this.backUrlValue || this.exitUrlValue
         }
         this._openModal()
       } else {
         // No confirmation needed — navigate back directly
         this._sentinelActive = false
-        window.location.replace(this.backUrlValue || this.exitUrlValue)
+        window.Turbo.visit(this.backUrlValue || this.exitUrlValue, { action: "replace" })
       }
     }
   }
@@ -114,6 +116,8 @@ export default class extends Controller {
   _handleDocumentClick(event) {
     if (event.target.closest("[data-action*='activity-flow-header#confirmExit']")) {
       this.confirmExit()
+    } else if (event.target.closest("[data-action*='activity-flow-header#handleBack']")) {
+      this.handleBack(event)
     }
   }
 
