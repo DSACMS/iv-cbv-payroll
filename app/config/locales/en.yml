@@ -187,7 +187,7 @@ en:
         title: Tell us about your school or program
         zip_code: Zip code
       review:
-        additional_comments_description: Share any comments or additional information about the payment details above that you'd like %{agency_name} to know. For example, you can share if the information is inaccurate or if you're no longer working at that job.
+        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
         additional_comments_title: Additional comments (optional)
         address: School address
         ce_explainer_body: If you are enrolled less than half-time, each credit hour counts as 4 hours toward the 80-hour community engagement requirement.
