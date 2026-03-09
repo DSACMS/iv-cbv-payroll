@@ -198,7 +198,7 @@ en:
         contact_phone: School contact phone number
         credit_hours: Credit hours
         credit_hours_section: Credit hours
-        description: Review all the information you've added for %{school_name} before adding it to your Community Engagement Report.
+        description: Review all the information you've added for %{school_name} before adding it to your community engagement report.
         edit: Edit
         save: Save and add to report
         school_info: School information
