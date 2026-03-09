@@ -93,7 +93,7 @@ class Activities::EducationController < Activities::BaseController
   def save_review
     @education_activity = @flow.education_activities.find(params[:id])
     @education_activity.update(review_params)
-    redirect_to after_activity_path
+    redirect_to @education_activity.self_attested? ? activities_flow_root_path : after_activity_path
   end
 
   def error
