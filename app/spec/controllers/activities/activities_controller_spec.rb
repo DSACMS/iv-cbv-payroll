@@ -34,11 +34,11 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
            )
     end
 
-    it "shows education activities that have enrollment terms" do
+    it "shows current flow education activities" do
       expect(
-        assigns(:education_activities_with_terms)
+        assigns(:education_activities)
       ).to match_array(
-             current_flow.education_activities.where.associated(:nsc_enrollment_terms).distinct
+             current_flow.education_activities
            )
     end
 
@@ -123,6 +123,35 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
     it "shows enrollment data and not the empty-state copy" do
       expect(response.body).to include("Test University")
+      expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
+    end
+  end
+
+  context "when self-attested education activity is added" do
+    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
+
+    before do
+      education_activity = create(
+        :education_activity,
+        activity_flow: current_flow,
+        data_source: :self_attested,
+        school_name: "Colorado Springs Community College"
+      )
+      create(
+        :education_activity_month,
+        education_activity: education_activity,
+        month: current_flow.reporting_months.first.beginning_of_month,
+        hours: 4
+      )
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "shows self-attested education card details and hides empty-state copy" do
+      expect(response.body).to include("Colorado Springs Community College")
+      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
+      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 4))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
   end

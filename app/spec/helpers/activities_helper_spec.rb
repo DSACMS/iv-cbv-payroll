@@ -165,6 +165,30 @@ RSpec.describe ActivitiesHelper do
         helper.edit_activities_flow_education_path(id: activity.id)
       )
     end
+
+    it "builds a self-attested card from activity months" do
+      activity = create(
+        :education_activity,
+        activity_flow: flow,
+        data_source: :self_attested,
+        school_name: "STATE UNIVERSITY"
+      )
+      create(:education_activity_month, education_activity: activity, month: first_month.beginning_of_month, hours: 4)
+      create(:education_activity_month, education_activity: activity, month: second_month.beginning_of_month, hours: 6)
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      expect(result).to contain_exactly(
+        {
+          name: "State University",
+          months: [
+            { month: second_month, credit_hours: 6, community_engagement_hours: 6 },
+            { month: first_month, credit_hours: 4, community_engagement_hours: 4 }
+          ],
+          edit_path: helper.edit_activities_flow_education_month_path(education_id: activity.id, id: 0)
+        }
+      )
+    end
   end
 
   describe "#employment_cards" do
