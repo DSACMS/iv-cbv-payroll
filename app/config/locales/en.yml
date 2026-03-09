@@ -194,6 +194,24 @@ en:
         street_address_line_2: Street address line 2
         title: Tell us about your school or program
         zip_code: Zip code
+      review:
+        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_title: Additional comments (optional)
+        address: School address
+        ce_explainer_body: If you are enrolled less than half-time, each credit hour counts as 4 hours toward the 80-hour community engagement requirement.
+        ce_explainer_title: How credit hours are counted towards community engagement
+        community_engagement_hours: Community engagement hours
+        contact_email: School contact email
+        contact_name: School contact name
+        contact_phone: School contact phone number
+        credit_hours: Credit hours
+        credit_hours_section: Credit hours
+        description: Review all the information you've added for %{school_name} before adding it to your community engagement report.
+        edit: Edit
+        save: Save and add to report
+        school_info: School information
+        school_name: School or program
+        title: Review your student information for %{school_name}
       show:
         enrollment_dates: Enrollment dates
         enrollment_status: Enrollment status

@@ -143,6 +143,41 @@ RSpec.describe Activities::EducationController, type: :controller do
     end
   end
 
+  describe "GET #review" do
+    let(:education_activity) do
+      create(:education_activity, activity_flow: activity_flow, data_source: :self_attested, school_name: "University of Illinois")
+    end
+
+    it "renders the review page" do
+      get :review, params: { id: education_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(education_activity.school_name)
+    end
+
+    it "displays education activity months" do
+      create(:education_activity_month, education_activity: education_activity, month: activity_flow.reporting_months.first, hours: 4)
+
+      get :review, params: { id: education_activity.id }
+
+      expect(response.body).to include("4")
+      expect(response.body).to include("16")
+    end
+  end
+
+  describe "PATCH #save_review" do
+    let(:education_activity) do
+      create(:education_activity, activity_flow: activity_flow, data_source: :self_attested, school_name: "University of Illinois")
+    end
+
+    it "saves additional comments and redirects to the hub" do
+      patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "Some notes" } }
+
+      expect(education_activity.reload.additional_comments).to eq("Some notes")
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+  end
+
   describe "PATCH #update" do
     let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
 
