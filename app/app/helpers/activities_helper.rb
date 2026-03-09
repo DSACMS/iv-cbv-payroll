@@ -141,7 +141,7 @@ module ActivitiesHelper
       {
         month: month_start,
         credit_hours: credit_hours,
-        community_engagement_hours: education_community_engagement_hours(activity_month)
+        community_engagement_hours: activity.community_engagement_hours(credit_hours)
       }
     end
 
@@ -155,13 +155,6 @@ module ActivitiesHelper
   def education_credit_hours(activity_month)
     return 0 unless activity_month
     return activity_month.credit_hours.to_i if activity_month.has_attribute?(:credit_hours)
-
-    activity_month.hours.to_i
-  end
-
-  def education_community_engagement_hours(activity_month)
-    return 0 unless activity_month
-    return activity_month.community_engagement_hours.to_i if activity_month.has_attribute?(:community_engagement_hours)
 
     activity_month.hours.to_i
   end

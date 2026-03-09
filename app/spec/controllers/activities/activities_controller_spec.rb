@@ -151,7 +151,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     it "shows self-attested education card details and hides empty-state copy" do
       expect(response.body).to include("Colorado Springs Community College")
       expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
-      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 4))
+      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 16))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
   end
