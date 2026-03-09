@@ -27,6 +27,6 @@ class VolunteeringActivity < Activity
   end
 
   def document_upload_suggestion_text
-    I18n.t("activities.community_service.document_upload_suggestion_text_html")
+    "activities.community_service.document_upload_suggestion_text_html"
   end
 end

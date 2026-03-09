@@ -41,7 +41,7 @@ class EducationActivity < ApplicationRecord
   end
 
   def document_upload_suggestion_text
-    I18n.t("activities.education.document_upload_suggestion_text_html")
+    "activities.education.document_upload_suggestion_text_html"
   end
 
   def progress_hours_for_month(month_start)

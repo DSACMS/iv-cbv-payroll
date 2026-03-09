@@ -41,6 +41,6 @@ module DocumentUploadable
   # Override this method to give different suggested document types in
   # the "Suggested documents" accordion.
   def document_upload_suggestion_text
-    I18n.t("activities.document_uploads.new.suggestion_text_html")
+    "activities.document_uploads.new.suggestion_text_html"
   end
 end

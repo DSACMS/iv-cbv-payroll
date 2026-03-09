@@ -23,10 +23,10 @@ RSpec.describe EducationActivity do
   end
 
   describe "#document_upload_suggestion_text" do
-    it "returns education-specific suggested documents" do
+    it "returns the education suggestion translation key" do
       activity = build(:education_activity, school_name: "University of Illinois")
 
-      expect(activity.document_upload_suggestion_text).to include("Copy of class schedule for the current term")
+      expect(activity.document_upload_suggestion_text).to eq("activities.education.document_upload_suggestion_text_html")
     end
   end
 
