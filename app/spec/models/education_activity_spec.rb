@@ -63,6 +63,36 @@ RSpec.describe EducationActivity do
       end
     end
 
+    context "when self-attested" do
+      let(:monthly_credit_hours) { 4 }
+
+      let(:education_activity) do
+        create(
+          :education_activity,
+          activity_flow: flow,
+          data_source: :self_attested,
+          school_name: "Test U",
+          status: "unknown"
+        )
+      end
+
+      it "returns credit hours multiplied by the CE conversion value for the month" do
+        create(
+          :education_activity_month,
+          education_activity: education_activity,
+          month: month_start.beginning_of_month,
+          hours: monthly_credit_hours
+        )
+
+        expected_hours = monthly_credit_hours * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER
+        expect(education_activity.progress_hours_for_month(month_start)).to eq(expected_hours)
+      end
+
+      it "returns 0 when no monthly credit hours are present" do
+        expect(education_activity.progress_hours_for_month(month_start)).to eq(0)
+      end
+    end
+
     context "when sync succeeded but no enrollment terms exist" do
       it "returns 0 hours" do
         expect(education_activity.progress_hours_for_month(month_start)).to eq(0)
