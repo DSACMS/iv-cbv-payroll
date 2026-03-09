@@ -99,6 +99,14 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response).to redirect_to(review_activities_flow_community_service_path(id: volunteering_activity))
     end
 
+    it "redirects to review for education when no upload params are provided" do
+      education_activity = create(:education_activity, activity_flow: activity_flow, data_source: :self_attested, school_name: "University of Illinois")
+
+      post :create, params: { education_id: education_activity.id }
+
+      expect(response).to redirect_to(review_activities_flow_education_path(id: education_activity))
+    end
+
     it "redirects to review for job training when no upload params are provided" do
       job_training_activity = create(:job_training_activity, activity_flow: activity_flow)
 

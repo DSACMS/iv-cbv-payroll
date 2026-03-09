@@ -1,0 +1,71 @@
+<% content_for :title, t("activities.education.review.title", school_name: @education_activity.school_name) %>
+
+<h1>
+  <%= t("activities.education.review.title", school_name: @education_activity.school_name) %>
+</h1>
+<p>
+  <%= t("activities.education.review.description", school_name: @education_activity.school_name) %>
+</p>
+
+<h2><%= t("activities.education.review.school_info") %></h2>
+<%= render(ContactInfoReviewTableComponent.new(rows: [
+  { label: t("activities.education.review.school_name"), value: @education_activity.school_name },
+  { label: t("activities.education.review.address"), value: ContactInfoReviewTableComponent.formatted_address(@education_activity) },
+  { label: t("activities.education.review.contact_name"), value: @education_activity.contact_name },
+  { label: t("activities.education.review.contact_email"), value: @education_activity.contact_email },
+  { label: t("activities.education.review.contact_phone"), value: @education_activity.contact_phone_number }
+])) %>
+
+<h2><%= t("activities.education.review.credit_hours_section") %></h2>
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
+  <% @education_activity.education_activity_months.order(:month).each_with_index do |activity_month, index| %>
+    <%= table.with_row(class_names: "subheader-row") do |row| %>
+      <%= row.with_data_cell(is_header: true, colspan: 2) do %>
+        <div class="display-flex flex-justify">
+          <span><%= I18n.l(activity_month.month, format: :month) %></span>
+          <%= link_to t("activities.education.review.edit"),
+                edit_activities_flow_education_month_path(education_id: @education_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence),
+                class: "usa-link" %>
+        </div>
+      <% end %>
+    <% end %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.education.review.credit_hours") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= activity_month.hours %>
+      <% end %>
+    <% end %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.education.review.community_engagement_hours") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= @education_activity.community_engagement_hours(activity_month.hours) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<p>
+  <strong><%= t("activities.education.review.ce_explainer_title") %></strong>
+</p>
+<p>
+  <%= t("activities.education.review.ce_explainer_body") %>
+</p>
+
+<%= form_with model: @education_activity,
+      url: save_review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence),
+      method: :patch,
+      class: "usa-form usa-form--large" do |form| %>
+  <h2><%= t("activities.education.review.additional_comments_title") %></h2>
+  <%= form.label :additional_comments,
+        t("activities.education.review.additional_comments_description",
+          agency_name: agency_translation("shared.agency_full_name")),
+        class: "usa-label" %>
+  <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
+
+  <% submit_label = params[:from_edit].present? ? t("activities.hub.save") : t("activities.education.review.save") %>
+  <%= form.submit submit_label, class: "usa-button usa-button--primary" %>
+<% end %>
