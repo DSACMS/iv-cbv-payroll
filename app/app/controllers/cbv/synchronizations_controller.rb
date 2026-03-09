@@ -5,7 +5,7 @@ class Cbv::SynchronizationsController < Cbv::BaseController
   skip_before_action :capture_page_view, only: %i[update]
 
   def show
-    @polling_url = flow_navigator.income_sync_path(:synchronization, user: { account_id: params[:user][:account_id] })
+    @polling_url = flow_navigator.income_sync_path(:synchronizations, user: { account_id: params[:user][:account_id] })
   end
 
   def update

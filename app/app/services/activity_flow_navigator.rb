@@ -33,6 +33,8 @@ class ActivityFlowNavigator
       activities_flow_income_payment_details_path(**params)
     when :synchronization_failures
       activities_flow_income_synchronization_failures_path
+    else
+      raise "Unknown income_sync_path step: #{step}"
     end
   end
 
