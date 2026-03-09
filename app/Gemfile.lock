@@ -226,7 +226,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.3.0)
       activesupport (>= 6.1)
-    gpgme (2.0.25)
+    gpgme (2.0.26)
       mini_portile2 (~> 2.7)
     hashdiff (1.2.1)
     hashery (2.1.2)
