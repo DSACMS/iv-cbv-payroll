@@ -62,7 +62,11 @@ class PayrollAccount::Argyle < PayrollAccount
   def redact!
     argyle_environment = Rails.application.config.client_agencies[flow.cbv_applicant.client_agency_id].argyle_environment
     argyle = Aggregators::Sdk::ArgyleService.new(argyle_environment)
-    argyle.delete_account_api(account: aggregator_account_id)
+    begin
+      argyle.delete_account_api(account: aggregator_account_id)
+    rescue Faraday::ResourceNotFound
+      # Account already deleted on Argyle's side — safe to proceed with local redaction
+    end
     update_column(:additional_information, Redactable::REDACTION_REPLACEMENTS[:string])
     touch(:redacted_at)
   rescue => ex
