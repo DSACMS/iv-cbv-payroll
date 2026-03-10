@@ -60,17 +60,10 @@ module ActivitiesHelper
 
   def education_cards(activities, reporting_months)
     activities.flat_map do |activity|
-      activity.nsc_enrollment_terms.map do |term|
-        school_name = term.school_name&.titlecase || t("activities.education.title")
-        months = reporting_months.reverse.map do |month_start|
-          overlapping = term.overlaps_month?(month_start)
-          {
-            month: month_start,
-            enrollment_status: overlapping ? enrollment_status_display(term.enrollment_status) : t("activities.hub.cards.not_enrolled"),
-            credit_hours: overlapping ? activity.credit_hours.to_i : 0
-          }
-        end
-        { name: school_name, months: months, edit_path: edit_activities_flow_education_path(id: activity.id) }
+      if activity.self_attested?
+        self_attested_education_cards(activity, reporting_months)
+      else
+        validated_education_cards(activity, reporting_months)
       end
     end
   end
@@ -116,5 +109,53 @@ module ActivitiesHelper
     else
       t("shared.not_applicable")
     end
+  end
+
+  private
+
+  def validated_education_cards(activity, reporting_months)
+    activity.nsc_enrollment_terms.map do |term|
+      school_name = term.school_name&.titlecase || t("activities.education.title")
+      months = reporting_months.reverse.map do |month_start|
+        overlapping = term.overlaps_month?(month_start)
+        {
+          month: month_start,
+          enrollment_status: overlapping ? enrollment_status_display(term.enrollment_status) : t("activities.hub.cards.not_enrolled"),
+          credit_hours: overlapping ? activity.credit_hours.to_i : 0
+        }
+      end
+
+      {
+        name: school_name,
+        months: months,
+        edit_path: edit_activities_flow_education_path(id: activity.id)
+      }
+    end
+  end
+
+  def self_attested_education_cards(activity, reporting_months)
+    months_by_date = activity.education_activity_months.index_by(&:month)
+    months = reporting_months.reverse.map do |month_start|
+      activity_month = months_by_date[month_start.beginning_of_month]
+      credit_hours = education_credit_hours(activity_month)
+      {
+        month: month_start,
+        credit_hours: credit_hours,
+        community_engagement_hours: activity.community_engagement_hours(credit_hours)
+      }
+    end
+
+    [ {
+      name: activity.school_name&.titlecase || t("activities.education.title"),
+      months: months,
+      edit_path: edit_activities_flow_education_month_path(education_id: activity.id, id: 0)
+    } ]
+  end
+
+  def education_credit_hours(activity_month)
+    return 0 unless activity_month
+    return activity_month.credit_hours.to_i if activity_month.has_attribute?(:credit_hours)
+
+    activity_month.hours.to_i
   end
 end
