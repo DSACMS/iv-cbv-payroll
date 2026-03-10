@@ -56,8 +56,7 @@
     <% end %>
 
     <% if activity_type_enabled?(:education) %>
-      <%# Selecting educations with nsc_enrollment_terms filters out NSC responses where no data was found. %>
-      <% education_card_data = education_cards(@education_activities_with_terms || [], progress_calculator.reporting_months) %>
+      <% education_card_data = education_cards(@education_activities || [], progress_calculator.reporting_months) %>
       <%= render "activities/activities/activity_section",
             activity_type: "education",
             section_title: t("activities.education.title"),
@@ -76,8 +75,13 @@
                     <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
                   </div>
                   <div class="activity-month-details__data">
-                    <p class="margin-y-0"><%= t("activities.hub.cards.enrollment_status", status: month_data[:enrollment_status]) %></p>
-                    <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
+                    <% if month_data[:enrollment_status].present? %>
+                      <p class="margin-y-0"><%= t("activities.hub.cards.enrollment_status", status: month_data[:enrollment_status]) %></p>
+                      <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
+                    <% else %>
+                      <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
+                      <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:community_engagement_hours]) %></p>
+                    <% end %>
                   </div>
                 </div>
               <% end %>
