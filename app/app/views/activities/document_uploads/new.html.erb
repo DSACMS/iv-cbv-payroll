@@ -11,6 +11,16 @@
   <% end %>
 <% end %>
 
+<% if params[:job_training_id] %>
+  <% content_for :activity_flow_header do %>
+    <%= render ActivityFlowHeaderComponent.new(
+      title: t("activities.work_programs.title_singular"),
+      exit_url: activities_flow_root_path,
+      back_url: @back_url
+    ) %>
+  <% end %>
+<% end %>
+
 <h1><%= title %></h1>
 <p><%= t(".description") %></p>
 <ul>
