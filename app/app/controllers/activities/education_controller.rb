@@ -3,6 +3,9 @@ class Activities::EducationController < Activities::BaseController
   ARTIFICIAL_DELAY = 7.seconds
   INDICATOR_COUNT = 3
 
+  before_action :set_education_activity, only: %i[show edit update destroy review save_review]
+  before_action :set_back_url, only: %i[review]
+
   def verify
     @identity = current_identity!
   end
@@ -24,7 +27,6 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def show
-    @education_activity = @flow.education_activities.find(params[:id])
     @polling_url = activities_flow_education_sync_path(education_id: @education_activity.id)
 
     set_completed_indicators
@@ -39,29 +41,38 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def update
-    @education_activity = @flow.education_activities.find(params[:id])
-    if @education_activity.update(education_params)
-      redirect_to after_activity_path
+    if @education_activity.self_attested?
+      if @education_activity.update(self_attested_education_params)
+        redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0, from_edit: 1)
+      else
+        render :new, status: :unprocessable_content
+      end
     else
-      redirect_to :edit, flash: { alert: t("activities.education.errors.unexpected") }
+      if @education_activity.update(education_params)
+        redirect_to after_activity_path
+      else
+        redirect_to :edit, flash: { alert: t("activities.education.errors.unexpected") }
+      end
     end
   end
 
   def edit
-    @education_activity = @flow.education_activities.find(params[:id])
-    @student_information = current_identity!
+    if @education_activity.self_attested?
+      render :new
+    else
+      @student_information = current_identity!
 
-    unless @education_activity
-      redirect_to(
-        activities_flow_root_path,
-        flash: { alert: t("activities.education.error_no_data") }
-      )
+      unless @education_activity
+        redirect_to(
+          activities_flow_root_path,
+          flash: { alert: t("activities.education.error_no_data") }
+        )
+      end
     end
   end
 
   def destroy
-    activity = @flow.education_activities.find(params[:id])
-    activity.destroy
+    @education_activity.destroy
 
     redirect_to activities_flow_root_path
   end
@@ -87,11 +98,9 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def review
-    @education_activity = @flow.education_activities.find(params[:id])
   end
 
   def save_review
-    @education_activity = @flow.education_activities.find(params[:id])
     @education_activity.update(review_params)
     redirect_to @education_activity.self_attested? ? activities_flow_root_path : after_activity_path
   end
@@ -100,6 +109,17 @@ class Activities::EducationController < Activities::BaseController
   end
 
   private
+
+  def set_education_activity
+    @education_activity = @flow.education_activities.find(params[:id])
+  end
+
+  def set_back_url
+    @back_url = new_activities_flow_education_document_upload_path(
+      education_id: @education_activity,
+      from_edit: params[:from_edit].presence
+    )
+  end
 
   def review_params
     params.require(:education_activity).permit(:additional_comments)
