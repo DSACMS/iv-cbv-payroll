@@ -40,7 +40,13 @@ class Activities::EducationController < Activities::BaseController
 
   def update
     @education_activity = @flow.education_activities.find(params[:id])
-    if @education_activity.update(education_params)
+    if @education_activity.self_attested?
+      if @education_activity.update(self_attested_education_params)
+        redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0, from_edit: 1)
+      else
+        render :edit_self_attested, status: :unprocessable_content
+      end
+    elsif @education_activity.update(education_params)
       redirect_to after_activity_path
     else
       redirect_to :edit, flash: { alert: t("activities.education.errors.unexpected") }
@@ -48,15 +54,16 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def edit
-    @education_activity = @flow.education_activities.find(params[:id])
-    @student_information = current_identity!
-
+    @education_activity = @flow.education_activities.find_by(id: params[:id])
     unless @education_activity
       redirect_to(
         activities_flow_root_path,
         flash: { alert: t("activities.education.error_no_data") }
       )
+      return
     end
+
+    render :edit_self_attested if @education_activity.self_attested?
   end
 
   def destroy

@@ -30,6 +30,25 @@ RSpec.describe EducationActivity do
     end
   end
 
+  describe "#formatted_address" do
+    it "returns a formatted street, city, and state string when present" do
+      activity = build(
+        :education_activity,
+        street_address: "601 E John St",
+        city: "Champaign",
+        state: "IL"
+      )
+
+      expect(activity.formatted_address).to eq("601 E John St, Champaign, IL")
+    end
+
+    it "returns nil when no address fields are present" do
+      activity = build(:education_activity, street_address: nil, city: nil, state: nil)
+
+      expect(activity.formatted_address).to be_nil
+    end
+  end
+
   describe "#document_upload_months_to_verify" do
     it "returns months from education_activity_months when present" do
       activity_flow = create(:activity_flow, reporting_window_months: 2, education_activities_count: 0)

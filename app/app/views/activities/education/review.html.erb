@@ -10,7 +10,7 @@
 <h2><%= t("activities.education.review.school_info") %></h2>
 <%= render(ContactInfoReviewTableComponent.new(rows: [
   { label: t("activities.education.review.school_name"), value: @education_activity.school_name },
-  { label: t("activities.education.review.address"), value: ContactInfoReviewTableComponent.formatted_address(@education_activity) },
+  { label: t("activities.education.review.address"), value: @education_activity.formatted_address },
   { label: t("activities.education.review.contact_name"), value: @education_activity.contact_name },
   { label: t("activities.education.review.contact_email"), value: @education_activity.contact_email },
   { label: t("activities.education.review.contact_phone"), value: @education_activity.contact_phone_number }

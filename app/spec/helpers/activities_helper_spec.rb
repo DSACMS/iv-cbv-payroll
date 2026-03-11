@@ -171,7 +171,7 @@ RSpec.describe ActivitiesHelper do
         :education_activity,
         activity_flow: flow,
         data_source: :self_attested,
-        school_name: "STATE UNIVERSITY"
+        school_name: "Updated University of Illinois"
       )
       create(:education_activity_month, education_activity: activity, month: first_month.beginning_of_month, hours: 4)
       create(:education_activity_month, education_activity: activity, month: second_month.beginning_of_month, hours: 6)
@@ -180,12 +180,12 @@ RSpec.describe ActivitiesHelper do
 
       expect(result).to contain_exactly(
         {
-          name: "State University",
+          name: "Updated University of Illinois",
           months: [
             { month: second_month, credit_hours: 6, community_engagement_hours: 24 },
             { month: first_month, credit_hours: 4, community_engagement_hours: 16 }
           ],
-          edit_path: helper.edit_activities_flow_education_month_path(education_id: activity.id, id: 0)
+          edit_path: helper.edit_activities_flow_education_path(id: activity.id)
         }
       )
     end
