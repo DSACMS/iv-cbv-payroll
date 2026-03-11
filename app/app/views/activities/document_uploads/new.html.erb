@@ -1,5 +1,9 @@
 <% title = t(".title", name: @activity.document_upload_object_title) %>
 <% content_for :title, title %>
+<%# i18n-tasks-use t('activities.document_uploads.new.suggestion_text_html') %>
+<%# i18n-tasks-use t('activities.community_service.document_upload_suggestion_text_html') %>
+<%# i18n-tasks-use t('activities.education.document_upload_suggestion_text_html') %>
+<%# i18n-tasks-use t('activities.job_training.document_upload_suggestion_text_html') %>
 
 <% if params[:community_service_id] %>
   <% content_for :activity_flow_header do %>
@@ -71,7 +75,7 @@
   <%= render(AccordionComponent.new(id: "document-upload-suggestions")) do |accordion| %>
     <% accordion.with_title { t(".suggestion_title") } %>
     <% accordion.with_accordion_item do %>
-      <%= @activity.document_upload_suggestion_text %>
+      <%= t(@activity.document_upload_suggestion_text) %>
     <% end %>
   <% end %>
   <%= f.submit t(".continue") %>

@@ -20,10 +20,10 @@ RSpec.describe JobTrainingActivity, type: :model do
   end
 
   describe "#document_upload_suggestion_text" do
-    it "returns job training specific suggested documents" do
+    it "returns the job training suggestion translation key" do
       activity = build(:job_training_activity)
 
-      expect(activity.document_upload_suggestion_text).to include("Signed statement on organization letterhead verifying hours")
+      expect(activity.document_upload_suggestion_text).to eq("activities.job_training.document_upload_suggestion_text_html")
     end
   end
 
