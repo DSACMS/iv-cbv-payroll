@@ -45,10 +45,25 @@ class EducationActivity < ApplicationRecord
   end
 
   def document_upload_suggestion_text
-    I18n.t("activities.education.document_upload_suggestion_text_html")
+    "activities.education.document_upload_suggestion_text_html"
   end
 
   def progress_hours_for_month(month_start)
+    return self_attested_progress_hours_for_month(month_start) if self_attested?
+
+    validated_progress_hours_for_month(month_start)
+  end
+
+  private
+
+  def self_attested_progress_hours_for_month(month_start)
+    month = month_start.beginning_of_month
+    monthly_credit_hours = education_activity_months.find_by(month: month)&.hours
+
+    community_engagement_hours(monthly_credit_hours)
+  end
+
+  def validated_progress_hours_for_month(month_start)
     return 0 unless sync_succeeded?
 
     terms_for_month = nsc_enrollment_terms.select { |term| term.overlaps_month?(month_start) }

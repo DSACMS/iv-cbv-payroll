@@ -29,6 +29,6 @@ class JobTrainingActivity < Activity
   end
 
   def document_upload_suggestion_text
-    I18n.t("activities.job_training.document_upload_suggestion_text_html")
+    "activities.job_training.document_upload_suggestion_text_html"
   end
 end

@@ -565,6 +565,45 @@ RSpec.describe ActivityFlowProgressCalculator do
 
     before { education_activity }
 
+    context "when education is self-attested" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 2, education_activities_count: 0) }
+      let(:self_attested_monthly_credit_hours) do
+        {
+          flow.reporting_months.first.beginning_of_month => 4,
+          flow.reporting_months.second.beginning_of_month => 5
+        }
+      end
+      let(:education_activity) do
+        create(
+          :education_activity,
+          activity_flow: flow,
+          data_source: :self_attested,
+          school_name: "University of Illinois",
+          status: "unknown"
+        )
+      end
+
+      before do
+        self_attested_monthly_credit_hours.each do |month, hours|
+          create(
+            :education_activity_month,
+            education_activity: education_activity,
+            month: month,
+            hours: hours
+          )
+        end
+      end
+
+      it "converts monthly credit hours to CE hours and applies them for each reporting month" do
+        expected_hours = self_attested_monthly_credit_hours.values.sum * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER
+        expect(progress.total_hours).to eq(expected_hours)
+      end
+
+      it "does not count self-attested education toward routing requirements" do
+        expect(progress.meets_routing_requirements).to be(false)
+      end
+    end
+
     context "when education has half_time or above enrollment for the month" do
       before do
         create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "half_time")

@@ -23,10 +23,10 @@ RSpec.describe EducationActivity do
   end
 
   describe "#document_upload_suggestion_text" do
-    it "returns education-specific suggested documents" do
+    it "returns the education suggestion translation key" do
       activity = build(:education_activity, school_name: "University of Illinois")
 
-      expect(activity.document_upload_suggestion_text).to include("Copy of class schedule for the current term")
+      expect(activity.document_upload_suggestion_text).to eq("activities.education.document_upload_suggestion_text_html")
     end
   end
 
@@ -78,6 +78,36 @@ RSpec.describe EducationActivity do
 
       it "returns 0 hours" do
         create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "full_time")
+        expect(education_activity.progress_hours_for_month(month_start)).to eq(0)
+      end
+    end
+
+    context "when self-attested" do
+      let(:monthly_credit_hours) { 4 }
+
+      let(:education_activity) do
+        create(
+          :education_activity,
+          activity_flow: flow,
+          data_source: :self_attested,
+          school_name: "Test U",
+          status: "unknown"
+        )
+      end
+
+      it "returns credit hours multiplied by the CE conversion value for the month" do
+        create(
+          :education_activity_month,
+          education_activity: education_activity,
+          month: month_start.beginning_of_month,
+          hours: monthly_credit_hours
+        )
+
+        expected_hours = monthly_credit_hours * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER
+        expect(education_activity.progress_hours_for_month(month_start)).to eq(expected_hours)
+      end
+
+      it "returns 0 when no monthly credit hours are present" do
         expect(education_activity.progress_hours_for_month(month_start)).to eq(0)
       end
     end
