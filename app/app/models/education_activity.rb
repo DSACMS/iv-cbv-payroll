@@ -21,6 +21,10 @@ class EducationActivity < ApplicationRecord
     failed: "failed"
   }, default: :unknown, prefix: :sync
 
+  def formatted_address
+    [ street_address, city, state ].compact_blank.join(", ").presence
+  end
+
   def community_engagement_hours(credit_hours)
     credit_hours.to_i * CREDIT_HOUR_CE_MULTIPLIER
   end

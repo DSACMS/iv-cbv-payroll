@@ -153,6 +153,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
       expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 16))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
+      expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
     end
   end
 

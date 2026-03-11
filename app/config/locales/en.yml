@@ -394,6 +394,14 @@ en:
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
       description: The report below has your community engagement information from %{start_date} to %{end_date}. Please review before sending to %{agency_name}.
       description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
+      education:
+        address: School address
+        contact_email: School contact email
+        contact_name: School contact name
+        contact_phone: School contact phone number
+        credit_hours: Credit hours
+        month: Month
+        school_name: School or program
       employment:
         employer: Employer
       job_training:

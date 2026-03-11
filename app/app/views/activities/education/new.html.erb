@@ -4,7 +4,8 @@
   <%= t(".title") %>
 </h1>
 
-<%= uswds_form_with(model: @education_activity, url: activities_flow_education_index_path) do |f| %>
+<% form_url = @education_activity.persisted? ? activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence) : activities_flow_education_index_path %>
+<%= uswds_form_with(model: @education_activity, url: form_url) do |f| %>
   <h2><%= t(".school_section_title") %></h2>
   <%= f.text_field :school_name,
         label: t(".school_name"),

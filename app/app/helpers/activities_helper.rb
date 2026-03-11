@@ -148,7 +148,7 @@ module ActivitiesHelper
     [ {
       name: activity.school_name&.titlecase || t("activities.education.title"),
       months: months,
-      edit_path: edit_activities_flow_education_month_path(education_id: activity.id, id: 0)
+      edit_path: edit_activities_flow_education_path(id: activity.id)
     } ]
   end
 

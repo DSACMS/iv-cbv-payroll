@@ -38,13 +38,31 @@ RSpec.describe Activities::SummaryController, type: :controller do
     it "builds all_activities list with all activity types" do
       create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Org A", hours: 1)
       create(:job_training_activity, activity_flow: activity_flow, program_name: "Program B", organization_address: "123 Main St", hours: 6)
-      create(:education_activity, activity_flow: activity_flow)
+      education_activity = create(:education_activity, activity_flow: activity_flow, status: :succeeded)
+      create(:nsc_enrollment_term, education_activity: education_activity, school_name: "Test University")
 
       get :show
 
       all_activities = assigns(:all_activities)
       expect(all_activities.length).to eq(3)
       expect(all_activities.map { |a| a[:type] }).to contain_exactly(:community_service, :work_programs, :education)
+    end
+
+    it "excludes validated education activities with no enrollment terms from all_activities" do
+      create(:education_activity, activity_flow: activity_flow, status: :no_enrollments)
+      self_attested_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :self_attested,
+        school_name: "University of Illinois"
+      )
+      create(:education_activity_month, education_activity: self_attested_activity, month: activity_flow.reporting_months.first, hours: 6)
+
+      get :show
+
+      education_activities = assigns(:all_activities).select { |activity| activity[:type] == :education }
+      expect(education_activities.size).to eq(1)
+      expect(education_activities.first[:activity]).to eq(self_attested_activity)
     end
 
     it "renders community service organization details and monthly hours in the summary table" do
@@ -100,6 +118,37 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       expect(response.body).to include(activity.organization_name)
       expect(response.body).to include(activity.program_name)
+      expect(response.body).to include(activity.formatted_address)
+      expect(response.body).to include(activity.contact_name)
+      expect(response.body).to include(activity.contact_email)
+      expect(response.body).to include(activity.contact_phone_number)
+      expect(response.body).to include(I18n.l(first_month.month, format: :month))
+      expect(response.body).to include(I18n.l(second_month.month, format: :month))
+      expect(response.body).to include(first_month.hours.to_s)
+      expect(response.body).to include(second_month.hours.to_s)
+    end
+
+    it "renders self-attested education details and monthly credit hours in the summary table" do
+      activity_flow.update!(reporting_window_months: 2)
+
+      activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :self_attested,
+        school_name: "University of Illinois",
+        street_address: "601 E John St",
+        city: "Champaign",
+        state: "IL",
+        contact_name: "Dr. Smith",
+        contact_email: "smith@illinois.edu",
+        contact_phone_number: "555-1212"
+      )
+      first_month = create(:education_activity_month, education_activity: activity, month: activity_flow.reporting_months.first, hours: 4)
+      second_month = create(:education_activity_month, education_activity: activity, month: activity_flow.reporting_months.second, hours: 6)
+
+      get :show
+
+      expect(response.body).to include(activity.school_name)
       expect(response.body).to include(activity.formatted_address)
       expect(response.body).to include(activity.contact_name)
       expect(response.body).to include(activity.contact_email)

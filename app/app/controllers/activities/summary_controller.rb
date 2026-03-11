@@ -18,6 +18,8 @@ class Activities::SummaryController < Activities::BaseController
     activities = []
 
     @education_activities.each do |activity|
+      next if activity.validated? && activity.nsc_enrollment_terms.none?
+
       activities << { type: :education, activity: activity, created_at: activity.created_at }
     end
 

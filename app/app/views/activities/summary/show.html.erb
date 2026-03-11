@@ -43,9 +43,7 @@
 
     <% case activity_data[:type] %>
     <% when :education %>
-      <% activity_data[:activity].nsc_enrollment_terms.each do |enrollment_term| %>
-        <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
-      <% end %>
+      <%= render partial: "activities/summary/education_table", locals: { activity: activity_data[:activity] } %>
     <% when :community_service %>
       <%= render partial: "activities/summary/volunteering_table", locals: { activity: activity_data[:activity] } %>
     <% when :work_programs %>

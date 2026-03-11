@@ -131,6 +131,23 @@ RSpec.describe Activities::EducationController, type: :controller do
     end
   end
 
+  describe "GET #edit" do
+    it "renders the self-attested education info form for self-attested activities" do
+      education_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :self_attested,
+        school_name: "Test University"
+      )
+
+      get :edit, params: { id: education_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("activities.education.new.title"))
+      expect(Capybara.string(response.body)).to have_field("education_activity_school_name", with: "Test University")
+    end
+  end
+
   describe "DELETE #destroy" do
     let!(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
 
@@ -242,6 +259,29 @@ RSpec.describe Activities::EducationController, type: :controller do
       }
 
       expect(response).to redirect_to(activities_flow_summary_path)
+    end
+
+    it "updates self-attested education info and redirects to month 0 from edit flow" do
+      self_attested_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :self_attested,
+        school_name: "Old School"
+      )
+
+      patch :update, params: {
+        id: self_attested_activity.id,
+        education_activity: {
+          school_name: "New School",
+          city: "New City",
+          state: "CA",
+          zip_code: "90001",
+          street_address: "123 Main St"
+        }
+      }
+
+      expect(self_attested_activity.reload.school_name).to eq("New School")
+      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: self_attested_activity, id: 0, from_edit: 1))
     end
   end
 end
