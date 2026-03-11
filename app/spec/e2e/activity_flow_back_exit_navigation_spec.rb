@@ -22,13 +22,11 @@ RSpec.describe "e2e Activity flow back and exit navigation", :js, type: :feature
     flow = ActivityFlow.last
     month1_label = I18n.l(flow.reporting_months.first, format: :month_year)
 
-    # --- /new page: browser back triggers modal (always_confirm, no back_url) → hub ---
+    # --- /new page: browser back navigates back to hub (no modal) ---
     within("[data-activity-type='community_service']") { click_button I18n.t("activities.hub.add") }
     verify_page(page, title: I18n.t("activities.community_service.new_title"))
 
     page.go_back
-    expect(page).to have_content(modal_heading)
-    find("[data-action*='activity-flow-header#confirmExit']").click
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     # --- Setup: create a community service activity to reach the hours input page ---
@@ -58,26 +56,33 @@ RSpec.describe "e2e Activity flow back and exit navigation", :js, type: :feature
     click_button I18n.t("activities.community_service.continue")
     verify_page(page, title: hours_title)
 
-    # --- Hours page (dirty form): browser back → modal → confirm → previous page (not hub) ---
+    # --- Hours page (dirty form): browser back navigates back (no modal) ---
     fill_in hours_label, with: "20"
     page.go_back
-    expect(page).to have_content(modal_heading)
-    find("[data-action*='activity-flow-header#confirmExit']").click
     verify_page(page, title: edit_title)
 
     # Return to hours input
     click_button I18n.t("activities.community_service.continue")
     verify_page(page, title: hours_title)
 
-    # --- Hours page (dirty form): modal "Back" button dismisses modal, stays on page ---
+    # --- Hours page (dirty form): UI back navigates directly (no modal) ---
     fill_in hours_label, with: "20"
     find(".back-nav__link").click
+    verify_page(page, title: edit_title)
+
+    # Return to hours input
+    click_button I18n.t("activities.community_service.continue")
+    verify_page(page, title: hours_title)
+
+    # --- Hours page (dirty form): exit (X) → modal → "Back" button dismisses modal ---
+    fill_in hours_label, with: "20"
+    find(".activity-header-title__exit-link").click
     expect(page).to have_content(modal_heading)
     click_button I18n.t("activities.activity_header_component.modal.back_button")
     expect(page).to have_no_content(modal_heading)
     expect(page).to have_content(hours_title)
 
-    # --- Hours page (dirty form): modal X close button dismisses modal, stays on page ---
+    # --- Hours page (dirty form): exit (X) → modal → X close button dismisses modal ---
     find(".activity-header-title__exit-link").click
     expect(page).to have_content(modal_heading)
     find("button.usa-modal__close").click
@@ -130,11 +135,9 @@ RSpec.describe "e2e Activity flow back and exit navigation", :js, type: :feature
     click_button I18n.t("activities.community_service.hours_input.continue")
     verify_page(page, title: doc_upload_title, skip_axe_rules: %w[heading-order])
 
-    # --- Document upload (dirty form): browser back → modal → confirm → month 2 hours ---
+    # --- Document upload (dirty form): browser back navigates back (no modal) ---
     attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
     page.go_back
-    expect(page).to have_content(modal_heading)
-    find("[data-action*='activity-flow-header#confirmExit']").click
     verify_page(page, title: month2_hours_title)
 
     # Return to document upload, attach file, and continue to review
@@ -152,11 +155,9 @@ RSpec.describe "e2e Activity flow back and exit navigation", :js, type: :feature
     click_button I18n.t("activities.document_uploads.new.continue")
     verify_page(page, title: review_title)
 
-    # --- Review page (dirty form): browser back → modal → confirm → document upload ---
+    # --- Review page (dirty form): browser back navigates back (no modal) ---
     fill_in "volunteering_activity_additional_comments", with: "Some notes"
     page.go_back
-    expect(page).to have_content(modal_heading)
-    find("[data-action*='activity-flow-header#confirmExit']").click
     verify_page(page, title: doc_upload_title, skip_axe_rules: %w[heading-order])
   end
 end
