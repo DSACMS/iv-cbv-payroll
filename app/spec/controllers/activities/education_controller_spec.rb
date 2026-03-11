@@ -143,8 +143,15 @@ RSpec.describe Activities::EducationController, type: :controller do
       get :edit, params: { id: education_activity.id }
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.education.new.title"))
+      expect(response.body).to include(I18n.t("activities.education.new.edit_title"))
       expect(Capybara.string(response.body)).to have_field("education_activity_school_name", with: "Test University")
+    end
+
+    it "redirects to the hub with an alert when the activity is missing" do
+      get :edit, params: { id: "99999999" }
+
+      expect(response).to redirect_to(activities_flow_root_path)
+      expect(flash[:alert]).to eq(I18n.t("activities.education.error_no_data"))
     end
   end
 

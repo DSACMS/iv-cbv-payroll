@@ -4,34 +4,4 @@
   <%= t(".title") %>
 </h1>
 
-<% form_url = @education_activity.persisted? ? activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence) : activities_flow_education_index_path %>
-<%= uswds_form_with(model: @education_activity, url: form_url) do |f| %>
-  <h2><%= t(".school_section_title") %></h2>
-  <%= f.text_field :school_name,
-        label: t(".school_name"),
-        hint: t(".school_name_hint") %>
-  <%= f.text_field :street_address, label: t(".street_address") %>
-  <%= f.text_field :street_address_line_2,
-        label: t(".street_address_line_2"),
-        optional: true %>
-  <%= f.text_field :city, label: t(".city") %>
-  <%= f.combo_box :state,
-        us_state_and_territory_options,
-        { label: t(".state") } %>
-  <%= f.text_field :zip_code, label: t(".zip_code"), width: "lg" %>
-
-  <hr class="margin-y-5 border-base-light border-top-0">
-
-  <h2><%= t(".contact_section_title") %></h2>
-  <%= f.text_field :contact_name,
-        label: t(".contact_name"),
-        optional: true %>
-  <%= f.email_field :contact_email,
-        label: t(".contact_email"),
-        optional: true %>
-  <%= f.phone_field :contact_phone_number,
-        label: t(".contact_phone_number"),
-        optional: true %>
-
-  <%= f.submit t(".continue") %>
-<% end %>
+<%= render "form", education_activity: @education_activity %>

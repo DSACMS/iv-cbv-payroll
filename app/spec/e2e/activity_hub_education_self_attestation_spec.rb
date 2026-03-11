@@ -72,7 +72,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     within("[data-activity-type='education']") do
       click_link I18n.t("activities.hub.edit")
     end
-    verify_page(page, title: I18n.t("activities.education.new.title"))
+    verify_page(page, title: I18n.t("activities.education.new.edit_title"))
     fill_in I18n.t("activities.education.new.school_name"), with: "Updated University of Illinois"
     click_button I18n.t("activities.education.new.continue")
 
