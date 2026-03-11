@@ -104,6 +104,6 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     click_button I18n.t("activities.hub.save")
 
     verify_page(page, title: I18n.t("activities.hub.title"))
-    expect(page).to have_content "Updated University of Illinois"
+    expect(page).to have_content("Updated University of Illinois")
   end
 end
