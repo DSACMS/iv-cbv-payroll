@@ -1,10 +1,19 @@
+# Query params used for navigation context:
+#
+#   from_edit   — "User entered from the hub's Edit button." Set only by the
+#                 hub edit link. Threads through the flow so the review page
+#                 shows "Save changes" and hides the back button.
+#
+#   from_review — "User clicked Edit on the review page to fix one thing."
+#                 Set by edit links on the review page. Tells controllers to
+#                 redirect back to review instead of advancing forward.
 class Activities::EducationController < Activities::BaseController
   # Keep the user on the loading page (the #show action) at least this long.
   ARTIFICIAL_DELAY = 7.seconds
   INDICATOR_COUNT = 3
 
   before_action :set_education_activity, only: %i[show edit update destroy review save_review]
-  before_action :set_back_url, only: %i[review]
+  before_action :set_back_url, only: %i[edit review]
 
   def verify
     @identity = current_identity!
@@ -43,7 +52,11 @@ class Activities::EducationController < Activities::BaseController
   def update
     if @education_activity.self_attested?
       if @education_activity.update(self_attested_education_params)
-        redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0, from_edit: 1)
+        if params[:from_review].present?
+          redirect_to review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence)
+        else
+          redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0, from_edit: params[:from_edit].presence)
+        end
       else
         render :edit_self_attested, status: :unprocessable_content
       end
@@ -102,10 +115,21 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def set_back_url
-    @back_url = new_activities_flow_education_document_upload_path(
-      education_id: @education_activity,
-      from_edit: params[:from_edit].presence
-    )
+    case action_name
+    when "edit"
+      if params[:from_review].present?
+        @back_url = review_activities_flow_education_path(
+          id: @education_activity,
+          from_edit: params[:from_edit].presence
+        )
+      end
+    when "review"
+      unless params[:from_edit].present?
+        @back_url = new_activities_flow_education_document_upload_path(
+          education_id: @education_activity
+        )
+      end
+    end
   end
 
   def review_params

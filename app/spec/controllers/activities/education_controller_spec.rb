@@ -287,7 +287,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       }
 
       expect(self_attested_activity.reload.school_name).to eq("New School")
-      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: self_attested_activity, id: 0, from_edit: 1))
+      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: self_attested_activity, id: 0))
     end
   end
 end
