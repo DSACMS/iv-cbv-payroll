@@ -196,6 +196,13 @@ RSpec.describe Cbv::EmployerSearchesController do
         expect(response.body).to include(CGI.escapeHTML(I18n.t("cbv.employer_searches.show.activity_flow.alert.heading")))
         expect(response.body).to include(I18n.t("cbv.employer_searches.show.activity_flow.add_employment_manually"))
       end
+
+      it "does not render Common questions content" do
+        get :show
+        expect(response.body).not_to include(I18n.t("cbv.employer_searches.show.common_questions_header"))
+        expect(response.body).not_to include(I18n.t("cbv.employer_searches.show.lost_job_title"))
+        expect(response.body).not_to include(I18n.t("cbv.employer_searches.show.no_income_title"))
+      end
     end
 
     context "for a CbvFlow" do
