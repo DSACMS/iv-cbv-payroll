@@ -1,4 +1,4 @@
-<% content_for :title, t(".title") %>
+<% content_for :title, t("activities.education.new.edit_title") %>
 
 <% content_for :activity_flow_header do %>
   <%= render ActivityFlowHeaderComponent.new(
@@ -8,7 +8,7 @@
 <% end %>
 
 <h1>
-  <%= t(".title") %>
+  <%= t("activities.education.new.edit_title") %>
 </h1>
 
 <%= render "form", education_activity: @education_activity %>

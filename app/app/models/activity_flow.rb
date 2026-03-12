@@ -63,6 +63,7 @@ class ActivityFlow < Flow
 
   def any_activities_added?
     education_activities.where.associated(:nsc_enrollment_terms).exists? ||
+      education_activities.self_attested.exists? ||
       volunteering_activities.exists? ||
       job_training_activities.exists? ||
       employment_activities.exists? ||

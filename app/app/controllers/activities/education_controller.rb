@@ -45,30 +45,17 @@ class Activities::EducationController < Activities::BaseController
       if @education_activity.update(self_attested_education_params)
         redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0, from_edit: 1)
       else
-        render :new, status: :unprocessable_content
+        render :edit_self_attested, status: :unprocessable_content
       end
+    elsif @education_activity.update(education_params)
+      redirect_to after_activity_path
     else
-      if @education_activity.update(education_params)
-        redirect_to after_activity_path
-      else
-        redirect_to :edit, flash: { alert: t("activities.education.errors.unexpected") }
-      end
+      redirect_to :edit, flash: { alert: t("activities.education.errors.unexpected") }
     end
   end
 
   def edit
-    if @education_activity.self_attested?
-      render :new
-    else
-      @student_information = current_identity!
-
-      unless @education_activity
-        redirect_to(
-          activities_flow_root_path,
-          flash: { alert: t("activities.education.error_no_data") }
-        )
-      end
-    end
+    render :edit_self_attested if @education_activity.self_attested?
   end
 
   def destroy
