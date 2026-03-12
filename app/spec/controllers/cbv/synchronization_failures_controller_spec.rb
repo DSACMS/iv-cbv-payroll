@@ -27,5 +27,19 @@ RSpec.describe Cbv::SynchronizationFailuresController do
         expect(response.body).to include I18n.t("cbv.expired_invitations.show.cta_button_html.sandbox")
       end
     end
+
+    context "for an ActivityFlow" do
+      let(:flow) { create(:activity_flow) }
+
+      before do
+        session[:flow_id] = flow.id
+        session[:flow_type] = :activity
+      end
+
+      it "shows cta button" do
+        get :show
+        expect(response.body).to include(I18n.t("cbv.employer_searches.show.activity_flow.add_employment_manually"))
+      end
+    end
   end
 end

@@ -16,13 +16,18 @@
 
 <ul class="usa-button-group margin-top-5">
   <li class="usa-button-group__item margin-bottom-0">
-    <%= link_to t(".back_to_search"), cbv_flow_employer_search_path, class: "usa-button usa-button--outline" %>
+    <%= link_to t(".back_to_search"), @back_to_search_path, class: "usa-button usa-button--outline" %>
   </li>
   <li class="usa-button-group__item margin-bottom-0">
-    <% if @cbv_flow.has_account_with_required_data? %>
-      <%= link_to t(".continue_to_report"), cbv_flow_other_job_path, class: "usa-button" %>
-    <% else %>
-      <%= agency_translation("cbv.expired_invitations.show.cta_button_html", agency_url: agency_url) %>
+    <% case @flow %>
+    <% when CbvFlow %>
+      <% if @cbv_flow.has_account_with_required_data? %>
+        <%= link_to t(".continue_to_report"), cbv_flow_other_job_path, class: "usa-button" %>
+      <% else %>
+        <%= agency_translation("cbv.expired_invitations.show.cta_button_html", agency_url: agency_url) %>
+      <% end %>
+    <% when ActivityFlow %>
+      <%= link_to t("cbv.employer_searches.show.activity_flow.add_employment_manually"), new_activities_flow_income_employment_path, class: "usa-button", data: { turbo_frame: "_top" } %>
     <% end %>
   </li>
 </ul>

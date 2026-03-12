@@ -125,7 +125,7 @@ class Cbv::BaseController < FlowController
   def ensure_payroll_account_linked
     return if @flow&.has_account_with_required_data?
 
-    redirect_to cbv_flow_synchronization_failures_path
+    redirect_to flow_navigator.income_sync_path(:synchronization_failures)
   end
 
   def flow_param

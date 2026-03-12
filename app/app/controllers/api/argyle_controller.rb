@@ -36,6 +36,13 @@ class Api::ArgyleController < ApplicationController
 
   def set_cbv_flow
     @flow = flow_class.find_by(id: session[:flow_id])
+    @flow_navigator = case @flow
+                      when CbvFlow
+                        CbvFlowNavigator.new(params)
+                      when ActivityFlow
+                        ActivityFlowNavigator.new(params, overall_progress_result: nil)
+                      end
+
     redirect_to(root_url(cbv_flow_timeout: true)) unless @flow
   end
 
@@ -62,12 +69,14 @@ class Api::ArgyleController < ApplicationController
     #
     # Redirect to the proper place based on the status of the connection.
     if payroll_account.sync_succeeded? || payroll_account.sync_failed?
-      redirect_to cbv_flow_payment_details_path(user: { account_id: payroll_account.aggregator_account_id })
+      redirect_to @flow_navigator.income_sync_path(:payment_details, user: { account_id: payroll_account.aggregator_account_id })
     elsif payroll_account.job_succeeded?("accounts")
       # Sync is in progress, and the user has successfully connected their account.
-      redirect_to cbv_flow_synchronizations_path(user: { account_id: payroll_account.aggregator_account_id })
+      redirect_to @flow_navigator.income_sync_path(:synchronizations, user: { account_id: payroll_account.aggregator_account_id })
     end
   end
+
+  private
 
   def track_event
     return unless @flow.present?

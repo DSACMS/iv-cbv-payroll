@@ -21,6 +21,7 @@ RSpec.describe Cbv::SessionsController, type: :controller do
   describe 'DELETE #end' do
     before do
       session[:flow_id] = create(:cbv_flow, :invited).id
+      session[:flow_type] = :cbv
     end
 
     context 'when timeout is true' do
@@ -33,6 +34,18 @@ RSpec.describe Cbv::SessionsController, type: :controller do
       it 'redirects to session timeout page with agency' do
         delete :end, params: { timeout: 'true' }
         expect(response).to redirect_to(cbv_flow_session_timeout_path(client_agency_id: "sandbox"))
+      end
+
+      context "for an ActivityFlow with the same ID as a CbvFlow" do
+        before do
+          create(:activity_flow, id: session[:flow_id])
+          session[:flow_type] = :activity
+        end
+
+        it 'redirects to root' do
+          delete :end, params: { timeout: 'true' }
+          expect(response).to redirect_to(root_url(cbv_flow_timeout: true))
+        end
       end
     end
 
