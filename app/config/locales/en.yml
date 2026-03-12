@@ -298,7 +298,7 @@ en:
       add: Add
       cards:
         credit_hours: 'Credit hours: %{amount}'
-        enrollment_status: 'Enrollment status: %{status}'
+        enrollment_status: 'Enrollment: %{status}'
         gross_income: 'Gross income: %{amount}'
         hours: 'Community engagement hours: %{count}'
         not_enrolled: Not enrolled

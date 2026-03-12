@@ -77,7 +77,7 @@
                   <div class="activity-month-details__data">
                     <% if month_data[:enrollment_status].present? %>
                       <p class="margin-y-0"><%= t("activities.hub.cards.enrollment_status", status: month_data[:enrollment_status]) %></p>
-                      <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
+                      <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:community_engagement_hours]) %></p>
                     <% else %>
                       <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
                       <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:community_engagement_hours]) %></p>
