@@ -2,7 +2,7 @@ class Activities::DocumentUploadsController < Activities::BaseController
   before_action :set_activity
   before_action :set_back_url, only: %i[new]
 
-  helper_method :upload_path
+  helper_method :upload_path, :document_upload_preview_url
 
   def new
   end
@@ -89,5 +89,14 @@ class Activities::DocumentUploadsController < Activities::BaseController
         new activity type.
       ERROR
     end
+  end
+
+  def document_upload_preview_url(attachment)
+    return unless attachment.previewable?
+
+    attachment.preview(resize_to_limit: [ 40, 40 ]).processed.url
+  rescue StandardError => e
+    Rails.logger.warn("Document upload preview unavailable for attachment #{attachment.id}: #{e.class}: #{e.message}")
+    nil
   end
 end

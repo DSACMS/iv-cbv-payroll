@@ -51,8 +51,8 @@
         <%= f.hidden_field :document_uploads, multiple: true, value: attachment.signed_id %>
 
         <li class="document-uploads__preview">
-          <% if attachment.previewable? %>
-            <%= attachment.preview(resize_to_limit: [ 40, 40 ]).processed.url %>
+          <% if (preview_url = document_upload_preview_url(attachment)) %>
+            <%= preview_url %>
           <% else %>
             <svg class="usa-icon document-uploads__preview-icon" aria-hidden="true" focusable="false" role="img">
               <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#file_present") %>"></use>
