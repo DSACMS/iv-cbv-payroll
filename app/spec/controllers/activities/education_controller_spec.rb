@@ -132,15 +132,12 @@ RSpec.describe Activities::EducationController, type: :controller do
   end
 
   describe "GET #edit" do
-    it "renders the self-attested education info form for self-attested activities" do
-      education_activity = create(
-        :education_activity,
-        activity_flow: activity_flow,
-        data_source: :self_attested,
-        school_name: "Test University"
-      )
+    let(:self_attested_activity) do
+      create(:education_activity, activity_flow: activity_flow, data_source: :self_attested, school_name: "Test University")
+    end
 
-      get :edit, params: { id: education_activity.id }
+    it "renders the self-attested education info form for self-attested activities" do
+      get :edit, params: { id: self_attested_activity.id }
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.education.new.edit_title"))
@@ -151,6 +148,40 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect {
         get :edit, params: { id: "99999999" }
       }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "sets back_url to review when from_review is present" do
+      get :edit, params: { id: self_attested_activity.id, from_review: 1 }
+
+      expect(assigns(:back_url)).to eq(
+        review_activities_flow_education_path(id: self_attested_activity)
+      )
+    end
+
+    it "threads from_edit into the back_url when from_review is present" do
+      get :edit, params: { id: self_attested_activity.id, from_review: 1, from_edit: 1 }
+
+      expect(assigns(:back_url)).to eq(
+        review_activities_flow_education_path(id: self_attested_activity, from_edit: 1)
+      )
+    end
+
+    it "has no back_url when from_review is absent" do
+      get :edit, params: { id: self_attested_activity.id }
+
+      expect(assigns(:back_url)).to be_nil
+    end
+
+    it "renders Save button when from_review is present" do
+      get :edit, params: { id: self_attested_activity.id, from_review: 1 }
+
+      expect(Capybara.string(response.body)).to have_button(I18n.t("activities.hub.save"))
+    end
+
+    it "renders Continue button when from_review is absent" do
+      get :edit, params: { id: self_attested_activity.id }
+
+      expect(Capybara.string(response.body)).to have_button(I18n.t("activities.education.new.continue"))
     end
   end
 
@@ -185,6 +216,28 @@ RSpec.describe Activities::EducationController, type: :controller do
 
       expect(response.body).to include("4")
       expect(response.body).to include("16")
+    end
+
+    it "sets back_url to document uploads when from_edit is absent" do
+      get :review, params: { id: education_activity.id }
+
+      expect(assigns(:back_url)).to eq(
+        new_activities_flow_education_document_upload_path(education_id: education_activity)
+      )
+    end
+
+    it "has no back_url when from_edit is present" do
+      get :review, params: { id: education_activity.id, from_edit: 1 }
+
+      expect(assigns(:back_url)).to be_nil
+    end
+
+    it "renders an edit link to school info with from_review" do
+      get :review, params: { id: education_activity.id }
+
+      doc = Capybara.string(response.body)
+      edit_link = doc.find("a", text: I18n.t("activities.hub.edit"))
+      expect(edit_link[:href]).to include("from_review=1")
     end
   end
 
@@ -267,7 +320,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to redirect_to(activities_flow_summary_path)
     end
 
-    it "updates self-attested education info and redirects to month 0 from edit flow" do
+    it "updates self-attested education info and redirects to month 0" do
       self_attested_activity = create(
         :education_activity,
         activity_flow: activity_flow,
@@ -288,6 +341,76 @@ RSpec.describe Activities::EducationController, type: :controller do
 
       expect(self_attested_activity.reload.school_name).to eq("New School")
       expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: self_attested_activity, id: 0))
+    end
+
+    it "redirects self-attested to review when from_review is present" do
+      self_attested_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :self_attested,
+        school_name: "Old School"
+      )
+
+      patch :update, params: {
+        id: self_attested_activity.id,
+        from_review: 1,
+        education_activity: {
+          school_name: "New School",
+          city: "New City",
+          state: "CA",
+          zip_code: "90001",
+          street_address: "123 Main St"
+        }
+      }
+
+      expect(response).to redirect_to(review_activities_flow_education_path(id: self_attested_activity))
+    end
+
+    it "threads from_edit to review when from_review is present" do
+      self_attested_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :self_attested,
+        school_name: "Old School"
+      )
+
+      patch :update, params: {
+        id: self_attested_activity.id,
+        from_review: 1,
+        from_edit: 1,
+        education_activity: {
+          school_name: "New School",
+          city: "New City",
+          state: "CA",
+          zip_code: "90001",
+          street_address: "123 Main St"
+        }
+      }
+
+      expect(response).to redirect_to(review_activities_flow_education_path(id: self_attested_activity, from_edit: 1))
+    end
+
+    it "threads from_edit to month 0 when from_review is absent" do
+      self_attested_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :self_attested,
+        school_name: "Old School"
+      )
+
+      patch :update, params: {
+        id: self_attested_activity.id,
+        from_edit: 1,
+        education_activity: {
+          school_name: "New School",
+          city: "New City",
+          state: "CA",
+          zip_code: "90001",
+          street_address: "123 Main St"
+        }
+      }
+
+      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: self_attested_activity, id: 0, from_edit: 1))
     end
   end
 end
