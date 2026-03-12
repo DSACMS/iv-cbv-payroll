@@ -98,13 +98,25 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       patch :update, params: { id: employment_activity.id, employment_activity: { employer_name: "Updated Corp" } }
 
       expect(employment_activity.reload.employer_name).to eq("Updated Corp")
-      expect(response).to redirect_to(edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 0, from_edit: 1))
+      expect(response).to redirect_to(edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 0))
     end
 
     it "redirects to review when from_review is present" do
       patch :update, params: { id: employment_activity.id, from_review: 1, employment_activity: { employer_name: "Updated Corp" } }
 
       expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity))
+    end
+
+    it "threads from_edit through to the redirect" do
+      patch :update, params: { id: employment_activity.id, from_edit: 1, employment_activity: { employer_name: "Updated Corp" } }
+
+      expect(response).to redirect_to(edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 0, from_edit: 1))
+    end
+
+    it "threads from_edit through the from_review redirect" do
+      patch :update, params: { id: employment_activity.id, from_review: 1, from_edit: 1, employment_activity: { employer_name: "Updated Corp" } }
+
+      expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1))
     end
 
     it "clears contact fields when self-employed is checked" do

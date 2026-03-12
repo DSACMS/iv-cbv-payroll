@@ -98,9 +98,9 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     fill_in I18n.t("activities.employment_info.contact_phone_number"), with: "(555) 123-4567"
     click_button I18n.t("activities.hub.save")
 
-    # Review page (edit flow — button should say "Save changes")
+    # Review page (creation flow — button should say "Save and add to my report")
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Updated Employer"))
-    expect(page).to have_button I18n.t("activities.hub.save")
+    expect(page).to have_button I18n.t("activities.employment.review.save")
     expect(page).to have_content "123 New Street"
     expect(page).to have_content "Jane Smith"
     expect(page).to have_content "jane@updatedemployer.com"
