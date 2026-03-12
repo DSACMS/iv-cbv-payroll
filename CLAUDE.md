@@ -1,1 +1,0 @@
-/Users/timmiller/Code/emmy/shared/CLAUDE.md
