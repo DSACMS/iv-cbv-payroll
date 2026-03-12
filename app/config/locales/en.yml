@@ -163,7 +163,6 @@ en:
         option_enter_manually: Enter your education information manually
         option_retry: Re-try verifying your student status with the National Student Clearinghouse
         retry_button: Retry student verification
-      error_no_data: No education information available
       errors:
         unexpected: An unexpected error occurred. Please try again.
       hours_input:
