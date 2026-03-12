@@ -1,3 +1,12 @@
+# Query params used for navigation context:
+#
+#   from_edit   — "User entered from the hub's Edit button." Set only by the
+#                 hub edit link. Threads through the flow so the review page
+#                 shows "Save changes" and hides the back button.
+#
+#   from_review — "User clicked Edit on the review page to fix one thing."
+#                 Set by edit links on the review page. Tells controllers to
+#                 redirect back to review instead of advancing forward.
 class Activities::EmploymentController < Activities::BaseController
   before_action :set_employment_activity, only: %i[edit update review save_review]
   before_action :ensure_review_ready, only: %i[review save_review]
