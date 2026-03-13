@@ -1,5 +1,13 @@
 <% content_for :title, t("activities.employment.review.title", employer_name: @employment_activity.employer_name) %>
 
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.employment.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: @back_url
+  ) %>
+<% end %>
+
 <h1>
   <%= t("activities.employment.review.title", employer_name: @employment_activity.employer_name) %>
 </h1>

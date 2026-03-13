@@ -274,7 +274,7 @@ RSpec.describe ActivitiesHelper do
 
       expect(result.first[:name]).to eq("Gainesville Wrecking")
       expect(result.first[:edit_path]).to eq(
-        helper.edit_activities_flow_income_employment_path(id: activity.id)
+        helper.review_activities_flow_income_employment_path(id: activity.id, from_edit: 1)
       )
       expect(result.first[:months]).to contain_exactly(
         { month: first_month, gross_earnings: 50000, hours: 40 },
