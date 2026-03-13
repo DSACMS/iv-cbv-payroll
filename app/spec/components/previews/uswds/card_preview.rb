@@ -49,6 +49,7 @@ module Uswds
       end
     end
 
+    # @label Validated education
     def education
       render(Uswds::Card.new(heading_text: "Education", class: "activity-hub-card")) do |card|
         card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
