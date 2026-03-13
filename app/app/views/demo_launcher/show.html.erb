@@ -18,7 +18,7 @@
         <label class="usa-radio__label" for="flow_type_cbv">Emmy Income</label>
       </div>
     <% end %>
-    <%= render DemoLauncher::SettingComponent.new(title: "Agency", hint: "Specify the agency the flow will use.") do %>
+    <%= render DemoLauncher::SettingComponent.new(title: "Agency", hint: "Select the agency the flow will use.") do %>
       <select class="usa-select" name="client_agency_id" id="client_agency_id">
         <% Rails.application.config.client_agencies.client_agency_ids.each do |agency_id| %>
           <option value="<%= agency_id %>" <%= "selected" if agency_id == "sandbox" %>><%= agency_id %></option>
@@ -26,7 +26,7 @@
       </select>
     <% end %>
     <div data-demo-launcher-target="ceOnly">
-    <%= render DemoLauncher::SettingComponent.new(title: "Reporting window", hint: "Specify the type of flow you want to create. This determines the number of months in the reporting window.") do %>
+    <%= render DemoLauncher::SettingComponent.new(title: "Reporting window", hint: "Select the type of flow you want to create. This determines the number of months in the reporting window.") do %>
       <div class="usa-radio">
         <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_application" value="application" <%= "checked" unless params[:reporting_window] == "renewal" %> data-action="demo-launcher#selectWindow">
         <label class="usa-radio__label" for="reporting_window_application">Application</label>
