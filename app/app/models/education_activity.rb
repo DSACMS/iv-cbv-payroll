@@ -1,10 +1,9 @@
-class EducationActivity < ApplicationRecord
+class EducationActivity < Activity
   include HasActivityMonths
   include DocumentUploadable
 
   CREDIT_HOUR_CE_MULTIPLIER = 4
 
-  belongs_to :activity_flow
   has_many :nsc_enrollment_terms, dependent: :destroy
   has_many :education_activity_months, dependent: :destroy
   has_activity_months :education_activity_months
@@ -55,6 +54,9 @@ class EducationActivity < ApplicationRecord
   end
 
   private
+
+  # No date column -- skip the inherited date validation from Activity
+  def date_within_reporting_window; end
 
   def self_attested_progress_hours_for_month(month_start)
     month = month_start.beginning_of_month
