@@ -30,9 +30,9 @@ class DemoLauncherController < ApplicationController
           elsif launch_type == "generic"
             build_generic_url(client_agency_id, overrides)
           elsif nsc_test_user.present?
-            build_nsc_test_user_url(nsc_test_user, client_agency_id, overrides)
+            build_nsc_test_user_url(nsc_test_user, client_agency_id, overrides.except(:reporting_window_start))
           elsif params[:fake_test_user].present?
-            build_fake_test_user_url(params[:fake_test_user], client_agency_id, overrides)
+            build_fake_test_user_url(params[:fake_test_user], client_agency_id, overrides.except(:reporting_window_start))
           else
             build_tokenized_url(client_agency_id, overrides)
           end
