@@ -3,6 +3,8 @@ class Activities::Employment::MonthsController < Activities::BaseController
 
   include MonthlyHoursInput
 
+  before_action :set_back_url, only: %i[edit update]
+
   private
 
   def set_employment_activity
@@ -56,8 +58,21 @@ class Activities::Employment::MonthsController < Activities::BaseController
     @employment_activity.employer_name
   end
 
+  def set_back_url
+    @back_url = if params[:from_review].present?
+                  review_activities_flow_income_employment_path(
+                    id: @employment_activity,
+                    from_edit: params[:from_edit].presence
+                  )
+                elsif @month_index > 0
+                  hours_input_path(@month_index - 1, from_edit: params[:from_edit].presence)
+                else
+                  edit_activities_flow_income_employment_path(id: @employment_activity)
+                end
+  end
+
   def hours_input_completed_path
-    review_activities_flow_income_employment_path(id: @employment_activity)
+    review_activities_flow_income_employment_path(id: @employment_activity, from_edit: params[:from_edit].presence)
   end
 
   def valid_hours_submission?
