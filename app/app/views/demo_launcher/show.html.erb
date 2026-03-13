@@ -96,6 +96,17 @@
         </button>
       </div>
     <% end %>
+    <%= render DemoLauncher::SettingComponent.new(
+      title: "Fake Test Scenarios",
+      hint: "Test scenarios using fake pre-populated NSC data."
+    ) do %>
+      <div class="demo-launcher__scenarios">
+        <button type="submit" name="fake_test_user" value="partial_enrollment" formtarget="_blank" class="usa-button usa-button--base demo-launcher__scenario-button">
+          <strong>Sam Testuser</strong>
+          <span class="demo-launcher__scenario-desc">Less than half-time enrollment (partially self-attested)</span>
+        </button>
+      </div>
+    <% end %>
     </div>
   <% end %>
 </div>
