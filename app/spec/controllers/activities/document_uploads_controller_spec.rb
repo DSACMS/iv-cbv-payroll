@@ -58,7 +58,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       education_activity = create(
         :education_activity,
         activity_flow: activity_flow,
-        data_source: :self_attested,
+        data_source: :fully_self_attested,
         school_name: "University of Illinois"
       )
       create(:education_activity_month, education_activity: education_activity, hours: 15)
@@ -122,7 +122,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
     end
 
     it "redirects to review for education when no upload params are provided" do
-      education_activity = create(:education_activity, activity_flow: activity_flow, data_source: :self_attested, school_name: "University of Illinois")
+      education_activity = create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
 
       post :create, params: { education_id: education_activity.id }
 

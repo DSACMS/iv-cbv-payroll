@@ -8,10 +8,10 @@ class EducationActivity < Activity
   has_many :education_activity_months, dependent: :destroy
   has_activity_months :education_activity_months
 
-  validates :school_name, presence: true, if: :self_attested?
+  validates :school_name, presence: true, if: :fully_self_attested?
 
   enum :data_source, {
-    self_attested: "self_attested",
+    fully_self_attested: "fully_self_attested",
     partially_self_attested: "partially_self_attested",
     validated: "validated"
   }, default: :validated
@@ -56,7 +56,7 @@ class EducationActivity < Activity
   end
 
   def progress_hours_for_month(month_start)
-    return self_attested_progress_hours_for_month(month_start) if self_attested?
+    return fully_self_attested_progress_hours_for_month(month_start) if fully_self_attested?
 
     validated_progress_hours_for_month(month_start)
   end
@@ -66,7 +66,7 @@ class EducationActivity < Activity
   # No date column -- skip the inherited date validation from Activity
   def date_within_reporting_window; end
 
-  def self_attested_progress_hours_for_month(month_start)
+  def fully_self_attested_progress_hours_for_month(month_start)
     month = month_start.beginning_of_month
     monthly_credit_hours = education_activity_months.find_by(month: month)&.hours
 

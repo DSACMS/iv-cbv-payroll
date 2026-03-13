@@ -50,19 +50,19 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
     it "excludes validated education activities with no enrollment terms from all_activities" do
       create(:education_activity, activity_flow: activity_flow, status: :no_enrollments)
-      self_attested_activity = create(
+      fully_self_attested_activity = create(
         :education_activity,
         activity_flow: activity_flow,
-        data_source: :self_attested,
+        data_source: :fully_self_attested,
         school_name: "University of Illinois"
       )
-      create(:education_activity_month, education_activity: self_attested_activity, month: activity_flow.reporting_months.first, hours: 6)
+      create(:education_activity_month, education_activity: fully_self_attested_activity, month: activity_flow.reporting_months.first, hours: 6)
 
       get :show
 
       education_activities = assigns(:all_activities).select { |activity| activity[:type] == :education }
       expect(education_activities.size).to eq(1)
-      expect(education_activities.first[:activity]).to eq(self_attested_activity)
+      expect(education_activities.first[:activity]).to eq(fully_self_attested_activity)
     end
 
     it "renders community service organization details and monthly hours in the summary table" do
@@ -128,13 +128,13 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(second_month.hours.to_s)
     end
 
-    it "renders self-attested education details and monthly credit hours in the summary table" do
+    it "renders fully self-attested education details and monthly credit hours in the summary table" do
       activity_flow.update!(reporting_window_months: 2)
 
       activity = create(
         :education_activity,
         activity_flow: activity_flow,
-        data_source: :self_attested,
+        data_source: :fully_self_attested,
         school_name: "University of Illinois",
         street_address: "601 E John St",
         city: "Champaign",

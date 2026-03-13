@@ -4,9 +4,9 @@ RSpec.describe EducationActivity do
   describe "validations" do
     let(:activity_flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
 
-    context "when self_attested" do
+    context "when fully_self_attested" do
       it "is invalid without a school name" do
-        activity = described_class.new(activity_flow: activity_flow, data_source: :self_attested, school_name: nil)
+        activity = described_class.new(activity_flow: activity_flow, data_source: :fully_self_attested, school_name: nil)
 
         expect(activity).not_to be_valid
         expect(activity.errors[:school_name]).to include(I18n.t("activerecord.errors.models.education_activity.attributes.school_name.blank"))
@@ -52,7 +52,7 @@ RSpec.describe EducationActivity do
   describe "#document_upload_months_to_verify" do
     it "returns months from education_activity_months when present" do
       activity_flow = create(:activity_flow, reporting_window_months: 2, education_activities_count: 0)
-      activity = create(:education_activity, activity_flow: activity_flow, data_source: :self_attested, school_name: "Test U")
+      activity = create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "Test U")
       first_month = activity.activity_flow.reporting_months.first.beginning_of_month
       second_month = activity.activity_flow.reporting_months.second.beginning_of_month
       create(:education_activity_month, education_activity: activity, month: first_month, hours: 6)
@@ -150,14 +150,14 @@ RSpec.describe EducationActivity do
       end
     end
 
-    context "when self-attested" do
+    context "when fully self-attested" do
       let(:monthly_credit_hours) { 4 }
 
       let(:education_activity) do
         create(
           :education_activity,
           activity_flow: flow,
-          data_source: :self_attested,
+          data_source: :fully_self_attested,
           school_name: "Test U",
           status: "unknown"
         )

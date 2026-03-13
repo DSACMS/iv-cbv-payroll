@@ -166,11 +166,11 @@ RSpec.describe ActivitiesHelper do
       )
     end
 
-    it "builds a self-attested card from activity months" do
+    it "builds a fully self-attested card from activity months" do
       activity = create(
         :education_activity,
         activity_flow: flow,
-        data_source: :self_attested,
+        data_source: :fully_self_attested,
         school_name: "Updated University of Illinois"
       )
       create(:education_activity_month, education_activity: activity, month: first_month.beginning_of_month, hours: 4)
