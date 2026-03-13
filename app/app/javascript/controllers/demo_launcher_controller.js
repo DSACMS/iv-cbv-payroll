@@ -19,6 +19,18 @@ export default class extends Controller {
     this.applyWindow(event.currentTarget.value)
   }
 
+  toggleTooltip(event) {
+    const wrapper = event.currentTarget.closest(".demo-launcher__tooltip-wrapper")
+    const isOpen = wrapper.classList.toggle("demo-launcher__tooltip-wrapper--active")
+
+    clearTimeout(wrapper._tooltipTimer)
+    if (isOpen) {
+      wrapper._tooltipTimer = setTimeout(() => {
+        wrapper.classList.remove("demo-launcher__tooltip-wrapper--active")
+      }, 10000)
+    }
+  }
+
   selectMonths(event) {
     const months = event.currentTarget.dataset.months
     this.monthsInputTarget.value = months

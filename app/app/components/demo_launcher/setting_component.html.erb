@@ -3,7 +3,7 @@
     <%= @title %>
     <% if @hint %>
       <span class="demo-launcher__tooltip-wrapper">
-        <span class="demo-launcher__tooltip-icon" aria-label="<%= @hint %>">ⓘ</span>
+        <span class="demo-launcher__tooltip-icon" aria-label="<%= @hint %>" data-action="click->demo-launcher#toggleTooltip">ⓘ</span>
         <span class="demo-launcher__tooltip"><%= @hint %></span>
       </span>
     <% end %>

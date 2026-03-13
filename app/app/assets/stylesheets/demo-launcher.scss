@@ -45,7 +45,8 @@
     line-height: line-height("body", 3);
   }
 
-  .demo-launcher__tooltip-wrapper:hover .demo-launcher__tooltip {
+  .demo-launcher__tooltip-wrapper:hover .demo-launcher__tooltip,
+  .demo-launcher__tooltip-wrapper--active .demo-launcher__tooltip {
     display: block;
   }
 
