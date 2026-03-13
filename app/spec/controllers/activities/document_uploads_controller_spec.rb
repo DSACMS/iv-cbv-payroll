@@ -71,6 +71,27 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(activities_flow_education_document_uploads_path)
       expect(response.body).to include(I18n.t("activities.education.document_upload_suggestion_text_html"))
     end
+
+    it "falls back to the file icon when an existing upload preview cannot be processed" do
+      volunteering_activity = create(
+        :volunteering_activity,
+        activity_flow: activity_flow,
+        organization_name: "Local Food Bank",
+      )
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, hours: 6)
+      volunteering_activity.document_uploads.attach(
+        io: StringIO.new("%PDF-1.4"),
+        filename: "verification.pdf",
+        content_type: "application/pdf"
+      )
+      allow_any_instance_of(ActiveStorage::Attachment).to receive(:preview).and_raise(StandardError, "preview failed")
+
+      get :new, params: { community_service_id: volunteering_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("verification.pdf")
+      expect(response.body).to include("file_present")
+    end
   end
 
   describe "POST #create" do
