@@ -47,7 +47,6 @@
         <label class="usa-radio__label" for="reporting_window_renewal">Renewal</label>
       </div>
       <div class="usa-hint demo-launcher__separator">-- or --</div>
-      <div class="usa-hint">Specify the reporting window manually.</div>
       <div class="demo-launcher__inline-field">
         <input class="usa-input usa-input--sm" type="number" name="reporting_window_months"
                id="reporting_window_months" min="1" max="99" autocomplete="off"
@@ -55,6 +54,10 @@
                data-demo-launcher-target="monthsInput"
                data-action="input->demo-launcher#updateDatePickerFromMonths">
         <span>months</span>
+        <span class="demo-launcher__tooltip-wrapper">
+          <span class="demo-launcher__tooltip-icon" aria-label="Specify the reporting window manually.">ⓘ</span>
+          <span class="demo-launcher__tooltip">Specify the reporting window manually.</span>
+        </span>
       </div>
     <% end %>
     <%= render DemoLauncher::SettingComponent.new(

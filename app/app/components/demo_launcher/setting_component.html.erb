@@ -1,8 +1,13 @@
 <div class="demo-launcher__setting">
-  <h3 class="demo-launcher__setting-title"><%= @title %></h3>
-  <% if @hint %>
-    <div class="usa-hint demo-launcher__setting-hint"><%= @hint %></div>
-  <% end %>
+  <h3 class="demo-launcher__setting-title">
+    <%= @title %>
+    <% if @hint %>
+      <span class="demo-launcher__tooltip-wrapper">
+        <span class="demo-launcher__tooltip-icon" aria-label="<%= @hint %>">ⓘ</span>
+        <span class="demo-launcher__tooltip"><%= @hint %></span>
+      </span>
+    <% end %>
+  </h3>
   <div class="usa-form-group demo-launcher__setting-body">
     <%= content %>
   </div>
