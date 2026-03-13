@@ -40,6 +40,12 @@ class Activities::DocumentUploadsController < Activities::BaseController
         id: last_month_index,
         from_edit: params[:from_edit].presence
       )
+    elsif params[:education_id]
+      @back_url = edit_activities_flow_education_month_path(
+        education_id: @activity,
+        id: last_month_index,
+        from_edit: params[:from_edit].presence
+      )
     end
   end
 

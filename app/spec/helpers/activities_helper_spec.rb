@@ -185,7 +185,7 @@ RSpec.describe ActivitiesHelper do
             { month: second_month, credit_hours: 6, community_engagement_hours: 24 },
             { month: first_month, credit_hours: 4, community_engagement_hours: 16 }
           ],
-          edit_path: helper.edit_activities_flow_education_path(id: activity.id)
+          edit_path: helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
         }
       )
     end

@@ -1,5 +1,13 @@
 <% content_for :title, t("activities.education.review.title", school_name: @education_activity.school_name) %>
 
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.education.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: @back_url
+  ) %>
+<% end %>
+
 <h1>
   <%= t("activities.education.review.title", school_name: @education_activity.school_name) %>
 </h1>
@@ -7,7 +15,12 @@
   <%= t("activities.education.review.description", school_name: @education_activity.school_name) %>
 </p>
 
-<h2><%= t("activities.education.review.school_info") %></h2>
+<div class="display-flex flex-justify flex-align-center">
+  <h2 class="margin-y-0"><%= t("activities.education.review.school_info") %></h2>
+  <%= link_to t("activities.hub.edit"),
+        edit_activities_flow_education_path(id: @education_activity, from_review: 1, from_edit: params[:from_edit].presence),
+        class: "usa-link" %>
+</div>
 <%= render(ContactInfoReviewTableComponent.new(rows: [
   { label: t("activities.education.review.school_name"), value: @education_activity.school_name },
   { label: t("activities.education.review.address"), value: @education_activity.formatted_address },
