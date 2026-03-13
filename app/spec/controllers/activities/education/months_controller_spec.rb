@@ -28,6 +28,56 @@ RSpec.describe Activities::Education::MonthsController, type: :controller do
     end
   end
 
+  describe "GET #edit back_url" do
+    render_views false
+
+    it "sets back_url to school info edit for month 0" do
+      get :edit, params: { education_id: education_activity.id, id: 0 }
+
+      expect(assigns(:back_url)).to eq(
+        edit_activities_flow_education_path(id: education_activity)
+      )
+    end
+
+    it "sets back_url to review when from_review is present" do
+      get :edit, params: { education_id: education_activity.id, id: 0, from_review: 1 }
+
+      expect(assigns(:back_url)).to eq(
+        review_activities_flow_education_path(id: education_activity)
+      )
+    end
+
+    it "threads from_edit into the back_url when from_review is present" do
+      get :edit, params: { education_id: education_activity.id, id: 0, from_review: 1, from_edit: 1 }
+
+      expect(assigns(:back_url)).to eq(
+        review_activities_flow_education_path(id: education_activity, from_edit: 1)
+      )
+    end
+  end
+
+  describe "GET #edit back_url with multiple reporting months" do
+    render_views false
+
+    let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
+
+    it "sets back_url to the previous month for month > 0" do
+      get :edit, params: { education_id: education_activity.id, id: 1 }
+
+      expect(assigns(:back_url)).to eq(
+        edit_activities_flow_education_month_path(education_id: education_activity, id: 0)
+      )
+    end
+
+    it "threads from_edit into the previous month back_url" do
+      get :edit, params: { education_id: education_activity.id, id: 1, from_edit: 1 }
+
+      expect(assigns(:back_url)).to eq(
+        edit_activities_flow_education_month_path(education_id: education_activity, id: 0, from_edit: 1)
+      )
+    end
+  end
+
   describe "PATCH #update" do
     it "redirects validated activities away from month screens" do
       education_activity.update!(data_source: :validated)
@@ -48,10 +98,24 @@ RSpec.describe Activities::Education::MonthsController, type: :controller do
       expect(response).to redirect_to(review_activities_flow_education_path(id: education_activity.id))
     end
 
+    it "threads from_edit to review when from_review is set" do
+      patch :update, params: { education_id: education_activity.id, id: 0, education_activity_month: { hours: 12 }, from_review: 1, from_edit: 1 }
+
+      expect(response).to redirect_to(review_activities_flow_education_path(id: education_activity.id, from_edit: 1))
+    end
+
+    it "threads from_edit to document uploads on completion" do
+      patch :update, params: { education_id: education_activity.id, id: 0, education_activity_month: { hours: 12 }, from_edit: 1 }
+
+      expect(response).to redirect_to(new_activities_flow_education_document_upload_path(education_id: education_activity.id, from_edit: 1))
+    end
+
     it "returns an error on a single-month flow when no-hours checkbox is selected" do
       patch :update, params: { education_id: education_activity.id, id: 0, no_hours: "1" }
 
       expect(response).to have_http_status(:unprocessable_content)
+      expect(assigns(:back_url)).to be_present
+      expect(response.body).to include("back-nav")
     end
 
     context "with multiple reporting months" do

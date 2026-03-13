@@ -1,4 +1,4 @@
-<% form_url ||= education_activity.persisted? ? activities_flow_education_path(id: education_activity, from_edit: params[:from_edit].presence) : activities_flow_education_index_path %>
+<% form_url ||= education_activity.persisted? ? activities_flow_education_path(id: education_activity, from_review: params[:from_review].presence, from_edit: params[:from_edit].presence) : activities_flow_education_index_path %>
 <%= uswds_form_with(model: education_activity, url: form_url) do |f| %>
   <h2><%= t("activities.education.new.school_section_title") %></h2>
   <%= f.text_field :school_name,
@@ -27,5 +27,6 @@
         label: t("activities.education.new.contact_phone_number"),
         optional: true %>
 
-  <%= f.submit t("activities.education.new.continue") %>
+  <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t("activities.education.new.continue") %>
+  <%= f.submit submit_label %>
 <% end %>
