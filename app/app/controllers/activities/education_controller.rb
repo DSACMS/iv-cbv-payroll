@@ -21,17 +21,9 @@ class Activities::EducationController < Activities::BaseController
 
   def create
     if params[:education_activity]
-      @education_activity = @flow.education_activities.new(fully_self_attested_education_params)
-      @education_activity.data_source = :fully_self_attested
-      if @education_activity.save
-        redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0)
-      else
-        render :new, status: :unprocessable_content
-      end
+      create_fully_self_attested_activity
     else
-      @education_activity = @flow.education_activities.create
-      NscSynchronizationJob.perform_later(@education_activity.id)
-      redirect_to activities_flow_education_path(id: @education_activity.id)
+      create_validated_activity
     end
   end
 
@@ -43,7 +35,7 @@ class Activities::EducationController < Activities::BaseController
     if @education_activity.sync_failed? || @education_activity.sync_no_enrollments?
       redirect_to activities_flow_education_error_path
     elsif @education_activity.sync_succeeded? && !testing_synchronization_page?
-      redirect_to edit_activities_flow_education_path(id: params[:id])
+      redirect_to education_sync_success_path
     else
       # sync is still in progress — render the polling page
     end
@@ -61,7 +53,7 @@ class Activities::EducationController < Activities::BaseController
         render :edit_fully_self_attested, status: :unprocessable_content
       end
     elsif @education_activity.update(education_params)
-      redirect_to after_activity_path
+      redirect_to after_education_update_path
     else
       redirect_to :edit, flash: { alert: t("activities.education.errors.unexpected") }
     end
@@ -89,7 +81,7 @@ class Activities::EducationController < Activities::BaseController
     elsif @wait_time < ARTIFICIAL_DELAY && !testing_synchronization_page?
       render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
     else
-      render turbo_stream: turbo_stream.action(:redirect, edit_activities_flow_education_path(id: @education_activity))
+      render turbo_stream: turbo_stream.action(:redirect, education_sync_success_path)
     end
   end
 
@@ -168,5 +160,45 @@ class Activities::EducationController < Activities::BaseController
   # if the synchronization actually happens immediately.
   def testing_synchronization_page?
     Rails.env.test?
+  end
+
+  def after_education_update_path
+    if params[:from_review].present?
+      review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence)
+    elsif @education_activity.partially_self_attested?
+      partially_self_attested_next_step_path
+    else
+      after_activity_path
+    end
+  end
+
+  def partially_self_attested_next_step_path
+    # TODO: Replace this with the first education monthly-hours term path
+    # once the partially self-attested monthly hours flow is implemented.
+    new_activities_flow_education_document_upload_path(education_id: @education_activity.id, from_edit: params[:from_edit].presence)
+  end
+
+  def create_fully_self_attested_activity
+    @education_activity = @flow.education_activities.new(fully_self_attested_education_params)
+    @education_activity.data_source = :fully_self_attested
+    if @education_activity.save
+      redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0)
+    else
+      render :new, status: :unprocessable_content
+    end
+  end
+
+  def create_validated_activity
+    @education_activity = @flow.education_activities.create
+    NscSynchronizationJob.perform_later(@education_activity.id)
+    redirect_to activities_flow_education_path(id: @education_activity.id)
+  end
+
+  def education_sync_success_path
+    if @education_activity.partially_self_attested?
+      partially_self_attested_next_step_path
+    else
+      edit_activities_flow_education_path(id: @education_activity)
+    end
   end
 end

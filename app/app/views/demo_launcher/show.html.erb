@@ -101,9 +101,13 @@
       hint: "Test scenarios using fake pre-populated NSC data."
     ) do %>
       <div class="demo-launcher__scenarios">
-        <button type="submit" name="fake_test_user" value="partial_enrollment" formtarget="_blank" class="usa-button usa-button--base demo-launcher__scenario-button">
+        <button type="submit" name="fake_test_user" value="partial_enrollment_sam" formtarget="_blank" class="usa-button usa-button--base demo-launcher__scenario-button">
           <strong>Sam Testuser</strong>
-          <span class="demo-launcher__scenario-desc">Less than half-time enrollment (partially self-attested)</span>
+          <span class="demo-launcher__scenario-desc">Less than half-time enrollment (2 schools)</span>
+        </button>
+        <button type="submit" name="fake_test_user" value="partial_enrollment_ziggy" formtarget="_blank" class="usa-button usa-button--base demo-launcher__scenario-button">
+          <strong>Ziggy Testuser</strong>
+          <span class="demo-launcher__scenario-desc">Less than half-time enrollment (1 school)</span>
         </button>
       </div>
     <% end %>

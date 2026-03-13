@@ -43,4 +43,25 @@ module DocumentUploadable
   def document_upload_suggestion_text
     "activities.document_uploads.new.suggestion_text_html"
   end
+
+  # Override when an activity should use a different title key.
+  # Default is "Upload supporting documents for %{name}".
+  def document_upload_title_i18n_key
+    "activities.document_uploads.new.title"
+  end
+
+  # Override when an activity should show term-based verification items
+  # instead of month-based items.
+  def document_upload_terms_for_partial_upload
+    []
+  end
+
+  def document_upload_verification_items
+    document_upload_months_to_verify.map do |month|
+      {
+        label: I18n.l(month, format: :month),
+        details: document_upload_details_for_month(month)
+      }
+    end
+  end
 end

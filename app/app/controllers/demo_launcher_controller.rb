@@ -105,11 +105,17 @@ class DemoLauncherController < ApplicationController
   end
 
   FAKE_TEST_USERS = {
-    "partial_enrollment" => {
+    "partial_enrollment_sam" => {
       first_name: "Sam",
       last_name: "Testuser",
       date_of_birth: "1990-05-15",
-      school_name: "Greenfield Community College"
+      school_names: [ "Greenfield Community College", "North Valley College" ]
+    },
+    "partial_enrollment_ziggy" => {
+      first_name: "Ziggy",
+      last_name: "Testuser",
+      date_of_birth: "1992-07-19",
+      school_names: [ "Sunrise Community College" ]
     }
   }.freeze
 
@@ -171,7 +177,7 @@ class DemoLauncherController < ApplicationController
       flow.update!(reporting_window_months: overrides[:reporting_window_months].to_i)
     end
 
-    identity = Identity.create!(
+    identity = Identity.find_or_create_by!(
       first_name: user_data[:first_name],
       last_name: user_data[:last_name],
       date_of_birth: Date.parse(user_data[:date_of_birth])
@@ -184,14 +190,16 @@ class DemoLauncherController < ApplicationController
     )
 
     reporting_window = flow.reporting_window_range
-    education_activity.nsc_enrollment_terms.create!(
-      school_name: user_data[:school_name],
-      first_name: user_data[:first_name],
-      last_name: user_data[:last_name],
-      enrollment_status: :less_than_half_time,
-      term_begin: reporting_window.begin,
-      term_end: reporting_window.end
-    )
+    user_data[:school_names].each do |school_name|
+      education_activity.nsc_enrollment_terms.create!(
+        school_name: school_name,
+        first_name: user_data[:first_name],
+        last_name: user_data[:last_name],
+        enrollment_status: :less_than_half_time,
+        term_begin: reporting_window.begin,
+        term_end: reporting_window.end
+      )
+    end
 
     set_flow_session(flow.id, :activity)
     activities_flow_root_url(host: request.host_with_port, protocol: request.protocol)

@@ -1,5 +1,7 @@
-<% title = t(".title", name: @activity.document_upload_object_title) %>
+<% title = t(@activity.document_upload_title_i18n_key, name: @activity.document_upload_object_title) %>
 <% content_for :title, title %>
+<%# i18n-tasks-use t('activities.document_uploads.new.title', name: 'name') %>
+<%# i18n-tasks-use t('activities.document_uploads.new.title_generic') %>
 <%# i18n-tasks-use t('activities.document_uploads.new.suggestion_text_html') %>
 <%# i18n-tasks-use t('activities.community_service.document_upload_suggestion_text_html') %>
 <%# i18n-tasks-use t('activities.education.document_upload_suggestion_text_html') %>
@@ -38,14 +40,11 @@
 <h1><%= title %></h1>
 <p><%= t(".description") %></p>
 <ul>
-  <% @activity.document_upload_months_to_verify.each do |month| %>
+  <% @activity.document_upload_verification_items.each do |item| %>
     <li>
-      <strong>
-        <%= l(month, format: :month) %>
-      </strong>
-      <% details = @activity.document_upload_details_for_month(month) %>
-      <% if details.present? %>
-        (<%= details %>)
+      <strong><%= item[:label] %></strong>
+      <% if item[:details].present? %>
+        <%= item[:details] %>
       <% end %>
     </li>
   <% end %>
