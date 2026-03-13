@@ -81,7 +81,7 @@ class Activities::EmploymentController < Activities::BaseController
         id: @employment_activity,
         from_edit: params[:from_edit].presence
       )
-    elsif action_name == "review" && !params[:from_edit].present?
+    elsif action_name == "review" && params[:from_edit].blank?
       last_month_index = @flow.reporting_months.length - 1
       @back_url = edit_activities_flow_income_employment_month_path(
         employment_id: @employment_activity,
