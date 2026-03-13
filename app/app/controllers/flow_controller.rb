@@ -155,9 +155,7 @@ class FlowController < ApplicationController
     end
 
     if params[:reporting_window_start].present? && @flow.is_a?(ActivityFlow)
-      start_date = Date.parse(params[:reporting_window_start]).beginning_of_month
-      anchor = start_date + @flow.reporting_window_months.months
-      @flow.update_columns(created_at: anchor.beginning_of_day)
+      @flow.shift_reporting_window_start!(params[:reporting_window_start])
     end
 
     if params[:demo_timeout].present?
