@@ -166,6 +166,17 @@ RSpec.describe ActivitiesHelper do
       )
     end
 
+    it "includes edit path to term credit hours for partially self-attested education" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
+      create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", enrollment_status: "less_than_half_time", term_begin: first_month, term_end: second_month.end_of_month)
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      expect(result.first[:edit_path]).to eq(
+        helper.edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: 0)
+      )
+    end
+
     it "builds a fully self-attested card from activity months" do
       activity = create(
         :education_activity,

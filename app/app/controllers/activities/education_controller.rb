@@ -53,7 +53,13 @@ class Activities::EducationController < Activities::BaseController
         render :edit_fully_self_attested, status: :unprocessable_content
       end
     elsif @education_activity.update(education_params)
-      redirect_to after_education_update_path
+      if @education_activity.has_less_than_half_time_terms?
+        redirect_to edit_activities_flow_education_term_credit_hour_path(
+          education_id: @education_activity, id: 0
+        )
+      else
+        redirect_to after_activity_path
+      end
     else
       redirect_to :edit, flash: { alert: t("activities.education.errors.unexpected") }
     end

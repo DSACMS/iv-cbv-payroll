@@ -179,6 +179,15 @@ en:
         month_indicator: Month %{current} / %{total}
         no_hours_checkbox: I didn't take any credit hours at %{organization} in %{month}
         title: Credit hours
+      term_credit_hours:
+        body: "Enter the number of credit hours you were taking at %{school_name} during this term."
+        continue: Continue
+        heading: "Add your credit hours for %{school_name}"
+        hours_label: Term credit hours
+        no_hours_checkbox: "I didn't take any classes at %{school_name} this term"
+        term_date_range: "Term: %{range}"
+        term_indicator: "Term %{current} / %{total}"
+        title: Credit hours
       new:
         city: City
         contact_email: Contact email
@@ -923,6 +932,8 @@ en:
   continue: Continue
   date:
     formats:
+      abbreviated_month: "%b"
+      abbreviated_month_year: "%b %Y"
       default: "%Y-%m-%d"
       long: "%B %-d, %Y"
       month: "%B"

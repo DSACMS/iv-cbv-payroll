@@ -27,6 +27,14 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(rendered).to match(/Linda Cooper/)
       expect(rendered).to match(/No NSC record found/)
     end
+
+    it "displays fake test scenario options with single and multi-term", :aggregate_failures do
+      get :show
+      rendered = response.body
+      expect(rendered).to match(/Fake Test Scenarios/)
+      expect(rendered).to match(/1 term/)
+      expect(rendered).to match(/2 terms/)
+    end
   end
 
   describe "POST #create" do
@@ -240,7 +248,7 @@ RSpec.describe DemoLauncherController, type: :controller do
           }
         }.to change(ActivityFlow, :count).by(1)
           .and change(EducationActivity, :count).by(1)
-          .and change(NscEnrollmentTerm, :count).by(2)
+          .and change(NscEnrollmentTerm, :count).by(1)
 
         flow = ActivityFlow.last
         education_activity = flow.education_activities.first
@@ -248,11 +256,11 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(education_activity.data_source).to eq("partially_self_attested")
         expect(education_activity.status).to eq("succeeded")
 
-        terms = education_activity.nsc_enrollment_terms
-        expect(terms.map(&:school_name)).to contain_exactly("Greenfield Community College", "North Valley College")
-        expect(terms.map(&:enrollment_status)).to all(eq("less_than_half_time"))
+        term = education_activity.nsc_enrollment_terms.first
+        expect(term.school_name).to eq("Greenfield Community College")
+        expect(term.enrollment_status).to eq("less_than_half_time")
 
-        expect(response).to redirect_to(%r{/activities$})
+        expect(response).to redirect_to(%r{/activities\z})
       end
 
       it "creates an Identity with the fake user's details" do
@@ -294,7 +302,7 @@ RSpec.describe DemoLauncherController, type: :controller do
 
         expect(identity.first_name).to eq("Ziggy")
         expect(identity.last_name).to eq("Testuser")
-        expect(term.school_name).to eq("Sunrise Community College")
+        expect(term.school_name).to eq("Greenfield Community College")
       end
 
       it "sets the flow session" do
@@ -306,14 +314,49 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(session[:flow_id]).to eq(ActivityFlow.last.id)
         expect(session[:flow_type]).to eq(:activity)
       end
+    end
 
-      it "raises an error for an unknown fake test user" do
+    context "with a multi-term fake test user" do
+      it "creates an ActivityFlow with 2 enrollment terms and redirects to the hub" do
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
-            fake_test_user: "nonexistent"
+            fake_test_user: "partial_enrollment_multi_term"
           }
-        }.to raise_error(ArgumentError, "Unknown fake test user: nonexistent")
+        }.to change(ActivityFlow, :count).by(1)
+          .and change(EducationActivity, :count).by(1)
+          .and change(NscEnrollmentTerm, :count).by(2)
+
+        flow = ActivityFlow.last
+        expect(flow.reporting_window_months).to eq(6)
+
+        education_activity = flow.education_activities.first
+        expect(education_activity.data_source).to eq("partially_self_attested")
+        expect(education_activity.status).to eq("succeeded")
+
+        terms = education_activity.nsc_enrollment_terms.order(:term_begin)
+        expect(terms.length).to eq(2)
+        expect(terms.first.school_name).to eq("Greenfield Community College")
+        expect(terms.first.enrollment_status).to eq("less_than_half_time")
+        expect(terms.second.school_name).to eq("Riverside Technical Institute")
+        expect(terms.second.enrollment_status).to eq("less_than_half_time")
+
+        expect(response).to redirect_to(%r{/activities\z})
+      end
+
+      it "splits term dates evenly across the reporting window" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          fake_test_user: "partial_enrollment_multi_term"
+        }
+
+        flow = ActivityFlow.last
+        reporting_window = flow.reporting_window_range
+        terms = flow.education_activities.first.nsc_enrollment_terms.order(:term_begin)
+
+        expect(terms.first.term_begin).to eq(reporting_window.begin)
+        expect(terms.second.term_end).to eq(reporting_window.end)
+        expect(terms.first.term_end).to eq(terms.second.term_begin)
       end
     end
 

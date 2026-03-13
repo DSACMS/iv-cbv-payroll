@@ -168,6 +168,68 @@ RSpec.describe EducationActivity do
     end
   end
 
+  describe "#less_than_half_time_terms_in_reporting_window" do
+    let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
+    let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }
+
+    it "returns only less-than-half-time terms within the reporting window" do
+      create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity)
+      create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "half_time")
+
+      terms = education_activity.less_than_half_time_terms_in_reporting_window
+      expect(terms.length).to eq(1)
+      expect(terms.first.enrollment_status).to eq("less_than_half_time")
+    end
+
+    it "excludes terms outside the reporting window" do
+      create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: education_activity,
+        term_begin: flow.reporting_window_range.begin - 6.months,
+        term_end: flow.reporting_window_range.begin - 3.months)
+
+      expect(education_activity.less_than_half_time_terms_in_reporting_window).to be_empty
+    end
+
+    it "returns terms sorted by term_begin" do
+      flow_6mo = create(:activity_flow, reporting_window_months: 6, education_activities_count: 0)
+      activity = create(:education_activity, activity_flow: flow_6mo, status: "succeeded")
+      range = flow_6mo.reporting_window_range
+
+      later_term = create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: activity,
+        term_begin: range.begin + 3.months,
+        term_end: range.end)
+      earlier_term = create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: activity,
+        term_begin: range.begin,
+        term_end: range.begin + 2.months)
+
+      terms = activity.less_than_half_time_terms_in_reporting_window
+      expect(terms.map(&:id)).to eq([ earlier_term.id, later_term.id ])
+    end
+  end
+
+  describe "#has_less_than_half_time_terms?" do
+    let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
+    let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }
+
+    it "returns true when less-than-half-time terms exist in the reporting window" do
+      create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity)
+
+      expect(education_activity.has_less_than_half_time_terms?).to be(true)
+    end
+
+    it "returns false when only half-time-or-above terms exist" do
+      create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "half_time")
+
+      expect(education_activity.has_less_than_half_time_terms?).to be(false)
+    end
+
+    it "returns false when no terms exist" do
+      expect(education_activity.has_less_than_half_time_terms?).to be(false)
+    end
+  end
+
   describe "#progress_hours_for_month" do
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
     let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }

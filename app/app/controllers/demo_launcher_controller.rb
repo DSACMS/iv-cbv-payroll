@@ -121,13 +121,27 @@ class DemoLauncherController < ApplicationController
       first_name: "Sam",
       last_name: "Testuser",
       date_of_birth: "1990-05-15",
-      school_names: [ "Greenfield Community College", "North Valley College" ]
+      terms: [
+        { school_name: "Greenfield Community College", enrollment_status: :less_than_half_time }
+      ]
+    },
+    "partial_enrollment_multi_term" => {
+      first_name: "Sam",
+      last_name: "Testuser",
+      date_of_birth: "1990-05-15",
+      reporting_window_months: 6,
+      terms: [
+        { school_name: "Greenfield Community College", enrollment_status: :less_than_half_time },
+        { school_name: "Riverside Technical Institute", enrollment_status: :less_than_half_time }
+      ]
     },
     "partial_enrollment_ziggy" => {
       first_name: "Ziggy",
       last_name: "Testuser",
       date_of_birth: "1992-07-19",
-      school_names: [ "Sunrise Community College" ]
+      terms: [
+        { school_name: "Greenfield Community College", enrollment_status: :less_than_half_time }
+      ]
     }
   }.freeze
 
@@ -138,10 +152,7 @@ class DemoLauncherController < ApplicationController
     "linda" => { first_name: "Linda", last_name: "Cooper", date_of_birth: "1999-01-01" }
   }.freeze
 
-  def build_nsc_test_user_url(user_key, client_agency_id, overrides)
-    user_data = NSC_TEST_USERS[user_key]
-    raise ArgumentError, "Unknown NSC test user: #{user_key}" unless user_data
-
+  def create_applicant_and_invitation(user_data, client_agency_id, reference_id)
     cbv_applicant = CbvApplicant.create!(
       first_name: user_data[:first_name],
       last_name: user_data[:last_name],
@@ -149,12 +160,16 @@ class DemoLauncherController < ApplicationController
       client_agency_id: client_agency_id
     )
 
-    invitation = ActivityFlowInvitation.create!(
+    ActivityFlowInvitation.create!(
       cbv_applicant: cbv_applicant,
       client_agency_id: client_agency_id,
-      reference_id: "nsc-demo-#{user_key}"
+      reference_id: reference_id
     )
+  end
 
+  def build_nsc_test_user_url(user_key, client_agency_id, overrides)
+    user_data = NSC_TEST_USERS[user_key]
+    invitation = create_applicant_and_invitation(user_data, client_agency_id, "nsc-demo-#{user_key}")
     invitation.to_url(
       host: request.host_with_port,
       protocol: request.protocol,
@@ -164,20 +179,8 @@ class DemoLauncherController < ApplicationController
 
   def build_fake_test_user_url(user_key, client_agency_id, overrides)
     user_data = FAKE_TEST_USERS[user_key]
-    raise ArgumentError, "Unknown fake test user: #{user_key}" unless user_data
 
-    cbv_applicant = CbvApplicant.create!(
-      first_name: user_data[:first_name],
-      last_name: user_data[:last_name],
-      date_of_birth: Date.parse(user_data[:date_of_birth]),
-      client_agency_id: client_agency_id
-    )
-
-    invitation = ActivityFlowInvitation.create!(
-      cbv_applicant: cbv_applicant,
-      client_agency_id: client_agency_id,
-      reference_id: "fake-demo-#{user_key}"
-    )
+    invitation = create_applicant_and_invitation(user_data, client_agency_id, "fake-demo-#{user_key}")
 
     flow = ActivityFlow.create_from_invitation(
       invitation,
@@ -185,9 +188,8 @@ class DemoLauncherController < ApplicationController
       overrides.to_h.symbolize_keys
     )
 
-    if overrides[:reporting_window_months].present?
-      flow.update!(reporting_window_months: overrides[:reporting_window_months].to_i)
-    end
+    reporting_window_months = user_data[:reporting_window_months] || overrides[:reporting_window_months]
+    flow.update!(reporting_window_months: reporting_window_months) if reporting_window_months
 
     if overrides[:reporting_window_start].present?
       flow.shift_reporting_window_start!(overrides[:reporting_window_start])
@@ -205,19 +207,33 @@ class DemoLauncherController < ApplicationController
       status: :succeeded
     )
 
-    reporting_window = flow.reporting_window_range
-    user_data[:school_names].each do |school_name|
-      education_activity.nsc_enrollment_terms.create!(
-        school_name: school_name,
-        first_name: user_data[:first_name],
-        last_name: user_data[:last_name],
-        enrollment_status: :less_than_half_time,
-        term_begin: reporting_window.begin,
-        term_end: reporting_window.end
-      )
-    end
+    create_fake_enrollment_terms(education_activity, user_data, flow.reporting_window_range)
 
     set_flow_session(flow.id, :activity)
     activities_flow_root_url(host: request.host_with_port, protocol: request.protocol)
+  end
+
+  def create_fake_enrollment_terms(education_activity, user_data, reporting_window)
+    terms = user_data[:terms]
+    total_days = (reporting_window.end - reporting_window.begin).to_i
+    days_per_term = total_days / terms.length
+
+    terms.each_with_index do |term_data, index|
+      term_begin = reporting_window.begin + (index * days_per_term)
+      term_end = if index == terms.length - 1
+                   reporting_window.end
+                 else
+                   reporting_window.begin + ((index + 1) * days_per_term)
+                 end
+
+      education_activity.nsc_enrollment_terms.create!(
+        school_name: term_data[:school_name],
+        first_name: user_data[:first_name],
+        last_name: user_data[:last_name],
+        enrollment_status: term_data[:enrollment_status],
+        term_begin: term_begin,
+        term_end: term_end
+      )
+    end
   end
 end

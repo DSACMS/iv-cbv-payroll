@@ -334,13 +334,16 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to redirect_to(activities_flow_summary_path)
     end
 
-    it "redirects partially self-attested activities to education document uploads" do
+    it "redirects partially self-attested activities to term credit hours" do
       partially_self_attested_activity = create(
         :education_activity,
         activity_flow: activity_flow,
         data_source: :partially_self_attested,
         status: :succeeded
       )
+      create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: partially_self_attested_activity,
+        school_name: "State University")
 
       patch :update, params: {
         id: partially_self_attested_activity.id,
@@ -348,8 +351,60 @@ RSpec.describe Activities::EducationController, type: :controller do
       }
 
       expect(response).to redirect_to(
-        new_activities_flow_education_document_upload_path(education_id: partially_self_attested_activity.id)
+        edit_activities_flow_education_term_credit_hour_path(education_id: partially_self_attested_activity.id, id: 0)
       )
+    end
+
+    context "when validated activity has less-than-half-time terms" do
+      let(:validated_activity) { create(:education_activity, activity_flow: activity_flow, status: :succeeded) }
+
+      before do
+        create(:nsc_enrollment_term, :less_than_half_time,
+          education_activity: validated_activity,
+          school_name: "State University")
+      end
+
+      it "redirects to term credit hours instead of after_activity_path" do
+        patch :update, params: {
+          id: validated_activity.id,
+          education_activity: { additional_comments: "test" }
+        }
+
+        expect(response).to redirect_to(
+          edit_activities_flow_education_term_credit_hour_path(
+            education_id: validated_activity, id: 0
+          )
+        )
+      end
+    end
+
+    context "when validated activity has only half-time-or-above terms" do
+      let(:validated_activity) { create(:education_activity, activity_flow: activity_flow, status: :succeeded) }
+
+      before do
+        create(:nsc_enrollment_term,
+          education_activity: validated_activity,
+          enrollment_status: "half_time",
+          school_name: "State University")
+
+        result = ActivityFlowProgressCalculator::OverallResult.new(
+          total_hours: 0,
+          meets_requirements: false,
+          meets_routing_requirements: false
+        )
+        allow(controller).to receive(:progress_calculator).and_return(
+          instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        )
+      end
+
+      it "redirects to after_activity_path (not term credit hours)" do
+        patch :update, params: {
+          id: validated_activity.id,
+          education_activity: { additional_comments: "test" }
+        }
+
+        expect(response).to redirect_to(activities_flow_root_path)
+      end
     end
 
     it "updates fully self-attested education info and redirects to month 0" do
