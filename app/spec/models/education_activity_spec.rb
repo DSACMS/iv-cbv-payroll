@@ -49,7 +49,7 @@ RSpec.describe EducationActivity do
     end
   end
 
-  describe "#document_upload_terms_for_partial_upload" do
+  describe "#document_upload_terms_to_verify" do
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
 
     it "returns only less-than-half-time terms in sorted order" do
@@ -58,7 +58,7 @@ RSpec.describe EducationActivity do
       earlier_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, term_begin: Date.new(2026, 1, 1))
       create(:nsc_enrollment_term, education_activity: activity, enrollment_status: :half_time, term_begin: Date.new(2026, 1, 15))
 
-      expect(activity.document_upload_terms_for_partial_upload).to eq([ earlier_term, later_term ])
+      expect(activity.document_upload_terms_to_verify).to eq([ earlier_term, later_term ])
     end
   end
 

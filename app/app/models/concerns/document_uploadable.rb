@@ -52,7 +52,7 @@ module DocumentUploadable
 
   # Override when an activity should show term-based verification items
   # instead of month-based items.
-  def document_upload_terms_for_partial_upload
+  def document_upload_terms_to_verify
     []
   end
 

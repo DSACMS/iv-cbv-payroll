@@ -166,13 +166,13 @@ class Activities::EducationController < Activities::BaseController
     if params[:from_review].present?
       review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence)
     elsif @education_activity.partially_self_attested?
-      partially_self_attested_next_step_path
+      partially_self_attested_education_next_step_path
     else
       after_activity_path
     end
   end
 
-  def partially_self_attested_next_step_path
+  def partially_self_attested_education_next_step_path
     # TODO: Replace this with the first education monthly-hours term path
     # once the partially self-attested monthly hours flow is implemented.
     new_activities_flow_education_document_upload_path(education_id: @education_activity.id, from_edit: params[:from_edit].presence)
@@ -196,7 +196,7 @@ class Activities::EducationController < Activities::BaseController
 
   def education_sync_success_path
     if @education_activity.partially_self_attested?
-      partially_self_attested_next_step_path
+      partially_self_attested_education_next_step_path
     else
       edit_activities_flow_education_path(id: @education_activity)
     end

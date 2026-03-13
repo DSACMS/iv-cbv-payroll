@@ -70,7 +70,7 @@ class EducationActivity < Activity
     end
   end
 
-  def document_upload_terms_for_partial_upload
+  def document_upload_terms_to_verify
     return [] unless partially_self_attested?
 
     nsc_enrollment_terms
@@ -89,7 +89,7 @@ class EducationActivity < Activity
   end
 
   def document_upload_verification_items
-    terms = document_upload_terms_for_partial_upload
+    terms = document_upload_terms_to_verify
     return super if terms.empty?
 
     terms.map do |term|
@@ -129,6 +129,6 @@ class EducationActivity < Activity
   end
 
   def document_upload_school_names
-    document_upload_terms_for_partial_upload.filter_map(&:school_name).uniq
+    document_upload_terms_to_verify.filter_map(&:school_name).uniq
   end
 end
