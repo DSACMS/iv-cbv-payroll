@@ -154,6 +154,12 @@ class FlowController < ApplicationController
       @flow.update!(reporting_window_months: params[:reporting_window_months].to_i)
     end
 
+    if params[:reporting_window_start].present? && @flow.is_a?(ActivityFlow)
+      start_date = Date.parse(params[:reporting_window_start]).beginning_of_month
+      anchor = start_date + @flow.reporting_window_months.months
+      @flow.update_columns(created_at: anchor.beginning_of_day)
+    end
+
     if params[:demo_timeout].present?
       session[:demo_timeout] = params[:demo_timeout].to_i.minutes.to_i
     end

@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["monthButtons", "monthsInput", "ceOnly"]
+  static targets = ["monthButtons", "monthsInput", "ceOnly", "datePickerWrapper"]
 
   connect() {
     const selectedFlow = this.element.querySelector("input[name=flow_type]:checked")
@@ -23,6 +23,7 @@ export default class extends Controller {
     const months = event.currentTarget.dataset.months
     this.monthsInputTarget.value = months
     this.highlightButton(months)
+    this.updateDatePickerFromMonths()
   }
 
   // private
@@ -46,6 +47,27 @@ export default class extends Controller {
       this.monthsInputTarget.value = "2"
       this.highlightButton("2")
     }
+    this.updateDatePickerFromMonths()
+  }
+
+  updateDatePickerFromMonths() {
+    if (!this.hasDatePickerWrapperTarget) return
+    const months = parseInt(this.monthsInputTarget.value, 10)
+    if (!months) return
+
+    const today = new Date()
+    const start = new Date(today.getFullYear(), today.getMonth() - months, 1)
+    const yyyy = start.getFullYear()
+    const mm = String(start.getMonth() + 1).padStart(2, "0")
+
+    const internalInput = this.datePickerWrapperTarget.querySelector(
+      ".usa-date-picker__internal-input"
+    )
+    const externalInput = this.datePickerWrapperTarget.querySelector(
+      ".usa-date-picker__external-input"
+    )
+    if (internalInput) internalInput.value = `${yyyy}-${mm}-01`
+    if (externalInput) externalInput.value = `${mm}/01/${yyyy}`
   }
 
   highlightButton(activeMonths) {

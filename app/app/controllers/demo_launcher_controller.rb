@@ -14,8 +14,12 @@ class DemoLauncherController < ApplicationController
     overrides = if flow_type == "cbv"
                   params.permit(:demo_timeout).select { |_, v| v.present? }
                 else
-                  params.permit(:reporting_window, :reporting_window_months, :demo_timeout).select { |_, v| v.present? }
+                  params.permit(:reporting_window, :reporting_window_months, :reporting_window_start, :demo_timeout).select { |_, v| v.present? }
                 end
+
+    if overrides[:reporting_window_start].present?
+      overrides[:reporting_window_start] = normalize_date_param(overrides[:reporting_window_start])
+    end
 
     url = if flow_type == "cbv"
             if launch_type == "generic"
@@ -40,6 +44,14 @@ class DemoLauncherController < ApplicationController
 
   def session_timeout_enabled?
     false
+  end
+
+  def normalize_date_param(date_str)
+    if date_str.match?(%r{/})
+      Date.strptime(date_str, "%m/%d/%Y").strftime("%Y-%m-%d")
+    else
+      date_str
+    end
   end
 
   def build_cbv_generic_url(client_agency_id, overrides)
@@ -169,6 +181,12 @@ class DemoLauncherController < ApplicationController
 
     if overrides[:reporting_window_months].present?
       flow.update!(reporting_window_months: overrides[:reporting_window_months].to_i)
+    end
+
+    if overrides[:reporting_window_start].present?
+      start_date = Date.parse(overrides[:reporting_window_start]).beginning_of_month
+      anchor = start_date + flow.reporting_window_months.months
+      flow.update_columns(created_at: anchor.beginning_of_day)
     end
 
     identity = Identity.create!(

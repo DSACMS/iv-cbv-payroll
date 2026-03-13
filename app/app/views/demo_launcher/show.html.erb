@@ -52,8 +52,23 @@
         <input class="usa-input usa-input--sm" type="number" name="reporting_window_months"
                id="reporting_window_months" min="1" max="99" autocomplete="off"
                value="<%= params[:reporting_window_months] %>"
-               data-demo-launcher-target="monthsInput">
+               data-demo-launcher-target="monthsInput"
+               data-action="input->demo-launcher#updateDatePickerFromMonths">
         <span>months</span>
+      </div>
+    <% end %>
+    <%= render DemoLauncher::SettingComponent.new(
+      title: "Reporting window start",
+      hint: "Specify when the reporting window begins. When set, the window runs forward from the beginning of the selected month. Leave blank to use the default (window ends at the latest completed month)."
+    ) do %>
+      <div class="usa-date-picker" data-demo-launcher-target="datePickerWrapper">
+        <input
+          class="usa-input"
+          type="text"
+          name="reporting_window_start"
+          id="reporting_window_start"
+          autocomplete="off"
+        >
       </div>
     <% end %>
     </div>
