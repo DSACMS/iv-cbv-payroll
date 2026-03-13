@@ -32,6 +32,7 @@ class NscDataFetcherService
 
     if @education_activity.sync_succeeded?
       save_enrollment_terms(response["enrollmentDetails"])
+      @education_activity.update!(data_source: EducationActivity.data_source_from_nsc_results(@education_activity.nsc_enrollment_terms))
     end
   end
 

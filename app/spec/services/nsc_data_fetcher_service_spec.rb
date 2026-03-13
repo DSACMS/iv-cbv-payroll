@@ -47,6 +47,12 @@ RSpec.describe NscDataFetcherService do
 
         expect(education_activity.nsc_enrollment_terms).to be_empty
       end
+
+      it "does not change data_source" do
+        service.fetch
+
+        expect(education_activity.reload.data_source).to eq("validated")
+      end
     end
 
     context "when there is one enrollment (Lynette)" do
@@ -75,6 +81,12 @@ RSpec.describe NscDataFetcherService do
             term_end: Date.parse("2024-11-19"),
           )
       end
+
+      it "sets data_source to partially_self_attested for enrolled (not half_time_or_above)" do
+        service.fetch
+
+        expect(education_activity.reload.data_source).to eq("partially_self_attested")
+      end
     end
 
     context "when there are multiple enrollments (Rick)" do
@@ -89,6 +101,12 @@ RSpec.describe NscDataFetcherService do
         service.fetch
 
         expect(education_activity.nsc_enrollment_terms.count).to eq(2)
+      end
+
+      it "sets data_source to validated for half_time enrollment" do
+        service.fetch
+
+        expect(education_activity.reload.data_source).to eq("validated")
       end
     end
 

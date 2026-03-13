@@ -47,7 +47,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       }.to change(EducationActivity, :count).by(1)
 
       activity = EducationActivity.last
-      expect(activity.data_source).to eq("self_attested")
+      expect(activity.data_source).to eq("fully_self_attested")
       expect(activity.school_name).to eq("Test University")
       expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: activity.id, id: 0))
     end
@@ -133,10 +133,10 @@ RSpec.describe Activities::EducationController, type: :controller do
 
   describe "GET #edit" do
     let(:self_attested_activity) do
-      create(:education_activity, activity_flow: activity_flow, data_source: :self_attested, school_name: "Test University")
+      create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "Test University")
     end
 
-    it "renders the self-attested education info form for self-attested activities" do
+    it "renders the fully self-attested education info form for fully self-attested activities" do
       get :edit, params: { id: self_attested_activity.id }
 
       expect(response).to have_http_status(:ok)
@@ -199,7 +199,7 @@ RSpec.describe Activities::EducationController, type: :controller do
 
   describe "GET #review" do
     let(:education_activity) do
-      create(:education_activity, activity_flow: activity_flow, data_source: :self_attested, school_name: "University of Illinois")
+      create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
     end
 
     it "renders the review page" do
@@ -243,7 +243,7 @@ RSpec.describe Activities::EducationController, type: :controller do
 
   describe "PATCH #save_review" do
     let(:education_activity) do
-      create(:education_activity, activity_flow: activity_flow, data_source: :self_attested, school_name: "University of Illinois")
+      create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
     end
 
     it "saves additional comments and redirects to the hub" do
@@ -320,16 +320,16 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to redirect_to(activities_flow_summary_path)
     end
 
-    it "updates self-attested education info and redirects to month 0" do
-      self_attested_activity = create(
+    it "updates fully self-attested education info and redirects to month 0" do
+      fully_self_attested_activity = create(
         :education_activity,
         activity_flow: activity_flow,
-        data_source: :self_attested,
+        data_source: :fully_self_attested,
         school_name: "Old School"
       )
 
       patch :update, params: {
-        id: self_attested_activity.id,
+        id: fully_self_attested_activity.id,
         education_activity: {
           school_name: "New School",
           city: "New City",
@@ -339,15 +339,15 @@ RSpec.describe Activities::EducationController, type: :controller do
         }
       }
 
-      expect(self_attested_activity.reload.school_name).to eq("New School")
-      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: self_attested_activity, id: 0))
+      expect(fully_self_attested_activity.reload.school_name).to eq("New School")
+      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: fully_self_attested_activity, id: 0))
     end
 
     it "redirects self-attested to review when from_review is present" do
       self_attested_activity = create(
         :education_activity,
         activity_flow: activity_flow,
-        data_source: :self_attested,
+        data_source: :fully_self_attested,
         school_name: "Old School"
       )
 
@@ -370,7 +370,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       self_attested_activity = create(
         :education_activity,
         activity_flow: activity_flow,
-        data_source: :self_attested,
+        data_source: :fully_self_attested,
         school_name: "Old School"
       )
 
@@ -394,7 +394,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       self_attested_activity = create(
         :education_activity,
         activity_flow: activity_flow,
-        data_source: :self_attested,
+        data_source: :fully_self_attested,
         school_name: "Old School"
       )
 

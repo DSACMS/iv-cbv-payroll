@@ -60,8 +60,8 @@ module ActivitiesHelper
 
   def education_cards(activities, reporting_months)
     activities.flat_map do |activity|
-      if activity.self_attested?
-        self_attested_education_cards(activity, reporting_months)
+      if activity.fully_self_attested?
+        fully_self_attested_education_cards(activity, reporting_months)
       else
         validated_education_cards(activity, reporting_months)
       end
@@ -133,7 +133,7 @@ module ActivitiesHelper
     end
   end
 
-  def self_attested_education_cards(activity, reporting_months)
+  def fully_self_attested_education_cards(activity, reporting_months)
     months_by_date = activity.education_activity_months.index_by(&:month)
     months = reporting_months.reverse.map do |month_start|
       activity_month = months_by_date[month_start.beginning_of_month]
