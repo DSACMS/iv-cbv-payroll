@@ -49,14 +49,29 @@ module Uswds
       end
     end
 
+    # @label Validated education
     def education
       render(Uswds::Card.new(heading_text: "Education", class: "activity-hub-card")) do |card|
         card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
         card.with_body do
           safe_join([
-            month_section("January 2026", "Enrolled", "12"),
-            month_section("December 2025", "Enrolled", "15"),
-            month_section("November 2025", "Not enrolled", "0")
+            validated_education_month_section("January 2026", "Half-time", "80"),
+            validated_education_month_section("December 2025", "Half-time", "80"),
+            validated_education_month_section("November 2025", "Not enrolled", "0")
+          ])
+        end
+      end
+    end
+
+    # @label Self-attested education
+    def self_attested_education
+      render(Uswds::Card.new(heading_text: "Education", class: "activity-hub-card")) do |card|
+        card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
+        card.with_body do
+          safe_join([
+            self_attested_education_month_section("January 2026", "12", "48"),
+            self_attested_education_month_section("December 2025", "9", "36"),
+            self_attested_education_month_section("November 2025", "6", "24")
           ])
         end
       end
@@ -89,14 +104,28 @@ module Uswds
       end
     end
 
-    def month_section(month, status, hours)
+    def validated_education_month_section(month, enrollment_status, hours)
       tag.div(class: "activity-month-details") do
         safe_join([
           tag.div(tag.strong(month), class: "activity-month-details__month"),
           tag.div(class: "activity-month-details__data") do
             safe_join([
-              tag.p("Enrollment status: #{status}", class: "margin-y-0"),
-              tag.p("Credit hours: #{hours}", class: "margin-y-0")
+              tag.p("Enrollment: #{enrollment_status}", class: "margin-y-0"),
+              tag.p("Community engagement hours: #{hours}", class: "margin-y-0")
+            ])
+          end
+        ])
+      end
+    end
+
+    def self_attested_education_month_section(month, credit_hours, hours)
+      tag.div(class: "activity-month-details") do
+        safe_join([
+          tag.div(tag.strong(month), class: "activity-month-details__month"),
+          tag.div(class: "activity-month-details__data") do
+            safe_join([
+              tag.p("Credit hours: #{credit_hours}", class: "margin-y-0"),
+              tag.p("Community engagement hours: #{hours}", class: "margin-y-0")
             ])
           end
         ])
