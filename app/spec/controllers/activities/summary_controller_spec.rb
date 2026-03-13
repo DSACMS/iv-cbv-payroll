@@ -228,5 +228,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       expect(response.body).to include("Submit to")
     end
+
+    it "renders a back link pointing to the activity hub" do
+      get :show
+
+      expect(response.body).to include("back-nav")
+      expect(response.body).to have_link(href: activities_flow_root_path)
+    end
   end
 end
