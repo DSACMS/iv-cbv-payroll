@@ -12,5 +12,17 @@ FactoryBot.define do
       term.term_begin ||= reporting_window.begin
       term.term_end ||= reporting_window.end
     end
+
+    trait :less_than_half_time do
+      enrollment_status { "less_than_half_time" }
+    end
+
+    trait :full_time do
+      enrollment_status { "full_time" }
+    end
+
+    trait :enrolled do
+      enrollment_status { "enrolled" }
+    end
   end
 end

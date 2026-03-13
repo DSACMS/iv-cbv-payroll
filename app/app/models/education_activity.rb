@@ -10,7 +10,11 @@ class EducationActivity < Activity
 
   validates :school_name, presence: true, if: :self_attested?
 
-  enum :data_source, { self_attested: "self_attested", validated: "validated" }, default: :validated
+  enum :data_source, {
+    self_attested: "self_attested",
+    partially_self_attested: "partially_self_attested",
+    validated: "validated"
+  }, default: :validated
 
   # Status is the API request/verification status
   enum :status, {
@@ -19,6 +23,10 @@ class EducationActivity < Activity
     succeeded: "succeeded",
     failed: "failed"
   }, default: :unknown, prefix: :sync
+
+  def self.data_source_from_nsc_results(enrollment_terms)
+    enrollment_terms.any?(&:half_time_or_above?) ? :validated : :partially_self_attested
+  end
 
   def formatted_address
     [ street_address, city, state ].compact_blank.join(", ").presence

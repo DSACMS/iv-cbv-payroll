@@ -68,6 +68,74 @@ RSpec.describe EducationActivity do
     end
   end
 
+  describe ".data_source_from_nsc_results" do
+    let(:half_time_term) { NscEnrollmentTerm.new(enrollment_status: "half_time") }
+    let(:full_time_term) { NscEnrollmentTerm.new(enrollment_status: "full_time") }
+    let(:three_quarter_time_term) { NscEnrollmentTerm.new(enrollment_status: "three_quarter_time") }
+    let(:less_than_half_time_term) { NscEnrollmentTerm.new(enrollment_status: "less_than_half_time") }
+    let(:enrolled_term) { NscEnrollmentTerm.new(enrollment_status: "enrolled") }
+
+    context "with half_time_or_above enrollment" do
+      it "returns :validated for half_time" do
+        expect(described_class.data_source_from_nsc_results([ half_time_term ])).to eq(:validated)
+      end
+
+      it "returns :validated for full_time" do
+        expect(described_class.data_source_from_nsc_results([ full_time_term ])).to eq(:validated)
+      end
+
+      it "returns :validated for three_quarter_time" do
+        expect(described_class.data_source_from_nsc_results([ three_quarter_time_term ])).to eq(:validated)
+      end
+    end
+
+    context "with less_than_half_time enrollment" do
+      it "returns :partially_self_attested" do
+        expect(described_class.data_source_from_nsc_results([ less_than_half_time_term ])).to eq(:partially_self_attested)
+      end
+    end
+
+    context "with enrolled status (unspecified load)" do
+      it "returns :partially_self_attested" do
+        expect(described_class.data_source_from_nsc_results([ enrolled_term ])).to eq(:partially_self_attested)
+      end
+    end
+
+    context "with mixed enrollment statuses" do
+      it "returns :validated when at least one term is half_time_or_above" do
+        expect(described_class.data_source_from_nsc_results([ full_time_term, less_than_half_time_term ])).to eq(:validated)
+      end
+
+      it "returns :partially_self_attested when no term is half_time_or_above" do
+        expect(described_class.data_source_from_nsc_results([ less_than_half_time_term, enrolled_term ])).to eq(:partially_self_attested)
+      end
+    end
+  end
+
+  describe "data_source enum" do
+    let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
+
+    it "supports partially_self_attested value" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: "succeeded")
+
+      expect(activity).to be_partially_self_attested
+    end
+
+    context "using factory traits" do
+      it "creates a partially self-attested activity" do
+        activity = create(:education_activity, :partially_self_attested, activity_flow: flow)
+
+        expect(activity).to be_partially_self_attested
+      end
+
+      it "creates a validated activity with enrollment" do
+        activity = create(:education_activity, :validated_with_enrollment, activity_flow: flow)
+
+        expect(activity).to be_validated
+      end
+    end
+  end
+
   describe "#progress_hours_for_month" do
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
     let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }
