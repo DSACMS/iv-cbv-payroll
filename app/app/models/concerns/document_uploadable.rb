@@ -50,12 +50,6 @@ module DocumentUploadable
     "activities.document_uploads.new.title"
   end
 
-  # Override when an activity should show term-based verification items
-  # instead of month-based items.
-  def document_upload_terms_to_verify
-    []
-  end
-
   def document_upload_verification_items
     document_upload_months_to_verify.map do |month|
       {

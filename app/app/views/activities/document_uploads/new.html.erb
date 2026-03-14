@@ -44,7 +44,7 @@
     <li>
       <strong><%= item[:label] %></strong>
       <% if item[:details].present? %>
-        <%= item[:details] %>
+        (<%= item[:details] %>)
       <% end %>
     </li>
   <% end %>
