@@ -2,12 +2,14 @@
   <h3 class="demo-launcher__setting-title">
     <%= @title %>
     <% if @hint %>
-      <span class="demo-launcher__tooltip-wrapper">
-        <span class="demo-launcher__tooltip-icon" aria-label="<%= @hint %>" data-action="click->demo-launcher#toggleTooltip">ⓘ</span>
-        <span class="demo-launcher__tooltip"><%= @hint %></span>
-      </span>
+      <span class="demo-launcher__hint-toggle" data-action="click->demo-launcher#toggleHint"><svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg></span>
     <% end %>
   </h3>
+  <% if @hint %>
+    <div class="usa-hint demo-launcher__setting-hint" hidden>
+      <%= @hint %>
+    </div>
+  <% end %>
   <div class="usa-form-group demo-launcher__setting-body">
     <%= content %>
   </div>

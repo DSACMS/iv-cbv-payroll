@@ -15,39 +15,15 @@
     margin-bottom: 0;
   }
 
-  .demo-launcher__tooltip-wrapper {
-    position: relative;
-    display: inline-block;
-  }
-
-  .demo-launcher__tooltip-icon {
-    cursor: help;
-    font-size: size("body", "2xs");
+  .demo-launcher__hint-toggle {
+    cursor: pointer;
     vertical-align: middle;
-    opacity: 0.6;
+    margin-left: units(0.5);
+    color: color("primary");
   }
 
-  .demo-launcher__tooltip {
-    display: none;
-    position: absolute;
-    left: 50%;
-    bottom: calc(100% + units(1));
-    transform: translateX(-50%);
-    background: color("ink");
-    color: color("white");
-    font-size: size("body", "2xs");
-    font-weight: normal;
-    padding: units(1) units(1.5);
-    border-radius: units(0.5);
-    width: max-content;
-    max-width: 300px;
-    z-index: 1000;
-    line-height: line-height("body", 3);
-  }
-
-  .demo-launcher__tooltip-wrapper:hover .demo-launcher__tooltip,
-  .demo-launcher__tooltip-wrapper--active .demo-launcher__tooltip {
-    display: block;
+  .demo-launcher__setting-hint {
+    margin-top: units(0.5);
   }
 
   .demo-launcher__setting-body {

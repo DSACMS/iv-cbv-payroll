@@ -19,16 +19,15 @@ export default class extends Controller {
     this.applyWindow(event.currentTarget.value)
   }
 
-  toggleTooltip(event) {
-    const wrapper = event.currentTarget.closest(".demo-launcher__tooltip-wrapper")
-    const isOpen = wrapper.classList.toggle("demo-launcher__tooltip-wrapper--active")
+  toggleHint(event) {
+    const setting = event.currentTarget.closest(".demo-launcher__setting")
+    const hint = setting.querySelector(".demo-launcher__setting-hint")
+    if (hint) hint.hidden = !hint.hidden
+  }
 
-    clearTimeout(wrapper._tooltipTimer)
-    if (isOpen) {
-      wrapper._tooltipTimer = setTimeout(() => {
-        wrapper.classList.remove("demo-launcher__tooltip-wrapper--active")
-      }, 10000)
-    }
+  toggleInlineHint(event) {
+    const hint = event.currentTarget.parentElement.nextElementSibling
+    if (hint) hint.hidden = !hint.hidden
   }
 
   selectMonths(event) {
