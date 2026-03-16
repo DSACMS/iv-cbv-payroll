@@ -42,11 +42,17 @@ class DemoLauncherController < ApplicationController
     false
   end
 
+  def launcher_url_options
+    opts = { host: request.host_with_port, protocol: request.protocol }
+    # When behind a reverse proxy (e.g., ngrok), explicitly set port to nil so the scheme's default port is used.
+    opts[:port] = nil if request.headers["X-Forwarded-Proto"].present?
+    opts
+  end
+
   def build_cbv_generic_url(client_agency_id, overrides)
     Rails.application.routes.url_helpers.cbv_flow_new_url(
       client_agency_id: client_agency_id,
-      host: request.host_with_port,
-      protocol: request.protocol,
+      **launcher_url_options,
       **overrides
     )
   end
@@ -75,7 +81,7 @@ class DemoLauncherController < ApplicationController
     uri = URI.parse(url)
     uri.scheme = request.scheme
     uri.host = request.host
-    uri.port = request.port
+    uri.port = request.headers["X-Forwarded-Proto"].present? ? nil : request.port
     existing_params = URI.decode_www_form(uri.query || "")
     existing_params << [ "client_agency_id", client_agency_id ]
     overrides.to_h.each { |k, v| existing_params << [ k, v ] }
@@ -86,8 +92,7 @@ class DemoLauncherController < ApplicationController
   def build_generic_url(client_agency_id, overrides)
     Rails.application.routes.url_helpers.activities_flow_new_url(
       client_agency_id: client_agency_id,
-      host: request.host_with_port,
-      protocol: request.protocol,
+      **launcher_url_options,
       **overrides
     )
   end
@@ -98,8 +103,7 @@ class DemoLauncherController < ApplicationController
       reference_id: "demo-#{SecureRandom.hex(4)}"
     )
     invitation.to_url(
-      host: request.host_with_port,
-      protocol: request.protocol,
+      **launcher_url_options,
       **overrides
     )
   end
@@ -138,8 +142,7 @@ class DemoLauncherController < ApplicationController
     )
 
     invitation.to_url(
-      host: request.host_with_port,
-      protocol: request.protocol,
+      **launcher_url_options,
       **overrides
     )
   end
@@ -194,6 +197,6 @@ class DemoLauncherController < ApplicationController
     )
 
     set_flow_session(flow.id, :activity)
-    activities_flow_root_url(host: request.host_with_port, protocol: request.protocol)
+    activities_flow_root_url(**launcher_url_options)
   end
 end
