@@ -128,6 +128,15 @@ class DemoLauncherController < ApplicationController
       last_name: "Testuser",
       date_of_birth: "1992-07-19",
       school_names: [ "Sunrise Community College" ]
+    },
+    "partial_enrollment_casey" => {
+      first_name: "Casey",
+      last_name: "Testuser",
+      date_of_birth: "1991-04-22",
+      enrollments: [
+        { school_name: "Pine Valley College", enrollment_status: :half_time },
+        { school_name: "Riverside Community College", enrollment_status: :less_than_half_time }
+      ]
     }
   }.freeze
 
@@ -206,12 +215,16 @@ class DemoLauncherController < ApplicationController
     )
 
     reporting_window = flow.reporting_window_range
-    user_data[:school_names].each do |school_name|
+    enrollments = user_data[:enrollments] || user_data[:school_names].map do |school_name|
+      { school_name: school_name, enrollment_status: :less_than_half_time }
+    end
+
+    enrollments.each do |enrollment|
       education_activity.nsc_enrollment_terms.create!(
-        school_name: school_name,
+        school_name: enrollment[:school_name],
         first_name: user_data[:first_name],
         last_name: user_data[:last_name],
-        enrollment_status: :less_than_half_time,
+        enrollment_status: enrollment[:enrollment_status],
         term_begin: reporting_window.begin,
         term_end: reporting_window.end
       )

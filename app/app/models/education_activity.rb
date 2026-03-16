@@ -36,6 +36,15 @@ class EducationActivity < Activity
     credit_hours.to_i * CREDIT_HOUR_CE_MULTIPLIER
   end
 
+  def review_school_name
+    school_name.presence || nsc_enrollment_terms.first&.school_name
+  end
+
+  def review_term_credit_hours(term)
+    # Temporary fallback until partially self-attested term-hours entry is implemented.
+    term.attributes["credit_hours"].to_i
+  end
+
   def document_upload_object_title
     if partially_self_attested?
       school_names = document_upload_school_names
