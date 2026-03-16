@@ -82,28 +82,22 @@ export default class extends Controller {
 
   clearDatePicker() {
     if (!this.hasDatePickerWrapperTarget) return
-    const internalInput = this.datePickerWrapperTarget.querySelector(
-      ".usa-date-picker__internal-input"
-    )
-    const externalInput = this.datePickerWrapperTarget.querySelector(
-      ".usa-date-picker__external-input"
-    )
-    if (internalInput) internalInput.value = ""
-    if (externalInput) externalInput.value = ""
+    this.datePickerWrapperTarget.querySelectorAll("input").forEach((input) => (input.value = ""))
   }
 
   setDatePicker(dateStr) {
     if (!this.hasDatePickerWrapperTarget) return
     // dateStr is MM/DD/YYYY
     const [mm, dd, yyyy] = dateStr.split("/")
-    const internalInput = this.datePickerWrapperTarget.querySelector(
-      ".usa-date-picker__internal-input"
-    )
-    const externalInput = this.datePickerWrapperTarget.querySelector(
-      ".usa-date-picker__external-input"
-    )
-    if (internalInput) internalInput.value = `${yyyy}-${mm}-${dd}`
-    if (externalInput) externalInput.value = dateStr
+    // Set every input in the date picker wrapper — USWDS creates multiple
+    // inputs and the form submits whichever one has the name attribute.
+    this.datePickerWrapperTarget.querySelectorAll("input").forEach((input) => {
+      if (input.type === "text") {
+        input.value = dateStr
+      } else {
+        input.value = `${yyyy}-${mm}-${dd}`
+      }
+    })
   }
 
   updateGenericButton(disabled) {
