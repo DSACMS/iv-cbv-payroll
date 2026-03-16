@@ -30,6 +30,38 @@ RSpec.describe EducationActivity do
     end
   end
 
+  describe "#document_upload_title_i18n_key" do
+    let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
+
+    it "returns generic title key when partially self-attested with more than one school" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded)
+      create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "School A")
+      create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "School B")
+
+      expect(activity.document_upload_title_i18n_key).to eq("activities.document_uploads.new.title_generic")
+    end
+
+    it "returns default title key when partially self-attested with one school" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded)
+      create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "School A")
+
+      expect(activity.document_upload_title_i18n_key).to eq("activities.document_uploads.new.title")
+    end
+  end
+
+  describe "#document_upload_terms_to_verify" do
+    let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
+
+    it "returns only less-than-half-time terms in sorted order" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded)
+      later_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, term_begin: Date.new(2026, 2, 1))
+      earlier_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, term_begin: Date.new(2026, 1, 1))
+      create(:nsc_enrollment_term, education_activity: activity, enrollment_status: :half_time, term_begin: Date.new(2026, 1, 15))
+
+      expect(activity.document_upload_terms_to_verify).to eq([ earlier_term, later_term ])
+    end
+  end
+
   describe "#formatted_address" do
     it "returns a formatted street, city, and state string when present" do
       activity = build(

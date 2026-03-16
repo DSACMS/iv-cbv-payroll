@@ -22,6 +22,15 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
   end
 
   describe "GET #new" do
+    let(:partial_education_activity) do
+      create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+    end
+
     it "renders the upload form for a volunteering activity" do
       volunteering_activity = create(
         :volunteering_activity,
@@ -70,6 +79,42 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("shared.credit_hours", count: 15))
       expect(response.body).to include(activities_flow_education_document_uploads_path)
       expect(response.body).to include(I18n.t("activities.education.document_upload_suggestion_text_html"))
+    end
+
+    it "renders the upload form for a partially self-attested education activity" do
+      term = create_partial_term(
+        activity: partial_education_activity,
+        school_name: "University of Illinois",
+        term_begin: Date.new(2026, 1, 5),
+        term_end: Date.new(2026, 5, 15)
+      )
+
+      get :new, params: { education_id: partial_education_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: term.school_name))
+      expect(response.body).to include("#{I18n.l(term.term_begin, format: :short)} to #{I18n.l(term.term_end, format: :short)}")
+    end
+
+    it "uses the simplified title when partially self-attested education has multiple schools" do
+      create_partial_term(
+        activity: partial_education_activity,
+        school_name: "University A",
+        term_begin: Date.new(2026, 1, 5),
+        term_end: Date.new(2026, 5, 15)
+      )
+      create_partial_term(
+        activity: partial_education_activity,
+        school_name: "College B",
+        term_begin: Date.new(2026, 1, 10),
+        term_end: Date.new(2026, 5, 20)
+      )
+
+      get :new, params: { education_id: partial_education_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("activities.document_uploads.new.title_generic"))
+      expect(response.body).not_to include(I18n.t("activities.document_uploads.new.title", name: "University A"))
     end
 
     it "falls back to the file icon when an existing upload preview cannot be processed" do
@@ -149,5 +194,16 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response).to render_template(:new)
       expect(response).to have_http_status(:ok)
     end
+  end
+
+  def create_partial_term(activity:, school_name:, term_begin:, term_end:)
+    create(
+      :nsc_enrollment_term,
+      :less_than_half_time,
+      education_activity: activity,
+      school_name: school_name,
+      term_begin: term_begin,
+      term_end: term_end
+    )
   end
 end
