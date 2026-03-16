@@ -1,7 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["monthButtons", "monthsInput", "ceOnly", "datePickerWrapper", "genericButton"]
+  static targets = [
+    "monthButtons",
+    "monthsInput",
+    "ceOnly",
+    "datePickerWrapper",
+    "genericButton",
+    "twoCol",
+  ]
 
   connect() {
     const selectedFlow = this.element.querySelector("input[name=flow_type]:checked")
@@ -48,12 +55,14 @@ export default class extends Controller {
   applyFlowType(value) {
     if (value === "cbv") {
       this.ceOnlyTargets.forEach((el) => (el.hidden = true))
+      if (this.hasTwoColTarget) this.twoColTarget.classList.add("demo-launcher__two-col--single")
       // Deselect any scenario and re-enable Generic
       const noneRadio = this.element.querySelector("#test_scenario_none")
       if (noneRadio) noneRadio.checked = true
       this.updateGenericButton(false)
     } else {
       this.ceOnlyTargets.forEach((el) => (el.hidden = false))
+      if (this.hasTwoColTarget) this.twoColTarget.classList.remove("demo-launcher__two-col--single")
       const selectedWindow = this.element.querySelector("input[name=reporting_window]:checked")
       if (selectedWindow) this.applyWindow(selectedWindow.value)
       // Re-apply scenario state

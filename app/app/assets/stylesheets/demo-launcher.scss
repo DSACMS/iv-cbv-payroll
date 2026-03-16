@@ -16,19 +16,18 @@
   .demo-launcher__two-col {
     display: flex;
     flex-direction: column;
+    margin-top: units(3);
   }
 
   .demo-launcher__left-col {
     display: contents;
   }
 
-  .demo-launcher__flow-type      { order: 1; }
+  .demo-launcher__test-scenarios { order: 1; }
   .demo-launcher__settings       { order: 2; }
-  .demo-launcher__launch         { order: 3; }
-  .demo-launcher__test-scenarios { order: 4; }
 
   .demo-launcher__mobile-divider {
-    order: 2;
+    order: 1;
     border: none;
     border-top: 1px solid color("base-lighter");
     margin: units(3) 0;
@@ -50,12 +49,11 @@
     .demo-launcher__settings {
       position: relative;
       padding-left: units(5);
-      padding-top: units(3);
 
       &::before {
         content: "";
         position: absolute;
-        top: units(3);
+        top: 0;
         left: 0;
         bottom: 0;
         width: 1px;
@@ -66,17 +64,24 @@
     .demo-launcher__mobile-divider {
       display: none;
     }
+
+    .demo-launcher__two-col--single {
+      grid-template-columns: 1fr;
+
+      .demo-launcher__settings {
+        padding-left: 0;
+
+        &::before {
+          display: none;
+        }
+      }
+    }
   }
 
-  // -- Left column: flow type --
-  .demo-launcher__flow-type {
-    padding-top: units(3);
-  }
-
+  // -- Flow type radios --
   .demo-launcher__flow-type-radios {
     display: flex;
     gap: units(1);
-    margin-top: units(0.5);
 
     .usa-radio {
       flex: 1;
@@ -98,11 +103,7 @@
     }
   }
 
-  // -- Left column: launch --
-  .demo-launcher__launch > .demo-launcher__section-label {
-    margin-top: units(2);
-  }
-
+  // -- Launch buttons --
   .demo-launcher__launch-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -130,11 +131,7 @@
     color: color("base");
   }
 
-  // -- Right column: settings --
-  .demo-launcher__settings > h2:first-child {
-    margin-top: 0;
-  }
-
+  // -- Settings --
   .demo-launcher__setting {
     margin-bottom: units(5);
   }

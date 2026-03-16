@@ -3,32 +3,8 @@
   <h1>Emmy Launcher</h1>
   <div class="usa-hint demo-launcher__usa-hint">Configure settings and launch Emmy in a new tab.</div>
   <%= form_with(url: "/demo", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "demo-launcher" }) do |f| %>
-    <div class="demo-launcher__two-col">
+    <div class="demo-launcher__two-col" data-demo-launcher-target="twoCol">
       <div class="demo-launcher__left-col">
-        <div class="demo-launcher__flow-type">
-          <h3 class="demo-launcher__section-label">Flow type</h3>
-          <div class="demo-launcher__flow-type-radios">
-            <div class="usa-radio">
-              <input class="usa-radio__input usa-radio__input--tile" type="radio" name="flow_type" id="flow_type_activity" value="activity" checked data-action="demo-launcher#selectFlowType">
-              <label class="usa-radio__label" for="flow_type_activity">CE</label>
-            </div>
-            <div class="usa-radio">
-              <input class="usa-radio__input usa-radio__input--tile" type="radio" name="flow_type" id="flow_type_cbv" value="cbv" data-action="demo-launcher#selectFlowType">
-              <label class="usa-radio__label" for="flow_type_cbv">Income</label>
-            </div>
-          </div>
-        </div>
-        <div class="demo-launcher__launch">
-          <h3 class="demo-launcher__section-label">Launch</h3>
-          <div class="demo-launcher__launch-buttons">
-            <button type="submit" name="launch_type" value="tokenized" formtarget="_blank" class="usa-button demo-launcher__launch-button">
-              Tokenized
-            </button>
-            <button type="submit" name="launch_type" value="generic" formtarget="_blank" class="usa-button usa-button--outline demo-launcher__launch-button" data-demo-launcher-target="genericButton">
-              Generic
-            </button>
-          </div>
-        </div>
         <div class="demo-launcher__test-scenarios" data-demo-launcher-target="ceOnly">
           <h3 class="demo-launcher__section-label">Test Scenarios</h3>
           <div class="demo-launcher__scenario-radios">
@@ -108,6 +84,18 @@
       <hr class="demo-launcher__mobile-divider">
       <div class="demo-launcher__settings">
         <h2>Settings</h2>
+        <%= render DemoLauncher::SettingComponent.new(title: "Flow type", hint: "Select which Emmy flow to launch.") do %>
+          <div class="demo-launcher__flow-type-radios">
+            <div class="usa-radio">
+              <input class="usa-radio__input usa-radio__input--tile" type="radio" name="flow_type" id="flow_type_activity" value="activity" checked data-action="demo-launcher#selectFlowType">
+              <label class="usa-radio__label" for="flow_type_activity">CE</label>
+            </div>
+            <div class="usa-radio">
+              <input class="usa-radio__input usa-radio__input--tile" type="radio" name="flow_type" id="flow_type_cbv" value="cbv" data-action="demo-launcher#selectFlowType">
+              <label class="usa-radio__label" for="flow_type_cbv">Income</label>
+            </div>
+          </div>
+        <% end %>
         <%= render DemoLauncher::SettingComponent.new(title: "Agency", hint: "Select the agency the flow will use.") do %>
           <select class="usa-select" name="client_agency_id" id="client_agency_id">
             <% Rails.application.config.client_agencies.client_agency_ids.each do |agency_id| %>
@@ -170,6 +158,16 @@
                    id="demo_timeout" min="1" max="999" autocomplete="off"
                    value="<%= params[:demo_timeout] || 30 %>">
             <span>minutes</span>
+          </div>
+        <% end %>
+        <%= render DemoLauncher::SettingComponent.new(title: "Launch", hint: "Open the configured flow in a new tab.") do %>
+          <div class="demo-launcher__launch-buttons">
+            <button type="submit" name="launch_type" value="tokenized" formtarget="_blank" class="usa-button demo-launcher__launch-button">
+              Tokenized
+            </button>
+            <button type="submit" name="launch_type" value="generic" formtarget="_blank" class="usa-button usa-button--outline demo-launcher__launch-button" data-demo-launcher-target="genericButton">
+              Generic
+            </button>
           </div>
         <% end %>
       </div>
