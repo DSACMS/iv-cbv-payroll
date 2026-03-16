@@ -217,6 +217,62 @@ RSpec.describe DemoLauncherController, type: :controller do
       end
     end
 
+    context "with a fake test user" do
+      it "creates an ActivityFlow with pre-populated education data and redirects to the hub" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            fake_test_user: "partial_enrollment"
+          }
+        }.to change(ActivityFlow, :count).by(1)
+          .and change(EducationActivity, :count).by(1)
+          .and change(NscEnrollmentTerm, :count).by(1)
+
+        flow = ActivityFlow.last
+        education_activity = flow.education_activities.first
+
+        expect(education_activity.data_source).to eq("partially_self_attested")
+        expect(education_activity.status).to eq("succeeded")
+
+        term = education_activity.nsc_enrollment_terms.first
+        expect(term.school_name).to eq("Greenfield Community College")
+        expect(term.enrollment_status).to eq("less_than_half_time")
+
+        expect(response).to redirect_to(%r{/activities})
+      end
+
+      it "creates an Identity with the fake user's details" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          fake_test_user: "partial_enrollment"
+        }
+
+        identity = ActivityFlow.last.identity
+        expect(identity.first_name).to eq("Sam")
+        expect(identity.last_name).to eq("Testuser")
+        expect(identity.date_of_birth).to eq(Date.parse("1990-05-15"))
+      end
+
+      it "sets the flow session" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          fake_test_user: "partial_enrollment"
+        }
+
+        expect(session[:flow_id]).to eq(ActivityFlow.last.id)
+        expect(session[:flow_type]).to eq(:activity)
+      end
+
+      it "raises an error for an unknown fake test user" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            fake_test_user: "nonexistent"
+          }
+        }.to raise_error(ArgumentError, "Unknown fake test user: nonexistent")
+      end
+    end
+
     context "with an NSC test user" do
       shared_examples "creates CbvApplicant with correct data" do |user_key, first_name, last_name, dob|
         it "creates a CbvApplicant with #{first_name}'s data" do

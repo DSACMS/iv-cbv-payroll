@@ -6,7 +6,7 @@ RSpec.describe Activities::Education::MonthsController, type: :controller do
   render_views
 
   let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
-  let(:education_activity) { create(:education_activity, activity_flow: activity_flow, data_source: :self_attested, school_name: "Test University", status: :succeeded) }
+  let(:education_activity) { create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "Test University", status: :succeeded) }
 
   before do
     session[:flow_id] = activity_flow.id

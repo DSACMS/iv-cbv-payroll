@@ -60,8 +60,8 @@ module ActivitiesHelper
 
   def education_cards(activities, reporting_months)
     activities.flat_map do |activity|
-      if activity.self_attested?
-        self_attested_education_cards(activity, reporting_months)
+      if activity.fully_self_attested?
+        fully_self_attested_education_cards(activity, reporting_months)
       else
         validated_education_cards(activity, reporting_months)
       end
@@ -121,7 +121,7 @@ module ActivitiesHelper
         {
           month: month_start,
           enrollment_status: overlapping ? enrollment_status_display(term.enrollment_status) : t("activities.hub.cards.not_enrolled"),
-          credit_hours: overlapping ? activity.credit_hours.to_i : 0
+          community_engagement_hours: overlapping && term.half_time_or_above? ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0
         }
       end
 
@@ -133,7 +133,7 @@ module ActivitiesHelper
     end
   end
 
-  def self_attested_education_cards(activity, reporting_months)
+  def fully_self_attested_education_cards(activity, reporting_months)
     months_by_date = activity.education_activity_months.index_by(&:month)
     months = reporting_months.reverse.map do |month_start|
       activity_month = months_by_date[month_start.beginning_of_month]

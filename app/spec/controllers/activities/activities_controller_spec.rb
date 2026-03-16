@@ -111,11 +111,18 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
   end
 
   context "when education activity has enrollment records" do
-    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
 
     before do
       education_activity = create(:education_activity, activity_flow: current_flow, status: :succeeded)
-      create(:nsc_enrollment_term, education_activity:, school_name: "Test University")
+      create(
+        :nsc_enrollment_term,
+        education_activity:,
+        school_name: "Test University",
+        enrollment_status: "half_time",
+        term_begin: current_flow.reporting_months.first.beginning_of_month,
+        term_end: current_flow.reporting_months.first.end_of_month
+      )
       session[:flow_id] = current_flow.id
       session[:flow_type] = :activity
       get :index
@@ -123,6 +130,9 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
     it "shows enrollment data and not the empty-state copy" do
       expect(response.body).to include("Test University")
+      expect(response.body).to include(I18n.t("activities.hub.cards.enrollment_status", status: "Half-time"))
+      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 12))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
   end
@@ -134,7 +144,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       education_activity = create(
         :education_activity,
         activity_flow: current_flow,
-        data_source: :self_attested,
+        data_source: :fully_self_attested,
         school_name: "Colorado Springs Community College"
       )
       create(

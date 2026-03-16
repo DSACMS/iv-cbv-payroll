@@ -21,8 +21,8 @@ class Activities::EducationController < Activities::BaseController
 
   def create
     if params[:education_activity]
-      @education_activity = @flow.education_activities.new(self_attested_education_params)
-      @education_activity.data_source = :self_attested
+      @education_activity = @flow.education_activities.new(fully_self_attested_education_params)
+      @education_activity.data_source = :fully_self_attested
       if @education_activity.save
         redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0)
       else
@@ -50,15 +50,15 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def update
-    if @education_activity.self_attested?
-      if @education_activity.update(self_attested_education_params)
+    if @education_activity.fully_self_attested?
+      if @education_activity.update(fully_self_attested_education_params)
         if params[:from_review].present?
           redirect_to review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence)
         else
           redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0, from_edit: params[:from_edit].presence)
         end
       else
-        render :edit_self_attested, status: :unprocessable_content
+        render :edit_fully_self_attested, status: :unprocessable_content
       end
     elsif @education_activity.update(education_params)
       redirect_to after_activity_path
@@ -68,7 +68,7 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def edit
-    render :edit_self_attested if @education_activity.self_attested?
+    render :edit_fully_self_attested if @education_activity.fully_self_attested?
   end
 
   def destroy
@@ -102,7 +102,7 @@ class Activities::EducationController < Activities::BaseController
 
   def save_review
     @education_activity.update(review_params)
-    redirect_to @education_activity.self_attested? ? activities_flow_root_path : after_activity_path
+    redirect_to @education_activity.fully_self_attested? ? activities_flow_root_path : after_activity_path
   end
 
   def error
@@ -146,7 +146,7 @@ class Activities::EducationController < Activities::BaseController
       )
   end
 
-  def self_attested_education_params
+  def fully_self_attested_education_params
     params.require(:education_activity).permit(
       :school_name, :street_address, :street_address_line_2,
       :city, :state, :zip_code,

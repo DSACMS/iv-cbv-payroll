@@ -27,6 +27,8 @@ class DemoLauncherController < ApplicationController
             build_generic_url(client_agency_id, overrides)
           elsif nsc_test_user.present?
             build_nsc_test_user_url(nsc_test_user, client_agency_id, overrides)
+          elsif params[:fake_test_user].present?
+            build_fake_test_user_url(params[:fake_test_user], client_agency_id, overrides)
           else
             build_tokenized_url(client_agency_id, overrides)
           end
@@ -102,6 +104,15 @@ class DemoLauncherController < ApplicationController
     )
   end
 
+  FAKE_TEST_USERS = {
+    "partial_enrollment" => {
+      first_name: "Sam",
+      last_name: "Testuser",
+      date_of_birth: "1990-05-15",
+      school_name: "Greenfield Community College"
+    }
+  }.freeze
+
   NSC_TEST_USERS = {
     "lynette" => { first_name: "Lynette", last_name: "Oyola", date_of_birth: "1988-10-24" },
     "rick" => { first_name: "Rick", last_name: "Banas", date_of_birth: "1979-08-18" },
@@ -131,5 +142,58 @@ class DemoLauncherController < ApplicationController
       protocol: request.protocol,
       **overrides
     )
+  end
+
+  def build_fake_test_user_url(user_key, client_agency_id, overrides)
+    user_data = FAKE_TEST_USERS[user_key]
+    raise ArgumentError, "Unknown fake test user: #{user_key}" unless user_data
+
+    cbv_applicant = CbvApplicant.create!(
+      first_name: user_data[:first_name],
+      last_name: user_data[:last_name],
+      date_of_birth: Date.parse(user_data[:date_of_birth]),
+      client_agency_id: client_agency_id
+    )
+
+    invitation = ActivityFlowInvitation.create!(
+      cbv_applicant: cbv_applicant,
+      client_agency_id: client_agency_id,
+      reference_id: "fake-demo-#{user_key}"
+    )
+
+    flow = ActivityFlow.create_from_invitation(
+      invitation,
+      cookies.permanent.signed[:device_id] || SecureRandom.uuid,
+      overrides.to_h.symbolize_keys
+    )
+
+    if overrides[:reporting_window_months].present?
+      flow.update!(reporting_window_months: overrides[:reporting_window_months].to_i)
+    end
+
+    identity = Identity.create!(
+      first_name: user_data[:first_name],
+      last_name: user_data[:last_name],
+      date_of_birth: Date.parse(user_data[:date_of_birth])
+    )
+    flow.update!(identity: identity)
+
+    education_activity = flow.education_activities.create!(
+      data_source: :partially_self_attested,
+      status: :succeeded
+    )
+
+    reporting_window = flow.reporting_window_range
+    education_activity.nsc_enrollment_terms.create!(
+      school_name: user_data[:school_name],
+      first_name: user_data[:first_name],
+      last_name: user_data[:last_name],
+      enrollment_status: :less_than_half_time,
+      term_begin: reporting_window.begin,
+      term_end: reporting_window.end
+    )
+
+    set_flow_session(flow.id, :activity)
+    activities_flow_root_url(host: request.host_with_port, protocol: request.protocol)
   end
 end

@@ -125,7 +125,7 @@ RSpec.describe ActivitiesHelper do
 
       result.first[:months].each do |month_data|
         expect(month_data[:enrollment_status]).to eq("Full-time")
-        expect(month_data[:credit_hours]).to eq(15)
+        expect(month_data[:community_engagement_hours]).to eq(80)
       end
     end
 
@@ -140,9 +140,9 @@ RSpec.describe ActivitiesHelper do
       first_month_data = result.first[:months].find { |m| m[:month] == first_month }
 
       expect(first_month_data[:enrollment_status]).to eq("Half-time")
-      expect(first_month_data[:credit_hours]).to eq(12)
+      expect(first_month_data[:community_engagement_hours]).to eq(80)
       expect(second_month_data[:enrollment_status]).to eq("Not enrolled")
-      expect(second_month_data[:credit_hours]).to eq(0)
+      expect(second_month_data[:community_engagement_hours]).to eq(0)
     end
 
     it "returns months in reverse chronological order" do
@@ -166,11 +166,11 @@ RSpec.describe ActivitiesHelper do
       )
     end
 
-    it "builds a self-attested card from activity months" do
+    it "builds a fully self-attested card from activity months" do
       activity = create(
         :education_activity,
         activity_flow: flow,
-        data_source: :self_attested,
+        data_source: :fully_self_attested,
         school_name: "Updated University of Illinois"
       )
       create(:education_activity_month, education_activity: activity, month: first_month.beginning_of_month, hours: 4)
