@@ -41,7 +41,6 @@ export default class extends Controller {
     const months = event.currentTarget.dataset.months
     this.monthsInputTarget.value = months
     this.highlightButton(months)
-    this.updateDatePickerFromMonths()
   }
 
   // private
@@ -109,7 +108,6 @@ export default class extends Controller {
       this.monthsInputTarget.value = "2"
       this.highlightButton("2")
     }
-    this.updateDatePickerFromMonths()
   }
 
   updateDatePickerFromMonths() {
