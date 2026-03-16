@@ -1,5 +1,16 @@
 <% content_for :title, t("activities.summary.title", benefit: agency_translation("shared.benefit")) %>
 
+<% content_for :activity_flow_header do %>
+  <div class="back-nav">
+    <%= link_to activities_flow_root_path, class: "back-nav__link" do %>
+      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+        <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#navigate_before") %>"></use>
+      </svg>
+      <%= t("activities.activity_header_component.back") %>
+    <% end %>
+  </div>
+<% end %>
+
 <h1>
   <%= t("activities.summary.title", benefit: agency_translation("shared.benefit")) %>
 </h1>
