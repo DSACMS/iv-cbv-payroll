@@ -26,7 +26,7 @@ class Activities::Education::MonthsController < Activities::BaseController
   end
 
   def redirect_validated_activity
-    redirect_to after_activity_path unless @education_activity.self_attested?
+    redirect_to after_activity_path unless @education_activity.fully_self_attested?
   end
 
   def hours_input_activity

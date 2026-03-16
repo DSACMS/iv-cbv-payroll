@@ -144,7 +144,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       education_activity = create(
         :education_activity,
         activity_flow: current_flow,
-        data_source: :self_attested,
+        data_source: :fully_self_attested,
         school_name: "Colorado Springs Community College"
       )
       create(

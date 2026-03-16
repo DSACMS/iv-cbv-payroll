@@ -1,4 +1,4 @@
-<% if activity.self_attested? %>
+<% if activity.fully_self_attested? %>
   <%= render(TableComponent.new(is_responsive: true)) do |table| %>
     <%= table.with_row do |row| %>
       <%= row.with_data_cell(is_header: true) do %>
