@@ -154,6 +154,10 @@ class FlowController < ApplicationController
       @flow.update!(reporting_window_months: params[:reporting_window_months].to_i)
     end
 
+    if params[:reporting_window_start].present? && @flow.is_a?(ActivityFlow)
+      @flow.shift_reporting_window_start!(params[:reporting_window_start])
+    end
+
     if params[:demo_timeout].present?
       session[:demo_timeout] = params[:demo_timeout].to_i.minutes.to_i
     end

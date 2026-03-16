@@ -18,7 +18,7 @@
         <label class="usa-radio__label" for="flow_type_cbv">Emmy Income</label>
       </div>
     <% end %>
-    <%= render DemoLauncher::SettingComponent.new(title: "Agency", hint: "Specify the agency the flow will use.") do %>
+    <%= render DemoLauncher::SettingComponent.new(title: "Agency", hint: "Select the agency the flow will use.") do %>
       <select class="usa-select" name="client_agency_id" id="client_agency_id">
         <% Rails.application.config.client_agencies.client_agency_ids.each do |agency_id| %>
           <option value="<%= agency_id %>" <%= "selected" if agency_id == "sandbox" %>><%= agency_id %></option>
@@ -26,7 +26,7 @@
       </select>
     <% end %>
     <div data-demo-launcher-target="ceOnly">
-    <%= render DemoLauncher::SettingComponent.new(title: "Reporting window", hint: "Specify the type of flow you want to create. This determines the number of months in the reporting window.") do %>
+    <%= render DemoLauncher::SettingComponent.new(title: "Reporting window", hint: "Select the type of flow you want to create. This determines the number of months in the reporting window.") do %>
       <div class="usa-radio">
         <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_application" value="application" <%= "checked" unless params[:reporting_window] == "renewal" %> data-action="demo-launcher#selectWindow">
         <label class="usa-radio__label" for="reporting_window_application">Application</label>
@@ -47,13 +47,31 @@
         <label class="usa-radio__label" for="reporting_window_renewal">Renewal</label>
       </div>
       <div class="usa-hint demo-launcher__separator">-- or --</div>
-      <div class="usa-hint">Specify the reporting window manually.</div>
       <div class="demo-launcher__inline-field">
         <input class="usa-input usa-input--sm" type="number" name="reporting_window_months"
                id="reporting_window_months" min="1" max="99" autocomplete="off"
                value="<%= params[:reporting_window_months] %>"
-               data-demo-launcher-target="monthsInput">
+               data-demo-launcher-target="monthsInput"
+               data-action="input->demo-launcher#updateDatePickerFromMonths">
         <span>months</span>
+        <span class="demo-launcher__hint-toggle" data-action="click->demo-launcher#toggleInlineHint"><svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg></span>
+      </div>
+      <div class="usa-hint demo-launcher__setting-hint" hidden>
+        Specify the reporting window manually.
+      </div>
+    <% end %>
+    <%= render DemoLauncher::SettingComponent.new(
+      title: "Reporting window start",
+      hint: "Specify when the reporting window begins. When set, the window runs forward from the beginning of the selected month. Leave blank to use the default (window ends at the latest completed month)."
+    ) do %>
+      <div class="usa-date-picker" data-demo-launcher-target="datePickerWrapper">
+        <input
+          class="usa-input"
+          type="text"
+          name="reporting_window_start"
+          id="reporting_window_start"
+          autocomplete="off"
+        >
       </div>
     <% end %>
     </div>
