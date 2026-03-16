@@ -25,7 +25,19 @@ class FeedbacksController < ApplicationController
     if params[:form] == "survey"
       survey_form_url
     else
-      feedback_form_url
+      append_prefill_params(feedback_form_url)
     end
+  end
+
+  def append_prefill_params(url)
+    device_id = cookies.permanent.signed[:device_id]
+    return url if device_id.blank?
+
+    uri = URI.parse(url)
+    params = URI.decode_www_form(uri.query || "")
+    params << [ "usp", "pp_url" ]
+    params << [ ApplicationHelper::FEEDBACK_FORM_DEVICE_ID_ENTRY, device_id ]
+    uri.query = URI.encode_www_form(params)
+    uri.to_s
   end
 end
