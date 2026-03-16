@@ -5,6 +5,17 @@
   <%= form_with(url: "/demo", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "demo-launcher" }) do |f| %>
     <div class="demo-launcher__two-col" data-demo-launcher-target="twoCol">
       <div class="demo-launcher__left-col">
+        <div class="demo-launcher__launch">
+          <h2>Launch</h2>
+          <div class="demo-launcher__launch-buttons">
+            <button type="submit" name="launch_type" value="tokenized" formtarget="_blank" class="usa-button demo-launcher__launch-button">
+              Tokenized
+            </button>
+            <button type="submit" name="launch_type" value="generic" formtarget="_blank" class="usa-button demo-launcher__launch-button" data-demo-launcher-target="genericButton">
+              Generic
+            </button>
+          </div>
+        </div>
         <div class="demo-launcher__test-scenarios" data-demo-launcher-target="ceOnly">
           <h3 class="demo-launcher__section-label">Test Scenarios</h3>
           <div class="demo-launcher__scenario-radios">
@@ -158,16 +169,6 @@
                    id="demo_timeout" min="1" max="999" autocomplete="off"
                    value="<%= params[:demo_timeout] || 30 %>">
             <span>minutes</span>
-          </div>
-        <% end %>
-        <%= render DemoLauncher::SettingComponent.new(title: "Launch", hint: "Open the configured flow in a new tab.") do %>
-          <div class="demo-launcher__launch-buttons">
-            <button type="submit" name="launch_type" value="tokenized" formtarget="_blank" class="usa-button demo-launcher__launch-button">
-              Tokenized
-            </button>
-            <button type="submit" name="launch_type" value="generic" formtarget="_blank" class="usa-button usa-button--outline demo-launcher__launch-button" data-demo-launcher-target="genericButton">
-              Generic
-            </button>
           </div>
         <% end %>
       </div>

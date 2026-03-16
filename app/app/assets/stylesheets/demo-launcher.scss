@@ -23,11 +23,12 @@
     display: contents;
   }
 
-  .demo-launcher__test-scenarios { order: 1; }
+  .demo-launcher__launch         { order: 1; }
   .demo-launcher__settings       { order: 2; }
+  .demo-launcher__test-scenarios { order: 3; }
 
   .demo-launcher__mobile-divider {
-    order: 1;
+    order: 2;
     border: none;
     border-top: 1px solid color("base-lighter");
     margin: units(3) 0;
@@ -103,13 +104,12 @@
     }
   }
 
-  // -- Launch buttons --
+  // -- Left column: launch --
   .demo-launcher__launch-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: units(1);
     margin-top: units(1);
-    margin-bottom: units(2);
   }
 
   .demo-launcher__launch-button {
@@ -119,6 +119,10 @@
   }
 
   // -- Left column: test scenarios --
+  .demo-launcher__test-scenarios {
+    margin-top: units(8);
+  }
+
   .demo-launcher__scenario-radios {
     margin-top: units(1);
     margin-bottom: units(2);
