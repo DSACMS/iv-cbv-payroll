@@ -51,6 +51,14 @@ RUN apt-get update -qq && \
       libunbound8 \
       # CVE-2025-14831 CVE-2025-9820 \
       libgnutls-dane0t64 libgnutls-openssl27t64 libgnutls28-dev libgnutls30t64 \
+      # CVE-2025-15281 CVE-2026-0915 CVE-2026-0861 \
+      libc-bin libc-dev-bin libc6 libc6-dev \
+      # CVE-2025-7709 \
+      libsqlite3-0 libsqlite3-dev \
+      # CVE-2026-2219 \
+      dpkg dpkg-dev libdpkg-perl \
+      # CVE-2025-61985 CVE-2025-61984 \
+      openssh-client \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -185,8 +193,11 @@ RUN apt-get update -qq && \
 RUN gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 debug && \
     gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 rss && \
     gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 rexml && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 uri && \
     gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 net-imap || true
+# uri is a default gem and can't be removed via gem uninstall, so remove it manually
+# GHSA-j4pr-3wm6-xx2r
+RUN rm -rf /usr/local/lib/ruby/gems/3.4.0/gems/uri-* \
+           /usr/local/lib/ruby/gems/3.4.0/specifications/default/uri-*
 
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/
