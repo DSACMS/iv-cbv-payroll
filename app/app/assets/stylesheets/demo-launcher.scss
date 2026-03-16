@@ -65,18 +65,6 @@
     .demo-launcher__mobile-divider {
       display: none;
     }
-
-    .demo-launcher__two-col--single {
-      grid-template-columns: 1fr;
-
-      .demo-launcher__settings {
-        padding-left: 0;
-
-        &::before {
-          display: none;
-        }
-      }
-    }
   }
 
   // -- Flow type radios --

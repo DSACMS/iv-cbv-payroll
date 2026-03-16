@@ -3,7 +3,7 @@
   <h1>Emmy Launcher 🏆🚀</h1>
   <div class="usa-hint demo-launcher__usa-hint">Configure settings and launch Emmy in a new tab.</div>
   <%= form_with(url: "/demo", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "demo-launcher" }) do |f| %>
-    <div class="demo-launcher__two-col" data-demo-launcher-target="twoCol">
+    <div class="demo-launcher__two-col">
       <div class="demo-launcher__left-col">
         <div class="demo-launcher__launch">
           <h2>Launch</h2>
