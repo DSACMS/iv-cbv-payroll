@@ -3,8 +3,136 @@
 
 // Demo launcher page
 .demo-launcher {
+  // -- Form override --
+  .usa-form {
+    max-width: none;
+  }
+
   .demo-launcher__usa-hint {
     margin-top: units(0.5);
+  }
+
+  // -- Layout: mobile (default) --
+  .demo-launcher__two-col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .demo-launcher__left-col {
+    display: contents;
+  }
+
+  .demo-launcher__flow-type      { order: 1; }
+  .demo-launcher__settings       { order: 2; }
+  .demo-launcher__launch         { order: 3; }
+  .demo-launcher__test-scenarios { order: 4; }
+
+  .demo-launcher__mobile-divider {
+    order: 2;
+    border: none;
+    border-top: 1px solid color("base-lighter");
+    margin: units(3) 0;
+  }
+
+  // -- Layout: desktop --
+  @include at-media("tablet") {
+    .demo-launcher__two-col {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: units(5);
+      align-items: start;
+    }
+
+    .demo-launcher__left-col {
+      display: block;
+    }
+
+    .demo-launcher__settings {
+      position: relative;
+      padding-left: units(5);
+      padding-top: units(3);
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: units(3);
+        left: 0;
+        bottom: 0;
+        width: 1px;
+        background-color: color("base-lighter");
+      }
+    }
+
+    .demo-launcher__mobile-divider {
+      display: none;
+    }
+  }
+
+  // -- Left column: flow type --
+  .demo-launcher__flow-type {
+    padding-top: units(3);
+  }
+
+  .demo-launcher__flow-type-radios {
+    display: flex;
+    gap: units(1);
+    margin-top: units(0.5);
+
+    .usa-radio {
+      flex: 1;
+    }
+  }
+
+  // -- Left column: shared section label --
+  .demo-launcher__section-label {
+    font-size: size("body", "2xs");
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: color("base");
+    margin-bottom: units(1);
+    margin-top: units(3);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  // -- Left column: launch --
+  .demo-launcher__launch > .demo-launcher__section-label {
+    margin-top: units(2);
+  }
+
+  .demo-launcher__launch-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: units(1);
+    margin-top: units(1);
+    margin-bottom: units(2);
+  }
+
+  .demo-launcher__launch-button {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+
+  // -- Left column: test scenarios --
+  .demo-launcher__scenario-radios {
+    margin-top: units(1);
+    margin-bottom: units(2);
+  }
+
+  .demo-launcher__scenario-desc {
+    display: block;
+    font-size: size("body", "2xs");
+    font-weight: normal;
+    color: color("base");
+  }
+
+  // -- Right column: settings --
+  .demo-launcher__settings > h2:first-child {
+    margin-top: 0;
   }
 
   .demo-launcher__setting {
@@ -13,6 +141,10 @@
 
   .demo-launcher__setting-title {
     margin-bottom: 0;
+  }
+
+  .demo-launcher__setting-body {
+    margin-top: units(0.5);
   }
 
   .demo-launcher__hint-toggle {
@@ -26,8 +158,9 @@
     margin-top: units(0.5);
   }
 
-  .demo-launcher__setting-body {
-    margin-top: units(0.5);
+  .demo-launcher__separator {
+    margin-top: units(3);
+    margin-bottom: units(2);
   }
 
   .demo-launcher__month-buttons {
@@ -52,11 +185,6 @@
     }
   }
 
-  .demo-launcher__separator {
-    margin-top: units(3);
-    margin-bottom: units(2);
-  }
-
   .demo-launcher__inline-field {
     display: flex;
     align-items: baseline;
@@ -68,39 +196,5 @@
       max-width: none;
       flex-shrink: 0;
     }
-  }
-
-  .demo-launcher__scenarios {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: units(1.5);
-    margin-top: units(2);
-
-    @include at-media("tablet") {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  .demo-launcher__scenario-button {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-    white-space: normal;
-    height: auto;
-    padding: units(2);
-    margin: 0;
-
-    strong {
-      display: block;
-      margin-bottom: units(0.5);
-    }
-  }
-
-  .demo-launcher__scenario-desc {
-    display: block;
-    font-size: size("body", "2xs");
-    font-weight: normal;
-    opacity: 0.9;
   }
 }

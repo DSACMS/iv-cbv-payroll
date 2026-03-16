@@ -9,8 +9,6 @@ class DemoLauncherController < ApplicationController
     flow_type = params[:flow_type]
     client_agency_id = params[:client_agency_id]
     launch_type = params[:launch_type]
-    nsc_test_user = params[:nsc_test_user]
-
     overrides = if flow_type == "cbv"
                   params.permit(:demo_timeout).select { |_, v| v.present? }
                 else
@@ -27,12 +25,12 @@ class DemoLauncherController < ApplicationController
             else
               build_cbv_tokenized_url(client_agency_id, overrides)
             end
+          elsif params[:test_scenario].in?(FAKE_SCENARIO_KEYS)
+            build_fake_test_scenario_url(params[:test_scenario], client_agency_id, overrides)
+          elsif params[:test_scenario].present?
+            build_test_scenario_url(params[:test_scenario], client_agency_id, overrides)
           elsif launch_type == "generic"
             build_generic_url(client_agency_id, overrides)
-          elsif nsc_test_user.present?
-            build_nsc_test_user_url(nsc_test_user, client_agency_id, overrides.except(:reporting_window_start))
-          elsif params[:fake_test_user].present?
-            build_fake_test_user_url(params[:fake_test_user], client_agency_id, overrides.except(:reporting_window_start))
           else
             build_tokenized_url(client_agency_id, overrides)
           end
@@ -116,31 +114,26 @@ class DemoLauncherController < ApplicationController
     )
   end
 
-  FAKE_TEST_USERS = {
+  TEST_SCENARIOS = {
+    "lynette" => { first_name: "Lynette", last_name: "Oyola", date_of_birth: "1988-10-24" },
+    "rick" => { first_name: "Rick", last_name: "Banas", date_of_birth: "1979-08-18" },
+    "dominique" => { first_name: "Dominique", last_name: "Ricardo", date_of_birth: "1978-01-12" },
+    "linda" => { first_name: "Linda", last_name: "Cooper", date_of_birth: "1999-01-01" },
     "partial_enrollment_sam" => {
-      first_name: "Sam",
-      last_name: "Testuser",
-      date_of_birth: "1990-05-15",
+      first_name: "Sam", last_name: "Testuser", date_of_birth: "1990-05-15",
       school_names: [ "Greenfield Community College", "North Valley College" ]
     },
     "partial_enrollment_ziggy" => {
-      first_name: "Ziggy",
-      last_name: "Testuser",
-      date_of_birth: "1992-07-19",
+      first_name: "Ziggy", last_name: "Testuser", date_of_birth: "1992-07-19",
       school_names: [ "Sunrise Community College" ]
     }
   }.freeze
 
-  NSC_TEST_USERS = {
-    "lynette" => { first_name: "Lynette", last_name: "Oyola", date_of_birth: "1988-10-24" },
-    "rick" => { first_name: "Rick", last_name: "Banas", date_of_birth: "1979-08-18" },
-    "dominique" => { first_name: "Dominique", last_name: "Ricardo", date_of_birth: "1978-01-12" },
-    "linda" => { first_name: "Linda", last_name: "Cooper", date_of_birth: "1999-01-01" }
-  }.freeze
+  FAKE_SCENARIO_KEYS = %w[partial_enrollment_sam partial_enrollment_ziggy].freeze
 
-  def build_nsc_test_user_url(user_key, client_agency_id, overrides)
-    user_data = NSC_TEST_USERS[user_key]
-    raise ArgumentError, "Unknown NSC test user: #{user_key}" unless user_data
+  def build_test_scenario_url(scenario_key, client_agency_id, overrides)
+    user_data = TEST_SCENARIOS[scenario_key]
+    raise ArgumentError, "Unknown test scenario: #{scenario_key}" unless user_data
 
     cbv_applicant = CbvApplicant.create!(
       first_name: user_data[:first_name],
@@ -152,7 +145,7 @@ class DemoLauncherController < ApplicationController
     invitation = ActivityFlowInvitation.create!(
       cbv_applicant: cbv_applicant,
       client_agency_id: client_agency_id,
-      reference_id: "nsc-demo-#{user_key}"
+      reference_id: "demo-#{scenario_key}"
     )
 
     invitation.to_url(
@@ -162,9 +155,9 @@ class DemoLauncherController < ApplicationController
     )
   end
 
-  def build_fake_test_user_url(user_key, client_agency_id, overrides)
-    user_data = FAKE_TEST_USERS[user_key]
-    raise ArgumentError, "Unknown fake test user: #{user_key}" unless user_data
+  def build_fake_test_scenario_url(scenario_key, client_agency_id, overrides)
+    user_data = TEST_SCENARIOS[scenario_key]
+    raise ArgumentError, "Unknown test scenario: #{scenario_key}" unless user_data
 
     cbv_applicant = CbvApplicant.create!(
       first_name: user_data[:first_name],
@@ -176,7 +169,7 @@ class DemoLauncherController < ApplicationController
     invitation = ActivityFlowInvitation.create!(
       cbv_applicant: cbv_applicant,
       client_agency_id: client_agency_id,
-      reference_id: "fake-demo-#{user_key}"
+      reference_id: "demo-#{scenario_key}"
     )
 
     flow = ActivityFlow.create_from_invitation(
