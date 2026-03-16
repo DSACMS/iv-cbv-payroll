@@ -54,6 +54,16 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(location).to include("demo_timeout=10")
       end
 
+      it "includes reporting_window_start param in the URL" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "generic",
+          reporting_window: "application",
+          reporting_window_start: "2024-10-01"
+        }
+        expect(response.location).to include("reporting_window_start=2024-10-01")
+      end
+
       it "filters out blank override params" do
         post :create, params: {
           client_agency_id: "sandbox",
@@ -126,11 +136,13 @@ RSpec.describe DemoLauncherController, type: :controller do
             launch_type: "generic",
             reporting_window: "application",
             reporting_window_months: "6",
+            reporting_window_start: "2024-10-01",
             demo_timeout: "10"
           }
           location = response.location
           expect(location).not_to include("reporting_window")
           expect(location).not_to include("reporting_window_months")
+          expect(location).not_to include("reporting_window_start")
           expect(location).to include("demo_timeout=10")
         end
       end
@@ -188,11 +200,13 @@ RSpec.describe DemoLauncherController, type: :controller do
             launch_type: "tokenized",
             reporting_window: "renewal",
             reporting_window_months: "3",
+            reporting_window_start: "2024-10-01",
             demo_timeout: "15"
           }
           location = response.location
           expect(location).not_to include("reporting_window")
           expect(location).not_to include("reporting_window_months")
+          expect(location).not_to include("reporting_window_start")
           expect(location).to include("demo_timeout=15")
         end
 
