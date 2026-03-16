@@ -73,11 +73,23 @@ export default class extends Controller {
     }
     if (start) {
       this.setDatePicker(start)
-    } else if (months) {
-      this.updateDatePickerFromMonths()
+    } else {
+      this.clearDatePicker()
     }
 
     this.updateGenericButton(hasScenario)
+  }
+
+  clearDatePicker() {
+    if (!this.hasDatePickerWrapperTarget) return
+    const internalInput = this.datePickerWrapperTarget.querySelector(
+      ".usa-date-picker__internal-input"
+    )
+    const externalInput = this.datePickerWrapperTarget.querySelector(
+      ".usa-date-picker__external-input"
+    )
+    if (internalInput) internalInput.value = ""
+    if (externalInput) externalInput.value = ""
   }
 
   setDatePicker(dateStr) {
