@@ -45,14 +45,12 @@ RSpec.describe "e2e Education partially self-attested review flow", :js, type: :
     visit review_activities_flow_education_path(id: education_activity)
     verify_page(
       page,
-      title: I18n.t(
-        "activities.education.review.title",
-        school_name: "Riverside Community College"
-      )
+      title: I18n.t("activities.education.review.title_no_school_name")
     )
 
     expect(page).to have_content(I18n.t("activities.education.review.enrollment_information_numbered", number: 1))
     expect(page).to have_content(I18n.t("activities.education.review.enrollment_information_numbered", number: 2))
+    expect(page).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
     expect(page).to have_content(I18n.t("activities.education.review.community_engagement_hours"))
     expect(page).to have_content(I18n.t("activities.education.review.ce_explainer_title"))
 

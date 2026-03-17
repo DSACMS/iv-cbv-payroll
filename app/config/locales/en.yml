@@ -215,6 +215,7 @@ en:
         school_info: School information
         school_name: School or program
         title: Review your student information for %{school_name}
+        title_no_school_name: Review your student information
       show:
         enrollment_dates: Enrollment dates
         enrollment_status: Enrollment status

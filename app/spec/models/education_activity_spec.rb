@@ -30,13 +30,13 @@ RSpec.describe EducationActivity do
     end
   end
 
-  describe "#review_school_name" do
+  describe "#review_header_school_name" do
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
 
     it "returns the school_name when present" do
       activity = build(:education_activity, activity_flow: flow, school_name: "Named School")
 
-      expect(activity.review_school_name).to eq("Named School")
+      expect(activity.review_header_school_name).to eq("Named School")
     end
 
     it "falls back to the first enrollment school name when school_name is blank" do
@@ -44,7 +44,35 @@ RSpec.describe EducationActivity do
       create(:nsc_enrollment_term, education_activity: activity, school_name: "First School", term_begin: Date.new(2026, 2, 1))
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Second School", term_begin: Date.new(2026, 1, 1))
 
-      expect(activity.review_school_name).to eq("First School")
+      expect(activity.review_header_school_name).to eq("First School")
+    end
+  end
+
+  describe "#review_description_school_names" do
+    let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
+
+    it "returns review_header_school_name for fully self-attested activities" do
+      activity = build(:education_activity, activity_flow: flow, data_source: :fully_self_attested, school_name: "Named School")
+
+      expect(activity.review_description_school_names).to eq("Named School")
+    end
+
+    it "returns a sentence of unique school names for partially self-attested activities" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded, school_name: nil)
+      create(:nsc_enrollment_term, education_activity: activity, school_name: "School A")
+      create(:nsc_enrollment_term, education_activity: activity, school_name: "School B")
+      create(:nsc_enrollment_term, education_activity: activity, school_name: "School A")
+
+      expect(activity.review_description_school_names).to eq("School A and School B")
+    end
+
+    it "returns a sentence with commas and and for three unique school names" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded, school_name: nil)
+      create(:nsc_enrollment_term, education_activity: activity, school_name: "School A")
+      create(:nsc_enrollment_term, education_activity: activity, school_name: "School B")
+      create(:nsc_enrollment_term, education_activity: activity, school_name: "School C")
+
+      expect(activity.review_description_school_names).to eq("School A, School B, and School C")
     end
   end
 

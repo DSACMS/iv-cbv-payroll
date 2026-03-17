@@ -1,9 +1,16 @@
 <% review_school_name = if @education_activity.partially_self_attested?
-                          @education_activity.review_school_name.presence || t("shared.not_applicable")
+                          @education_activity.review_header_school_name.presence || t("shared.not_applicable")
                         else
                           @education_activity.school_name
                         end %>
-<% content_for :title, t("activities.education.review.title", school_name: review_school_name) %>
+<% hide_school_name_in_header = @education_activity.partially_self_attested? && @education_activity.nsc_enrollment_terms.many? %>
+<% content_for :title do %>
+  <% if hide_school_name_in_header %>
+    <%= t("activities.education.review.title_no_school_name") %>
+  <% else %>
+    <%= t("activities.education.review.title", school_name: review_school_name) %>
+  <% end %>
+<% end %>
 
 <% content_for :activity_flow_header do %>
   <%= render ActivityFlowHeaderComponent.new(
@@ -14,10 +21,14 @@
 <% end %>
 
 <h1>
-  <%= t("activities.education.review.title", school_name: review_school_name) %>
+  <% if hide_school_name_in_header %>
+    <%= t("activities.education.review.title_no_school_name") %>
+  <% else %>
+    <%= t("activities.education.review.title", school_name: review_school_name) %>
+  <% end %>
 </h1>
 <p>
-  <%= t("activities.education.review.description", school_name: review_school_name) %>
+  <%= t("activities.education.review.description", school_name: @education_activity.review_description_school_names) %>
 </p>
 
 <% if @education_activity.partially_self_attested? %>

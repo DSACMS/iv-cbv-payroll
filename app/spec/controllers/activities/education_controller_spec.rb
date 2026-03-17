@@ -262,12 +262,14 @@ RSpec.describe Activities::EducationController, type: :controller do
 
         get :review, params: { id: education_activity.id }
 
+        doc = Capybara.string(response.body)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(I18n.t("activities.education.review.enrollment_information"))
         expect(response.body).to include(I18n.t("components.enrollment_term_table_component.school_or_program"))
         expect(response.body).to include(I18n.t("activities.education.review.credit_hours_section"))
         expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
         expect(response.body).to include(I18n.t("activities.education.review.ce_explainer_title"))
+        expect(doc).to have_text(I18n.t("activities.education.review.description", school_name: "University of Illinois"))
         expect(response.body).to include("0")
       end
 
@@ -288,8 +290,17 @@ RSpec.describe Activities::EducationController, type: :controller do
 
         get :review, params: { id: education_activity.id }
 
+        doc = Capybara.string(response.body)
         expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 1))
         expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 2))
+        expect(doc).to have_selector("h1", text: I18n.t("activities.education.review.title_no_school_name"))
+        expect(doc).to have_text(
+          I18n.t(
+            "activities.education.review.description",
+            school_name: "Half Time School and Less Than Half School"
+          )
+        )
+        expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
         expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
         expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(1)
       end
@@ -315,7 +326,14 @@ RSpec.describe Activities::EducationController, type: :controller do
         doc = Capybara.string(response.body)
         expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 1))
         expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 2))
-        expect(doc).to have_selector("h2", text: I18n.t("activities.education.review.credit_hours_section"), count: 2)
+        expect(doc).to have_selector("h1", text: I18n.t("activities.education.review.title_no_school_name"))
+        expect(doc).to have_text(
+          I18n.t(
+            "activities.education.review.description",
+            school_name: "School One and School Two"
+          )
+        )
+        expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 2)
         expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(2)
         expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
       end
