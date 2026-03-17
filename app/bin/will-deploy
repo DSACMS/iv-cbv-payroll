@@ -108,7 +108,8 @@ else
 fi
 
 # Generate output and capture it
-output='🚀 Will deploy `'${current_sha:0:7}'` to production: 🚀 (cc '"${tags}"')'$'\n\n'
+output='🚀 Will deploy `'${current_sha:0:7}'` to production: 🚀 (cc '"${tags}"')'$'\n'
+output+="🧪 *[Launch the demo →](https://la-verify-demo.navapbc.cloud/demo)*"$'\n\n'
 
 # Add categorized changes to output
 if [ ${#both_changes[@]} -gt 0 ]; then
@@ -139,7 +140,6 @@ if [ ${#other_changes[@]} -gt 0 ]; then
   done
 fi
 
-output+=$'\n'"🧪 *[Launch the demo →](https://la-verify-demo.navapbc.cloud/demo)*"$'\n'
 output+=$'\n'"See the [full diff on Github](https://github.com/DSACMS/iv-cbv-payroll/compare/${prod:0:7}..${current_sha:0:7})."$'\n'
 
 # Display output to user
