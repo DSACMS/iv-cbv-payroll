@@ -9,9 +9,6 @@
   <li><%= t(".option_1") %></li>
   <li><%= t(".option_2") %></li>
   <li><%= t(".option_3", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
-  <% if @cbv_flow.has_account_with_required_data? %>
-    <li><%= t("cbv.missing_results.show.continue_to_review", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
-  <% end %>
 </ol>
 
 <ul class="usa-button-group margin-top-5">
@@ -19,10 +16,6 @@
     <%= link_to t(".back_to_search"), @back_to_search_path, class: "usa-button usa-button--outline" %>
   </li>
   <li class="usa-button-group__item margin-bottom-0">
-    <% if @cbv_flow.has_account_with_required_data? %>
-      <%= link_to t(".continue_to_report"), cbv_flow_other_job_path, class: "usa-button" %>
-    <% else %>
-      <%= agency_translation("cbv.expired_invitations.show.cta_button_html", agency_url: agency_url) %>
-    <% end %>
+    <%= link_to t(".add_employment_manually"), new_activities_flow_income_employment_path, class: "usa-button", data: { turbo_frame: "_top" } %>
   </li>
 </ul>

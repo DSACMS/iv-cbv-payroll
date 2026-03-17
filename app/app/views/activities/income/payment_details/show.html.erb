@@ -6,11 +6,10 @@
 </h1>
 
 <%= t(".subheader_html",
-    start_date: format_date(@aggregator_report.from_date),
-    end_date: format_date(@aggregator_report.to_date),
-    agency_acronym: agency_translation("shared.agency_acronym"),
-    report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])
-  ) %>
+      start_date: format_date(@aggregator_report.from_date),
+      end_date: format_date(@aggregator_report.to_date),
+      agency_acronym: agency_translation("shared.agency_acronym"),
+    ) %>
 
 <%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @payroll_account, show_income: @is_w2_worker)) %>
 

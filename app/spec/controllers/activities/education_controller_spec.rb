@@ -212,27 +212,136 @@ RSpec.describe Activities::EducationController, type: :controller do
   end
 
   describe "GET #review" do
-    let(:education_activity) do
-      create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
+    context "when fully self-attested" do
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
+      end
+
+      it "renders the review page" do
+        get :review, params: { id: education_activity.id }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(education_activity.school_name)
+      end
+
+      it "displays education activity months" do
+        create(:education_activity_month, education_activity: education_activity, month: activity_flow.reporting_months.first, hours: 4)
+
+        get :review, params: { id: education_activity.id }
+
+        expect(response.body).to include("4")
+        expect(response.body).to include("16")
+      end
+
+      it "renders an edit link to school info with from_review" do
+        get :review, params: { id: education_activity.id }
+
+        doc = Capybara.string(response.body)
+        edit_link = doc.find("a", text: I18n.t("activities.hub.edit"))
+        expect(edit_link[:href]).to include("from_review=1")
+      end
     end
 
-    it "renders the review page" do
-      get :review, params: { id: education_activity.id }
+    context "when partially self-attested" do
+      let(:education_activity) do
+        create(
+          :education_activity,
+          activity_flow: activity_flow,
+          data_source: :partially_self_attested,
+          status: :succeeded
+        )
+      end
 
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include(education_activity.school_name)
-    end
+      it "renders enrollment review details for a single enrollment and fallback term hours" do
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "University of Illinois"
+        )
 
-    it "displays education activity months" do
-      create(:education_activity_month, education_activity: education_activity, month: activity_flow.reporting_months.first, hours: 4)
+        get :review, params: { id: education_activity.id }
 
-      get :review, params: { id: education_activity.id }
+        doc = Capybara.string(response.body)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(I18n.t("activities.education.review.enrollment_information"))
+        expect(response.body).to include(I18n.t("components.enrollment_term_table_component.school_or_program"))
+        expect(response.body).to include(I18n.t("activities.education.review.credit_hours_section"))
+        expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
+        expect(response.body).to include(I18n.t("activities.education.review.ce_explainer_title"))
+        expect(doc).to have_text(I18n.t("activities.education.review.description", school_name: "University of Illinois"))
+        expect(response.body).to include("0")
+      end
 
-      expect(response.body).to include("4")
-      expect(response.body).to include("16")
+      it "renders multiple enrollments and only shows term-hours table for less-than-half-time terms" do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "Half Time School",
+          enrollment_status: :half_time
+        )
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "Less Than Half School",
+          credit_hours: 4
+        )
+
+        get :review, params: { id: education_activity.id }
+
+        doc = Capybara.string(response.body)
+        expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 1))
+        expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 2))
+        expect(doc).to have_selector("h1", text: I18n.t("activities.education.review.title_no_school_name"))
+        expect(doc).to have_text(
+          I18n.t(
+            "activities.education.review.description",
+            school_name: "Half Time School and Less Than Half School"
+          )
+        )
+        expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
+        expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
+        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(1)
+      end
+
+      it "renders term-hours tables for each enrollment when all enrollments are less-than-half-time" do
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "School One",
+          credit_hours: 3
+        )
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "School Two",
+          credit_hours: 5
+        )
+
+        get :review, params: { id: education_activity.id }
+
+        doc = Capybara.string(response.body)
+        expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 1))
+        expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 2))
+        expect(doc).to have_selector("h1", text: I18n.t("activities.education.review.title_no_school_name"))
+        expect(doc).to have_text(
+          I18n.t(
+            "activities.education.review.description",
+            school_name: "School One and School Two"
+          )
+        )
+        expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 2)
+        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(2)
+        expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
+      end
     end
 
     it "sets back_url to document uploads when from_edit is absent" do
+      education_activity = create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
+
       get :review, params: { id: education_activity.id }
 
       expect(assigns(:back_url)).to eq(
@@ -241,17 +350,11 @@ RSpec.describe Activities::EducationController, type: :controller do
     end
 
     it "has no back_url when from_edit is present" do
+      education_activity = create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
+
       get :review, params: { id: education_activity.id, from_edit: 1 }
 
       expect(assigns(:back_url)).to be_nil
-    end
-
-    it "renders an edit link to school info with from_review" do
-      get :review, params: { id: education_activity.id }
-
-      doc = Capybara.string(response.body)
-      edit_link = doc.find("a", text: I18n.t("activities.hub.edit"))
-      expect(edit_link[:href]).to include("from_review=1")
     end
   end
 
