@@ -620,6 +620,7 @@ PLATFORMS
   arm64-darwin-21
   arm64-darwin-23
   arm64-darwin-24
+  arm64-darwin-25
   x86_64-darwin-20
   x86_64-darwin-22
   x86_64-darwin-23
@@ -697,7 +698,7 @@ DEPENDENCIES
   wkhtmltopdf-binary
 
 RUBY VERSION
-   ruby 3.4.5p51
+   ruby 3.4.9p82
 
 BUNDLED WITH
-   2.7.2
+   2.6.9
