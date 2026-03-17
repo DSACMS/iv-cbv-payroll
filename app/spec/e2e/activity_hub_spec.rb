@@ -310,7 +310,12 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     visit activities_flow_root_path
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content "Test University"
-    expect(page).to have_content I18n.t("activities.hub.cards.enrollment_status", status: "Less than half-time")
+    expect(page).to have_content(
+      I18n.t(
+        "activities.hub.cards.enrollment_status",
+        status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+      )
+    )
     expect(page).to have_content I18n.t("activities.hub.cards.credit_hours", amount: 0)
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 0)
   end
