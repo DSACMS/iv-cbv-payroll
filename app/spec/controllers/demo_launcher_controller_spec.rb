@@ -233,6 +233,20 @@ RSpec.describe DemoLauncherController, type: :controller do
       end
     end
 
+    context "behind a reverse proxy (ngrok)" do
+      it "does not include the local server port in redirect URLs" do
+        request.headers["X-Forwarded-Proto"] = "https"
+        request.headers["Host"] = "abc123.ngrok-free.app"
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "generic",
+          reporting_window: "application"
+        }
+        expect(response.location).to start_with("https://abc123.ngrok-free.app/")
+        expect(response.location).not_to include(":3000")
+      end
+    end
+
     context "with an NSC test scenario" do
       shared_examples "creates CbvApplicant with correct data" do |scenario_key, first_name, last_name, dob|
         it "creates a CbvApplicant with #{first_name}'s data" do

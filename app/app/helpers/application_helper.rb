@@ -80,8 +80,9 @@ module ApplicationHelper
     end
   end
 
-  APPLICANT_FEEDBACK_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform"
+  APPLICANT_FEEDBACK_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSdTdLUdhZbn6JcHvR_SN6zbIKhhPfVvs6aeJHz6UrZ9j-83AA/viewform"
   APPLICANT_SURVEY_FORM = "https://forms.gle/M9jVQNue96rjQTbD9"
+  FEEDBACK_FORM_DEVICE_ID_ENTRY = "entry.1176961978"
 
   def feedback_form_url
     APPLICANT_FEEDBACK_FORM
