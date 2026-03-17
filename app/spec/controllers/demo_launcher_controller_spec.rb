@@ -297,6 +297,26 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(term.school_name).to eq("Sunrise Community College")
       end
 
+      it "supports launching Casey fake test user with mixed enrollment statuses" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            fake_test_user: "partial_enrollment_casey"
+          }
+        }.to change(ActivityFlow, :count).by(1)
+          .and change(EducationActivity, :count).by(1)
+          .and change(NscEnrollmentTerm, :count).by(2)
+
+        flow = ActivityFlow.last
+        identity = flow.identity
+        terms = flow.education_activities.first.nsc_enrollment_terms
+
+        expect(identity.first_name).to eq("Casey")
+        expect(identity.last_name).to eq("Testuser")
+        expect(terms.map(&:school_name)).to contain_exactly("Pine Valley College", "Riverside Community College")
+        expect(terms.map(&:enrollment_status)).to contain_exactly("half_time", "less_than_half_time")
+      end
+
       it "sets the flow session" do
         post :create, params: {
           client_agency_id: "sandbox",

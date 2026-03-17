@@ -209,10 +209,13 @@ en:
         credit_hours_section: Credit hours
         description: Review all the information you've added for %{school_name} before adding it to your community engagement report.
         edit: Edit
+        enrollment_information: Enrollment information
+        enrollment_information_numbered: 'Enrollment #%{number} information'
         save: Save and add to report
         school_info: School information
         school_name: School or program
         title: Review your student information for %{school_name}
+        title_no_school_name: Review your student information
       show:
         enrollment_dates: Enrollment dates
         enrollment_status: Enrollment status
