@@ -142,7 +142,7 @@ class DemoLauncherController < ApplicationController
     }
   }.freeze
 
-  FAKE_SCENARIO_KEYS = %w[partial_enrollment_sam partial_enrollment_ziggy].freeze
+  FAKE_SCENARIO_KEYS = %w[partial_enrollment_sam partial_enrollment_ziggy partial_enrollment_casey].freeze
 
   def build_test_scenario_url(scenario_key, client_agency_id, overrides)
     user_data = TEST_SCENARIOS[scenario_key]
