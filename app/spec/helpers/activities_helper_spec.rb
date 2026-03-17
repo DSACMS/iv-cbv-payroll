@@ -101,7 +101,7 @@ RSpec.describe ActivitiesHelper do
     let(:reporting_months) { [ first_month, second_month ] }
 
     it "uses school name from enrollment term as card title" do
-      activity = create(:education_activity, activity_flow: flow, credit_hours: 12)
+      activity = create(:education_activity, activity_flow: flow)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "STATE UNIVERSITY", term_begin: first_month, term_end: second_month.end_of_month)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
@@ -110,7 +110,7 @@ RSpec.describe ActivitiesHelper do
     end
 
     it "returns empty array when activity has no enrollment terms" do
-      activity = create(:education_activity, activity_flow: flow, credit_hours: 12)
+      activity = create(:education_activity, activity_flow: flow)
 
       result = helper.education_cards([ activity ], reporting_months)
 
@@ -118,19 +118,19 @@ RSpec.describe ActivitiesHelper do
     end
 
     it "shows enrollment status for months with overlapping terms" do
-      activity = create(:education_activity, activity_flow: flow, credit_hours: 15)
+      activity = create(:education_activity, activity_flow: flow)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", enrollment_status: "full_time", term_begin: first_month, term_end: second_month.end_of_month)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
       result.first[:months].each do |month_data|
-        expect(month_data[:enrollment_status]).to eq("Full-time")
+        expect(month_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.full_time"))
         expect(month_data[:community_engagement_hours]).to eq(80)
       end
     end
 
     it "shows 'Not enrolled' for months without overlapping terms" do
-      activity = create(:education_activity, activity_flow: flow, credit_hours: 12)
+      activity = create(:education_activity, activity_flow: flow)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", enrollment_status: "half_time", term_begin: first_month, term_end: first_month.end_of_month)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
@@ -139,14 +139,14 @@ RSpec.describe ActivitiesHelper do
       second_month_data = result.first[:months].find { |m| m[:month] == second_month }
       first_month_data = result.first[:months].find { |m| m[:month] == first_month }
 
-      expect(first_month_data[:enrollment_status]).to eq("Half-time")
+      expect(first_month_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.half_time"))
       expect(first_month_data[:community_engagement_hours]).to eq(80)
-      expect(second_month_data[:enrollment_status]).to eq("Not enrolled")
+      expect(second_month_data[:enrollment_status]).to eq(I18n.t("activities.hub.cards.not_enrolled"))
       expect(second_month_data[:community_engagement_hours]).to eq(0)
     end
 
     it "returns months in reverse chronological order" do
-      activity = create(:education_activity, activity_flow: flow, credit_hours: 12)
+      activity = create(:education_activity, activity_flow: flow)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", term_begin: first_month, term_end: second_month.end_of_month)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
@@ -156,7 +156,7 @@ RSpec.describe ActivitiesHelper do
     end
 
     it "includes edit path to education edit" do
-      activity = create(:education_activity, activity_flow: flow, credit_hours: 12)
+      activity = create(:education_activity, activity_flow: flow)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", term_begin: first_month, term_end: second_month.end_of_month)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
