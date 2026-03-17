@@ -304,6 +304,7 @@ en:
         enrollment_status: 'Enrollment: %{status}'
         gross_income: 'Gross income: %{amount}'
         hours: 'Community engagement hours: %{count}'
+        no_employment_data: No payments found from this employer.
         not_enrolled: Not enrolled
       description_html: "<strong>Reporting period:</strong> %{reporting_window}"
       edit: Edit
@@ -346,8 +347,8 @@ en:
           continue: Continue
           header: Review your information from %{employer_name}
           header_no_employer_name: Your information from your employer
-          none_found: We didn't find any payments from this employer in the past %{report_data_range}.
-          none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, add a comment below.
+          none_found: We didn't find any payments from this employer
+          none_found_description: This typically happens when you haven't received income from this job between %{start_date} and %{end_date}. If you believe this is an error, add a comment below.
           subheader_html: "<p>We have gathered your records from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
           unknown: Unknown
       synchronization_failures:

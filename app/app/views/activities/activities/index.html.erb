@@ -38,6 +38,11 @@
               <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
             <% end %>
             <% card.with_body do %>
+              <% if card_data[:months].none? %>
+                <div class="margin-top-2">
+                  <%= t("activities.hub.cards.no_employment_data") %>
+                </div>
+              <% end %>
               <% card_data[:months].each do |month_data| %>
                 <div class="activity-month-details">
                   <div class="activity-month-details__month">
