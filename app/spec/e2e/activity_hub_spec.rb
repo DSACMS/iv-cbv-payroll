@@ -265,8 +265,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.title"))
 
     current_flow = ActivityFlow.order(created_at: :desc).first
-    education_activity = create(:education_activity, activity_flow: current_flow, status: :succeeded)
-    create(:nsc_enrollment_term, education_activity:, school_name: "Test University")
+    education_activity = create(:education_activity, activity_flow: current_flow)
+    create(:nsc_enrollment_term, education_activity:)
 
     visit activities_flow_root_path
     verify_page(page, title: I18n.t("activities.hub.title"))
@@ -283,6 +283,41 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
+  end
+
+  it "shows less-than-half-time education card details on the hub" do
+    visit URI(root_url).request_uri
+    visit activities_flow_entry_path(client_agency_id: "sandbox")
+    verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
+    click_link I18n.t("activities.entries.show.continue")
+    verify_page(page, title: I18n.t("activities.hub.title"))
+
+    current_flow = ActivityFlow.order(created_at: :desc).first
+    education_activity = create(
+      :education_activity,
+      activity_flow: current_flow,
+      data_source: :partially_self_attested
+    )
+    create(
+      :nsc_enrollment_term,
+      :less_than_half_time,
+      education_activity: education_activity,
+      credit_hours: 4,
+      term_begin: current_flow.reporting_months.first.beginning_of_month,
+      term_end: current_flow.reporting_months.first.end_of_month
+    )
+
+    visit activities_flow_root_path
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_content "Test University"
+    expect(page).to have_content(
+      I18n.t(
+        "activities.hub.cards.enrollment_status",
+        status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+      )
+    )
+    expect(page).to have_content I18n.t("activities.hub.cards.credit_hours", amount: 0)
+    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 0)
   end
 
   it "supports editing a community service activity through the full flow" do # rubocop:disable RSpec/ExampleLength

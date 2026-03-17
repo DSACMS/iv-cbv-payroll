@@ -114,12 +114,10 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
 
     before do
-      education_activity = create(:education_activity, activity_flow: current_flow, status: :succeeded)
+      education_activity = create(:education_activity, activity_flow: current_flow)
       create(
         :nsc_enrollment_term,
         education_activity:,
-        school_name: "Test University",
-        enrollment_status: "half_time",
         term_begin: current_flow.reporting_months.first.beginning_of_month,
         term_end: current_flow.reporting_months.first.end_of_month
       )
@@ -130,9 +128,46 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
     it "shows enrollment data and not the empty-state copy" do
       expect(response.body).to include("Test University")
-      expect(response.body).to include(I18n.t("activities.hub.cards.enrollment_status", status: "Half-time"))
+      expect(response.body).to include(
+        I18n.t(
+          "activities.hub.cards.enrollment_status",
+          status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        )
+      )
       expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
       expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 12))
+      expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
+    end
+  end
+
+  context "when education activity has less-than-half-time enrollment records" do
+    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
+
+    before do
+      education_activity = create(:education_activity, activity_flow: current_flow, data_source: :partially_self_attested)
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        credit_hours: 4,
+        term_begin: current_flow.reporting_months.first.beginning_of_month,
+        term_end: current_flow.reporting_months.first.end_of_month
+      )
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "shows enrollment status with zeroed credit hours and CE hours on the education card" do
+      expect(response.body).to include("Test University")
+      expect(response.body).to include(
+        I18n.t(
+          "activities.hub.cards.enrollment_status",
+          status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        )
+      )
+      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 0))
+      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 0))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
   end
