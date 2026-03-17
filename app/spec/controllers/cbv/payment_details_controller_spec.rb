@@ -124,16 +124,6 @@ RSpec.describe Cbv::PaymentDetailsController do
           expect(response.body).not_to include(comment)
         end
       end
-
-      context "for an ActivityFlow" do
-        let(:flow) { create(:activity_flow) }
-        let(:flow_type) { :activity }
-
-        it "renders properly" do
-          get :show, params: { user: { account_id: account_id } }
-          expect(response).to be_successful
-        end
-      end
     end
 
     context "when report paystubs aren't present" do
@@ -467,22 +457,6 @@ RSpec.describe Cbv::PaymentDetailsController do
 
       patch :update, params: { user: { account_id: account_id },
                                payroll_account: { additional_information: comment } }
-    end
-
-    context "for an ActivityFlow" do
-      let(:flow) { create(:activity_flow) }
-      let(:flow_type) { :activity }
-
-      it "updates the account comment" do
-        payroll_account = flow.payroll_accounts.find_by(aggregator_account_id: account_id)
-
-        expect do
-          patch :update, params: { user: { account_id: account_id },
-                                   payroll_account: { additional_information: comment } }
-        end.to change { payroll_account.reload.additional_information }
-          .from(old_comment)
-          .to(comment)
-      end
     end
   end
 end

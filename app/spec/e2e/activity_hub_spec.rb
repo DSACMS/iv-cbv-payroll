@@ -144,7 +144,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
   def add_self_attested_employment_activity
     within("[data-activity-type='employment']") { click_button I18n.t("activities.hub.add") }
-    verify_page(page, title: I18n.t("cbv.employer_searches.show.activity_flow.header"))
+    verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
     visit new_activities_flow_income_employment_path
     verify_page(page, title: I18n.t("activities.employment_info.title"))
     fill_in I18n.t("activities.employment_info.employer_name"), with: "Gainesville Wrecking"
@@ -190,7 +190,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     within("[data-activity-type='employment']") do
       click_button I18n.t("activities.hub.add")
     end
-    verify_page(page, title: I18n.t("cbv.employer_searches.show.activity_flow.header"))
+    verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
     @e2e.replay_modal_callbacks(page.driver.browser) do
       click_button "Paychex"
     end
@@ -210,13 +210,13 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       expect(page).to have_no_css("div[id*='argyle-link-root']", visible: :all, wait: 30)
     end
     # /activities/income/synchronizations
-    verify_page(page, title: I18n.t("cbv.synchronizations.show.activity_flow.header"), wait: 15)
+    verify_page(page, title: I18n.t("activities.income.synchronizations.show.header"), wait: 15)
     # /activities/income/payment_details
     @e2e.replay_webhooks
-    verify_page(page, title: I18n.t("cbv.payment_details.show.activity_flow.header", employer_name: ""), wait: 60)
+    verify_page(page, title: I18n.t("activities.income.payment_details.show.header", employer_name: ""), wait: 60)
     fill_in "payroll_account[additional_information]",
       with: "Some kind of additional information"
-    click_button I18n.t("cbv.payment_details.show.continue")
+    click_button I18n.t("activities.income.payment_details.show.continue")
     verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
 
     # /activities/summary

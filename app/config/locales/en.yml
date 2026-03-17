@@ -313,6 +313,54 @@ en:
       review_and_submit: Review and Submit
       save: Save changes
       title: Add activities to your community engagement report
+    income:
+      employer_searches:
+        employer:
+          add_employment_manually: Add employment manually
+          cant_find_employer: Can't find your employer or business?
+          no_results_body: You will need to enter information about your employment manually. You will also need to upload documents like pay stubs.
+          no_results_title: We couldn't find your employer or business.
+          results:
+            one: 1 result
+            other: "%{count} results"
+          search_subheader: Please select your employer or business from the list below.
+          select: Select
+        show:
+          add_employment_manually: Add employment manually
+          alert:
+            heading: Can't connect to your payroll provider?
+          app_based_providers: App-based providers
+          header: Search for your employer
+          payroll_providers: Payroll providers
+          popular_providers: Popular providers
+          search: Search
+          search_label: Search for the employer or business you want to add. If you can't find it, you can add it manually.
+      error_no_access: You don't have permission to access that information
+      payment_details:
+        show:
+          additional_information_header: Additional information
+          additional_information_label: Share any comments or additional information about the details above that you'd like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
+          continue: Continue
+          header: Review your information from %{employer_name}
+          header_no_employer_name: Your information from your employer
+          none_found: We didn't find any payments from this employer in the past %{report_data_range}.
+          none_found_description: This typically happens when you haven't received income from this job in the past %{report_data_range}. If you believe this is an error, add a comment below.
+          subheader_html: "<p>We have gathered your records from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
+          unknown: Unknown
+      synchronization_failures:
+        show:
+          add_employment_manually: Add employment manually
+          back_to_search: Back to employer search
+          description: 'We were unable to connect to your employer''s system due to an error. To continue, you can:'
+          option_1: Go back to employer search to retry adding this employer.
+          option_2: Go back to employer search to add another job.
+          option_3: Submit your income information for this employer directly to %{agency_acronym}.
+          title: We couldn't access your employer information
+      synchronizations:
+        show:
+          header: We’re gathering details from your employer
+        status:
+          fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
     job_training:
       document_upload_suggestion_text_html: "<ul><li>Signed statement on organization letterhead verifying hours</li><li>Signed monthly log of participation</li><li>Program tuition receipt</li></ul>"
       edit_title: Edit Work Program Activity
@@ -616,15 +664,6 @@ en:
         error_updating_applicant: An error occurred while updating the applicant information. Please try again.
     employer_searches:
       show:
-        activity_flow:
-          add_employment_manually: Add employment manually
-          alert:
-            heading: Can't connect to your payroll provider?
-          cant_find_employer: Can't find your employer or business?
-          header: Search for your employer
-          no_results_body: You will need to enter information about your employment manually. You will also need to upload documents like pay stubs.
-          no_results_title: We couldn't find your employer or business.
-          search_label: Enter the name of your employer. If you work for yourself, enter the name of your business.
         alert:
           heading: Need help connecting to your payroll provider?
           help_options: Get help here.
@@ -726,11 +765,6 @@ en:
         radio_yes: Yes, I will report other income directly to %{agency_acronym}
     payment_details:
       show:
-        activity_flow:
-          additional_information_label: Share any comments or additional information about the details above that you'd like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
-          header: Review your information from %{employer_name}
-          header_no_employer_name: Your information from your employer
-          subheader_html: "<p>We have gathered your records from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Continue
@@ -873,8 +907,6 @@ en:
         income: Income
         paystubs: Paystubs
       show:
-        activity_flow:
-          header: We’re gathering details from your employer
         header: We’re gathering your payment details from your employer
       status:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.

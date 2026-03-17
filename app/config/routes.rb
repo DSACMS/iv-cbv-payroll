@@ -73,10 +73,10 @@ Rails.application.routes.draw do
       resource :submit, only: %i[show update], controller: "submit", format: %i[html pdf]
       resource :success, only: %i[show], controller: "success"
       scope "/income", as: :income do
-        resource :employer_search, only: %i[show], controller: "/cbv/employer_searches"
-        resource :synchronizations, only: %i[show update], controller: "/cbv/synchronizations"
-        resource :synchronization_failures, only: %i[show], controller: "/cbv/synchronization_failures"
-        resource :payment_details, only: %i[show update], controller: "/cbv/payment_details"
+        resource :employer_search, only: %i[show], controller: "income/employer_searches"
+        resource :synchronizations, only: %i[show update], controller: "income/synchronizations"
+        resource :synchronization_failures, only: %i[show], controller: "income/synchronization_failures"
+        resource :payment_details, only: %i[show update], controller: "income/payment_details"
         resources :employment, only: %i[new create edit update], controller: "/activities/employment" do
           resources :months, only: %i[edit update], controller: "employment/months"
           member do

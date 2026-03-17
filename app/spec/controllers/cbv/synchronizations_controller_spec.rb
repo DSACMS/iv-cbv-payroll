@@ -75,17 +75,6 @@ RSpec.describe Cbv::SynchronizationsController do
 
         patch :update, params: { user: { account_id: payroll_account.aggregator_account_id } }
       end
-
-      context "for an ActivityFlow" do
-        let(:flow) { create(:activity_flow) }
-        let(:flow_type) { :activity }
-
-        it "renders the page" do
-          patch :update, params: { user: { account_id: payroll_account.aggregator_account_id } }
-
-          expect(response.body).to include("turbo-frame id=\"synchronization\"")
-        end
-      end
     end
 
     context "when account exists but paystubs synchronization fails" do

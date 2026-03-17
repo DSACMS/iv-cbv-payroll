@@ -1,7 +1,7 @@
 <div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @flow.id %>">
   <div data-cbv-employer-search-target="helpAlert" class="display-none margin-bottom-4">
-    <%= render Uswds::Alert.new(type: :warning, heading: t(".alert.heading")) do %>
-      <%= render("help/help_link", text: t(".alert.help_options"), source: "banner") %>
+    <%= render Uswds::Alert.new(type: :info, heading: t(".alert.heading")) do %>
+      <%= link_to t(".add_employment_manually"), new_activities_flow_income_employment_path, class: "usa-link", data: { turbo_frame: "_top" } %>
     <% end %>
   </div>
 
@@ -87,29 +87,5 @@
         </div>
       <% end %>
     </div>
-  <% end %>
-
-  <% unless @flow.is_a?(ActivityFlow) %>
-    <div class="divider margin-bottom-2 margin-top-5"></div>
-
-    <h2><%= t(".common_questions_header") %></h2>
-
-    <%= render AccordionComponent.new(id: "employer-search-lost-job",
-                                     heading_level: 2,
-                                     data_action: "click->common-questions#view",
-                                     data_section_identifier: "what_if_i_lost_my_job",
-                                     data_page: "employer_search") do |a| %>
-      <% a.with_title { t(".lost_job_title") } %>
-      <% a.with_accordion_item { t(".lost_job_body_html") } %>
-    <% end %>
-
-    <%= render AccordionComponent.new(id: "employer-search-no-income",
-                                     heading_level: 2,
-                                     data_action: "click->common-questions#view",
-                                     data_section_identifier: "what_if_i_have_no_income_to_report",
-                                     data_page: "employer_search") do |a| %>
-      <% a.with_title { t(".no_income_title") } %>
-      <% a.with_accordion_item { t(".no_income_body", agency_acronym: agency_translation("shared.agency_acronym")) } %>
-    <% end %>
   <% end %>
 </div>
