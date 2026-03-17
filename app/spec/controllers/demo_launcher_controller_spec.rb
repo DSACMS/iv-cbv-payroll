@@ -238,7 +238,7 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
-            fake_test_user: "partial_enrollment_sam"
+            test_scenario: "partial_enrollment_sam"
           }
         }.to change(ActivityFlow, :count).by(1)
           .and change(EducationActivity, :count).by(1)
@@ -260,7 +260,7 @@ RSpec.describe DemoLauncherController, type: :controller do
       it "creates an Identity with the fake user's details" do
         post :create, params: {
           client_agency_id: "sandbox",
-          fake_test_user: "partial_enrollment_sam"
+          test_scenario: "partial_enrollment_sam"
         }
 
         identity = ActivityFlow.last.identity
@@ -274,7 +274,7 @@ RSpec.describe DemoLauncherController, type: :controller do
           2.times do
             post :create, params: {
               client_agency_id: "sandbox",
-              fake_test_user: "partial_enrollment_sam"
+              test_scenario: "partial_enrollment_sam"
             }
           end
         }.to change(Identity, :count).by(1)
@@ -284,7 +284,7 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
-            fake_test_user: "partial_enrollment_ziggy"
+            test_scenario: "partial_enrollment_ziggy"
           }
         }.to change(ActivityFlow, :count).by(1)
           .and change(EducationActivity, :count).by(1)
@@ -303,7 +303,7 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
-            fake_test_user: "partial_enrollment_casey"
+            test_scenario: "partial_enrollment_casey"
           }
         }.to change(ActivityFlow, :count).by(1)
           .and change(EducationActivity, :count).by(1)
@@ -322,7 +322,7 @@ RSpec.describe DemoLauncherController, type: :controller do
       it "sets the flow session" do
         post :create, params: {
           client_agency_id: "sandbox",
-          fake_test_user: "partial_enrollment_sam"
+          test_scenario: "partial_enrollment_sam"
         }
 
         expect(session[:flow_id]).to eq(ActivityFlow.last.id)
@@ -333,9 +333,9 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
-            fake_test_user: "nonexistent"
+            test_scenario: "nonexistent"
           }
-        }.to raise_error(ArgumentError, "Unknown fake test user: nonexistent")
+        }.to raise_error(ArgumentError, "Unknown test scenario: nonexistent")
       end
     end
 
