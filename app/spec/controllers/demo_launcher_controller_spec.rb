@@ -54,6 +54,16 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(location).to include("demo_timeout=10")
       end
 
+      it "includes reporting_window_start param in the URL" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "generic",
+          reporting_window: "application",
+          reporting_window_start: "2024-10-01"
+        }
+        expect(response.location).to include("reporting_window_start=2024-10-01")
+      end
+
       it "filters out blank override params" do
         post :create, params: {
           client_agency_id: "sandbox",
@@ -126,11 +136,13 @@ RSpec.describe DemoLauncherController, type: :controller do
             launch_type: "generic",
             reporting_window: "application",
             reporting_window_months: "6",
+            reporting_window_start: "2024-10-01",
             demo_timeout: "10"
           }
           location = response.location
           expect(location).not_to include("reporting_window")
           expect(location).not_to include("reporting_window_months")
+          expect(location).not_to include("reporting_window_start")
           expect(location).to include("demo_timeout=10")
         end
       end
@@ -188,11 +200,13 @@ RSpec.describe DemoLauncherController, type: :controller do
             launch_type: "tokenized",
             reporting_window: "renewal",
             reporting_window_months: "3",
+            reporting_window_start: "2024-10-01",
             demo_timeout: "15"
           }
           location = response.location
           expect(location).not_to include("reporting_window")
           expect(location).not_to include("reporting_window_months")
+          expect(location).not_to include("reporting_window_start")
           expect(location).to include("demo_timeout=15")
         end
 
@@ -222,11 +236,11 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
-            fake_test_user: "partial_enrollment"
+            fake_test_user: "partial_enrollment_sam"
           }
         }.to change(ActivityFlow, :count).by(1)
           .and change(EducationActivity, :count).by(1)
-          .and change(NscEnrollmentTerm, :count).by(1)
+          .and change(NscEnrollmentTerm, :count).by(2)
 
         flow = ActivityFlow.last
         education_activity = flow.education_activities.first
@@ -234,17 +248,17 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(education_activity.data_source).to eq("partially_self_attested")
         expect(education_activity.status).to eq("succeeded")
 
-        term = education_activity.nsc_enrollment_terms.first
-        expect(term.school_name).to eq("Greenfield Community College")
-        expect(term.enrollment_status).to eq("less_than_half_time")
+        terms = education_activity.nsc_enrollment_terms
+        expect(terms.map(&:school_name)).to contain_exactly("Greenfield Community College", "North Valley College")
+        expect(terms.map(&:enrollment_status)).to all(eq("less_than_half_time"))
 
-        expect(response).to redirect_to(%r{/activities})
+        expect(response).to redirect_to(%r{/activities$})
       end
 
       it "creates an Identity with the fake user's details" do
         post :create, params: {
           client_agency_id: "sandbox",
-          fake_test_user: "partial_enrollment"
+          fake_test_user: "partial_enrollment_sam"
         }
 
         identity = ActivityFlow.last.identity
@@ -253,10 +267,40 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(identity.date_of_birth).to eq(Date.parse("1990-05-15"))
       end
 
+      it "reuses the same Identity across repeated launches for the fake user" do
+        expect {
+          2.times do
+            post :create, params: {
+              client_agency_id: "sandbox",
+              fake_test_user: "partial_enrollment_sam"
+            }
+          end
+        }.to change(Identity, :count).by(1)
+      end
+
+      it "supports launching Ziggy fake test user" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            fake_test_user: "partial_enrollment_ziggy"
+          }
+        }.to change(ActivityFlow, :count).by(1)
+          .and change(EducationActivity, :count).by(1)
+          .and change(NscEnrollmentTerm, :count).by(1)
+
+        flow = ActivityFlow.last
+        identity = flow.identity
+        term = flow.education_activities.first.nsc_enrollment_terms.first
+
+        expect(identity.first_name).to eq("Ziggy")
+        expect(identity.last_name).to eq("Testuser")
+        expect(term.school_name).to eq("Sunrise Community College")
+      end
+
       it "sets the flow session" do
         post :create, params: {
           client_agency_id: "sandbox",
-          fake_test_user: "partial_enrollment"
+          fake_test_user: "partial_enrollment_sam"
         }
 
         expect(session[:flow_id]).to eq(ActivityFlow.last.id)

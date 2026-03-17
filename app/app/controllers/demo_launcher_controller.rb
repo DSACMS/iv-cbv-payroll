@@ -14,8 +14,12 @@ class DemoLauncherController < ApplicationController
     overrides = if flow_type == "cbv"
                   params.permit(:demo_timeout).select { |_, v| v.present? }
                 else
-                  params.permit(:reporting_window, :reporting_window_months, :demo_timeout).select { |_, v| v.present? }
+                  params.permit(:reporting_window, :reporting_window_months, :reporting_window_start, :demo_timeout).select { |_, v| v.present? }
                 end
+
+    if overrides[:reporting_window_start].present?
+      overrides[:reporting_window_start] = normalize_date_param(overrides[:reporting_window_start])
+    end
 
     url = if flow_type == "cbv"
             if launch_type == "generic"
@@ -26,9 +30,9 @@ class DemoLauncherController < ApplicationController
           elsif launch_type == "generic"
             build_generic_url(client_agency_id, overrides)
           elsif nsc_test_user.present?
-            build_nsc_test_user_url(nsc_test_user, client_agency_id, overrides)
+            build_nsc_test_user_url(nsc_test_user, client_agency_id, overrides.except(:reporting_window_start))
           elsif params[:fake_test_user].present?
-            build_fake_test_user_url(params[:fake_test_user], client_agency_id, overrides)
+            build_fake_test_user_url(params[:fake_test_user], client_agency_id, overrides.except(:reporting_window_start))
           else
             build_tokenized_url(client_agency_id, overrides)
           end
@@ -47,6 +51,14 @@ class DemoLauncherController < ApplicationController
     # When behind a reverse proxy (e.g., ngrok), explicitly set port to nil so the scheme's default port is used.
     opts[:port] = nil if request.headers["X-Forwarded-Proto"].present?
     opts
+  end
+
+  def normalize_date_param(date_str)
+    if date_str.match?(%r{/})
+      Date.strptime(date_str, "%m/%d/%Y").strftime("%Y-%m-%d")
+    else
+      date_str
+    end
   end
 
   def build_cbv_generic_url(client_agency_id, overrides)
@@ -109,11 +121,17 @@ class DemoLauncherController < ApplicationController
   end
 
   FAKE_TEST_USERS = {
-    "partial_enrollment" => {
+    "partial_enrollment_sam" => {
       first_name: "Sam",
       last_name: "Testuser",
       date_of_birth: "1990-05-15",
-      school_name: "Greenfield Community College"
+      school_names: [ "Greenfield Community College", "North Valley College" ]
+    },
+    "partial_enrollment_ziggy" => {
+      first_name: "Ziggy",
+      last_name: "Testuser",
+      date_of_birth: "1992-07-19",
+      school_names: [ "Sunrise Community College" ]
     }
   }.freeze
 
@@ -174,7 +192,11 @@ class DemoLauncherController < ApplicationController
       flow.update!(reporting_window_months: overrides[:reporting_window_months].to_i)
     end
 
-    identity = Identity.create!(
+    if overrides[:reporting_window_start].present?
+      flow.shift_reporting_window_start!(overrides[:reporting_window_start])
+    end
+
+    identity = Identity.find_or_create_by!(
       first_name: user_data[:first_name],
       last_name: user_data[:last_name],
       date_of_birth: Date.parse(user_data[:date_of_birth])
@@ -187,14 +209,16 @@ class DemoLauncherController < ApplicationController
     )
 
     reporting_window = flow.reporting_window_range
-    education_activity.nsc_enrollment_terms.create!(
-      school_name: user_data[:school_name],
-      first_name: user_data[:first_name],
-      last_name: user_data[:last_name],
-      enrollment_status: :less_than_half_time,
-      term_begin: reporting_window.begin,
-      term_end: reporting_window.end
-    )
+    user_data[:school_names].each do |school_name|
+      education_activity.nsc_enrollment_terms.create!(
+        school_name: school_name,
+        first_name: user_data[:first_name],
+        last_name: user_data[:last_name],
+        enrollment_status: :less_than_half_time,
+        term_begin: reporting_window.begin,
+        term_end: reporting_window.end
+      )
+    end
 
     set_flow_session(flow.id, :activity)
     activities_flow_root_url(**launcher_url_options)

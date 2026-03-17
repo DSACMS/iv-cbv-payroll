@@ -109,6 +109,20 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response).to redirect_to(edit_activities_flow_education_path(id: education_activity.id))
       end
     end
+
+    context "when the EducationActivity is partially self-attested and succeeded" do
+      before do
+        education_activity.update(status: :succeeded, data_source: :partially_self_attested)
+        allow(controller).to receive(:testing_synchronization_page?)
+          .and_return(false)
+      end
+
+      it "redirects to education document uploads" do
+        get :show, params: { id: education_activity.id }
+
+        expect(response).to redirect_to(new_activities_flow_education_document_upload_path(education_id: education_activity.id))
+      end
+    end
   end
 
   describe "GET #error" do
@@ -318,6 +332,24 @@ RSpec.describe Activities::EducationController, type: :controller do
       }
 
       expect(response).to redirect_to(activities_flow_summary_path)
+    end
+
+    it "redirects partially self-attested activities to education document uploads" do
+      partially_self_attested_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+
+      patch :update, params: {
+        id: partially_self_attested_activity.id,
+        education_activity: { additional_comments: "Needs docs" }
+      }
+
+      expect(response).to redirect_to(
+        new_activities_flow_education_document_upload_path(education_id: partially_self_attested_activity.id)
+      )
     end
 
     it "updates fully self-attested education info and redirects to month 0" do

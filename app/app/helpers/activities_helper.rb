@@ -128,7 +128,12 @@ module ActivitiesHelper
       {
         name: school_name,
         months: months,
-        edit_path: edit_activities_flow_education_path(id: activity.id)
+        edit_path: if activity.partially_self_attested?
+                     # Temporary: partial education opens doc upload until monthly hours screens are implemented.
+                     new_activities_flow_education_document_upload_path(education_id: activity.id)
+                   else
+                     edit_activities_flow_education_path(id: activity.id)
+                   end
       }
     end
   end
