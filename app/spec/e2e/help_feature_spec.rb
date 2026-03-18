@@ -51,7 +51,9 @@ RSpec.describe "Help Features", :js, type: :feature do
 
         # Verify feedback link opens in new tab with correct URL
         feedback_link = find_link(I18n.t("help.index.feedback"))
-        expect(feedback_link[:href]).to eq(ApplicationHelper::APPLICANT_FEEDBACK_FORM)
+        feedback_uri = URI.parse(feedback_link[:href])
+        expect(feedback_uri.path).to eq("/feedback")
+        expect(CGI.parse(feedback_uri.query)["referer"]).to eq([ current_url ])
         expect(feedback_link[:target]).to eq("_blank")
       end
     end

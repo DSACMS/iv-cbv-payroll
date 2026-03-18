@@ -1,30 +1,16 @@
-<% case @flow %>
-<% when ActivityFlow %>
-  <% header = employer_name ? t(".activity_flow.header", employer_name: employer_name) : t(".activity_flow.header_no_employer_name") %>
-<% else %>
-  <% header = employer_name ? t(".header", employer_name: employer_name) : t(".header_no_employer_name") %>
-<% end %>
+<% header = employer_name ? t(".header", employer_name: employer_name) : t(".header_no_employer_name") %>
 
 <% content_for :title, header %>
 <h1>
   <%= header %>
 </h1>
 
-<% case @flow %>
-<% when ActivityFlow %>
-  <%= t(".activity_flow.subheader_html",
-      start_date: format_date(@aggregator_report.from_date),
-      end_date: format_date(@aggregator_report.to_date),
-      agency_acronym: agency_translation("shared.agency_acronym"),
-    ) %>
-<% else %>
-  <%= t(".subheader_html",
-      start_date: format_date(@aggregator_report.from_date),
-      end_date: format_date(@aggregator_report.to_date),
-      agency_acronym: agency_translation("shared.agency_acronym"),
-      report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])
-    ) %>
-<% end %>
+<%= t(".subheader_html",
+    start_date: format_date(@aggregator_report.from_date),
+    end_date: format_date(@aggregator_report.to_date),
+    agency_acronym: agency_translation("shared.agency_acronym"),
+    report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])
+  ) %>
 
 <%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @payroll_account, show_income: @is_w2_worker)) %>
 
@@ -46,12 +32,7 @@
   <%= form_with(model: @payroll_account, scope: :payroll_account, url: @payment_details_path, method: :patch, class: "usa-form usa-form--large") do |form| %>
     <%= hidden_field_tag "user[account_id]", params[:user][:account_id] %>
 
-    <% case @flow %>
-    <% when ActivityFlow %>
-      <% additional_information_label = t(".activity_flow.additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")) %>
-    <% else %>
-      <% additional_information_label = t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")) %>
-    <% end %>
+    <% additional_information_label = t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")) %>
     <%= form.label :additional_information, additional_information_label, class: "usa-label" %>
     <%= form.text_area :additional_information, class: "usa-textarea", rows: 5 %>
     <%= form.submit t(".continue"), class: "usa-button usa-button--primary" %>

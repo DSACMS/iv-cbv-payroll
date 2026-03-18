@@ -47,6 +47,22 @@ class EducationActivity < Activity
     less_than_half_time_terms_in_reporting_window.any?
   end
 
+  def review_header_school_name
+    school_name.presence || nsc_enrollment_terms.first&.school_name
+  end
+
+  def review_description_school_names
+    return review_header_school_name unless partially_self_attested?
+
+    school_names = nsc_enrollment_terms.filter_map(&:school_name).uniq
+    school_names = [ I18n.t("shared.not_applicable") ] if school_names.empty?
+    school_names.to_sentence
+  end
+
+  def review_term_credit_hours(term)
+    term.attributes["credit_hours"].to_i
+  end
+
   def document_upload_object_title
     if partially_self_attested?
       school_names = document_upload_school_names

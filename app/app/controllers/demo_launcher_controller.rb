@@ -9,8 +9,6 @@ class DemoLauncherController < ApplicationController
     flow_type = params[:flow_type]
     client_agency_id = params[:client_agency_id]
     launch_type = params[:launch_type]
-    nsc_test_user = params[:nsc_test_user]
-
     overrides = if flow_type == "cbv"
                   params.permit(:demo_timeout).select { |_, v| v.present? }
                 else
@@ -27,12 +25,12 @@ class DemoLauncherController < ApplicationController
             else
               build_cbv_tokenized_url(client_agency_id, overrides)
             end
+          elsif params[:test_scenario].in?(FAKE_SCENARIO_KEYS)
+            build_fake_test_scenario_url(params[:test_scenario], client_agency_id, overrides)
+          elsif params[:test_scenario].present?
+            build_test_scenario_url(params[:test_scenario], client_agency_id, overrides)
           elsif launch_type == "generic"
             build_generic_url(client_agency_id, overrides)
-          elsif nsc_test_user.present?
-            build_nsc_test_user_url(nsc_test_user, client_agency_id, overrides.except(:reporting_window_start))
-          elsif params[:fake_test_user].present?
-            build_fake_test_user_url(params[:fake_test_user], client_agency_id, overrides.except(:reporting_window_start))
           else
             build_tokenized_url(client_agency_id, overrides)
           end
@@ -46,6 +44,13 @@ class DemoLauncherController < ApplicationController
     false
   end
 
+  def launcher_url_options
+    opts = { host: request.host_with_port, protocol: request.protocol }
+    # When behind a reverse proxy (e.g., ngrok), explicitly set port to nil so the scheme's default port is used.
+    opts[:port] = nil if request.headers["X-Forwarded-Proto"].present?
+    opts
+  end
+
   def normalize_date_param(date_str)
     if date_str.match?(%r{/})
       Date.strptime(date_str, "%m/%d/%Y").strftime("%Y-%m-%d")
@@ -57,8 +62,7 @@ class DemoLauncherController < ApplicationController
   def build_cbv_generic_url(client_agency_id, overrides)
     Rails.application.routes.url_helpers.cbv_flow_new_url(
       client_agency_id: client_agency_id,
-      host: request.host_with_port,
-      protocol: request.protocol,
+      **launcher_url_options,
       **overrides
     )
   end
@@ -87,7 +91,7 @@ class DemoLauncherController < ApplicationController
     uri = URI.parse(url)
     uri.scheme = request.scheme
     uri.host = request.host
-    uri.port = request.port
+    uri.port = request.headers["X-Forwarded-Proto"].present? ? nil : request.port
     existing_params = URI.decode_www_form(uri.query || "")
     existing_params << [ "client_agency_id", client_agency_id ]
     overrides.to_h.each { |k, v| existing_params << [ k, v ] }
@@ -98,8 +102,7 @@ class DemoLauncherController < ApplicationController
   def build_generic_url(client_agency_id, overrides)
     Rails.application.routes.url_helpers.activities_flow_new_url(
       client_agency_id: client_agency_id,
-      host: request.host_with_port,
-      protocol: request.protocol,
+      **launcher_url_options,
       **overrides
     )
   end
@@ -110,20 +113,19 @@ class DemoLauncherController < ApplicationController
       reference_id: "demo-#{SecureRandom.hex(4)}"
     )
     invitation.to_url(
-      host: request.host_with_port,
-      protocol: request.protocol,
+      **launcher_url_options,
       **overrides
     )
   end
 
-  FAKE_TEST_USERS = {
+  TEST_SCENARIOS = {
+    "lynette" => { first_name: "Lynette", last_name: "Oyola", date_of_birth: "1988-10-24" },
+    "rick" => { first_name: "Rick", last_name: "Banas", date_of_birth: "1979-08-18" },
+    "dominique" => { first_name: "Dominique", last_name: "Ricardo", date_of_birth: "1978-01-12" },
+    "linda" => { first_name: "Linda", last_name: "Cooper", date_of_birth: "1999-01-01" },
     "partial_enrollment_sam" => {
-      first_name: "Sam",
-      last_name: "Testuser",
-      date_of_birth: "1990-05-15",
-      terms: [
-        { school_name: "Greenfield Community College", enrollment_status: :less_than_half_time }
-      ]
+      first_name: "Sam", last_name: "Testuser", date_of_birth: "1990-05-15",
+      school_names: [ "Greenfield Community College", "North Valley College" ]
     },
     "partial_enrollment_multi_term" => {
       first_name: "Sam",
@@ -136,23 +138,26 @@ class DemoLauncherController < ApplicationController
       ]
     },
     "partial_enrollment_ziggy" => {
-      first_name: "Ziggy",
+      first_name: "Ziggy", last_name: "Testuser", date_of_birth: "1992-07-19",
+      school_names: [ "Sunrise Community College" ]
+    },
+    "partial_enrollment_casey" => {
+      first_name: "Casey",
       last_name: "Testuser",
-      date_of_birth: "1992-07-19",
-      terms: [
-        { school_name: "Greenfield Community College", enrollment_status: :less_than_half_time }
+      date_of_birth: "1991-04-22",
+      enrollments: [
+        { school_name: "Pine Valley College", enrollment_status: :half_time },
+        { school_name: "Riverside Community College", enrollment_status: :less_than_half_time }
       ]
     }
   }.freeze
 
-  NSC_TEST_USERS = {
-    "lynette" => { first_name: "Lynette", last_name: "Oyola", date_of_birth: "1988-10-24" },
-    "rick" => { first_name: "Rick", last_name: "Banas", date_of_birth: "1979-08-18" },
-    "dominique" => { first_name: "Dominique", last_name: "Ricardo", date_of_birth: "1978-01-12" },
-    "linda" => { first_name: "Linda", last_name: "Cooper", date_of_birth: "1999-01-01" }
-  }.freeze
+  FAKE_SCENARIO_KEYS = %w[partial_enrollment_sam partial_enrollment_multi_term partial_enrollment_ziggy partial_enrollment_casey].freeze
 
-  def create_applicant_and_invitation(user_data, client_agency_id, reference_id)
+  def build_test_scenario_url(scenario_key, client_agency_id, overrides)
+    user_data = TEST_SCENARIOS[scenario_key]
+    raise ArgumentError, "Unknown test scenario: #{scenario_key}" unless user_data
+
     cbv_applicant = CbvApplicant.create!(
       first_name: user_data[:first_name],
       last_name: user_data[:last_name],
@@ -160,27 +165,34 @@ class DemoLauncherController < ApplicationController
       client_agency_id: client_agency_id
     )
 
-    ActivityFlowInvitation.create!(
+    invitation = ActivityFlowInvitation.create!(
       cbv_applicant: cbv_applicant,
       client_agency_id: client_agency_id,
-      reference_id: reference_id
+      reference_id: "demo-#{scenario_key}"
     )
-  end
 
-  def build_nsc_test_user_url(user_key, client_agency_id, overrides)
-    user_data = NSC_TEST_USERS[user_key]
-    invitation = create_applicant_and_invitation(user_data, client_agency_id, "nsc-demo-#{user_key}")
     invitation.to_url(
-      host: request.host_with_port,
-      protocol: request.protocol,
+      **launcher_url_options,
       **overrides
     )
   end
 
-  def build_fake_test_user_url(user_key, client_agency_id, overrides)
-    user_data = FAKE_TEST_USERS[user_key]
+  def build_fake_test_scenario_url(scenario_key, client_agency_id, overrides)
+    user_data = TEST_SCENARIOS[scenario_key]
+    raise ArgumentError, "Unknown test scenario: #{scenario_key}" unless user_data
 
-    invitation = create_applicant_and_invitation(user_data, client_agency_id, "fake-demo-#{user_key}")
+    cbv_applicant = CbvApplicant.create!(
+      first_name: user_data[:first_name],
+      last_name: user_data[:last_name],
+      date_of_birth: Date.parse(user_data[:date_of_birth]),
+      client_agency_id: client_agency_id
+    )
+
+    invitation = ActivityFlowInvitation.create!(
+      cbv_applicant: cbv_applicant,
+      client_agency_id: client_agency_id,
+      reference_id: "demo-#{scenario_key}"
+    )
 
     flow = ActivityFlow.create_from_invitation(
       invitation,
@@ -207,10 +219,28 @@ class DemoLauncherController < ApplicationController
       status: :succeeded
     )
 
-    create_fake_enrollment_terms(education_activity, user_data, flow.reporting_window_range)
+    reporting_window = flow.reporting_window_range
+    if user_data[:terms]
+      create_fake_enrollment_terms(education_activity, user_data, reporting_window)
+    else
+      enrollments = user_data[:enrollments] || user_data[:school_names].map do |school_name|
+        { school_name: school_name, enrollment_status: :less_than_half_time }
+      end
+
+      enrollments.each do |enrollment|
+        education_activity.nsc_enrollment_terms.create!(
+          school_name: enrollment[:school_name],
+          first_name: user_data[:first_name],
+          last_name: user_data[:last_name],
+          enrollment_status: enrollment[:enrollment_status],
+          term_begin: reporting_window.begin,
+          term_end: reporting_window.end
+        )
+      end
+    end
 
     set_flow_session(flow.id, :activity)
-    activities_flow_root_url(host: request.host_with_port, protocol: request.protocol)
+    activities_flow_root_url(**launcher_url_options)
   end
 
   def create_fake_enrollment_terms(education_activity, user_data, reporting_window)

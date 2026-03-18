@@ -39,11 +39,12 @@ service_endpoint="$(terraform -chdir="infra/${app_name}/service" output -raw ser
 pr_info=$(cat <<EOF
 <!-- begin PR environment info -->
 ## Preview environment
-- Service endpoint: ${service_endpoint}
+- Link to demo: ${service_endpoint}/demo
 - Deployed commit: ${image_tag}
 <!-- end PR environment info -->
 EOF
 )
+echo "${pr_info}"
 
 pr_body="$(gh pr view "${pr_number}" --json body | jq --raw-output .body)"
 if [[ $pr_body == *"<!-- begin PR environment info -->"*"<!-- end PR environment info -->"* ]]; then

@@ -1,11 +1,6 @@
 <%= turbo_frame_tag "synchronization" do %>
   <h1>
-    <% case @flow %>
-    <% when ActivityFlow %>
-      <%= t("cbv.synchronizations.show.activity_flow.header") %>
-    <% else %>
-      <%= t("cbv.synchronizations.show.header") %>
-    <% end %>
+    <%= t("cbv.synchronizations.show.header") %>
   </h1>
 
   <p>

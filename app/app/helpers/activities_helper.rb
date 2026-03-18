@@ -118,11 +118,12 @@ module ActivitiesHelper
       school_name = term.school_name&.titlecase || t("activities.education.title")
       months = reporting_months.reverse.map do |month_start|
         overlapping = term.overlaps_month?(month_start)
-        {
-          month: month_start,
-          enrollment_status: overlapping ? enrollment_status_display(term.enrollment_status) : t("activities.hub.cards.not_enrolled"),
-          community_engagement_hours: overlapping && term.half_time_or_above? ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0
-        }
+        show_credit_hours = overlapping && term.enrollment_less_than_half_time?
+        if show_credit_hours
+          partial_self_attested_month_data(activity: activity, term: term, month_start: month_start)
+        else
+          validated_month_data(term: term, month_start: month_start)
+        end
       end
 
       {
@@ -141,12 +142,7 @@ module ActivitiesHelper
     months_by_date = activity.education_activity_months.index_by(&:month)
     months = reporting_months.reverse.map do |month_start|
       activity_month = months_by_date[month_start.beginning_of_month]
-      credit_hours = education_credit_hours(activity_month)
-      {
-        month: month_start,
-        credit_hours: credit_hours,
-        community_engagement_hours: activity.community_engagement_hours(credit_hours)
-      }
+      self_attested_month_data(activity: activity, activity_month: activity_month, month_start: month_start)
     end
 
     [ {
@@ -159,7 +155,38 @@ module ActivitiesHelper
   def education_credit_hours(activity_month)
     return 0 unless activity_month
     return activity_month.credit_hours.to_i if activity_month.has_attribute?(:credit_hours)
-
     activity_month.hours.to_i
+  end
+
+  def validated_month_data(term:, month_start:)
+    overlapping = term.overlaps_month?(month_start)
+    {
+      month: month_start,
+      enrollment_status: overlapping ? enrollment_status_display(term.enrollment_status) : t("activities.hub.cards.not_enrolled"),
+      community_engagement_hours: overlapping && term.half_time_or_above? ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0,
+      credit_hours: nil,
+      show_credit_hours: false
+    }
+  end
+
+  def partial_self_attested_month_data(activity:, term:, month_start:)
+    # TODO: Replace with saved term-hours once term-hours screens are implemented.
+    credit_hours = 0
+    {
+      month: month_start,
+      enrollment_status: enrollment_status_display(term.enrollment_status),
+      community_engagement_hours: activity.community_engagement_hours(credit_hours),
+      credit_hours: credit_hours,
+      show_credit_hours: true
+    }
+  end
+
+  def self_attested_month_data(activity:, activity_month:, month_start:)
+    credit_hours = education_credit_hours(activity_month)
+    {
+      month: month_start,
+      credit_hours: credit_hours,
+      community_engagement_hours: activity.community_engagement_hours(credit_hours)
+    }
   end
 end

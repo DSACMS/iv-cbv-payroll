@@ -1,35 +1,17 @@
 <div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @flow.id %>">
   <div data-cbv-employer-search-target="helpAlert" class="display-none margin-bottom-4">
-    <% case @flow %>
-    <% when ActivityFlow %>
-      <%= render Uswds::Alert.new(type: :info, heading: t(".activity_flow.alert.heading")) do %>
-        <%= link_to t(".activity_flow.add_employment_manually"), new_activities_flow_income_employment_path, class: "usa-link", data: { turbo_frame: "_top" } %>
-      <% end %>
-    <% else %>
-      <%= render Uswds::Alert.new(type: :warning, heading: t(".alert.heading")) do %>
-        <%= render("help/help_link", text: t(".alert.help_options"), source: "banner") %>
-      <% end %>
+    <%= render Uswds::Alert.new(type: :warning, heading: t(".alert.heading")) do %>
+      <%= render("help/help_link", text: t(".alert.help_options"), source: "banner") %>
     <% end %>
   </div>
 
+  <% content_for :title, t(".header") %>
   <h1 class="margin-top-0">
-    <% case @flow %>
-    <% when ActivityFlow %>
-      <% content_for :title, t(".activity_flow.header") %>
-      <%= t(".activity_flow.header") %>
-    <% else %>
-      <% content_for :title, t(".header") %>
-      <%= t(".header") %>
-    <% end %>
+    <%= t(".header") %>
   </h1>
 
   <p>
-    <% case @flow %>
-    <% when ActivityFlow %>
-      <%= t(".activity_flow.search_label") %>
-    <% else %>
-      <%= t(".search_label") %>
-    <% end %>
+    <%= t(".search_label") %>
   </p>
 
   <%= form_with url: @search_path,

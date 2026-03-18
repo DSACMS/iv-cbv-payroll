@@ -30,8 +30,8 @@ current_sha=$(git rev-parse origin/main)
 
 # Arrays to store categorized changes (initialize as empty)
 both_changes=()
-cbv_changes=()
-hr1_changes=()
+income_changes=()
+ce_changes=()
 other_changes=()
 
 echo "Categorizing changes for deployment..." >&2
@@ -63,7 +63,7 @@ for commit_line in "${commits[@]}"; do
 
   # Loop until valid category is provided
   while true; do
-    echo "Is this user-facing? (b=Both CBV+HR1, c=CBV, h=HR1, o=Other/Maintenance, s=Skip): " >&2
+    echo "Is this user-facing? (b=Both, i=Emmy Income, e=Emmy CE, o=Other/Maintenance, s=Skip): " >&2
     read -r category
 
     case "$category" in
@@ -71,12 +71,12 @@ for commit_line in "${commits[@]}"; do
         both_changes+=("$commit")
         break
         ;;
-      c|C)
-        cbv_changes+=("$commit")
+      i|I)
+        income_changes+=("$commit")
         break
         ;;
-      h|H)
-        hr1_changes+=("$commit")
+      e|E)
+        ce_changes+=("$commit")
         break
         ;;
       o|O)
@@ -88,34 +88,47 @@ for commit_line in "${commits[@]}"; do
         break
         ;;
       *)
-        echo "Invalid option. Please enter b, c, h, o, or s." >&2
+        echo "Invalid option. Please enter b, i, e, o, or s." >&2
         ;;
     esac
   done
   echo "" >&2
 done
 
+# Determine who to tag based on which categories have changes
+tags="@emmy-platform"
+has_income=$(( ${#both_changes[@]} + ${#income_changes[@]} ))
+has_ce=$(( ${#both_changes[@]} + ${#ce_changes[@]} ))
+if [ $has_income -gt 0 ] && [ $has_ce -eq 0 ]; then
+  tags+=" @Ming"
+elif [ $has_ce -gt 0 ] && [ $has_income -eq 0 ]; then
+  tags+=" @Jacob"
+else
+  tags+=" @Ming @Jacob"
+fi
+
 # Generate output and capture it
-output='🚀 Will deploy `'${current_sha:0:7}'` to production: 🚀 (cc @emmy-platform)'$'\n\n'
+output='🚀 Will deploy `'${current_sha:0:7}'` to production: 🚀 (cc '"${tags}"')'$'\n'
+output+="🧪 *[Launch the demo →](https://la-verify-demo.navapbc.cloud/demo)*"$'\n\n'
 
 # Add categorized changes to output
 if [ ${#both_changes[@]} -gt 0 ]; then
-  output+="👥 *User facing changes to CBV + HR1*"$'\n'
+  output+="👥 *User facing changes to Emmy Income + Emmy CE*"$'\n'
   for change in "${both_changes[@]}"; do
     output+="$(echo "  • $change" | linkify_jira)"$'\n'
   done
 fi
 
-if [ ${#cbv_changes[@]} -gt 0 ]; then
-  output+="📝 *CBV only user facing changes*"$'\n'
-  for change in "${cbv_changes[@]}"; do
+if [ ${#income_changes[@]} -gt 0 ]; then
+  output+="📝 *Emmy Income only user facing changes*"$'\n'
+  for change in "${income_changes[@]}"; do
     output+="$(echo "  • $change" | linkify_jira)"$'\n'
   done
 fi
 
-if [ ${#hr1_changes[@]} -gt 0 ]; then
-  output+="🏆 *HR1 only user facing changes*"$'\n'
-  for change in "${hr1_changes[@]}"; do
+if [ ${#ce_changes[@]} -gt 0 ]; then
+  output+="🏆 *Emmy CE only user facing changes*"$'\n'
+  for change in "${ce_changes[@]}"; do
     output+="$(echo "  • $change" | linkify_jira)"$'\n'
   done
 fi
@@ -127,7 +140,6 @@ if [ ${#other_changes[@]} -gt 0 ]; then
   done
 fi
 
-output+=$'\n'"👀 Check out the changes at [https://la-verify-demo.navapbc.cloud/](https://la-verify-demo.navapbc.cloud/)"$'\n'
 output+=$'\n'"See the [full diff on Github](https://github.com/DSACMS/iv-cbv-payroll/compare/${prod:0:7}..${current_sha:0:7})."$'\n'
 
 # Display output to user

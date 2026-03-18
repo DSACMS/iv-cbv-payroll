@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["monthButtons", "monthsInput", "ceOnly", "datePickerWrapper"]
+  static targets = ["monthButtons", "monthsInput", "ceOnly", "datePickerWrapper", "genericButton"]
 
   connect() {
     const selectedFlow = this.element.querySelector("input[name=flow_type]:checked")
@@ -9,6 +9,9 @@ export default class extends Controller {
 
     const selectedWindow = this.element.querySelector("input[name=reporting_window]:checked")
     if (selectedWindow) this.applyWindow(selectedWindow.value)
+
+    const selectedScenario = this.element.querySelector("input[name=test_scenario]:checked")
+    if (selectedScenario) this.applyScenario(selectedScenario)
   }
 
   selectFlowType(event) {
@@ -17,6 +20,10 @@ export default class extends Controller {
 
   selectWindow(event) {
     this.applyWindow(event.currentTarget.value)
+  }
+
+  selectScenario(event) {
+    this.applyScenario(event.currentTarget)
   }
 
   toggleHint(event) {
@@ -34,7 +41,6 @@ export default class extends Controller {
     const months = event.currentTarget.dataset.months
     this.monthsInputTarget.value = months
     this.highlightButton(months)
-    this.updateDatePickerFromMonths()
   }
 
   // private
@@ -42,11 +48,61 @@ export default class extends Controller {
   applyFlowType(value) {
     if (value === "cbv") {
       this.ceOnlyTargets.forEach((el) => (el.hidden = true))
+      // Deselect any scenario and re-enable Generic
+      const noneRadio = this.element.querySelector("#test_scenario_none")
+      if (noneRadio) noneRadio.checked = true
+      this.updateGenericButton(false)
     } else {
       this.ceOnlyTargets.forEach((el) => (el.hidden = false))
       const selectedWindow = this.element.querySelector("input[name=reporting_window]:checked")
       if (selectedWindow) this.applyWindow(selectedWindow.value)
+      // Re-apply scenario state
+      const selectedScenario = this.element.querySelector("input[name=test_scenario]:checked")
+      if (selectedScenario) this.applyScenario(selectedScenario)
     }
+  }
+
+  applyScenario(radio) {
+    const start = radio.dataset.reportingWindowStart
+    const months = radio.dataset.reportingWindowMonths
+    const hasScenario = radio.value !== ""
+
+    if (months) {
+      this.monthsInputTarget.value = months
+      this.highlightButton(months)
+    }
+    if (start) {
+      this.setDatePicker(start)
+    } else {
+      this.clearDatePicker()
+    }
+
+    this.updateGenericButton(hasScenario)
+  }
+
+  clearDatePicker() {
+    if (!this.hasDatePickerWrapperTarget) return
+    this.datePickerWrapperTarget.querySelectorAll("input").forEach((input) => (input.value = ""))
+  }
+
+  setDatePicker(dateStr) {
+    if (!this.hasDatePickerWrapperTarget) return
+    // dateStr is MM/DD/YYYY
+    const [mm, dd, yyyy] = dateStr.split("/")
+    // Set every input in the date picker wrapper — USWDS creates multiple
+    // inputs and the form submits whichever one has the name attribute.
+    this.datePickerWrapperTarget.querySelectorAll("input").forEach((input) => {
+      if (input.type === "text") {
+        input.value = dateStr
+      } else {
+        input.value = `${yyyy}-${mm}-${dd}`
+      }
+    })
+  }
+
+  updateGenericButton(disabled) {
+    if (!this.hasGenericButtonTarget) return
+    this.genericButtonTarget.disabled = disabled
   }
 
   applyWindow(value) {
@@ -58,7 +114,6 @@ export default class extends Controller {
       this.monthsInputTarget.value = "2"
       this.highlightButton("2")
     }
-    this.updateDatePickerFromMonths()
   }
 
   updateDatePickerFromMonths() {
