@@ -128,7 +128,7 @@ class DemoLauncherController < ApplicationController
       school_names: [ "Greenfield Community College", "North Valley College" ]
     },
     "partial_enrollment_multi_term" => {
-      first_name: "Sam",
+      first_name: "Nina",
       last_name: "Testuser",
       date_of_birth: "1990-05-15",
       reporting_window_months: 6,
