@@ -24,6 +24,12 @@ RSpec.describe Activities::Income::SynchronizationsController do
 
         expect(response.body).to include("turbo-frame id=\"synchronization\"")
       end
+
+      it "does not render the activity flow header" do
+        patch :update, params: { user: { account_id: payroll_account.aggregator_account_id } }
+
+        expect(response.body).not_to include("exit-confirmation-modal")
+      end
     end
   end
 end

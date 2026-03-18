@@ -37,6 +37,14 @@ RSpec.describe Activities::Income::PaymentDetailsController do
       expect(response).to be_successful
     end
 
+    it "renders the activity flow header with exit button and back link" do
+      get :show, params: { user: { account_id: account_id } }
+
+      expect(response.body).to include(I18n.t("activities.employment.title_singular"))
+      expect(response.body).to include("exit-confirmation-modal")
+      expect(response.body).to include("back-nav")
+    end
+
     it "tracks viewed payment details with activity_flow_id" do
       allow(EventTrackingJob).to receive(:perform_later).with(TrackEvent::CbvPageView, anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with(TrackEvent::ApplicantViewedPaymentDetails, anything, hash_including(
