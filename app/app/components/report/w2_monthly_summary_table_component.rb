@@ -41,7 +41,7 @@ class Report::W2MonthlySummaryTableComponent < ViewComponent::Base
   end
 
   def table_colspan
-    3
+    4
   end
 
   def show_footnote?
