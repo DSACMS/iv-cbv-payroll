@@ -40,7 +40,7 @@ class EducationActivity < Activity
     reporting_range = activity_flow.reporting_window_range
     nsc_enrollment_terms
       .select { |term| term.less_than_half_time? && term.within_reporting_window?(reporting_range) }
-      .sort_by(&:term_begin)
+      .sort_by { |term| [ term.term_begin, term.id ] }
   end
 
   def has_less_than_half_time_terms?
