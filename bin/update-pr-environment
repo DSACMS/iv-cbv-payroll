@@ -35,7 +35,7 @@ service_name="$(terraform -chdir="infra/$app_name/service" output -raw service_n
 echo "Wait for service ${service_name} to become stable"
 aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
 
-service_endpoint="http://p-1496-app-dev-957687948.us-east-1.elb.amazonaws.com"
+service_endpoint="$(terraform -chdir="infra/${app_name}/service" output -raw service_endpoint)"
 pr_info=$(cat <<EOF
 <!-- begin PR environment info -->
 ## Preview environment
