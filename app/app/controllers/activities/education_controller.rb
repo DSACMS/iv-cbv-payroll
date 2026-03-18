@@ -179,9 +179,17 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def partially_self_attested_education_next_step_path
-    # TODO: Replace this with the first education monthly-hours term path
-    # once the partially self-attested monthly hours flow is implemented.
-    new_activities_flow_education_document_upload_path(education_id: @education_activity.id, from_edit: params[:from_edit].presence)
+    if @education_activity.has_less_than_half_time_terms?
+      edit_activities_flow_education_term_credit_hour_path(
+        education_id: @education_activity.id,
+        id: 0
+      )
+    else
+      new_activities_flow_education_document_upload_path(
+        education_id: @education_activity.id,
+        from_edit: params[:from_edit].presence
+      )
+    end
   end
 
   def create_fully_self_attested_activity

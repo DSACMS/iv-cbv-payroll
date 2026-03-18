@@ -130,7 +130,9 @@ module ActivitiesHelper
         name: school_name,
         months: months,
         edit_path: if activity.partially_self_attested?
-                     edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: 0)
+                     term_index = activity.less_than_half_time_terms_in_reporting_window
+                       .index { |less_than_half_time_term| less_than_half_time_term.id == term.id } || 0
+                     edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: term_index)
                    else
                      edit_activities_flow_education_path(id: activity.id)
                    end
@@ -148,7 +150,7 @@ module ActivitiesHelper
     [ {
       name: activity.school_name.presence || t("activities.education.title"),
       months: months,
-      edit_path: review_activities_flow_education_path(id: activity.id, from_edit: 1)
+      edit_path: edit_activities_flow_education_month_path(education_id: activity.id, id: 0, from_edit: 1)
     } ]
   end
 
@@ -170,8 +172,7 @@ module ActivitiesHelper
   end
 
   def partial_self_attested_month_data(activity:, term:, month_start:)
-    # TODO: Replace with saved term-hours once term-hours screens are implemented.
-    credit_hours = 0
+    credit_hours = activity.review_term_credit_hours(term)
     {
       month: month_start,
       enrollment_status: enrollment_status_display(term.enrollment_status),

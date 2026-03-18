@@ -25,8 +25,14 @@
             &dash;
             <%= format_date(enrollment_term.term_end) %>
           </span>
+          <% term_index = less_than_half_time_terms.index { |term| term.id == enrollment_term.id } || 0 %>
           <%= link_to t("activities.education.review.edit"),
-                review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence),
+                edit_activities_flow_education_term_credit_hour_path(
+                  education_id: @education_activity,
+                  id: term_index,
+                  from_review: 1,
+                  from_edit: params[:from_edit].presence
+                ),
                 class: "usa-link" %>
         </div>
       <% end %>

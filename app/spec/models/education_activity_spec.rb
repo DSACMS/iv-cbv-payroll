@@ -271,7 +271,7 @@ RSpec.describe EducationActivity do
       expect(terms.map(&:id)).to eq([ earlier_term.id, later_term.id ])
     end
 
-    it "returns terms in a stable order when term dates are the same" do
+    it "returns terms in a stable order by term_begin and id when term dates are the same" do
       flow_6mo = create(:activity_flow, reporting_window_months: 6, education_activities_count: 0)
       activity = create(:education_activity, activity_flow: flow_6mo, status: "succeeded")
       range = flow_6mo.reporting_window_range
@@ -288,7 +288,7 @@ RSpec.describe EducationActivity do
         term_end: range.end)
 
       terms = activity.less_than_half_time_terms_in_reporting_window
-      expect(terms.map(&:id)).to eq([ term_a.id, term_b.id ])
+      expect(terms.map(&:id)).to eq([ term_b.id, term_a.id ])
     end
   end
 

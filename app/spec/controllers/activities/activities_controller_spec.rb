@@ -158,7 +158,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows enrollment status with zeroed credit hours and CE hours on the education card" do
+    it "shows enrollment status with saved credit hours and CE hours on the education card" do
       expect(response.body).to include("Test University")
       expect(response.body).to include(
         I18n.t(
@@ -166,8 +166,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         )
       )
-      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 0))
-      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 0))
+      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
+      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 16))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
   end
