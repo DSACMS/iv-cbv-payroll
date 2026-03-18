@@ -48,16 +48,23 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       expect(response.body).to include("Term:")
     end
 
+    it "shows body copy with the term begin and end dates" do
+      get :edit, params: { education_id: education_activity.id, id: 0 }
+
+      expected_body = I18n.t(
+        "activities.education.term_credit_hours.body_html",
+        term_begin: I18n.l(less_than_half_time_term.term_begin.to_date, format: :long),
+        term_end: I18n.l(less_than_half_time_term.term_end.to_date, format: :long)
+      )
+
+      expect(response.body).to include(expected_body)
+      expect(response.body).to include(I18n.t("activities.education.term_credit_hours.body_conversion"))
+    end
+
     it "does not show checkbox for a single term" do
       get :edit, params: { education_id: education_activity.id, id: 0 }
 
       expect(response.body).not_to include("no_hours")
-    end
-
-    it "does not show term indicator for a single term" do
-      get :edit, params: { education_id: education_activity.id, id: 0 }
-
-      expect(response.body).not_to include("Term 1 / ")
     end
 
     it "redirects to index 0 for an out-of-range index" do
@@ -100,12 +107,6 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     }
 
     before { second_term }
-
-    it "shows term indicator" do
-      get :edit, params: { education_id: education_activity.id, id: 0 }
-
-      expect(response.body).to include("Term 1 / 2")
-    end
 
     it "shows checkbox for multi-term" do
       get :edit, params: { education_id: education_activity.id, id: 0 }

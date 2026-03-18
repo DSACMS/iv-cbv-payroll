@@ -9,13 +9,6 @@
   ) %>
 <% end %>
 
-<% if @terms.length > 1 %>
-  <p class="month-indicator">
-    <%= t("activities.education.term_credit_hours.term_indicator",
-          current: @term_index + 1, total: @terms.length) %>
-  </p>
-<% end %>
-
 <p class="month-indicator">
   <%= t("activities.education.term_credit_hours.term_date_range",
         range: @current_term.term_date_display) %>
@@ -27,8 +20,13 @@
 </h1>
 
 <p class="margin-bottom-3">
-  <%= t("activities.education.term_credit_hours.body",
-        school_name: @current_term.school_name.titlecase) %>
+  <%= t("activities.education.term_credit_hours.body_html",
+        term_begin: format_date(@current_term.term_begin),
+        term_end: format_date(@current_term.term_end)) %>
+</p>
+
+<p class="margin-bottom-3">
+  <%= t("activities.education.term_credit_hours.body_conversion") %>
 </p>
 
 <%= uswds_form_with(model: @current_term,
