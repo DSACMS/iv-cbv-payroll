@@ -30,7 +30,7 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(rendered).to match(/Ziggy Testuser/)
     end
 
-    it "displays fake test scenario options with single and multi-term", :aggregate_failures do
+    it "displays fake test scenario options with single and multi-term" do
       get :show
       rendered = response.body
       expect(rendered).to match(/Fake Test Scenarios/)

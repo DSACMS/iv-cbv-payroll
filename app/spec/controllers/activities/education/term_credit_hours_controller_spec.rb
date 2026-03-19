@@ -79,7 +79,14 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
 
     it "redirects to after_activity_path when no less-than-half-time terms exist" do
       less_than_half_time_term.update!(enrollment_status: "half_time")
-      stub_not_meets_routing_requirements
+      result = ActivityFlowProgressCalculator::OverallResult.new(
+        total_hours: 0,
+        meets_requirements: false,
+        meets_routing_requirements: false
+      )
+      allow(controller).to receive(:progress_calculator).and_return(
+        instance_double(ActivityFlowProgressCalculator, overall_result: result)
+      )
 
       get :edit, params: { education_id: education_activity.id, id: 0 }
 
@@ -97,16 +104,15 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
         reporting_window_months: 6
       )
     }
-    let(:second_term) {
+
+    before do
       range = activity_flow.reporting_window_range
       create(:nsc_enrollment_term, :less_than_half_time,
         education_activity: education_activity,
         school_name: "State University",
         term_begin: range.begin + 3.months,
         term_end: range.end)
-    }
-
-    before { second_term }
+    end
 
     it "shows checkbox for multi-term" do
       get :edit, params: { education_id: education_activity.id, id: 0 }
@@ -136,16 +142,15 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
           reporting_window_months: 6
         )
       }
-      let(:second_term) {
+
+      before do
         range = activity_flow.reporting_window_range
         create(:nsc_enrollment_term, :less_than_half_time,
           education_activity: education_activity,
           school_name: "State University",
           term_begin: range.begin + 3.months,
           term_end: range.end)
-      }
-
-      before { second_term }
+      end
 
       it "sets back_url to previous term for term index > 0" do
         get :edit, params: { education_id: education_activity.id, id: 1 }
@@ -203,16 +208,15 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
           reporting_window_months: 6
         )
       }
-      let(:second_term) {
+
+      before do
         range = activity_flow.reporting_window_range
         create(:nsc_enrollment_term, :less_than_half_time,
           education_activity: education_activity,
           school_name: "State University",
           term_begin: range.begin + 3.months,
           term_end: range.end)
-      }
-
-      before { second_term }
+      end
 
       it "redirects to the next term when not the last term" do
         patch :update, params: {
@@ -243,15 +247,4 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
   end
 
   private
-
-  def stub_not_meets_routing_requirements
-    result = ActivityFlowProgressCalculator::OverallResult.new(
-      total_hours: 0,
-      meets_requirements: false,
-      meets_routing_requirements: false
-    )
-    allow(controller).to receive(:progress_calculator).and_return(
-      instance_double(ActivityFlowProgressCalculator, overall_result: result)
-    )
-  end
 end
