@@ -6,7 +6,7 @@ module "demo_config" {
   environment                     = "demo"
   network_name                    = "demo"
   domain_name                     = "demo.reportmyincome.org"
-  bucket_name                     = "iv-cbv-payroll-app-demo-1"
+  bucket_name                     = terraform.workspace == "default" ? "iv-cbv-payroll-app-demo-1" : null
   enable_https                    = true
   has_database                    = local.has_database
   has_incident_management_service = local.has_incident_management_service
