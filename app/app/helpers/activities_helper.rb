@@ -63,7 +63,7 @@ module ActivitiesHelper
       if activity.fully_self_attested?
         fully_self_attested_education_cards(activity, reporting_months)
       else
-        validated_education_cards(activity, reporting_months)
+        education_cards_for_term_enrollments(activity, reporting_months)
       end
     end
   end
@@ -113,10 +113,15 @@ module ActivitiesHelper
 
   private
 
-  def validated_education_cards(activity, reporting_months)
+  def education_cards_for_term_enrollments(activity, reporting_months)
     activity.nsc_enrollment_terms.map do |term|
       school_name = term.school_name&.titlecase || t("activities.education.title")
-      months = reporting_months.reverse.map do |month_start|
+      visible_months = if activity.partially_self_attested?
+                         reporting_months.reverse.select { |month_start| term.overlaps_month?(month_start) }
+                       else
+                         reporting_months.reverse
+                       end
+      months = visible_months.map do |month_start|
         overlapping = term.overlaps_month?(month_start)
         show_credit_hours = overlapping && term.less_than_half_time?
         if show_credit_hours

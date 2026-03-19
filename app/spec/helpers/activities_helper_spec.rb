@@ -214,6 +214,24 @@ RSpec.describe ActivitiesHelper do
       end
     end
 
+    it "only includes overlapping months for partially self-attested terms" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: "Test U",
+        term_begin: first_month,
+        term_end: first_month.end_of_month,
+        credit_hours: 4
+      )
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      expect(result.first[:months].map { |m| m[:month] }).to eq([ first_month ])
+      expect(result.first[:months].first[:credit_hours]).to eq(4)
+    end
+
     it "shows saved term credit hours for enrolled partially self-attested months" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
       create(
