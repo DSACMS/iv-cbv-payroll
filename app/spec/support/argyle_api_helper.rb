@@ -1,4 +1,7 @@
 module ArgyleApiHelper
+  BOB_ACCOUNT_ID = "019571bc-2f60-3955-d972-dbadfe0913a8"
+  KIM_ACCOUNT_ID = "01956d5f-cb8d-af2f-9232-38bce8531f58"
+
   def argyle_stub_request_employer_search_response(user_folder)
     stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::EMPLOYER_SEARCH_ENDPOINT}})
       .to_return(

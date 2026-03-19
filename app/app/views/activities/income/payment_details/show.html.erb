@@ -25,8 +25,11 @@
   <% if @payroll_account_report.paystubs.any? %>
     <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, @payroll_account)) %>
   <% else %>
-    <%= render Uswds::Alert.new(type: :info, heading: t(".none_found", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])), class: "margin-top-5") do %>
-      <%= t(".none_found_description", report_data_range: report_data_range(@aggregator_report, params[:user][:account_id])) %>
+    <%= render Uswds::Alert.new(type: :info, heading: t(".none_found"), class: "margin-top-5") do %>
+      <%= t(".none_found_description",
+        start_date: format_date(@aggregator_report.from_date),
+        end_date: format_date(@aggregator_report.to_date),
+      ) %>
     <% end %>
   <% end %>
   <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(@aggregator_report, @payroll_account, is_w2_worker: @is_w2_worker, pay_frequency_text: pay_frequency)) %>
