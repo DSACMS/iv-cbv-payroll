@@ -15,7 +15,12 @@
   <%= t("activities.work_programs.review.description", program_name: @job_training_activity.program_name) %>
 </p>
 
-<h2><%= t("activities.work_programs.review.organization_info") %></h2>
+<div class="display-flex flex-justify flex-align-center">
+  <h2 class="margin-y-0"><%= t("activities.work_programs.review.organization_info") %></h2>
+  <%= link_to t("activities.hub.edit"),
+        edit_activities_flow_job_training_path(id: @job_training_activity, from_review: 1, from_edit: params[:from_edit].presence),
+        class: "usa-link" %>
+</div>
 <%= render(TableComponent.new(is_responsive: true, class_names: "cs-review-org-table")) do |table| %>
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>

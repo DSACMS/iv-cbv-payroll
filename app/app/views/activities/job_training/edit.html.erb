@@ -3,7 +3,8 @@
 <% content_for :activity_flow_header do %>
   <%= render ActivityFlowHeaderComponent.new(
     title: t("activities.work_programs.title_singular"),
-    exit_url: activities_flow_root_path
+    exit_url: activities_flow_root_path,
+    back_url: @back_url
   ) %>
 <% end %>
 

@@ -29,14 +29,14 @@ RSpec.describe ActivitiesHelper do
         expect(result.first[:months].first[:month]).to eq(first_month)
       end
 
-      it "includes edit path to community service edit" do
+      it "includes edit path to community service review with from_edit" do
         activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
         create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 5)
 
         result = helper.community_service_cards(flow.volunteering_activities)
 
         expect(result.first[:edit_path]).to eq(
-          helper.edit_activities_flow_community_service_path(id: activity.id)
+          helper.review_activities_flow_community_service_path(id: activity.id, from_edit: 1)
         )
       end
 
@@ -82,14 +82,14 @@ RSpec.describe ActivitiesHelper do
       expect(result.length).to eq(2)
     end
 
-    it "includes edit path to job training edit" do
+    it "includes edit path to job training review with from_edit" do
       activity = create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main")
       create(:job_training_activity_month, job_training_activity: activity, month: first_month, hours: 5)
 
       result = helper.work_program_cards(flow.job_training_activities)
 
       expect(result.first[:edit_path]).to eq(
-        helper.edit_activities_flow_job_training_path(id: activity.id)
+        helper.review_activities_flow_job_training_path(id: activity.id, from_edit: 1)
       )
     end
   end

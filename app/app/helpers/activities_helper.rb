@@ -76,7 +76,7 @@ module ActivitiesHelper
       {
         name: activity.organization_name,
         months: months,
-        edit_path: edit_activities_flow_community_service_path(id: activity.id)
+        edit_path: review_activities_flow_community_service_path(id: activity.id, from_edit: 1)
       }
     end
   end
@@ -89,7 +89,7 @@ module ActivitiesHelper
       {
         name: activity.program_name,
         months: months,
-        edit_path: edit_activities_flow_job_training_path(id: activity.id)
+        edit_path: review_activities_flow_job_training_path(id: activity.id, from_edit: 1)
       }
     end
   end
