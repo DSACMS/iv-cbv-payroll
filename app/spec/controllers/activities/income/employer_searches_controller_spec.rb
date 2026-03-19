@@ -20,6 +20,12 @@ RSpec.describe Activities::Income::EmployerSearchesController do
       expect(response).to be_successful
     end
 
+    it "renders the activity flow header with exit button" do
+      get :show
+      expect(response.body).to include(I18n.t("activities.employment.title_singular"))
+      expect(response.body).to include("exit-confirmation-modal")
+    end
+
     it "tracks an accessed search event with activity_flow_id" do
       allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantAccessedSearchPage", anything, hash_including(
