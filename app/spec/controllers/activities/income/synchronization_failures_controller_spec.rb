@@ -17,5 +17,12 @@ RSpec.describe Activities::Income::SynchronizationFailuresController do
 
       expect(response.body).to include(I18n.t("activities.income.synchronization_failures.show.add_employment_manually"))
     end
+
+    it "renders the activity flow header with exit button" do
+      get :show
+
+      expect(response.body).to include(I18n.t("activities.employment.title_singular"))
+      expect(response.body).to include("exit-confirmation-modal")
+    end
   end
 end

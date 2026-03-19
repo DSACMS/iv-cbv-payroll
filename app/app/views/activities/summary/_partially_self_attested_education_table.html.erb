@@ -1,0 +1,57 @@
+<% enrollment_terms = activity.nsc_enrollment_terms.order(:term_begin, :term_end, :school_name) %>
+<% first_term = enrollment_terms.first %>
+<% student_name = [ first_term&.first_name, first_term&.middle_name, first_term&.last_name ].compact_blank.join(" ").presence || t("shared.not_applicable") %>
+
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("components.enrollment_term_table_component.student_name_label") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= student_name %>
+    <% end %>
+  <% end %>
+
+  <% enrollment_terms.group_by(&:school_name).each do |school_name, school_terms| %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("components.enrollment_term_table_component.school_or_program") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= school_name.to_s.titlecase.presence || t("shared.not_applicable") %>
+      <% end %>
+    <% end %>
+
+    <% school_terms.each do |enrollment_term| %>
+      <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+          <%= t("components.enrollment_term_table_component.enrollment_term") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+          <%= format_date(enrollment_term.term_begin) %>
+          &dash;
+          <%= format_date(enrollment_term.term_end) %>
+        <% end %>
+      <% end %>
+
+      <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+          <%= t("components.enrollment_term_table_component.enrollment_status") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+          <% enrollment_status_key = "components.enrollment_term_table_component.status.#{enrollment_term.enrollment_status}" %>
+          <%= I18n.exists?(enrollment_status_key) ? t(enrollment_status_key) : t("shared.not_applicable") %>
+        <% end %>
+      <% end %>
+
+      <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+          <%= t("activities.summary.education.term_credit_hours") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+          <%= activity.review_term_credit_hours(enrollment_term) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

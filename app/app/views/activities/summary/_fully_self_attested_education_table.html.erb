@@ -1,0 +1,87 @@
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.education.school_name") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.school_name.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.education.address") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.formatted_address.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.education.contact_name") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.contact_name.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.education.contact_email") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.contact_email.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.education.contact_phone") %>
+    <% end %>
+    <%= row.with_data_cell do %>
+      <%= activity.contact_phone_number.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <% month_rows = activity.education_activity_months.order(:month) %>
+  <% if month_rows.empty? %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.summary.education.month") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= t("shared.not_applicable") %>
+      <% end %>
+    <% end %>
+
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true) do %>
+        <%= t("activities.summary.education.credit_hours") %>
+      <% end %>
+      <%= row.with_data_cell do %>
+        <%= t("shared.not_applicable") %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <% month_rows.each do |activity_month| %>
+      <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+          <%= t("activities.summary.education.month") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+          <%= I18n.l(activity_month.month, format: :month) %>
+        <% end %>
+      <% end %>
+
+      <%= table.with_row do |row| %>
+        <%= row.with_data_cell(is_header: true) do %>
+          <%= t("activities.summary.education.credit_hours") %>
+        <% end %>
+        <%= row.with_data_cell do %>
+          <%= activity_month.hours %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

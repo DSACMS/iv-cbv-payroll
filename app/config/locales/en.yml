@@ -463,6 +463,7 @@ en:
         credit_hours: Credit hours
         month: Month
         school_name: School or program
+        term_credit_hours: Term credit hours
       employment:
         employer: Employer
       job_training:
