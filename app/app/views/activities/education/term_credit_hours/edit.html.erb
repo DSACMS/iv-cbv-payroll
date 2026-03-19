@@ -1,0 +1,57 @@
+<% content_for :title, t("activities.education.term_credit_hours.heading",
+      school_name: @current_term.school_name.titlecase) %>
+
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.education.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: @back_url
+  ) %>
+<% end %>
+
+<p class="month-indicator">
+  <%= t("activities.education.term_credit_hours.term_date_range",
+        range: @current_term.term_date_display) %>
+</p>
+
+<h1 class="margin-top-0 padding-top-2 padding-bottom-3">
+  <%= t("activities.education.term_credit_hours.heading",
+        school_name: @current_term.school_name.titlecase) %>
+</h1>
+
+<p class="margin-bottom-3">
+  <%= t("activities.education.term_credit_hours.body_html",
+        term_begin: format_date(@current_term.term_begin),
+        term_end: format_date(@current_term.term_end)) %>
+</p>
+
+<p class="margin-bottom-3">
+  <%= t("activities.education.term_credit_hours.body_conversion") %>
+</p>
+
+<%= uswds_form_with(model: @current_term,
+      url: activities_flow_education_term_credit_hour_path(
+        education_id: @education_activity, id: @term_index),
+      method: :patch) do |f| %>
+
+  <div data-controller="hours-input">
+    <% if @terms.length > 1 %>
+      <div class="usa-checkbox">
+        <%= check_box_tag :no_hours, "1", false,
+              class: "usa-checkbox__input usa-checkbox__input--tile",
+              data: { hours_input_target: "checkbox", action: "hours-input#toggle" } %>
+        <%= label_tag :no_hours,
+              t("activities.education.term_credit_hours.no_hours_checkbox",
+                school_name: @current_term.school_name.titlecase),
+              class: "usa-checkbox__label" %>
+      </div>
+    <% end %>
+
+    <%= f.text_field :credit_hours, type: :number,
+          label: t("activities.education.term_credit_hours.hours_label"),
+          label_class: "text-bold",
+          data: { hours_input_target: "hoursField", action: "input->hours-input#input" } %>
+
+    <%= f.submit t("activities.education.term_credit_hours.continue") %>
+  </div>
+<% end %>

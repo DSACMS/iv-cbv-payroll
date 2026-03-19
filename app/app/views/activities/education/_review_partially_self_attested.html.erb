@@ -1,6 +1,6 @@
 <% enrollment_terms = @education_activity.nsc_enrollment_terms.order(:term_begin, :term_end, :school_name) %>
 <% has_multiple_enrollments = enrollment_terms.length > 1 %>
-<% less_than_half_time_terms = enrollment_terms.select(&:enrollment_less_than_half_time?) %>
+<% less_than_half_time_terms = enrollment_terms.select(&:less_than_half_time?) %>
 
 <% enrollment_terms.each_with_index do |enrollment_term, index| %>
   <h2>
@@ -13,7 +13,7 @@
 
   <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
 
-  <% next unless enrollment_term.enrollment_less_than_half_time? %>
+  <% next unless enrollment_term.less_than_half_time? %>
 
   <h3><%= t("activities.education.review.credit_hours_section") %></h3>
   <%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
@@ -25,8 +25,14 @@
             &dash;
             <%= format_date(enrollment_term.term_end) %>
           </span>
+          <% term_index = less_than_half_time_terms.index { |term| term.id == enrollment_term.id } || 0 %>
           <%= link_to t("activities.education.review.edit"),
-                review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence),
+                edit_activities_flow_education_term_credit_hour_path(
+                  education_id: @education_activity,
+                  id: term_index,
+                  from_review: 1,
+                  from_edit: params[:from_edit].presence
+                ),
                 class: "usa-link" %>
         </div>
       <% end %>

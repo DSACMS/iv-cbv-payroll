@@ -222,6 +222,14 @@ en:
         fetching_education_description: This may take a few seconds. Please keep this window open while we work on this.
         header: We're gathering your details from National Student Clearinghouse
         school_or_program: School or program
+      term_credit_hours:
+        body_conversion: We will convert these credit hours into your community engagement progress.
+        body_html: Enter the number of credit hours you were taking in the term from %{term_begin} to %{term_end}.
+        continue: Continue
+        heading: Add your credit hours for %{school_name}
+        hours_label: Term credit hours
+        no_hours_checkbox: I didn't take any classes at %{school_name} this term
+        term_date_range: 'Term: %{range}'
       title: Education
       title_singular: Education
       verify:
@@ -959,6 +967,8 @@ en:
   continue: Continue
   date:
     formats:
+      abbreviated_month: "%b"
+      abbreviated_month_year: "%b %Y"
       default: "%Y-%m-%d"
       long: "%B %-d, %Y"
       month: "%B"
