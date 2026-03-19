@@ -159,6 +159,109 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(second_month.hours.to_s)
     end
 
+    it "renders partially self-attested education in one table with saved term credit hours" do
+      activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        first_name: "Ada",
+        middle_name: "B",
+        last_name: "Lovelace",
+        school_name: "River College",
+        credit_hours: 9
+      )
+
+      get :show
+
+      doc = Capybara.string(response.body)
+      expect(doc).to have_selector("table", count: 1)
+      expect(response.body).to include("Ada B Lovelace")
+      expect(response.body).to include("River College")
+      expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.less_than_half_time"))
+
+      term_credit_rows = doc.all("tr").select { |row| row.text.include?(I18n.t("activities.summary.education.term_credit_hours")) }
+      expect(term_credit_rows.size).to eq(1)
+      expect(term_credit_rows.first.all("th, td").last.text.strip).to eq("9")
+    end
+
+    it "renders multiple less-than-half-time enrollments from the same school in one collapsed table" do
+      activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: "River College",
+        term_begin: Date.new(2026, 1, 1),
+        term_end: Date.new(2026, 1, 31),
+        credit_hours: 3
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: "River College",
+        term_begin: Date.new(2026, 2, 1),
+        term_end: Date.new(2026, 2, 28),
+        credit_hours: 6
+      )
+
+      get :show
+
+      doc = Capybara.string(response.body)
+      expect(doc).to have_selector("table", count: 1)
+      expect(response.body.scan("River College").count).to eq(1)
+      expect(response.body.scan(I18n.t("components.enrollment_term_table_component.enrollment_term")).count).to eq(2)
+      expect(response.body.scan(I18n.t("components.enrollment_term_table_component.enrollment_status")).count).to eq(2)
+      expect(response.body.scan(I18n.t("activities.summary.education.term_credit_hours")).count).to eq(2)
+
+      term_credit_rows = doc.all("tr").select { |row| row.text.include?(I18n.t("activities.summary.education.term_credit_hours")) }
+      expect(term_credit_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[3 6])
+    end
+
+    it "renders multiple less-than-half-time enrollments from different schools in one table" do
+      activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: "River College",
+        credit_hours: 3
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: "Lake Tech",
+        credit_hours: 6
+      )
+
+      get :show
+
+      doc = Capybara.string(response.body)
+      expect(doc).to have_selector("table", count: 1)
+      expect(response.body).to include("River College")
+      expect(response.body).to include("Lake Tech")
+      expect(response.body.scan(I18n.t("components.enrollment_term_table_component.school_or_program")).count).to eq(2)
+
+      term_credit_rows = doc.all("tr").select { |row| row.text.include?(I18n.t("activities.summary.education.term_credit_hours")) }
+      expect(term_credit_rows.map { |row| row.all("th, td").last.text.strip }).to contain_exactly("3", "6")
+    end
+
     context "with payroll accounts" do
       it "includes synced payroll accounts in all_activities list" do
         payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow)

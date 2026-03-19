@@ -35,6 +35,7 @@ RSpec.describe DemoLauncherController, type: :controller do
       rendered = response.body
       expect(rendered).to match(/Fake Test Scenarios/)
       expect(rendered).to match(/2 terms/)
+      expect(rendered).to match(/Maya Testuser/)
     end
   end
 
@@ -415,6 +416,27 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(identity.last_name).to eq("Testuser")
         expect(terms.map(&:school_name)).to contain_exactly("Pine Valley College", "Riverside Community College")
         expect(terms.map(&:enrollment_status)).to contain_exactly("half_time", "less_than_half_time")
+      end
+
+      it "supports launching Maya fake test user with multiple enrollments at the same school" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            test_scenario: "partial_enrollment_maya"
+          }
+        }.to change(ActivityFlow, :count).by(1)
+          .and change(EducationActivity, :count).by(1)
+          .and change(NscEnrollmentTerm, :count).by(2)
+
+        flow = ActivityFlow.last
+        identity = flow.identity
+        terms = flow.education_activities.first.nsc_enrollment_terms
+
+        expect(identity.first_name).to eq("Maya")
+        expect(identity.last_name).to eq("Testuser")
+        expect(terms.map(&:school_name)).to all(eq("River College"))
+        expect(terms.map(&:enrollment_status)).to all(eq("less_than_half_time"))
+        expect(terms.map(&:term_begin).uniq.length).to eq(2)
       end
 
       it "sets the flow session" do

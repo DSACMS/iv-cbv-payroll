@@ -149,10 +149,25 @@ class DemoLauncherController < ApplicationController
         { school_name: "Pine Valley College", enrollment_status: :half_time },
         { school_name: "Riverside Community College", enrollment_status: :less_than_half_time }
       ]
+    },
+    "partial_enrollment_maya" => {
+      first_name: "Maya",
+      last_name: "Testuser",
+      date_of_birth: "1993-09-11",
+      terms: [
+        { school_name: "River College", enrollment_status: :less_than_half_time },
+        { school_name: "River College", enrollment_status: :less_than_half_time }
+      ]
     }
   }.freeze
 
-  FAKE_SCENARIO_KEYS = %w[partial_enrollment_sam partial_enrollment_multi_term partial_enrollment_ziggy partial_enrollment_casey].freeze
+  FAKE_SCENARIO_KEYS = %w[
+    partial_enrollment_sam
+    partial_enrollment_multi_term
+    partial_enrollment_ziggy
+    partial_enrollment_casey
+    partial_enrollment_maya
+  ].freeze
 
   def build_test_scenario_url(scenario_key, client_agency_id, overrides)
     user_data = TEST_SCENARIOS[scenario_key]
