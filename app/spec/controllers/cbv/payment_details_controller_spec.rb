@@ -280,7 +280,7 @@ RSpec.describe Cbv::PaymentDetailsController do
       context "for Bob (a gig worker)" do
         subject { response.body }
 
-        let(:account_id) { "019571bc-2f60-3955-d972-dbadfe0913a8" }
+        let(:account_id) { ArgyleApiHelper::BOB_ACCOUNT_ID }
         let(:cbv_applicant) { create(:cbv_applicant, created_at: Date.parse("2025-03-15"), snap_application_date: Date.parse("2025-03-15"), case_number: "ABC1234") }
         let(:cbv_flow) do
           create(:cbv_flow,
