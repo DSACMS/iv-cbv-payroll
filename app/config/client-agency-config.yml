@@ -62,7 +62,7 @@
     w2: 90
     gig: 90
   application_reporting_months: 2
-  invitation_valid_days: 14
+  invitation_valid_days: 30
   weekly_report:
     recipient: ffs-eng@navapbc.com
   applicant_attributes:
