@@ -140,6 +140,8 @@ gem "wkhtmltopdf-binary"
 
 gem "net-sftp"
 gem "net-ssh"
+gem "ed25519" # Necessary for SSH Key support in Net::SSH
+gem "bcrypt_pbkdf" # Necessary for SSH Key support in Net::SSH
 
 # Sinatra for JSON API reference implementation
 gem "sinatra", "~> 4.2"

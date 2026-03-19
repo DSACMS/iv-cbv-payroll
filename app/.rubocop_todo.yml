@@ -161,15 +161,6 @@ RSpec/SpecFilePathFormat:
     - 'spec/controllers/concerns/gpg_encryption_spec.rb'
     - 'spec/tasks/rake_invitation_spec.rb'
 
-# Offense count: 12
-RSpec/StubbedMock:
-  Exclude:
-    - 'spec/controllers/api/argyle_controller_spec.rb'
-    - 'spec/jobs/case_worker_transmitter_job_spec.rb'
-    - 'spec/services/argyle_webhooks_manager_spec.rb'
-    - 'spec/services/transmitters/json_transmitter_spec.rb'
-    - 'spec/support/pdf_transmitter_examples.rb'
-
 # Offense count: 4
 RSpec/SubjectStub:
   Exclude:

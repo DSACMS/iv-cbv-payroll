@@ -16,6 +16,12 @@ inherit_gem:
   rubocop-rails-omakase: rubocop.yml
 AllCops:
   NewCops: enable
+RSpec/StubbedMock:
+  # Disabled to allow for setting expectations while configuring a mock. This
+  # increases compactness of specs. See
+  # https://github.com/rubocop/rubocop-rspec/issues/1271
+  Enabled: false
+
 
 # Re-enable some Cops not included in the rubocop-rails-omakase configuration:
 # https://github.com/rails/rubocop-rails-omakase/blob/main/rubocop.yml

@@ -134,6 +134,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     base64 (0.3.0)
     bcrypt (3.1.22)
+    bcrypt_pbkdf (1.1.2)
     better_html (2.1.1)
       actionview (>= 6.0)
       activesupport (>= 6.0)
@@ -200,6 +201,7 @@ GEM
       railties (>= 6.1)
     drb (2.2.3)
     dumb_delegator (1.1.0)
+    ed25519 (1.4.0)
     erb (6.0.2)
     erb_lint (0.9.0)
       activesupport
@@ -632,6 +634,7 @@ DEPENDENCIES
   aws-sdk-rails
   aws-sdk-s3
   axe-core-rspec (~> 4.11)
+  bcrypt_pbkdf
   bootsnap
   brakeman
   bundler-audit (~> 0.9)
@@ -646,6 +649,7 @@ DEPENDENCIES
   device_detector
   devise (~> 5.0)
   dotenv-rails (~> 3.2)
+  ed25519
   erb_lint
   factory_bot (~> 6.5)
   faker (~> 3.6)
