@@ -276,6 +276,22 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response.body).to include("0")
       end
 
+      it "renders term-hours table for an enrolled term" do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "University of Illinois",
+          enrollment_status: :enrolled,
+          credit_hours: 4
+        )
+
+        get :review, params: { id: education_activity.id }
+
+        doc = Capybara.string(response.body)
+        expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
+        expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
+      end
+
       it "renders term-hours edit link to the term credit-hours screen" do
         create(
           :nsc_enrollment_term,

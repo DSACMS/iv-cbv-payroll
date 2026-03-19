@@ -118,7 +118,7 @@ module ActivitiesHelper
       school_name = term.school_name&.titlecase || t("activities.education.title")
       months = reporting_months.reverse.map do |month_start|
         overlapping = term.overlaps_month?(month_start)
-        show_credit_hours = overlapping && term.enrollment_less_than_half_time?
+        show_credit_hours = overlapping && term.less_than_half_time?
         if show_credit_hours
           partial_self_attested_month_data(activity: activity, term: term, month_start: month_start)
         else

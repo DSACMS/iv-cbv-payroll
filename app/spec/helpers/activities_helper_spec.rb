@@ -214,6 +214,27 @@ RSpec.describe ActivitiesHelper do
       end
     end
 
+    it "shows saved term credit hours for enrolled partially self-attested months" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
+      create(
+        :nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Test U",
+        enrollment_status: "enrolled",
+        term_begin: first_month,
+        term_end: second_month.end_of_month,
+        credit_hours: 5
+      )
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      result.first[:months].each do |month_data|
+        expect(month_data[:credit_hours]).to eq(5)
+        expect(month_data[:community_engagement_hours]).to eq(20)
+        expect(month_data[:show_credit_hours]).to be(true)
+      end
+    end
+
     it "builds a fully self-attested card from activity months" do
       activity = create(
         :education_activity,
