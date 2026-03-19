@@ -94,6 +94,7 @@ Rails.application.routes.draw do
         patch "sync", to: "education#sync", as: :sync
         resources :document_uploads, only: %i[new create], controller: "/activities/document_uploads"
         resources :months, only: %i[edit update], controller: "education/months"
+        resources :term_credit_hours, only: %i[edit update], controller: "education/term_credit_hours"
 
         member do
           get :review

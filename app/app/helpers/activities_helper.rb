@@ -63,7 +63,7 @@ module ActivitiesHelper
       if activity.fully_self_attested?
         fully_self_attested_education_cards(activity, reporting_months)
       else
-        validated_education_cards(activity, reporting_months)
+        education_cards_for_term_enrollments(activity, reporting_months)
       end
     end
   end
@@ -113,12 +113,17 @@ module ActivitiesHelper
 
   private
 
-  def validated_education_cards(activity, reporting_months)
+  def education_cards_for_term_enrollments(activity, reporting_months)
     activity.nsc_enrollment_terms.map do |term|
       school_name = term.school_name&.titlecase || t("activities.education.title")
-      months = reporting_months.reverse.map do |month_start|
+      visible_months = if activity.partially_self_attested?
+                         reporting_months.reverse.select { |month_start| term.overlaps_month?(month_start) }
+                       else
+                         reporting_months.reverse
+                       end
+      months = visible_months.map do |month_start|
         overlapping = term.overlaps_month?(month_start)
-        show_credit_hours = overlapping && term.enrollment_less_than_half_time?
+        show_credit_hours = overlapping && term.less_than_half_time?
         if show_credit_hours
           partial_self_attested_month_data(activity: activity, term: term, month_start: month_start)
         else
@@ -130,9 +135,9 @@ module ActivitiesHelper
         name: school_name,
         months: months,
         edit_path: if activity.partially_self_attested?
-                     # TODO: Route to partially self-attested term-hours edit flow
-                     # once term-hours screens are implemented.
-                     new_activities_flow_education_document_upload_path(education_id: activity.id)
+                     term_index = activity.less_than_half_time_terms_in_reporting_window
+                       .index { |less_than_half_time_term| less_than_half_time_term.id == term.id } || 0
+                     edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: term_index)
                    else
                      edit_activities_flow_education_path(id: activity.id)
                    end
@@ -150,7 +155,7 @@ module ActivitiesHelper
     [ {
       name: activity.school_name.presence || t("activities.education.title"),
       months: months,
-      edit_path: review_activities_flow_education_path(id: activity.id, from_edit: 1)
+      edit_path: edit_activities_flow_education_month_path(education_id: activity.id, id: 0, from_edit: 1)
     } ]
   end
 
@@ -172,8 +177,7 @@ module ActivitiesHelper
   end
 
   def partial_self_attested_month_data(activity:, term:, month_start:)
-    # TODO: Replace with saved term-hours once term-hours screens are implemented.
-    credit_hours = 0
+    credit_hours = activity.review_term_credit_hours(term)
     {
       month: month_start,
       enrollment_status: enrollment_status_display(term.enrollment_status),

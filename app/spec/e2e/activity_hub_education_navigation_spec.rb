@@ -219,10 +219,25 @@ RSpec.describe "e2e Education self-attestation back/exit navigation", :js, type:
       click_link I18n.t("activities.hub.edit")
     end
 
-    # Should land on review page (not edit form) with no back button
+    # Hub edit starts on month 1 input, then continues through flow back to review.
+    verify_page(page, title: I18n.t("activities.education.hours_input.heading",
+      month: month1_label, organization: "Updated University"))
+    expect(page).to have_button I18n.t("activities.education.hours_input.continue")
+    click_button I18n.t("activities.education.hours_input.continue")
+
+    verify_page(page, title: I18n.t("activities.education.hours_input.heading",
+      month: month2_label, organization: "Updated University"))
+    click_button I18n.t("activities.education.hours_input.continue")
+
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: "Updated University"),
+      skip_axe_rules: %w[heading-order]
+    )
+    click_button I18n.t("activities.document_uploads.new.continue")
+
     verify_page(page, title: I18n.t("activities.education.review.title", school_name: "Updated University"))
     expect(page).not_to have_css(".back-nav__link")
-    # Button should say "Save changes"
     expect(page).to have_button I18n.t("activities.hub.save")
 
     # Edit school info from review in edit-from-hub flow

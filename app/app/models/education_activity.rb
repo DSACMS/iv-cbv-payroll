@@ -36,6 +36,17 @@ class EducationActivity < Activity
     credit_hours.to_i * CREDIT_HOUR_CE_MULTIPLIER
   end
 
+  def less_than_half_time_terms_in_reporting_window
+    reporting_range = activity_flow.reporting_window_range
+    nsc_enrollment_terms
+      .select { |term| term.less_than_half_time? && term.within_reporting_window?(reporting_range) }
+      .sort_by { |term| [ term.term_begin, term.id ] }
+  end
+
+  def has_less_than_half_time_terms?
+    less_than_half_time_terms_in_reporting_window.any?
+  end
+
   def review_header_school_name
     school_name.presence || nsc_enrollment_terms.first&.school_name
   end
@@ -49,7 +60,6 @@ class EducationActivity < Activity
   end
 
   def review_term_credit_hours(term)
-    # Temporary fallback until partially self-attested term-hours entry is implemented.
     term.attributes["credit_hours"].to_i
   end
 

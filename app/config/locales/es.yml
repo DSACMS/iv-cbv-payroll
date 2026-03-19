@@ -460,6 +460,8 @@ es:
     - viernes
     - sábado
     formats:
+      abbreviated_month: "%b"
+      abbreviated_month_year: "%b %Y"
       default: "%-d/%-m/%Y"
       long: "%-d de %B de %Y"
       month: "%B"

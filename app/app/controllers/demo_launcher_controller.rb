@@ -127,6 +127,16 @@ class DemoLauncherController < ApplicationController
       first_name: "Sam", last_name: "Testuser", date_of_birth: "1990-05-15",
       school_names: [ "Greenfield Community College", "North Valley College" ]
     },
+    "partial_enrollment_multi_term" => {
+      first_name: "Nina",
+      last_name: "Testuser",
+      date_of_birth: "1990-05-15",
+      reporting_window_months: 6,
+      terms: [
+        { school_name: "Greenfield Community College", enrollment_status: :less_than_half_time },
+        { school_name: "Riverside Technical Institute", enrollment_status: :less_than_half_time }
+      ]
+    },
     "partial_enrollment_ziggy" => {
       first_name: "Ziggy", last_name: "Testuser", date_of_birth: "1992-07-19",
       school_names: [ "Sunrise Community College" ]
@@ -142,7 +152,7 @@ class DemoLauncherController < ApplicationController
     }
   }.freeze
 
-  FAKE_SCENARIO_KEYS = %w[partial_enrollment_sam partial_enrollment_ziggy partial_enrollment_casey].freeze
+  FAKE_SCENARIO_KEYS = %w[partial_enrollment_sam partial_enrollment_multi_term partial_enrollment_ziggy partial_enrollment_casey].freeze
 
   def build_test_scenario_url(scenario_key, client_agency_id, overrides)
     user_data = TEST_SCENARIOS[scenario_key]
@@ -190,9 +200,8 @@ class DemoLauncherController < ApplicationController
       overrides.to_h.symbolize_keys
     )
 
-    if overrides[:reporting_window_months].present?
-      flow.update!(reporting_window_months: overrides[:reporting_window_months].to_i)
-    end
+    reporting_window_months = user_data[:reporting_window_months] || overrides[:reporting_window_months]
+    flow.update!(reporting_window_months: reporting_window_months) if reporting_window_months
 
     if overrides[:reporting_window_start].present?
       flow.shift_reporting_window_start!(overrides[:reporting_window_start])
@@ -211,22 +220,50 @@ class DemoLauncherController < ApplicationController
     )
 
     reporting_window = flow.reporting_window_range
-    enrollments = user_data[:enrollments] || user_data[:school_names].map do |school_name|
-      { school_name: school_name, enrollment_status: :less_than_half_time }
-    end
+    if user_data[:terms]
+      create_fake_enrollment_terms(education_activity, user_data, reporting_window)
+    else
+      enrollments = user_data[:enrollments] || user_data[:school_names].map do |school_name|
+        { school_name: school_name, enrollment_status: :less_than_half_time }
+      end
 
-    enrollments.each do |enrollment|
-      education_activity.nsc_enrollment_terms.create!(
-        school_name: enrollment[:school_name],
-        first_name: user_data[:first_name],
-        last_name: user_data[:last_name],
-        enrollment_status: enrollment[:enrollment_status],
-        term_begin: reporting_window.begin,
-        term_end: reporting_window.end
-      )
+      enrollments.each do |enrollment|
+        education_activity.nsc_enrollment_terms.create!(
+          school_name: enrollment[:school_name],
+          first_name: user_data[:first_name],
+          last_name: user_data[:last_name],
+          enrollment_status: enrollment[:enrollment_status],
+          term_begin: reporting_window.begin,
+          term_end: reporting_window.end
+        )
+      end
     end
 
     set_flow_session(flow.id, :activity)
     activities_flow_root_url(**launcher_url_options)
+  end
+
+  def create_fake_enrollment_terms(education_activity, user_data, reporting_window)
+    terms = user_data[:terms]
+    total_days = (reporting_window.end - reporting_window.begin).to_i
+    days_per_term = total_days / terms.length
+
+    terms.each_with_index do |term_data, index|
+      term_begin = reporting_window.begin + (index * days_per_term)
+      term_end = if index == terms.length - 1
+                   reporting_window.end
+                 else
+                   reporting_window.begin + ((index + 1) * days_per_term)
+                 end
+
+      education_activity.nsc_enrollment_terms.create!(
+        school_name: term_data[:school_name],
+        first_name: user_data[:first_name],
+        last_name: user_data[:last_name],
+        enrollment_status: term_data[:enrollment_status],
+        term_begin: term_begin,
+        term_end: term_end
+      )
+    end
   end
 end

@@ -166,6 +166,93 @@ RSpec.describe ActivitiesHelper do
       )
     end
 
+    it "includes edit path to term credit hours for partially self-attested education" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
+      create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", enrollment_status: "less_than_half_time", term_begin: first_month, term_end: second_month.end_of_month)
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      expect(result.first[:edit_path]).to eq(
+        helper.edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: 0)
+      )
+    end
+
+    it "routes each partially self-attested education card to the matching term index" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
+      first_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "First School", term_begin: first_month, term_end: second_month.end_of_month)
+      second_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "Second School", term_begin: first_month, term_end: second_month.end_of_month)
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+      cards_by_name = result.index_by { |card| card[:name] }
+
+      expect(cards_by_name[first_term.school_name].fetch(:edit_path)).to eq(
+        helper.edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: 0)
+      )
+      expect(cards_by_name[second_term.school_name].fetch(:edit_path)).to eq(
+        helper.edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: 1)
+      )
+    end
+
+    it "shows saved term credit hours for partially self-attested months" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
+      create(
+        :nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Test U",
+        enrollment_status: "less_than_half_time",
+        term_begin: first_month,
+        term_end: second_month.end_of_month,
+        credit_hours: 6
+      )
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      result.first[:months].each do |month_data|
+        expect(month_data[:credit_hours]).to eq(6)
+        expect(month_data[:community_engagement_hours]).to eq(24)
+        expect(month_data[:show_credit_hours]).to be(true)
+      end
+    end
+
+    it "only includes overlapping months for partially self-attested terms" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: "Test U",
+        term_begin: first_month,
+        term_end: first_month.end_of_month,
+        credit_hours: 4
+      )
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      expect(result.first[:months].map { |m| m[:month] }).to eq([ first_month ])
+      expect(result.first[:months].first[:credit_hours]).to eq(4)
+    end
+
+    it "shows saved term credit hours for enrolled partially self-attested months" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
+      create(
+        :nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Test U",
+        enrollment_status: "enrolled",
+        term_begin: first_month,
+        term_end: second_month.end_of_month,
+        credit_hours: 5
+      )
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      result.first[:months].each do |month_data|
+        expect(month_data[:credit_hours]).to eq(5)
+        expect(month_data[:community_engagement_hours]).to eq(20)
+        expect(month_data[:show_credit_hours]).to be(true)
+      end
+    end
+
     it "builds a fully self-attested card from activity months" do
       activity = create(
         :education_activity,
@@ -185,7 +272,7 @@ RSpec.describe ActivitiesHelper do
             { month: second_month, credit_hours: 6, community_engagement_hours: 24 },
             { month: first_month, credit_hours: 4, community_engagement_hours: 16 }
           ],
-          edit_path: helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
+          edit_path: helper.edit_activities_flow_education_month_path(education_id: activity.id, id: 0, from_edit: 1)
         }
       )
     end
