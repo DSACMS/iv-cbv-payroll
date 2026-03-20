@@ -809,5 +809,39 @@ RSpec.describe ActivityFlowProgressCalculator do
         end
       end
     end
+
+    context "when using spring enrollment for summer routing" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 2, education_activities_count: 0) }
+      let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }
+      let(:reporting_months) { flow.reporting_months.sort }
+
+      before do
+        flow.shift_reporting_window_start!("2025-07-01")
+        create(:nsc_enrollment_term,
+                  education_activity: education_activity,
+                  enrollment_status: "half_time",
+                  term_begin: Date.new(2025, 3, 1),
+                  term_end: Date.new(2025, 6, 15))
+        create(:nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "less_than_half_time",
+          term_begin: Date.new(2025, 7, 1),
+          term_end: Date.new(2025, 8, 15))
+      end
+
+
+      it "marks each summer reporting month complete" do
+        monthly_results = described_class.new(flow).monthly_results.sort_by(&:month)
+
+        expect(monthly_results.map(&:month)).to eq(reporting_months)
+        expect(monthly_results.map(&:total_hours)).to eq([ 80, 80 ])
+        expect(monthly_results).to all(have_attributes(meets_requirements: true))
+      end
+
+      it "meets routing requirements with validated spring carryover data" do
+        expect(progress.meets_requirements).to be(true)
+        expect(progress.meets_routing_requirements).to be(true)
+      end
+    end
   end
 end

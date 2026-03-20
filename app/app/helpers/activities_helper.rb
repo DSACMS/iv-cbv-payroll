@@ -114,7 +114,11 @@ module ActivitiesHelper
   private
 
   def education_cards_for_term_enrollments(activity, reporting_months)
-    activity.nsc_enrollment_terms.map do |term|
+    summer_carryover_service = EducationSummerCarryoverService.new(activity)
+
+    activity.nsc_enrollment_terms
+      .select { |term| reporting_months.any? { |month_start| term.overlaps_month?(month_start) } }
+      .map do |term|
       school_name = term.school_name&.titlecase || t("activities.education.title")
       visible_months = if activity.partially_self_attested?
                          reporting_months.reverse.select { |month_start| term.overlaps_month?(month_start) }
@@ -122,12 +126,15 @@ module ActivitiesHelper
                          reporting_months.reverse
                        end
       months = visible_months.map do |month_start|
-        overlapping = term.overlaps_month?(month_start)
-        show_credit_hours = overlapping && term.less_than_half_time?
+        show_credit_hours = activity.partially_self_attested? && term.less_than_half_time?
         if show_credit_hours
           partial_self_attested_month_data(activity: activity, term: term, month_start: month_start)
         else
-          validated_month_data(term: term, month_start: month_start)
+          effective_term = summer_carryover_service.effective_validated_term_for_month(
+            month_start,
+            displayed_term: term
+          )
+          validated_month_data(month_start: month_start, effective_term: effective_term)
         end
       end
 
@@ -165,12 +172,11 @@ module ActivitiesHelper
     activity_month.hours.to_i
   end
 
-  def validated_month_data(term:, month_start:)
-    overlapping = term.overlaps_month?(month_start)
+  def validated_month_data(month_start:, effective_term:)
     {
       month: month_start,
-      enrollment_status: overlapping ? enrollment_status_display(term.enrollment_status) : t("activities.hub.cards.not_enrolled"),
-      community_engagement_hours: overlapping && term.half_time_or_above? ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0,
+      enrollment_status: effective_term ? enrollment_status_display(effective_term.enrollment_status) : t("activities.hub.cards.not_enrolled"),
+      community_engagement_hours: effective_term&.half_time_or_above? ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0,
       credit_hours: nil,
       show_credit_hours: false
     }

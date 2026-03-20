@@ -145,6 +145,26 @@ RSpec.describe ActivitiesHelper do
       expect(second_month_data[:community_engagement_hours]).to eq(0)
     end
 
+    it "does not build a card for a term with no reporting-window overlap" do
+      activity = create(:education_activity, activity_flow: flow)
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Spring Only U",
+        enrollment_status: "half_time",
+        term_begin: first_month - 4.months,
+        term_end: first_month - 2.months)
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Summer U",
+        enrollment_status: "less_than_half_time",
+        term_begin: first_month,
+        term_end: second_month.end_of_month)
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      expect(result.map { |card| card[:name] }).to eq([ "Summer U" ])
+    end
+
     it "returns months in reverse chronological order" do
       activity = create(:education_activity, activity_flow: flow)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", term_begin: first_month, term_end: second_month.end_of_month)
@@ -275,6 +295,34 @@ RSpec.describe ActivitiesHelper do
           edit_path: helper.edit_activities_flow_education_month_path(education_id: activity.id, id: 0, from_edit: 1)
         }
       )
+    end
+
+    it "shows the spring enrollment status on the summer card when carryover applies" do
+      summer_flow = create(:activity_flow, reporting_window_months: 2, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      summer_flow.shift_reporting_window_start!("2025-07-01")
+      summer_months = summer_flow.reporting_months
+      activity = create(:education_activity, activity_flow: summer_flow, status: "succeeded")
+
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Coastal State College",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15))
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Coastal State College",
+        enrollment_status: "less_than_half_time",
+        term_begin: Date.new(2025, 7, 1),
+        term_end: Date.new(2025, 8, 15))
+
+      result = helper.education_cards([ activity.reload ], summer_months)
+
+      expect(result.length).to eq(1)
+      expect(result.first[:months].map { |month| month[:enrollment_status] })
+        .to all(eq(I18n.t("components.enrollment_term_table_component.status.half_time")))
+      expect(result.first[:months].map { |month| month[:community_engagement_hours] })
+        .to all(eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
     end
   end
 

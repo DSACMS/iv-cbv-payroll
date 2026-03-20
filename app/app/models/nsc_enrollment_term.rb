@@ -1,6 +1,7 @@
 class NscEnrollmentTerm < ApplicationRecord
   belongs_to :education_activity
 
+  SUMMER_MONTHS = [ 5, 6, 7, 8 ].freeze
   enum :enrollment_status, {
     full_time: "full_time",                     # F
     three_quarter_time: "three_quarter_time",   # Q
@@ -27,6 +28,23 @@ class NscEnrollmentTerm < ApplicationRecord
 
   def within_reporting_window?(reporting_window_range)
     term_begin <= reporting_window_range.max && term_end >= reporting_window_range.min
+  end
+
+  def summer_term?
+    term_begin.month.in?([ 6, 7, 8 ])
+  end
+
+  def spring_term?
+    return false if summer_term?
+
+    spring_start = Date.new(term_end.year, 4, 1)
+    spring_end = Date.new(term_end.year, 6, 30)
+
+    term_end.between?(spring_start, spring_end)
+  end
+
+  def self.summer_month?(month_start)
+    month_start.month.in?(SUMMER_MONTHS)
   end
 
   def term_date_display

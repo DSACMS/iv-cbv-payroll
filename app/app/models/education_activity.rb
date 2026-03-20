@@ -163,10 +163,10 @@ class EducationActivity < Activity
     return 0 unless sync_succeeded?
 
     terms = terms_for_month(month_start)
-    return 0 if terms.empty?
-    return 0 unless month_has_half_time_or_above?(terms)
+    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if month_has_half_time_or_above?(terms)
+    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if summer_carryover_service.applies?(month_start, terms)
 
-    ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
+    0
   end
 
   def terms_for_month(month_start)
@@ -183,5 +183,9 @@ class EducationActivity < Activity
 
   def document_upload_school_names
     document_upload_terms_to_verify.filter_map(&:school_name).uniq
+  end
+
+  def summer_carryover_service
+    @summer_carryover_service ||= EducationSummerCarryoverService.new(self)
   end
 end

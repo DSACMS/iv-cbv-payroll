@@ -457,6 +457,7 @@ RSpec.describe DemoLauncherController, type: :controller do
         terms = education_activity.nsc_enrollment_terms.order(:term_begin)
 
         expect(flow.reporting_window_range.begin).to eq(Date.new(2025, 7, 1))
+        expect(education_activity.data_source).to eq("validated")
         expect(terms.map(&:enrollment_status)).to eq([ "half_time", "less_than_half_time" ])
         expect(terms.map(&:term_begin)).to eq([ Date.new(2025, 3, 1), Date.new(2025, 7, 1) ])
         expect(terms.map(&:term_end)).to eq([ Date.new(2025, 6, 15), Date.new(2025, 8, 15) ])

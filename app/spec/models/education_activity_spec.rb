@@ -400,5 +400,84 @@ RSpec.describe EducationActivity do
         expect(education_activity.progress_hours_for_month(month_start)).to eq(0)
       end
     end
+
+    context "when the reporting month is in summer" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
+      let(:month_start) { Date.new(2025, 7, 1) }
+
+      before do
+        flow.shift_reporting_window_start!("2025-07-01")
+      end
+
+      it "uses a qualifying spring term when summer enrollment is less than half time" do
+        create(:nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: Date.new(2025, 3, 1),
+          term_end: Date.new(2025, 6, 15))
+        create(:nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "less_than_half_time",
+          term_begin: Date.new(2025, 7, 1),
+          term_end: Date.new(2025, 8, 15))
+
+        expect(education_activity.progress_hours_for_month(month_start)).to eq(80)
+      end
+
+      it "uses a qualifying spring term when no summer term exists" do
+        create(:nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: Date.new(2025, 3, 1),
+          term_end: Date.new(2025, 6, 15))
+
+        expect(education_activity.progress_hours_for_month(month_start)).to eq(80)
+      end
+
+      it "does not use spring carryover when the spring term is less than half time" do
+        create(:nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "less_than_half_time",
+          term_begin: Date.new(2025, 3, 1),
+          term_end: Date.new(2025, 6, 15))
+        create(:nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "less_than_half_time",
+          term_begin: Date.new(2025, 7, 1),
+          term_end: Date.new(2025, 8, 15))
+
+        expect(education_activity.progress_hours_for_month(month_start)).to eq(0)
+      end
+
+      it "does not use spring carryover when a summer term is half time or above" do
+        create(:nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: Date.new(2025, 3, 1),
+          term_end: Date.new(2025, 6, 15))
+        create(:nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: Date.new(2025, 7, 1),
+          term_end: Date.new(2025, 8, 15))
+
+        expect(education_activity.progress_hours_for_month(month_start)).to eq(80)
+      end
+
+      it "does not use a qualifying spring term from a prior year" do
+        create(:nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: Date.new(2024, 3, 1),
+          term_end: Date.new(2024, 6, 15))
+        create(:nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "less_than_half_time",
+          term_begin: Date.new(2025, 7, 1),
+          term_end: Date.new(2025, 8, 15))
+
+        expect(education_activity.progress_hours_for_month(month_start)).to eq(0)
+      end
+    end
   end
 end
