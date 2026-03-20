@@ -248,7 +248,7 @@ class DemoLauncherController < ApplicationController
     flow.update!(identity: identity)
 
     education_activity = flow.education_activities.create!(
-      data_source: :validated,
+      data_source: :partially_self_attested,
       status: :succeeded
     )
 
@@ -264,7 +264,11 @@ class DemoLauncherController < ApplicationController
 
   def create_fake_enrollment_terms(education_activity, user_data, reporting_window)
     fake_terms_for_user_data(user_data).each do |term_data|
-      term_begin, term_end = fake_term_dates_for_type(term_data, reporting_window)
+      term_begin, term_end = if term_data[:term_type].present?
+                               fake_term_dates_for_type(term_data, reporting_window)
+                             else
+                               [ reporting_window.begin, reporting_window.end ]
+                             end
 
       education_activity.nsc_enrollment_terms.create!(
         school_name: term_data[:school_name],
@@ -294,17 +298,13 @@ class DemoLauncherController < ApplicationController
       { school_name: school_name, enrollment_status: :less_than_half_time }
     end
 
-    enrollments.map do |enrollment|
-      enrollment.merge(term_type: :reporting_window_full)
-    end
+    enrollments
   end
 
   def fake_term_dates_for_type(term_data, reporting_window)
     year = reporting_window.begin.year
 
     case term_data[:term_type].to_sym
-    when :reporting_window_full
-      [ reporting_window.begin, reporting_window.end ]
     when :reporting_window_segmented
       total_days = (reporting_window.end - reporting_window.begin).to_i
       days_per_term = total_days / term_data[:total_terms]

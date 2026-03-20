@@ -132,7 +132,7 @@ module ActivitiesHelper
         else
           effective_term = summer_carryover_service.effective_validated_term_for_month(
             month_start,
-            displayed_term: term
+            term
           )
           validated_month_data(month_start: month_start, effective_term: effective_term)
         end
