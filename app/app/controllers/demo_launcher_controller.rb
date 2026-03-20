@@ -158,6 +158,23 @@ class DemoLauncherController < ApplicationController
         { school_name: "River College", enrollment_status: :less_than_half_time },
         { school_name: "River College", enrollment_status: :less_than_half_time }
       ]
+    },
+    "summer_term_carryover_sage" => {
+      first_name: "Sage",
+      last_name: "Testuser",
+      date_of_birth: "1994-08-03",
+      terms: [
+        {
+          school_name: "Coastal State College",
+          enrollment_status: :half_time,
+          term_type: :qualifying_spring
+        },
+        {
+          school_name: "Coastal State College",
+          enrollment_status: :less_than_half_time,
+          term_type: :summer_less_than_half_time
+        }
+      ]
     }
   }.freeze
 
@@ -167,6 +184,7 @@ class DemoLauncherController < ApplicationController
     partial_enrollment_ziggy
     partial_enrollment_casey
     partial_enrollment_maya
+    summer_term_carryover_sage
   ].freeze
 
   def build_test_scenario_url(scenario_key, client_agency_id, overrides)
@@ -230,46 +248,23 @@ class DemoLauncherController < ApplicationController
     flow.update!(identity: identity)
 
     education_activity = flow.education_activities.create!(
-      data_source: :partially_self_attested,
+      data_source: :validated,
       status: :succeeded
     )
 
     reporting_window = flow.reporting_window_range
-    if user_data[:terms]
-      create_fake_enrollment_terms(education_activity, user_data, reporting_window)
-    else
-      enrollments = user_data[:enrollments] || user_data[:school_names].map do |school_name|
-        { school_name: school_name, enrollment_status: :less_than_half_time }
-      end
-
-      enrollments.each do |enrollment|
-        education_activity.nsc_enrollment_terms.create!(
-          school_name: enrollment[:school_name],
-          first_name: user_data[:first_name],
-          last_name: user_data[:last_name],
-          enrollment_status: enrollment[:enrollment_status],
-          term_begin: reporting_window.begin,
-          term_end: reporting_window.end
-        )
-      end
-    end
+    create_fake_enrollment_terms(education_activity, user_data, reporting_window)
+    education_activity.update!(
+      data_source: EducationActivity.data_source_from_nsc_results(education_activity.nsc_enrollment_terms)
+    )
 
     set_flow_session(flow.id, :activity)
     activities_flow_root_url(**launcher_url_options)
   end
 
   def create_fake_enrollment_terms(education_activity, user_data, reporting_window)
-    terms = user_data[:terms]
-    total_days = (reporting_window.end - reporting_window.begin).to_i
-    days_per_term = total_days / terms.length
-
-    terms.each_with_index do |term_data, index|
-      term_begin = reporting_window.begin + (index * days_per_term)
-      term_end = if index == terms.length - 1
-                   reporting_window.end
-                 else
-                   reporting_window.begin + ((index + 1) * days_per_term)
-                 end
+    fake_terms_for_user_data(user_data).each do |term_data|
+      term_begin, term_end = fake_term_dates_for_type(term_data, reporting_window)
 
       education_activity.nsc_enrollment_terms.create!(
         school_name: term_data[:school_name],
@@ -279,6 +274,53 @@ class DemoLauncherController < ApplicationController
         term_begin: term_begin,
         term_end: term_end
       )
+    end
+  end
+
+  def fake_terms_for_user_data(user_data)
+    if user_data[:terms]
+      total_terms = user_data[:terms].length
+
+      return user_data[:terms].each_with_index.map do |term, index|
+        term.reverse_merge(
+          term_type: :reporting_window_segmented,
+          term_index: index,
+          total_terms: total_terms
+        )
+      end
+    end
+
+    enrollments = user_data[:enrollments] || user_data[:school_names].map do |school_name|
+      { school_name: school_name, enrollment_status: :less_than_half_time }
+    end
+
+    enrollments.map do |enrollment|
+      enrollment.merge(term_type: :reporting_window_full)
+    end
+  end
+
+  def fake_term_dates_for_type(term_data, reporting_window)
+    year = reporting_window.begin.year
+
+    case term_data[:term_type].to_sym
+    when :reporting_window_full
+      [ reporting_window.begin, reporting_window.end ]
+    when :reporting_window_segmented
+      total_days = (reporting_window.end - reporting_window.begin).to_i
+      days_per_term = total_days / term_data[:total_terms]
+      term_begin = reporting_window.begin + (term_data[:term_index] * days_per_term)
+      term_end = if term_data[:term_index] == term_data[:total_terms] - 1
+                   reporting_window.end
+                 else
+                   reporting_window.begin + ((term_data[:term_index] + 1) * days_per_term)
+                 end
+      [ term_begin, term_end ]
+    when :qualifying_spring
+      [ Date.new(year, 3, 1), Date.new(year, 6, 15) ]
+    when :summer_less_than_half_time
+      [ Date.new(year, 7, 1), Date.new(year, 8, 15) ]
+    else
+      raise ArgumentError, "Unknown fake term type: #{term_data[:term_type]}"
     end
   end
 end

@@ -36,6 +36,8 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(rendered).to match(/Fake Test Scenarios/)
       expect(rendered).to match(/2 terms/)
       expect(rendered).to match(/Maya Testuser/)
+      expect(rendered).to match(/Sage Testuser/)
+      expect(rendered).to match(/Spring carryover for summer months/)
     end
   end
 
@@ -437,6 +439,27 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(terms.map(&:school_name)).to all(eq("River College"))
         expect(terms.map(&:enrollment_status)).to all(eq("less_than_half_time"))
         expect(terms.map(&:term_begin).uniq.length).to eq(2)
+      end
+
+      it "supports launching the summer carryover fake test user" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            test_scenario: "summer_term_carryover_sage",
+            reporting_window_start: "07/01/2025"
+          }
+        }.to change(ActivityFlow, :count).by(1)
+          .and change(EducationActivity, :count).by(1)
+          .and change(NscEnrollmentTerm, :count).by(2)
+
+        flow = ActivityFlow.last
+        education_activity = flow.education_activities.first
+        terms = education_activity.nsc_enrollment_terms.order(:term_begin)
+
+        expect(flow.reporting_window_range.begin).to eq(Date.new(2025, 7, 1))
+        expect(terms.map(&:enrollment_status)).to eq([ "half_time", "less_than_half_time" ])
+        expect(terms.map(&:term_begin)).to eq([ Date.new(2025, 3, 1), Date.new(2025, 7, 1) ])
+        expect(terms.map(&:term_end)).to eq([ Date.new(2025, 6, 15), Date.new(2025, 8, 15) ])
       end
 
       it "sets the flow session" do
