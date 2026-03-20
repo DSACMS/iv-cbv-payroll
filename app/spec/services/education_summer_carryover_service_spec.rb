@@ -64,7 +64,7 @@ RSpec.describe EducationSummerCarryoverService do
         term_begin: Date.new(2025, 7, 1),
         term_end: Date.new(2025, 8, 15))
 
-      expect(service.effective_validated_term_for_month(month_start, displayed_term: summer_term)).to eq(spring_term)
+      expect(service.effective_validated_term_for_month(month_start, summer_term)).to eq(spring_term)
     end
 
     it "returns the displayed term when carryover does not apply" do
@@ -74,7 +74,7 @@ RSpec.describe EducationSummerCarryoverService do
         term_begin: Date.new(2025, 7, 1),
         term_end: Date.new(2025, 8, 15))
 
-      expect(service.effective_validated_term_for_month(month_start, displayed_term: summer_term)).to eq(summer_term)
+      expect(service.effective_validated_term_for_month(month_start, summer_term)).to eq(summer_term)
     end
   end
 end

@@ -109,22 +109,34 @@ RSpec.describe NscEnrollmentTerm do
       expect(term.spring_term?).to be(false)
     end
 
-    it "returns false for a June-starting term even if it ends by June 30" do
+    it "returns true for a May term even though May is also a summer month" do
+      term = described_class.new(term_begin: Date.new(2025, 5, 1), term_end: Date.new(2025, 5, 31))
+
+      expect(term.spring_term?).to be(true)
+    end
+
+    it "returns true for a June-starting term if it ends by June 30" do
       term = described_class.new(term_begin: Date.new(2025, 6, 1), term_end: Date.new(2025, 6, 30))
 
-      expect(term.spring_term?).to be(false)
+      expect(term.spring_term?).to be(true)
     end
   end
 
   describe "#summer_term?" do
+    it "returns true for a term that starts in May" do
+      term = described_class.new(term_begin: Date.new(2025, 5, 1), term_end: Date.new(2025, 5, 31))
+
+      expect(term.summer_term?).to be(true)
+    end
+
     it "returns true for a term that starts in June" do
       term = described_class.new(term_begin: Date.new(2025, 6, 1), term_end: Date.new(2025, 8, 1))
 
       expect(term.summer_term?).to be(true)
     end
 
-    it "returns false for a term that starts before June" do
-      term = described_class.new(term_begin: Date.new(2025, 5, 15), term_end: Date.new(2025, 6, 30))
+    it "returns false for a term that starts before May" do
+      term = described_class.new(term_begin: Date.new(2025, 4, 15), term_end: Date.new(2025, 6, 30))
 
       expect(term.summer_term?).to be(false)
     end

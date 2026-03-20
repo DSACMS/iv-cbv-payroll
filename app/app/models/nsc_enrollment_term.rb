@@ -31,12 +31,10 @@ class NscEnrollmentTerm < ApplicationRecord
   end
 
   def summer_term?
-    term_begin.month.in?([ 6, 7, 8 ])
+    term_begin.month.in?(SUMMER_MONTHS)
   end
 
   def spring_term?
-    return false if summer_term?
-
     spring_start = Date.new(term_end.year, 4, 1)
     spring_end = Date.new(term_end.year, 6, 30)
 

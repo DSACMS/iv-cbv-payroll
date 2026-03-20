@@ -3,20 +3,20 @@ class EducationSummerCarryoverService
     @education_activity = education_activity
   end
 
-  def effective_validated_term_for_month(month_start, displayed_term: nil)
-    terms_for_month = overlapping_terms_for_month(month_start)
-    return displayed_term if displayed_term&.overlaps_month?(month_start) && !displayed_term.summer_term?
-    return displayed_term if displayed_term&.overlaps_month?(month_start) && displayed_term.half_time_or_above?
-    return qualifying_spring_term_for_year(month_start.year) if displayed_term&.summer_term? && applies?(month_start, terms_for_month)
-
-    displayed_term if displayed_term&.overlaps_month?(month_start)
-  end
-
   def applies?(month_start, terms_for_month = overlapping_terms_for_month(month_start))
     return false unless NscEnrollmentTerm.summer_month?(month_start)
 
     qualifying_spring_term_for_year(month_start.year).present? &&
       no_half_time_or_above_summer_terms_for_month?(terms_for_month)
+  end
+
+  def effective_validated_term_for_month(month_start, displayed_term)
+    terms_for_month = overlapping_terms_for_month(month_start)
+    return displayed_term if displayed_term.overlaps_month?(month_start) && !displayed_term.summer_term?
+    return displayed_term if displayed_term.overlaps_month?(month_start) && displayed_term.half_time_or_above?
+    return qualifying_spring_term_for_year(month_start.year) if displayed_term.summer_term? && applies?(month_start, terms_for_month)
+
+    displayed_term if displayed_term.overlaps_month?(month_start)
   end
 
   def qualifying_spring_term_for_year(year)
