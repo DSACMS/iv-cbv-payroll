@@ -264,11 +264,7 @@ class DemoLauncherController < ApplicationController
 
   def create_fake_enrollment_terms(education_activity, user_data, reporting_window)
     fake_terms_for_user_data(user_data).each do |term_data|
-      term_begin, term_end = if term_data[:term_type].present?
-                               fake_term_dates_for_type(term_data, reporting_window)
-                             else
-                               [ reporting_window.begin, reporting_window.end ]
-                             end
+      term_begin, term_end = fake_term_dates_for_type(term_data, reporting_window)
 
       education_activity.nsc_enrollment_terms.create!(
         school_name: term_data[:school_name],
