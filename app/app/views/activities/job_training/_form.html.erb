@@ -1,4 +1,4 @@
-<%= uswds_form_with(model: job_training_activity, url: job_training_activity.persisted? ? activities_flow_job_training_path(id: job_training_activity.id) : activities_flow_job_training_index_path) do |f| %>
+<%= uswds_form_with(model: job_training_activity, url: job_training_activity.persisted? ? activities_flow_job_training_path(id: job_training_activity.id, from_review: params[:from_review].presence, from_edit: params[:from_edit].presence) : activities_flow_job_training_index_path) do |f| %>
   <h2>
     <%= t(".organization_section_title") %>
   </h2>
@@ -27,5 +27,6 @@
         label: t(".contact_phone_number"),
         optional: true %>
 
-  <%= f.submit t(".continue") %>
+  <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t(".continue") %>
+  <%= f.submit submit_label %>
 <% end %>

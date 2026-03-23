@@ -98,11 +98,29 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
   describe "PATCH #update" do
     let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow) }
 
-    it "updates the activity and redirects to month 0 in edit mode" do
+    it "updates the activity and redirects to month 0" do
       patch :update, params: { id: job_training_activity.id, job_training_activity: { contact_name: "Taylor Smith" } }
 
       expect(job_training_activity.reload.contact_name).to eq("Taylor Smith")
+      expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: job_training_activity.id, id: 0))
+    end
+
+    it "redirects to review when from_review is present" do
+      patch :update, params: { id: job_training_activity.id, from_review: 1, job_training_activity: { contact_name: "Taylor Smith" } }
+
+      expect(response).to redirect_to(review_activities_flow_job_training_path(id: job_training_activity))
+    end
+
+    it "threads from_edit through to the redirect" do
+      patch :update, params: { id: job_training_activity.id, from_edit: 1, job_training_activity: { contact_name: "Taylor Smith" } }
+
       expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: job_training_activity.id, id: 0, from_edit: 1))
+    end
+
+    it "threads from_edit through the from_review redirect" do
+      patch :update, params: { id: job_training_activity.id, from_review: 1, from_edit: 1, job_training_activity: { contact_name: "Taylor Smith" } }
+
+      expect(response).to redirect_to(review_activities_flow_job_training_path(id: job_training_activity, from_edit: 1))
     end
   end
 

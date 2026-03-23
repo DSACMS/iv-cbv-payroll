@@ -76,7 +76,25 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: "Updated Org" } }
 
       expect(volunteering_activity.reload.organization_name).to eq("Updated Org")
+      expect(response).to redirect_to(edit_activities_flow_community_service_month_path(community_service_id: volunteering_activity, id: 0))
+    end
+
+    it "redirects to review when from_review is present" do
+      patch :update, params: { id: volunteering_activity.id, from_review: 1, volunteering_activity: { organization_name: "Updated Org" } }
+
+      expect(response).to redirect_to(review_activities_flow_community_service_path(id: volunteering_activity))
+    end
+
+    it "threads from_edit through to the redirect" do
+      patch :update, params: { id: volunteering_activity.id, from_edit: 1, volunteering_activity: { organization_name: "Updated Org" } }
+
       expect(response).to redirect_to(edit_activities_flow_community_service_month_path(community_service_id: volunteering_activity, id: 0, from_edit: 1))
+    end
+
+    it "threads from_edit through the from_review redirect" do
+      patch :update, params: { id: volunteering_activity.id, from_review: 1, from_edit: 1, volunteering_activity: { organization_name: "Updated Org" } }
+
+      expect(response).to redirect_to(review_activities_flow_community_service_path(id: volunteering_activity, from_edit: 1))
     end
   end
 

@@ -380,39 +380,25 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     # --- Step 2: Edit the activity from the hub ---
     click_link I18n.t("activities.hub.edit")
 
-    # Edit org info page
+    # Should land on review page (from_edit flow — no back, "Save changes" button)
+    verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Helping Hands"))
+    expect(page).to have_button I18n.t("activities.hub.save")
+
+    # Edit org info from review
+    edit_links = all("a", text: I18n.t("activities.hub.edit"))
+    edit_links.first.click
+
     verify_page(page, title: I18n.t("activities.community_service.edit_title"))
     fill_in I18n.t("activities.community_service.organization_name"), with: "Updated Org"
-    click_button I18n.t("activities.community_service.continue")
+    click_button I18n.t("activities.hub.save")
 
-    # Hours input month 1 (edit flow)
-    verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
-      month: month1_label, organization: "Updated Org"))
-    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month1_label), with: "25"
-    click_button I18n.t("activities.community_service.hours_input.continue")
-
-    # Hours input month 2 (edit flow)
-    verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
-      month: month2_label, organization: "Updated Org"))
-    fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month2_label), with: "15"
-    click_button I18n.t("activities.community_service.hours_input.continue")
-
-    # Document upload (edit flow)
-    verify_page(
-      page,
-      title: I18n.t("activities.document_uploads.new.title", name: "Updated Org"),
-      skip_axe_rules: %w[heading-order]
-    )
-    attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
-    click_button I18n.t("activities.document_uploads.new.continue")
-
-    # Review page (edit flow - button should say "Save changes")
+    # Should return directly to review with updated data
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Updated Org"))
     expect(page).to have_button I18n.t("activities.hub.save")
 
     # --- Step 3: Edit a single month from the review page ---
     # Click Edit on month 1 — should go to hours input and return directly to review
-    edit_links = all("a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links = all(".subheader-row a", text: I18n.t("activities.community_service.review.edit"))
     edit_links.first.click
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
@@ -426,7 +412,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # --- Step 4: Validation guard — cannot set all months to 0 from review ---
     # First, set month 2 to 0 via edit from review
-    edit_links = all("a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links = all(".subheader-row a", text: I18n.t("activities.community_service.review.edit"))
     edit_links.last.click
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
@@ -438,7 +424,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Updated Org"))
 
     # Now try to set month 1 to 0 — should fail validation
-    edit_links = all("a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links = all(".subheader-row a", text: I18n.t("activities.community_service.review.edit"))
     edit_links.first.click
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",

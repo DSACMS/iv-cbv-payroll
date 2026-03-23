@@ -15,7 +15,12 @@
   <%= t("activities.community_service.review.description", organization_name: @volunteering_activity.organization_name) %>
 </p>
 
-<h2><%= t("activities.community_service.review.organization_info") %></h2>
+<div class="display-flex flex-justify flex-align-center">
+  <h2 class="margin-y-0"><%= t("activities.community_service.review.organization_info") %></h2>
+  <%= link_to t("activities.hub.edit"),
+        edit_activities_flow_community_service_path(id: @volunteering_activity, from_review: 1, from_edit: params[:from_edit].presence),
+        class: "usa-link" %>
+</div>
 <%= render(ContactInfoReviewTableComponent.new(rows: [
   { label: t("activities.community_service.review.name"), value: @volunteering_activity.organization_name },
   { label: t("activities.community_service.review.address"), value: ContactInfoReviewTableComponent.formatted_address(@volunteering_activity) },
