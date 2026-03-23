@@ -371,10 +371,10 @@ RSpec.describe EducationActivity do
         end
       end
 
-      it "returns 0 hours when any term is less_than_half_time" do
+      it "returns 80 hours when at least one overlapping term is half_time_or_above" do
         create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "full_time")
         create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "less_than_half_time")
-        expect(education_activity.progress_hours_for_month(month_start)).to eq(0)
+        expect(education_activity.progress_hours_for_month(month_start)).to eq(80)
       end
 
       it "returns 0 hours when term status is enrolled (unspecified)" do

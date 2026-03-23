@@ -632,6 +632,78 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
     end
 
+    context "when education has mixed half_time and less_than_half_time enrollment for the month" do
+      before do
+        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "half_time")
+        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "less_than_half_time")
+      end
+
+      it "adds 80 hours to total" do
+        expect(progress.total_hours).to eq(80)
+      end
+
+      it "meets requirements and routing requirements from validated half-time data" do
+        expect(progress.meets_requirements).to be(true)
+        expect(progress.meets_routing_requirements).to be(true)
+      end
+    end
+
+    context "with multi-month reporting window and mixed enrollment in only one month" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 2, education_activities_count: 0) }
+      let(:first_month) { flow.reporting_window_range.begin }
+
+      before do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: first_month,
+          term_end: first_month.end_of_month
+        )
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "less_than_half_time",
+          term_begin: first_month,
+          term_end: first_month.end_of_month
+        )
+      end
+
+      it "does not meet requirements or routing requirements when the other month is below threshold" do
+        expect(progress.meets_requirements).to be(false)
+        expect(progress.meets_routing_requirements).to be(false)
+      end
+    end
+
+    context "when education is partially self-attested with less-than-half-time credit hours" do
+      let(:education_activity) do
+        create(
+          :education_activity,
+          activity_flow: flow,
+          data_source: :partially_self_attested,
+          status: "succeeded"
+        )
+      end
+
+      before do
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          credit_hours: 20
+        )
+      end
+
+      it "converts credit hours to CE hours for total progress" do
+        expect(progress.total_hours).to eq(80)
+      end
+
+      it "meets requirements but does not meet routing requirements" do
+        expect(progress.meets_requirements).to be(true)
+        expect(progress.meets_routing_requirements).to be(false)
+      end
+    end
+
     context "when education sync has not succeeded" do
       let(:education_activity) { create(:education_activity, activity_flow: flow, status: "unknown") }
 
