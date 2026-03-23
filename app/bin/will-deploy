@@ -1,151 +1,151 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
 # Use this script when preparing for a deploy:
 #
 #   bin/will-deploy
 #
 # The output will be automatically copied to your clipboard.
 # Then paste the message into Slack and apply formatting with Cmd+Shift+F.
-set -euo pipefail
 
-linkify_jira() {
-  # Convert "FFS-1234:" (or just "1234:") into a Jira link
-  sed -E 's/(FFS-)?([0-9]{3,4})(-[0-9]*)?:? (.*)/\4 \[[FFS-\2](https:\/\/jiraent.cms.gov\/browse\/FFS-\2)\]/g' |
-    # Convert "(#123)" into a Github PR link
-    sed -E 's|\(#([0-9]*)\)|([#\1](https://github.com/DSACMS/iv-cbv-payroll/pull/\1))|' /dev/stdin
-}
+require "json"
+require "open-uri"
+require "open3"
 
-# Run with --test to test the regular expressions above
-if [ ${1:-""} = "--test" ]; then
-  echo "1234: Foo bar baz" | linkify_jira
-  echo "FFS-1234: Foo bar baz" | linkify_jira
-  echo "FFS-1234 Foo bar baz" | linkify_jira
-  echo "FFS-1234-3: Foo bar baz" | linkify_jira
-  echo "FFS-1234-3: Foo bar baz (#123)" | linkify_jira
-  exit
-fi
+def linkify_jira(text)
+  linked_text = text.gsub(/\(#(\d+)\)/) do
+    "([##{$1}](https://github.com/DSACMS/iv-cbv-payroll/pull/#{$1}))"
+  end
 
-git fetch --quiet
-prod=$(curl --silent https://snap-income-pilot.com/health | jq -r .version)
-current_sha=$(git rev-parse origin/main)
+  linked_text.gsub(/^(?:FFS-)?(\d{3,4})(-[0-9]+)?:?\s+(.*)$/) do
+    "#{Regexp.last_match(3)} [[FFS-#{Regexp.last_match(1)}](https://jiraent.cms.gov/browse/FFS-#{Regexp.last_match(1)})]"
+  end
+end
 
-# Arrays to store categorized changes (initialize as empty)
-both_changes=()
-income_changes=()
-ce_changes=()
-other_changes=()
+def run_command(*command)
+  stdout, status = Open3.capture2(*command)
+  raise "Command failed: #{command.join(' ')}" unless status.success?
 
-echo "Categorizing changes for deployment..." >&2
-echo "======================================" >&2
-echo "" >&2
+  stdout.strip
+end
 
-# Read commits with commit hashes into an array
-mapfile -t commits < <(git log --no-decorate --pretty="format:%s - %an|%H" ${prod}..${current_sha})
+def fetch_production_version
+  response = URI.open("https://snap-income-pilot.com/health", &:read)
+  JSON.parse(response).fetch("version")
+end
 
-# Process each commit
-for commit_line in "${commits[@]}"; do
-  # Split commit message and hash
-  commit="${commit_line%|*}"
-  commit_hash="${commit_line#*|}"
+def commit_lines(prod, current_sha)
+  run_command(
+    "git", "log", "--no-decorate",
+    '--pretty=format:%s - %an|%H',
+    "#{prod}..#{current_sha}"
+  ).lines(chomp: true)
+end
 
-  # Extract PR number if present
-  pr_link=""
-  if [[ $commit =~ \(#([0-9]+)\) ]]; then
-    pr_num="${BASH_REMATCH[1]}"
-    pr_link="https://github.com/DSACMS/iv-cbv-payroll/pull/${pr_num}"
-    echo "Change: $commit" >&2
-    echo "PR: $pr_link" >&2
+def prompt_for_category
+  loop do
+    warn "Is this user-facing? (b=Both, i=Emmy Income, e=Emmy CE, o=Other/Maintenance, s=Skip): "
+    category = $stdin.gets&.strip
+
+    case category&.downcase
+    when "b", "i", "e", "o", "s"
+      return category.downcase
+    else
+      warn "Invalid option. Please enter b, i, e, o, or s."
+    end
+  end
+end
+
+def tags_for_changes(both_changes, income_changes, ce_changes)
+  tags = "@emmy-platform"
+  has_income = both_changes.length + income_changes.length
+  has_ce = both_changes.length + ce_changes.length
+
+  if has_income.positive? && has_ce.zero?
+    "#{tags} @Ming"
+  elsif has_ce.positive? && has_income.zero?
+    "#{tags} @Jacob"
   else
-    # No PR, show commit link instead
-    commit_link="https://github.com/DSACMS/iv-cbv-payroll/commit/${commit_hash}"
-    echo "Change: $commit" >&2
-    echo "Commit: $commit_link" >&2
-  fi
+    "#{tags} @Ming @Jacob"
+  end
+end
 
-  # Loop until valid category is provided
-  while true; do
-    echo "Is this user-facing? (b=Both, i=Emmy Income, e=Emmy CE, o=Other/Maintenance, s=Skip): " >&2
-    read -r category
+def copy_to_clipboard(text)
+  IO.popen("pbcopy", "w") { |io| io.write(text) }
+end
 
-    case "$category" in
-      b|B)
-        both_changes+=("$commit")
-        break
-        ;;
-      i|I)
-        income_changes+=("$commit")
-        break
-        ;;
-      e|E)
-        ce_changes+=("$commit")
-        break
-        ;;
-      o|O)
-        other_changes+=("$commit")
-        break
-        ;;
-      s|S)
-        echo "Skipping..." >&2
-        break
-        ;;
-      *)
-        echo "Invalid option. Please enter b, i, e, o, or s." >&2
-        ;;
-    esac
-  done
-  echo "" >&2
-done
+def append_changes(output, heading, changes)
+  return output if changes.empty?
 
-# Determine who to tag based on which categories have changes
-tags="@emmy-platform"
-has_income=$(( ${#both_changes[@]} + ${#income_changes[@]} ))
-has_ce=$(( ${#both_changes[@]} + ${#ce_changes[@]} ))
-if [ $has_income -gt 0 ] && [ $has_ce -eq 0 ]; then
-  tags+=" @Ming"
-elif [ $has_ce -gt 0 ] && [ $has_income -eq 0 ]; then
-  tags+=" @Jacob"
-else
-  tags+=" @Ming @Jacob"
-fi
+  output << "#{heading}\n"
+  changes.each do |change|
+    output << "#{linkify_jira("  • #{change}")}\n"
+  end
+  output
+end
 
-# Generate output and capture it
-output='🚀 Will deploy `'${current_sha:0:7}'` to production: 🚀 (cc '"${tags}"')'$'\n'
-output+="🧪 *[Launch the demo →](https://la-verify-demo.navapbc.cloud/demo)*"$'\n\n'
+if ARGV.first == "--test"
+  puts linkify_jira("1234: Foo bar baz")
+  puts linkify_jira("FFS-1234: Foo bar baz")
+  puts linkify_jira("FFS-1234 Foo bar baz")
+  puts linkify_jira("FFS-1234-3: Foo bar baz")
+  puts linkify_jira("FFS-1234-3: Foo bar baz (#123)")
+  exit
+end
 
-# Add categorized changes to output
-if [ ${#both_changes[@]} -gt 0 ]; then
-  output+="👥 *User facing changes to Emmy Income + Emmy CE*"$'\n'
-  for change in "${both_changes[@]}"; do
-    output+="$(echo "  • $change" | linkify_jira)"$'\n'
-  done
-fi
+run_command("git", "fetch", "--quiet")
+prod = fetch_production_version
+current_sha = run_command("git", "rev-parse", "origin/main")
 
-if [ ${#income_changes[@]} -gt 0 ]; then
-  output+="📝 *Emmy Income only user facing changes*"$'\n'
-  for change in "${income_changes[@]}"; do
-    output+="$(echo "  • $change" | linkify_jira)"$'\n'
-  done
-fi
+both_changes = []
+income_changes = []
+ce_changes = []
+other_changes = []
 
-if [ ${#ce_changes[@]} -gt 0 ]; then
-  output+="🏆 *Emmy CE only user facing changes*"$'\n'
-  for change in "${ce_changes[@]}"; do
-    output+="$(echo "  • $change" | linkify_jira)"$'\n'
-  done
-fi
+warn "Categorizing changes for deployment..."
+warn "======================================"
+warn ""
 
-if [ ${#other_changes[@]} -gt 0 ]; then
-  output+="⚙️ *Other/Maintenance (Not user facing)*"$'\n'
-  for change in "${other_changes[@]}"; do
-    output+="$(echo "  • $change" | linkify_jira)"$'\n'
-  done
-fi
+commit_lines(prod, current_sha).each do |commit_line|
+  commit, commit_hash = commit_line.split("|", 2)
 
-output+=$'\n'"See the [full diff on Github](https://github.com/DSACMS/iv-cbv-payroll/compare/${prod:0:7}..${current_sha:0:7})."$'\n'
+  if (match = commit.match(/\(#(\d+)\)/))
+    warn "Change: #{commit}"
+    warn "PR: https://github.com/DSACMS/iv-cbv-payroll/pull/#{match[1]}"
+  else
+    warn "Change: #{commit}"
+    warn "Commit: https://github.com/DSACMS/iv-cbv-payroll/commit/#{commit_hash}"
+  end
 
-# Display output to user
-echo "$output"
+  case prompt_for_category
+  when "b"
+    both_changes << commit
+  when "i"
+    income_changes << commit
+  when "e"
+    ce_changes << commit
+  when "o"
+    other_changes << commit
+  when "s"
+    warn "Skipping..."
+  end
 
-# Copy to clipboard
-echo "$output" | pbcopy
-echo "" >&2
-echo "✅ Deployment message copied to clipboard!" >&2
+  warn ""
+end
+
+tags = tags_for_changes(both_changes, income_changes, ce_changes)
+
+output = +""
+output << "🚀 Will deploy `#{current_sha[0, 7]}` to production: 🚀 (cc #{tags})\n"
+output << "🧪 *[Launch the demo →](https://la-verify-demo.navapbc.cloud/demo)*\n\n"
+append_changes(output, "👥 *User facing changes to Emmy Income + Emmy CE*", both_changes)
+append_changes(output, "📝 *Emmy Income only user facing changes*", income_changes)
+append_changes(output, "🏆 *Emmy CE only user facing changes*", ce_changes)
+append_changes(output, "⚙️ *Other/Maintenance (Not user facing)*", other_changes)
+output << "\n"
+output << "See the [full diff on Github](https://github.com/DSACMS/iv-cbv-payroll/compare/#{prod[0, 7]}..#{current_sha[0, 7]}).\n"
+
+puts output
+copy_to_clipboard(output)
+warn ""
+warn "✅ Deployment message copied to clipboard!"
