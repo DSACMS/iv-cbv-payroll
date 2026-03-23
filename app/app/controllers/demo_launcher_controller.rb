@@ -300,7 +300,7 @@ class DemoLauncherController < ApplicationController
   def fake_term_dates_for_type(term_data, reporting_window)
     year = reporting_window.begin.year
 
-    case term_data[:term_type].to_sym
+    case term_data[:term_type]&.to_sym
     when :reporting_window_segmented
       total_days = (reporting_window.end - reporting_window.begin).to_i
       days_per_term = total_days / term_data[:total_terms]
@@ -316,7 +316,7 @@ class DemoLauncherController < ApplicationController
     when :summer_less_than_half_time
       [ Date.new(year, 7, 1), Date.new(year, 8, 15) ]
     else
-      raise ArgumentError, "Unknown fake term type: #{term_data[:term_type]}"
+      [ reporting_window.begin, reporting_window.end ]
     end
   end
 end
