@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "e2e Education partially self-attested review flow", :js, type: :feature do
+RSpec.describe "e2e Education mixed enrollment review flow", :js, type: :feature do
   include E2e::TestHelpers
   include_context "activity_hub"
 
@@ -11,7 +11,7 @@ RSpec.describe "e2e Education partially self-attested review flow", :js, type: :
     end
   end
 
-  it "renders mixed enrollment details and saves back to the hub" do # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
+  it "renders mixed enrollment details and routes to review and submit when half-time coverage is present" do # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
     # Start at the activity hub
     visit URI(root_url).request_uri
     visit activities_flow_entry_path(client_agency_id: "sandbox")
@@ -54,9 +54,9 @@ RSpec.describe "e2e Education partially self-attested review flow", :js, type: :
     expect(page).to have_content(I18n.t("activities.education.review.community_engagement_hours"))
     expect(page).to have_content(I18n.t("activities.education.review.ce_explainer_title"))
 
-    # --- Step 2: Save and return to the hub ---
+    # --- Step 2: Save and continue to review and submit ---
     click_button I18n.t("activities.education.review.save")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
   end
 
   it "shows same-school less-than-half-time enrollments in one collapsed table on review and submit" do
@@ -104,5 +104,43 @@ RSpec.describe "e2e Education partially self-attested review flow", :js, type: :
       text: /#{Regexp.escape(I18n.t("components.enrollment_term_table_component.school_or_program"))}.*River College/,
       count: 1
     )
+  end
+
+  it "saves back to the activity hub when no half-time coverage is present" do # rubocop:disable RSpec/MultipleExpectations
+    visit URI(root_url).request_uri
+    visit activities_flow_entry_path(client_agency_id: "sandbox")
+    click_link I18n.t("activities.entries.show.continue")
+    verify_page(page, title: I18n.t("activities.hub.title"))
+
+    flow = ActivityFlow.last
+    education_activity = create(
+      :education_activity,
+      activity_flow: flow,
+      data_source: :partially_self_attested,
+      status: :succeeded
+    )
+
+    first_month = flow.reporting_months.first
+    second_month = flow.reporting_months.second
+
+    create(
+      :nsc_enrollment_term,
+      :less_than_half_time,
+      education_activity: education_activity,
+      school_name: "Riverside Community College",
+      credit_hours: 4,
+      term_begin: first_month,
+      term_end: second_month.end_of_month
+    )
+
+    visit review_activities_flow_education_path(id: education_activity)
+    verify_page(
+      page,
+      title: I18n.t("activities.education.review.title_no_school_name")
+    )
+
+    click_button I18n.t("activities.education.review.save")
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    expect(page).to have_button(I18n.t("activities.hub.review_and_submit"))
   end
 end

@@ -262,6 +262,44 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(term_credit_rows.map { |row| row.all("th, td").last.text.strip }).to contain_exactly("3", "6")
     end
 
+    it "renders mixed overlapping statuses and includes all enrollments in the summary" do
+      half_time_school_name = "Pine Valley College"
+      less_than_half_time_school_name = "Riverside Community College"
+      activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :validated,
+        status: :succeeded
+      )
+      first_month = activity_flow.reporting_months.first
+      second_month = activity_flow.reporting_months.second
+      create(
+        :nsc_enrollment_term,
+        education_activity: activity,
+        school_name: half_time_school_name,
+        enrollment_status: :half_time,
+        term_begin: first_month,
+        term_end: second_month.end_of_month
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: less_than_half_time_school_name,
+        term_begin: first_month,
+        term_end: second_month.end_of_month,
+        credit_hours: 0
+      )
+
+      get :show
+
+      doc = Capybara.string(response.body)
+      expect(response.body).to include(half_time_school_name)
+      expect(response.body).to include(less_than_half_time_school_name)
+      expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.half_time"))
+      expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.less_than_half_time"))
+    end
+
     context "with payroll accounts" do
       it "includes synced payroll accounts in all_activities list" do
         payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow)

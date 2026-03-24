@@ -164,46 +164,40 @@ RSpec.describe EducationActivity do
   end
 
   describe ".data_source_from_nsc_results" do
-    let(:half_time_term) { NscEnrollmentTerm.new(enrollment_status: "half_time") }
-    let(:full_time_term) { NscEnrollmentTerm.new(enrollment_status: "full_time") }
-    let(:three_quarter_time_term) { NscEnrollmentTerm.new(enrollment_status: "three_quarter_time") }
-    let(:less_than_half_time_term) { NscEnrollmentTerm.new(enrollment_status: "less_than_half_time") }
-    let(:enrolled_term) { NscEnrollmentTerm.new(enrollment_status: "enrolled") }
+    let(:jan) { Date.new(2026, 1, 1) }
+    let(:feb) { Date.new(2026, 2, 1) }
+    let(:reporting_months) { [ jan, feb ] }
 
-    context "with half_time_or_above enrollment" do
-      it "returns :validated for half_time" do
-        expect(described_class.data_source_from_nsc_results([ half_time_term ])).to eq(:validated)
-      end
-
-      it "returns :validated for full_time" do
-        expect(described_class.data_source_from_nsc_results([ full_time_term ])).to eq(:validated)
-      end
-
-      it "returns :validated for three_quarter_time" do
-        expect(described_class.data_source_from_nsc_results([ three_quarter_time_term ])).to eq(:validated)
-      end
+    def term(status:, begin_date:, end_date:)
+      NscEnrollmentTerm.new(enrollment_status: status, term_begin: begin_date, term_end: end_date)
     end
 
-    context "with less_than_half_time enrollment" do
-      it "returns :partially_self_attested" do
-        expect(described_class.data_source_from_nsc_results([ less_than_half_time_term ])).to eq(:partially_self_attested)
-      end
+    it "returns :validated when half_time_or_above covers all reporting months" do
+      half_time_term = term(status: "half_time", begin_date: jan, end_date: feb.end_of_month)
+
+      expect(
+        described_class.data_source_from_nsc_results([ half_time_term ], reporting_months: reporting_months)
+      ).to eq(:validated)
     end
 
-    context "with enrolled status (unspecified load)" do
-      it "returns :partially_self_attested" do
-        expect(described_class.data_source_from_nsc_results([ enrolled_term ])).to eq(:partially_self_attested)
-      end
+    it "returns :partially_self_attested for less_than_half_time coverage only" do
+      less_than_half_time_term = term(status: "less_than_half_time", begin_date: jan, end_date: feb.end_of_month)
+
+      expect(
+        described_class.data_source_from_nsc_results([ less_than_half_time_term ], reporting_months: reporting_months)
+      ).to eq(:partially_self_attested)
     end
 
-    context "with mixed enrollment statuses" do
-      it "returns :validated when at least one term is half_time_or_above" do
-        expect(described_class.data_source_from_nsc_results([ full_time_term, less_than_half_time_term ])).to eq(:validated)
-      end
+    it "returns :partially_self_attested when half_time_or_above does not cover every month" do
+      half_time_jan_only = term(status: "half_time", begin_date: jan, end_date: jan.end_of_month)
+      less_than_half_time_full = term(status: "less_than_half_time", begin_date: jan, end_date: feb.end_of_month)
 
-      it "returns :partially_self_attested when no term is half_time_or_above" do
-        expect(described_class.data_source_from_nsc_results([ less_than_half_time_term, enrolled_term ])).to eq(:partially_self_attested)
-      end
+      expect(
+        described_class.data_source_from_nsc_results(
+          [ half_time_jan_only, less_than_half_time_full ],
+          reporting_months: reporting_months
+        )
+      ).to eq(:partially_self_attested)
     end
   end
 

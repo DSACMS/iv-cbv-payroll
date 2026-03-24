@@ -172,6 +172,68 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
   end
 
+  context "when education activity has mixed overlapping statuses in each month" do
+    let(:half_time_school_name) { "Pine Valley College" }
+    let(:less_than_half_time_school_name) { "Riverside Community College" }
+
+    let(:current_flow) do
+      create(
+        :activity_flow,
+        volunteering_activities_count: 0,
+        job_training_activities_count: 0,
+        education_activities_count: 0,
+        reporting_window_months: 2
+      )
+    end
+
+    before do
+      education_activity = create(:education_activity, activity_flow: current_flow, data_source: :validated, status: :succeeded)
+      first_month = current_flow.reporting_months.first
+      second_month = current_flow.reporting_months.second
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        school_name: half_time_school_name,
+        enrollment_status: :half_time,
+        term_begin: first_month,
+        term_end: second_month.end_of_month
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        school_name: less_than_half_time_school_name,
+        credit_hours: 0,
+        term_begin: first_month,
+        term_end: second_month.end_of_month
+      )
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "shows all enrollment statuses on education cards and uses 80 hours in monthly progress" do
+      expect(response.body).to include(half_time_school_name)
+      expect(response.body).to include(less_than_half_time_school_name)
+      expect(response.body).to include(
+        I18n.t(
+          "activities.hub.cards.enrollment_status",
+          status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        )
+      )
+      expect(response.body).to include(
+        I18n.t(
+          "activities.hub.cards.enrollment_status",
+          status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        )
+      )
+
+      progress_text = /80\s*\/\s*#{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD}\s*#{I18n.t("activity_flow_progress_indicator.hours")}/
+      page_text = Capybara.string(response.body).text
+      expect(page_text.scan(progress_text).count).to eq(2)
+    end
+  end
+
   context "when self-attested education activity is added" do
     let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
 
