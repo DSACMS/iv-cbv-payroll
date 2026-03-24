@@ -93,5 +93,4 @@ module ActivitiesHelper
       }
     end
   end
-
 end
