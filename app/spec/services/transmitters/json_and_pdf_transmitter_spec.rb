@@ -41,15 +41,8 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
     let(:time_now) { Time.now }
 
     around do |example|
-      original_allow_http = VCR.configuration.allow_http_connections_when_no_cassette?
-      VCR.configure do |c|
-        c.allow_http_connections_when_no_cassette = true
-      end
-
-      example.run
-    ensure
-      VCR.configure do |c|
-        c.allow_http_connections_when_no_cassette = original_allow_http
+      Timecop.freeze do
+        VCR.turned_off { example.run }
       end
     end
 
