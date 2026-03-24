@@ -93,7 +93,7 @@ RSpec.describe NscDataFetcherService do
       let(:identity) { create(:identity, :nsc_rick) }
 
       before do
-        education_activity.activity_flow.update!(created_at: Date.new(2024, 7, 15), reporting_window_months: 6)
+        education_activity.activity_flow.update!(created_at: Date.new(2024, 8, 1), reporting_window_months: 2)
         nsc_stub_request_education_search_response("rick_banas")
       end
 

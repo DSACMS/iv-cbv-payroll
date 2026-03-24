@@ -24,8 +24,16 @@ class EducationActivity < Activity
     failed: "failed"
   }, default: :unknown, prefix: :sync
 
-  def self.data_source_from_nsc_results(enrollment_terms)
-    enrollment_terms.any?(&:half_time_or_above?) ? :validated : :partially_self_attested
+  def self.data_source_from_nsc_results(enrollment_terms, reporting_months:)
+    return :partially_self_attested if enrollment_terms.blank?
+
+    all_months_have_half_time_or_above = reporting_months.all? do |month_start|
+      enrollment_terms.any? do |term|
+        term.half_time_or_above? && term.overlaps_month?(month_start)
+      end
+    end
+
+    all_months_have_half_time_or_above ? :validated : :partially_self_attested
   end
 
   def formatted_address
@@ -131,6 +139,17 @@ class EducationActivity < Activity
     progress_calculator.progress_hours_for_month(month_start)
   end
 
+  def routing_hours_for_month(month_start)
+    return 0 if fully_self_attested?
+    return 0 unless sync_succeeded?
+
+    terms = terms_for_month(month_start)
+    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if summer_carryover_service.applies?(month_start, terms)
+    return 0 if terms.empty?
+
+    month_has_half_time_or_above?(terms) ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0
+  end
+
   private
 
   # No date column -- skip the inherited date validation from Activity
@@ -140,7 +159,23 @@ class EducationActivity < Activity
     document_upload_terms_to_verify.filter_map(&:school_name).uniq
   end
 
+  def terms_for_month(month_start)
+    reporting_range = activity_flow.reporting_window_range
+
+    nsc_enrollment_terms.select do |term|
+      term.within_reporting_window?(reporting_range) && term.overlaps_month?(month_start)
+    end
+  end
+
+  def month_has_half_time_or_above?(terms)
+    terms.any?(&:half_time_or_above?)
+  end
+
   def progress_calculator
     @progress_calculator ||= EducationActivityProgressCalculator.new(self)
+  end
+
+  def summer_carryover_service
+    @summer_carryover_service ||= EducationSummerCarryoverService.new(self)
   end
 end

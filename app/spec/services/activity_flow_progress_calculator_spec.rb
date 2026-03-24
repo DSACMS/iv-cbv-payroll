@@ -704,6 +704,27 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
     end
 
+    context "when education is partially self-attested with mixed half_time and less_than_half_time statuses" do
+      let(:education_activity) do
+        create(
+          :education_activity,
+          activity_flow: flow,
+          data_source: :partially_self_attested,
+          status: "succeeded"
+        )
+      end
+
+      before do
+        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "half_time")
+        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: "less_than_half_time", credit_hours: 0)
+      end
+
+      it "meets requirements and routing requirements from NSC half-time status" do
+        expect(progress.meets_requirements).to be(true)
+        expect(progress.meets_routing_requirements).to be(true)
+      end
+    end
+
     context "when education sync has not succeeded" do
       let(:education_activity) { create(:education_activity, activity_flow: flow, status: "unknown") }
 

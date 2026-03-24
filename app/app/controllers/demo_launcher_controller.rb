@@ -122,70 +122,10 @@ class DemoLauncherController < ApplicationController
     "lynette" => { first_name: "Lynette", last_name: "Oyola", date_of_birth: "1988-10-24" },
     "rick" => { first_name: "Rick", last_name: "Banas", date_of_birth: "1979-08-18" },
     "dominique" => { first_name: "Dominique", last_name: "Ricardo", date_of_birth: "1978-01-12" },
-    "linda" => { first_name: "Linda", last_name: "Cooper", date_of_birth: "1999-01-01" },
-    "partial_enrollment_sam" => {
-      first_name: "Sam", last_name: "Testuser", date_of_birth: "1990-05-15",
-      school_names: [ "Greenfield Community College", "North Valley College" ]
-    },
-    "partial_enrollment_multi_term" => {
-      first_name: "Nina",
-      last_name: "Testuser",
-      date_of_birth: "1990-05-15",
-      reporting_window_months: 6,
-      terms: [
-        { school_name: "Greenfield Community College", enrollment_status: :less_than_half_time },
-        { school_name: "Riverside Technical Institute", enrollment_status: :less_than_half_time }
-      ]
-    },
-    "partial_enrollment_ziggy" => {
-      first_name: "Ziggy", last_name: "Testuser", date_of_birth: "1992-07-19",
-      school_names: [ "Sunrise Community College" ]
-    },
-    "partial_enrollment_casey" => {
-      first_name: "Casey",
-      last_name: "Testuser",
-      date_of_birth: "1991-04-22",
-      enrollments: [
-        { school_name: "Pine Valley College", enrollment_status: :half_time },
-        { school_name: "Riverside Community College", enrollment_status: :less_than_half_time }
-      ]
-    },
-    "partial_enrollment_maya" => {
-      first_name: "Maya",
-      last_name: "Testuser",
-      date_of_birth: "1993-09-11",
-      terms: [
-        { school_name: "River College", enrollment_status: :less_than_half_time },
-        { school_name: "River College", enrollment_status: :less_than_half_time }
-      ]
-    },
-    "summer_term_carryover_sage" => {
-      first_name: "Sage",
-      last_name: "Testuser",
-      date_of_birth: "1994-08-03",
-      terms: [
-        {
-          school_name: "Coastal State College",
-          enrollment_status: :half_time,
-          term_type: :qualifying_spring
-        },
-        {
-          school_name: "Coastal State College",
-          enrollment_status: :less_than_half_time,
-          term_type: :summer_less_than_half_time
-        }
-      ]
-    }
+    "linda" => { first_name: "Linda", last_name: "Cooper", date_of_birth: "1999-01-01" }
   }.freeze
 
-  FAKE_SCENARIO_KEYS = %w[
-    partial_enrollment_sam
-    partial_enrollment_multi_term
-    partial_enrollment_ziggy
-    partial_enrollment_casey
-    partial_enrollment_maya
-    summer_term_carryover_sage
-  ].freeze
+  FAKE_SCENARIO_KEYS = DemoLauncher::FakeNscScenarios.scenario_keys.freeze
 
   def build_test_scenario_url(scenario_key, client_agency_id, overrides)
     user_data = TEST_SCENARIOS[scenario_key]
@@ -211,13 +151,13 @@ class DemoLauncherController < ApplicationController
   end
 
   def build_fake_test_scenario_url(scenario_key, client_agency_id, overrides)
-    user_data = TEST_SCENARIOS[scenario_key]
+    user_data = DemoLauncher::FakeNscScenarios.by_key(scenario_key)
     raise ArgumentError, "Unknown test scenario: #{scenario_key}" unless user_data
 
     cbv_applicant = CbvApplicant.create!(
-      first_name: user_data[:first_name],
-      last_name: user_data[:last_name],
-      date_of_birth: Date.parse(user_data[:date_of_birth]),
+      first_name: user_data.first_name,
+      last_name: user_data.last_name,
+      date_of_birth: user_data.date_of_birth,
       client_agency_id: client_agency_id
     )
 
@@ -226,97 +166,11 @@ class DemoLauncherController < ApplicationController
       client_agency_id: client_agency_id,
       reference_id: "demo-#{scenario_key}"
     )
+    merged_overrides = overrides.to_h
 
-    flow = ActivityFlow.create_from_invitation(
-      invitation,
-      cookies.permanent.signed[:device_id] || SecureRandom.uuid,
-      overrides.to_h.symbolize_keys
+    invitation.to_url(
+      **launcher_url_options,
+      **merged_overrides
     )
-
-    reporting_window_months = user_data[:reporting_window_months] || overrides[:reporting_window_months]
-    flow.update!(reporting_window_months: reporting_window_months) if reporting_window_months
-
-    if overrides[:reporting_window_start].present?
-      flow.shift_reporting_window_start!(overrides[:reporting_window_start])
-    end
-
-    identity = Identity.find_or_create_by!(
-      first_name: user_data[:first_name],
-      last_name: user_data[:last_name],
-      date_of_birth: Date.parse(user_data[:date_of_birth])
-    )
-    flow.update!(identity: identity)
-
-    education_activity = flow.education_activities.create!(
-      data_source: :partially_self_attested,
-      status: :succeeded
-    )
-
-    reporting_window = flow.reporting_window_range
-    create_fake_enrollment_terms(education_activity, user_data, reporting_window)
-    education_activity.update!(
-      data_source: EducationActivity.data_source_from_nsc_results(education_activity.nsc_enrollment_terms)
-    )
-
-    set_flow_session(flow.id, :activity)
-    activities_flow_root_url(**launcher_url_options)
-  end
-
-  def create_fake_enrollment_terms(education_activity, user_data, reporting_window)
-    fake_terms_for_user_data(user_data).each do |term_data|
-      term_begin, term_end = fake_term_dates_for_type(term_data, reporting_window)
-
-      education_activity.nsc_enrollment_terms.create!(
-        school_name: term_data[:school_name],
-        first_name: user_data[:first_name],
-        last_name: user_data[:last_name],
-        enrollment_status: term_data[:enrollment_status],
-        term_begin: term_begin,
-        term_end: term_end
-      )
-    end
-  end
-
-  def fake_terms_for_user_data(user_data)
-    if user_data[:terms]
-      total_terms = user_data[:terms].length
-
-      return user_data[:terms].each_with_index.map do |term, index|
-        term.reverse_merge(
-          term_type: :reporting_window_segmented,
-          term_index: index,
-          total_terms: total_terms
-        )
-      end
-    end
-
-    enrollments = user_data[:enrollments] || user_data[:school_names].map do |school_name|
-      { school_name: school_name, enrollment_status: :less_than_half_time }
-    end
-
-    enrollments
-  end
-
-  def fake_term_dates_for_type(term_data, reporting_window)
-    year = reporting_window.begin.year
-
-    case term_data[:term_type]&.to_sym
-    when :reporting_window_segmented
-      total_days = (reporting_window.end - reporting_window.begin).to_i
-      days_per_term = total_days / term_data[:total_terms]
-      term_begin = reporting_window.begin + (term_data[:term_index] * days_per_term)
-      term_end = if term_data[:term_index] == term_data[:total_terms] - 1
-                   reporting_window.end
-                 else
-                   reporting_window.begin + ((term_data[:term_index] + 1) * days_per_term)
-                 end
-      [ term_begin, term_end ]
-    when :qualifying_spring
-      [ Date.new(year, 3, 1), Date.new(year, 6, 15) ]
-    when :summer_less_than_half_time
-      [ Date.new(year, 7, 1), Date.new(year, 8, 15) ]
-    else
-      [ reporting_window.begin, reporting_window.end ]
-    end
   end
 end
