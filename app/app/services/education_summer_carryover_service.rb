@@ -15,11 +15,13 @@ class EducationSummerCarryoverService
   end
 
   def effective_term_for_month(month_start, terms)
-    terms
-      .select { |term| term.overlaps_month?(month_start) }
+    terms_for_month = terms.select { |term| term.overlaps_month?(month_start) }
+    effective_terms = terms
       .map { |term| effective_validated_term_for_month(month_start, term) }
       .compact
-      .max_by(&:enrollment_priority)
+
+    effective_terms.max_by(&:enrollment_priority) ||
+      (qualifying_spring_term_for_year(month_start.year) if applies?(month_start, terms_for_month))
   end
 
   def qualifying_spring_term_for_year(year)

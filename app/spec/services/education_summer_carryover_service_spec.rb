@@ -86,6 +86,18 @@ RSpec.describe EducationSummerCarryoverService do
       ).to eq(spring_term)
     end
 
+    it "returns the carryover spring term when no summer term exists" do
+      spring_term = create(:nsc_enrollment_term,
+        education_activity: education_activity,
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15))
+
+      expect(
+        service.effective_term_for_month(Date.new(2025, 7, 1), [ spring_term ])
+      ).to eq(spring_term)
+    end
+
     it "returns the displayed summer term when carryover does not apply" do
       summer_term = create(:nsc_enrollment_term,
         education_activity: education_activity,

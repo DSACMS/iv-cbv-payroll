@@ -8,16 +8,12 @@ class EducationActivityCardBuilder
   def build
     return fully_self_attested_cards if @activity.fully_self_attested?
 
-    overlapping_terms = @activity.nsc_enrollment_terms
-      .select { |term| @reporting_months.any? { |month_start| term.overlaps_month?(month_start) } }
+    return partially_self_attested_build if @activity.partially_self_attested?
 
-    return [] if overlapping_terms.empty?
+    validated_terms = validated_terms_for_reporting_months
+    return [] if validated_terms.empty?
 
-    if @activity.partially_self_attested?
-      partially_self_attested_cards(overlapping_terms)
-    else
-      [ validated_card(overlapping_terms) ]
-    end
+    [ validated_card(validated_terms) ]
   end
 
   private
@@ -113,6 +109,27 @@ class EducationActivityCardBuilder
   def less_than_half_time_term_index(term)
     @activity.less_than_half_time_terms_in_reporting_window
       .index { |less_than_half_time_term| less_than_half_time_term.id == term.id } || 0
+  end
+
+  def partially_self_attested_build
+    overlapping_terms = @activity.nsc_enrollment_terms
+      .select { |term| @reporting_months.any? { |month_start| term.overlaps_month?(month_start) } }
+
+    return [] if overlapping_terms.empty?
+
+    partially_self_attested_cards(overlapping_terms)
+  end
+
+  def validated_terms_for_reporting_months
+    overlapping_terms = @activity.nsc_enrollment_terms
+      .select { |term| @reporting_months.any? { |month_start| term.overlaps_month?(month_start) } }
+    carryover_terms = @reporting_months.filter_map do |month_start|
+      next unless summer_carryover_service.applies?(month_start)
+
+      summer_carryover_service.qualifying_spring_term_for_year(month_start.year)
+    end
+
+    (overlapping_terms + carryover_terms).uniq
   end
 
   def summer_carryover_service

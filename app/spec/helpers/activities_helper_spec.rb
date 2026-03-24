@@ -325,6 +325,28 @@ RSpec.describe ActivitiesHelper do
         .to all(eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
     end
 
+    it "shows the spring enrollment status on the summer card when no summer term exists" do
+      summer_flow = create(:activity_flow, reporting_window_months: 2, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      summer_flow.shift_reporting_window_start!("2025-07-01")
+      summer_months = summer_flow.reporting_months
+      activity = create(:education_activity, activity_flow: summer_flow, status: "succeeded")
+
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Coastal State College",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15))
+
+      result = helper.education_cards([ activity.reload ], summer_months)
+
+      expect(result.length).to eq(1)
+      expect(result.first[:months].map { |month| month[:enrollment_status] })
+        .to all(eq(I18n.t("components.enrollment_term_table_component.status.half_time")))
+      expect(result.first[:months].map { |month| month[:community_engagement_hours] })
+        .to all(eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
+    end
+
     it "builds one validated card when two terms overlap the same reporting month" do
       june_flow = create(:activity_flow, reporting_window_months: 2, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
       june_flow.shift_reporting_window_start!("2025-06-01")
