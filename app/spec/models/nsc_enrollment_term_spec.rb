@@ -60,6 +60,41 @@ RSpec.describe NscEnrollmentTerm do
     end
   end
 
+  describe "#enrollment_status_display" do
+    it "returns the translated label for the enrollment status" do
+      term = described_class.new(enrollment_status: "three_quarter_time")
+
+      expect(term.enrollment_status_display).to eq(
+        I18n.t("components.enrollment_term_table_component.status.three_quarter_time")
+      )
+    end
+
+    it "falls back to not applicable for unknown statuses" do
+      term = described_class.new
+
+      allow(term).to receive(:enrollment_status).and_return("not_a_real_status")
+
+      expect(term.enrollment_status_display).to eq(I18n.t("shared.not_applicable"))
+    end
+  end
+
+  describe "#enrollment_priority" do
+    it "ranks higher enrollment statuses above lower ones" do
+      expect(described_class.new(enrollment_status: "full_time").enrollment_priority).to be >
+        described_class.new(enrollment_status: "half_time").enrollment_priority
+      expect(described_class.new(enrollment_status: "half_time").enrollment_priority).to be >
+        described_class.new(enrollment_status: "less_than_half_time").enrollment_priority
+    end
+
+    it "returns -1 for an unrecognized status" do
+      term = described_class.new
+
+      allow(term).to receive(:enrollment_status).and_return("not_a_real_status")
+
+      expect(term.enrollment_priority).to eq(-1)
+    end
+  end
+
   describe "#within_reporting_window?" do
     let(:range) { Date.new(2025, 1, 1)..Date.new(2025, 3, 31) }
 

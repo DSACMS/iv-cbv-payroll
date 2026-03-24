@@ -128,10 +128,7 @@ class EducationActivity < Activity
   end
 
   def progress_hours_for_month(month_start)
-    return fully_self_attested_progress_hours_for_month(month_start) if fully_self_attested?
-    return partially_self_attested_progress_hours_for_month(month_start) if partially_self_attested?
-
-    validated_progress_hours_for_month(month_start)
+    progress_calculator.progress_hours_for_month(month_start)
   end
 
   private
@@ -139,53 +136,11 @@ class EducationActivity < Activity
   # No date column -- skip the inherited date validation from Activity
   def date_within_reporting_window; end
 
-  def fully_self_attested_progress_hours_for_month(month_start)
-    month = month_start.beginning_of_month
-    monthly_credit_hours = education_activity_months.find_by(month: month)&.hours
-
-    community_engagement_hours(monthly_credit_hours)
-  end
-
-  def partially_self_attested_progress_hours_for_month(month_start)
-    terms = terms_for_month(month_start)
-    return 0 if terms.empty?
-
-    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if month_has_half_time_or_above?(terms)
-
-    monthly_credit_hours = terms
-      .select(&:less_than_half_time?)
-      .sum { |term| review_term_credit_hours(term) }
-
-    community_engagement_hours(monthly_credit_hours)
-  end
-
-  def validated_progress_hours_for_month(month_start)
-    return 0 unless sync_succeeded?
-
-    terms = terms_for_month(month_start)
-    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if month_has_half_time_or_above?(terms)
-    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if summer_carryover_service.applies?(month_start, terms)
-
-    0
-  end
-
-  def terms_for_month(month_start)
-    reporting_range = activity_flow.reporting_window_range
-
-    nsc_enrollment_terms.select do |term|
-      term.within_reporting_window?(reporting_range) && term.overlaps_month?(month_start)
-    end
-  end
-
-  def month_has_half_time_or_above?(terms)
-    terms.any?(&:half_time_or_above?)
-  end
-
   def document_upload_school_names
     document_upload_terms_to_verify.filter_map(&:school_name).uniq
   end
 
-  def summer_carryover_service
-    @summer_carryover_service ||= EducationSummerCarryoverService.new(self)
+  def progress_calculator
+    @progress_calculator ||= EducationActivityProgressCalculator.new(self)
   end
 end

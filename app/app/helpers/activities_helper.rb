@@ -60,11 +60,11 @@ module ActivitiesHelper
 
   def education_cards(activities, reporting_months)
     activities.flat_map do |activity|
-      if activity.fully_self_attested?
-        fully_self_attested_education_cards(activity, reporting_months)
-      else
-        education_cards_for_term_enrollments(activity, reporting_months)
-      end
+      EducationActivityCardBuilder.new(
+        activity: activity,
+        reporting_months: reporting_months,
+        view_context: self
+      ).build
     end
   end
 
@@ -94,111 +94,4 @@ module ActivitiesHelper
     end
   end
 
-  def enrollment_status_display(status)
-    case status.to_sym
-    when :full_time
-      t("components.enrollment_term_table_component.status.full_time")
-    when :three_quarter_time
-      t("components.enrollment_term_table_component.status.three_quarter_time")
-    when :half_time
-      t("components.enrollment_term_table_component.status.half_time")
-    when :less_than_half_time
-      t("components.enrollment_term_table_component.status.less_than_half_time")
-    when :enrolled
-      t("components.enrollment_term_table_component.status.enrolled")
-    else
-      t("shared.not_applicable")
-    end
-  end
-
-  private
-
-  def education_cards_for_term_enrollments(activity, reporting_months)
-    summer_carryover_service = EducationSummerCarryoverService.new(activity)
-
-    activity.nsc_enrollment_terms
-      .select { |term| reporting_months.any? { |month_start| term.overlaps_month?(month_start) } }
-      .map do |term|
-      school_name = term.school_name&.titlecase || t("activities.education.title")
-      visible_months = if activity.partially_self_attested?
-                         reporting_months.reverse.select { |month_start| term.overlaps_month?(month_start) }
-                       else
-                         reporting_months.reverse
-                       end
-      months = visible_months.map do |month_start|
-        show_credit_hours = activity.partially_self_attested? && term.less_than_half_time?
-        if show_credit_hours
-          partial_self_attested_month_data(activity: activity, term: term, month_start: month_start)
-        else
-          effective_term = summer_carryover_service.effective_validated_term_for_month(
-            month_start,
-            term
-          )
-          validated_month_data(month_start: month_start, effective_term: effective_term)
-        end
-      end
-
-      {
-        name: school_name,
-        months: months,
-        edit_path: if activity.partially_self_attested?
-                     term_index = activity.less_than_half_time_terms_in_reporting_window
-                       .index { |less_than_half_time_term| less_than_half_time_term.id == term.id } || 0
-                     edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: term_index)
-                   else
-                     edit_activities_flow_education_path(id: activity.id)
-                   end
-      }
-    end
-  end
-
-  def fully_self_attested_education_cards(activity, reporting_months)
-    months_by_date = activity.education_activity_months.index_by(&:month)
-    months = reporting_months.reverse.map do |month_start|
-      activity_month = months_by_date[month_start.beginning_of_month]
-      self_attested_month_data(activity: activity, activity_month: activity_month, month_start: month_start)
-    end
-
-    [ {
-      name: activity.school_name.presence || t("activities.education.title"),
-      months: months,
-      edit_path: edit_activities_flow_education_month_path(education_id: activity.id, id: 0, from_edit: 1)
-    } ]
-  end
-
-  def education_credit_hours(activity_month)
-    return 0 unless activity_month
-    return activity_month.credit_hours.to_i if activity_month.has_attribute?(:credit_hours)
-    activity_month.hours.to_i
-  end
-
-  def validated_month_data(month_start:, effective_term:)
-    {
-      month: month_start,
-      enrollment_status: effective_term ? enrollment_status_display(effective_term.enrollment_status) : t("activities.hub.cards.not_enrolled"),
-      community_engagement_hours: effective_term&.half_time_or_above? ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0,
-      credit_hours: nil,
-      show_credit_hours: false
-    }
-  end
-
-  def partial_self_attested_month_data(activity:, term:, month_start:)
-    credit_hours = activity.review_term_credit_hours(term)
-    {
-      month: month_start,
-      enrollment_status: enrollment_status_display(term.enrollment_status),
-      community_engagement_hours: activity.community_engagement_hours(credit_hours),
-      credit_hours: credit_hours,
-      show_credit_hours: true
-    }
-  end
-
-  def self_attested_month_data(activity:, activity_month:, month_start:)
-    credit_hours = education_credit_hours(activity_month)
-    {
-      month: month_start,
-      credit_hours: credit_hours,
-      community_engagement_hours: activity.community_engagement_hours(credit_hours)
-    }
-  end
 end

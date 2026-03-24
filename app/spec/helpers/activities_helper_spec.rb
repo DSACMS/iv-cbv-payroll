@@ -324,6 +324,37 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:months].map { |month| month[:community_engagement_hours] })
         .to all(eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
     end
+
+    it "builds one validated card when two terms overlap the same reporting month" do
+      june_flow = create(:activity_flow, reporting_window_months: 2, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      june_flow.shift_reporting_window_start!("2025-06-01")
+      june_months = june_flow.reporting_months
+      activity = create(:education_activity, activity_flow: june_flow, status: "succeeded")
+
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Test University",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15))
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Test University",
+        enrollment_status: "less_than_half_time",
+        term_begin: Date.new(2025, 6, 1),
+        term_end: Date.new(2025, 7, 31))
+
+      result = helper.education_cards([ activity.reload ], june_months)
+
+      expect(result.length).to eq(1)
+      june_data = result.first[:months].find { |month| month[:month] == Date.new(2025, 6, 1) }
+      july_data = result.first[:months].find { |month| month[:month] == Date.new(2025, 7, 1) }
+
+      expect(june_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.half_time"))
+      expect(june_data[:community_engagement_hours]).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
+      expect(july_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.half_time"))
+      expect(july_data[:community_engagement_hours]).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
+    end
   end
 
   describe "#employment_cards" do
