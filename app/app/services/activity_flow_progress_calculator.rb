@@ -172,9 +172,7 @@ class ActivityFlowProgressCalculator
   end
 
   def validated_education_hours_for_month(month_start)
-    @education_activities
-      .select(&:validated?)
-      .sum { |education| education.progress_hours_for_month(month_start) }
+    @education_activities.sum { |education| education.routing_hours_for_month(month_start) }
   end
 
   def validated_training_hours_for_month(month_start)

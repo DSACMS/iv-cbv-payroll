@@ -53,7 +53,7 @@ class Activities::EducationController < Activities::BaseController
         render :edit_fully_self_attested, status: :unprocessable_content
       end
     elsif @education_activity.update(education_params)
-      if @education_activity.has_less_than_half_time_terms?
+      if @education_activity.partially_self_attested? && @education_activity.has_less_than_half_time_terms?
         redirect_to edit_activities_flow_education_term_credit_hour_path(
           education_id: @education_activity, id: 0
         )
@@ -212,7 +212,7 @@ class Activities::EducationController < Activities::BaseController
     if @education_activity.partially_self_attested?
       partially_self_attested_education_next_step_path
     else
-      edit_activities_flow_education_path(id: @education_activity)
+      after_activity_path
     end
   end
 end
