@@ -23,7 +23,7 @@ class Transmitters::HttpPdfTransmitter < Transmitters::BasePdfTransmitter
     req.content_length = pdf_output.file_size
     req.body = payload
 
-    req["X-IVAAS-Timestamp"] = Time.now.to_i
+    req["X-IVAAS-Timestamp"] = timestamp
     req["X-IVAAS-Signature"] = signature
     req["X-IVAAS-Confirmation-Code"] = cbv_flow.confirmation_code
 

@@ -47,8 +47,10 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
     end
 
     before do
-      allow_any_instance_of(Transmitter).to receive(:signature).and_return(sig)
-      allow_any_instance_of(Transmitter).to receive(:api_key_for_agency!).and_return("api_key_dummy")
+      allow_any_instance_of(Transmitters::JsonTransmitter).to receive(:signature).and_return(sig)
+      allow_any_instance_of(Transmitters::JsonTransmitter).to receive(:api_key_for_agency!).and_return("api_key_dummy")
+      allow_any_instance_of(Transmitters::HttpPdfTransmitter).to receive(:signature).and_return(sig)
+      allow_any_instance_of(Transmitters::HttpPdfTransmitter).to receive(:api_key_for_agency!).and_return("api_key_dummy")
       allow_any_instance_of(Transmitters::HttpPdfTransmitter).to receive(:pdf_output).and_return(pdf_output)
     end
 
