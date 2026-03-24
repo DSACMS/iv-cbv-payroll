@@ -132,11 +132,11 @@ RSpec.describe Activities::EducationController, type: :controller do
           .and_return(false)
       end
 
-      it "redirects to term credit hours" do
+      it "redirects to education edit to review NSC enrollment details first" do
         get :show, params: { id: education_activity.id }
 
         expect(response).to redirect_to(
-          edit_activities_flow_education_term_credit_hour_path(education_id: education_activity.id, id: 0)
+          edit_activities_flow_education_path(id: education_activity.id)
         )
       end
     end
