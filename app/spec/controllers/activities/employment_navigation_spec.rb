@@ -4,6 +4,8 @@ require "rails_helper"
 RSpec.describe Activities::EmploymentController, type: :controller do
   include_context "activity_hub"
 
+  render_views
+
   let(:activity_flow) do
     create(:activity_flow,
       volunteering_activities_count: 0,
@@ -32,15 +34,14 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   describe "creation flow" do
     it "employer info has no back button" do
       get :new
-      expect(assigns(:back_url)).to be_nil
+      expect(Capybara.string(response.body)).not_to have_css(".back-nav")
     end
 
     it "review back goes to last month" do
       get :review, params: { id: employment_activity.id }
-      expect(assigns(:back_url)).to eq(
-        edit_activities_flow_income_employment_month_path(
-          employment_id: employment_activity, id: 1)
-      )
+      expected = edit_activities_flow_income_employment_month_path(
+        employment_id: employment_activity, id: 1)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
   end
 
@@ -49,16 +50,14 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   describe "edit from review" do
     it "employer info back goes to review" do
       get :edit, params: { id: employment_activity.id, from_review: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_income_employment_path(id: employment_activity)
-      )
+      expected = review_activities_flow_income_employment_path(id: employment_activity)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
 
     it "employer info back goes to review with from_edit when editing from hub" do
       get :edit, params: { id: employment_activity.id, from_review: 1, from_edit: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1)
-      )
+      expected = review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
   end
 
@@ -67,13 +66,15 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   describe "edit from hub" do
     it "review has no back button" do
       get :review, params: { id: employment_activity.id, from_edit: 1 }
-      expect(assigns(:back_url)).to be_nil
+      expect(Capybara.string(response.body)).not_to have_css(".back-nav")
     end
   end
 end
 
 RSpec.describe Activities::Employment::MonthsController, type: :controller do
   include_context "activity_hub"
+
+  render_views
 
   let(:activity_flow) do
     create(:activity_flow,
@@ -94,17 +95,15 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
   describe "creation flow" do
     it "month 0 back goes to employer info edit" do
       get :edit, params: { employment_id: employment_activity.id, id: 0 }
-      expect(assigns(:back_url)).to eq(
-        edit_activities_flow_income_employment_path(id: employment_activity)
-      )
+      expected = edit_activities_flow_income_employment_path(id: employment_activity)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
 
     it "month 1 back goes to month 0" do
       get :edit, params: { employment_id: employment_activity.id, id: 1 }
-      expect(assigns(:back_url)).to eq(
-        edit_activities_flow_income_employment_month_path(
-          employment_id: employment_activity, id: 0)
-      )
+      expected = edit_activities_flow_income_employment_month_path(
+        employment_id: employment_activity, id: 0)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
   end
 
@@ -113,16 +112,14 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
   describe "edit from review" do
     it "month 0 back goes to review" do
       get :edit, params: { employment_id: employment_activity.id, id: 0, from_review: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_income_employment_path(id: employment_activity)
-      )
+      expected = review_activities_flow_income_employment_path(id: employment_activity)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
 
     it "month 1 back goes to review" do
       get :edit, params: { employment_id: employment_activity.id, id: 1, from_review: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_income_employment_path(id: employment_activity)
-      )
+      expected = review_activities_flow_income_employment_path(id: employment_activity)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
   end
 
@@ -131,16 +128,14 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
   describe "edit from hub" do
     it "month 0 back goes to review with from_edit" do
       get :edit, params: { employment_id: employment_activity.id, id: 0, from_review: 1, from_edit: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1)
-      )
+      expected = review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
 
     it "month 1 back goes to review with from_edit" do
       get :edit, params: { employment_id: employment_activity.id, id: 1, from_review: 1, from_edit: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1)
-      )
+      expected = review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
   end
 end
