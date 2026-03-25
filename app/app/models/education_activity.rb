@@ -140,14 +140,7 @@ class EducationActivity < Activity
   end
 
   def routing_hours_for_month(month_start)
-    return 0 if fully_self_attested?
-    return 0 unless sync_succeeded?
-
-    terms = terms_for_month(month_start)
-    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if summer_carryover_service.applies?(month_start, terms)
-    return 0 if terms.empty?
-
-    month_has_half_time_or_above?(terms) ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0
+    progress_calculator.routing_hours_for_month(month_start)
   end
 
   private
@@ -159,23 +152,7 @@ class EducationActivity < Activity
     document_upload_terms_to_verify.filter_map(&:school_name).uniq
   end
 
-  def terms_for_month(month_start)
-    reporting_range = activity_flow.reporting_window_range
-
-    nsc_enrollment_terms.select do |term|
-      term.within_reporting_window?(reporting_range) && term.overlaps_month?(month_start)
-    end
-  end
-
-  def month_has_half_time_or_above?(terms)
-    terms.any?(&:half_time_or_above?)
-  end
-
   def progress_calculator
     @progress_calculator ||= EducationActivityProgressCalculator.new(self)
-  end
-
-  def summer_carryover_service
-    @summer_carryover_service ||= EducationSummerCarryoverService.new(self)
   end
 end

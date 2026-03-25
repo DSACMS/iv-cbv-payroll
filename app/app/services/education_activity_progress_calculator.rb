@@ -10,6 +10,17 @@ class EducationActivityProgressCalculator
     validated_progress_hours_for_month(month_start)
   end
 
+  def routing_hours_for_month(month_start)
+    return 0 if @education_activity.fully_self_attested?
+    return 0 unless @education_activity.sync_succeeded?
+
+    terms = terms_for_month(month_start)
+    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if summer_carryover_service.applies?(month_start, terms)
+    return 0 if terms.empty?
+
+    month_has_half_time_or_above?(terms) ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0
+  end
+
   private
 
   def fully_self_attested_progress_hours_for_month(month_start)
