@@ -65,6 +65,8 @@ end
 RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
   include_context "activity_hub"
 
+  render_views
+
   let(:activity_flow) do
     create(:activity_flow,
       volunteering_activities_count: 0,
@@ -84,15 +86,15 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
   describe "creation flow" do
     it "month 0 back goes to org info edit" do
       get :edit, params: { community_service_id: volunteering_activity.id, id: 0 }
-      expect(assigns(:back_url)).to eq(
-        edit_activities_flow_community_service_path(id: volunteering_activity))
+      expected = edit_activities_flow_community_service_path(id: volunteering_activity)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
 
     it "month 1 back goes to month 0" do
       get :edit, params: { community_service_id: volunteering_activity.id, id: 1 }
-      expect(assigns(:back_url)).to eq(
-        edit_activities_flow_community_service_month_path(
-          community_service_id: volunteering_activity, id: 0))
+      expected = edit_activities_flow_community_service_month_path(
+        community_service_id: volunteering_activity, id: 0)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
   end
 
@@ -101,14 +103,14 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
   describe "edit from review" do
     it "month 0 back goes to review" do
       get :edit, params: { community_service_id: volunteering_activity.id, id: 0, from_review: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_community_service_path(id: volunteering_activity))
+      expected = review_activities_flow_community_service_path(id: volunteering_activity)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
 
     it "month 1 back goes to review" do
       get :edit, params: { community_service_id: volunteering_activity.id, id: 1, from_review: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_community_service_path(id: volunteering_activity))
+      expected = review_activities_flow_community_service_path(id: volunteering_activity)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
   end
 
@@ -117,14 +119,14 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
   describe "edit from hub" do
     it "month 0 back goes to review with from_edit" do
       get :edit, params: { community_service_id: volunteering_activity.id, id: 0, from_review: 1, from_edit: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_community_service_path(id: volunteering_activity, from_edit: 1))
+      expected = review_activities_flow_community_service_path(id: volunteering_activity, from_edit: 1)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
 
     it "month 1 back goes to review with from_edit" do
       get :edit, params: { community_service_id: volunteering_activity.id, id: 1, from_review: 1, from_edit: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_community_service_path(id: volunteering_activity, from_edit: 1))
+      expected = review_activities_flow_community_service_path(id: volunteering_activity, from_edit: 1)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
   end
 end

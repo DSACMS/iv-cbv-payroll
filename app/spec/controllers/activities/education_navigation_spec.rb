@@ -75,6 +75,8 @@ end
 RSpec.describe Activities::Education::MonthsController, type: :controller do
   include_context "activity_hub"
 
+  render_views
+
   let(:activity_flow) do
     create(:activity_flow,
       volunteering_activities_count: 0,
@@ -99,22 +101,22 @@ RSpec.describe Activities::Education::MonthsController, type: :controller do
   describe "creation flow" do
     it "month 0 back goes to school info edit" do
       get :edit, params: { education_id: education_activity.id, id: 0 }
-      expect(assigns(:back_url)).to eq(
-        edit_activities_flow_education_path(id: education_activity))
+      expected = edit_activities_flow_education_path(id: education_activity)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
 
     it "month 1 back goes to month 0" do
       get :edit, params: { education_id: education_activity.id, id: 1 }
-      expect(assigns(:back_url)).to eq(
-        edit_activities_flow_education_month_path(
-          education_id: education_activity, id: 0))
+      expected = edit_activities_flow_education_month_path(
+        education_id: education_activity, id: 0)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
 
     it "month 1 with from_edit back goes to month 0 with from_edit" do
       get :edit, params: { education_id: education_activity.id, id: 1, from_edit: 1 }
-      expect(assigns(:back_url)).to eq(
-        edit_activities_flow_education_month_path(
-          education_id: education_activity, id: 0, from_edit: 1))
+      expected = edit_activities_flow_education_month_path(
+        education_id: education_activity, id: 0, from_edit: 1)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
   end
 
@@ -123,14 +125,14 @@ RSpec.describe Activities::Education::MonthsController, type: :controller do
   describe "edit from review" do
     it "month 0 back goes to review" do
       get :edit, params: { education_id: education_activity.id, id: 0, from_review: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_education_path(id: education_activity))
+      expected = review_activities_flow_education_path(id: education_activity)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
 
     it "month 1 back goes to review" do
       get :edit, params: { education_id: education_activity.id, id: 1, from_review: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_education_path(id: education_activity))
+      expected = review_activities_flow_education_path(id: education_activity)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
   end
 
@@ -139,14 +141,14 @@ RSpec.describe Activities::Education::MonthsController, type: :controller do
   describe "edit from hub" do
     it "month 0 back goes to review with from_edit" do
       get :edit, params: { education_id: education_activity.id, id: 0, from_review: 1, from_edit: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_education_path(id: education_activity, from_edit: 1))
+      expected = review_activities_flow_education_path(id: education_activity, from_edit: 1)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
 
     it "month 1 back goes to review with from_edit" do
       get :edit, params: { education_id: education_activity.id, id: 1, from_review: 1, from_edit: 1 }
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_education_path(id: education_activity, from_edit: 1))
+      expected = review_activities_flow_education_path(id: education_activity, from_edit: 1)
+      expect(Capybara.string(response.body)).to have_css(".back-nav__link[href='#{expected}']")
     end
   end
 end
