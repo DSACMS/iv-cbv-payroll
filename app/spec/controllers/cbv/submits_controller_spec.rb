@@ -423,6 +423,10 @@ RSpec.describe Cbv::SubmitsController do
 
         before do
           session[:flow_id] = cbv_flow.id
+          # Ensure deterministic ordering so the account with paystub data comes first
+          allow(cbv_flow).to receive(:payroll_accounts).and_return(
+            PayrollAccount.where(id: [ payroll_account.id, payroll_account_2.id ]).order(:id)
+          )
           argyle_stub_request_identities_response("kim")
           argyle_stub_request_paystubs_response("kim")
           argyle_stub_request_gigs_response("kim")
