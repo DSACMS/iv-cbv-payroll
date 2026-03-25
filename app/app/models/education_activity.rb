@@ -24,8 +24,16 @@ class EducationActivity < Activity
     failed: "failed"
   }, default: :unknown, prefix: :sync
 
-  def self.data_source_from_nsc_results(enrollment_terms)
-    enrollment_terms.any?(&:half_time_or_above?) ? :validated : :partially_self_attested
+  def self.data_source_from_nsc_results(enrollment_terms, reporting_months:)
+    return :partially_self_attested if enrollment_terms.blank?
+
+    all_months_have_half_time_or_above = reporting_months.all? do |month_start|
+      enrollment_terms.any? do |term|
+        term.half_time_or_above? && term.overlaps_month?(month_start)
+      end
+    end
+
+    all_months_have_half_time_or_above ? :validated : :partially_self_attested
   end
 
   def formatted_address
@@ -132,6 +140,16 @@ class EducationActivity < Activity
     return partially_self_attested_progress_hours_for_month(month_start) if partially_self_attested?
 
     validated_progress_hours_for_month(month_start)
+  end
+
+  def routing_hours_for_month(month_start)
+    return 0 if fully_self_attested?
+    return 0 unless sync_succeeded?
+
+    terms = terms_for_month(month_start)
+    return 0 if terms.empty?
+
+    month_has_half_time_or_above?(terms) ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0
   end
 
   private

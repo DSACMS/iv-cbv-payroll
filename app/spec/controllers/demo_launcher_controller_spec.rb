@@ -1,5 +1,7 @@
 require "rails_helper"
 
+RSpec::Matchers.define_negated_matcher :not_change, :change
+
 RSpec.describe DemoLauncherController, type: :controller do
   render_views
 
@@ -34,8 +36,9 @@ RSpec.describe DemoLauncherController, type: :controller do
       get :show
       rendered = response.body
       expect(rendered).to match(/Fake Test Scenarios/)
-      expect(rendered).to match(/2 terms/)
-      expect(rendered).to match(/Maya Testuser/)
+      expect(rendered).to include('id="test_scenario_partial_enrollment_multi_term"')
+      expect(rendered).to include('id="test_scenario_partial_enrollment_taylor"')
+      expect(rendered).to include('id="test_scenario_partial_enrollment_maya"')
     end
   end
 
@@ -319,27 +322,20 @@ RSpec.describe DemoLauncherController, type: :controller do
     end
 
     context "with a fake test scenario" do
-      it "creates an ActivityFlow with pre-populated education data and redirects to the hub" do
+      it "creates a tokenized invitation and redirects to /activities/start" do
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
             test_scenario: "partial_enrollment_sam"
           }
-        }.to change(ActivityFlow, :count).by(1)
-          .and change(EducationActivity, :count).by(1)
-          .and change(NscEnrollmentTerm, :count).by(2)
+        }.to change(ActivityFlowInvitation, :count).by(1)
+          .and not_change(ActivityFlow, :count)
+          .and not_change(EducationActivity, :count)
+          .and not_change(NscEnrollmentTerm, :count)
 
-        flow = ActivityFlow.last
-        education_activity = flow.education_activities.first
-
-        expect(education_activity.data_source).to eq("partially_self_attested")
-        expect(education_activity.status).to eq("succeeded")
-
-        terms = education_activity.nsc_enrollment_terms
-        expect(terms.map(&:school_name)).to contain_exactly("Greenfield Community College", "North Valley College")
-        expect(terms.map(&:enrollment_status)).to all(eq("less_than_half_time"))
-
-        expect(response).to redirect_to(%r{/activities$})
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.reference_id).to eq("demo-partial_enrollment_sam")
+        expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
       end
 
       it "creates a CbvApplicant with Sam's data" do
@@ -356,46 +352,20 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(applicant.date_of_birth).to eq(Date.parse("1990-05-15"))
       end
 
-      it "creates an Identity with the fake user's details" do
-        post :create, params: {
-          client_agency_id: "sandbox",
-          test_scenario: "partial_enrollment_sam"
-        }
-
-        identity = ActivityFlow.last.identity
-        expect(identity.first_name).to eq("Sam")
-        expect(identity.last_name).to eq("Testuser")
-        expect(identity.date_of_birth).to eq(Date.parse("1990-05-15"))
-      end
-
-      it "reuses the same Identity across repeated launches" do
-        expect {
-          2.times do
-            post :create, params: {
-              client_agency_id: "sandbox",
-              test_scenario: "partial_enrollment_sam"
-            }
-          end
-        }.to change(Identity, :count).by(1)
-      end
-
       it "supports launching Ziggy fake test scenario" do
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
             test_scenario: "partial_enrollment_ziggy"
           }
-        }.to change(ActivityFlow, :count).by(1)
-          .and change(EducationActivity, :count).by(1)
-          .and change(NscEnrollmentTerm, :count).by(1)
+        }.to change(ActivityFlowInvitation, :count).by(1)
+          .and not_change(ActivityFlow, :count)
+          .and not_change(EducationActivity, :count)
+          .and not_change(NscEnrollmentTerm, :count)
 
-        flow = ActivityFlow.last
-        identity = flow.identity
-        term = flow.education_activities.first.nsc_enrollment_terms.first
-
-        expect(identity.first_name).to eq("Ziggy")
-        expect(identity.last_name).to eq("Testuser")
-        expect(term.school_name).to eq("Sunrise Community College")
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.reference_id).to eq("demo-partial_enrollment_ziggy")
+        expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
       end
 
       it "supports launching Casey fake test user with mixed enrollment statuses" do
@@ -404,18 +374,30 @@ RSpec.describe DemoLauncherController, type: :controller do
             client_agency_id: "sandbox",
             test_scenario: "partial_enrollment_casey"
           }
-        }.to change(ActivityFlow, :count).by(1)
-          .and change(EducationActivity, :count).by(1)
-          .and change(NscEnrollmentTerm, :count).by(2)
+        }.to change(ActivityFlowInvitation, :count).by(1)
+          .and not_change(ActivityFlow, :count)
+          .and not_change(EducationActivity, :count)
+          .and not_change(NscEnrollmentTerm, :count)
 
-        flow = ActivityFlow.last
-        identity = flow.identity
-        terms = flow.education_activities.first.nsc_enrollment_terms
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.reference_id).to eq("demo-partial_enrollment_casey")
+        expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
+      end
 
-        expect(identity.first_name).to eq("Casey")
-        expect(identity.last_name).to eq("Testuser")
-        expect(terms.map(&:school_name)).to contain_exactly("Pine Valley College", "Riverside Community College")
-        expect(terms.map(&:enrollment_status)).to contain_exactly("half_time", "less_than_half_time")
+      it "supports launching Taylor fake test user with partial half-time coverage" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            test_scenario: "partial_enrollment_taylor"
+          }
+        }.to change(ActivityFlowInvitation, :count).by(1)
+          .and not_change(ActivityFlow, :count)
+          .and not_change(EducationActivity, :count)
+          .and not_change(NscEnrollmentTerm, :count)
+
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.reference_id).to eq("demo-partial_enrollment_taylor")
+        expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
       end
 
       it "supports launching Maya fake test user with multiple enrollments at the same school" do
@@ -424,73 +406,51 @@ RSpec.describe DemoLauncherController, type: :controller do
             client_agency_id: "sandbox",
             test_scenario: "partial_enrollment_maya"
           }
-        }.to change(ActivityFlow, :count).by(1)
-          .and change(EducationActivity, :count).by(1)
-          .and change(NscEnrollmentTerm, :count).by(2)
+        }.to change(ActivityFlowInvitation, :count).by(1)
+          .and not_change(ActivityFlow, :count)
+          .and not_change(EducationActivity, :count)
+          .and not_change(NscEnrollmentTerm, :count)
 
-        flow = ActivityFlow.last
-        identity = flow.identity
-        terms = flow.education_activities.first.nsc_enrollment_terms
-
-        expect(identity.first_name).to eq("Maya")
-        expect(identity.last_name).to eq("Testuser")
-        expect(terms.map(&:school_name)).to all(eq("River College"))
-        expect(terms.map(&:enrollment_status)).to all(eq("less_than_half_time"))
-        expect(terms.map(&:term_begin).uniq.length).to eq(2)
-      end
-
-      it "sets the flow session" do
-        post :create, params: {
-          client_agency_id: "sandbox",
-          test_scenario: "partial_enrollment_sam"
-        }
-
-        expect(session[:flow_id]).to eq(ActivityFlow.last.id)
-        expect(session[:flow_type]).to eq(:activity)
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.reference_id).to eq("demo-partial_enrollment_maya")
+        expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
       end
     end
 
     context "with a multi-term fake test scenario" do
-      it "creates an ActivityFlow with 2 enrollment terms and redirects to the hub" do
+      it "creates a tokenized invitation and redirects to /activities/start" do
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
             test_scenario: "partial_enrollment_multi_term"
           }
-        }.to change(ActivityFlow, :count).by(1)
-          .and change(EducationActivity, :count).by(1)
-          .and change(NscEnrollmentTerm, :count).by(2)
+        }.to change(ActivityFlowInvitation, :count).by(1)
+          .and not_change(ActivityFlow, :count)
+          .and not_change(EducationActivity, :count)
+          .and not_change(NscEnrollmentTerm, :count)
 
-        flow = ActivityFlow.last
-        expect(flow.reporting_window_months).to eq(6)
-
-        education_activity = flow.education_activities.first
-        expect(education_activity.data_source).to eq("partially_self_attested")
-        expect(education_activity.status).to eq("succeeded")
-
-        terms = education_activity.nsc_enrollment_terms.order(:term_begin)
-        expect(terms.length).to eq(2)
-        expect(terms.first.school_name).to eq("Greenfield Community College")
-        expect(terms.first.enrollment_status).to eq("less_than_half_time")
-        expect(terms.second.school_name).to eq("Riverside Technical Institute")
-        expect(terms.second.enrollment_status).to eq("less_than_half_time")
-
-        expect(response).to redirect_to(%r{/activities\z})
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.reference_id).to eq("demo-partial_enrollment_multi_term")
+        expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
       end
 
-      it "splits term dates evenly across the reporting window" do
+      it "does not force reporting window months on the server" do
         post :create, params: {
           client_agency_id: "sandbox",
           test_scenario: "partial_enrollment_multi_term"
         }
 
-        flow = ActivityFlow.last
-        reporting_window = flow.reporting_window_range
-        terms = flow.education_activities.first.nsc_enrollment_terms.order(:term_begin)
+        expect(response.location).not_to include("reporting_window_months")
+      end
 
-        expect(terms.first.term_begin).to eq(reporting_window.begin)
-        expect(terms.second.term_end).to eq(reporting_window.end)
-        expect(terms.first.term_end).to eq(terms.second.term_begin)
+      it "passes through manually selected reporting window months" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          test_scenario: "partial_enrollment_multi_term",
+          reporting_window_months: "2"
+        }
+
+        expect(response.location).to include("reporting_window_months=2")
       end
     end
   end

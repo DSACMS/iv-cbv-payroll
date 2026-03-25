@@ -53,7 +53,7 @@ class Activities::EducationController < Activities::BaseController
         render :edit_fully_self_attested, status: :unprocessable_content
       end
     elsif @education_activity.update(education_params)
-      if @education_activity.has_less_than_half_time_terms?
+      if @education_activity.partially_self_attested? && @education_activity.has_less_than_half_time_terms?
         redirect_to edit_activities_flow_education_term_credit_hour_path(
           education_id: @education_activity, id: 0
         )
@@ -168,30 +168,6 @@ class Activities::EducationController < Activities::BaseController
     Rails.env.test?
   end
 
-  def after_education_update_path
-    if params[:from_review].present?
-      review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence)
-    elsif @education_activity.partially_self_attested?
-      partially_self_attested_education_next_step_path
-    else
-      after_activity_path
-    end
-  end
-
-  def partially_self_attested_education_next_step_path
-    if @education_activity.has_less_than_half_time_terms?
-      edit_activities_flow_education_term_credit_hour_path(
-        education_id: @education_activity.id,
-        id: 0
-      )
-    else
-      new_activities_flow_education_document_upload_path(
-        education_id: @education_activity.id,
-        from_edit: params[:from_edit].presence
-      )
-    end
-  end
-
   def create_fully_self_attested_activity
     @education_activity = @flow.education_activities.new(fully_self_attested_education_params)
     @education_activity.data_source = :fully_self_attested
@@ -210,9 +186,9 @@ class Activities::EducationController < Activities::BaseController
 
   def education_sync_success_path
     if @education_activity.partially_self_attested?
-      partially_self_attested_education_next_step_path
+      edit_activities_flow_education_path(id: @education_activity.id)
     else
-      edit_activities_flow_education_path(id: @education_activity)
+      after_activity_path
     end
   end
 end

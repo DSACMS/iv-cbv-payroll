@@ -103,10 +103,24 @@ RSpec.describe Activities::EducationController, type: :controller do
           .and_return(false)
       end
 
-      it "redirects to the edit page" do
+      it "redirects via after_activity_path" do
         get :show, params: { id: education_activity.id }
 
-        expect(response).to redirect_to(edit_activities_flow_education_path(id: education_activity.id))
+        expect(response).to redirect_to(activities_flow_root_path)
+      end
+    end
+
+    context "when the EducationActivity has succeeded and routing requirements are met" do
+      before do
+        education_activity.update(status: :succeeded)
+        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: :half_time)
+        allow(controller).to receive(:testing_synchronization_page?).and_return(false)
+      end
+
+      it "redirects to summary" do
+        get :show, params: { id: education_activity.id }
+
+        expect(response).to redirect_to(activities_flow_summary_path)
       end
     end
 
@@ -118,11 +132,11 @@ RSpec.describe Activities::EducationController, type: :controller do
           .and_return(false)
       end
 
-      it "redirects to term credit hours" do
+      it "redirects to education edit to review NSC enrollment details first" do
         get :show, params: { id: education_activity.id }
 
         expect(response).to redirect_to(
-          edit_activities_flow_education_term_credit_hour_path(education_id: education_activity.id, id: 0)
+          edit_activities_flow_education_path(id: education_activity.id)
         )
       end
     end
@@ -367,6 +381,82 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(education_activity.reload.additional_comments).to eq("Some notes")
       expect(response).to redirect_to(activities_flow_root_path)
     end
+
+    context "when validated mixed enrollment has half-time-or-above in each reporting month" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          reporting_window_months: 2,
+          education_activities_count: 0,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          with_identity: true
+        )
+      end
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :validated, status: :succeeded)
+      end
+
+      before do
+        first_month = activity_flow.reporting_months.first
+        second_month = activity_flow.reporting_months.second
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: :half_time,
+          term_begin: first_month,
+          term_end: second_month.end_of_month
+        )
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          term_begin: first_month,
+          term_end: second_month.end_of_month
+        )
+      end
+
+      it "redirects to summary" do
+        patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "Mixed statuses" } }
+
+        expect(response).to redirect_to(activities_flow_summary_path)
+      end
+    end
+
+    context "when no half-time-or-above status is present" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          reporting_window_months: 2,
+          education_activities_count: 0,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          with_identity: true
+        )
+      end
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :partially_self_attested, status: :succeeded)
+      end
+
+      before do
+        first_month = activity_flow.reporting_months.first
+        second_month = activity_flow.reporting_months.second
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          credit_hours: 0,
+          term_begin: first_month,
+          term_end: second_month.end_of_month
+        )
+      end
+
+      it "redirects to activity hub" do
+        patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "All less than half-time" } }
+
+        expect(response).to redirect_to(activities_flow_root_path)
+      end
+    end
   end
 
   describe "PATCH #update" do
@@ -463,19 +553,54 @@ RSpec.describe Activities::EducationController, type: :controller do
         create(:nsc_enrollment_term, :less_than_half_time,
           education_activity: validated_activity,
           school_name: "State University")
+        result = ActivityFlowProgressCalculator::OverallResult.new(
+          total_hours: 0,
+          meets_requirements: false,
+          meets_routing_requirements: false
+        )
+        allow(controller).to receive(:progress_calculator).and_return(
+          instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        )
       end
 
-      it "redirects to term credit hours instead of after_activity_path" do
+      it "redirects to after_activity_path (not term credit hours)" do
         patch :update, params: {
           id: validated_activity.id,
           education_activity: { additional_comments: "test" }
         }
 
-        expect(response).to redirect_to(
-          edit_activities_flow_education_term_credit_hour_path(
-            education_id: validated_activity, id: 0
-          )
+        expect(response).to redirect_to(activities_flow_root_path)
+      end
+    end
+
+    context "when validated activity has mixed half-time and less-than-half-time terms" do
+      let(:validated_activity) { create(:education_activity, activity_flow: activity_flow, status: :succeeded) }
+
+      before do
+        create(:nsc_enrollment_term,
+          education_activity: validated_activity,
+          enrollment_status: "half_time",
+          school_name: "Pine Valley College")
+        create(:nsc_enrollment_term, :less_than_half_time,
+          education_activity: validated_activity,
+          school_name: "Riverside Community College")
+        result = ActivityFlowProgressCalculator::OverallResult.new(
+          total_hours: 80,
+          meets_requirements: true,
+          meets_routing_requirements: true
         )
+        allow(controller).to receive(:progress_calculator).and_return(
+          instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        )
+      end
+
+      it "redirects to summary" do
+        patch :update, params: {
+          id: validated_activity.id,
+          education_activity: { additional_comments: "test" }
+        }
+
+        expect(response).to redirect_to(activities_flow_summary_path)
       end
     end
 
