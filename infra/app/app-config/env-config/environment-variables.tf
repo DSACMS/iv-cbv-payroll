@@ -115,6 +115,22 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-include-report-pdf"
     },
+    NH_DHHS_SFTP_USER = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nh-dhhs-sftp-user"
+    },
+    NH_DHHS_SFTP_PRIVATE_KEY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nh-dhhs-sftp-private-key"
+    },
+    NH_DHHS_SFTP_URL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nh-dhhs-sftp-url"
+    },
+    NH_DHHS_SFTP_DIRECTORY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/nh-dhhs-sftp-directory"
+    },
 
     # Feature Flags:
     SUPPORTED_PROVIDERS = {

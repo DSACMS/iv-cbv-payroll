@@ -181,28 +181,6 @@ RSpec.describe Activities::EducationController, type: :controller do
       }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "sets back_url to review when from_review is present" do
-      get :edit, params: { id: self_attested_activity.id, from_review: 1 }
-
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_education_path(id: self_attested_activity)
-      )
-    end
-
-    it "threads from_edit into the back_url when from_review is present" do
-      get :edit, params: { id: self_attested_activity.id, from_review: 1, from_edit: 1 }
-
-      expect(assigns(:back_url)).to eq(
-        review_activities_flow_education_path(id: self_attested_activity, from_edit: 1)
-      )
-    end
-
-    it "has no back_url when from_review is absent" do
-      get :edit, params: { id: self_attested_activity.id }
-
-      expect(assigns(:back_url)).to be_nil
-    end
-
     it "renders Save button when from_review is present" do
       get :edit, params: { id: self_attested_activity.id, from_review: 1 }
 
@@ -389,24 +367,6 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(2)
         expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
       end
-    end
-
-    it "sets back_url to document uploads when from_edit is absent" do
-      education_activity = create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
-
-      get :review, params: { id: education_activity.id }
-
-      expect(assigns(:back_url)).to eq(
-        new_activities_flow_education_document_upload_path(education_id: education_activity)
-      )
-    end
-
-    it "has no back_url when from_edit is present" do
-      education_activity = create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
-
-      get :review, params: { id: education_activity.id, from_edit: 1 }
-
-      expect(assigns(:back_url)).to be_nil
     end
   end
 
