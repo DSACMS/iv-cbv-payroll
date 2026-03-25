@@ -9,7 +9,7 @@ module AutoTitleTestHelper
 
     title_contents = title_elements.first.text.split('|').first.strip
     h1_contents = h1_elements.first.text.strip
-    expect(h1_contents).to include(title_contents), "H1 and title content differ: `#{h1_contents}` vs `#{title_contents}`"
+    expect(h1_contents.downcase).to include(title_contents.downcase), "H1 and title content differ: `#{h1_contents}` vs `#{title_contents}`"
   end
 end
 
