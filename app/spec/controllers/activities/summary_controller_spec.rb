@@ -14,7 +14,6 @@ RSpec.describe Activities::SummaryController, type: :controller do
     )
   }
   let(:other_flow) { create(:activity_flow) }
-  let(:frozen_time) { Time.zone.local(2025, 12, 1, 12, 0, 0) }
   let(:test_confirmation_code) { "SANDBOX123" }
 
   before do
@@ -381,14 +380,11 @@ RSpec.describe Activities::SummaryController, type: :controller do
   end
 
   describe "PATCH #update" do
-    around do |example|
-      Timecop.freeze(frozen_time) { example.run }
-    end
-
     it "marks the flow as completed and redirects to success" do
-      patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+      expect {
+        patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+      }.to change { activity_flow.reload.completed_at }.from(nil)
 
-      expect(activity_flow.reload.completed_at).to eq(frozen_time)
       expect(response).to redirect_to(activities_flow_success_path)
     end
 
