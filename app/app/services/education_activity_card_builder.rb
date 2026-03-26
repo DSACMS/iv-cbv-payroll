@@ -1,8 +1,9 @@
 class EducationActivityCardBuilder
-  def initialize(activity:, reporting_months:, view_context:)
+  include Rails.application.routes.url_helpers
+
+  def initialize(activity:, reporting_months:)
     @activity = activity
     @reporting_months = reporting_months
-    @view_context = view_context
   end
 
   def build
@@ -28,7 +29,7 @@ class EducationActivityCardBuilder
     [ {
       name: @activity.school_name.presence || I18n.t("activities.education.title"),
       months: months,
-      edit_path: @view_context.edit_activities_flow_education_month_path(education_id: @activity.id, id: 0, from_edit: 1)
+      edit_path: edit_activities_flow_education_month_path(education_id: @activity.id, id: 0, from_edit: 1)
     } ]
   end
 
@@ -47,7 +48,7 @@ class EducationActivityCardBuilder
       {
         name: school_name,
         months: months,
-        edit_path: @view_context.edit_activities_flow_education_term_credit_hour_path(
+        edit_path: edit_activities_flow_education_term_credit_hour_path(
           education_id: @activity.id,
           id: less_than_half_time_term_index(term)
         )
@@ -65,7 +66,7 @@ class EducationActivityCardBuilder
     {
       name: school_name,
       months: months,
-      edit_path: @view_context.edit_activities_flow_education_path(id: @activity.id)
+      edit_path: edit_activities_flow_education_path(id: @activity.id)
     }
   end
 

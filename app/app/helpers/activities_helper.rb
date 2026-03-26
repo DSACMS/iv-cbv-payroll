@@ -62,8 +62,7 @@ module ActivitiesHelper
     activities.flat_map do |activity|
       EducationActivityCardBuilder.new(
         activity: activity,
-        reporting_months: reporting_months,
-        view_context: self
+        reporting_months: reporting_months
       ).build
     end
   end
