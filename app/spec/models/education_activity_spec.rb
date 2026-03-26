@@ -199,6 +199,17 @@ RSpec.describe EducationActivity do
         )
       ).to eq(:partially_self_attested)
     end
+
+    it "returns :validated when a summer month is covered by spring carryover from NSC terms" do
+      june = Date.new(2025, 6, 1)
+      july = Date.new(2025, 7, 1)
+      spring_term = term(status: "half_time", begin_date: Date.new(2025, 3, 1), end_date: Date.new(2025, 6, 15))
+      summer_term = term(status: "less_than_half_time", begin_date: Date.new(2025, 7, 1), end_date: Date.new(2025, 8, 15))
+
+      expect(
+        described_class.data_source_from_nsc_results([ spring_term, summer_term ], reporting_months: [ june, july ])
+      ).to eq(:validated)
+    end
   end
 
   describe "data_source enum" do

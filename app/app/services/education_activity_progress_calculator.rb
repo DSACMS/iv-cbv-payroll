@@ -1,56 +1,67 @@
 class EducationActivityProgressCalculator
+  MonthHours = Struct.new(:progress, :routing, keyword_init: true)
+
   def initialize(education_activity)
     @education_activity = education_activity
   end
 
   def progress_hours_for_month(month_start)
-    return fully_self_attested_progress_hours_for_month(month_start) if @education_activity.fully_self_attested?
-    return partially_self_attested_progress_hours_for_month(month_start) if @education_activity.partially_self_attested?
-
-    validated_progress_hours_for_month(month_start)
+    monthly_hours_for(month_start).progress
   end
 
   def routing_hours_for_month(month_start)
-    return 0 if @education_activity.fully_self_attested?
-    return 0 unless @education_activity.sync_succeeded?
-
-    terms = terms_for_month(month_start)
-    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if summer_carryover_service.applies?(month_start, terms)
-    return 0 if terms.empty?
-
-    month_has_half_time_or_above?(terms) ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0
+    monthly_hours_for(month_start).routing
   end
 
   private
 
-  def fully_self_attested_progress_hours_for_month(month_start)
+  def monthly_hours_for(month_start)
     month = month_start.beginning_of_month
-    monthly_credit_hours = @education_activity.education_activity_months.find_by(month: month)&.hours
 
-    @education_activity.community_engagement_hours(monthly_credit_hours)
+    @monthly_hours_by_month ||= @education_activity.activity_flow.reporting_months.index_with do |month_start|
+      monthly_hours_for_reporting_month(month_start.beginning_of_month)
+    end
+
+    @monthly_hours_by_month[month]
   end
 
-  def partially_self_attested_progress_hours_for_month(month_start)
+  def monthly_hours_for_reporting_month(month_start)
     terms = terms_for_month(month_start)
-    return 0 if terms.empty?
 
-    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if month_has_half_time_or_above?(terms)
+    if @education_activity.fully_self_attested?
+      monthly_credit_hours = @education_activity.education_activity_months.find_by(month: month_start)&.hours
+      MonthHours.new(
+        progress: @education_activity.community_engagement_hours(monthly_credit_hours),
+        routing: 0      # Always route to hours entry/doc upload pages.
+      )
+    elsif !@education_activity.sync_succeeded?
+      MonthHours.new(progress: 0, routing: 0)
+    elsif EducationSummerCarryoverService.applies?(@education_activity.nsc_enrollment_terms, month_start)
+      MonthHours.new(
+        progress: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
+        routing: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
+      )
+    elsif month_has_half_time_or_above?(terms)
+      MonthHours.new(
+        progress: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
+        routing: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
+      )
+    elsif @education_activity.partially_self_attested? && terms.present?
+      partially_self_attested_monthly_hours(terms)
+    else
+      MonthHours.new(progress: 0, routing: 0)
+    end
+  end
 
+  def partially_self_attested_monthly_hours(terms)
     monthly_credit_hours = terms
       .select(&:less_than_half_time?)
       .sum { |term| @education_activity.review_term_credit_hours(term) }
 
-    @education_activity.community_engagement_hours(monthly_credit_hours)
-  end
-
-  def validated_progress_hours_for_month(month_start)
-    return 0 unless @education_activity.sync_succeeded?
-
-    terms = terms_for_month(month_start)
-    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if month_has_half_time_or_above?(terms)
-    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if summer_carryover_service.applies?(month_start, terms)
-
-    0
+    MonthHours.new(
+      progress: @education_activity.community_engagement_hours(monthly_credit_hours),
+      routing: 0
+    )
   end
 
   def terms_for_month(month_start)
@@ -63,9 +74,5 @@ class EducationActivityProgressCalculator
 
   def month_has_half_time_or_above?(terms)
     terms.any?(&:half_time_or_above?)
-  end
-
-  def summer_carryover_service
-    @summer_carryover_service ||= EducationSummerCarryoverService.new(@education_activity)
   end
 end

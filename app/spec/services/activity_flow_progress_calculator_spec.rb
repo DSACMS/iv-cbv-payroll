@@ -864,5 +864,48 @@ RSpec.describe ActivityFlowProgressCalculator do
         expect(progress.meets_routing_requirements).to be(true)
       end
     end
+
+    context "when summer logic should outrank partial self-attestation in July" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 2, education_activities_count: 0) }
+      let(:education_activity) do
+        create(
+          :education_activity,
+          activity_flow: flow,
+          data_source: :partially_self_attested,
+          status: "succeeded"
+        )
+      end
+
+      before do
+        flow.shift_reporting_window_start!("2025-06-01")
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: Date.new(2025, 3, 1),
+          term_end: Date.new(2025, 6, 15)
+        )
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: Date.new(2025, 7, 1),
+          term_end: Date.new(2025, 8, 15)
+        )
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          credit_hours: 4,
+          term_begin: Date.new(2025, 6, 1),
+          term_end: Date.new(2025, 6, 30)
+        )
+      end
+
+      it "still meets routing requirements for the reporting range" do
+        expect(progress.meets_requirements).to be(true)
+        expect(progress.meets_routing_requirements).to be(true)
+      end
+    end
   end
 end

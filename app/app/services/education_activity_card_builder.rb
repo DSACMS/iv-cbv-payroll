@@ -58,7 +58,7 @@ class EducationActivityCardBuilder
   def validated_card(overlapping_terms)
     school_name = overlapping_terms.first.school_name&.titlecase || I18n.t("activities.education.title")
     months = @reporting_months.reverse.map do |month_start|
-      effective_term = summer_carryover_service.effective_term_for_month(month_start, overlapping_terms)
+      effective_term = EducationSummerCarryoverService.effective_term_for_month(overlapping_terms, month_start)
       validated_month_data(month_start: month_start, effective_term: effective_term)
     end
 
@@ -124,15 +124,11 @@ class EducationActivityCardBuilder
     overlapping_terms = @activity.nsc_enrollment_terms
       .select { |term| @reporting_months.any? { |month_start| term.overlaps_month?(month_start) } }
     carryover_terms = @reporting_months.filter_map do |month_start|
-      next unless summer_carryover_service.applies?(month_start)
+      next unless EducationSummerCarryoverService.applies?(@activity.nsc_enrollment_terms, month_start)
 
-      summer_carryover_service.qualifying_spring_term_for_year(month_start.year)
+      EducationSummerCarryoverService.qualifying_spring_term_for_year(@activity.nsc_enrollment_terms, month_start.year)
     end
 
     (overlapping_terms + carryover_terms).uniq
-  end
-
-  def summer_carryover_service
-    @summer_carryover_service ||= EducationSummerCarryoverService.new(@activity)
   end
 end

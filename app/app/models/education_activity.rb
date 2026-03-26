@@ -28,9 +28,12 @@ class EducationActivity < Activity
     return :partially_self_attested if enrollment_terms.blank?
 
     all_months_have_half_time_or_above = reporting_months.all? do |month_start|
-      enrollment_terms.any? do |term|
-        term.half_time_or_above? && term.overlaps_month?(month_start)
-      end
+      terms_for_month = enrollment_terms.select { |term| term.overlaps_month?(month_start) }
+
+      # Consider an activity "validated" if all months are enrolled at least
+      # half-time, after taking into account the summer carryover logic.
+      terms_for_month.any?(&:half_time_or_above?) ||
+        EducationSummerCarryoverService.applies?(enrollment_terms, month_start)
     end
 
     all_months_have_half_time_or_above ? :validated : :partially_self_attested
