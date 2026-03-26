@@ -1,5 +1,4 @@
 class Activities::SubmitController < Activities::BaseController
-  include ConfirmationCodeGeneratable
   def show
     respond_to do |format|
       format.html
@@ -7,30 +6,7 @@ class Activities::SubmitController < Activities::BaseController
     end
   end
 
-  def update
-    unless params.dig(:activity_flow, :consent_to_submit) == "1"
-      flash.now[:alert] = t("activities.submit.consent_required")
-      return render :show, status: :unprocessable_content
-    end
-
-    ensure_confirmation_code
-    mark_as_completed
-
-    redirect_to next_path
-  end
-
   private
-
-  def ensure_confirmation_code
-    return if @flow.complete? || @flow.confirmation_code.present?
-
-    confirmation_code = generate_confirmation_code(@flow)
-    @flow.update!(confirmation_code: confirmation_code)
-  end
-
-  def mark_as_completed
-    @flow.completed_at.nil? ? @flow.update!(completed_at: Time.zone.now) : @flow.touch(:completed_at)
-  end
 
   def render_pdf
     @community_service_activities = @flow.volunteering_activities.order(date: :desc, created_at: :desc)

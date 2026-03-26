@@ -42,47 +42,4 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(pdf_text).to include(I18n.l(frozen_time, format: :long))
     end
   end
-
-  describe "PATCH #update" do
-    it "marks the flow as completed and redirects to success" do
-      patch :update, params: { activity_flow: { consent_to_submit: "1" } }
-
-      expect(activity_flow.reload.completed_at).to eq(frozen_time)
-      expect(response).to redirect_to(activities_flow_success_path)
-    end
-
-    it "re-renders when consent is missing" do
-      patch :update
-
-      expect(activity_flow.reload.completed_at).to be_nil
-      expect(response).to have_http_status(:unprocessable_content)
-      expect(flash[:alert]).to eq(I18n.t("activities.submit.consent_required"))
-    end
-
-    it "generates a confirmation code" do
-      expect(activity_flow.confirmation_code).to be_nil
-
-      patch :update, params: { activity_flow: { consent_to_submit: "1" } }
-
-      expect(activity_flow.reload.confirmation_code).to be_present
-      expect(activity_flow.confirmation_code).to start_with(activity_flow.cbv_applicant.client_agency_id.upcase)
-    end
-
-    it "formats the agency name in the confirmation code" do
-      activity_flow.cbv_applicant.update!(client_agency_id: "la_ldh")
-      expect(activity_flow.confirmation_code).to be_nil
-
-      patch :update, params: { activity_flow: { consent_to_submit: "1" } }
-
-      expect(activity_flow.reload.confirmation_code).to start_with(activity_flow.cbv_applicant.client_agency_id.gsub("_", "").upcase)
-    end
-
-    it "does not overwrite an existing confirmation code" do
-      activity_flow.update(confirmation_code: test_confirmation_code)
-
-      patch :update, params: { activity_flow: { consent_to_submit: "1" } }
-
-      expect(activity_flow.reload.confirmation_code).to eq(test_confirmation_code)
-    end
-  end
 end
