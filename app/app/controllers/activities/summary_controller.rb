@@ -1,14 +1,13 @@
 class Activities::SummaryController < Activities::BaseController
   include ConfirmationCodeGeneratable
 
-  def show
-    load_summary_data
-  end
+  before_action :load_summary_data, only: %i[show]
+
+  def show; end
 
   def update
-    load_summary_data
-
     unless params.dig(:activity_flow, :consent_to_submit) == "1"
+      load_summary_data
       flash.now[:alert] = t("activities.submit.consent_required")
       return render :show, status: :unprocessable_content
     end
