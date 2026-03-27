@@ -130,6 +130,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.l(flow.reporting_months.first, format: :month)
     expect(page).to have_content I18n.l(flow.reporting_months.second, format: :month)
     expect(page).to have_content job_training.program_name
+    expect(page).to have_content "Gainesville Wrecking"
+    expect(page).to have_content "Donny Spears"
+    expect(page).to have_content "$500.00"
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))

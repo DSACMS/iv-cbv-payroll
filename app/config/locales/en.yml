@@ -465,7 +465,14 @@ en:
         school_name: School or program
         term_credit_hours: Term credit hours
       employment:
+        address: Address
+        contact_email: Contact email
+        contact_name: Contact name
+        contact_phone: Contact phone
         employer: Employer
+        gross_income: Gross income
+        hours_worked: Hours worked
+        month: Month
       job_training:
         address: Address
         contact_email: Contact email
@@ -476,6 +483,7 @@ en:
         program_name: Program name
         work_program_hours: Work program hours
       legal_agreement: Legal agreement
+      monthly_details: Monthly details
       submit: Submit to %{agency_name}
       title: Review and submit your %{benefit} community engagement report
     work_programs:

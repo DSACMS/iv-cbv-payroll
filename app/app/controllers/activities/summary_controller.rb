@@ -35,7 +35,8 @@ class Activities::SummaryController < Activities::BaseController
     @community_service_activities = @flow.volunteering_activities.order(created_at: :asc)
     @work_programs_activities = @flow.job_training_activities.order(created_at: :asc)
     @education_activities = @flow.education_activities.order(created_at: :asc)
-    @employment_activities = @flow.payroll_accounts.select(&:sync_succeeded?)
+    @employment_payroll_accounts = @flow.payroll_accounts.select(&:sync_succeeded?)
+    @self_attested_employment_activities = @flow.employment_activities.order(created_at: :asc)
     @persisted_report = PersistedReportAdapter.new(@flow)
     @all_activities = build_activities_list
   end
@@ -56,7 +57,11 @@ class Activities::SummaryController < Activities::BaseController
       activities << { type: :work_programs, activity: activity, created_at: activity.created_at }
     end
 
-    @employment_activities.each do |payroll_account|
+    @self_attested_employment_activities.each do |employment_activity|
+      activities << { type: :employment, employment_activity: employment_activity, created_at: employment_activity.created_at }
+    end
+
+    @employment_payroll_accounts.each do |payroll_account|
       activities << { type: :employment, payroll_account: payroll_account, created_at: payroll_account.created_at }
     end
 
