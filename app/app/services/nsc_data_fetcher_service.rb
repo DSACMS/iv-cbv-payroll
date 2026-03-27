@@ -11,10 +11,16 @@ class NscDataFetcherService
     "Y" => :enrolled
   }
 
-  def initialize(education_activity:, logger: Rails.logger, environment: ENV.fetch("NSC_ENVIRONMENT", "sandbox"))
+  def initialize(
+    education_activity:,
+    logger: Rails.logger,
+    environment: ENV.fetch("NSC_ENVIRONMENT", "sandbox"),
+    response_transformer: nil
+  )
     @education_activity = education_activity
     @logger = logger
     @service = Aggregators::Sdk::NscService.new(environment: environment, logger: logger)
+    @response_transformer = response_transformer
   end
 
   # Main entry pont to submit an enrollment request to NSC
@@ -26,6 +32,7 @@ class NscDataFetcherService
       date_of_birth: identity.date_of_birth,
       as_of_date: @education_activity.activity_flow.reporting_window_range.max
     )
+    response = transform_response(response)
     update_education_activity(@education_activity, response)
 
     if @education_activity.sync_succeeded?
@@ -38,8 +45,6 @@ class NscDataFetcherService
       )
     end
   end
-
-  private
 
   def update_education_activity(education_activity, response_data)
     enrollments = Array(response_data["enrollmentDetails"])
@@ -79,6 +84,12 @@ class NscDataFetcherService
   end
 
   private
+
+  def transform_response(response)
+    return response unless @response_transformer
+
+    @response_transformer.call(response)
+  end
 
   def enrollment_status(enrollment_data)
     ENROLLMENT_STATUSES.fetch(enrollment_data["enrollmentStatus"]) do

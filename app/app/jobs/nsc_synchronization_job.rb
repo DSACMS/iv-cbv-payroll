@@ -24,6 +24,8 @@ class NscSynchronizationJob < ApplicationJob
   def data_fetcher_service
     if use_demo_fake_data_fetcher?
       DemoLauncher::FakeNscDataFetcherService.new(education_activity: @education_activity)
+    elsif use_demo_forward_dating_service?
+      DemoLauncher::NscForwardDatingService.new(education_activity: @education_activity)
     else
       NscDataFetcherService.new(education_activity: @education_activity)
     end
@@ -33,5 +35,11 @@ class NscSynchronizationJob < ApplicationJob
     return false unless Rails.application.config.is_internal_environment
 
     DemoLauncher::FakeNscScenarios.by_identity(@education_activity.activity_flow.identity).present?
+  end
+
+  def use_demo_forward_dating_service?
+    return false unless Rails.application.config.is_internal_environment
+
+    DemoLauncher::NscForwardDatingService.applicable?(@education_activity)
   end
 end
