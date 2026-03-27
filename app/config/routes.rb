@@ -69,8 +69,8 @@ Rails.application.routes.draw do
           patch :save_review
         end
       end
-      resource :summary, only: %i[show], controller: "summary"
-      resource :submit, only: %i[show update], controller: "submit", format: %i[html pdf]
+      resource :summary, only: %i[show update], controller: "summary"
+      resource :submit, only: %i[show], controller: "submit", format: %i[html pdf]
       resource :success, only: %i[show], controller: "success"
       scope "/income", as: :income do
         resource :employer_search, only: %i[show], controller: "income/employer_searches"

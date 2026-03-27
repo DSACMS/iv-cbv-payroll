@@ -133,9 +133,10 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
-    verify_page(page, title: I18n.t("activities.submit.title"))
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    expect(page).to have_content I18n.t("activities.submit.consent_required")
     find("label[for='activity_flow_consent_to_submit']").click
-    click_button I18n.t("activities.submit.confirm")
+    click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
 
     # /activities/success
     verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
@@ -221,9 +222,10 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
-    verify_page(page, title: I18n.t("activities.submit.title"))
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    expect(page).to have_content I18n.t("activities.submit.consent_required")
     find("label[for='activity_flow_consent_to_submit']").click
-    click_button I18n.t("activities.submit.confirm")
+    click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
 
     # /activities/success
     verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
@@ -278,9 +280,10 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Test University"
 
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
-    verify_page(page, title: I18n.t("activities.submit.title"))
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    expect(page).to have_content I18n.t("activities.submit.consent_required")
     find("label[for='activity_flow_consent_to_submit']").click
-    click_button I18n.t("activities.submit.confirm")
+    click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
 
     verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")

@@ -14,6 +14,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
     )
   }
   let(:other_flow) { create(:activity_flow) }
+  let(:test_confirmation_code) { "SANDBOX123" }
 
   before do
     session[:flow_id] = activity_flow.id
@@ -375,6 +376,58 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       expect(response.body).to include("back-nav")
       expect(response.body).to have_link(href: activities_flow_root_path)
+    end
+  end
+
+  describe "PATCH #update" do
+    it "marks the flow as completed and redirects to success" do
+      expect {
+        patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+      }.to change { activity_flow.reload.completed_at }.from(nil)
+
+      expect(response).to redirect_to(activities_flow_success_path)
+    end
+
+    it "re-renders summary with alert when consent is missing and keeps activity table content" do
+      create(
+        :volunteering_activity,
+        activity_flow: activity_flow,
+        organization_name: "Helping Hands"
+      )
+
+      patch :update
+
+      expect(activity_flow.reload.completed_at).to be_nil
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(flash.now[:alert]).to eq(I18n.t("activities.submit.consent_required"))
+      expect(response.body).to include("Helping Hands")
+      expect(response.body).to include(I18n.t("activities.summary.legal_agreement"))
+    end
+
+    it "generates a confirmation code" do
+      expect(activity_flow.confirmation_code).to be_nil
+
+      patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+
+      expect(activity_flow.reload.confirmation_code).to be_present
+      expect(activity_flow.confirmation_code).to start_with(activity_flow.cbv_applicant.client_agency_id.upcase)
+    end
+
+    it "formats the agency name in the confirmation code" do
+      activity_flow.cbv_applicant.update!(client_agency_id: "la_ldh")
+      expect(activity_flow.confirmation_code).to be_nil
+
+      patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+
+      expect(activity_flow.reload.confirmation_code).to start_with(activity_flow.cbv_applicant.client_agency_id.gsub("_", "").upcase)
+    end
+
+    it "does not overwrite an existing confirmation code" do
+      activity_flow.update(confirmation_code: test_confirmation_code)
+
+      patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+
+      expect(activity_flow.reload.confirmation_code).to eq(test_confirmation_code)
     end
   end
 end
