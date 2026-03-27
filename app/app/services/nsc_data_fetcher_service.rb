@@ -46,6 +46,8 @@ class NscDataFetcherService
     end
   end
 
+  private
+
   def update_education_activity(education_activity, response_data)
     enrollments = Array(response_data["enrollmentDetails"])
     current_enrollments = enrollments.find_all { |enrollment_detail| enrollment_detail["currentEnrollmentStatus"] == "CC" }
@@ -82,8 +84,6 @@ class NscDataFetcherService
       end
     end
   end
-
-  private
 
   def transform_response(response)
     return response unless @response_transformer
