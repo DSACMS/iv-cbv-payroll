@@ -24,7 +24,7 @@ class Cbv::SessionsController < Cbv::BaseController
   end
 
   def timeout_path
-    return root_url(cbv_flow_timeout: true) unless session[:flow_type].to_sym == :cbv && session[:flow_id].present?
+    return root_url(cbv_flow_timeout: true) unless session[:flow_type]&.to_sym == :cbv && session[:flow_id].present?
 
     client_agency_id = CbvFlow.includes(:cbv_applicant).find(session[:flow_id]).cbv_applicant.client_agency_id
     cbv_flow_session_timeout_path(client_agency_id: client_agency_id)
