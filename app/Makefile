@@ -90,7 +90,7 @@ init-native: ## Initialize the project for running natively
 init-native: .env deps-native init-db
 
 init-db: ## Initialize the project database
-init-db: .env db-up wait-on-db db-migrate db-test-prepare db-seed
+init-db: .env db-up db-migrate db-test-prepare db-seed
 
 deps-native: ## Install dependencies
 	bundle install
@@ -157,9 +157,6 @@ db-reset: ## Reset the database
 
 db-console: ## Access the rails db console
 	$(RAILS_RUN_CMD) dbconsole
-
-wait-on-db:
-	./bin/wait-for-local-postgres.sh
 
 ##################################################
 # Testing
