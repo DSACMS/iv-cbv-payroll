@@ -151,12 +151,13 @@ en:
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (Optional)
-        additional_information_label: Share any comments or additional information that you’d like %{agency_acronym} to know. For example, the credit hours you are taking.
+        additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         continue: Save and continue
-        description_html: "<p>We have gathered your student enrollment details from %{reporting_window}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
+        description: We have gathered your student enrollment details from %{reporting_window}.
         enrollment_information: Enrollment information
         enrollment_information_multiple: 'Enrollment status: %{school_name}'
         header: Review your student enrollment details
+        summer_logic_description: If you don’t have enough summer enrollment, we’ll use your spring enrollment to meet the community engagement requirement for the summer.
       error:
         description: 'We were unable to verify your student status with National Student Clearinghouse. To continue, you can:'
         enter_manually_button: Enter education manually
@@ -196,7 +197,7 @@ en:
         title: Tell us about your school or program
         zip_code: Zip code
       review:
-        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_description: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         additional_comments_title: Additional comments (optional)
         address: School address
         ce_explainer_body: If you are enrolled less than half-time, each credit hour counts as 4 hours toward the 80-hour community engagement requirement.

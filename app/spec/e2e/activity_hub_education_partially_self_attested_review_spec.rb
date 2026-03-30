@@ -53,7 +53,18 @@ RSpec.describe "e2e Education mixed enrollment review flow", :js, type: :feature
     expect(page).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
     expect(page).to have_content(I18n.t("activities.education.review.community_engagement_hours"))
     expect(page).to have_content(I18n.t("activities.education.review.ce_explainer_title"))
-
+    expect(page).to have_content(
+      I18n.t(
+        "activities.education.review.description",
+        school_name: "Pine Valley College and Riverside Community College"
+      )
+    )
+    expect(page).to have_content(
+      I18n.t(
+        "activities.education.review.additional_comments_description",
+        agency_name: I18n.t("shared.agency_full_name.sandbox")
+      )
+    )
     # --- Step 2: Save and continue to review and submit ---
     click_button I18n.t("activities.education.review.save")
     verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
