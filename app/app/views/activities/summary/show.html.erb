@@ -60,12 +60,17 @@
     <% when :work_programs %>
       <%= render partial: "activities/summary/job_training_table", locals: { activity: activity_data[:activity] } %>
     <% when :employment %>
-      <%= render partial: "activities/summary/employment_table",
-                 locals: { payroll_account: activity_data[:payroll_account], persisted_report: @persisted_report } %>
+      <% if activity_data[:payroll_account].present? %>
+        <%= render partial: "activities/summary/employment_table",
+                   locals: { payroll_account: activity_data[:payroll_account], persisted_report: @persisted_report } %>
+      <% else %>
+        <%= render partial: "activities/summary/self_attested_employment_table",
+                   locals: { activity: activity_data[:employment_activity] } %>
+      <% end %>
     <% end %>
 
     <% if activity_data[:type] == :employment %>
-      <% comment = activity_data[:payroll_account].additional_information %>
+      <% comment = activity_data[:payroll_account]&.additional_information || activity_data[:employment_activity]&.additional_comments %>
       <% if comment.present? %>
         <h3>
           <%= t("activities.summary.additional_comments") %>
