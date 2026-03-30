@@ -6,6 +6,7 @@
 <%# i18n-tasks-use t('activities.community_service.document_upload_suggestion_text_html') %>
 <%# i18n-tasks-use t('activities.education.document_upload_suggestion_text_html') %>
 <%# i18n-tasks-use t('activities.job_training.document_upload_suggestion_text_html') %>
+<%# i18n-tasks-use t('activities.employment.document_upload_suggestion_text_html') %>
 
 <% if params[:community_service_id] %>
   <% content_for :activity_flow_header do %>
@@ -31,6 +32,16 @@
   <% content_for :activity_flow_header do %>
     <%= render ActivityFlowHeaderComponent.new(
       title: t("activities.education.title_singular"),
+      exit_url: activities_flow_root_path,
+      back_url: @back_url
+    ) %>
+  <% end %>
+<% end %>
+
+<% if params[:employment_id] %>
+  <% content_for :activity_flow_header do %>
+    <%= render ActivityFlowHeaderComponent.new(
+      title: t("activities.employment.title_singular"),
       exit_url: activities_flow_root_path,
       back_url: @back_url
     ) %>

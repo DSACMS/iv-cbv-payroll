@@ -39,17 +39,33 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
   end
 
   describe "PATCH #update" do
-    it "saves month values and redirects to the hub on single month flows" do
+    it "saves month values and redirects to document upload on single month flows" do
       patch :update, params: {
         employment_id: employment_activity.id,
         id: 0,
         employment_activity_month: { gross_income: 339, hours: 45 }
       }
 
-      expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity))
+      expect(response).to redirect_to(new_activities_flow_income_employment_document_upload_path(employment_id: employment_activity))
       month = employment_activity.activity_months.last
       expect(month.gross_income).to eq(339)
       expect(month.hours).to eq(45)
+    end
+
+    it "threads from_edit to document upload redirect" do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 0,
+        from_edit: 1,
+        employment_activity_month: { gross_income: 339, hours: 45 }
+      }
+
+      expect(response).to redirect_to(
+        new_activities_flow_income_employment_document_upload_path(
+          employment_id: employment_activity,
+          from_edit: 1
+        )
+      )
     end
 
     context "with multiple reporting months" do
