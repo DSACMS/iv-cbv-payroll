@@ -38,7 +38,13 @@ class EmploymentActivity < Activity
     activity_month = employment_activity_months
       .find { |employment_activity_month| employment_activity_month.month == month }
 
-    I18n.t("shared.hours", count: activity_month.hours) if activity_month
+    return unless activity_month
+
+    I18n.t(
+      "activities.employment.document_upload_month_detail",
+      gross_income: ActiveSupport::NumberHelper.number_to_currency(activity_month.gross_income),
+      hours: I18n.t("shared.hours", count: activity_month.hours)
+    )
   end
 
   def document_upload_suggestion_text

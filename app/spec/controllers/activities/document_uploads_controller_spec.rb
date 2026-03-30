@@ -89,7 +89,13 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: employment_activity.employer_name))
-      expect(response.body).to include(I18n.t("shared.hours", count: month_record.hours))
+      expect(response.body).to include(
+        I18n.t(
+          "activities.employment.document_upload_month_detail",
+          gross_income: ActiveSupport::NumberHelper.number_to_currency(month_record.gross_income),
+          hours: I18n.t("shared.hours", count: month_record.hours)
+        )
+      )
       expect(response.body).to include(activities_flow_income_employment_document_uploads_path)
       expect(response.body).to include(I18n.t("activities.employment.document_upload_suggestion_text_html"))
     end

@@ -241,6 +241,7 @@ en:
         last_name: Last name
     employment:
       account_id: Account ID
+      document_upload_month_detail: "%{gross_income}, %{hours}"
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:
         continue: Continue

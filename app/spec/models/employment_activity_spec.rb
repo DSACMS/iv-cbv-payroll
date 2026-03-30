@@ -73,7 +73,13 @@ RSpec.describe EmploymentActivity, type: :model do
       month = activity_flow.reporting_months.first.beginning_of_month
       month_record = create(:employment_activity_month, employment_activity: activity, month: month, hours: 12)
 
-      expect(activity.document_upload_details_for_month(month)).to eq(I18n.t("shared.hours", count: month_record.hours))
+      expect(activity.document_upload_details_for_month(month)).to eq(
+        I18n.t(
+          "activities.employment.document_upload_month_detail",
+          gross_income: ActiveSupport::NumberHelper.number_to_currency(month_record.gross_income),
+          hours: I18n.t("shared.hours", count: month_record.hours)
+        )
+      )
     end
 
     it "returns the employment suggestion translation key" do
