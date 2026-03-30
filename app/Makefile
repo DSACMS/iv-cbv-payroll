@@ -141,7 +141,7 @@ stop-containers: ## Stop Docker
 ##################################################
 
 db-up: ## Run just the database container
-	$(DOCKER_CMD) compose up --remove-orphans --detach database
+	$(DOCKER_CMD) compose up --remove-orphans --detach postgres
 
 db-migrate: ## Run database migrations
 	$(RAILS_RUN_CMD) db:migrate
