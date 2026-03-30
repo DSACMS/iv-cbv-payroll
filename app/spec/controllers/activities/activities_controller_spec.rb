@@ -214,23 +214,136 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
     it "shows all enrollment statuses on education cards and uses 80 hours in monthly progress" do
       expect(response.body).to include(half_time_school_name)
-      expect(response.body).to include(less_than_half_time_school_name)
+      expect(response.body).not_to include(less_than_half_time_school_name)
       expect(response.body).to include(
         I18n.t(
           "activities.hub.cards.enrollment_status",
           status: I18n.t("components.enrollment_term_table_component.status.half_time")
         )
       )
-      expect(response.body).to include(
+      expect(response.body).not_to include(
         I18n.t(
           "activities.hub.cards.enrollment_status",
           status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         )
       )
-
       progress_text = /80\s*\/\s*#{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD}\s*#{I18n.t("activity_flow_progress_indicator.hours")}/
       page_text = Capybara.string(response.body).text
       expect(page_text.scan(progress_text).count).to eq(2)
+    end
+  end
+
+  context "when summer carryover applies for an education activity" do
+    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 2) }
+
+    before do
+      current_flow.shift_reporting_window_start!("2025-07-01")
+      education_activity = create(:education_activity, activity_flow: current_flow, status: "succeeded")
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        school_name: "Coastal State College",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15)
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        school_name: "Coastal State College",
+        term_begin: Date.new(2025, 7, 1),
+        term_end: Date.new(2025, 8, 15)
+      )
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "renders one education card and shows the spring enrollment status" do
+      education_section = Nokogiri::HTML.parse(response.body)
+        .css("[data-activity-type='education'] .activity-hub-card")
+
+      expect(education_section.length).to eq(1)
+      expect(response.body).to include("Coastal State College")
+      expect(response.body).to include(
+        I18n.t(
+          "activities.hub.cards.enrollment_status",
+          status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        )
+      )
+      expect(response.body).not_to include(
+        I18n.t(
+          "activities.hub.cards.enrollment_status",
+          status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        )
+      )
+    end
+  end
+
+  context "when summer carryover applies with no summer term" do
+    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 2) }
+
+    before do
+      current_flow.shift_reporting_window_start!("2025-07-01")
+      education_activity = create(:education_activity, activity_flow: current_flow, status: "succeeded")
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        school_name: "Coastal State College",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15)
+      )
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "renders one education card and shows the spring enrollment status for the summer months" do
+      education_section = Nokogiri::HTML.parse(response.body)
+        .css("[data-activity-type='education'] .activity-hub-card")
+
+      expect(education_section.length).to eq(1)
+      expect(response.body.scan("Enrollment: Half-time").length).to eq(2)
+      expect(response.body).not_to include("Enrollment: Not enrolled")
+    end
+  end
+
+  context "when validated education terms overlap in the same reporting month" do
+    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 2) }
+
+    before do
+      current_flow.shift_reporting_window_start!("2025-06-01")
+      education_activity = create(:education_activity, activity_flow: current_flow, status: "succeeded")
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        school_name: "Test University",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15)
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        school_name: "Test University",
+        term_begin: Date.new(2025, 6, 1),
+        term_end: Date.new(2025, 7, 31)
+      )
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "renders one education card and shows the stronger overlapping enrollment status" do
+      education_section = Nokogiri::HTML.parse(response.body)
+        .css("[data-activity-type='education'] .activity-hub-card")
+
+      expect(education_section.length).to eq(1)
+      expect(response.body.scan("Enrollment: Half-time").length).to eq(2)
+      expect(response.body).not_to include("Enrollment: Less than half-time")
     end
   end
 
