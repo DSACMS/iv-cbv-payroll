@@ -12,8 +12,14 @@
 </h1>
 
 <p>
-  <%= t(".description_html", reporting_window: @flow.reporting_window_display, agency_acronym: agency_translation("shared.agency_acronym")) %>
+  <%= t(".description", reporting_window: @flow.reporting_window_display) %>
 </p>
+
+<% if summer_logic_applied? %>
+  <p>
+    <%= t(".summer_logic_description") %>
+  </p>
+<% end %>
 
 <% has_multiple_enrollments = @education_activity.nsc_enrollment_terms.size > 1 %>
 <% unless has_multiple_enrollments %>
@@ -35,7 +41,7 @@
 <div class="usa-form-group margin-top-5">
   <%= form_with model: @education_activity, url: activities_flow_education_path(id: @education_activity.id), class: "usa-form usa-form--large" do |form| %>
     <h2><%= t(".additional_information_header") %></h2>
-    <%= form.label :additional_comments, t(".additional_information_label", agency_acronym: agency_translation("shared.agency_acronym")), class: "usa-label" %>
+    <%= form.label :additional_comments, t(".additional_information_label", agency_name: agency_translation("shared.agency_full_name")), class: "usa-label" %>
     <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
 
     <%= form.submit t(".continue"), class: "usa-button usa-button--primary" %>
