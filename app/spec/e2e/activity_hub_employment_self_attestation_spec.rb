@@ -60,6 +60,14 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: month2_label), with: "20"
     click_button I18n.t("activities.employment.hours_input.continue")
 
+    # Document upload page
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: "Gainesville Wrecking"),
+      skip_axe_rules: %w[heading-order]
+    )
+    click_button I18n.t("activities.document_uploads.new.continue")
+
     # Review page
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Gainesville Wrecking"))
     expect(page).to have_content "Gainesville Wrecking"

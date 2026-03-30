@@ -68,6 +68,31 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       )
     end
 
+    it "redirects back to review when from_review is set" do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 0,
+        from_review: 1,
+        employment_activity_month: { gross_income: 339, hours: 45 }
+      }
+
+      expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity))
+    end
+
+    it "threads from_edit to review when from_review is set" do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 0,
+        from_review: 1,
+        from_edit: 1,
+        employment_activity_month: { gross_income: 339, hours: 45 }
+      }
+
+      expect(response).to redirect_to(
+        review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1)
+      )
+    end
+
     context "with multiple reporting months" do
       let(:reporting_window_months) { 3 }
 

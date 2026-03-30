@@ -72,10 +72,17 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def hours_input_completed_path
-    new_activities_flow_income_employment_document_upload_path(
-      employment_id: @employment_activity.id,
-      from_edit: params[:from_edit].presence
-    )
+    if params[:from_review].present?
+      review_activities_flow_income_employment_path(
+        id: @employment_activity,
+        from_edit: params[:from_edit].presence
+      )
+    else
+      new_activities_flow_income_employment_document_upload_path(
+        employment_id: @employment_activity.id,
+        from_edit: params[:from_edit].presence
+      )
+    end
   end
 
   def valid_hours_submission?
