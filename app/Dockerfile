@@ -98,7 +98,8 @@ RUN apt-get update -qq && \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-RUN mkdir -p /rails/tmp
+RUN mkdir -p /rails/tmp /docs/app/rendered && \
+    echo 0 > /docs/app/rendered/.database-diagram-schema-version
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION} && \
     bundle config set --local without production && \
