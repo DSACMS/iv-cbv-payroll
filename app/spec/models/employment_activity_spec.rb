@@ -54,13 +54,18 @@ RSpec.describe EmploymentActivity, type: :model do
     end
   end
 
-  describe "document upload fields" do
+  describe "#document_upload_object_title" do
     let(:activity_flow) { create(:activity_flow, reporting_window_months: 1) }
     let(:activity) { create(:employment_activity, activity_flow: activity_flow) }
 
-    it "uses employer name as the document upload object title" do
+    it "returns the employer name" do
       expect(activity.document_upload_object_title).to eq(activity.employer_name)
     end
+  end
+
+  describe "#document_upload_months_to_verify" do
+    let(:activity_flow) { create(:activity_flow, reporting_window_months: 1) }
+    let(:activity) { create(:employment_activity, activity_flow: activity_flow) }
 
     it "returns saved activity months for verification" do
       month = activity_flow.reporting_months.first.beginning_of_month
@@ -68,8 +73,13 @@ RSpec.describe EmploymentActivity, type: :model do
 
       expect(activity.document_upload_months_to_verify).to eq([ month ])
     end
+  end
 
-    it "returns hours details for document upload month summaries" do
+  describe "#document_upload_details_for_month" do
+    let(:activity_flow) { create(:activity_flow, reporting_window_months: 1) }
+    let(:activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "returns gross income and hours details for document upload month summaries" do
       month = activity_flow.reporting_months.first.beginning_of_month
       month_record = create(:employment_activity_month, employment_activity: activity, month: month, hours: 12)
 
@@ -81,9 +91,23 @@ RSpec.describe EmploymentActivity, type: :model do
         )
       )
     end
+  end
+
+  describe "#document_upload_suggestion_text" do
+    let(:activity_flow) { create(:activity_flow, reporting_window_months: 1) }
+    let(:activity) { create(:employment_activity, activity_flow: activity_flow) }
 
     it "returns the employment suggestion translation key" do
       expect(activity.document_upload_suggestion_text).to eq("activities.employment.document_upload_suggestion_text_html")
+    end
+  end
+
+  describe "#document_upload_header_title_i18n_key" do
+    let(:activity_flow) { create(:activity_flow, reporting_window_months: 1) }
+    let(:activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "returns the employment header title translation key" do
+      expect(activity.document_upload_header_title_i18n_key).to eq("activities.employment.title_singular")
     end
   end
 end
