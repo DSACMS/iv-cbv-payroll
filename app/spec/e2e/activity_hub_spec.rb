@@ -173,6 +173,13 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       click_button I18n.t("activities.employment.hours_input.continue")
     end
 
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: employer_name),
+      skip_axe_rules: %w[heading-order]
+    )
+    click_button I18n.t("activities.document_uploads.new.continue")
+
     # Review page
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: employer_name))
     click_button I18n.t("activities.employment.review.save")

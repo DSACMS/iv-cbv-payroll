@@ -37,10 +37,11 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(Capybara.string(response.body)).not_to have_link("Back")
     end
 
-    it "review back goes to last month" do
+    it "review back goes to document uploads" do
       get :review, params: { id: employment_activity.id }
-      expected = edit_activities_flow_income_employment_month_path(
-        employment_id: employment_activity, id: 1)
+      expected = new_activities_flow_income_employment_document_upload_path(
+        employment_id: employment_activity
+      )
       expect(Capybara.string(response.body)).to have_link("Back", href: expected)
     end
   end
@@ -67,6 +68,36 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     it "review has no back button" do
       get :review, params: { id: employment_activity.id, from_edit: 1 }
       expect(Capybara.string(response.body)).not_to have_link("Back")
+    end
+  end
+end
+
+RSpec.describe Activities::DocumentUploadsController, type: :controller do
+  include_context "activity_hub"
+
+  render_views
+
+  let(:activity_flow) do
+    create(:activity_flow,
+      volunteering_activities_count: 0,
+      job_training_activities_count: 0,
+      education_activities_count: 0,
+      reporting_window_months: 2)
+  end
+  let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+  before do
+    session[:flow_id] = activity_flow.id
+    session[:flow_type] = :activity
+  end
+
+  describe "creation flow" do
+    it "document uploads back goes to last month" do
+      get :new, params: { employment_id: employment_activity.id }
+      expected = edit_activities_flow_income_employment_month_path(
+        employment_id: employment_activity, id: 1
+      )
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
     end
   end
 end

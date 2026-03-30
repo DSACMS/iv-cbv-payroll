@@ -53,4 +53,37 @@ RSpec.describe EmploymentActivity, type: :model do
       expect(activity.formatted_address).to eq("")
     end
   end
+
+  describe "document upload fields" do
+    let(:activity_flow) { create(:activity_flow, reporting_window_months: 1) }
+    let(:activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "uses employer name as the document upload object title" do
+      expect(activity.document_upload_object_title).to eq(activity.employer_name)
+    end
+
+    it "returns saved activity months for verification" do
+      month = activity_flow.reporting_months.first.beginning_of_month
+      create(:employment_activity_month, employment_activity: activity, month: month, hours: 12)
+
+      expect(activity.document_upload_months_to_verify).to eq([ month ])
+    end
+
+    it "returns hours details for document upload month summaries" do
+      month = activity_flow.reporting_months.first.beginning_of_month
+      month_record = create(:employment_activity_month, employment_activity: activity, month: month, hours: 12)
+
+      expect(activity.document_upload_details_for_month(month)).to eq(
+        I18n.t(
+          "activities.employment.document_upload_month_detail",
+          gross_income: ActiveSupport::NumberHelper.number_to_currency(month_record.gross_income),
+          hours: I18n.t("shared.hours", count: month_record.hours)
+        )
+      )
+    end
+
+    it "returns the employment suggestion translation key" do
+      expect(activity.document_upload_suggestion_text).to eq("activities.employment.document_upload_suggestion_text_html")
+    end
+  end
 end
