@@ -23,7 +23,7 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(rendered).to match(/Lynette Oyola/)
       expect(rendered).to match(/Currently enrolled.*1 school/)
       expect(rendered).to match(/Rick Banas/)
-      expect(rendered).to match(/Currently enrolled.*2 schools/)
+      expect(rendered).to match(/Enrolled half-time.*2 schools/)
       expect(rendered).to match(/Dominique Ricardo/)
       expect(rendered).to match(/Not currently enrolled/)
       expect(rendered).to match(/Linda Cooper/)
