@@ -43,4 +43,12 @@ RSpec.describe VolunteeringActivity, type: :model do
       expect(activity.formatted_address).to eq("123 Main St, Suite 200, Springfield, IL 62701")
     end
   end
+
+  describe "#document_upload_header_title_i18n_key" do
+    it "returns the community service header title translation key" do
+      activity = create(:volunteering_activity)
+
+      expect(activity.document_upload_header_title_i18n_key).to eq("activities.community_service.title_singular")
+    end
+  end
 end
