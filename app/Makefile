@@ -23,7 +23,7 @@ __check_defined = \
 # Constants
 ##################################################
 
-APP_NAME := app-rails
+APP_NAME := app_rails
 
 # Support other container tools like `finch`
 ifdef CONTAINER_CMD
@@ -80,8 +80,8 @@ export RUN_UID
 ##################################################
 
 
-.env: local.env.example
-	@([ -f .env ] && echo ".env file already exists, but local.env.example is newer (or you just switched branches), check for any updates" && touch .env) || cp local.env.example .env
+.env: .env.local.example
+	@([ -f .env ] && echo ".env file already exists, but .env.local.example is newer (or you just switched branches), check for any updates" && touch .env) || cp .env.local.example .env
 
 init-container: ## Initialize the project for running in a container
 init-container: .env build init-db
