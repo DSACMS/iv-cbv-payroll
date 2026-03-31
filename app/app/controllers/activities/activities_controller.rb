@@ -1,5 +1,9 @@
 class Activities::ActivitiesController < Activities::BaseController
   def index
+    # This is in support of the functionality where we delete any records that were not completed
+    # on creation. If you exit out of an activity flow in the middle before you save from the
+    # Review page, we should delete all the records that were not completed. This results in no
+    # visible changes when the user returns to the Activity Hub.
     if session[:creating_activity]
       activity_class = session[:creating_activity]["class_name"].safe_constantize
       activity_class&.find_by(id: session[:creating_activity]["id"])&.destroy
