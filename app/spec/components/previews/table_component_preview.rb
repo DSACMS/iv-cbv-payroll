@@ -7,13 +7,13 @@ class TableComponentPreview < ApplicationPreview
       table.with_header_cell(is_header: true, scope: "col") { "Value" }
 
       table.with_row do |row|
-        row.with_data_cell(is_header: true, data_label: "Field") { "Employer" }
-        row.with_data_cell(data_label: "Value") { "Patuxent Labs" }
+        row.with_data_cell(is_header: true) { "Employer" }
+        row.with_data_cell { "Patuxent Labs" }
       end
 
       table.with_row do |row|
-        row.with_data_cell(is_header: true, data_label: "Field") { "Net pay" }
-        row.with_data_cell(data_label: "Value") { "$1,950.25" }
+        row.with_data_cell(is_header: true) { "Net pay" }
+        row.with_data_cell { "$1,950.25" }
       end
     end
   end

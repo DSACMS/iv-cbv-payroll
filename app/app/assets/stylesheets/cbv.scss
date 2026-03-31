@@ -337,6 +337,12 @@ input#invitation_link {
       border-bottom: none;
     }
   }
+
+  @include at-media-max("mobile-lg") {
+    thead {
+      display: none;
+    }
+  }
 }
 
 .usa-table--borderless.cbv-table thead th {
