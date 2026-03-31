@@ -47,6 +47,36 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
   end
 
+  describe "delete-on-close cleanup" do
+    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+
+    before do
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+    end
+
+    it "destroys the tracked incomplete activity on hub visit" do
+      activity = create(:volunteering_activity, activity_flow: current_flow)
+      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => activity.id }
+
+      expect { get :index }.to change(VolunteeringActivity, :count).by(-1)
+      expect(session[:creating_activity]).to be_nil
+    end
+
+    it "does nothing when no creating_activity is in session" do
+      create(:volunteering_activity, activity_flow: current_flow)
+
+      expect { get :index }.not_to change(VolunteeringActivity, :count)
+    end
+
+    it "handles an already-deleted activity gracefully" do
+      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => -1 }
+
+      expect { get :index }.not_to raise_error
+      expect(session[:creating_activity]).to be_nil
+    end
+  end
+
   context "when no activities are added" do
     let(:current_flow) do
       create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)

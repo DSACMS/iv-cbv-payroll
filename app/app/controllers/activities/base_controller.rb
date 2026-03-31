@@ -42,6 +42,14 @@ class Activities::BaseController < FlowController
     @_progress_calculator ||= ActivityFlowProgressCalculator.new(@flow)
   end
 
+  def track_creating_activity(activity)
+    session[:creating_activity] = { "class_name" => activity.class.name, "id" => activity.id }
+  end
+
+  def clear_creating_activity
+    session.delete(:creating_activity)
+  end
+
   def flow_param
     :activity
   end

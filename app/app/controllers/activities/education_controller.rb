@@ -100,6 +100,7 @@ class Activities::EducationController < Activities::BaseController
 
   def save_review
     @education_activity.update(review_params)
+    clear_creating_activity
     redirect_to @education_activity.fully_self_attested? ? activities_flow_root_path : after_activity_path
   end
 
@@ -172,6 +173,7 @@ class Activities::EducationController < Activities::BaseController
     @education_activity = @flow.education_activities.new(fully_self_attested_education_params)
     @education_activity.data_source = :fully_self_attested
     if @education_activity.save
+      track_creating_activity(@education_activity)
       redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0)
     else
       render :new, status: :unprocessable_content
@@ -180,6 +182,7 @@ class Activities::EducationController < Activities::BaseController
 
   def create_validated_activity
     @education_activity = @flow.education_activities.create
+    track_creating_activity(@education_activity)
     NscSynchronizationJob.perform_later(@education_activity.id)
     redirect_to activities_flow_education_path(id: @education_activity.id)
   end

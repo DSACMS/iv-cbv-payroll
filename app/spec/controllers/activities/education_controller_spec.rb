@@ -41,6 +41,13 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to redirect_to(activities_flow_education_path(id: EducationActivity.last.id))
     end
 
+    it "tracks the validated activity in the session" do
+      post :create
+
+      activity = EducationActivity.last
+      expect(session[:creating_activity]).to eq("class_name" => "EducationActivity", "id" => activity.id)
+    end
+
     it "creates a self-attested EducationActivity and redirects to month 0" do
       expect {
         post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
@@ -50,6 +57,13 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(activity.data_source).to eq("fully_self_attested")
       expect(activity.school_name).to eq("Test University")
       expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: activity.id, id: 0))
+    end
+
+    it "tracks the self-attested activity in the session" do
+      post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
+
+      activity = EducationActivity.last
+      expect(session[:creating_activity]).to eq("class_name" => "EducationActivity", "id" => activity.id)
     end
 
     it "re-renders the form when self-attested params are invalid" do
@@ -380,6 +394,14 @@ RSpec.describe Activities::EducationController, type: :controller do
 
       expect(education_activity.reload.additional_comments).to eq("Some notes")
       expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "clears the creating_activity session" do
+      session[:creating_activity] = { "class_name" => "EducationActivity", "id" => education_activity.id }
+
+      patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
+
+      expect(session[:creating_activity]).to be_nil
     end
 
     context "when validated mixed enrollment has half-time-or-above in each reporting month" do

@@ -18,6 +18,7 @@ class Activities::JobTrainingController < Activities::BaseController
   def create
     @job_training_activity = @flow.job_training_activities.new(job_training_activity_params)
     if @job_training_activity.save
+      track_creating_activity(@job_training_activity)
       redirect_to edit_activities_flow_job_training_month_path(job_training_id: @job_training_activity, id: 0)
     else
       render :new, status: :unprocessable_content
@@ -45,6 +46,7 @@ class Activities::JobTrainingController < Activities::BaseController
 
   def save_review
     @job_training_activity.update(review_params)
+    clear_creating_activity
     redirect_to after_activity_path
   end
 

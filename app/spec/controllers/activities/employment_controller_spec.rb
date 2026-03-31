@@ -89,6 +89,13 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       activity = activity_flow.employment_activities.last
       expect(activity.data_source).to eq("self_attested")
     end
+
+    it "tracks the new activity in the session" do
+      post :create, params: employment_params
+
+      activity = activity_flow.employment_activities.last
+      expect(session[:creating_activity]).to eq("class_name" => "EmploymentActivity", "id" => activity.id)
+    end
   end
 
   describe "PATCH #update" do
@@ -213,6 +220,14 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
       expect(employment_activity.reload.additional_comments).to eq("Some notes")
       expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "clears the creating_activity session" do
+      session[:creating_activity] = { "class_name" => "EmploymentActivity", "id" => employment_activity.id }
+
+      patch :save_review, params: { id: employment_activity.id, employment_activity: { additional_comments: "" } }
+
+      expect(session[:creating_activity]).to be_nil
     end
   end
 end
