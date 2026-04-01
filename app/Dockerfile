@@ -169,6 +169,9 @@ COPY --from=release-build /rails /rails
 RUN bundle clean --force && \
     bundle install --no-cache
 
+# Pre-decompress the wkhtmltopdf binary so it doesn't need to happen at runtime
+RUN bundle exec wkhtmltopdf --version
+
 # Ensure all necessary directories exist
 RUN mkdir -p /rails/tmp/pids /rails/log /rails/db
 
