@@ -4,7 +4,7 @@
         edit_activities_flow_education_path(id: @education_activity, from_review: 1, from_edit: params[:from_edit].presence),
         class: "usa-link" %>
 </div>
-<%= render(ContactInfoReviewTableComponent.new(rows: [
+<%= render(ContactInfoReviewTableComponent.new(field_header: t("shared.table_headers.education_information"), value_header: t("shared.table_headers.your_details"), rows: [
   { label: t("activities.education.review.school_name"), value: @education_activity.school_name },
   { label: t("activities.education.review.address"), value: @education_activity.formatted_address },
   { label: t("activities.education.review.contact_name"), value: @education_activity.contact_name },

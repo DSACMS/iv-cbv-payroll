@@ -2,13 +2,9 @@
   <h2 class="margin-0">
     <%= I18n.t("cbv.payment_details.show.employment_information_table_header") %>
   </h2>
-  <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
-    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-             .with_content(I18n.t("cbv.payment_details.show.employment_information_table_header")) %>
-      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-             .with_content(I18n.t("components.report.employment_details_table.header.your_details")) %>
-    <% end %>
+  <%= render(TableComponent.new(is_responsive: @is_responsive, class_names: "acitvity-review-table", thead_class_names: "")) do |table| %>
+    <%= table.with_header_cell(is_header: true, scope: "col") { I18n.t("shared.table_headers.employer_information") } %>
+    <%= table.with_header_cell(is_header: true, scope: "col") { I18n.t("shared.table_headers.your_details") } %>
     <% if @show_identity %>
       <%= table.with_data_point(:client_full_name, @identity.full_name) %>
       <%= table.with_data_point(:ssn, @identity.ssn) %>

@@ -371,36 +371,39 @@ input#invitation_link {
 }
 
 // Make sure second col is aligned between both tables on desktop
-.activity-review-org-table th,
 .activity-review-hours-table th:not([colspan]),
 .activity-review-hours-table td:first-child {
   width: 60%;
 }
 
-.activity-review-org-table {
-  thead {
-    border-top: units(0.5) solid color("ink");
+.acitvity-review-table {
+  max-width: 44rem;
+  border: units(1px) solid color("ink");
+
+  @include at-media("tablet") {
+    th {
+      width: 50%;
+    }
   }
 
-  th {
-    border-top: units(1px) solid color("base-light");
+  tbody tr {
+    border-bottom: units(1px) solid color("ink");
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
-  td {
-    border-top: 0;
-  }
-
-  tr:first-child th:first-child {
-    border-top: 0;
+  @include at-media-max("mobile-lg") {
+    thead {
+      display: none;
+    }
   }
 }
 
-.activity-review-org-table.usa-table--stacked tr {
-  border-bottom: units(1px) solid color("base-light");
-}
-
-.activity-review-org-table.usa-table--stacked tr:first-child {
-  border-top: units(0.5) solid color("ink");
+.usa-table--borderless.acitvity-review-table thead th {
+  background-color: color("blue-cool-5");
+  border-bottom: units(1px) solid color("ink");
 }
 
 /*

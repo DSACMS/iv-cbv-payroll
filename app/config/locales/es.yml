@@ -398,9 +398,6 @@ es:
         fetching_payroll_description: Esto puede tardar algunos minutos. Mantenga abierta esta ventana mientras trabajamos en esto.
   components:
     report:
-      employment_details_table:
-        header:
-          your_details: Sus datos
       monthly_summary_table:
         accrued_gross_earnings: Ganancias brutas acumuladas
         compact:

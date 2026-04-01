@@ -21,7 +21,7 @@
         edit_activities_flow_community_service_path(id: @volunteering_activity, from_review: 1, from_edit: params[:from_edit].presence),
         class: "usa-link" %>
 </div>
-<%= render(ContactInfoReviewTableComponent.new(rows: [
+<%= render(ContactInfoReviewTableComponent.new(field_header: t("shared.table_headers.community_service_information"), value_header: t("shared.table_headers.your_details"), rows: [
   { label: t("activities.community_service.review.name"), value: @volunteering_activity.organization_name },
   { label: t("activities.community_service.review.address"), value: ContactInfoReviewTableComponent.formatted_address(@volunteering_activity) },
   { label: t("activities.community_service.review.coordinator_name"), value: @volunteering_activity.coordinator_name },
