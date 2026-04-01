@@ -186,30 +186,54 @@ RSpec.describe ActivitiesHelper do
       )
     end
 
-    it "includes edit path to term credit hours for partially self-attested education" do
+    it "includes edit path to education review for partially self-attested education" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", enrollment_status: "less_than_half_time", term_begin: first_month, term_end: second_month.end_of_month)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
       expect(result.first[:edit_path]).to eq(
-        helper.edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: 0)
+        helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
       )
     end
 
-    it "routes each partially self-attested education card to the matching term index" do
+    it "builds one partially self-attested card per school when a school has multiple terms" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
-      first_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "First School", term_begin: first_month, term_end: second_month.end_of_month)
-      second_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "Second School", term_begin: first_month, term_end: second_month.end_of_month)
+      create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: activity,
+        school_name: "River College",
+        term_begin: first_month,
+        term_end: first_month.end_of_month,
+        credit_hours: 3)
+      create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: activity,
+        school_name: "River College",
+        term_begin: second_month,
+        term_end: second_month.end_of_month,
+        credit_hours: 5)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
-      cards_by_name = result.index_by { |card| card[:name] }
 
-      expect(cards_by_name[first_term.school_name].fetch(:edit_path)).to eq(
-        helper.edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: 0)
+      expect(result.length).to eq(1)
+      expect(result.first[:name]).to eq("River College")
+      expect(result.first[:edit_path]).to eq(
+        helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
       )
-      expect(cards_by_name[second_term.school_name].fetch(:edit_path)).to eq(
-        helper.edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: 1)
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: first_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
+          community_engagement_hours: 12,
+          credit_hours: 3,
+          show_credit_hours: true
+        },
+        {
+          month: second_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
+          community_engagement_hours: 20,
+          credit_hours: 5,
+          show_credit_hours: true
+        }
       )
     end
 
@@ -292,7 +316,7 @@ RSpec.describe ActivitiesHelper do
             { month: second_month, credit_hours: 6, community_engagement_hours: 24 },
             { month: first_month, credit_hours: 4, community_engagement_hours: 16 }
           ],
-          edit_path: helper.edit_activities_flow_education_month_path(education_id: activity.id, id: 0, from_edit: 1)
+          edit_path: helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
         }
       )
     end

@@ -142,9 +142,9 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
   context "when education activity has less-than-half-time enrollment records" do
     let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
+    let(:education_activity) { create(:education_activity, activity_flow: current_flow, data_source: :partially_self_attested) }
 
     before do
-      education_activity = create(:education_activity, activity_flow: current_flow, data_source: :partially_self_attested)
       create(
         :nsc_enrollment_term,
         :less_than_half_time,
@@ -169,6 +169,62 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
       expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 16))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
+    end
+
+    it "routes card edit to education review with from_edit" do
+      expect(response.body).to include(
+        review_activities_flow_education_path(id: education_activity.id, from_edit: 1)
+      )
+    end
+  end
+
+  context "when partially self-attested education has multiple enrollments for the same school" do
+    let(:current_flow) do
+      create(
+        :activity_flow,
+        volunteering_activities_count: 0,
+        job_training_activities_count: 0,
+        education_activities_count: 0,
+        reporting_window_months: 2
+      )
+    end
+
+    before do
+      education_activity = create(:education_activity, activity_flow: current_flow, data_source: :partially_self_attested)
+      first_month = current_flow.reporting_months.first
+      second_month = current_flow.reporting_months.second
+
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        school_name: "River College",
+        credit_hours: 3,
+        term_begin: first_month,
+        term_end: first_month.end_of_month
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        school_name: "River College",
+        credit_hours: 5,
+        term_begin: second_month,
+        term_end: second_month.end_of_month
+      )
+
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "renders one card for the school with both months of data" do
+      education_cards = Nokogiri::HTML.parse(response.body).css("[data-activity-type='education'] .activity-hub-card")
+
+      expect(education_cards.length).to eq(1)
+      expect(response.body).to include("River College")
+      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 3))
+      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 5))
     end
   end
 
@@ -349,14 +405,16 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
   context "when self-attested education activity is added" do
     let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
-
-    before do
-      education_activity = create(
+    let(:education_activity) do
+      create(
         :education_activity,
         activity_flow: current_flow,
         data_source: :fully_self_attested,
         school_name: "Colorado Springs Community College"
       )
+    end
+
+    before do
       create(
         :education_activity_month,
         education_activity: education_activity,
@@ -374,6 +432,12 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 16))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
       expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
+    end
+
+    it "routes card edit to education review with from_edit" do
+      expect(response.body).to include(
+        review_activities_flow_education_path(id: education_activity.id, from_edit: 1)
+      )
     end
   end
 

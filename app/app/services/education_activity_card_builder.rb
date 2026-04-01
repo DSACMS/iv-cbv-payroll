@@ -29,29 +29,16 @@ class EducationActivityCardBuilder
     [ {
       name: @activity.school_name.presence || I18n.t("activities.education.title"),
       months: months,
-      edit_path: edit_activities_flow_education_month_path(education_id: @activity.id, id: 0, from_edit: 1)
+      edit_path: review_activities_flow_education_path(id: @activity.id, from_edit: 1)
     } ]
   end
 
   def partially_self_attested_cards(overlapping_terms)
-    overlapping_terms.map do |term|
-      school_name = term.school_name&.titlecase || I18n.t("activities.education.title")
-      visible_months = @reporting_months.reverse.select { |month_start| term.overlaps_month?(month_start) }
-      months = visible_months.map do |month_start|
-        if term.less_than_half_time?
-          partial_self_attested_month_data(term: term, month_start: month_start)
-        else
-          validated_month_data(month_start: month_start, effective_term: term)
-        end
-      end
-
+    terms_grouped_by_school(overlapping_terms).map do |school_terms|
       {
-        name: school_name,
-        months: months,
-        edit_path: edit_activities_flow_education_term_credit_hour_path(
-          education_id: @activity.id,
-          id: less_than_half_time_term_index(term)
-        )
+        name: school_terms.first.school_name.presence&.titlecase || I18n.t("activities.education.title"),
+        months: partially_self_attested_months_for_school(school_terms),
+        edit_path: review_activities_flow_education_path(id: @activity.id, from_edit: 1)
       }
     end
   end
@@ -107,9 +94,27 @@ class EducationActivityCardBuilder
     activity_month.hours.to_i
   end
 
-  def less_than_half_time_term_index(term)
-    @activity.less_than_half_time_terms_in_reporting_window
-      .index { |less_than_half_time_term| less_than_half_time_term.id == term.id } || 0
+  def terms_grouped_by_school(terms)
+    terms.group_by { |term| term.school_name.to_s.strip.downcase }.values
+  end
+
+  def partially_self_attested_months_for_school(school_terms)
+    @reporting_months.reverse.filter_map do |month_start|
+      effective_term = effective_school_term_for_month(school_terms, month_start)
+      next unless effective_term
+
+      if effective_term.less_than_half_time?
+        partial_self_attested_month_data(term: effective_term, month_start: month_start)
+      else
+        validated_month_data(month_start: month_start, effective_term: effective_term)
+      end
+    end
+  end
+
+  def effective_school_term_for_month(school_terms, month_start)
+    school_terms
+      .select { |term| term.overlaps_month?(month_start) }
+      .max_by(&:enrollment_priority)
   end
 
   def partially_self_attested_build
