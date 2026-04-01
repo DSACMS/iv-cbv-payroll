@@ -42,6 +42,8 @@ ENV RAILS_ENV="production" \
     BUNDLER_VERSION='2.4'
 
 # Start the server by default, this can be overwritten at runtime
+# Prevents sporadic 500s on report generation, similar to known issue documented here:
+# https://github.com/zakird/wkhtmltopdf_binary_gem/issues/57
 EXPOSE 3000
 
 
