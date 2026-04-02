@@ -1,11 +1,10 @@
 <% enrollment_terms = @education_activity.nsc_enrollment_terms.order(:term_begin, :term_end, :school_name) %>
 <% has_multiple_enrollments = enrollment_terms.length > 1 %>
 
-<% enrollment_terms.each do |enrollment_term| %>
+<% enrollment_terms.each_with_index do |enrollment_term, index| %>
   <h2>
     <% if has_multiple_enrollments %>
-      <% school_name = enrollment_term.school_name.presence&.titlecase || t("shared.not_applicable") %>
-      <%= t("activities.education.review.enrollment_information_multiple", school_name:) %>
+      <%= t("activities.education.review.enrollment_information_numbered", number: index + 1) %>
     <% else %>
       <%= t("activities.education.review.enrollment_information") %>
     <% end %>

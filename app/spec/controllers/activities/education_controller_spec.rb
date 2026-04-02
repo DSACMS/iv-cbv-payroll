@@ -470,10 +470,10 @@ RSpec.describe Activities::EducationController, type: :controller do
         doc = Capybara.string(response.body)
         expect(response).to have_http_status(:ok)
         expect(doc).to have_text(
-          I18n.t("activities.education.review.enrollment_information_multiple", school_name: "Pine Valley College")
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
         )
         expect(doc).to have_text(
-          I18n.t("activities.education.review.enrollment_information_multiple", school_name: "Riverside Community College")
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
         )
         expect(doc).not_to have_link(I18n.t("activities.education.review.edit"))
         expect(doc).not_to have_link(I18n.t("activities.hub.edit"))
