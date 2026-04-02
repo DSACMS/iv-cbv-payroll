@@ -53,6 +53,7 @@
     private_key: <%= ENV['NH_DHHS_SFTP_PRIVATE_KEY'].inspect %>
     url: <%= ENV['NH_DHHS_SFTP_URL'] %>
     sftp_directory: <%= ENV['NH_DHHS_SFTP_DIRECTORY'] %>
+    pdf_filename_format: CBV_%{case_number}_%{consent_timestamp}_%{confirmation_code}
   staff_portal_enabled: true
   pilot_ended: false
   sso:
