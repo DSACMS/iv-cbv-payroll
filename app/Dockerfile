@@ -169,6 +169,11 @@ COPY --from=release-build /rails /rails
 RUN bundle clean --force && \
     bundle install --no-cache
 
+# Pre-decompress the wkhtmltopdf binary so it doesn't need to happen at runtime
+# Prevents sporadic 500s on report generation, similar to known issue documented here:
+# https://github.com/zakird/wkhtmltopdf_binary_gem/issues/57
+RUN bundle exec wkhtmltopdf --version
+
 # Ensure all necessary directories exist
 RUN mkdir -p /rails/tmp/pids /rails/log /rails/db
 

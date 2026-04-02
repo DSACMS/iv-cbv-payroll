@@ -108,6 +108,10 @@ class EducationActivity < Activity
     end
   end
 
+  def document_upload_header_title_i18n_key
+    "activities.education.title_singular"
+  end
+
   def document_upload_terms_to_verify
     return [] unless partially_self_attested?
 

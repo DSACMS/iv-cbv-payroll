@@ -192,6 +192,36 @@ RSpec.describe Activities::EducationController, type: :controller do
 
       expect(Capybara.string(response.body)).to have_button(I18n.t("activities.education.new.continue"))
     end
+
+    it "renders the summer logic description for partially self-attested activities when carryover applies" do
+      activity_flow.update!(created_at: Time.zone.local(2026, 9, 1), reporting_window_months: 3)
+      education_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        school_name: "University of Illinois",
+        enrollment_status: :half_time,
+        term_begin: Date.new(2026, 4, 1),
+        term_end: Date.new(2026, 6, 15)
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        school_name: "University of Illinois",
+        term_begin: Date.new(2026, 6, 1),
+        term_end: Date.new(2026, 8, 31)
+      )
+
+      get :edit, params: { id: education_activity.id }
+
+      expect(Capybara.string(response.body)).to have_text(I18n.t("activities.education.edit.summer_logic_description"))
+    end
   end
 
   describe "DELETE #destroy" do
@@ -264,7 +294,16 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response.body).to include(I18n.t("activities.education.review.credit_hours_section"))
         expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
         expect(response.body).to include(I18n.t("activities.education.review.ce_explainer_title"))
-        expect(doc).to have_text(I18n.t("activities.education.review.description", school_name: "University of Illinois"))
+        expect(doc).to have_text(
+          I18n.t("activities.education.review.description", school_name: "University of Illinois")
+        )
+        expect(doc).to have_text(
+          I18n.t(
+            "activities.education.review.additional_comments_description",
+            agency_name: I18n.t("shared.agency_full_name.sandbox")
+          )
+        )
+        expect(doc).not_to have_text(I18n.t("activities.education.edit.summer_logic_description"))
         expect(response.body).to include("0")
       end
 

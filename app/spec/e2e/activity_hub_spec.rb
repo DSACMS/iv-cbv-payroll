@@ -130,6 +130,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.l(flow.reporting_months.first, format: :month)
     expect(page).to have_content I18n.l(flow.reporting_months.second, format: :month)
     expect(page).to have_content job_training.program_name
+    expect(page).to have_content "Gainesville Wrecking"
+    expect(page).to have_content "Donny Spears"
+    expect(page).to have_content "$500.00"
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
@@ -169,6 +172,13 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(month, format: :month_year)), with: "40"
       click_button I18n.t("activities.employment.hours_input.continue")
     end
+
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: employer_name),
+      skip_axe_rules: %w[heading-order]
+    )
+    click_button I18n.t("activities.document_uploads.new.continue")
 
     # Review page
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: employer_name))

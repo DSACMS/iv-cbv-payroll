@@ -31,4 +31,8 @@ class JobTrainingActivity < Activity
   def document_upload_suggestion_text
     "activities.job_training.document_upload_suggestion_text_html"
   end
+
+  def document_upload_header_title_i18n_key
+    "activities.work_programs.title_singular"
+  end
 end

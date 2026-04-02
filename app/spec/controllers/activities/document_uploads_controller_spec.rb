@@ -81,6 +81,25 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("activities.education.document_upload_suggestion_text_html"))
     end
 
+    it "renders the upload form for an employment activity" do
+      employment_activity = create(:employment_activity, activity_flow: activity_flow)
+      month_record = create(:employment_activity_month, employment_activity: employment_activity, hours: 18)
+
+      get :new, params: { employment_id: employment_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: employment_activity.employer_name))
+      expect(response.body).to include(
+        I18n.t(
+          "activities.employment.document_upload_month_detail",
+          gross_income: ActiveSupport::NumberHelper.number_to_currency(month_record.gross_income),
+          hours: I18n.t("shared.hours", count: month_record.hours)
+        )
+      )
+      expect(response.body).to include(activities_flow_income_employment_document_uploads_path)
+      expect(response.body).to include(I18n.t("activities.employment.document_upload_suggestion_text_html"))
+    end
+
     it "renders the upload form for a partially self-attested education activity" do
       term = create_partial_term(
         activity: partial_education_activity,
@@ -180,6 +199,14 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       post :create, params: { job_training_id: job_training_activity.id }
 
       expect(response).to redirect_to(review_activities_flow_job_training_path(id: job_training_activity))
+    end
+
+    it "redirects to review for employment when no upload params are provided" do
+      employment_activity = create(:employment_activity, activity_flow: activity_flow)
+
+      post :create, params: { employment_id: employment_activity.id }
+
+      expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity))
     end
 
     it "renders new when the update fails" do

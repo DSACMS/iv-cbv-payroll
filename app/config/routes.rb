@@ -78,6 +78,7 @@ Rails.application.routes.draw do
         resource :synchronization_failures, only: %i[show], controller: "income/synchronization_failures"
         resource :payment_details, only: %i[show update], controller: "income/payment_details"
         resources :employment, only: %i[new create edit update], controller: "/activities/employment" do
+          resources :document_uploads, only: %i[new create], controller: "/activities/document_uploads"
           resources :months, only: %i[edit update], controller: "employment/months"
           member do
             get :review

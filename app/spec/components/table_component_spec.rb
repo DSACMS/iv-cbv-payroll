@@ -44,4 +44,20 @@ RSpec.describe TableComponent, type: :component do
       expect(result.css('table[data-testid="test"]')).to be_present
     end
   end
+
+  context "when header_cells are provided" do
+    subject(:result) do
+      render_inline(described_class.new) do |table|
+        table.with_header_cell(is_header: true, scope: "col") { "Col 1" }
+        table.with_header_cell(is_header: true, scope: "col") { "Col 2" }
+        table.with_row { |row| row.with_data_cell.with_content("cell") }
+      end
+    end
+
+    it "renders each header cell inside a thead tr" do
+      expect(result.css("thead tr th[scope='col']").length).to eq(2)
+      expect(result.css("thead tr th[scope='col']").first.text.strip).to eq("Col 1")
+      expect(result.css("thead tr th[scope='col']").last.text.strip).to eq("Col 2")
+    end
+  end
 end

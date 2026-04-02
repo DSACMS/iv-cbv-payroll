@@ -30,6 +30,14 @@ RSpec.describe EducationActivity do
     end
   end
 
+  describe "#document_upload_header_title_i18n_key" do
+    it "returns the education header title translation key" do
+      activity = build(:education_activity)
+
+      expect(activity.document_upload_header_title_i18n_key).to eq("activities.education.title_singular")
+    end
+  end
+
   describe "#review_header_school_name" do
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
 

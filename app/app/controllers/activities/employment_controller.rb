@@ -82,10 +82,8 @@ class Activities::EmploymentController < Activities::BaseController
         from_edit: params[:from_edit].presence
       )
     elsif action_name == "review" && params[:from_edit].blank?
-      last_month_index = @flow.reporting_months.length - 1
-      @back_url = edit_activities_flow_income_employment_month_path(
-        employment_id: @employment_activity,
-        id: last_month_index
+      @back_url = new_activities_flow_income_employment_document_upload_path(
+        employment_id: @employment_activity
       )
     end
   end
