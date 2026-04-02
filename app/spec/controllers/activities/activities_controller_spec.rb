@@ -75,6 +75,21 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect { get :index }.not_to raise_error
       expect(session[:creating_activity]).to be_nil
     end
+
+    it "destroys a tracked incomplete payroll account on hub visit" do
+      payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow)
+      session[:creating_payroll_account] = payroll_account.aggregator_account_id
+
+      expect { get :index }.to change(current_flow.payroll_accounts, :count).by(-1)
+      expect(session[:creating_payroll_account]).to be_nil
+    end
+
+    it "handles an already-deleted payroll account gracefully" do
+      session[:creating_payroll_account] = "nonexistent-account-id"
+
+      expect { get :index }.not_to raise_error
+      expect(session[:creating_payroll_account]).to be_nil
+    end
   end
 
   context "when no activities are added" do

@@ -43,6 +43,7 @@ class Activities::Income::PaymentDetailsController < Activities::BaseController
     end
 
     @payroll_account.update(payroll_account_params)
+    clear_creating_payroll_account
 
     redirect_to next_path
   end

@@ -10,6 +10,11 @@ class Activities::ActivitiesController < Activities::BaseController
       session.delete(:creating_activity)
     end
 
+    if session[:creating_payroll_account]
+      @flow.payroll_accounts.find_by(aggregator_account_id: session[:creating_payroll_account])&.destroy
+      session.delete(:creating_payroll_account)
+    end
+
     unless @flow.identity
       @flow.identity = IdentityService.new(request, @flow.cbv_applicant).get_identity
       @flow.save

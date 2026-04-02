@@ -50,6 +50,14 @@ class Activities::BaseController < FlowController
     session.delete(:creating_activity)
   end
 
+  def track_creating_payroll_account(aggregator_account_id)
+    session[:creating_payroll_account] = aggregator_account_id
+  end
+
+  def clear_creating_payroll_account
+    session.delete(:creating_payroll_account)
+  end
+
   def flow_param
     :activity
   end
