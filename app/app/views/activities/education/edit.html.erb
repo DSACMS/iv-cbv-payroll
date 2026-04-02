@@ -28,10 +28,10 @@
   </h2>
 <% end %>
 
-<% @education_activity.nsc_enrollment_terms.each do |enrollment_term| %>
+<% @education_activity.nsc_enrollment_terms.each_with_index do |enrollment_term, index| %>
   <% if has_multiple_enrollments %>
     <h2>
-      <%= t(".enrollment_information_multiple", school_name: enrollment_term.school_name.titlecase) %>
+      <%= t(".enrollment_information_numbered", number: index + 1) %>
     </h2>
   <% end %>
 

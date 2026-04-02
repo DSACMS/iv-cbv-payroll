@@ -222,6 +222,34 @@ RSpec.describe Activities::EducationController, type: :controller do
 
       expect(Capybara.string(response.body)).to have_text(I18n.t("activities.education.edit.summer_logic_description"))
     end
+
+    it "renders numbered enrollment headers on the partially self-attested edit page" do
+      education_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        school_name: "Half Time School",
+        enrollment_status: :half_time
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        school_name: "Less Than Half School",
+        credit_hours: 4
+      )
+
+      get :edit, params: { id: education_activity.id }
+
+      doc = Capybara.string(response.body)
+      expect(doc).to have_text(I18n.t("activities.education.edit.enrollment_information_numbered", number: 1))
+      expect(doc).to have_text(I18n.t("activities.education.edit.enrollment_information_numbered", number: 2))
+    end
   end
 
   describe "DELETE #destroy" do
@@ -361,10 +389,10 @@ RSpec.describe Activities::EducationController, type: :controller do
 
         doc = Capybara.string(response.body)
         expect(response.body).to include(
-          I18n.t("activities.education.review.enrollment_information_multiple", school_name: "Half Time School")
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
         )
         expect(response.body).to include(
-          I18n.t("activities.education.review.enrollment_information_multiple", school_name: "Less Than Half School")
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
         )
         expect(doc).to have_selector("h1", text: I18n.t("activities.education.review.title_no_school_name"))
         expect(doc).to have_text(
@@ -398,10 +426,10 @@ RSpec.describe Activities::EducationController, type: :controller do
 
         doc = Capybara.string(response.body)
         expect(response.body).to include(
-          I18n.t("activities.education.review.enrollment_information_multiple", school_name: "School One")
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
         )
         expect(response.body).to include(
-          I18n.t("activities.education.review.enrollment_information_multiple", school_name: "School Two")
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
         )
         expect(doc).to have_selector("h1", text: I18n.t("activities.education.review.title_no_school_name"))
         expect(doc).to have_text(

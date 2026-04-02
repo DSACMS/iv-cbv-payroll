@@ -49,10 +49,10 @@ RSpec.describe "e2e Education mixed enrollment review flow", :js, type: :feature
     )
 
     expect(page).to have_content(
-      I18n.t("activities.education.review.enrollment_information_multiple", school_name: "Pine Valley College")
+      I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
     )
     expect(page).to have_content(
-      I18n.t("activities.education.review.enrollment_information_multiple", school_name: "Riverside Community College")
+      I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
     )
     expect(page).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
     expect(page).to have_content(I18n.t("activities.education.review.community_engagement_hours"))
