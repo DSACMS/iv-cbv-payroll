@@ -21,7 +21,7 @@
         edit_activities_flow_income_employment_path(id: @employment_activity, from_review: 1, from_edit: params[:from_edit].presence),
         class: "usa-link" %>
 </div>
-<%= render(ContactInfoReviewTableComponent.new(rows: [
+<%= render(ContactInfoReviewTableComponent.new(field_header: t("shared.table_headers.employer_information"), value_header: t("shared.table_headers.your_details"), rows: [
   { label: t("activities.employment.review.name"), value: @employment_activity.employer_name },
   { label: t("activities.employment.review.address"), value: @employment_activity.formatted_address },
   { label: t("activities.employment.review.contact_name"), value: @employment_activity.contact_name },

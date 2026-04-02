@@ -1,6 +1,8 @@
 class ContactInfoReviewTableComponent < ViewComponent::Base
-  def initialize(rows:)
+  def initialize(rows:, field_header:, value_header:)
     @rows = rows
+    @field_header = field_header
+    @value_header = value_header
   end
 
   def self.formatted_address(activity)
