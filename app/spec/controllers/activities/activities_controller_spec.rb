@@ -112,9 +112,9 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
   context "when education activity has enrollment records" do
     let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
+    let(:education_activity) { create(:education_activity, activity_flow: current_flow) }
 
     before do
-      education_activity = create(:education_activity, activity_flow: current_flow)
       create(
         :nsc_enrollment_term,
         education_activity:,
@@ -137,6 +137,12 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
       expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 12))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
+    end
+
+    it "routes card edit to education review with from_edit" do
+      expect(response.body).to include(
+        review_activities_flow_education_path(id: education_activity.id, from_edit: 1)
+      )
     end
   end
 

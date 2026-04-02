@@ -59,13 +59,16 @@ class EducationActivity < Activity
   end
 
   def review_header_school_name
-    school_name.presence || nsc_enrollment_terms.first&.school_name
+    school_name.presence || nsc_school_name(nsc_enrollment_terms.first&.school_name)
   end
 
   def review_description_school_names
-    return review_header_school_name unless partially_self_attested?
+    return review_header_school_name if fully_self_attested?
 
-    school_names = nsc_enrollment_terms.filter_map(&:school_name).uniq.sort
+    school_names = nsc_enrollment_terms
+      .filter_map { |term| nsc_school_name(term.school_name) }
+      .uniq
+      .sort
     school_names = [ I18n.t("shared.not_applicable") ] if school_names.empty?
     school_names.to_sentence
   end
@@ -161,5 +164,9 @@ class EducationActivity < Activity
 
   def progress_calculator
     @progress_calculator ||= EducationActivityProgressCalculator.new(self)
+  end
+
+  def nsc_school_name(name)
+    name.to_s.strip.presence&.titlecase
   end
 end

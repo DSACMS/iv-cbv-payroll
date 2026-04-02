@@ -323,7 +323,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
         expect(response.body).to include(I18n.t("activities.education.review.ce_explainer_title"))
         expect(doc).to have_text(
-          I18n.t("activities.education.review.description", school_name: "University of Illinois")
+          I18n.t("activities.education.review.description", school_name: "University Of Illinois")
         )
         expect(doc).to have_text(
           I18n.t(
@@ -441,6 +441,43 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 2)
         expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(2)
         expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
+      end
+    end
+
+    context "when validated" do
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow)
+      end
+
+      before do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "Pine Valley College",
+          enrollment_status: :half_time
+        )
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "Riverside Community College",
+          enrollment_status: :full_time
+        )
+      end
+
+      it "renders validated enrollment info without edit links to entry pages" do
+        get :review, params: { id: education_activity.id, from_edit: 1 }
+
+        doc = Capybara.string(response.body)
+        expect(response).to have_http_status(:ok)
+        expect(doc).to have_text(
+          I18n.t("activities.education.review.enrollment_information_multiple", school_name: "Pine Valley College")
+        )
+        expect(doc).to have_text(
+          I18n.t("activities.education.review.enrollment_information_multiple", school_name: "Riverside Community College")
+        )
+        expect(doc).not_to have_link(I18n.t("activities.education.review.edit"))
+        expect(doc).not_to have_link(I18n.t("activities.hub.edit"))
+        expect(doc).to have_button(I18n.t("activities.hub.save"))
       end
     end
   end

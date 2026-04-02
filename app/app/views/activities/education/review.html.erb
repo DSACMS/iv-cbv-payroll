@@ -1,9 +1,9 @@
-<% review_school_name = if @education_activity.partially_self_attested?
-                          @education_activity.review_header_school_name.presence || t("shared.not_applicable")
-                        else
+<% review_school_name = if @education_activity.fully_self_attested?
                           @education_activity.school_name
+                        else
+                          @education_activity.review_header_school_name.presence || t("shared.not_applicable")
                         end %>
-<% hide_school_name_in_header = @education_activity.partially_self_attested? && @education_activity.nsc_enrollment_terms.many? %>
+<% hide_school_name_in_header = !@education_activity.fully_self_attested? && @education_activity.nsc_enrollment_terms.many? %>
 <% title = if hide_school_name_in_header
              t("activities.education.review.title_no_school_name")
            else
@@ -28,8 +28,10 @@
 
 <% if @education_activity.partially_self_attested? %>
   <%= render "review_partially_self_attested" %>
-<% else %>
+<% elsif @education_activity.fully_self_attested? %>
   <%= render "review_fully_self_attested" %>
+<% else %>
+  <%= render "review_validated" %>
 <% end %>
 
 <%= form_with model: @education_activity,
