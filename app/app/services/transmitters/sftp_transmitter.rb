@@ -1,5 +1,7 @@
 class Transmitters::SftpTransmitter < Transmitters::BasePdfTransmitter
   TRANSMISSION_METHOD = "sftp"
+  DEFAULT_PDF_FILENAME_FORMAT = "CBVPilot_%{consent_date}_Conf%{confirmation_code}"
+
   def deliver
     config = current_agency.transmission_method_configuration.with_indifferent_access
     sftp_gateway = SftpGateway.new(config)
@@ -10,10 +12,11 @@ class Transmitters::SftpTransmitter < Transmitters::BasePdfTransmitter
   private
 
   def pdf_filename(cbv_flow)
-    [
-      "CBVPilot",
-      cbv_flow.consented_to_authorized_use_at.strftime("%Y%m%d"),
-      "Conf#{cbv_flow.confirmation_code}"
-    ].join("_")
+    Transmitters::PdfFilenameFormatter.format(cbv_flow, pdf_filename_format)
+  end
+
+  def pdf_filename_format
+    current_agency.transmission_method_configuration.with_indifferent_access[:pdf_filename_format].presence ||
+      DEFAULT_PDF_FILENAME_FORMAT
   end
 end
