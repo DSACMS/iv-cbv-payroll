@@ -820,6 +820,7 @@ en:
         payments_and_deductions_table_header: Payments and deductions
         subheader_html: "<p>We have gathered your payment records from the past %{report_data_range} from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report.</p>"
         unknown: Unknown
+        your_details: Your details
     submits:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
@@ -946,6 +947,9 @@ en:
         three_quarter_time: Three-quarter Time
       student_name_label: Name on school record
     report:
+      employment_details_table:
+        header:
+          your_details: Your details
       monthly_summary_table:
         accrued_gross_earnings: Accrued gross earnings
         compact:

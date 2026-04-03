@@ -19,7 +19,7 @@
       agency_acronym: agency_translation("shared.agency_acronym"),
     ) %>
 
-<%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @payroll_account, show_income: @is_w2_worker)) %>
+<%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @payroll_account, show_income: @is_w2_worker, use_activity_style: true)) %>
 
 <% if @is_w2_worker %>
   <% if @payroll_account_report.paystubs.any? %>
@@ -32,7 +32,7 @@
       ) %>
     <% end %>
   <% end %>
-  <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(@aggregator_report, @payroll_account, is_w2_worker: @is_w2_worker, pay_frequency_text: pay_frequency)) %>
+  <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(@aggregator_report, @payroll_account, is_w2_worker: @is_w2_worker, pay_frequency_text: pay_frequency, use_activity_style: true)) %>
 <% else %>
   <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, @payroll_account)) %>
 <% end %>
