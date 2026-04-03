@@ -175,14 +175,14 @@ RSpec.describe ActivitiesHelper do
       expect(months).to eq(months.sort.reverse)
     end
 
-    it "includes edit path to education edit" do
+    it "includes edit path to education review with from_edit for validated education" do
       activity = create(:education_activity, activity_flow: flow)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", term_begin: first_month, term_end: second_month.end_of_month)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
       expect(result.first[:edit_path]).to eq(
-        helper.edit_activities_flow_education_path(id: activity.id)
+        helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
       )
     end
 

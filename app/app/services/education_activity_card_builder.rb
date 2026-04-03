@@ -53,7 +53,7 @@ class EducationActivityCardBuilder
     {
       name: school_name,
       months: months,
-      edit_path: edit_activities_flow_education_path(id: @activity.id)
+      edit_path: review_activities_flow_education_path(id: @activity.id, from_edit: 1)
     }
   end
 

@@ -443,6 +443,47 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
       end
     end
+
+    context "when validated" do
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow)
+      end
+
+      before do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "Pine Valley College",
+          enrollment_status: :half_time
+        )
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "Riverside Community College",
+          enrollment_status: :full_time
+        )
+      end
+
+      it "renders validated enrollment info without edit links to entry pages" do
+        get :review, params: { id: education_activity.id, from_edit: 1 }
+
+        doc = Capybara.string(response.body)
+        expect(response).to have_http_status(:ok)
+        expect(doc).to have_selector("h1", text: I18n.t("activities.education.edit.header"))
+        expect(doc).to have_text(
+          I18n.t("activities.education.edit.description", reporting_window: activity_flow.reporting_window_display)
+        )
+        expect(doc).to have_text(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
+        )
+        expect(doc).to have_text(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
+        )
+        expect(doc).not_to have_link(I18n.t("activities.education.review.edit"))
+        expect(doc).not_to have_link(I18n.t("activities.hub.edit"))
+        expect(doc).to have_button(I18n.t("activities.hub.save"))
+      end
+    end
   end
 
   describe "PATCH #save_review" do
