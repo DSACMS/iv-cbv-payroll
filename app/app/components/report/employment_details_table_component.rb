@@ -4,10 +4,11 @@ class Report::EmploymentDetailsTableComponent< ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, is_responsive: true, show_identity: false, show_income: false)
+  def initialize(report, payroll_account, is_responsive: true, show_identity: false, show_income: false, use_activity_style: false)
     @show_identity = show_identity
     @show_income = show_income
     @is_responsive = is_responsive
+    @use_activity_style = use_activity_style
     @payroll_account = payroll_account
 
     account_report = find_account_report(report)
