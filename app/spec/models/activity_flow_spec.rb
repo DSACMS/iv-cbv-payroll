@@ -90,6 +90,12 @@ RSpec.describe ActivityFlow, type: :model do
     end
   end
 
+  describe "#activity_month_order_oldest_first?" do
+    it "returns true" do
+      expect(create(:activity_flow).activity_month_order_oldest_first?).to be true
+    end
+  end
+
   describe "#after_payroll_sync_succeeded" do
     let(:flow) { create(:activity_flow, reporting_window_months: 1) }
     let(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "acct-1") }
