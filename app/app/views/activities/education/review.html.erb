@@ -31,11 +31,6 @@
 <p>
   <%= description %>
 </p>
-<% if @education_activity.validated? && summer_logic_applied? %>
-  <p>
-    <%= t("activities.education.edit.summer_logic_description") %>
-  </p>
-<% end %>
 
 <% if @education_activity.partially_self_attested? %>
   <%= render "review_partially_self_attested" %>
