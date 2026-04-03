@@ -15,6 +15,14 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
 
     @current_term.save!
 
+    if params[:from_review].present?
+      redirect_to review_activities_flow_education_path(
+        id: @education_activity,
+        from_edit: params[:from_edit].presence
+      )
+      return
+    end
+
     next_index = @term_index + 1
     if next_index < @terms.length
       redirect_to edit_activities_flow_education_term_credit_hour_path(
@@ -51,10 +59,16 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
     end
 
     @current_term = @terms[@term_index]
+    @show_no_hours_checkbox = @terms.many? || mixed_enrollment_in_window?
   end
 
   def set_back_url
-    @back_url = if @term_index > 0
+    @back_url = if params[:from_review].present?
+                  review_activities_flow_education_path(
+                    id: @education_activity,
+                    from_edit: params[:from_edit].presence
+                  )
+                elsif @term_index > 0
                   edit_activities_flow_education_term_credit_hour_path(
                     education_id: @education_activity, id: @term_index - 1
                   )
@@ -65,5 +79,11 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
 
   def term_credit_hours_params
     params.require(:nsc_enrollment_term).permit(:credit_hours)
+  end
+
+  def mixed_enrollment_in_window?
+    reporting_range = @flow.reporting_window_range
+    @education_activity.nsc_enrollment_terms
+      .any? { |term| term.within_reporting_window?(reporting_range) && term.half_time_or_above? }
   end
 end

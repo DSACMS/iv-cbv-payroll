@@ -155,7 +155,7 @@ en:
         continue: Save and continue
         description: We have gathered your student enrollment details from %{reporting_window}.
         enrollment_information: Enrollment information
-        enrollment_information_multiple: 'Enrollment status: %{school_name}'
+        enrollment_information_numbered: 'Enrollment #%{number} information'
         header: Review your student enrollment details
         summer_logic_description: If you don’t have enough summer enrollment, we’ll use your spring enrollment to meet the community engagement requirement for the summer.
       error:
