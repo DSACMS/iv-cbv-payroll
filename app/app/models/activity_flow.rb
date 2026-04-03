@@ -92,6 +92,10 @@ class ActivityFlow < Flow
     { w2: days, gig: days }
   end
 
+  def activity_month_order_oldest_first?
+    true
+  end
+
   private
 
   def set_default_reporting_window

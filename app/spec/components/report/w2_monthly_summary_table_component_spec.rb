@@ -174,6 +174,26 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
         expect(subject.to_html).to include('"Number of paychecks" is how many times')
         expect(subject.to_html).to include('"Total hours worked" are the total number')
       end
+
+      context "for an activity flow" do
+        let(:activity_flow) { create(:activity_flow, reporting_window_months: 3, cbv_applicant: cbv_applicant, created_at: current_time) }
+        let!(:payroll_account) do
+          create(
+            :payroll_account,
+            :argyle_fully_synced,
+            flow: activity_flow,
+            aggregator_account_id: account_id
+          )
+        end
+
+        it "renders months in reporting window order (oldest first)" do
+          month_labels = subject.css("tbody tr th[scope='row']").map { |header| header.text.lines.first.strip }
+          month_dates = month_labels.map { |label| Date.strptime(label, "%B %Y") }
+
+          expect(month_dates.length).to be >= 2
+          expect(month_dates).to eq(month_dates.sort)
+        end
+      end
     end
 
     context "with sarah, a w2-worker without paystubs" do
