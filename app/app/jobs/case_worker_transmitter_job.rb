@@ -3,6 +3,17 @@ class CaseWorkerTransmitterJob < ApplicationJob
 
   queue_as :default
 
+  limits_concurrency to: 1,
+    key: ->(flow_id) {
+      flow = CbvFlow.find(flow_id)
+      if flow.cbv_applicant.client_agency_id == "nh_dhhs"
+        flow.cbv_applicant.client_agency_id
+      else
+        flow_id
+      end
+    },
+    duration: 2.minutes
+
   def perform(cbv_flow_id)
     @cbv_flow = CbvFlow.find(cbv_flow_id)
     @current_agency = current_agency(@cbv_flow)
