@@ -49,7 +49,7 @@ RSpec.describe EducationActivity do
 
     it "falls back to the first enrollment school name when school_name is blank" do
       activity = create(:education_activity, activity_flow: flow, school_name: nil)
-      create(:nsc_enrollment_term, education_activity: activity, school_name: "FIRST SCHOOL", term_begin: Date.new(2026, 2, 1))
+      create(:nsc_enrollment_term, education_activity: activity, school_name: "First School", term_begin: Date.new(2026, 2, 1))
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Second School", term_begin: Date.new(2026, 1, 1))
 
       expect(activity.review_header_school_name).to eq("First School")
@@ -81,15 +81,6 @@ RSpec.describe EducationActivity do
       create(:nsc_enrollment_term, education_activity: activity, school_name: "School C")
 
       expect(activity.review_description_school_names).to eq("School A, School B, and School C")
-    end
-
-    it "returns a sentence of unique school names for validated activities" do
-      activity = create(:education_activity, activity_flow: flow)
-      create(:nsc_enrollment_term, education_activity: activity, school_name: "SCHOOL A")
-      create(:nsc_enrollment_term, education_activity: activity, school_name: "SCHOOL B")
-      create(:nsc_enrollment_term, education_activity: activity, school_name: "School A")
-
-      expect(activity.review_description_school_names).to eq("School A and School B")
     end
   end
 

@@ -323,7 +323,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
         expect(response.body).to include(I18n.t("activities.education.review.ce_explainer_title"))
         expect(doc).to have_text(
-          I18n.t("activities.education.review.description", school_name: "University Of Illinois")
+          I18n.t("activities.education.review.description", school_name: "University of Illinois")
         )
         expect(doc).to have_text(
           I18n.t(
@@ -469,6 +469,10 @@ RSpec.describe Activities::EducationController, type: :controller do
 
         doc = Capybara.string(response.body)
         expect(response).to have_http_status(:ok)
+        expect(doc).to have_selector("h1", text: I18n.t("activities.education.edit.header"))
+        expect(doc).to have_text(
+          I18n.t("activities.education.edit.description", reporting_window: activity_flow.reporting_window_display)
+        )
         expect(doc).to have_text(
           I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
         )

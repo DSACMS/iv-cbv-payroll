@@ -1,14 +1,20 @@
-<% review_school_name = if @education_activity.fully_self_attested?
-                          @education_activity.school_name
-                        else
-                          @education_activity.review_header_school_name.presence || t("shared.not_applicable")
-                        end %>
-<% hide_school_name_in_header = !@education_activity.fully_self_attested? && @education_activity.nsc_enrollment_terms.many? %>
-<% title = if hide_school_name_in_header
-             t("activities.education.review.title_no_school_name")
-           else
-             t("activities.education.review.title", school_name: review_school_name)
-           end %>
+<% if @education_activity.validated? %>
+  <% title = t("activities.education.edit.header") %>
+  <% description = t("activities.education.edit.description", reporting_window: @flow.reporting_window_display) %>
+<% else %>
+  <% review_school_name = if @education_activity.fully_self_attested?
+                            @education_activity.school_name
+                          else
+                            @education_activity.review_header_school_name.presence || t("shared.not_applicable")
+                          end %>
+  <% hide_school_name_in_header = !@education_activity.fully_self_attested? && @education_activity.nsc_enrollment_terms.many? %>
+  <% title = if hide_school_name_in_header
+               t("activities.education.review.title_no_school_name")
+             else
+               t("activities.education.review.title", school_name: review_school_name)
+             end %>
+  <% description = t("activities.education.review.description", school_name: @education_activity.review_description_school_names) %>
+<% end %>
 <% content_for :title, title %>
 
 <% content_for :activity_flow_header do %>
@@ -23,8 +29,13 @@
   <%= title %>
 </h1>
 <p>
-  <%= t("activities.education.review.description", school_name: @education_activity.review_description_school_names) %>
+  <%= description %>
 </p>
+<% if @education_activity.validated? && summer_logic_applied? %>
+  <p>
+    <%= t("activities.education.edit.summer_logic_description") %>
+  </p>
+<% end %>
 
 <% if @education_activity.partially_self_attested? %>
   <%= render "review_partially_self_attested" %>
