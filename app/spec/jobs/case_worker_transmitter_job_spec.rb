@@ -66,6 +66,34 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     end
   end
 
+  describe "concurrency key" do
+    let(:transmission_method) { "shared_email" }
+
+    context "for NH DHHS cbv_flows" do
+      let(:nh_dhhs_applicant) { create(:cbv_applicant, client_agency_id: "nh_dhhs", case_number: "NH123456") }
+      let(:nh_dhhs_flow) { create(:cbv_flow, cbv_applicant: nh_dhhs_applicant) }
+      let(:another_nh_dhhs_flow) { create(:cbv_flow, cbv_applicant: create(:cbv_applicant, client_agency_id: "nh_dhhs", case_number: "NH654321")) }
+
+      it "returns the same fixed key to serialize transmissions" do
+        job = described_class.new.tap { |j| j.arguments = [ nh_dhhs_flow.id ] }
+        another_job = described_class.new.tap { |j| j.arguments = [ another_nh_dhhs_flow.id ] }
+        expect(job.concurrency_key).to eq(another_job.concurrency_key)
+        expect(job.concurrency_key).to include("nh_dhhs")
+      end
+    end
+
+    context "for non-NH cbv_flows" do
+      let(:sandbox_flow) { create(:cbv_flow, cbv_applicant: create(:cbv_applicant, client_agency_id: "sandbox")) }
+      let(:another_sandbox_flow) { create(:cbv_flow, cbv_applicant: create(:cbv_applicant, client_agency_id: "sandbox")) }
+
+      it "returns distinct keys so they are not subject to the concurrency limit" do
+        job = described_class.new.tap { |j| j.arguments = [ sandbox_flow.id ] }
+        another_job = described_class.new.tap { |j| j.arguments = [ another_sandbox_flow.id ] }
+        expect(job.concurrency_key).not_to eq(another_job.concurrency_key)
+      end
+    end
+  end
+
   describe "#perform" do
     let(:argyle_report) { build(:argyle_report, :with_argyle_account) }
 
