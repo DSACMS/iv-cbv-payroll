@@ -11,7 +11,8 @@ class PayrollAccount < ApplicationRecord
 
   belongs_to :flow, polymorphic: true
   validates :flow, presence: true
-  has_many :webhook_events
+  has_many :webhook_events, dependent: :destroy
+  has_many :activity_flow_monthly_summaries, dependent: :destroy
 
   enum :data_source, { self_attested: "self_attested", validated: "validated" }, default: :validated
 

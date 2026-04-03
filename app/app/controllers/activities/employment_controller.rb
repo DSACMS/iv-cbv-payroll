@@ -19,6 +19,7 @@ class Activities::EmploymentController < Activities::BaseController
   def create
     @employment_activity = @flow.employment_activities.new(employment_activity_params)
     if @employment_activity.save
+      track_creating_activity(@employment_activity)
       redirect_to edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: 0)
     else
       render :new, status: :unprocessable_content
@@ -49,6 +50,7 @@ class Activities::EmploymentController < Activities::BaseController
 
   def save_review
     @employment_activity.update(review_params)
+    clear_creating_activity
     redirect_to after_activity_path
   end
 

@@ -18,6 +18,7 @@ class Activities::VolunteeringController < Activities::BaseController
   def create
     @volunteering_activity = @flow.volunteering_activities.new(volunteering_activity_params)
     if @volunteering_activity.save
+      track_creating_activity(@volunteering_activity)
       redirect_to edit_activities_flow_community_service_month_path(community_service_id: @volunteering_activity, id: 0)
     else
       render :new, status: :unprocessable_content
@@ -45,6 +46,7 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def save_review
     @volunteering_activity.update(review_params)
+    clear_creating_activity
     redirect_to after_activity_path
   end
 

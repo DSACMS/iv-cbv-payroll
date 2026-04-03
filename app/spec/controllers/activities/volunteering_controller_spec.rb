@@ -44,6 +44,13 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(activity).to have_attributes(expected)
     end
 
+    it "tracks the new activity in the session" do
+      post :create, params: volunteering_params
+
+      activity = activity_flow.volunteering_activities.last
+      expect(session[:creating_activity]).to eq("class_name" => "VolunteeringActivity", "id" => activity.id)
+    end
+
     it "stores optional fields when provided" do
       post :create, params: volunteering_params.deep_merge(
         volunteering_activity: {
@@ -125,6 +132,14 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
       expect(volunteering_activity.reload.additional_comments).to eq("Some notes")
       expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "clears the creating_activity session" do
+      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => volunteering_activity.id }
+
+      patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "" } }
+
+      expect(session[:creating_activity]).to be_nil
     end
   end
 

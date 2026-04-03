@@ -13,6 +13,14 @@ RSpec.describe Activities::Income::SynchronizationsController do
     session[:flow_type] = :activity
   end
 
+  describe "#show" do
+    it "tracks the payroll account in the session" do
+      get :show, params: { user: { account_id: payroll_account.aggregator_account_id } }
+
+      expect(session[:creating_payroll_account]).to eq(payroll_account.aggregator_account_id)
+    end
+  end
+
   describe "#update" do
     context "when account exists but is not fully synced" do
       before do

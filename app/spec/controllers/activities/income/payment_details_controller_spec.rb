@@ -146,6 +146,17 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         .to(comment)
     end
 
+    it "clears the creating_payroll_account session" do
+      session[:creating_payroll_account] = account_id
+
+      patch :update, params: {
+        user: { account_id: account_id },
+        payroll_account: { additional_information: comment }
+      }
+
+      expect(session[:creating_payroll_account]).to be_nil
+    end
+
     it "tracks saved payment details with activity_flow_id" do
       allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSavedPaymentDetails", anything, hash_including(
