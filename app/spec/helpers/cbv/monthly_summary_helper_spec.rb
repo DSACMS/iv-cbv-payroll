@@ -250,4 +250,37 @@ RSpec.describe Cbv::MonthlySummaryHelper, type: :helper do
       expect(unique_months).to eq([])
     end
   end
+
+  describe ".ordered_monthly_summary_data" do
+    let(:monthly_summary_data) do
+      {
+        "2025-03" => { paystubs: [ 1 ] },
+        "2025-01" => { paystubs: [ 2 ] },
+        "2025-02" => { paystubs: [ 3 ] }
+      }
+    end
+
+    it "sorts oldest first when the flow requests it" do
+      flow = instance_double(ActivityFlow, activity_month_order_oldest_first?: true)
+
+      ordered = subject.ordered_monthly_summary_data(monthly_summary_data, flow)
+
+      expect(ordered.keys).to eq(%w[2025-01 2025-02 2025-03])
+    end
+
+    it "keeps existing order when the flow does not request oldest-first ordering" do
+      flow = instance_double(CbvFlow, activity_month_order_oldest_first?: false)
+
+      ordered = subject.ordered_monthly_summary_data(monthly_summary_data, flow)
+
+      expect(ordered.keys).to eq(%w[2025-03 2025-01 2025-02])
+    end
+
+    it "returns blank data unchanged" do
+      flow = instance_double(ActivityFlow, activity_month_order_oldest_first?: true)
+
+      expect(subject.ordered_monthly_summary_data(nil, flow)).to be_nil
+      expect(subject.ordered_monthly_summary_data({}, flow)).to eq({})
+    end
+  end
 end

@@ -180,6 +180,29 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
         expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
       end
+
+      context "for an activity flow" do
+        let(:activity_flow) { create(:activity_flow, reporting_window_months: 3, cbv_applicant: cbv_applicant, created_at: current_time) }
+        let!(:payroll_account) do
+          create(
+            :payroll_account,
+            :argyle_fully_synced,
+            flow: activity_flow,
+            aggregator_account_id: account_id
+          )
+        end
+
+        it "renders month accordions in reporting window order (oldest first)" do
+          accordion_titles = subject.css("button.usa-accordion__button").map { |button| button.text.squish }
+          month_dates = accordion_titles.map do |title|
+            month_label = title.match(/[A-Za-z]+\s+\d{4}/).to_s
+            Date.strptime(month_label, "%B %Y")
+          end
+
+          expect(month_dates.length).to be >= 2
+          expect(month_dates).to eq(month_dates.sort)
+        end
+      end
     end
 
     context "with bob, a gig-worker whose paystubs failed to sync" do

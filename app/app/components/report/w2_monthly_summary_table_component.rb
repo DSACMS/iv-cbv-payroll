@@ -15,7 +15,7 @@ class Report::W2MonthlySummaryTableComponent < ViewComponent::Base
     account_report = report.find_account_report(@account_id)
     @paystubs = account_report&.paystubs
     @employer_name = account_report&.dig(:employment, :employer_name)
-    @monthly_summary_data = report.summarize_by_month[@account_id]
+    @monthly_summary_data = ordered_monthly_summary_data(report.summarize_by_month[@account_id], @report.flow)
     @is_responsive = is_responsive
     @is_caseworker = is_caseworker
   end
