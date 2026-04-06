@@ -29,6 +29,8 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       # CVE-2026-28693 \
       imagemagick \
+      # CVE-2026-33416
+      libpng-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -150,7 +152,6 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
         libgpgme11t64=1.24.2-3 \
         libvips42t64=8.16.1-1+b1 \
-        libpng-dev=1.6.48-1+deb13u3 \
         postgresql-client-17 \
         python-is-python3=3.13.3-1 \
         python3-venv=3.13.5-1 \
