@@ -4,14 +4,14 @@ class Activities::ActivitiesController < Activities::BaseController
     # on creation. If you exit out of an activity flow in the middle before you save from the
     # Review page, we should delete all the records that were not completed. This results in no
     # visible changes when the user returns to the Activity Hub.
-    if session[:creating_activity]
+    if session[:creating_activity] && session[:creating_activity]["activity_flow_id"] == @flow.id
       activity_class = session[:creating_activity]["class_name"].safe_constantize
-      activity_class&.find_by(id: session[:creating_activity]["id"], activity_flow_id: @flow.id)&.destroy
+      activity_class&.find_by(id: session[:creating_activity]["id"])&.destroy
       session.delete(:creating_activity)
     end
 
-    if session[:creating_payroll_account]
-      @flow.payroll_accounts.find_by(aggregator_account_id: session[:creating_payroll_account])&.destroy
+    if session[:creating_payroll_account] && session[:creating_payroll_account]["flow_id"] == @flow.id
+      @flow.payroll_accounts.find_by(aggregator_account_id: session[:creating_payroll_account]["aggregator_account_id"])&.destroy
       session.delete(:creating_payroll_account)
     end
 

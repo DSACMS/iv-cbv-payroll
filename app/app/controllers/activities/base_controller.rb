@@ -43,7 +43,7 @@ class Activities::BaseController < FlowController
   end
 
   def track_creating_activity(activity)
-    session[:creating_activity] = { "class_name" => activity.class.name, "id" => activity.id }
+    session[:creating_activity] = { "class_name" => activity.class.name, "id" => activity.id, "activity_flow_id" => activity.activity_flow_id }
   end
 
   def clear_creating_activity
@@ -51,7 +51,7 @@ class Activities::BaseController < FlowController
   end
 
   def track_creating_payroll_account(aggregator_account_id)
-    session[:creating_payroll_account] = aggregator_account_id
+    session[:creating_payroll_account] = { "aggregator_account_id" => aggregator_account_id, "flow_id" => @flow.id }
   end
 
   def clear_creating_payroll_account

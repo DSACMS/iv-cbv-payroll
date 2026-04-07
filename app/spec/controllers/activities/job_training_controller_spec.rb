@@ -55,7 +55,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       post :create, params: job_training_params
 
       activity = activity_flow.job_training_activities.last
-      expect(session[:creating_activity]).to eq("class_name" => "JobTrainingActivity", "id" => activity.id)
+      expect(session[:creating_activity]).to eq("class_name" => "JobTrainingActivity", "id" => activity.id, "activity_flow_id" => activity_flow.id)
     end
 
     it "redirects to month 0 when total hours are below the threshold" do

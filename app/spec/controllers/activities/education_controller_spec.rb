@@ -45,7 +45,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       post :create
 
       activity = EducationActivity.last
-      expect(session[:creating_activity]).to eq("class_name" => "EducationActivity", "id" => activity.id)
+      expect(session[:creating_activity]).to eq("class_name" => "EducationActivity", "id" => activity.id, "activity_flow_id" => activity_flow.id)
     end
 
     it "creates a self-attested EducationActivity and redirects to month 0" do
@@ -63,7 +63,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
 
       activity = EducationActivity.last
-      expect(session[:creating_activity]).to eq("class_name" => "EducationActivity", "id" => activity.id)
+      expect(session[:creating_activity]).to eq("class_name" => "EducationActivity", "id" => activity.id, "activity_flow_id" => activity_flow.id)
     end
 
     it "re-renders the form when self-attested params are invalid" do

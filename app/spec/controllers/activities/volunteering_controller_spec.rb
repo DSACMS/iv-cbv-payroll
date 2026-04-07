@@ -48,7 +48,7 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       post :create, params: volunteering_params
 
       activity = activity_flow.volunteering_activities.last
-      expect(session[:creating_activity]).to eq("class_name" => "VolunteeringActivity", "id" => activity.id)
+      expect(session[:creating_activity]).to eq("class_name" => "VolunteeringActivity", "id" => activity.id, "activity_flow_id" => activity_flow.id)
     end
 
     it "stores optional fields when provided" do

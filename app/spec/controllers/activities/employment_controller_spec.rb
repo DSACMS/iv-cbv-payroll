@@ -94,7 +94,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       post :create, params: employment_params
 
       activity = activity_flow.employment_activities.last
-      expect(session[:creating_activity]).to eq("class_name" => "EmploymentActivity", "id" => activity.id)
+      expect(session[:creating_activity]).to eq("class_name" => "EmploymentActivity", "id" => activity.id, "activity_flow_id" => activity_flow.id)
     end
   end
 

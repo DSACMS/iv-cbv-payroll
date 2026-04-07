@@ -57,7 +57,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
     it "destroys the tracked incomplete activity on hub visit" do
       activity = create(:volunteering_activity, activity_flow: current_flow)
-      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => activity.id }
+      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => activity.id, "activity_flow_id" => current_flow.id }
 
       expect { get :index }.to change(VolunteeringActivity, :count).by(-1)
       expect(session[:creating_activity]).to be_nil
@@ -69,17 +69,17 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect { get :index }.not_to change(VolunteeringActivity, :count)
     end
 
-    it "does not destroy an activity belonging to a different flow" do
+    it "does not destroy an activity belonging to a different flow and preserves session" do
       other_flow = create(:activity_flow)
       activity = create(:volunteering_activity, activity_flow: other_flow)
-      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => activity.id }
+      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => activity.id, "activity_flow_id" => other_flow.id }
 
       expect { get :index }.not_to change(VolunteeringActivity, :count)
-      expect(session[:creating_activity]).to be_nil
+      expect(session[:creating_activity]).to be_present
     end
 
     it "handles an already-deleted activity gracefully" do
-      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => -1 }
+      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => -1, "activity_flow_id" => current_flow.id }
 
       expect { get :index }.not_to raise_error
       expect(session[:creating_activity]).to be_nil
@@ -87,14 +87,23 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
     it "destroys a tracked incomplete payroll account on hub visit" do
       payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow)
-      session[:creating_payroll_account] = payroll_account.aggregator_account_id
+      session[:creating_payroll_account] = { "aggregator_account_id" => payroll_account.aggregator_account_id, "flow_id" => current_flow.id }
 
       expect { get :index }.to change(current_flow.payroll_accounts, :count).by(-1)
       expect(session[:creating_payroll_account]).to be_nil
     end
 
+    it "does not destroy a payroll account tracked for a different flow and preserves session" do
+      other_flow = create(:activity_flow)
+      payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: other_flow)
+      session[:creating_payroll_account] = { "aggregator_account_id" => payroll_account.aggregator_account_id, "flow_id" => other_flow.id }
+
+      expect { get :index }.not_to change(PayrollAccount, :count)
+      expect(session[:creating_payroll_account]).to be_present
+    end
+
     it "handles an already-deleted payroll account gracefully" do
-      session[:creating_payroll_account] = "nonexistent-account-id"
+      session[:creating_payroll_account] = { "aggregator_account_id" => "nonexistent-account-id", "flow_id" => current_flow.id }
 
       expect { get :index }.not_to raise_error
       expect(session[:creating_payroll_account]).to be_nil
