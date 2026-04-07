@@ -1,75 +1,93 @@
-<% complete_months = monthly_calculation_results.count(&:meets_requirements) %>
-<% total_months = monthly_calculation_results.count %>
-<% is_complete = complete_months == total_months %>
-
-<div class="activity-flow-progress-indicator">
-  <h2>
-    <% if is_complete %>
-      <%= t(".title_complete") %>
-    <% elsif multi_month? %>
-      <%= t(".title_multi_month") %>
-    <% else %>
-      <% first_month = monthly_calculation_results.first.month %>
-      <%= t(".title", month: l(first_month, format: :month)) %>
-    <% end %>
-  </h2>
-
-  <p>
-    <% if is_complete %>
-      <%= t(".description_complete", agency_full_name: agency_full_name) %>
-    <% else %>
-      <%= t(".description") %>
-    <% end %>
-  </p>
-
-  <% if multi_month? %>
-    <p class="font-heading-md">
-      <% if is_complete %>
-        <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
-          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
-        </svg>
-      <% end %>
-      <%= t(".months_completed_html", complete: complete_months, total: total_months) %>
-    </p>
-  <% end %>
-
-  <% monthly_calculation_results.each do |monthly_result| %>
-    <div class="activity-flow-progress-indicator__progress-bar
-      <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-bar--complete<% end %>"
-    >
-      <div class="activity-flow-progress-indicator__progress-bar-fill
-        <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-bar-fill--complete<% end %>"
-         style="width: <%= percent_complete(monthly_result) %>%"
-      >
-      </div>
-    </div>
-
-    <div class="activity-flow-progress-indicator__progress-amount-container">
-      <span>
-        <% if multi_month? %>
-          <% if monthly_result.meets_requirements %>
+<%= render(Uswds::Card.new(class: "activity-flow-progress-indicator__card")) do |card| %>
+  <% card.with_body do %>
+    <div class="activity-flow-progress-indicator">
+      <h2 class="activity-flow-progress-indicator__title">
+        <% if renewal? %>
+          <% if complete? %>
             <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
               <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
             </svg>
           <% end %>
-          <%= l(monthly_result.month, format: :month) %>
+          <%= t(".renewal_months_completed", complete: complete_month_count, required: required_month_count) %>
+        <% elsif complete? %>
+          <%= t(".title_complete") %>
+        <% elsif multi_month? %>
+          <%= t(".title_multi_month") %>
+        <% else %>
+          <% first_month = ordered_monthly_calculation_results.first.month %>
+          <%= t(".title", month: l(first_month, format: :month)) %>
         <% end %>
-      </span>
+      </h2>
 
-      <span>
-        <span class="activity-flow-progress-indicator__progress-amount
-                    <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-amount--complete<% end %>">
-          <% if monthly_result.meets_requirements && !multi_month? %>
+      <p class="activity-flow-progress-indicator__description">
+        <% if renewal? %>
+          <% if reporting_window_start_month && reporting_window_end_month %>
+            <%= t(
+              ".renewal_subtitle",
+              required: required_month_count,
+              start_month: l(reporting_window_start_month, format: :month),
+              end_month: l(reporting_window_end_month, format: :month)
+            ) %>
+          <% else %>
+            <%= t(".renewal_subtitle_no_range", required: required_month_count) %>
+          <% end %>
+        <% elsif complete? %>
+          <%= t(".description_complete", agency_full_name: agency_full_name) %>
+        <% else %>
+          <%= t(".description") %>
+        <% end %>
+      </p>
+
+      <% if multi_month? && !renewal? %>
+        <p class="activity-flow-progress-indicator__months-completed">
+          <% if complete? %>
             <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
               <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
             </svg>
           <% end %>
+          <%= t(".months_completed_html", complete: complete_month_count, total: total_month_count) %>
+        </p>
+      <% end %>
 
-          <%= format_hours(monthly_result.total_hours) %>
-        </span>
-        /
-        <%= completion_threshold %> <%= t(".hours") %>
-      </span>
+      <% ordered_monthly_calculation_results.each do |monthly_result| %>
+        <div class="activity-flow-progress-indicator__progress-bar
+          <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-bar--complete<% end %>"
+        >
+          <div class="activity-flow-progress-indicator__progress-bar-fill
+            <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-bar-fill--complete<% end %>"
+            style="width: <%= percent_complete(monthly_result) %>%"
+          >
+          </div>
+        </div>
+
+        <div class="activity-flow-progress-indicator__progress-amount-container">
+          <span>
+            <% if multi_month? %>
+              <% if monthly_result.meets_requirements %>
+                <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
+                  <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
+                </svg>
+              <% end %>
+              <%= l(monthly_result.month, format: :month) %>
+            <% end %>
+          </span>
+
+          <span>
+            <span class="activity-flow-progress-indicator__progress-amount
+                        <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-amount--complete<% end %>">
+              <% if monthly_result.meets_requirements && !multi_month? %>
+                <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
+                  <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
+                </svg>
+              <% end %>
+
+              <%= format_hours(monthly_result.total_hours) %>
+            </span>
+            /
+            <%= completion_threshold %> <%= t(".hours") %>
+          </span>
+        </div>
+      <% end %>
     </div>
   <% end %>
-</div>
+<% end %>
