@@ -147,18 +147,11 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     it "renders the month names" do
       render_inline(component)
 
-      expect(page).to have_css(
-        ".activity-flow-progress-indicator__progress-amount-container",
-        text: "December"
-      )
-      expect(page).to have_css(
-        ".activity-flow-progress-indicator__progress-amount-container",
-        text: "November"
-      )
-      expect(page).to have_css(
-        ".activity-flow-progress-indicator__progress-amount-container",
-        text: "October"
-      )
+      month_labels = page
+        .all(".activity-flow-progress-indicator__progress-amount-container")
+        .map { |row| row.find("span", match: :first).text.strip }
+
+      expect(month_labels).to eq([ "October", "November", "December" ])
     end
 
     it "displays success icons" do
@@ -219,6 +212,16 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
       expect(page).to have_text(
         "Complete any 3 months between August-January to meet requirements."
       )
+    end
+
+    it "renders renewal months oldest to newest" do
+      render_inline(component)
+
+      month_labels = page
+        .all(".activity-flow-progress-indicator__progress-amount-container")
+        .map { |row| row.find("span", match: :first).text.strip }
+
+      expect(month_labels).to eq([ "August", "September", "October", "November", "December", "January" ])
     end
 
     it "does not render the default completed copy variants" do

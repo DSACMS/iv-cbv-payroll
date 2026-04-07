@@ -14,7 +14,7 @@
         <% elsif multi_month? %>
           <%= t(".title_multi_month") %>
         <% else %>
-          <% first_month = monthly_calculation_results.first.month %>
+          <% first_month = ordered_monthly_calculation_results.first.month %>
           <%= t(".title", month: l(first_month, format: :month)) %>
         <% end %>
       </h2>
@@ -49,7 +49,7 @@
         </p>
       <% end %>
 
-      <% monthly_calculation_results.each do |monthly_result| %>
+      <% ordered_monthly_calculation_results.each do |monthly_result| %>
         <div class="activity-flow-progress-indicator__progress-bar
           <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-bar--complete<% end %>"
         >

@@ -36,6 +36,8 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
 
   def total_month_count = monthly_calculation_results.length
 
+  def ordered_monthly_calculation_results = @ordered_monthly_calculation_results ||= monthly_calculation_results.sort_by(&:month)
+
   def complete?
     if renewal?
       complete_month_count >= required_month_count
@@ -46,9 +48,9 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
 
   def renewal? = @renewal
 
-  def reporting_window_start_month = monthly_calculation_results.min_by(&:month)&.month
+  def reporting_window_start_month = ordered_monthly_calculation_results.first&.month
 
-  def reporting_window_end_month = monthly_calculation_results.max_by(&:month)&.month
+  def reporting_window_end_month = ordered_monthly_calculation_results.last&.month
 
   private
   attr_reader :monthly_calculation_results, :agency_full_name, :required_month_count
