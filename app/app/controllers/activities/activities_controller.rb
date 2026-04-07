@@ -6,7 +6,7 @@ class Activities::ActivitiesController < Activities::BaseController
     # visible changes when the user returns to the Activity Hub.
     if session[:creating_activity]
       activity_class = session[:creating_activity]["class_name"].safe_constantize
-      activity_class&.find_by(id: session[:creating_activity]["id"])&.destroy
+      activity_class&.find_by(id: session[:creating_activity]["id"], activity_flow_id: @flow.id)&.destroy
       session.delete(:creating_activity)
     end
 

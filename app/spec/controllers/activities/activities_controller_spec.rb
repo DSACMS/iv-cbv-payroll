@@ -69,6 +69,15 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect { get :index }.not_to change(VolunteeringActivity, :count)
     end
 
+    it "does not destroy an activity belonging to a different flow" do
+      other_flow = create(:activity_flow)
+      activity = create(:volunteering_activity, activity_flow: other_flow)
+      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => activity.id }
+
+      expect { get :index }.not_to change(VolunteeringActivity, :count)
+      expect(session[:creating_activity]).to be_nil
+    end
+
     it "handles an already-deleted activity gracefully" do
       session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => -1 }
 
