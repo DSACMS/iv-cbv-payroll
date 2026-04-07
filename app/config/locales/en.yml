@@ -524,6 +524,9 @@ en:
     description_complete: "%{agency_full_name} will determine your final eligibility based on the activities you’ve added to your report."
     hours: hours
     months_completed_html: "<strong>%{complete}</strong> / <strong>%{total}</strong> months completed"
+    renewal_months_completed: "%{complete}/%{required} months completed"
+    renewal_subtitle: Complete any %{required} months between %{start_month}-%{end_month} to meet requirements.
+    renewal_subtitle_no_range: Complete any %{required} months to meet requirements.
     title: Your %{month} progress
     title_complete: You're ready to review and submit your report
     title_multi_month: Your progress
