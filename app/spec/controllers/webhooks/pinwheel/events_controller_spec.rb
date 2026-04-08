@@ -248,6 +248,23 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           post :create, params: valid_params
         end
 
+        context "when the identity has no phone numbers" do
+          before do
+            pinwheel_stub_request_identity_response_without_phone_numbers
+          end
+
+          it "does not raise and reports zero phone numbers" do
+            expect(event_logger).to receive(:track).with("ApplicantReportMetUsefulRequirements", anything, anything)
+            expect(event_logger).to receive(:track).with(
+              "ApplicantFinishedPinwheelSync",
+              anything,
+              include(identity_phone_numbers_count: 0)
+            )
+
+            post :create, params: valid_params
+          end
+        end
+
         context "when not meeting the useful report validations" do
           before do
             pinwheel_stub_request_end_user_no_paydate_response

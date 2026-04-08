@@ -157,6 +157,17 @@ module PinwheelApiHelper
       )
   end
 
+  def pinwheel_stub_request_identity_response_without_phone_numbers
+    body = pinwheel_load_relative_json_file('request_identity_response.json')
+    body["data"]["phone_numbers"] = nil
+    stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::ACCOUNTS_ENDPOINT}/[0-9a-fA-F\-]{36}/identity})
+      .to_return(
+        status: 200,
+        body: body.to_json,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      )
+  end
+
   def pinwheel_stub_request_platform_response
     stub_request(:get, %r{#{Aggregators::Sdk::PinwheelService::PLATFORMS_ENDPOINT}/[0-9a-fA-F\-]{36}})
       .to_return(
