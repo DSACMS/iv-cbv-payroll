@@ -54,6 +54,8 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
 
   def renewal? = @renewal
 
+  def renewal_requires_subset_months? = renewal? && required_month_count < total_month_count
+
   def reporting_window_start_month = ordered_monthly_calculation_results.first&.month
 
   def reporting_window_end_month = ordered_monthly_calculation_results.last&.month

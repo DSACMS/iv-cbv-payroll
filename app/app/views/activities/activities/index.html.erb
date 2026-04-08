@@ -9,6 +9,8 @@
 <%# i18n-tasks-use t("activities.hub.in_progress_state_title") %>
 <%# i18n-tasks-use t("activities.hub.completed_state_description", agency_name: "Test Agency") %>
 <%# i18n-tasks-use t("activities.hub.in_progress_state_description", agency_name: "Test Agency") %>
+<%# i18n-tasks-use t("activities.hub.empty_state_months_required_any", required_month_count: 3) %>
+<%# i18n-tasks-use t("activities.hub.empty_state_months_required_all", required_month_count: 6) %>
 
 <% content_for :title, t(title_key) %>
 
@@ -19,15 +21,16 @@
     </h1>
 
     <% if state == :empty %>
-      <p class="activity-hub-subheading activity-hub-subheading--reporting-period">
+      <p class="activity-hub-subheading margin-top-2">
         <strong><%= t("activities.hub.empty_state_reporting_period_label") %></strong>
         <%= @flow.reporting_window_display %>
       </p>
 
       <% if variant == :renewal %>
+        <% months_required_key = monthly_results.length < @flow.reporting_window_months ? "activities.hub.empty_state_months_required_any" : "activities.hub.empty_state_months_required_all" %>
         <p class="activity-hub-subheading">
           <strong><%= t("activities.hub.empty_state_months_required_label") %></strong>
-          <%= t("activities.hub.empty_state_months_required", required_month_count: monthly_results.length) %>
+          <%= t(months_required_key, required_month_count: monthly_results.length) %>
         </p>
       <% end %>
 
@@ -48,10 +51,10 @@
         )
       ) %>
 
-      <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button activity-hub-submit-button", method: :get %>
+      <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-3", method: :get %>
 
       <% if state == :in_progress %>
-        <p class="activity-hub-info-link">
+        <p class="margin-top-2 text-center text-primary font-sans-sm text-underline">
           <%= t("activities.hub.verification_info_link") %>
         </p>
       <% end %>

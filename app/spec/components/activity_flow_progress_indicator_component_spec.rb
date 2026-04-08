@@ -273,9 +273,7 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
         render_inline(component)
 
         expect(page).to have_css("h2", text: "4/6 months completed")
-        expect(page).to have_text(
-          "Complete any 6 months between August-January to meet requirements."
-        )
+        expect(page).not_to have_css(".activity-flow-progress-indicator__description")
       end
     end
   end

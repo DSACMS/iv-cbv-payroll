@@ -326,7 +326,8 @@ en:
         employment: No employment added
         work_programs: No work programs added
       empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
-      empty_state_months_required: any %{required_month_count} months in the reporting period
+      empty_state_months_required_all: all %{required_month_count} months in the reporting period
+      empty_state_months_required_any: any %{required_month_count} months in the reporting period
       empty_state_months_required_label: 'Months required:'
       empty_state_reporting_period_label: 'Reporting period:'
       empty_state_title: Build your community engagement report

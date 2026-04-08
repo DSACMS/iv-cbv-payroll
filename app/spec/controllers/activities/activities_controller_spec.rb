@@ -234,16 +234,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "renders the renewal progress indicator subtitle" do
-      expected_subtitle = I18n.t(
-        "activity_flow_progress_indicator.renewal_subtitle",
-        required: 6,
-        start_month: I18n.l(current_flow.reporting_window_range.begin, format: :month),
-        end_month: I18n.l(current_flow.reporting_window_range.end, format: :month)
-      )
-
-      expect(response.body).to include(expected_subtitle)
-      expect(response.body).to include("activity-flow-progress-indicator__description")
+    it "does not render renewal subtitle when required months equals reporting window" do
+      expect(response.body).not_to include("activity-flow-progress-indicator__description")
     end
   end
 
@@ -270,7 +262,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       expect(page_text).to include(I18n.t("activities.hub.empty_state_months_required_label"))
       expect(page_text).to include(
-        I18n.t("activities.hub.empty_state_months_required", required_month_count: 6)
+        I18n.t("activities.hub.empty_state_months_required_all", required_month_count: 6)
       )
     end
   end

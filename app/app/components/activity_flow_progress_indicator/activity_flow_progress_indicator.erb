@@ -22,7 +22,7 @@
         <% end %>
       </h2>
 
-      <% if renewal? %>
+      <% if renewal_requires_subset_months? %>
         <p class="activity-flow-progress-indicator__description">
           <% if reporting_window_start_month && reporting_window_end_month %>
             <%= t(
