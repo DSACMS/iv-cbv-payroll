@@ -19,6 +19,33 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
 
       expect(response).to redirect_to(edit_activities_flow_community_service_month_path(community_service_id: volunteering_activity, id: 0))
     end
+
+    context "when session[:flow_id] was overwritten by another tab" do
+      let(:other_flow) { create(:activity_flow) }
+
+      before do
+        cookies.permanent.signed[:device_id] = activity_flow.device_id
+        session[:flow_id] = other_flow.id
+      end
+
+      it "recovers the correct flow and renders successfully" do
+        get :edit, params: { community_service_id: volunteering_activity.id, id: 0 }
+
+        expect(session[:flow_id]).to eq(activity_flow.id)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when the activity was deleted by another tab" do
+      it "redirects to the hub" do
+        deleted_id = volunteering_activity.id
+        volunteering_activity.destroy
+
+        get :edit, params: { community_service_id: deleted_id, id: 0 }
+
+        expect(response).to redirect_to(activities_flow_root_path)
+      end
+    end
   end
 
   describe "PATCH #update" do

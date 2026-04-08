@@ -7,12 +7,12 @@ class ActivityFlowProgressCalculator
   OverallResult = Struct.new(:total_hours, :meets_requirements, :meets_routing_requirements, keyword_init: true)
   MonthlyResult = Struct.new(:month, :total_hours, :meets_requirements, keyword_init: true)
 
-  def initialize(activity_flow)
+  def initialize(activity_flow, exclude_activity: nil)
     @activity_flow = activity_flow
-    @volunteering_activities = activity_flow.volunteering_activities
-    @job_training_activities = activity_flow.job_training_activities
-    @education_activities = activity_flow.education_activities
-    @employment_activities = activity_flow.employment_activities
+    @volunteering_activities = maybe_exclude(activity_flow.volunteering_activities, exclude_activity)
+    @job_training_activities = maybe_exclude(activity_flow.job_training_activities, exclude_activity)
+    @education_activities = maybe_exclude(activity_flow.education_activities, exclude_activity)
+    @employment_activities = maybe_exclude(activity_flow.employment_activities, exclude_activity)
   end
 
   def overall_result
@@ -201,5 +201,12 @@ class ActivityFlowProgressCalculator
 
   def education_hours_for_month(month_start)
     @education_activities.sum { |education| education.progress_hours_for_month(month_start) }
+  end
+
+  def maybe_exclude(scope, exclude_activity)
+    return scope unless exclude_activity
+    return scope unless scope.klass.name == exclude_activity[:class_name]
+
+    scope.where.not(id: exclude_activity[:id])
   end
 end

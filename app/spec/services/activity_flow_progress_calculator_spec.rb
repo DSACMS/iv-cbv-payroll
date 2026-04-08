@@ -540,6 +540,38 @@ RSpec.describe ActivityFlowProgressCalculator do
     end
   end
 
+  describe "exclude_activity" do
+    let(:flow) { create(:activity_flow, reporting_window_months: 1) }
+    let(:first_month) { flow.reporting_window_range.begin }
+
+    it "excludes a volunteering activity from hours calculation" do
+      included = create(:volunteering_activity, activity_flow: flow, organization_name: "Library")
+      create(:volunteering_activity_month, volunteering_activity: included, month: first_month, hours: 10)
+      excluded = create(:volunteering_activity, activity_flow: flow, organization_name: "Incomplete")
+      create(:volunteering_activity_month, volunteering_activity: excluded, month: first_month, hours: 5)
+
+      result = described_class.new(flow, exclude_activity: { class_name: "VolunteeringActivity", id: excluded.id }).overall_result
+      expect(result.total_hours).to eq(10)
+    end
+
+    it "excludes a job training activity from hours calculation" do
+      included = create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 10)
+      excluded = create(:job_training_activity, activity_flow: flow, program_name: "Incomplete", organization_address: "456 Elm St", hours: 5)
+
+      result = described_class.new(flow, exclude_activity: { class_name: "JobTrainingActivity", id: excluded.id }).overall_result
+      expect(result.total_hours).to eq(10)
+    end
+
+    it "does not exclude activities of a different type" do
+      activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Library")
+      create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 10)
+      training = create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main St", hours: 5)
+
+      result = described_class.new(flow, exclude_activity: { class_name: "JobTrainingActivity", id: training.id }).overall_result
+      expect(result.total_hours).to eq(10)
+    end
+  end
+
   describe "#reporting_months" do
     subject(:calculator) { described_class.new(flow) }
 

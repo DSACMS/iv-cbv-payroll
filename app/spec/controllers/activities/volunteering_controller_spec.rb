@@ -51,6 +51,15 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(session[:creating_activity]).to eq("class_name" => "VolunteeringActivity", "id" => activity.id, "activity_flow_id" => activity_flow.id)
     end
 
+    it "destroys a previously tracked incomplete activity" do
+      old_activity = create(:volunteering_activity, activity_flow: activity_flow)
+      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => old_activity.id, "activity_flow_id" => activity_flow.id }
+
+      post :create, params: volunteering_params
+
+      expect(VolunteeringActivity.find_by(id: old_activity.id)).to be_nil
+    end
+
     it "stores optional fields when provided" do
       post :create, params: volunteering_params.deep_merge(
         volunteering_activity: {
