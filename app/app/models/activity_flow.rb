@@ -96,6 +96,10 @@ class ActivityFlow < Flow
     true
   end
 
+  def renewal_reporting_window?
+    reporting_window_type == "renewal"
+  end
+
   private
 
   def set_default_reporting_window
@@ -103,7 +107,7 @@ class ActivityFlow < Flow
   end
 
   def calculate_reporting_window_months
-    return 6 if reporting_window_type == "renewal"
+    return 6 if renewal_reporting_window?
 
     client_agency = Rails.application.config.client_agencies[cbv_applicant&.client_agency_id]
     client_agency&.application_reporting_months || 1

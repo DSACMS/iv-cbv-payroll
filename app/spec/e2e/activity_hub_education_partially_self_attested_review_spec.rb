@@ -16,7 +16,7 @@ RSpec.describe "e2e Education mixed enrollment review flow", :js, type: :feature
     visit URI(root_url).request_uri
     visit activities_flow_entry_path(client_agency_id: "sandbox")
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     # Seed a partially self-attested education activity with mixed enrollments
     flow = ActivityFlow.last
@@ -79,7 +79,7 @@ RSpec.describe "e2e Education mixed enrollment review flow", :js, type: :feature
     visit activities_flow_entry_path(client_agency_id: "sandbox")
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     current_flow = ActivityFlow.order(created_at: :desc).first
     education_activity = create(
@@ -110,7 +110,7 @@ RSpec.describe "e2e Education mixed enrollment review flow", :js, type: :feature
     )
 
     visit activities_flow_root_path
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
     click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
 
@@ -125,7 +125,7 @@ RSpec.describe "e2e Education mixed enrollment review flow", :js, type: :feature
     visit URI(root_url).request_uri
     visit activities_flow_entry_path(client_agency_id: "sandbox")
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     flow = ActivityFlow.last
     education_activity = create(
@@ -155,7 +155,7 @@ RSpec.describe "e2e Education mixed enrollment review flow", :js, type: :feature
     )
 
     click_button I18n.t("activities.education.review.save")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
     expect(page).to have_button(I18n.t("activities.hub.review_and_submit"))
   end
 end

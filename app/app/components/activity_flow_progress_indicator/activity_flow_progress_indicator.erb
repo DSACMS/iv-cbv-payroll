@@ -9,18 +9,21 @@
             </svg>
           <% end %>
           <%= t(".renewal_months_completed", complete: complete_month_count, required: required_month_count) %>
-        <% elsif complete? %>
-          <%= t(".title_complete") %>
         <% elsif multi_month? %>
-          <%= t(".title_multi_month") %>
+          <% if complete? %>
+            <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
+              <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
+            </svg>
+          <% end %>
+          <%= t(".application_months_completed", complete: complete_month_count, total: total_month_count) %>
         <% else %>
           <% first_month = ordered_monthly_calculation_results.first.month %>
           <%= t(".title", month: l(first_month, format: :month)) %>
         <% end %>
       </h2>
 
-      <p class="activity-flow-progress-indicator__description">
-        <% if renewal? %>
+      <% if renewal? %>
+        <p class="activity-flow-progress-indicator__description">
           <% if reporting_window_start_month && reporting_window_end_month %>
             <%= t(
               ".renewal_subtitle",
@@ -31,21 +34,6 @@
           <% else %>
             <%= t(".renewal_subtitle_no_range", required: required_month_count) %>
           <% end %>
-        <% elsif complete? %>
-          <%= t(".description_complete", agency_full_name: agency_full_name) %>
-        <% else %>
-          <%= t(".description") %>
-        <% end %>
-      </p>
-
-      <% if multi_month? && !renewal? %>
-        <p class="activity-flow-progress-indicator__months-completed">
-          <% if complete? %>
-            <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
-              <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
-            </svg>
-          <% end %>
-          <%= t(".months_completed_html", complete: complete_month_count, total: total_month_count) %>
         </p>
       <% end %>
 

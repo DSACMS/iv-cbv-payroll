@@ -23,6 +23,28 @@
   }
 }
 
+.activity-hub-submit-button {
+  width: 100%;
+  margin-top: units(3);
+}
+
+.activity-hub-subheading {
+  margin: units(1) 0 0;
+}
+
+.activity-hub-subheading--reporting-period {
+  margin-top: units(2);
+}
+
+.activity-hub-info-link {
+  @include u-font("sans", "sm");
+
+  color: color("primary");
+  margin: units(2) 0 0;
+  text-align: center;
+  text-decoration: underline;
+}
+
 .activity-hub-columns__activities {
   @include at-media("tablet") {
     flex: 1;
@@ -30,16 +52,6 @@
     margin-left: units(8);
     border-left: 1px solid color("base-lighter");
     padding-left: units(8);
-  }
-}
-
-// Mobile-only horizontal divider between progress and cards
-.activity-hub-mobile-divider {
-  border: none;
-  border-top: 1px solid color("base-lighter");
-
-  @include at-media("tablet") {
-    display: none;
   }
 }
 

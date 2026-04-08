@@ -1,21 +1,62 @@
-<% content_for :title, t("activities.hub.title") %>
+<% any_activities_added = @flow.any_activities_added? %>
+<% monthly_results = progress_calculator.monthly_results %>
+<% state = activity_hub_state(any_activities_added:, monthly_results:) %>
+<% variant = @flow.renewal_reporting_window? ? :renewal : :application %>
+<% title_key = activity_hub_title_key(state) %>
+<% description_key = activity_hub_description_key(state) %>
+<%# i18n-tasks-use t("activities.hub.empty_state_title") %>
+<%# i18n-tasks-use t("activities.hub.completed_state_title") %>
+<%# i18n-tasks-use t("activities.hub.in_progress_state_title") %>
+<%# i18n-tasks-use t("activities.hub.completed_state_description", agency_name: "Test Agency") %>
+<%# i18n-tasks-use t("activities.hub.in_progress_state_description", agency_name: "Test Agency") %>
 
-<h1>
-  <%= t("activities.hub.title") %>
-</h1>
-<p>
-  <%= t("activities.hub.description_html", reporting_window: @flow.reporting_window_display) %>
-</p>
+<% content_for :title, t(title_key) %>
 
 <div class="activity-hub-columns">
   <div class="activity-hub-columns__progress">
-    <%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator, agency_translation("shared.agency_full_name"))) %>
+    <h1>
+      <%= t(title_key) %>
+    </h1>
 
-    <% if @flow.any_activities_added? %>
-      <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button margin-top-3", method: :get %>
+    <% if state == :empty %>
+      <p class="activity-hub-subheading activity-hub-subheading--reporting-period">
+        <strong><%= t("activities.hub.empty_state_reporting_period_label") %></strong>
+        <%= @flow.reporting_window_display %>
+      </p>
+
+      <% if variant == :renewal %>
+        <p class="activity-hub-subheading">
+          <strong><%= t("activities.hub.empty_state_months_required_label") %></strong>
+          <%= t("activities.hub.empty_state_months_required", required_month_count: monthly_results.length) %>
+        </p>
+      <% end %>
+
+      <p class="activity-hub-subheading">
+        <%= t("activities.hub.empty_state_description", reporting_window: @flow.reporting_window_display) %>
+      </p>
+    <% else %>
+      <p class="activity-hub-subheading">
+        <%= t(description_key, agency_name: agency_translation("shared.agency_full_name")) %>
+      </p>
     <% end %>
 
-    <hr class="margin-y-4 activity-hub-mobile-divider">
+    <% if any_activities_added %>
+      <%= render(
+        ActivityFlowProgressIndicator.from_calculator(
+          progress_calculator,
+          variant: variant
+        )
+      ) %>
+
+      <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button activity-hub-submit-button", method: :get %>
+
+      <% if state == :in_progress %>
+        <p class="activity-hub-info-link">
+          <%= t("activities.hub.verification_info_link") %>
+        </p>
+      <% end %>
+    <% end %>
+
   </div>
   <div class="activity-hub-columns__activities">
     <% if activity_type_enabled?(:employment) %>
