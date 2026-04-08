@@ -20,6 +20,10 @@ WickedPdf.configure do |config|
                       Gem.bin_path("wkhtmltopdf-binary", "wkhtmltopdf")
                     end
 
+  # Increase viewport size from the default of 1024x768, so that PDFs render with styling applied
+  # based on the "desktop" layout (not the "tablet" one).
+  config.viewport_size = "1280x1024"
+
   # Needed for wkhtmltopdf 0.12.6+ to use many wicked_pdf asset helpers
   # config.enable_local_file_access = true,
 
