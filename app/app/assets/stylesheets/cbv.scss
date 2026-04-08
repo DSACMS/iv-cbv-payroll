@@ -537,8 +537,9 @@ input#invitation_link {
   }
 }
 
+$table-width: 44rem;
 .activity-review-table {
-  max-width: 44rem;
+  max-width: $table-width;
   border: units(1px) solid color("ink");
 
   @include at-media("tablet") {
@@ -559,6 +560,11 @@ input#invitation_link {
 .usa-table--borderless.activity-review-table thead th {
   background-color: color("blue-cool-5");
   border-bottom: units(1px) solid color("ink");
+}
+
+.maxw-table {
+  // USWDS-style helper for making other things the same size as a standard <table>
+  max-width: $table-width;
 }
 
 /*
