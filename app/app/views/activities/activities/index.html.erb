@@ -11,7 +11,7 @@
   <div class="activity-hub-columns__progress">
     <%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator, agency_translation("shared.agency_full_name"))) %>
 
-    <% if @flow.any_activities_added? %>
+    <% if @any_visible_activities %>
       <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button margin-top-3", method: :get %>
     <% end %>
 

@@ -66,21 +66,32 @@ class Activities::BaseController < FlowController
   end
 
   def after_activity_path
-    progress_result = progress_calculator.overall_result
+    progress_result = ActivityFlowProgressCalculator.new(@flow).overall_result
     progress_result.meets_routing_requirements ? activities_flow_summary_path : activities_flow_root_path
   end
 
   def progress_calculator
     return nil unless @flow
 
-    @_progress_calculator ||= ActivityFlowProgressCalculator.new(@flow, exclude_activity: creating_activity_id)
+    @_progress_calculator ||= ActivityFlowProgressCalculator.new(@flow, exclude: creating_records)
   end
 
-  def creating_activity_id
-    creating = session[:creating_activity]
-    return unless creating
+  def creating_records
+    [ creating_activity, creating_payroll_account ].compact
+  end
 
-    { class_name: creating["class_name"], id: creating["id"] }
+  def creating_activity
+    data = session[:creating_activity]
+    return unless data
+
+    data["class_name"].safe_constantize&.find_by(id: data["id"])
+  end
+
+  def creating_payroll_account
+    data = session[:creating_payroll_account]
+    return unless data
+
+    PayrollAccount.find_by(aggregator_account_id: data["aggregator_account_id"])
   end
 
   def track_creating_activity(activity)

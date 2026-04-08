@@ -94,6 +94,34 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(assigns(:employment_payroll_accounts)).to contain_exactly(kept)
     end
 
+    it "hides review and submit when the only activity is incomplete" do
+      incomplete = create(:volunteering_activity, activity_flow: current_flow)
+      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => incomplete.id, "activity_flow_id" => current_flow.id }
+
+      get :index
+
+      expect(response.body).not_to include(I18n.t("activities.hub.review_and_submit"))
+    end
+
+    it "shows review and submit when a completed activity exists alongside an incomplete one" do
+      create(:volunteering_activity, activity_flow: current_flow)
+      incomplete = create(:job_training_activity, activity_flow: current_flow)
+      session[:creating_activity] = { "class_name" => "JobTrainingActivity", "id" => incomplete.id, "activity_flow_id" => current_flow.id }
+
+      get :index
+
+      expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
+    end
+
+    it "hides review and submit when the only payroll account is incomplete" do
+      hidden = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow)
+      session[:creating_payroll_account] = { "aggregator_account_id" => hidden.aggregator_account_id, "flow_id" => current_flow.id }
+
+      get :index
+
+      expect(response.body).not_to include(I18n.t("activities.hub.review_and_submit"))
+    end
+
     it "does not delete any records" do
       activity = create(:volunteering_activity, activity_flow: current_flow)
       session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => activity.id, "activity_flow_id" => current_flow.id }

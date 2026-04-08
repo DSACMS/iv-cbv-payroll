@@ -63,15 +63,6 @@ class ActivityFlow < Flow
     completed_at.present?
   end
 
-  def any_activities_added?
-    education_activities.where.associated(:nsc_enrollment_terms).exists? ||
-      education_activities.fully_self_attested.exists? ||
-      volunteering_activities.exists? ||
-      job_training_activities.exists? ||
-      employment_activities.exists? ||
-      payroll_accounts.exists?
-  end
-
   def invitation_id
     activity_flow_invitation_id
   end

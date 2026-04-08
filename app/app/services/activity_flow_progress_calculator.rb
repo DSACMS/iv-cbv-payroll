@@ -7,12 +7,13 @@ class ActivityFlowProgressCalculator
   OverallResult = Struct.new(:total_hours, :meets_requirements, :meets_routing_requirements, keyword_init: true)
   MonthlyResult = Struct.new(:month, :total_hours, :meets_requirements, keyword_init: true)
 
-  def initialize(activity_flow, exclude_activity: nil)
+  def initialize(activity_flow, exclude: [])
     @activity_flow = activity_flow
-    @volunteering_activities = maybe_exclude(activity_flow.volunteering_activities, exclude_activity)
-    @job_training_activities = maybe_exclude(activity_flow.job_training_activities, exclude_activity)
-    @education_activities = maybe_exclude(activity_flow.education_activities, exclude_activity)
-    @employment_activities = maybe_exclude(activity_flow.employment_activities, exclude_activity)
+    @exclude = Array(exclude)
+    @volunteering_activities = maybe_exclude(activity_flow.volunteering_activities)
+    @job_training_activities = maybe_exclude(activity_flow.job_training_activities)
+    @education_activities = maybe_exclude(activity_flow.education_activities)
+    @employment_activities = maybe_exclude(activity_flow.employment_activities)
   end
 
   def overall_result
@@ -192,21 +193,34 @@ class ActivityFlowProgressCalculator
   end
 
   def validated_account_ids
-    @validated_account_ids ||= @activity_flow.payroll_accounts.select(&:validated?).map(&:aggregator_account_id).compact
+    @validated_account_ids ||= @activity_flow.payroll_accounts
+      .reject { |pa| excluded_payroll_account_ids.include?(pa.aggregator_account_id) }
+      .select(&:validated?)
+      .map(&:aggregator_account_id)
+      .compact
   end
 
   def monthly_summaries
-    @monthly_summaries ||= @activity_flow.monthly_summaries_by_account_with_fallback
+    @monthly_summaries ||= begin
+      summaries = @activity_flow.monthly_summaries_by_account_with_fallback
+      summaries.except(*excluded_payroll_account_ids)
+    end
+  end
+
+  def excluded_payroll_account_ids
+    @excluded_payroll_account_ids ||= @exclude
+      .select { |r| r.is_a?(PayrollAccount) }
+      .map(&:aggregator_account_id)
   end
 
   def education_hours_for_month(month_start)
     @education_activities.sum { |education| education.progress_hours_for_month(month_start) }
   end
 
-  def maybe_exclude(scope, exclude_activity)
-    return scope unless exclude_activity
-    return scope unless scope.klass.name == exclude_activity[:class_name]
+  def maybe_exclude(scope)
+    ids = @exclude.select { |r| r.is_a?(scope.klass) }.map(&:id)
+    return scope if ids.empty?
 
-    scope.where.not(id: exclude_activity[:id])
+    scope.where.not(id: ids)
   end
 end

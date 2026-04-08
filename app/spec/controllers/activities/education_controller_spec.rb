@@ -505,7 +505,8 @@ RSpec.describe Activities::EducationController, type: :controller do
         meets_requirements: false,
         meets_routing_requirements: false
       )
-      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+      calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+      allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
 
       patch :update, params: {
         id: education_activity.id,
@@ -521,7 +522,8 @@ RSpec.describe Activities::EducationController, type: :controller do
         meets_requirements: true,
         meets_routing_requirements: false
       )
-      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+      calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+      allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
 
       patch :update, params: {
         id: education_activity.id,
@@ -537,7 +539,8 @@ RSpec.describe Activities::EducationController, type: :controller do
         meets_requirements: true,
         meets_routing_requirements: true
       )
-      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+      calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+      allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
 
       patch :update, params: {
         id: education_activity.id,
@@ -580,9 +583,8 @@ RSpec.describe Activities::EducationController, type: :controller do
           meets_requirements: false,
           meets_routing_requirements: false
         )
-        allow(controller).to receive(:progress_calculator).and_return(
-          instance_double(ActivityFlowProgressCalculator, overall_result: result)
-        )
+        calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
       end
 
       it "redirects to after_activity_path (not term credit hours)" do
@@ -611,9 +613,8 @@ RSpec.describe Activities::EducationController, type: :controller do
           meets_requirements: true,
           meets_routing_requirements: true
         )
-        allow(controller).to receive(:progress_calculator).and_return(
-          instance_double(ActivityFlowProgressCalculator, overall_result: result)
-        )
+        calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
       end
 
       it "redirects to summary" do
@@ -640,9 +641,8 @@ RSpec.describe Activities::EducationController, type: :controller do
           meets_requirements: false,
           meets_routing_requirements: false
         )
-        allow(controller).to receive(:progress_calculator).and_return(
-          instance_double(ActivityFlowProgressCalculator, overall_result: result)
-        )
+        calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
       end
 
       it "redirects to after_activity_path (not term credit hours)" do
