@@ -365,15 +365,144 @@ input#invitation_link {
   background-color: color("gray-cool-10");
 }
 
-.activity-review-hours-table.usa-table--stacked .subheader-row th,
-.activity-review-hours-table.usa-table--stacked tr.subheader-row:nth-child(odd) th {
-  background-color: color("gray-cool-10");
+.activity-review-hours-table {
+  // On narrow viewports (including stacked mobile), fill the container.
+  // At wider breakpoints (min-width: 30em), shrink to content width so
+  // narrow tables don't sprawl across the full page.
+  max-width: 100%;
+  border: units(1px) solid color("ink");
+
+  // Override the default border-top-05 utility on thead (0.25rem !important)
+  // so the outer table border provides the top edge instead
+  thead {
+    border-top: 0 !important;
+  }
 }
 
-// Make sure second col is aligned between both tables on desktop
-.activity-review-hours-table th:not([colspan]),
-.activity-review-hours-table td:first-child {
-  width: 60%;
+.usa-table--borderless.activity-review-hours-table thead th {
+  background-color: color("blue-cool-5");
+  border-bottom: units(1px) solid color("ink");
+}
+
+.activity-review-hours-table.usa-table--stacked .subheader-row th,
+.activity-review-hours-table.usa-table--stacked tr.subheader-row:nth-child(odd) th {
+  background-color: color("blue-cool-5");
+}
+
+// Keep edit column compact in multi-column hours tables
+.activity-review-hours-table td:last-child,
+.activity-review-hours-table th:last-child {
+  white-space: nowrap;
+}
+
+// Stacked layout for activity review tables.
+// USWDS usa-table--stacked activates at max-width: 29.99em (480px).
+// We extend stacking to max-width: 39.99em (640px / tablet) so both
+// table types break to mobile view at the same point.
+// The USWDS stacking rules are re-declared here so they cover 480px–639px;
+// at < 480px they are also applied redundantly (harmless override).
+@media all and (max-width: 39.99em) {
+  // --- USWDS usa-table--stacked rules, scoped to our tables ---
+  .activity-review-hours-table thead,
+  .activity-review-table thead {
+    display: none;
+  }
+
+  .activity-review-hours-table th,
+  .activity-review-table th {
+    background-color: white;
+  }
+
+  .activity-review-hours-table th,
+  .activity-review-hours-table td,
+  .activity-review-table th,
+  .activity-review-table td {
+    border-bottom-width: 0;
+    display: block;
+    width: 100%;
+  }
+
+  .activity-review-hours-table tr,
+  .activity-review-table tr {
+    border-bottom: 0.25rem solid color("ink");
+    border-top-width: 0;
+    width: 100%;
+  }
+
+  .activity-review-hours-table tr th:first-child,
+  .activity-review-hours-table tr td:first-child,
+  .activity-review-table tr th:first-child,
+  .activity-review-table tr td:first-child {
+    border-top-width: 0;
+  }
+
+  .activity-review-hours-table tr:nth-child(odd) td,
+  .activity-review-hours-table tr:nth-child(odd) th,
+  .activity-review-table tr:nth-child(odd) td,
+  .activity-review-table tr:nth-child(odd) th {
+    background-color: inherit;
+  }
+
+  .activity-review-hours-table tr:first-child th:first-child,
+  .activity-review-hours-table tr:first-child td:first-child,
+  .activity-review-table tr:first-child th:first-child,
+  .activity-review-table tr:first-child td:first-child {
+    border-top: 0.25rem solid color("ink");
+  }
+
+  .activity-review-hours-table th[data-label],
+  .activity-review-hours-table td[data-label],
+  .activity-review-table th[data-label],
+  .activity-review-table td[data-label] {
+    padding-bottom: 0.75rem;
+  }
+
+  .activity-review-hours-table th[data-label]::before,
+  .activity-review-hours-table td[data-label]::before,
+  .activity-review-table th[data-label]::before,
+  .activity-review-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 700;
+    margin: -0.5rem -1rem 0rem;
+    padding: 0.75rem 1rem 0.25rem;
+  }
+
+  // --- Custom additions for hours tables only ---
+
+  .activity-review-hours-table tbody tr {
+    position: relative;
+  }
+
+  .activity-review-hours-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+
+  .activity-review-hours-table tbody th {
+    font-weight: normal;
+  }
+
+  // Edit column: anchor top-right of the row group
+  .activity-review-hours-table tbody td:last-child {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.75rem 1rem 0;
+    width: auto;
+  }
+}
+
+// On wider screens (≥ tablet / 640px), shrink the table to its content width
+// rather than expanding to fill the full container (which would space out
+// narrow 2- and 3-column tables).
+@media all and (min-width: 40em) {
+  .activity-review-hours-table {
+    max-width: 44rem;
+  }
+}
+
+.activity-review-edit-header {
+  max-width: 44rem;
 }
 
 .activity-review-table {
@@ -382,7 +511,7 @@ input#invitation_link {
 
   @include at-media("tablet") {
     th {
-      width: 50%;
+      width: 40%;
     }
   }
 
@@ -391,12 +520,6 @@ input#invitation_link {
 
     &:last-child {
       border-bottom: none;
-    }
-  }
-
-  @include at-media-max("mobile-lg") {
-    thead {
-      display: none;
     }
   }
 }

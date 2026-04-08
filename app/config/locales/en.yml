@@ -120,7 +120,7 @@ en:
         additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
         additional_comments_title: Additional comments (optional)
         address: Address
-        community_service_hours: Community service hours
+        community_service_hours: Community engagement hours
         coordinator_email: Coordinator's email
         coordinator_name: Coordinator's name
         coordinator_phone: Coordinator's phone number
@@ -215,6 +215,7 @@ en:
         save: Save and add to report
         school_info: School information
         school_name: School or program
+        term: Term
         title: Review your student information for %{school_name}
         title_no_school_name: Review your student information
       show:
@@ -452,7 +453,7 @@ en:
         coordinator_email: Coordinator's email
         coordinator_name: Coordinator's name
         coordinator_phone: Coordinator's phone
-        hours_served: Community service hours
+        hours_served: Community engagement hours
         month: Month
         organization: Organization name
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'

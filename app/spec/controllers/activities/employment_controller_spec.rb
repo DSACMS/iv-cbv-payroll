@@ -197,6 +197,14 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response.body).to include("25")
       expect(response.body).to include("500")
     end
+
+    it "includes an edit link for each month" do
+      get :review, params: { id: employment_activity.id }
+
+      expect(response.body).to include(
+        edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 0, from_review: 1)
+      )
+    end
   end
 
   describe "PATCH #save_review" do

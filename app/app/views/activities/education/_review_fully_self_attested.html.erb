@@ -1,4 +1,4 @@
-<div class="display-flex flex-justify flex-align-center">
+<div class="display-flex flex-justify flex-align-center activity-review-edit-header">
   <h2 class="margin-y-0"><%= t("activities.education.review.school_info") %></h2>
   <%= link_to t("activities.hub.edit"),
         edit_activities_flow_education_path(id: @education_activity, from_review: 1, from_edit: params[:from_edit].presence),
@@ -14,31 +14,28 @@
 
 <h2><%= t("activities.education.review.credit_hours_section") %></h2>
 <%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
+  <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+           .with_content(t("activities.summary.education.month")) %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+           .with_content(t("activities.education.review.credit_hours")) %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+           .with_content(t("activities.education.review.community_engagement_hours")) %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+           .with_content(t("activities.education.review.edit")) %>
+  <% end %>
   <% @education_activity.education_activity_months.order(:month).each_with_index do |activity_month, index| %>
-    <%= table.with_row(class_names: "subheader-row") do |row| %>
-      <%= row.with_data_cell(is_header: true, colspan: 2) do %>
-        <div class="display-flex flex-justify">
-          <span><%= I18n.l(activity_month.month, format: :month) %></span>
-          <%= link_to t("activities.education.review.edit"),
-                edit_activities_flow_education_month_path(education_id: @education_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence),
-                class: "usa-link" %>
-        </div>
-      <% end %>
-    <% end %>
     <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.education.review.credit_hours") %>
-      <% end %>
+      <%= row.with_data_cell(data_label: t("activities.summary.education.month"), is_header: true)
+             .with_content(I18n.l(activity_month.month, format: :month)) %>
+      <%= row.with_data_cell(data_label: t("activities.education.review.credit_hours"))
+             .with_content(activity_month.hours) %>
+      <%= row.with_data_cell(data_label: t("activities.education.review.community_engagement_hours"))
+             .with_content(@education_activity.community_engagement_hours(activity_month.hours)) %>
       <%= row.with_data_cell do %>
-        <%= activity_month.hours %>
-      <% end %>
-    <% end %>
-    <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.education.review.community_engagement_hours") %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= @education_activity.community_engagement_hours(activity_month.hours) %>
+        <%= link_to t("activities.education.review.edit"),
+              edit_activities_flow_education_month_path(education_id: @education_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence),
+              class: "usa-link" %>
       <% end %>
     <% end %>
   <% end %>

@@ -286,6 +286,16 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response.body).to include("16")
       end
 
+      it "includes an edit link for each month" do
+        create(:education_activity_month, education_activity: education_activity, month: activity_flow.reporting_months.first, hours: 4)
+
+        get :review, params: { id: education_activity.id }
+
+        expect(response.body).to include(
+          edit_activities_flow_education_month_path(education_id: education_activity, id: 0, from_review: 1)
+        )
+      end
+
       it "renders an edit link to school info with from_review" do
         get :review, params: { id: education_activity.id }
 
@@ -403,7 +413,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         )
         expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
         expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
-        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(1)
+        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(2)
       end
 
       it "renders term-hours tables for each enrollment when all enrollments are less-than-half-time" do
@@ -439,7 +449,7 @@ RSpec.describe Activities::EducationController, type: :controller do
           )
         )
         expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 2)
-        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(2)
+        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(4)
         expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
       end
     end
