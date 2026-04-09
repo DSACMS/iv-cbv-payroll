@@ -113,7 +113,26 @@ jobs:
             echo "_instructions at the top of the Dockerfile)._"
           } > pr-body.md
 
+      - name: Check for existing open fix PR
+        id: check-existing-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EXISTING=$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --label security \
+            --state open \
+            --json number,headRefName \
+            --jq '[.[] | select(.headRefName | startswith("auto-fix/dockerfile-os-vulnerabilities"))] | first | .number')
+          if [ -n "$EXISTING" ] && [ "$EXISTING" != "null" ]; then
+            echo "Open fix PR #$EXISTING already exists — skipping creation."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Create or update fix PR
+        if: steps.check-existing-pr.outputs.skip != 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
