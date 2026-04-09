@@ -34,6 +34,16 @@ RUN apt-get update -qq && \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
+# Auto-fix: OS package vulnerabilities detected by Trivy (managed automatically)
+# hadolint ignore=DL3008
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+      libtiff-dev=4.7.0-3+deb13u2 \
+      libtiff6=4.7.0-3+deb13u2 \
+      libtiffxx6=4.7.0-3+deb13u2 \
+    && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
 # Rails app lives here
 WORKDIR /rails
 
