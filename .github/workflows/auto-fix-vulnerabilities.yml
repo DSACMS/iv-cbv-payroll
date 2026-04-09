@@ -76,6 +76,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: app/Dockerfile
           branch: auto-fix/dockerfile-os-vulnerabilities
           base: main
           delete-branch: false
