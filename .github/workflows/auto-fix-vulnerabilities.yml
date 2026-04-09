@@ -7,12 +7,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 9 * * 1' # Monday 9am UTC fallback
-  # Temporary: allows testing from a feature branch before merging to main.
-  # Remove this trigger once the workflow has been validated on main.
-  pull_request:
-    paths:
-      - .github/workflows/auto-fix-vulnerabilities.yml
-      - .github/scripts/patch-dockerfile.py
 
 # Prevent parallel runs from creating conflicting Dockerfile edits or duplicate PRs.
 concurrency:
@@ -32,7 +26,6 @@ jobs:
     if: |
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'schedule' ||
-      github.event_name == 'pull_request' ||
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure')
 
     env:
