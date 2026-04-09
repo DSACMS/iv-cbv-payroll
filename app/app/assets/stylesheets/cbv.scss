@@ -395,6 +395,11 @@ input#invitation_link {
   white-space: nowrap;
 }
 
+// Mobile edit link lives inside the th; hidden on desktop where the td column is visible
+.mobile-edit-link {
+  display: none;
+}
+
 // Stacked layout for activity review tables.
 // USWDS usa-table--stacked activates at max-width: 29.99em (480px).
 // We extend stacking to max-width: 39.99em (640px / tablet) so both
@@ -470,10 +475,6 @@ input#invitation_link {
 
   // --- Custom additions for hours tables only ---
 
-  .activity-review-hours-table tbody tr {
-    position: relative;
-  }
-
   .activity-review-hours-table tbody tr:last-child {
     border-bottom: 0;
   }
@@ -482,13 +483,21 @@ input#invitation_link {
     font-weight: normal;
   }
 
-  // Edit column: anchor top-right of the row group
-  .activity-review-hours-table tbody td:last-child {
+  // On mobile, show the edit link inside the th and hide the desktop td column.
+  // Absolutely positioned to sit alongside the ::before label at the top of the cell.
+  .activity-review-hours-table th[data-label] {
+    position: relative;
+  }
+
+  .activity-review-hours-table .mobile-edit-link {
+    display: inline;
     position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0.75rem 1rem 0;
-    width: auto;
+    top: 0.75rem;
+    right: 1rem;
+  }
+
+  .activity-review-hours-table .desktop-edit-link {
+    display: none !important;
   }
 }
 
@@ -499,10 +508,33 @@ input#invitation_link {
   .activity-review-hours-table {
     max-width: 44rem;
   }
+
+  // Lock the Edit column to a consistent width so it aligns with the
+  // Edit link in the .activity-review-edit-header above.
+  .activity-review-hours-table .subheader-row th:last-child,
+  .activity-review-hours-table .desktop-edit-link {
+    width: 5rem;
+  }
 }
 
 .activity-review-edit-header {
   max-width: 44rem;
+  align-items: flex-start;
+}
+
+@media all and (max-width: 39.99em) {
+  .activity-review-edit-header > .usa-link {
+    margin-right: 1rem;
+  }
+}
+
+// On desktop, match the Edit column width from the hours table so the
+// header Edit link aligns with the table Edit column.
+@media all and (min-width: 40em) {
+  .activity-review-edit-header > .usa-link {
+    width: 5rem;
+    padding-left: 1rem;
+  }
 }
 
 .activity-review-table {

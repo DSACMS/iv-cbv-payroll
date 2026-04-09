@@ -15,7 +15,7 @@
   <%= t("activities.employment.review.description", employer_name: @employment_activity.employer_name) %>
 </p>
 
-<div class="display-flex flex-justify flex-align-center activity-review-edit-header">
+<div class="display-flex flex-justify activity-review-edit-header">
   <h2 class="margin-y-0"><%= t("activities.employment.review.employer_info") %></h2>
   <%= link_to t("activities.hub.edit"),
         edit_activities_flow_income_employment_path(id: @employment_activity, from_review: 1, from_edit: params[:from_edit].presence),
@@ -42,17 +42,18 @@
            .with_content(t("activities.hub.edit")) %>
   <% end %>
   <% @employment_activity.employment_activity_months.order(:month).each_with_index do |activity_month, index| %>
+    <% edit_path = edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>
-      <%= row.with_data_cell(data_label: t("activities.summary.employment.month"), is_header: true)
-             .with_content(I18n.l(activity_month.month, format: :month)) %>
+      <%= row.with_data_cell(data_label: t("activities.summary.employment.month"), is_header: true) do %>
+        <%= I18n.l(activity_month.month, format: :month) %>
+        <%= link_to t("activities.hub.edit"), edit_path, class: "usa-link mobile-edit-link" %>
+      <% end %>
       <%= row.with_data_cell(data_label: t("activities.employment.review.gross_income"))
              .with_content(number_to_currency(activity_month.gross_income)) %>
       <%= row.with_data_cell(data_label: t("activities.employment.review.hours_worked"))
              .with_content(activity_month.hours) %>
-      <%= row.with_data_cell do %>
-        <%= link_to t("activities.hub.edit"),
-              edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence),
-              class: "usa-link" %>
+      <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
+        <%= link_to t("activities.hub.edit"), edit_path, class: "usa-link" %>
       <% end %>
     <% end %>
   <% end %>

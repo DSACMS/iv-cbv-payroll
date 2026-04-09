@@ -15,7 +15,7 @@
   <%= t("activities.work_programs.review.description", program_name: @job_training_activity.program_name) %>
 </p>
 
-<div class="display-flex flex-justify flex-align-center activity-review-edit-header">
+<div class="display-flex flex-justify activity-review-edit-header">
   <h2 class="margin-y-0"><%= t("activities.work_programs.review.organization_info") %></h2>
   <%= link_to t("activities.hub.edit"),
         edit_activities_flow_job_training_path(id: @job_training_activity, from_review: 1, from_edit: params[:from_edit].presence),
@@ -90,15 +90,16 @@
            .with_content(t("activities.work_programs.review.edit")) %>
   <% end %>
   <% @job_training_activity.job_training_activity_months.order(:month).each_with_index do |activity_month, index| %>
+    <% edit_path = edit_activities_flow_job_training_month_path(job_training_id: @job_training_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>
-      <%= row.with_data_cell(data_label: t("activities.summary.job_training.month"), is_header: true)
-             .with_content(I18n.l(activity_month.month, format: :month)) %>
+      <%= row.with_data_cell(data_label: t("activities.summary.job_training.month"), is_header: true) do %>
+        <%= I18n.l(activity_month.month, format: :month) %>
+        <%= link_to t("activities.work_programs.review.edit"), edit_path, class: "usa-link mobile-edit-link" %>
+      <% end %>
       <%= row.with_data_cell(data_label: t("activities.work_programs.review.work_program_hours"))
              .with_content(activity_month.hours) %>
-      <%= row.with_data_cell do %>
-        <%= link_to t("activities.work_programs.review.edit"),
-              edit_activities_flow_job_training_month_path(job_training_id: @job_training_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence),
-              class: "usa-link" %>
+      <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
+        <%= link_to t("activities.work_programs.review.edit"), edit_path, class: "usa-link" %>
       <% end %>
     <% end %>
   <% end %>

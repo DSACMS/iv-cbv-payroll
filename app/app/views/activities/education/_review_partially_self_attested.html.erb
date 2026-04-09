@@ -30,11 +30,18 @@
              .with_content(t("activities.education.review.edit")) %>
     <% end %>
     <% term_index = less_than_half_time_terms.index { |term| term.id == enrollment_term.id } || 0 %>
+    <% edit_path = edit_activities_flow_education_term_credit_hour_path(
+          education_id: @education_activity,
+          id: term_index,
+          from_review: 1,
+          from_edit: params[:from_edit].presence
+        ) %>
     <%= table.with_row do |row| %>
       <%= row.with_data_cell(data_label: t("activities.education.review.term"), is_header: true) do %>
         <%= format_date(enrollment_term.term_begin) %>
         &dash;
         <%= format_date(enrollment_term.term_end) %>
+        <%= link_to t("activities.education.review.edit"), edit_path, class: "usa-link mobile-edit-link" %>
       <% end %>
       <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_status")) do %>
         <% enrollment_status_key = "components.enrollment_term_table_component.status.#{enrollment_term.enrollment_status}" %>
@@ -44,15 +51,8 @@
              .with_content(@education_activity.review_term_credit_hours(enrollment_term)) %>
       <%= row.with_data_cell(data_label: t("activities.education.review.community_engagement_hours"))
              .with_content(@education_activity.community_engagement_hours(@education_activity.review_term_credit_hours(enrollment_term))) %>
-      <%= row.with_data_cell do %>
-        <%= link_to t("activities.education.review.edit"),
-              edit_activities_flow_education_term_credit_hour_path(
-                education_id: @education_activity,
-                id: term_index,
-                from_review: 1,
-                from_edit: params[:from_edit].presence
-              ),
-              class: "usa-link" %>
+      <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
+        <%= link_to t("activities.education.review.edit"), edit_path, class: "usa-link" %>
       <% end %>
     <% end %>
   <% end %>
