@@ -13,12 +13,10 @@
               <%= table.with_header_cell(scope: "col") { t("cbv.payment_details.show.pay_information") } %>
               <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
             <% else %>
-              <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-                <%= row.with_data_cell(is_header: true)
-                      .with_content(t("cbv.payment_details.show.pay_information")) %>
-                <%= row.with_data_cell(is_header: true)
-                      .with_content(t("cbv.payment_details.show.your_details")) %>
-              <% end %>
+              <%= table.with_header_cell(colspan: 1)
+                     .with_content(t("cbv.payment_details.show.pay_information")) %>
+              <%= table.with_header_cell(colspan: 1)
+                     .with_content(t("cbv.payment_details.show.your_details")) %>
             <% end %>
             <%= table.with_data_point(:pay_date, paystub.pay_date) %>
             <% if @is_w2_worker %>

@@ -350,21 +350,6 @@ input#invitation_link {
   border-bottom: units(1px) solid color("ink");
 }
 
-.usa-table--borderless.cbv-table .subheader-row th {
-  background-color: color("blue-cool-5");
-}
-
-.subheader-row {
-  > th {
-    font-weight: bold;
-    background-color: color("gray-cool-10");
-  }
-}
-
-.usa-table--borderless .subheader-row th {
-  background-color: color("gray-cool-10");
-}
-
 .activity-review-hours-table {
   // On narrow viewports (including stacked mobile), fill the container.
   // At wider breakpoints (min-width: 30em), shrink to content width so
@@ -384,15 +369,16 @@ input#invitation_link {
   border-bottom: units(1px) solid color("ink");
 }
 
-.activity-review-hours-table.usa-table--stacked .subheader-row th,
-.activity-review-hours-table.usa-table--stacked tr.subheader-row:nth-child(odd) th {
-  background-color: color("blue-cool-5");
-}
-
 // Keep edit column compact in multi-column hours tables
 .activity-review-hours-table td:last-child,
 .activity-review-hours-table th:last-child {
   white-space: nowrap;
+}
+
+// Make sure second col is aligned between both tables on desktop
+.activity-review-hours-table th:not([colspan]),
+.activity-review-hours-table td:first-child {
+  width: 60%;
 }
 
 // Mobile edit link lives inside the th; hidden on desktop where the td column is visible
@@ -511,7 +497,6 @@ input#invitation_link {
 
   // Lock the Edit column to a consistent width so it aligns with the
   // Edit link in the .activity-review-edit-header above.
-  .activity-review-hours-table .subheader-row th:last-child,
   .activity-review-hours-table .desktop-edit-link {
     width: 5rem;
   }

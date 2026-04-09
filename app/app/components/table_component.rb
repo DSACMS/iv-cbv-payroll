@@ -6,7 +6,6 @@ class TableComponent < ViewComponent::Base
     kwargs[:is_header] = true
     TableCellComponent.new(**kwargs)
   }
-  renders_one :subheader_row, TableRowComponent
   renders_many :rows, types: {
     content: {
       renders: TableRowComponent,

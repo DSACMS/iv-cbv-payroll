@@ -9,9 +9,6 @@
         <% header_cells.each { |cell| concat(cell) } %>
       </tr>
     <% end %>
-    <% if subheader_row.present? %>
-      <%= subheader_row %>
-    <% end %>
   </thead>
   <tbody>
     <% rows.each do |row| %>

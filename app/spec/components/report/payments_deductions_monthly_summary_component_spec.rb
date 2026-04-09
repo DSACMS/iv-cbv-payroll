@@ -71,7 +71,6 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
           end
 
           it "uses subheader row style (no thead column headers)" do
-            expect(subject.css("thead tr.subheader-row th").length).to eq(2)
             expect(subject.css("thead tr th").length).to eq(2)
           end
         end

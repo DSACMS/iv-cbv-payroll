@@ -81,14 +81,12 @@
 </h2>
 <% if @community_service_activities.any? %>
   <%= render TableComponent.new do |table| %>
-    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(t("activities.submit.pdf.organization_name")) %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(t("activities.submit.pdf.hours")) %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(t("activities.submit.pdf.date")) %>
-    <% end %>
+    <%= table.with_header_cell(colspan: 1)
+           .with_content(t("activities.submit.pdf.organization_name")) %>
+    <%= table.with_header_cell(colspan: 1)
+           .with_content(t("activities.submit.pdf.hours")) %>
+    <%= table.with_header_cell(colspan: 1)
+           .with_content(t("activities.submit.pdf.date")) %>
     <% @community_service_activities.each do |activity| %>
       <% date_value = activity.date ? l(activity.date) : not_provided %>
       <%= table.with_row do |row| %>
@@ -109,14 +107,12 @@
 </h2>
 <% if @work_programs_activities.any? %>
   <%= render TableComponent.new do |table| %>
-    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(t("activities.submit.pdf.program_name")) %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(t("activities.submit.pdf.organization_address")) %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(t("activities.submit.pdf.hours")) %>
-    <% end %>
+    <%= table.with_header_cell(colspan: 1)
+           .with_content(t("activities.submit.pdf.program_name")) %>
+    <%= table.with_header_cell(colspan: 1)
+           .with_content(t("activities.submit.pdf.organization_address")) %>
+    <%= table.with_header_cell(colspan: 1)
+           .with_content(t("activities.submit.pdf.hours")) %>
     <% @work_programs_activities.each do |activity| %>
       <% total_hours = activity.job_training_activity_months.sum(:hours) %>
       <%= table.with_row do |row| %>
@@ -137,12 +133,10 @@
 </h2>
 <% if @flow.payroll_accounts.any? %>
   <%= render TableComponent.new do |table| %>
-    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(t("activities.employment.account_id")) %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(t("activities.employment.synchronization_status")) %>
-    <% end %>
+    <%= table.with_header_cell(colspan: 1)
+           .with_content(t("activities.employment.account_id")) %>
+    <%= table.with_header_cell(colspan: 1)
+           .with_content(t("activities.employment.synchronization_status")) %>
     <% @flow.payroll_accounts.each do |payroll_account| %>
       <%= table.with_row do |row| %>
         <% row.with_data_cell.with_content(payroll_account.aggregator_account_id) %>

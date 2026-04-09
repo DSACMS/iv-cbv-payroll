@@ -59,12 +59,12 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
 
         it "includes table header" do
           expect(subject.css("h2").to_html).to include "Employment information"
-          expect(subject.css("thead tr.subheader-row th").length).to eq(2)
+          expect(subject.css("thead tr th").length).to eq(2)
         end
 
         it "renders the correct column headers" do
-          expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Employment information"
-          expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
+          expect(subject.css("thead tr th:nth-child(1)").to_html).to include "Employment information"
+          expect(subject.css("thead tr th:nth-child(2)").to_html).to include "Your details"
         end
 
         it "renders employment details" do
@@ -150,13 +150,13 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
 
       it "includes table header" do
         expect(subject.css("h2").to_html).to include "Employment information"
-        expect(subject.css("thead tr.subheader-row th").length).to eq(2)
+        expect(subject.css("thead tr th").length).to eq(2)
       end
 
       it "renders the correct column headers" do
         x = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Employment information"
-        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
+        expect(subject.css("thead tr th:nth-child(1)").to_html).to include "Employment information"
+        expect(subject.css("thead tr th:nth-child(2)").to_html).to include "Your details"
       end
 
       it "renders employment details" do
@@ -203,13 +203,13 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
 
       it "includes table header" do
         expect(subject.css("h2").to_html).to include "Employment information"
-        expect(subject.css("thead tr.subheader-row th").length).to eq(2)
+        expect(subject.css("thead tr th").length).to eq(2)
       end
 
       it "renders the correct column headers" do
         x = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Employment information"
-        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
+        expect(subject.css("thead tr th:nth-child(1)").to_html).to include "Employment information"
+        expect(subject.css("thead tr th:nth-child(2)").to_html).to include "Your details"
       end
 
       it "renders employment details" do
