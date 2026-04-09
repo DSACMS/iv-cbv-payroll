@@ -70,7 +70,44 @@ jobs:
           scanners: vuln
 
       - name: Patch Dockerfile with fixable OS packages
+        env:
+          PATCH_SUMMARY_FILE: patch-summary.md
         run: python3 .github/scripts/patch-dockerfile.py trivy-results.json app/Dockerfile
+
+      - name: Generate PR body
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          TRIGGER_RUN_URL: ${{ github.event.workflow_run.html_url }}
+          TRIGGER_RUN_TITLE: ${{ github.event.workflow_run.display_title }}
+        run: |
+          {
+            echo "## Automated Dockerfile OS Vulnerability Fix"
+            echo ""
+            if [ "$EVENT_NAME" = "workflow_run" ]; then
+              echo "**Detected in:** [${TRIGGER_RUN_TITLE}](${TRIGGER_RUN_URL})"
+            else
+              echo "**Triggered by:** manual \`${EVENT_NAME}\`"
+            fi
+            echo ""
+            echo "Trivy identified OS packages with available CVE fixes. The auto-managed"
+            echo "\`RUN apt-get install\` block in the Dockerfile BASE stage has been updated:"
+            echo ""
+            cat patch-summary.md
+            echo "---"
+            echo ""
+            echo "> [!IMPORTANT]"
+            echo "> **Trigger CI before merging.** This PR was opened by an automated workflow."
+            echo "> GitHub does not run CI on \`GITHUB_TOKEN\`-created PRs automatically."
+            echo "> To run \`CI Vulnerability Scans\`:"
+            echo "> 1. Click **Close pull request** at the bottom of this page"
+            echo "> 2. Click **Reopen pull request**"
+            echo ""
+            echo "Once CI passes and confirms Trivy/Anchore are green, this PR is safe to merge."
+            echo ""
+            echo "_The auto-fix block in the Dockerfile is temporary — remove it when the base_"
+            echo "_Ruby image is next upgraded to a version that includes these fixes (see upgrade_"
+            echo "_instructions at the top of the Dockerfile)._"
+          } > pr-body.md
 
       - name: Create or update fix PR
         uses: peter-evans/create-pull-request@v7
@@ -82,20 +119,5 @@ jobs:
           delete-branch: false
           title: 'fix: patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore'
           labels: security
-          body: |
-            ## Automated Dockerfile OS Vulnerability Fix
-
-            Triggered by: `${{ github.event_name }}`
-
-            Trivy identified OS packages with available fixes. This PR reconciles the
-            auto-managed `RUN apt-get install` block in the Dockerfile BASE stage:
-
-            - **Added**: packages with newly available CVE fixes
-            - **Removed**: packages resolved by the base image update (if any)
-
-            **Before merging:**
-            - Re-run `CI Vulnerability Scans` on this PR to confirm Trivy and Anchore pass
-            - The auto-fix block is temporary — per the Dockerfile header instructions,
-              remove it when the base Ruby image is next upgraded to a version that
-              includes these fixes
+          body-path: pr-body.md
           commit-message: 'fix: patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore'

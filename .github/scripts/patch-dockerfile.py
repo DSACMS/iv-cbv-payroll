@@ -16,6 +16,7 @@ Never touches the manually-maintained "Upgrade packages in base image" block.
 """
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -178,6 +179,38 @@ def main(trivy_path: str, dockerfile_path: str) -> None:
 
     dockerfile.write_text("".join(lines))
     print(f"Dockerfile updated: {dockerfile_path}")
+
+    write_summary(to_add, to_remove)
+
+
+def write_summary(added: dict[str, str], removed: set[str]) -> None:
+    """Writes a markdown patch summary to the file path in PATCH_SUMMARY_FILE env var."""
+    summary_file = os.environ.get("PATCH_SUMMARY_FILE")
+    if not summary_file:
+        return
+
+    lines = []
+
+    if added:
+        lines.append("### Packages added\n\n")
+        lines.append("| Package | Fixed version |\n")
+        lines.append("|---------|---------------|\n")
+        for pkg, ver in sorted(added.items()):
+            lines.append(f"| `{pkg}` | `{ver}` |\n")
+        lines.append("\n")
+    else:
+        lines.append("### Packages added\n\nNone\n\n")
+
+    if removed:
+        lines.append("### Packages removed _(resolved by base image update)_\n\n")
+        lines.append("| Package |\n")
+        lines.append("|---------|\n")
+        for pkg in sorted(removed):
+            lines.append(f"| `{pkg}` |\n")
+        lines.append("\n")
+
+    with open(summary_file, "w") as f:
+        f.writelines(lines)
 
 
 if __name__ == "__main__":
