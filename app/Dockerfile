@@ -33,6 +33,8 @@ RUN apt-get update -qq && \
       libpng-dev \
       # CVE-2026-4775 \
       libtiff-dev \
+      # CVE-2026-2673 \
+      libssl-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
