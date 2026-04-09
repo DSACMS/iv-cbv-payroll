@@ -52,31 +52,13 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
           pinwheel_report.fetch
         end
 
-        context "with default (CBV) style" do
+        context "with column header style" do
           subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
           it "pinwheel_report is properly fetched" do
             expect(pinwheel_report.gigs.length).to eq(3)
             expect(pinwheel_report.paystubs.length).to eq(1)
           end
-
-          it "includes the payments and deductions section with accordion and content" do
-            expect(subject.css("h2").to_html).to include "Payments and deductions"
-
-            accordion = subject.at_css('button.usa-accordion__button')
-            expect(accordion).not_to be_nil
-            expect(accordion.text).to include("December 2020")
-
-            expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
-          end
-
-          it "uses subheader row style (no thead column headers)" do
-            expect(subject.css("thead tr th").length).to eq(2)
-          end
-        end
-
-        context "with activity style" do
-          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly", use_activity_style: true)) }
 
           it "includes the payments and deductions section with accordion and content" do
             expect(subject.css("h2").to_html).to include "Payments and deductions"

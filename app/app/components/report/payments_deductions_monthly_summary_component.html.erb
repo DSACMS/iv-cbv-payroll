@@ -9,15 +9,8 @@
         <% accordion.with_accordion_item do %>
           <% summary[:paystubs].each do |paystub| %>
           <%= render(TableComponent.new(class_names: "payment-details-table")) do |table| %>
-            <% if @use_activity_style %>
-              <%= table.with_header_cell(scope: "col") { t("cbv.payment_details.show.pay_information") } %>
-              <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
-            <% else %>
-              <%= table.with_header_cell(colspan: 1)
-                     .with_content(t("cbv.payment_details.show.pay_information")) %>
-              <%= table.with_header_cell(colspan: 1)
-                     .with_content(t("cbv.payment_details.show.your_details")) %>
-            <% end %>
+            <%= table.with_header_cell(scope: "col") { t("cbv.payment_details.show.pay_information") } %>
+            <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
             <%= table.with_data_point(:pay_date, paystub.pay_date) %>
             <% if @is_w2_worker %>
               <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, @pay_frequency_text) %>
