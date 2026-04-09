@@ -43,6 +43,20 @@ jobs:
         id: timestamp
         run: echo "value=$(date -u +%Y%m%d-%H%M%S)" >> "$GITHUB_OUTPUT"
 
+      - name: Determine reviewer
+        id: reviewer
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            # Tag the person whose push/PR triggered the failing CI run
+            echo "login=${{ github.event.workflow_run.actor.login }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Tag whoever manually triggered this workflow
+            echo "login=${{ github.actor }}" >> "$GITHUB_OUTPUT"
+          else
+            # Scheduled run — no specific person to tag
+            echo "login=" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
 
       - name: Login to Docker Hub
@@ -83,12 +97,18 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           TRIGGER_RUN_URL: ${{ github.event.workflow_run.html_url }}
           TRIGGER_RUN_TITLE: ${{ github.event.workflow_run.display_title }}
+          TRIGGER_PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
         run: |
           {
             echo "## Automated Dockerfile OS Vulnerability Fix"
             echo ""
             if [ "$EVENT_NAME" = "workflow_run" ]; then
-              echo "**Detected in:** [${TRIGGER_RUN_TITLE}](${TRIGGER_RUN_URL})"
+              echo "| | |"
+              echo "|---|---|"
+              echo "| **Failed scan** | [${TRIGGER_RUN_TITLE}](${TRIGGER_RUN_URL}) |"
+              if [ -n "$TRIGGER_PR_NUMBER" ] && [ "$TRIGGER_PR_NUMBER" != "null" ]; then
+                echo "| **Source PR** | #${TRIGGER_PR_NUMBER} |"
+              fi
             else
               echo "**Triggered by:** manual \`${EVENT_NAME}\`"
             fi
@@ -143,4 +163,5 @@ jobs:
           title: 'fix: patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore'
           labels: security
           body-path: pr-body.md
+          reviewers: ${{ steps.reviewer.outputs.login }}
           commit-message: 'fix: patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore'
