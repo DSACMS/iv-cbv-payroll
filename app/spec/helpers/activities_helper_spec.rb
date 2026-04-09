@@ -1,6 +1,68 @@
 require "rails_helper"
 
 RSpec.describe ActivitiesHelper do
+  describe "activity hub display helpers" do
+    describe "#activity_hub_state" do
+      let(:meeting_result) { instance_double(ActivityFlowProgressCalculator::MonthlyResult, meets_requirements: true) }
+      let(:not_meeting_result) { instance_double(ActivityFlowProgressCalculator::MonthlyResult, meets_requirements: false) }
+
+      it "returns empty when no activities are added" do
+        state = helper.activity_hub_state(
+          any_activities_added: false,
+          monthly_results: [ meeting_result ]
+        )
+
+        expect(state).to eq(:empty)
+      end
+
+      it "returns completed when all months meet requirements" do
+        state = helper.activity_hub_state(
+          any_activities_added: true,
+          monthly_results: [ meeting_result, meeting_result ]
+        )
+
+        expect(state).to eq(:completed)
+      end
+
+      it "returns in_progress when any month does not meet requirements" do
+        state = helper.activity_hub_state(
+          any_activities_added: true,
+          monthly_results: [ meeting_result, not_meeting_result ]
+        )
+
+        expect(state).to eq(:in_progress)
+      end
+    end
+
+    describe "#activity_hub_title_key" do
+      it "maps empty state to empty-state title key" do
+        expect(helper.activity_hub_title_key(:empty)).to eq("activities.hub.empty_state_title")
+      end
+
+      it "maps completed state to completed-state title key" do
+        expect(helper.activity_hub_title_key(:completed)).to eq("activities.hub.completed_state_title")
+      end
+
+      it "maps in-progress state to in-progress title key" do
+        expect(helper.activity_hub_title_key(:in_progress)).to eq("activities.hub.in_progress_state_title")
+      end
+    end
+
+    describe "#activity_hub_description_key" do
+      it "maps completed state to completed-state description key" do
+        expect(helper.activity_hub_description_key(:completed)).to eq("activities.hub.completed_state_description")
+      end
+
+      it "maps in-progress state to in-progress description key" do
+        expect(helper.activity_hub_description_key(:in_progress)).to eq("activities.hub.in_progress_state_description")
+      end
+
+      it "maps empty state to in-progress description key" do
+        expect(helper.activity_hub_description_key(:empty)).to eq("activities.hub.in_progress_state_description")
+      end
+    end
+  end
+
   describe "#community_service_cards" do
     let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
     let(:first_month) { flow.reporting_window_range.begin.beginning_of_month }

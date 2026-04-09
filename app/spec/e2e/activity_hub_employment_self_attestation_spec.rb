@@ -15,7 +15,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     visit URI(root_url).request_uri
     visit activities_flow_entry_path(client_agency_id: "sandbox")
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     flow = ActivityFlow.last
     month1 = flow.reporting_months.first
@@ -166,6 +166,6 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Updated Employer"))
     click_button I18n.t("activities.employment.review.save")
 
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
   end
 end

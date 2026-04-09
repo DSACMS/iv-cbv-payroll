@@ -1,16 +1,22 @@
 class ActivityFlowProgressIndicator < ViewComponent::Base
-  def self.from_calculator(progress_calculator, agency_full_name, variant: :standard, required_month_count: nil)
+  def self.from_calculator(
+    progress_calculator,
+    variant: :application,
+    required_month_count: nil
+  )
     new(
       monthly_calculation_results: progress_calculator.monthly_results,
-      agency_full_name: agency_full_name,
       variant: variant,
       required_month_count: required_month_count
     )
   end
 
-  def initialize(monthly_calculation_results:, agency_full_name:, variant: :standard, required_month_count: nil)
+  def initialize(
+    monthly_calculation_results:,
+    variant: :application,
+    required_month_count: nil
+  )
     @monthly_calculation_results = monthly_calculation_results
-    @agency_full_name = agency_full_name
     @renewal = variant.to_s == "renewal"
     @required_month_count = normalize_required_month_count(required_month_count)
   end
@@ -48,12 +54,14 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
 
   def renewal? = @renewal
 
+  def renewal_requires_subset_months? = renewal? && required_month_count < total_month_count
+
   def reporting_window_start_month = ordered_monthly_calculation_results.first&.month
 
   def reporting_window_end_month = ordered_monthly_calculation_results.last&.month
 
   private
-  attr_reader :monthly_calculation_results, :agency_full_name, :required_month_count
+  attr_reader :monthly_calculation_results, :required_month_count
 
   def normalize_required_month_count(required_month_count)
     requested_count = required_month_count || monthly_calculation_results.length

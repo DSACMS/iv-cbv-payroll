@@ -317,17 +317,26 @@ en:
         hours: 'Community engagement hours: %{count}'
         no_employment_data: No payments found from this employer.
         not_enrolled: Not enrolled
-      description_html: "<strong>Reporting period:</strong> %{reporting_window}"
+      completed_state_description: "%{agency_name} will determine your eligibility based on the activities you've added to your report."
+      completed_state_title: You're ready to review and submit your report
       edit: Edit
       empty:
         community_service: No community service added
         education: No education added
         employment: No employment added
         work_programs: No work programs added
+      empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
+      empty_state_months_required_all: all %{required_month_count} months in the reporting period
+      empty_state_months_required_any: any %{required_month_count} months in the reporting period
+      empty_state_months_required_label: 'Months required:'
+      empty_state_reporting_period_label: 'Reporting period:'
+      empty_state_title: Build your community engagement report
+      in_progress_state_description: "%{agency_name} will determine your eligibility based on the activities you add to your report."
+      in_progress_state_title: Add more activities or continue to review and submit your report
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit
       save: Save changes
-      title: Add activities to your community engagement report
+      verification_info_link: What if I can't meet the requirements?
     income:
       employer_searches:
         employer:
@@ -520,16 +529,12 @@ en:
       title: Work programs
       title_singular: Work Program
   activity_flow_progress_indicator:
-    description: We calculate your community engagement from the activities you add to your report.
-    description_complete: "%{agency_full_name} will determine your final eligibility based on the activities you’ve added to your report."
+    application_months_completed: "%{complete}/%{total} months completed"
     hours: hours
-    months_completed_html: "<strong>%{complete}</strong> / <strong>%{total}</strong> months completed"
     renewal_months_completed: "%{complete}/%{required} months completed"
     renewal_subtitle: Complete any %{required} months between %{start_month}-%{end_month} to meet requirements.
     renewal_subtitle_no_range: Complete any %{required} months to meet requirements.
     title: Your %{month} progress
-    title_complete: You're ready to review and submit your report
-    title_multi_month: Your progress
   aggregator_strings:
     deductions:
       401k: 401k

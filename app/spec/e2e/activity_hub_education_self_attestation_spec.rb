@@ -18,7 +18,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     visit URI(root_url).request_uri
     visit activities_flow_entry_path(client_agency_id: "sandbox")
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     flow = ActivityFlow.last
     month1 = flow.reporting_months.first
@@ -64,7 +64,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
 
     # --- Step 2: Save and return to the hub ---
     click_button I18n.t("activities.education.review.save")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
 
     # --- Step 3: Edit from the hub card → review (no back button) → edit school info → review ---
     within("[data-activity-type='education']") do
@@ -99,7 +99,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     # --- Step 4: Save and return to the hub ---
     click_button I18n.t("activities.hub.save")
 
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
     expect(page).to have_content("Updated University of Illinois")
   end
 end

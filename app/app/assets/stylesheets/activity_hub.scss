@@ -23,6 +23,10 @@
   }
 }
 
+.activity-hub-subheading {
+  margin: units(1) 0 0;
+}
+
 .activity-hub-columns__activities {
   @include at-media("tablet") {
     flex: 1;
@@ -30,16 +34,6 @@
     margin-left: units(8);
     border-left: 1px solid color("base-lighter");
     padding-left: units(8);
-  }
-}
-
-// Mobile-only horizontal divider between progress and cards
-.activity-hub-mobile-divider {
-  border: none;
-  border-top: 1px solid color("base-lighter");
-
-  @include at-media("tablet") {
-    display: none;
   }
 }
 

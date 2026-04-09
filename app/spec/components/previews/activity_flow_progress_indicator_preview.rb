@@ -6,7 +6,6 @@ class ActivityFlowProgressIndicatorPreview < ApplicationPreview
     result = make_result(Date.new(2026, 1, 1), hours.to_f)
 
     render ActivityFlowProgressIndicator.new(
-      agency_full_name: "Test Agency",
       monthly_calculation_results: [ result ]
     )
   end
@@ -24,7 +23,6 @@ class ActivityFlowProgressIndicatorPreview < ApplicationPreview
     results << make_result(Date.new(2025, 10, 1), month_4_hours) if num_months.to_i > 3
 
     render ActivityFlowProgressIndicator.new(
-      agency_full_name: "Test Agency",
       monthly_calculation_results: results
     )
   end
@@ -35,7 +33,6 @@ class ActivityFlowProgressIndicatorPreview < ApplicationPreview
     results << make_result(Date.new(2025, 12, 1), 91)
 
     render ActivityFlowProgressIndicator.new(
-      agency_full_name: "Test Agency",
       monthly_calculation_results: results
     )
   end
@@ -51,7 +48,6 @@ class ActivityFlowProgressIndicatorPreview < ApplicationPreview
     results << make_result(Date.new(2025, 8, 1), 0)
 
     render ActivityFlowProgressIndicator.new(
-      agency_full_name: "Test Agency",
       monthly_calculation_results: results,
       variant: :renewal,
       required_month_count: required_months.to_i
@@ -69,7 +65,6 @@ class ActivityFlowProgressIndicatorPreview < ApplicationPreview
     results << make_result(Date.new(2025, 8, 1), 93)
 
     render ActivityFlowProgressIndicator.new(
-      agency_full_name: "Test Agency",
       monthly_calculation_results: results,
       variant: :renewal,
       required_month_count: required_months.to_i
@@ -82,7 +77,7 @@ class ActivityFlowProgressIndicatorPreview < ApplicationPreview
     ActivityFlowProgressCalculator::MonthlyResult.new(
       month: month,
       total_hours: hours.to_f,
-      meets_requirements: hours.to_f > ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
+      meets_requirements: hours.to_f >= ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
     )
   end
 end
