@@ -48,8 +48,8 @@ RSpec.describe TableComponent, type: :component do
   context "when header_cells are provided" do
     subject(:result) do
       render_inline(described_class.new) do |table|
-        table.with_header_cell(is_header: true, scope: "col") { "Col 1" }
-        table.with_header_cell(is_header: true, scope: "col") { "Col 2" }
+        table.with_header_cell(scope: "col") { "Col 1" }
+        table.with_header_cell(scope: "col") { "Col 2" }
         table.with_row { |row| row.with_data_cell.with_content("cell") }
       end
     end
@@ -58,6 +58,20 @@ RSpec.describe TableComponent, type: :component do
       expect(result.css("thead tr th[scope='col']").length).to eq(2)
       expect(result.css("thead tr th[scope='col']").first.text.strip).to eq("Col 1")
       expect(result.css("thead tr th[scope='col']").last.text.strip).to eq("Col 2")
+    end
+  end
+
+  context "when header cell content is provided without is_header" do
+    subject(:result) do
+      render_inline(described_class.new) do |table|
+        table.with_header_cell { "Header" }
+        table.with_row { |row| row.with_data_cell.with_content("cell") }
+      end
+    end
+
+    it "renders the slot as a table header cell" do
+      expect(result.css("thead tr th").text).to include("Header")
+      expect(result.css("thead tr td")).to be_empty
     end
   end
 end

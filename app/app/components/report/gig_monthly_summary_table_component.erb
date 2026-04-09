@@ -8,15 +8,15 @@
       </h2>
     <% end %>
     <%= render(TableComponent.new(is_responsive: @is_responsive, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
-      <%= table.with_header_cell(is_header: true)
+      <%= table.with_header_cell
                .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
-      <%= table.with_header_cell(is_header: true)
+      <%= table.with_header_cell
                .with_content(I18n.t("components.report.monthly_summary_table.accrued_gross_earnings")) %>
       <% if has_mileage_data? %>
-        <%= table.with_header_cell(is_header: true, class_names: "text-no-wrap")
+        <%= table.with_header_cell(class_names: "text-no-wrap")
                  .with_content(I18n.t("components.report.monthly_summary_table.verified_mileage_expenses")) %>
       <% end %>
-      <%= table.with_header_cell(is_header: true)
+      <%= table.with_header_cell
                .with_content(I18n.t("components.report.monthly_summary_table.total_gig_hours")) %>
 
       <% if has_monthly_summary_results? %>

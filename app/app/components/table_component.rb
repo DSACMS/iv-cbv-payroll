@@ -2,14 +2,16 @@
 
 class TableComponent < ViewComponent::Base
   renders_one :header, TableHeaderComponent
-  renders_many :header_cells, TableCellComponent
+  renders_many :header_cells, lambda { |**kwargs|
+    kwargs[:is_header] = true
+    TableCellComponent.new(**kwargs)
+  }
   renders_one :subheader_row, TableRowComponent
   renders_many :rows, types: {
     content: {
       renders: TableRowComponent,
       as: :row
     },
-    section: TableRowSectionHeaderComponent,
     data_point: {
       renders: AggregateDataPointComponent,
       as: :data_point

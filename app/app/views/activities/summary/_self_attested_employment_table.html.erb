@@ -1,6 +1,6 @@
 <%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
-  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.employer_information") } %>
-  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.your_details") } %>
+  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.employer_information") } %>
+  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.summary.employment.employer") %>
@@ -50,11 +50,11 @@
 <h3><%= t("activities.summary.monthly_details") %></h3>
 <%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
   <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+    <%= row.with_data_cell(is_header: true, class_names: "text-no-wrap")
            .with_content(t("activities.summary.employment.month")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+    <%= row.with_data_cell(is_header: true, class_names: "text-no-wrap")
            .with_content(t("activities.summary.employment.gross_income")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+    <%= row.with_data_cell(is_header: true, class_names: "text-no-wrap")
            .with_content(t("activities.summary.employment.hours_worked")) %>
   <% end %>
 

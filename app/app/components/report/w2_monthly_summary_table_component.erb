@@ -5,13 +5,13 @@
     </h2>
   <% end %>
   <%= render(TableComponent.new(is_responsive: @is_responsive, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
-    <%= table.with_header_cell(is_header: true, class_names: "text-nowrap")
+    <%= table.with_header_cell(class_names: "text-no-wrap")
            .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
-    <%= table.with_header_cell(is_header: true, class_names: "text-nowrap")
+    <%= table.with_header_cell(class_names: "text-no-wrap")
            .with_content(I18n.t("components.report.monthly_summary_table.w2.title_gross_income")) %>
-    <%= table.with_header_cell(is_header: true)
+    <%= table.with_header_cell
            .with_content(I18n.t("components.report.monthly_summary_table.w2.title_number_of_paychecks")) %>
-    <%= table.with_header_cell(is_header: true)
+    <%= table.with_header_cell
            .with_content(I18n.t("components.report.monthly_summary_table.w2.title_total_hours_worked")) %>
 
     <% if has_monthly_summary_results? %>
