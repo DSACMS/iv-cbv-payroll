@@ -30,17 +30,7 @@
 ])) %>
 
 <h2><%= t("activities.employment.review.hours_and_income") %></h2>
-<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
-  <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.summary.employment.month")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.employment.review.gross_income")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.employment.review.hours_worked")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.hub.edit")) %>
-  <% end %>
+<%= render(TableComponent.new(class_names: "activity-review-hours-table")) do |table| %>
   <% @employment_activity.employment_activity_months.order(:month).each_with_index do |activity_month, index| %>
     <% edit_path = edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>

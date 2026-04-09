@@ -18,10 +18,9 @@ class TableComponent < ViewComponent::Base
     }
   }
 
-  def initialize(is_responsive: false, class_names: "", thead_class_names: "", attributes: {})
-    @class_names = "usa-table usa-table--borderless width-full activity-review-table"
+  def initialize(class_names: "", thead_class_names: "", attributes: {})
+    @class_names = "usa-table usa-table--borderless width-full activity-review-table usa-table--stacked"
     @class_names = [ @class_names, class_names ].join(" ") if class_names.present?
-    @class_names = [ @class_names, " usa-table--stacked" ].join(" ") if is_responsive
     @thead_class_names = thead_class_names
     @attributes = attributes
   end

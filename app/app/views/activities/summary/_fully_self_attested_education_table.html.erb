@@ -1,4 +1,4 @@
-<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+<%= render(TableComponent.new) do |table| %>
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.education_information") } %>
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
@@ -49,7 +49,7 @@
 <% end %>
 
 <h3><%= t("activities.summary.monthly_details") %></h3>
-<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
+<%= render(TableComponent.new(class_names: "activity-review-table", thead_class_names: "")) do |table| %>
   <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.education.month") } %>
   <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.education.credit_hours") } %>
   <% activity.education_activity_months.order(:month).each do |activity_month| %>

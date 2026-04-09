@@ -231,7 +231,6 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
           render_inline(described_class.new(
             argyle_report,
             payroll_account,
-            is_responsive: false,
             is_caseworker: true
           ))
         end

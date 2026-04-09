@@ -17,7 +17,7 @@ RSpec.describe TableComponent, type: :component do
 
   let(:table_attributes) { {} }
   let(:rows) { [] }
-  let(:base_class) { "usa-table usa-table--borderless width-full" }
+  let(:base_class) { "usa-table usa-table--borderless width-full activity-review-table usa-table--stacked" }
 
 
   context "when no rows are provided" do
@@ -33,6 +33,7 @@ RSpec.describe TableComponent, type: :component do
     it "renders a <table> element" do
       expect(result.css("table")).to be_present
       expect(result.text).to include("Cell content")
+      expect(result.css("table").first["class"]).to include(base_class)
     end
   end
 

@@ -21,7 +21,7 @@
         edit_activities_flow_job_training_path(id: @job_training_activity, from_review: 1, from_edit: params[:from_edit].presence),
         class: "usa-link" %>
 </div>
-<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+<%= render(TableComponent.new) do |table| %>
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.work_program_information") } %>
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
@@ -80,15 +80,7 @@
 <% end %>
 
 <h2><%= t("activities.work_programs.review.hours_section") %></h2>
-<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
-  <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.summary.job_training.month")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.work_programs.review.work_program_hours")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.work_programs.review.edit")) %>
-  <% end %>
+<%= render(TableComponent.new(class_names: "cs-review-hours-table")) do |table| %>
   <% @job_training_activity.job_training_activity_months.order(:month).each_with_index do |activity_month, index| %>
     <% edit_path = edit_activities_flow_job_training_month_path(job_training_id: @job_training_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>

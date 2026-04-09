@@ -53,7 +53,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         end
 
         context "with default (CBV) style" do
-          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
           it "pinwheel_report is properly fetched" do
             expect(pinwheel_report.gigs.length).to eq(3)
@@ -77,7 +77,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         end
 
         context "with activity style" do
-          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly", use_activity_style: true)) }
+          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly", use_activity_style: true)) }
 
           it "includes the payments and deductions section with accordion and content" do
             expect(subject.css("h2").to_html).to include "Payments and deductions"
@@ -99,7 +99,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       end
 
       context "whose paystubs failed to sync" do
-        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
         let(:supported_jobs) { %w[paystubs employment income] }
         let(:errored_jobs) { [ "paystubs" ] }
@@ -158,7 +158,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
     end
 
     context "with bob, a gig-worker whose paystubs synced" do
-      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+      subject { render_inline(described_class.new(argyle_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
       before do
         argyle_stub_request_paystubs_response("bob")
@@ -216,7 +216,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
       it "raises an error without the paystubs data" do
         expect {
-          render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly"))
+          render_inline(described_class.new(argyle_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly"))
         }.to raise_error(RuntimeError, "No employments found that match account_id 019571bc-2f60-3955-d972-dbadfe0913a8")
       end
     end

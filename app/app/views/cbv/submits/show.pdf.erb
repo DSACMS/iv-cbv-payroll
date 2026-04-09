@@ -148,7 +148,7 @@
   <% end %>
 
   <% if is_w2_worker %>
-    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true, show_footnote: is_first_w2_job)) %>
+    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_pdf: true, show_footnote: is_first_w2_job)) %>
     <h3><%= t(".pdf.shared.payments_and_deductions_header", employer_name: employer_name) %></h3>
     <% summary[:paystubs]&.each do |paystub| %>
       <%= render(TableComponent.new) do |table| %>
@@ -191,7 +191,7 @@
       <% end %>
     <% end %>
   <% else %>
-    <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true, show_footnote: is_first_gig_job)) %>
+    <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_pdf: true, show_footnote: is_first_gig_job)) %>
   <% end %>
 
   <% payroll_account = @cbv_flow.payroll_accounts.find_by(aggregator_account_id: account_id) %>
