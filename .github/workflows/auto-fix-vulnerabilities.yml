@@ -39,6 +39,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
     steps:
+      - name: Generate branch timestamp
+        id: timestamp
+        run: echo "value=$(date -u +%Y%m%d-%H%M%S)" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@v4
 
       - name: Login to Docker Hub
@@ -114,7 +118,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           add-paths: app/Dockerfile
-          branch: auto-fix/dockerfile-os-vulnerabilities
+          branch: auto-fix/dockerfile-os-vulnerabilities-${{ steps.timestamp.outputs.value }}
           base: main
           delete-branch: false
           title: 'fix: patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore'
