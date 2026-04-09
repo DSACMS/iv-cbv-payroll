@@ -29,8 +29,10 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       # CVE-2026-28693 \
       imagemagick \
-      # CVE-2026-33416
+      # CVE-2026-33416 \
       libpng-dev \
+      # CVE-2026-4775 \
+      libtiff-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
