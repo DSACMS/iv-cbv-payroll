@@ -5,9 +5,9 @@
     </h2>
   <% end %>
   <%= render(TableComponent.new) do |table| %>
-    <%= table.with_header_cell(class_names: "text-no-wrap")
+    <%= table.with_header_cell
            .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
-    <%= table.with_header_cell(class_names: "text-no-wrap")
+    <%= table.with_header_cell
            .with_content(I18n.t("components.report.monthly_summary_table.w2.title_gross_income")) %>
     <%= table.with_header_cell
            .with_content(I18n.t("components.report.monthly_summary_table.w2.title_number_of_paychecks")) %>

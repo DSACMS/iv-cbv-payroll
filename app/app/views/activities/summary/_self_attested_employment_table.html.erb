@@ -50,11 +50,11 @@
 <h3><%= t("activities.summary.monthly_details") %></h3>
 <%= render(TableComponent.new) do |table| %>
   <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-no-wrap")
+    <%= row.with_data_cell(is_header: true)
            .with_content(t("activities.summary.employment.month")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-no-wrap")
+    <%= row.with_data_cell(is_header: true)
            .with_content(t("activities.summary.employment.gross_income")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-no-wrap")
+    <%= row.with_data_cell(is_header: true)
            .with_content(t("activities.summary.employment.hours_worked")) %>
   <% end %>
 

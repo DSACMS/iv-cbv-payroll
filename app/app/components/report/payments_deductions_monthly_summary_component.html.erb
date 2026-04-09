@@ -14,9 +14,9 @@
               <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
             <% else %>
               <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-                <%= row.with_data_cell(is_header: true, class_names: "text-no-wrap")
+                <%= row.with_data_cell(is_header: true)
                       .with_content(t("cbv.payment_details.show.pay_information")) %>
-                <%= row.with_data_cell(is_header: true, class_names: "text-no-wrap")
+                <%= row.with_data_cell(is_header: true)
                       .with_content(t("cbv.payment_details.show.your_details")) %>
               <% end %>
             <% end %>

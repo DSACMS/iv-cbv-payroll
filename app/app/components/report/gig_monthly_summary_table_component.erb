@@ -13,7 +13,7 @@
       <%= table.with_header_cell
                .with_content(I18n.t("components.report.monthly_summary_table.accrued_gross_earnings")) %>
       <% if has_mileage_data? %>
-        <%= table.with_header_cell(class_names: "text-no-wrap")
+        <%= table.with_header_cell
                  .with_content(I18n.t("components.report.monthly_summary_table.verified_mileage_expenses")) %>
       <% end %>
       <%= table.with_header_cell
