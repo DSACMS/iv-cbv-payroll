@@ -1,4 +1,4 @@
-<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
+<%= render(TableComponent.new(is_responsive: true)) do |table| %>
   <%= table.with_header_cell(scope: "col") { @field_header } %>
   <%= table.with_header_cell(scope: "col") { @value_header } %>
   <% @rows.each do |row_data| %>

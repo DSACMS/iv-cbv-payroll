@@ -2,10 +2,7 @@
   <h2 class="margin-0">
     <%= I18n.t("cbv.payment_details.show.employment_information_table_header") %>
   </h2>
-  <% table_options = @use_activity_style \
-      ? { is_responsive: @is_responsive, class_names: "activity-review-table", thead_class_names: "" } \
-      : { is_responsive: @is_responsive } %>
-  <%= render(TableComponent.new(**table_options)) do |table| %>
+  <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
     <% if @use_activity_style %>
       <%= table.with_header_cell(scope: "col") { I18n.t("shared.table_headers.employer_information") } %>
       <%= table.with_header_cell(scope: "col") { I18n.t("shared.table_headers.your_details") } %>

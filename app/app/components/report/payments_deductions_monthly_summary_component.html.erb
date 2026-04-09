@@ -8,10 +8,7 @@
         <% end %>
         <% accordion.with_accordion_item do %>
           <% summary[:paystubs].each do |paystub| %>
-          <% table_options = @use_activity_style \
-              ? { is_responsive: @is_responsive, class_names: "activity-review-table payment-details-table", thead_class_names: "" } \
-              : { is_responsive: @is_responsive, class_names: "payment-details-table" } %>
-          <%= render(TableComponent.new(**table_options)) do |table| %>
+          <%= render(TableComponent.new(is_responsive: @is_responsive, class_names: "payment-details-table")) do |table| %>
             <% if @use_activity_style %>
               <%= table.with_header_cell(scope: "col") { t("cbv.payment_details.show.pay_information") } %>
               <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>

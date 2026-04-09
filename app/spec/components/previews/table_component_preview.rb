@@ -2,7 +2,7 @@
 
 class TableComponentPreview < ApplicationPreview
   def default
-    render(TableComponent.new(is_responsive: true, class_names: "cbv-table", thead_class_names: "")) do |table|
+    render(TableComponent.new(is_responsive: true, class_names: "cbv-table")) do |table|
       table.with_header_cell(scope: "col") { "Field" }
       table.with_header_cell(scope: "col") { "Value" }
 
