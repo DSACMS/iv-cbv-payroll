@@ -85,9 +85,9 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
         end
       end
 
-      it "uses column header style with activity-review-table class" do
+      it "uses column header style with usa-table class" do
         result = render_inline(described_class.new(pinwheel_report, payroll_account))
-        expect(result.at_css('table.activity-review-table')).not_to be_nil
+        expect(result.at_css('table.usa-table')).not_to be_nil
         expect(result.css("thead tr th").length).to eq(2)
         expect(result.css("thead tr th:nth-child(1)").text).to include("Employer information")
         expect(result.css("thead tr th:nth-child(2)").text).to include("Your details")

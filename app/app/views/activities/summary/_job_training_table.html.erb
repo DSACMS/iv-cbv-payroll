@@ -58,7 +58,7 @@
 <% end %>
 
 <h3><%= t("activities.summary.monthly_details") %></h3>
-<%= render(TableComponent.new(class_names: "activity-review-table", thead_class_names: "")) do |table| %>
+<%= render(TableComponent.new) do |table| %>
   <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.job_training.month") } %>
   <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.job_training.work_program_hours") } %>
   <% activity.job_training_activity_months.order(:month).each do |month_hours| %>

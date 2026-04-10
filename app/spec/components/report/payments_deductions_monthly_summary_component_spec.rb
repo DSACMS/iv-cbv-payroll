@@ -70,8 +70,8 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
             expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
           end
 
-          it "uses column header style with activity-review-table class" do
-            expect(subject.at_css('table.activity-review-table')).not_to be_nil
+          it "uses column header style with usa-table class" do
+            expect(subject.at_css('table.usa-table')).not_to be_nil
             expect(subject.css("thead tr th").length).to eq(2)
             expect(subject.css("thead tr th:nth-child(1)").text).to include("Pay information")
             expect(subject.css("thead tr th:nth-child(2)").text).to include("Your details")

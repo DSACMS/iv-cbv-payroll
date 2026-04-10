@@ -49,7 +49,7 @@
 <% end %>
 
 <h3><%= t("activities.summary.monthly_details") %></h3>
-<%= render(TableComponent.new(class_names: "activity-review-table", thead_class_names: "")) do |table| %>
+<%= render(TableComponent.new) do |table| %>
   <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.community_service.month") } %>
   <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.community_service.hours_served") } %>
   <% activity.activity_months.order(month: :asc).each do |activity_month| %>
