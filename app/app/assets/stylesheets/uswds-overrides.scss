@@ -77,12 +77,6 @@ $table-width: 44rem;
   max-width: $table-width;
   border: units(1px) solid color("ink");
 
-  @include at-media("tablet") {
-    th {
-      width: 50%;
-    }
-  }
-
   tbody tr {
     border-bottom: units(1px) solid color("ink");
 
@@ -94,6 +88,14 @@ $table-width: 44rem;
   @include at-media-max("mobile-lg") {
     thead {
       display: none;
+    }
+  }
+}
+
+.usa-table:not(.usa-table--multi-column) {
+  @include at-media("tablet") {
+    th {
+      width: 50%;
     }
   }
 }

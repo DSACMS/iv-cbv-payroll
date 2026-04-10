@@ -6,7 +6,7 @@ RSpec.describe TableComponent, type: :component do
   include ViewComponent::TestHelpers
 
   subject(:result) do
-    table = described_class.new(attributes: table_attributes)
+    table = described_class.new(multi_column: multi_column, attributes: table_attributes)
     rows.each do |row_data|
       table.with_row do |row|
         row.with_data_cell.with_content(row_data)
@@ -16,6 +16,7 @@ RSpec.describe TableComponent, type: :component do
   end
 
   let(:table_attributes) { {} }
+  let(:multi_column) { false }
   let(:rows) { [] }
   let(:base_class) { "usa-table usa-table--borderless usa-table--stacked" }
 
@@ -34,6 +35,23 @@ RSpec.describe TableComponent, type: :component do
       expect(result.css("table")).to be_present
       expect(result.text).to include("Cell content")
       expect(result.css("table").first["class"]).to include(base_class)
+    end
+  end
+
+  context "when the table is not marked as multi-column" do
+    let(:rows) { [ "Cell content" ] }
+
+    it "does not add the multi-column class" do
+      expect(result.css("table").first["class"]).not_to include("usa-table--multi-column")
+    end
+  end
+
+  context "when the table is marked as multi-column" do
+    let(:rows) { [ "Cell content" ] }
+    let(:multi_column) { true }
+
+    it "adds the multi-column class" do
+      expect(result.css("table").first["class"]).to include("usa-table--multi-column")
     end
   end
 

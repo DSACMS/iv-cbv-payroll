@@ -80,7 +80,7 @@
   <%= t("activities.submit.pdf.community_service_section") %>
 </h2>
 <% if @community_service_activities.any? %>
-  <%= render TableComponent.new do |table| %>
+  <%= render TableComponent.new(multi_column: true) do |table| %>
     <%= table.with_header_cell(colspan: 1)
            .with_content(t("activities.submit.pdf.organization_name")) %>
     <%= table.with_header_cell(colspan: 1)
@@ -106,7 +106,7 @@
   <%= t("activities.submit.pdf.work_programs_section") %>
 </h2>
 <% if @work_programs_activities.any? %>
-  <%= render TableComponent.new do |table| %>
+  <%= render TableComponent.new(multi_column: true) do |table| %>
     <%= table.with_header_cell(colspan: 1)
            .with_content(t("activities.submit.pdf.program_name")) %>
     <%= table.with_header_cell(colspan: 1)

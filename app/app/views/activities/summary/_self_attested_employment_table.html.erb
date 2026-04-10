@@ -48,7 +48,7 @@
 <% end %>
 
 <h3><%= t("activities.summary.monthly_details") %></h3>
-<%= render(TableComponent.new) do |table| %>
+<%= render(TableComponent.new(multi_column: true)) do |table| %>
   <%= table.with_header_cell(colspan: 1)
          .with_content(t("activities.summary.employment.month")) %>
   <%= table.with_header_cell(colspan: 1)
