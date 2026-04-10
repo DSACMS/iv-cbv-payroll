@@ -77,8 +77,8 @@ end
 
           expect(doc.css("title").text).to include("Review your income report")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table-caption\"]").content).to include("Employer 1: Acme Corporation")
-          expect(doc).to have_css("table.usa-table.usa-table--borderless.width-full.usa-table--stacked", count: 1)
-          within("table.usa-table.usa-table--borderless.width-full.usa-table--stacked") do
+          expect(doc).to have_css("table.usa-table.usa-table--borderless.usa-table--stacked", count: 1)
+          within("table.usa-table.usa-table--borderless.usa-table--stacked") do
             expect(page).to have_css("tr", count: 2)
           end
           expect(response).to be_successful
@@ -96,8 +96,8 @@ end
           expect(response).to be_successful
           expect(doc.css("title").text).to include("Review your income report")
           expect(doc.at_xpath("//*[@data-testid=\"paystub-table-caption\"]").content).to include("Employer 1: Acme Corporation")
-          expect(doc).to have_css("table.usa-table.usa-table--borderless.width-full.usa-table--stacked", count: 1)
-          within("table.usa-table.usa-table--borderless.width-full.usa-table--stacked") do
+          expect(doc).to have_css("table.usa-table.usa-table--borderless.usa-table--stacked", count: 1)
+          within("table.usa-table.usa-table--borderless.usa-table--stacked") do
             expect(page).to have_css("tr", count: 3)
           end
         end

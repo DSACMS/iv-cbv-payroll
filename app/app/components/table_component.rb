@@ -18,7 +18,7 @@ class TableComponent < ViewComponent::Base
   }
 
   def initialize(class_names: "", thead_class_names: "", attributes: {})
-    @class_names = "usa-table usa-table--borderless width-full activity-review-table usa-table--stacked"
+    @class_names = "usa-table usa-table--borderless activity-review-table usa-table--stacked"
     @class_names = [ @class_names, class_names ].join(" ") if class_names.present?
     @thead_class_names = thead_class_names
     @attributes = attributes

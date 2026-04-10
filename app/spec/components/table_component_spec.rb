@@ -17,7 +17,7 @@ RSpec.describe TableComponent, type: :component do
 
   let(:table_attributes) { {} }
   let(:rows) { [] }
-  let(:base_class) { "usa-table usa-table--borderless width-full activity-review-table usa-table--stacked" }
+  let(:base_class) { "usa-table usa-table--borderless activity-review-table usa-table--stacked" }
 
 
   context "when no rows are provided" do
