@@ -35,6 +35,8 @@ RUN apt-get update -qq && \
       libtiff-dev \
       # CVE-2026-2673 \
       libssl-dev \
+      # CVE-2026-3497 \
+      openssh-client \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
