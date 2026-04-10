@@ -15,7 +15,7 @@
   <%= t("activities.employment.review.description", employer_name: @employment_activity.employer_name) %>
 </p>
 
-<div class="display-flex flex-justify flex-align-center">
+<div class="display-flex flex-justify activity-review-edit-header">
   <h2 class="margin-y-0"><%= t("activities.employment.review.employer_info") %></h2>
   <%= link_to t("activities.hub.edit"),
         edit_activities_flow_income_employment_path(id: @employment_activity, from_review: 1, from_edit: params[:from_edit].presence),
@@ -31,31 +31,29 @@
 
 <h2><%= t("activities.employment.review.hours_and_income") %></h2>
 <%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
+  <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+           .with_content(t("activities.summary.employment.month")) %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+           .with_content(t("activities.employment.review.gross_income")) %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+           .with_content(t("activities.employment.review.hours_worked")) %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+           .with_content(t("activities.hub.edit")) %>
+  <% end %>
   <% @employment_activity.employment_activity_months.order(:month).each_with_index do |activity_month, index| %>
-    <%= table.with_row(class_names: "subheader-row") do |row| %>
-      <%= row.with_data_cell(is_header: true, colspan: 2) do %>
-        <div class="display-flex flex-justify">
-          <span><%= I18n.l(activity_month.month, format: :month) %></span>
-          <%= link_to t("activities.community_service.review.edit"),
-                edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence),
-                class: "usa-link" %>
-        </div>
-      <% end %>
-    <% end %>
+    <% edit_path = edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.employment.review.gross_income") %>
+      <%= row.with_data_cell(data_label: t("activities.summary.employment.month"), is_header: true) do %>
+        <%= I18n.l(activity_month.month, format: :month) %>
+        <%= link_to t("activities.hub.edit"), edit_path, class: "usa-link mobile-edit-link" %>
       <% end %>
-      <%= row.with_data_cell do %>
-        <%= number_to_currency(activity_month.gross_income) %>
-      <% end %>
-    <% end %>
-    <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.employment.review.hours_worked") %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= activity_month.hours %>
+      <%= row.with_data_cell(data_label: t("activities.employment.review.gross_income"))
+             .with_content(number_to_currency(activity_month.gross_income)) %>
+      <%= row.with_data_cell(data_label: t("activities.employment.review.hours_worked"))
+             .with_content(activity_month.hours) %>
+      <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
+        <%= link_to t("activities.hub.edit"), edit_path, class: "usa-link" %>
       <% end %>
     <% end %>
   <% end %>

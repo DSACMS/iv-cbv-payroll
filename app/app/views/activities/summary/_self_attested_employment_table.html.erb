@@ -48,7 +48,7 @@
 <% end %>
 
 <h3><%= t("activities.summary.monthly_details") %></h3>
-<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
   <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
     <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
            .with_content(t("activities.summary.employment.month")) %>

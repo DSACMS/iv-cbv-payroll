@@ -4,7 +4,10 @@
       <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
     </h2>
   <% end %>
-  <%= render(TableComponent.new(is_responsive: @is_responsive)) do |table| %>
+  <% table_options = @use_activity_style \
+      ? { is_responsive: @is_responsive, class_names: "activity-review-hours-table" } \
+      : { is_responsive: @is_responsive } %>
+  <%= render(TableComponent.new(**table_options)) do |table| %>
     <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
       <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
              .with_content(I18n.t("components.report.monthly_summary_table.month")) %>

@@ -15,7 +15,7 @@
   <%= t("activities.community_service.review.description", organization_name: @volunteering_activity.organization_name) %>
 </p>
 
-<div class="display-flex flex-justify flex-align-center">
+<div class="display-flex flex-justify activity-review-edit-header">
   <h2 class="margin-y-0"><%= t("activities.community_service.review.organization_info") %></h2>
   <%= link_to t("activities.hub.edit"),
         edit_activities_flow_community_service_path(id: @volunteering_activity, from_review: 1, from_edit: params[:from_edit].presence),
@@ -31,23 +31,25 @@
 
 <h2><%= t("activities.community_service.review.hours_section") %></h2>
 <%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
+  <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+           .with_content(t("activities.summary.community_service.month")) %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+           .with_content(t("activities.community_service.review.community_service_hours")) %>
+    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+           .with_content(t("activities.community_service.review.edit")) %>
+  <% end %>
   <% @volunteering_activity.volunteering_activity_months.order(:month).each_with_index do |activity_month, index| %>
-    <%= table.with_row(class_names: "subheader-row") do |row| %>
-      <%= row.with_data_cell(is_header: true, colspan: 2) do %>
-        <div class="display-flex flex-justify">
-          <span><%= I18n.l(activity_month.month, format: :month) %></span>
-          <%= link_to t("activities.community_service.review.edit"),
-                edit_activities_flow_community_service_month_path(community_service_id: @volunteering_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence),
-                class: "usa-link" %>
-        </div>
-      <% end %>
-    <% end %>
+    <% edit_path = edit_activities_flow_community_service_month_path(community_service_id: @volunteering_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.community_service.review.community_service_hours") %>
+      <%= row.with_data_cell(data_label: t("activities.summary.community_service.month"), is_header: true) do %>
+        <%= I18n.l(activity_month.month, format: :month) %>
+        <%= link_to t("activities.community_service.review.edit"), edit_path, class: "usa-link mobile-edit-link" %>
       <% end %>
-      <%= row.with_data_cell do %>
-        <%= activity_month.hours %>
+      <%= row.with_data_cell(data_label: t("activities.community_service.review.community_service_hours"))
+             .with_content(activity_month.hours) %>
+      <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
+        <%= link_to t("activities.community_service.review.edit"), edit_path, class: "usa-link" %>
       <% end %>
     <% end %>
   <% end %>

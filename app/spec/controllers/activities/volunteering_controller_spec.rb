@@ -115,6 +115,16 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
       expect(response.body).to include("25")
     end
+
+    it "includes an edit link for each month" do
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.first, hours: 25)
+
+      get :review, params: { id: volunteering_activity.id }
+
+      expect(response.body).to include(
+        edit_activities_flow_community_service_month_path(community_service_id: volunteering_activity, id: 0, from_review: 1)
+      )
+    end
   end
 
   describe "PATCH #save_review" do

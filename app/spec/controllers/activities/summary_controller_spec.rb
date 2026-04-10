@@ -181,12 +181,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
       get :show
 
       doc = Capybara.string(response.body)
-      expect(doc).to have_selector("table", count: 1)
+      expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
       expect(response.body).to include("Ada B Lovelace")
       expect(response.body).to include("River College")
       expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.less_than_half_time"))
 
-      term_credit_rows = doc.all("tr").select { |row| row.text.include?(I18n.t("activities.summary.education.term_credit_hours")) }
+      term_credit_rows = doc.all("table").last.all("tbody tr")
       expect(term_credit_rows.size).to eq(1)
       expect(term_credit_rows.first.all("th, td").last.text.strip).to eq("9")
     end
@@ -220,13 +220,13 @@ RSpec.describe Activities::SummaryController, type: :controller do
       get :show
 
       doc = Capybara.string(response.body)
-      expect(doc).to have_selector("table", count: 1)
+      expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
       expect(response.body.scan("River College").count).to eq(1)
       expect(response.body.scan(I18n.t("components.enrollment_term_table_component.enrollment_term")).count).to eq(2)
-      expect(response.body.scan(I18n.t("components.enrollment_term_table_component.enrollment_status")).count).to eq(2)
-      expect(response.body.scan(I18n.t("activities.summary.education.term_credit_hours")).count).to eq(2)
+      expect(response.body.scan(I18n.t("components.enrollment_term_table_component.enrollment_status")).count).to eq(5) # 2 contact info rows + 1 monthly header + 2 monthly data-labels
+      expect(response.body.scan(I18n.t("activities.summary.education.term_credit_hours")).count).to eq(3) # 1 monthly header + 2 monthly data-labels
 
-      term_credit_rows = doc.all("tr").select { |row| row.text.include?(I18n.t("activities.summary.education.term_credit_hours")) }
+      term_credit_rows = doc.all("table").last.all("tbody tr")
       expect(term_credit_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[3 6])
     end
 
@@ -254,12 +254,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
       get :show
 
       doc = Capybara.string(response.body)
-      expect(doc).to have_selector("table", count: 1)
+      expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
       expect(response.body).to include("River College")
       expect(response.body).to include("Lake Tech")
       expect(response.body.scan(I18n.t("components.enrollment_term_table_component.school_or_program")).count).to eq(2)
 
-      term_credit_rows = doc.all("tr").select { |row| row.text.include?(I18n.t("activities.summary.education.term_credit_hours")) }
+      term_credit_rows = doc.all("table").last.all("tbody tr")
       expect(term_credit_rows.map { |row| row.all("th, td").last.text.strip }).to contain_exactly("3", "6")
     end
 

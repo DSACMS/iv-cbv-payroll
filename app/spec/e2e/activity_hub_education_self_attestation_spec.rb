@@ -85,7 +85,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     expect(page).to have_content "601 E John St, Champaign, IL"
 
     # Edit month 1 from review
-    month_edit_links = all(".subheader-row a", text: I18n.t("activities.education.review.edit"))
+    month_edit_links = all("td a", text: I18n.t("activities.education.review.edit"))
     month_edit_links.first.click
     verify_page(page, title: I18n.t("activities.education.hours_input.heading",
       month: month1_label, organization: "Updated University of Illinois"))
