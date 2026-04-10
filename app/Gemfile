@@ -130,7 +130,7 @@ end
 
 group :production do
   # Add plugin for pg gem to support AWS RDS IAM
-  gem "pg-aws_rds_iam", "~> 0.7.0"
+  gem "pg-aws_rds_iam", "~> 0.8.0"
 end
 gem "devise", "~> 5.0"
 
