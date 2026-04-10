@@ -25,7 +25,8 @@ class Activities::Income::SynchronizationsController < Activities::BaseControlle
   private
 
   def track_payroll_account_creation
-    track_creating_payroll_account(params[:user][:account_id])
+    payroll_account = @flow.payroll_accounts.find_by(aggregator_account_id: params[:user][:account_id])
+    payroll_account&.update!(draft: true)
   end
 
   def session_timeout_enabled?

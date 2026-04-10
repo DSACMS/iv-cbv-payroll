@@ -47,7 +47,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
   end
 
-  describe "hiding incomplete activities on the hub" do
+  describe "hiding draft activities on the hub" do
     let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
 
     before do
@@ -55,78 +55,57 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       session[:flow_type] = :activity
     end
 
-    it "hides the tracked incomplete activity from the hub" do
-      completed = create(:volunteering_activity, activity_flow: current_flow)
-      incomplete = create(:volunteering_activity, activity_flow: current_flow)
-      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => incomplete.id, "activity_flow_id" => current_flow.id }
+    it "hides draft activities from the hub" do
+      completed = create(:volunteering_activity, activity_flow: current_flow, draft: false)
+      _draft = create(:volunteering_activity, activity_flow: current_flow, draft: true)
 
       get :index
 
       expect(assigns(:community_service_activities)).to contain_exactly(completed)
     end
 
-    it "does not hide activities when no creating_activity is in session" do
-      activity = create(:volunteering_activity, activity_flow: current_flow)
+    it "shows all published activities" do
+      activity = create(:volunteering_activity, activity_flow: current_flow, draft: false)
 
       get :index
 
       expect(assigns(:community_service_activities)).to contain_exactly(activity)
     end
 
-    it "only hides the matching activity type" do
-      volunteering = create(:volunteering_activity, activity_flow: current_flow)
-      job_training = create(:job_training_activity, activity_flow: current_flow)
-      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => volunteering.id, "activity_flow_id" => current_flow.id }
+    it "only hides draft activities of the matching type" do
+      _draft_volunteering = create(:volunteering_activity, activity_flow: current_flow, draft: true)
+      published_job_training = create(:job_training_activity, activity_flow: current_flow, draft: false)
 
       get :index
 
       expect(assigns(:community_service_activities)).to be_empty
-      expect(assigns(:work_programs_activities)).to contain_exactly(job_training)
+      expect(assigns(:work_programs_activities)).to contain_exactly(published_job_training)
     end
 
-    it "hides the tracked incomplete payroll account from the hub" do
-      kept = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow)
-      hidden = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow)
-      session[:creating_payroll_account] = { "aggregator_account_id" => hidden.aggregator_account_id, "flow_id" => current_flow.id }
+    it "hides draft payroll accounts from the hub" do
+      kept = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow, draft: false)
+      _draft = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow, draft: true)
 
       get :index
 
       expect(assigns(:employment_payroll_accounts)).to contain_exactly(kept)
     end
 
-    it "hides review and submit when the only activity is incomplete" do
-      incomplete = create(:volunteering_activity, activity_flow: current_flow)
-      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => incomplete.id, "activity_flow_id" => current_flow.id }
+    it "hides review and submit when the only activity is a draft" do
+      create(:volunteering_activity, activity_flow: current_flow, draft: true)
 
       get :index
 
       expect(response.body).not_to include(I18n.t("activities.hub.review_and_submit"))
     end
 
-    it "shows review and submit when a completed activity exists alongside an incomplete one" do
-      create(:volunteering_activity, activity_flow: current_flow)
-      incomplete = create(:job_training_activity, activity_flow: current_flow)
-      session[:creating_activity] = { "class_name" => "JobTrainingActivity", "id" => incomplete.id, "activity_flow_id" => current_flow.id }
+    it "shows review and submit when a published activity exists alongside a draft" do
+      create(:volunteering_activity, activity_flow: current_flow, draft: false)
+      create(:job_training_activity, activity_flow: current_flow, draft: true)
 
       get :index
 
       expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
-    end
-
-    it "hides review and submit when the only payroll account is incomplete" do
-      hidden = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow)
-      session[:creating_payroll_account] = { "aggregator_account_id" => hidden.aggregator_account_id, "flow_id" => current_flow.id }
-
-      get :index
-
-      expect(response.body).not_to include(I18n.t("activities.hub.review_and_submit"))
-    end
-
-    it "does not delete any records" do
-      activity = create(:volunteering_activity, activity_flow: current_flow)
-      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => activity.id, "activity_flow_id" => current_flow.id }
-
-      expect { get :index }.not_to change(VolunteeringActivity, :count)
     end
   end
 

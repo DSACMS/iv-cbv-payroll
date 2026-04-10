@@ -11,7 +11,7 @@
   <div class="activity-hub-columns__progress">
     <%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator, agency_translation("shared.agency_full_name"))) %>
 
-    <% if @any_visible_activities %>
+    <% if [@community_service_activities, @work_programs_activities, @education_activities, @employment_payroll_accounts, @employment_activities].any?(&:any?) %>
       <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button margin-top-3", method: :get %>
     <% end %>
 

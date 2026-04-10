@@ -51,11 +51,11 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: created_activity.id, id: 0))
     end
 
-    it "tracks the new activity in the session" do
+    it "creates the activity as a draft" do
       post :create, params: job_training_params
 
       activity = activity_flow.job_training_activities.last
-      expect(session[:creating_activity]).to eq("class_name" => "JobTrainingActivity", "id" => activity.id, "activity_flow_id" => activity_flow.id)
+      expect(activity.draft).to be(true)
     end
 
     it "redirects to month 0 when total hours are below the threshold" do
@@ -152,12 +152,10 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "clears the creating_activity session" do
-      session[:creating_activity] = { "class_name" => "JobTrainingActivity", "id" => job_training_activity.id }
-
+    it "publishes the activity" do
       patch :save_review, params: { id: job_training_activity.id, job_training_activity: { additional_comments: "" } }
 
-      expect(session[:creating_activity]).to be_nil
+      expect(job_training_activity.reload.draft).to be(false)
     end
   end
 

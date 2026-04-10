@@ -90,11 +90,11 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(activity.data_source).to eq("self_attested")
     end
 
-    it "tracks the new activity in the session" do
+    it "creates the activity as a draft" do
       post :create, params: employment_params
 
       activity = activity_flow.employment_activities.last
-      expect(session[:creating_activity]).to eq("class_name" => "EmploymentActivity", "id" => activity.id, "activity_flow_id" => activity_flow.id)
+      expect(activity.draft).to be(true)
     end
   end
 
@@ -222,12 +222,10 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "clears the creating_activity session" do
-      session[:creating_activity] = { "class_name" => "EmploymentActivity", "id" => employment_activity.id }
-
+    it "publishes the activity" do
       patch :save_review, params: { id: employment_activity.id, employment_activity: { additional_comments: "" } }
 
-      expect(session[:creating_activity]).to be_nil
+      expect(employment_activity.reload.draft).to be(false)
     end
   end
 end

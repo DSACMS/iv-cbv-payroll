@@ -23,6 +23,12 @@ class PayrollAccount < ApplicationRecord
     failed: "failed" # defines the method: sync_failed?
   }, prefix: "sync"
 
+  scope :published, -> { where(draft: false) }
+
+  def publish!
+    update!(draft: false)
+  end
+
   # Returns whether we have received all expected webhooks for the sync
   # process, regardless of whether any of them are errors.
   #

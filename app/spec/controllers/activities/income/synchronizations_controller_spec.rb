@@ -14,10 +14,10 @@ RSpec.describe Activities::Income::SynchronizationsController do
   end
 
   describe "#show" do
-    it "tracks the payroll account in the session" do
+    it "marks the payroll account as draft" do
       get :show, params: { user: { account_id: payroll_account.aggregator_account_id } }
 
-      expect(session[:creating_payroll_account]).to eq("aggregator_account_id" => payroll_account.aggregator_account_id, "flow_id" => flow.id)
+      expect(payroll_account.reload.draft).to be(true)
     end
   end
 

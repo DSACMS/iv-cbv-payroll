@@ -44,20 +44,11 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(activity).to have_attributes(expected)
     end
 
-    it "tracks the new activity in the session" do
+    it "creates the activity as a draft" do
       post :create, params: volunteering_params
 
       activity = activity_flow.volunteering_activities.last
-      expect(session[:creating_activity]).to eq("class_name" => "VolunteeringActivity", "id" => activity.id, "activity_flow_id" => activity_flow.id)
-    end
-
-    it "destroys a previously tracked incomplete activity" do
-      old_activity = create(:volunteering_activity, activity_flow: activity_flow)
-      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => old_activity.id, "activity_flow_id" => activity_flow.id }
-
-      post :create, params: volunteering_params
-
-      expect(VolunteeringActivity.find_by(id: old_activity.id)).to be_nil
+      expect(activity.draft).to be(true)
     end
 
     it "stores optional fields when provided" do
@@ -143,12 +134,10 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "clears the creating_activity session" do
-      session[:creating_activity] = { "class_name" => "VolunteeringActivity", "id" => volunteering_activity.id }
-
+    it "publishes the activity" do
       patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "" } }
 
-      expect(session[:creating_activity]).to be_nil
+      expect(volunteering_activity.reload.draft).to be(false)
     end
   end
 
