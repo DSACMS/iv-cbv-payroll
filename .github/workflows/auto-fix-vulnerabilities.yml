@@ -88,11 +88,13 @@ jobs:
           scanners: vuln
 
       - name: Patch Dockerfile with fixable OS packages
+        id: patch
         env:
           PATCH_SUMMARY_FILE: patch-summary.md
         run: ruby .github/scripts/patch-dockerfile.rb trivy-results.json app/Dockerfile
 
       - name: Generate PR body
+        if: steps.patch.outputs.changes_made == 'true'
         env:
           EVENT_NAME: ${{ github.event_name }}
           TRIGGER_RUN_URL: ${{ github.event.workflow_run.html_url }}
@@ -134,6 +136,7 @@ jobs:
           } > pr-body.md
 
       - name: Check for existing open fix PR
+        if: steps.patch.outputs.changes_made == 'true'
         id: check-existing-pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -152,7 +155,7 @@ jobs:
           fi
 
       - name: Create or update fix PR
-        if: steps.check-existing-pr.outputs.skip != 'true'
+        if: steps.patch.outputs.changes_made == 'true' && steps.check-existing-pr.outputs.skip != 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -82,6 +82,13 @@ def find_insertion_index(lines)
   -1
 end
 
+def set_github_output(key, value)
+  output_file = ENV["GITHUB_OUTPUT"]
+  return unless output_file
+
+  File.open(output_file, "a") { |f| f.puts("#{key}=#{value}") }
+end
+
 def write_summary(added, removed)
   summary_file = ENV["PATCH_SUMMARY_FILE"]
   return unless summary_file
@@ -120,6 +127,7 @@ def main(trivy_path, dockerfile_path)
 
   if to_add.empty? && to_remove.empty?
     puts "No changes needed."
+    set_github_output("changes_made", "false")
     return
   end
 
@@ -153,6 +161,7 @@ def main(trivy_path, dockerfile_path)
   puts "Dockerfile updated: #{dockerfile_path}"
 
   write_summary(to_add, to_remove)
+  set_github_output("changes_made", "true")
 end
 
 if ARGV.size != 2
