@@ -6,7 +6,7 @@ on:
     types: [completed]
   workflow_dispatch:
   schedule:
-    - cron: '0 9 * * 1' # Monday 9am UTC fallback
+    - cron: '0 9 * * *' # Daily 9am UTC
 
 # Prevent parallel runs from creating conflicting Dockerfile edits or duplicate PRs.
 concurrency:
@@ -83,7 +83,7 @@ jobs:
       - name: Patch Dockerfile with fixable OS packages
         env:
           PATCH_SUMMARY_FILE: patch-summary.md
-        run: python3 .github/scripts/patch-dockerfile.py trivy-results.json app/Dockerfile
+        run: ruby .github/scripts/patch-dockerfile.rb trivy-results.json app/Dockerfile
 
       - name: Generate PR body
         env:
