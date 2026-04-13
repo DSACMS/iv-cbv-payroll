@@ -6,7 +6,7 @@ RSpec.describe TableComponent, type: :component do
   include ViewComponent::TestHelpers
 
   subject(:result) do
-    table = described_class.new(multi_column: multi_column, attributes: table_attributes)
+    table = described_class.new(multi_column: multi_column, subdued_header: subdued_header, attributes: table_attributes)
     rows.each do |row_data|
       table.with_row do |row|
         row.with_data_cell.with_content(row_data)
@@ -17,6 +17,7 @@ RSpec.describe TableComponent, type: :component do
 
   let(:table_attributes) { {} }
   let(:multi_column) { false }
+  let(:subdued_header) { false }
   let(:rows) { [] }
   let(:base_class) { "usa-table usa-table--borderless usa-table--stacked" }
 
@@ -52,6 +53,15 @@ RSpec.describe TableComponent, type: :component do
 
     it "adds the multi-column class" do
       expect(result.css("table").first["class"]).to include("usa-table--multi-column")
+    end
+  end
+
+  context "when the table uses the subdued_header variant" do
+    let(:rows) { [ "Cell content" ] }
+    let(:subdued_header) { true }
+
+    it "adds the subdued header class" do
+      expect(result.css("table").first["class"]).to include("usa-table--subdued-header")
     end
   end
 

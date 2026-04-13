@@ -151,7 +151,7 @@
     <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_pdf: true, show_footnote: is_first_w2_job)) %>
     <h3><%= t(".pdf.shared.payments_and_deductions_header", employer_name: employer_name) %></h3>
     <% summary[:paystubs]&.each do |paystub| %>
-      <%= render(TableComponent.new) do |table| %>
+      <%= render(TableComponent.new(subdued_header: true)) do |table| %>
         <%= table.with_header_cell
               .with_content(t(".pdf.shared.pay_information")) %>
         <%= table.with_header_cell

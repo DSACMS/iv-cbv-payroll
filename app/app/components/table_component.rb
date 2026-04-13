@@ -17,9 +17,10 @@ class TableComponent < ViewComponent::Base
     }
   }
 
-  def initialize(multi_column: false, class_names: "", attributes: {})
+  def initialize(multi_column: false, subdued_header: false, class_names: "", attributes: {})
     @class_names = "usa-table usa-table--borderless usa-table--stacked"
     @class_names = [ @class_names, "usa-table--multi-column" ].join(" ") if multi_column
+    @class_names = [ @class_names, "usa-table--subdued-header" ].join(" ") if subdued_header
     @class_names = [ @class_names, class_names ].join(" ") if class_names.present?
     @attributes = attributes
   end
