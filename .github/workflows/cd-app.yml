@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - "main"
+      # Temporary branch trigger for pre-merge workflow validation. Remove before merge.
+      - "codex/split-image-publishing-org"
     paths:
       - "app/**"
       - "bin/**"
