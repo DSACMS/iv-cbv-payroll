@@ -61,6 +61,13 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
+      - name: Login to Artifactory
+        uses: docker/login-action@v3
+        with:
+          registry: artifactory.cloud.cms.gov
+          username: ${{ secrets.ARTIFACTORY_USERNAME }}
+          password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+
       - name: Get image metadata
         id: image-metadata
         run: |
@@ -75,21 +82,13 @@ jobs:
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
         run: |
-          is_image_published=$(./bin/is-artifactory-image-published "${IMAGE_REPOSITORY_URL}" "${{ steps.image-metadata.outputs.image_tag }}")
+          is_image_published=$(./bin/is-artifactory-image-published "${{ steps.image-metadata.outputs.image_tag }}")
           echo "Is image published: $is_image_published"
           echo "is_image_published=$is_image_published" >> "$GITHUB_OUTPUT"
 
       - name: Build release
         if: steps.check-image-published.outputs.is_image_published == 'false'
         run: make APP_NAME=${{ inputs.app_name }} release-build
-
-      - name: Login to Artifactory
-        if: steps.check-image-published.outputs.is_image_published == 'false'
-        uses: docker/login-action@v3
-        with:
-          registry: artifactory.cloud.cms.gov
-          username: ${{ secrets.ARTIFACTORY_USERNAME }}
-          password: ${{ secrets.ARTIFACTORY_PASSWORD }}
 
       - name: Publish release
         if: steps.check-image-published.outputs.is_image_published == 'false'
