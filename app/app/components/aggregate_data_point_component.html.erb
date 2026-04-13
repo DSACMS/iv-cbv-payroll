@@ -2,7 +2,7 @@
   <%= row.with_data_cell(is_header: true) do -%>
     <%= @field[:label] || "" -%>
   <%- end -%>
-  <%= row.with_data_cell do -%>
+  <%= row.with_data_cell(data_label: @field[:label]) do -%>
     <%= @field[:value] || "" %>
   <%- end -%>
 <%- end -%>
