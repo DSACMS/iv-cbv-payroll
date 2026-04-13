@@ -28,6 +28,8 @@ jobs:
     name: Get commit hash
     if: github.repository_owner == 'CMSgov'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       commit_hash: ${{ steps.get-commit-hash.outputs.commit_hash }}
     steps:
