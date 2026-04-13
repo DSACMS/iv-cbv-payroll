@@ -1,0 +1,32 @@
+#!/bin/bash
+# Checks if an image tag has already been published to Artifactory.
+# Prints "true" if so, "false" otherwise.
+
+set -euo pipefail
+
+image_repository_url="$1"
+image_tag="$2"
+
+registry="${image_repository_url%%/*}"
+repository="${image_repository_url#*/}"
+manifest_url="https://${registry}/v2/${repository}/manifests/${image_tag}"
+
+status_code="$(
+  curl \
+    --silent \
+    --show-error \
+    --output /dev/null \
+    --write-out "%{http_code}" \
+    --user "${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD}" \
+    --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+    "${manifest_url}"
+)"
+
+if [ "${status_code}" = "200" ]; then
+  echo "true"
+elif [ "${status_code}" = "404" ]; then
+  echo "false"
+else
+  echo "Unexpected response from Artifactory: ${status_code}" >&2
+  exit 1
+fi

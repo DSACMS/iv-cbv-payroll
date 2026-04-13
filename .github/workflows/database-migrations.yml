@@ -20,7 +20,7 @@ concurrency: database-migrations-${{ inputs.app_name }}-${{ inputs.environment }
 jobs:
   build-and-publish:
     name: Build
-    uses: ./.github/workflows/build-and-publish.yml
+    uses: ./.github/workflows/dsacms-build-and-publish.yml
     with:
       app_name: ${{ inputs.app_name }}
       ref: ${{ inputs.commit_sha || github.ref }}

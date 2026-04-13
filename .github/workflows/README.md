@@ -33,16 +33,21 @@ The CD workflow uses these reusable workflows:
 
 - [`deploy`](./deploy.yml): deploys an application
 - [`database-migrations`](./database-migrations.yml): runs database migrations for an application
-- [`build-and-publish`](./build-and-publish.yml): builds a container image for an application and publishes it to an image repository
+- [`dsacms-build-and-publish`](./dsacms-build-and-publish.yml): DSACMS-only reusable workflow that builds a container image for an application and publishes it to ECR
+- [`cmsgov-build-and-publish`](./cmsgov-build-and-publish.yml): CMSgov-only reusable workflow that builds a container image for an application and publishes it to Artifactory
+- [`cmsgov-cd-app`](./cmsgov-cd-app.yml): CMSgov-only top-level workflow that publishes the `app` image to `artifactory.cloud.cms.gov/emmy-docker/emmy-app` on `main` pushes and manual dispatch
 
 ```mermaid
 graph TD
   cd-app
   deploy
   database-migrations
-  build-and-publish
+  dsacms-build-and-publish
+  cmsgov-cd-app
+  cmsgov-build-and-publish
 
-  cd-app-->|calls|deploy-->|calls|database-migrations-->|calls|build-and-publish
+  cd-app-->|calls|deploy-->|calls|database-migrations-->|calls|dsacms-build-and-publish
+  cmsgov-cd-app-->|calls|cmsgov-build-and-publish
 ```
 
 ## ⛑️ Helper workflows

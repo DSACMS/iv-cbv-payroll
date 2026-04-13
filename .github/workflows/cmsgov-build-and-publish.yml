@@ -26,6 +26,7 @@ on:
 jobs:
   get-commit-hash:
     name: Get commit hash
+    if: github.repository_owner == 'CMSgov'
     runs-on: ubuntu-latest
     outputs:
       commit_hash: ${{ steps.get-commit-hash.outputs.commit_hash }}
@@ -39,44 +40,40 @@ jobs:
           COMMIT_HASH=$(git rev-parse ${{ inputs.ref }})
           echo "Commit hash: $COMMIT_HASH"
           echo "commit_hash=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
+
   build-and-publish:
     name: Build and publish
+    if: github.repository_owner == 'CMSgov'
     runs-on: ubuntu-latest
     needs: get-commit-hash
     concurrency: ${{ github.workflow }}-${{ needs.get-commit-hash.outputs.commit_hash }}
 
     permissions:
       contents: read
-      id-token: write
 
     env:
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      IMAGE_REPOSITORY_URL: artifactory.cloud.cms.gov/emmy-docker/emmy-app
 
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
 
-      - name: Login to Docker Hub
-        if: env.DOCKERHUB_TOKEN != ''
-        uses: docker/login-action@v3
-        with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_TOKEN }}
-
-      - name: Set up Terraform
-        uses: ./.github/actions/setup-terraform
-
-      - name: Configure AWS credentials
-        uses: ./.github/actions/configure-aws-credentials
-        with:
-          app_name: ${{ inputs.app_name }}
-          environment: shared
+      - name: Get image metadata
+        id: image-metadata
+        run: |
+          image_name=$(make APP_NAME=${{ inputs.app_name }} release-image-name)
+          image_tag=$(make release-image-tag)
+          echo "image_name=$image_name" >> "$GITHUB_OUTPUT"
+          echo "image_tag=$image_tag" >> "$GITHUB_OUTPUT"
 
       - name: Check if image is already published
         id: check-image-published
+        env:
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
         run: |
-          is_image_published=$(./bin/is-image-published "${{ inputs.app_name }}" "${{ inputs.ref }}")
+          is_image_published=$(./bin/is-artifactory-image-published "${IMAGE_REPOSITORY_URL}" "${{ steps.image-metadata.outputs.image_tag }}")
           echo "Is image published: $is_image_published"
           echo "is_image_published=$is_image_published" >> "$GITHUB_OUTPUT"
 
@@ -84,6 +81,16 @@ jobs:
         if: steps.check-image-published.outputs.is_image_published == 'false'
         run: make APP_NAME=${{ inputs.app_name }} release-build
 
+      - name: Login to Artifactory
+        if: steps.check-image-published.outputs.is_image_published == 'false'
+        uses: docker/login-action@v3
+        with:
+          registry: artifactory.cloud.cms.gov
+          username: ${{ secrets.ARTIFACTORY_USERNAME }}
+          password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+
       - name: Publish release
         if: steps.check-image-published.outputs.is_image_published == 'false'
-        run: make APP_NAME=${{ inputs.app_name }} release-publish
+        run: |
+          docker tag "${{ steps.image-metadata.outputs.image_name }}:${{ steps.image-metadata.outputs.image_tag }}" "${IMAGE_REPOSITORY_URL}:${{ steps.image-metadata.outputs.image_tag }}"
+          docker push "${IMAGE_REPOSITORY_URL}:${{ steps.image-metadata.outputs.image_tag }}"

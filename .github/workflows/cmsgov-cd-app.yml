@@ -1,0 +1,26 @@
+name: Publish App Image
+run-name: Publish ${{ inputs.commit_sha || github.sha }} to Artifactory
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "app/**"
+      - "bin/**"
+      - "infra/**"
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        required: false
+        type: string
+        description: "SHA to publish (defaults to the workflow trigger SHA)"
+
+jobs:
+  build-and-publish:
+    name: Publish
+    uses: ./.github/workflows/cmsgov-build-and-publish.yml
+    with:
+      app_name: "app"
+      ref: ${{ inputs.commit_sha || github.sha }}
+    secrets: inherit

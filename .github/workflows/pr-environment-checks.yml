@@ -18,7 +18,7 @@ on:
 jobs:
   build-and-publish:
     name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
-    uses: ./.github/workflows/build-and-publish.yml
+    uses: ./.github/workflows/dsacms-build-and-publish.yml
     with:
       app_name: ${{ inputs.app_name }}
       ref: ${{ inputs.commit_hash }}
