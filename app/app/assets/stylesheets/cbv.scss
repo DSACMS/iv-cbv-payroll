@@ -326,30 +326,6 @@ input#invitation_link {
 * Tables
 */
 
-.cbv-table {
-  max-width: 44rem; // 704px (44rem = 88 USWDS 8px units)
-  border: units(1px) solid color("ink");
-
-  tbody tr {
-    border-bottom: units(1px) solid color("ink");
-
-    &:last-child {
-      border-bottom: none;
-    }
-  }
-
-  @include at-media-max("mobile-lg") {
-    thead {
-      display: none;
-    }
-  }
-}
-
-.usa-table--borderless.cbv-table thead th {
-  background-color: color("blue-cool-5");
-  border-bottom: units(1px) solid color("ink");
-}
-
 .activity-review-hours-table {
   // On narrow viewports (including stacked mobile), fill the container.
   // At wider breakpoints (min-width: 30em), shrink to content width so
