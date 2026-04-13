@@ -403,10 +403,91 @@ RSpec.describe ActivityFlowProgressCalculator do
 
     it "returns empty results for all months when no activities exist" do
       expect(result).to contain_exactly(
-        have_attributes(month: reporting_range_months.first, total_hours: 0, meets_requirements: false),
-        have_attributes(month: reporting_range_months.second, total_hours: 0, meets_requirements: false),
-        have_attributes(month: reporting_range_months.third, total_hours: 0, meets_requirements: false),
+        have_attributes(month: reporting_range_months.first, total_hours: 0, total_earnings_cents: 0, default_unit: :hours, meets_requirements: false),
+        have_attributes(month: reporting_range_months.second, total_hours: 0, total_earnings_cents: 0, default_unit: :hours, meets_requirements: false),
+        have_attributes(month: reporting_range_months.third, total_hours: 0, total_earnings_cents: 0, default_unit: :hours, meets_requirements: false),
       )
+    end
+
+    context "when a month is complete by earnings only" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 1) }
+      let(:month) { flow.reporting_window_range.begin }
+      let!(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "unit-test-account") }
+
+      before do
+        create(
+          :activity_flow_monthly_summary,
+          activity_flow: flow,
+          payroll_account: payroll_account,
+          month: month.beginning_of_month,
+          total_w2_hours: 77.0,
+          accrued_gross_earnings_cents: 597_00
+        )
+      end
+
+      it "uses dollars as the monthly default unit" do
+        monthly_result = result.first
+
+        expect(monthly_result).to have_attributes(
+          month: month,
+          total_hours: 77.0,
+          total_earnings_cents: 597_00,
+          default_unit: :dollars,
+          meets_requirements: true
+        )
+      end
+    end
+
+    context "when both hours and earnings meet thresholds" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 1) }
+      let(:month) { flow.reporting_window_range.begin }
+      let!(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "unit-test-account-2") }
+
+      before do
+        create(
+          :activity_flow_monthly_summary,
+          activity_flow: flow,
+          payroll_account: payroll_account,
+          month: month.beginning_of_month,
+          total_w2_hours: 82.0,
+          accrued_gross_earnings_cents: 620_00
+        )
+      end
+
+      it "keeps hours as the monthly default unit" do
+        monthly_result = result.first
+
+        expect(monthly_result).to have_attributes(
+          default_unit: :hours,
+          meets_requirements: true
+        )
+      end
+    end
+
+    context "when a month is below both thresholds" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 1) }
+      let(:month) { flow.reporting_window_range.begin }
+      let!(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "unit-test-account-3") }
+
+      before do
+        create(
+          :activity_flow_monthly_summary,
+          activity_flow: flow,
+          payroll_account: payroll_account,
+          month: month.beginning_of_month,
+          total_w2_hours: 77.0,
+          accrued_gross_earnings_cents: 570_00
+        )
+      end
+
+      it "uses hours as the default unit and remains incomplete" do
+        monthly_result = result.first
+
+        expect(monthly_result).to have_attributes(
+          default_unit: :hours,
+          meets_requirements: false
+        )
+      end
     end
 
     context "when there are job training activities within the reporting range" do

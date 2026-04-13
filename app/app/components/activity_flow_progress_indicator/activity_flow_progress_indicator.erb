@@ -69,10 +69,13 @@
                 </svg>
               <% end %>
 
-              <%= format_hours(monthly_result.total_hours) %>
+              <%= display_progress_amount(monthly_result) %>
             </span>
             /
-            <%= completion_threshold %> <%= t(".hours") %>
+            <%= display_completion_threshold(monthly_result) %>
+            <% if display_hours_unit?(monthly_result) %>
+              <%= t(".hours") %>
+            <% end %>
           </span>
         </div>
       <% end %>
