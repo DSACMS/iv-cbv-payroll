@@ -5,7 +5,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.summary.community_service.organization") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("activities.summary.community_service.organization")) do %>
       <%= activity.organization_name %>
     <% end %>
   <% end %>
@@ -14,7 +14,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.summary.community_service.address") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("activities.summary.community_service.address")) do %>
       <%= activity.formatted_address.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
@@ -23,7 +23,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.summary.community_service.coordinator_name") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("activities.summary.community_service.coordinator_name")) do %>
       <%= activity.coordinator_name.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
@@ -32,7 +32,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.summary.community_service.coordinator_email") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("activities.summary.community_service.coordinator_email")) do %>
       <%= activity.coordinator_email.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
@@ -41,7 +41,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.summary.community_service.coordinator_phone") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("activities.summary.community_service.coordinator_phone")) do %>
       <%= activity.coordinator_phone_number.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
@@ -49,7 +49,7 @@
 <% end %>
 
 <h3><%= t("activities.summary.monthly_details") %></h3>
-<%= render(TableComponent.new) do |table| %>
+<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
   <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.community_service.month") } %>
   <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.community_service.hours_served") } %>
   <% activity.activity_months.order(month: :asc).each do |activity_month| %>

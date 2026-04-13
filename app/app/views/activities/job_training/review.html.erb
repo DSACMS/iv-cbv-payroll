@@ -28,7 +28,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.work_programs.review.organization_name") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("activities.work_programs.review.organization_name")) do %>
       <%= @job_training_activity.organization_name.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
@@ -37,7 +37,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.work_programs.review.program_name") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("activities.work_programs.review.program_name")) do %>
       <%= @job_training_activity.program_name.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
@@ -46,7 +46,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.work_programs.review.address") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("activities.work_programs.review.address")) do %>
       <%= @job_training_activity.formatted_address.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
@@ -55,7 +55,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.work_programs.review.contact_name") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("activities.work_programs.review.contact_name")) do %>
       <%= @job_training_activity.contact_name.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
@@ -64,7 +64,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.work_programs.review.contact_email") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("activities.work_programs.review.contact_email")) do %>
       <%= @job_training_activity.contact_email.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
@@ -73,14 +73,21 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.work_programs.review.contact_phone") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("activities.work_programs.review.contact_phone")) do %>
       <%= @job_training_activity.contact_phone_number.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 <% end %>
 
 <h2><%= t("activities.work_programs.review.hours_section") %></h2>
-<%= render(TableComponent.new(class_names: "cs-review-hours-table")) do |table| %>
+<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+           .with_content(t("activities.summary.job_training.month")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+           .with_content(t("activities.work_programs.review.work_program_hours")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+           .with_content(t("activities.work_programs.review.edit")) %>
+
   <% @job_training_activity.job_training_activity_months.order(:month).each_with_index do |activity_month, index| %>
     <% edit_path = edit_activities_flow_job_training_month_path(job_training_id: @job_training_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>

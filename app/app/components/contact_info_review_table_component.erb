@@ -6,7 +6,7 @@
       <%= row.with_data_cell(is_header: true) do %>
         <%= row_data[:label] %>
       <% end %>
-      <%= row.with_data_cell do %>
+      <%= row.with_data_cell(data_label: row_data[:label]) do %>
         <%= display_value(row_data[:value]) %>
       <% end %>
     <% end %>

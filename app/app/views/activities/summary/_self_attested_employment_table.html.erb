@@ -2,46 +2,51 @@
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.employer_information") } %>
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.employer") %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.employment.employer") %>
+      <%= header %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: header) do %>
       <%= activity.employer_name.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.address") %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.employment.address") %>
+      <%= header %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: header) do %>
       <%= activity.formatted_address.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.contact_name") %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.employment.contact_name") %>
+      <%= header %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: header) do %>
       <%= activity.contact_name.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.contact_email") %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.employment.contact_email") %>
+      <%= header %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: header) do %>
       <%= activity.contact_email.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.contact_phone") %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.employment.contact_phone") %>
+      <%= header %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: header) do %>
       <%= activity.contact_phone_number.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>

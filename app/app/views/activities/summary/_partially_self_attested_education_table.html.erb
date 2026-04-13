@@ -9,7 +9,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("components.enrollment_term_table_component.student_name_label") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.student_name_label")) do %>
       <%= student_name %>
     <% end %>
   <% end %>
@@ -19,7 +19,7 @@
       <%= row.with_data_cell(is_header: true) do %>
         <%= t("components.enrollment_term_table_component.school_or_program") %>
       <% end %>
-      <%= row.with_data_cell do %>
+      <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.school_or_program")) do %>
         <%= school_name.to_s.titlecase.presence || t("shared.not_applicable") %>
       <% end %>
     <% end %>
@@ -29,7 +29,7 @@
         <%= row.with_data_cell(is_header: true) do %>
           <%= t("components.enrollment_term_table_component.enrollment_term") %>
         <% end %>
-        <%= row.with_data_cell do %>
+        <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_term")) do %>
           <%= format_date(enrollment_term.term_begin) %>
           &dash;
           <%= format_date(enrollment_term.term_end) %>
@@ -40,7 +40,7 @@
         <%= row.with_data_cell(is_header: true) do %>
           <%= t("components.enrollment_term_table_component.enrollment_status") %>
         <% end %>
-        <%= row.with_data_cell do %>
+        <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_status")) do %>
           <% enrollment_status_key = "components.enrollment_term_table_component.status.#{enrollment_term.enrollment_status}" %>
           <%= I18n.exists?(enrollment_status_key) ? t(enrollment_status_key) : t("shared.not_applicable") %>
         <% end %>
@@ -51,15 +51,14 @@
 <% end %>
 
 <h3><%= t("activities.summary.monthly_details") %></h3>
-<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
-  <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.education.review.term")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("components.enrollment_term_table_component.enrollment_status")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.summary.education.term_credit_hours")) %>
-  <% end %>
+<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+         .with_content(t("activities.education.review.term")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+         .with_content(t("components.enrollment_term_table_component.enrollment_status")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+         .with_content(t("activities.summary.education.term_credit_hours")) %>
+
   <% enrollment_terms.each do |enrollment_term| %>
     <%= table.with_row do |row| %>
       <%= row.with_data_cell(data_label: t("activities.education.review.term"), is_header: true) do %>

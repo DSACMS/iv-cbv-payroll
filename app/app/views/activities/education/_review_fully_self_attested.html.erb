@@ -13,7 +13,16 @@
 ])) %>
 
 <h2><%= t("activities.education.review.credit_hours_section") %></h2>
-<%= render(TableComponent.new(class_names: "activity-review-hours-table")) do |table| %>
+<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+           .with_content(t("activities.summary.education.month")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+         .with_content(t("activities.education.review.credit_hours")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+         .with_content(t("activities.education.review.community_engagement_hours")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+         .with_content(t("activities.education.review.edit")) %>
+
   <% @education_activity.education_activity_months.order(:month).each_with_index do |activity_month, index| %>
     <% edit_path = edit_activities_flow_education_month_path(education_id: @education_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>

@@ -30,7 +30,14 @@
 ])) %>
 
 <h2><%= t("activities.community_service.review.hours_section") %></h2>
-<%= render(TableComponent.new(class_names: "activity-review-hours-table")) do |table| %>
+<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+           .with_content(t("activities.summary.community_service.month")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+           .with_content(t("activities.community_service.review.community_service_hours")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+           .with_content(t("activities.community_service.review.edit")) %>
+
   <% @volunteering_activity.volunteering_activity_months.order(:month).each_with_index do |activity_month, index| %>
     <% edit_path = edit_activities_flow_community_service_month_path(community_service_id: @volunteering_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>

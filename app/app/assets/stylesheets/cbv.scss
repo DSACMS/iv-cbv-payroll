@@ -351,12 +351,6 @@ input#invitation_link {
   white-space: nowrap;
 }
 
-// Make sure second col is aligned between both tables on desktop
-.activity-review-hours-table th:not([colspan]),
-.activity-review-hours-table td:first-child {
-  width: 60%;
-}
-
 // Mobile edit link lives inside the th; hidden on desktop where the td column is visible
 .mobile-edit-link {
   display: none;
