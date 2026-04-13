@@ -104,6 +104,20 @@ $table-width: 44rem;
   background-color: color("gray-cool-10");
 }
 
+.usa-table--stacked {
+  // Override stacked behavior in wkhtmltopdf - we don't want the responsive
+  // behavior of the stacked table to apply. This behavior shouldn't apply anyway
+  // because we set the viewport size to that of the desktop breakpoint, but there
+  // is some rendering bug that results in the table headers being misaligned even
+  // when the responsive styles are not applied.
+  .wkhtmltopdf & th,
+  .wkhtmltopdf & td {
+    @include at-media-max("mobile") {
+      display: none;
+    }
+  }
+}
+
 tr td:first-child {
   font-weight: bold;
 }
