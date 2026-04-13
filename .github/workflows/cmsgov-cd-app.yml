@@ -18,6 +18,10 @@ on:
         type: string
         description: "SHA to publish (defaults to the workflow trigger SHA)"
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   build-and-publish:
     name: Publish
