@@ -51,7 +51,7 @@ jobs:
       run: ${{ matrix.terraform-cmd }}
 
     - name: Comment Terraform plan if changed
-      uses: borchero/terraform-plan-comment@v2
+      uses: borchero/terraform-plan-comment@v3
       with:
         token: ${{ github.token }}
         working-directory: ${{ matrix.working-directory }}
