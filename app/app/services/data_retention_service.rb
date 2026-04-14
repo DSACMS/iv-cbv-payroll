@@ -1,7 +1,7 @@
 # This class is responsible for redacting data on all models in accordance with
 # our data retention policy.
 class DataRetentionService
-  # Redact unstarted and incomplete invitations 7 days after they expire
+  # Redact invitations 7 days after they expire
   REDACT_UNUSED_INVITATIONS_AFTER = 7.days
 
   # Redact transmitted CbvFlows 7 days after they are sent to caseworker
@@ -19,13 +19,13 @@ class DataRetentionService
 
   def redact_invitations
     CbvFlowInvitation
-      .unstarted
       .unredacted
+      .includes(:cbv_applicant, :cbv_flows)
       .find_each do |cbv_flow_invitation|
         next unless Time.current.after?(cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER)
 
         cbv_flow_invitation.redact!
-        cbv_flow_invitation.cbv_applicant&.redact!
+        cbv_flow_invitation.cbv_applicant&.redact! if cbv_flow_invitation.cbv_flows.none?
       end
   end
 
@@ -69,7 +69,6 @@ class DataRetentionService
       .includes(:cbv_flow_invitation, :payroll_accounts)
       .find_each do |cbv_flow|
         cbv_flow.redact!
-        cbv_flow.cbv_flow_invitation.redact! if cbv_flow.cbv_flow_invitation.present?
         cbv_flow.cbv_applicant&.redact!
         cbv_flow.payroll_accounts.each(&:redact!)
       end

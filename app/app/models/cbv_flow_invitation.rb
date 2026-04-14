@@ -35,8 +35,7 @@ class CbvFlowInvitation < ApplicationRecord
 
   include Redactable
   has_redactable_fields(
-    email_address: :email,
-    auth_token: :string
+    email_address: :email
   )
 
   scope :unstarted, -> { left_outer_joins(:cbv_flows).where(cbv_flows: { id: nil }) }
