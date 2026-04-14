@@ -2,17 +2,11 @@ name: Auto-fix Dockerfile OS Vulnerabilities
 
 on:
   workflow_run:
-    workflows: ["CI Vulnerability Scans"]
-    types: [completed]
+    workflows: [ "CI Vulnerability Scans" ]
+    types: [ completed ]
   workflow_dispatch:
   schedule:
     - cron: '0 9 * * *' # Daily 9am UTC
-  # Temporary: allows testing from a feature branch before merging to main.
-  # Remove this trigger once the workflow has been validated on main.
-  pull_request:
-    paths:
-      - .github/workflows/auto-fix-vulnerabilities.yml
-      - .github/scripts/patch-dockerfile.py
 
 # Prevent parallel runs from creating conflicting Dockerfile edits or duplicate PRs.
 concurrency:
