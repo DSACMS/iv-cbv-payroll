@@ -50,7 +50,7 @@ jobs:
             echo "login=" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Login to Docker Hub
         if: env.DOCKERHUB_TOKEN != '' && github.event.pull_request.head.repo.full_name == github.repository
