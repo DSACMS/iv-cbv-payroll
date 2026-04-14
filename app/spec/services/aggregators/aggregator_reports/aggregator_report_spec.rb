@@ -141,10 +141,23 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
     let(:comment) { "cool stuff" }
     let(:cbv_flow) { create(:cbv_flow, has_other_jobs: false) }
     let(:report) { build(:pinwheel_report, :hydrated, :with_pinwheel_account) }
+    let(:earnings) do
+      [
+        Aggregators::ResponseObjects::Earning.new(
+          category: "salary",
+          amount: 10_000
+        ),
+        Aggregators::ResponseObjects::Earning.new(
+          category: "tips",
+          amount: 2_345
+        )
+      ]
+    end
 
     before do
       report.payroll_accounts.first.flow = cbv_flow
       report.payroll_accounts.first.update!(additional_information: comment)
+      report.paystubs.first.earnings = earnings
     end
 
     it 'income information' do
@@ -171,6 +184,16 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
                 pay_period_start: Date.new(2014, 1, 1),
                 pay_period_end: Date.new(2014, 1, 2),
                 pay_gross: 12345,
+                gross_pay_list: [
+                  {
+                    type: "salary",
+                    amount: 10_000
+                  },
+                  {
+                    type: "tips",
+                    amount: 2_345
+                  }
+                ],
                 pay_gross_ytd: 12345,
                 pay_net: 12345,
                 hours_paid: 12.0,
@@ -201,6 +224,16 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
       expect { report.income_report }.not_to raise_error
       result = report.income_report
       expect(result[:employments].first[:paystubs]).to eq([])
+    end
+
+    context "when a paystub has no earnings" do
+      before do
+        report.paystubs.first.earnings = nil
+      end
+
+      it "renders gross_pay_list as an empty array" do
+        expect(report.income_report[:employments].first[:paystubs].first[:gross_pay_list]).to eq([])
+      end
     end
 
     context "when a paystub has null gross_pay_amount" do
@@ -248,6 +281,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
                 pay_period_start: Date.new(2015, 1, 1),
                 pay_period_end: Date.new(2015, 1, 2),
                 pay_gross: 2222,
+                gross_pay_list: [],
                 pay_gross_ytd: 2222,
                 pay_net: 2222,
                 hours_paid: 20.0,
