@@ -79,17 +79,3 @@ jobs:
           directory: infra
           framework: terraform
           quiet: true # only displays failed checks
-  check-compliance-with-tfsec:
-    name: Check compliance with tfsec
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      pull-requests: write
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run tfsec check
-        uses: aquasecurity/tfsec-pr-commenter-action@v1.3.1
-        with:
-          github_token: ${{ github.token }}
