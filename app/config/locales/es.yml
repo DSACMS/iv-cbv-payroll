@@ -645,6 +645,7 @@ es:
       preheader:
         default: Un sitio web en colaboración con la Agencia de pruebas.
         la_ldh: Un sitio web en colaboración con el Departamento de Salud de Luisiana
+        nh_dhhs: Un sitio web en colaboración con la NH DHHS Oficina de Asistencia Familiar (BFA)
       primary: Menú principal
     hours:
       one: "%{count} hora"

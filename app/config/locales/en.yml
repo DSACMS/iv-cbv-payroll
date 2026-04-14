@@ -1164,6 +1164,7 @@ en:
       preheader:
         default: A website in partnership with Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health
+        nh_dhhs: A website in partnership with NH DHHS Bureau of Family Assistance
       primary: Primary navigation
     hours:
       one: "%{count} hour"
