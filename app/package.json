@@ -18,7 +18,7 @@
     "postcss-nesting": "^14.0.0",
     "postcss-scss": "^4.0.9",
     "sass": "^1.99.0",
-    "webpack": "^5.105.4",
+    "webpack": "^5.106.1",
     "webpack-cli": "^7.0.2"
   },
   "scripts": {
