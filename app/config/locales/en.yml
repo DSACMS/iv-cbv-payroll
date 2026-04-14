@@ -606,7 +606,6 @@ en:
       footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
       greeting: Hello,
       header:
-        nh_dhhs: Test Agency has sent you an invitation to verify your income
         sandbox: Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
@@ -769,7 +768,7 @@ en:
         body_1: If you still need to verify your income, please submit your income information by visiting %{agency_acronym}'s website.
         cta_button_html:
           la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit LDH's website</a>
-          nh_dhhs: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at Test Agency</a>
+          nh_dhhs: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit NH DHHS's website</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at Test Agency</a>
         title: Your invitation to verify income has expired
     missing_results:
@@ -1130,11 +1129,11 @@ en:
   shared:
     agency_acronym:
       la_ldh: LDH
-      nh_dhhs: TA
+      nh_dhhs: NH DHHS
       sandbox: TA
     agency_full_name:
       la_ldh: Louisiana Department of Health
-      nh_dhhs: New Hampshire Test Agency
+      nh_dhhs: NH DHHS Bureau of Family Assistance
       sandbox: Test Agency
     app_name:
       nh_dhhs: TAApp
@@ -1155,11 +1154,13 @@ en:
       aria_label: Main navigation
       cbv_flow_title:
         la_ldh: Department of Health
-        nh_dhhs: New Hampshire Test Agency
+        nh_dhhs: NH DHHS Bureau of Family Assistance
         sandbox: Test Agency
       close: Close
       help: Help
       log_out: Log out
+      logo_alt_text:
+        nh_dhhs: New Hampshire's logo image for the website
       preheader:
         default: A website in partnership with Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health

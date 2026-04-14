@@ -77,7 +77,6 @@ es:
       footer: Este es un mensaje generado automáticamente desde su agencia de SNAP. Por favor no conteste a este correo electrónico.
       greeting: "¡Hola!"
       header:
-        nh_dhhs: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
         sandbox: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
       subject:
         default: Verifique sus ingresos para su solicitud o renovación de SNAP
@@ -234,7 +233,7 @@ es:
         body_1: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_acronym}.
         cta_button_html:
           la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del LDH</a>
-          nh_dhhs: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Obtenga más información en la Agencia de pruebas</a>
+          nh_dhhs: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del NH DHHS</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Obtenga más información en la Agencia de pruebas</a>
         title: Su invitación para verificar ingresos ha expirado
     missing_results:
@@ -616,11 +615,11 @@ es:
   shared:
     agency_acronym:
       la_ldh: LDH
-      nh_dhhs: TA
+      nh_dhhs: NH DHHS
       sandbox: TA
     agency_full_name:
       la_ldh: Departamento de Salud de Luisiana
-      nh_dhhs: Agencia de pruebas de New Hampshire
+      nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
       sandbox: Agencia de pruebas
     app_name:
       nh_dhhs: TAApp
@@ -638,7 +637,7 @@ es:
       aria_label: Menú principal
       cbv_flow_title:
         la_ldh: Departamento de Salud
-        nh_dhhs: Agencia de pruebas de New Hampshire
+        nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
         sandbox: Agencia de pruebas
       close: Cerrar
       help: Ayuda
