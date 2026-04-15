@@ -49,7 +49,8 @@ class Activities::EmploymentController < Activities::BaseController
 
   def save_review
     @employment_activity.update(review_params)
-    redirect_to after_activity_path(@employment_activity)
+    @employment_activity.publish!
+    redirect_to after_activity_path
   end
 
   private

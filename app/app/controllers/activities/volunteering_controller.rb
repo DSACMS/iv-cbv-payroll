@@ -45,7 +45,8 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def save_review
     @volunteering_activity.update(review_params)
-    redirect_to after_activity_path(@volunteering_activity)
+    @volunteering_activity.publish!
+    redirect_to after_activity_path
   end
 
   def destroy
