@@ -235,6 +235,19 @@ RSpec.describe Cbv::EntriesController do
           expect(response).to redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
         end
       end
+
+      context "when the invitation has been redacted" do
+        before do
+          invitation.redact!
+        end
+
+        it "redirects to the expired invitations page" do
+          expect { get :show, params: { token: invitation.auth_token } }
+            .not_to change { session[:flow_id] }
+
+          expect(response).to redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+        end
+      end
     end
 
     context "when the session points to a deleted cbv flow" do
