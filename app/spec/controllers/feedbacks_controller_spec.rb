@@ -37,7 +37,7 @@ RSpec.describe FeedbacksController, type: :controller do
         expect(response.location).to eq(expected_url)
       end
 
-      it "redirects to the survey form without prefill params" do
+      it "redirects to the survey form with prefill params" do
         get :show, params: { form: "survey" }
 
         expect(event_logger).to have_received(:track).with(
@@ -49,7 +49,9 @@ RSpec.describe FeedbacksController, type: :controller do
           )
         )
         expect(response).to have_http_status(:redirect)
-        expect(response.location).to eq(ApplicationController.helpers.survey_form_url)
+        agency_prefixed_device_id = CGI.escape("#{cbv_flow.cbv_applicant.client_agency_id}/test-device-id-123")
+        expected_url = "#{ApplicationHelper::APPLICANT_SURVEY_FORM}?usp=pp_url&#{ApplicationHelper::SURVEY_FORM_SESSION_ID_ENTRY}=#{agency_prefixed_device_id}"
+        expect(response.location).to eq(expected_url)
       end
     end
 
