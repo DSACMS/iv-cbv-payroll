@@ -111,4 +111,40 @@ RSpec.describe ActivityFlow, type: :model do
       }.to change { flow.activity_flow_monthly_summaries.count }.by(flow.reporting_months.size)
     end
   end
+
+  describe "#any_activities_added?" do
+    let(:flow) do
+      create(
+        :activity_flow,
+        volunteering_activities_count: 0,
+        job_training_activities_count: 0,
+        education_activities_count: 0
+      )
+    end
+
+    it "returns false when flow has no activities" do
+      expect(flow.any_activities_added?).to be false
+    end
+
+    it "returns false when flow only has draft activities" do
+      create(:volunteering_activity, activity_flow: flow, draft: true)
+
+      expect(flow.any_activities_added?).to be false
+    end
+
+    [
+      [ :volunteering_activity, :activity_flow ],
+      [ :job_training_activity, :activity_flow ],
+      [ :education_activity, :activity_flow ],
+      [ :employment_activity, :activity_flow ],
+      [ :payroll_account, :flow ]
+    ].each do |factory_name, flow_attribute|
+      activity_name = factory_name.to_s.humanize.downcase
+
+      it "returns true when flow includes a published #{activity_name}" do
+        create(factory_name, flow_attribute => flow, draft: false)
+        expect(flow.any_activities_added?).to be true
+      end
+    end
+  end
 end

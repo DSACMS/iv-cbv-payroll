@@ -59,6 +59,14 @@ class ActivityFlow < Flow
     "#{start_display} - #{end_display}"
   end
 
+  def any_activities_added?
+    volunteering_activities.published.exists? ||
+      job_training_activities.published.exists? ||
+      education_activities.published.exists? ||
+      employment_activities.published.exists? ||
+      payroll_accounts.published.exists?
+  end
+
   def complete?
     completed_at.present?
   end

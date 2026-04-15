@@ -223,6 +223,8 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     end
 
     it "publishes the activity" do
+      employment_activity.update!(draft: true)
+
       patch :save_review, params: { id: employment_activity.id, employment_activity: { additional_comments: "" } }
 
       expect(employment_activity.reload.draft).to be(false)

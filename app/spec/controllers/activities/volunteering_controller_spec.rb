@@ -135,6 +135,8 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
     end
 
     it "publishes the activity" do
+      volunteering_activity.update!(draft: true)
+
       patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "" } }
 
       expect(volunteering_activity.reload.draft).to be(false)

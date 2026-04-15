@@ -147,6 +147,8 @@ RSpec.describe Activities::Income::PaymentDetailsController do
     end
 
     it "publishes the payroll account" do
+      payroll_account.update!(draft: true)
+
       patch :update, params: {
         user: { account_id: account_id },
         payroll_account: { additional_information: comment }

@@ -153,6 +153,8 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
     end
 
     it "publishes the activity" do
+      job_training_activity.update!(draft: true)
+
       patch :save_review, params: { id: job_training_activity.id, job_training_activity: { additional_comments: "" } }
 
       expect(job_training_activity.reload.draft).to be(false)

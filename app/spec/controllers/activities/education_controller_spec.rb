@@ -397,6 +397,8 @@ RSpec.describe Activities::EducationController, type: :controller do
     end
 
     it "publishes the activity" do
+      education_activity.update!(draft: true)
+
       patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
 
       expect(education_activity.reload.draft).to be(false)
