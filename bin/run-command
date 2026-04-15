@@ -10,6 +10,8 @@
 #     e.g. '[{ "name" : "DB_USER", "value" : "migrator" }]'
 #   --task_role_arn - the IAM role ARN that the task should assume. Overrides the
 #     task role specified in the task definition.
+#   --workspace - the Terraform workspace to use when resolving service outputs.
+#     This is useful for PR environments, which use workspaces like "p-1606".
 #
 # Positional parameters:
 #   app_name (required) - the name of subdirectory of /infra that holds the
@@ -27,6 +29,7 @@ set -euo pipefail
 # Parse optional parameters
 environment_variables=""
 task_role_arn=""
+workspace=""
 while :; do
   case "$1" in
     --environment-variables)
@@ -37,12 +40,18 @@ while :; do
       task_role_arn="$2"
       shift 2
       ;;
+    --workspace)
+      workspace="$2"
+      shift 2
+      ;;
     --help)
       echo "Usage: $0 [app_name] [environment] [command]"
-      echo "  --environment_variables   - JSON list of environment variables"
-      echo "  --task_role_arn           - IAM role ARN that teh task should assume"
+      echo "  --environment-variables   - JSON list of environment variables"
+      echo "  --task-role-arn           - IAM role ARN that the task should assume"
+      echo "  --workspace               - Terraform workspace to select before reading outputs"
       echo
       echo "Example: $0 app prod '[\"echo\", \"Hello, world\"]'"
+      echo "Example: $0 --workspace p-1606 app dev '[\"bin/rails\", \"--version\"]'"
       exit 0
       ;;
     *)
@@ -64,10 +73,14 @@ echo "  environment=${environment}"
 echo "  command=${command}"
 echo "  environment_variables=${environment_variables:-}"
 echo "  task_role_arn=${task_role_arn:-}"
+echo "  workspace=${workspace:-}"
 echo
 
 # Initialize terraform and select workspace if specified
 ./bin/terraform-init "infra/${app_name}/service" "${environment}"
+if [ -n "${workspace}" ]; then
+  terraform -chdir="infra/${app_name}/service" workspace select "${workspace}"
+fi
 
 # Use the same cluster, task definition, and network configuration that the application service uses
 cluster_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_cluster_name)
