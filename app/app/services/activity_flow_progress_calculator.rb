@@ -5,7 +5,7 @@ class ActivityFlowProgressCalculator
   PER_MONTH_EARNINGS_THRESHOLD = 580_00 # in cents
 
   OverallResult = Struct.new(:total_hours, :meets_requirements, :meets_routing_requirements, keyword_init: true)
-  MonthlyResult = Struct.new(:month, :total_hours, :meets_requirements, keyword_init: true)
+  MonthlyResult = Struct.new(:month, :total_hours, :total_earnings_cents, :default_unit, :meets_requirements, keyword_init: true)
 
   def initialize(activity_flow)
     @activity_flow = activity_flow
@@ -27,11 +27,14 @@ class ActivityFlowProgressCalculator
   def monthly_results
     reporting_months.map do |month|
       hours = hours_for_month(month)
+      earnings_cents = earnings_for_month(month)
 
       MonthlyResult.new(
         month: month,
         total_hours: hours,
-        meets_requirements: hours >= PER_MONTH_HOURS_THRESHOLD
+        total_earnings_cents: earnings_cents,
+        default_unit: default_unit_for_month(hours: hours, earnings_cents: earnings_cents),
+        meets_requirements: hours >= PER_MONTH_HOURS_THRESHOLD || earnings_cents >= PER_MONTH_EARNINGS_THRESHOLD
       )
     end
   end
@@ -70,6 +73,10 @@ class ActivityFlowProgressCalculator
       validated_hours_for_month(month_start) >= PER_MONTH_HOURS_THRESHOLD ||
         validated_earnings_for_month(month_start) >= PER_MONTH_EARNINGS_THRESHOLD
     end >= required_month_count
+  end
+
+  def default_unit_for_month(hours:, earnings_cents:)
+    earnings_cents >= PER_MONTH_EARNINGS_THRESHOLD && hours < PER_MONTH_HOURS_THRESHOLD ? :dollars : :hours
   end
 
   def hours_for_month(month_start)

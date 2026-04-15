@@ -8,7 +8,7 @@
     "@hotwired/turbo-rails": "^8.0.23",
     "@rails/actioncable": "^8.1.300",
     "@uswds/uswds": "^3.13.0",
-    "autoprefixer": "^10.4.27",
+    "autoprefixer": "^10.5.0",
     "esbuild": "^0.27.0",
     "load-script": "^2.0.0",
     "postcss": "^8.5.8",
@@ -17,8 +17,8 @@
     "postcss-minify": "^1.2.0",
     "postcss-nesting": "^14.0.0",
     "postcss-scss": "^4.0.9",
-    "sass": "^1.98.0",
-    "webpack": "^5.105.4",
+    "sass": "^1.99.0",
+    "webpack": "^5.106.1",
     "webpack-cli": "^7.0.2"
   },
   "scripts": {
@@ -29,9 +29,9 @@
     "format:precommit": "prettier --write"
   },
   "devDependencies": {
-    "happy-dom": ">=20.8.9",
+    "happy-dom": ">=20.9.0",
     "jsdom": "^29.0.2",
-    "prettier": "^3.8.1",
+    "prettier": "^3.8.2",
     "vite": "^8.0.2",
     "vitest": "^4.1.4"
   },

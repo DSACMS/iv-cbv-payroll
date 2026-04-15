@@ -203,9 +203,11 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "keeps the hub in in-progress state to match the progress indicator completion rule" do
-      expect(response.body).to include(I18n.t("activities.hub.in_progress_state_title"))
-      expect(response.body).not_to include(I18n.t("activities.hub.completed_state_title"))
+    it "shows the hub in completed state" do
+      page_text = Capybara.string(response.body).text
+
+      expect(page_text).to include(I18n.t("activities.hub.completed_state_title"))
+      expect(page_text).not_to include(I18n.t("activities.hub.in_progress_state_title"))
     end
   end
 
