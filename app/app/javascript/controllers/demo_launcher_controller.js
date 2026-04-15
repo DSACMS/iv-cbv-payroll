@@ -1,7 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["monthButtons", "monthsInput", "ceOnly", "datePickerWrapper", "genericButton"]
+  static targets = [
+    "monthButtons",
+    "monthsInput",
+    "ceOnly",
+    "datePickerWrapper",
+    "genericButton",
+    "renewalRequiredField",
+  ]
 
   connect() {
     const selectedFlow = this.element.querySelector("input[name=flow_type]:checked")
@@ -107,9 +114,15 @@ export default class extends Controller {
 
   applyWindow(value) {
     if (value === "renewal") {
+      if (this.hasRenewalRequiredFieldTarget) {
+        this.renewalRequiredFieldTarget.classList.remove("demo-launcher__renewal-required--hidden")
+      }
       this.monthButtonsTarget.classList.add("demo-launcher__month-buttons--hidden")
       this.monthsInputTarget.value = "6"
     } else {
+      if (this.hasRenewalRequiredFieldTarget) {
+        this.renewalRequiredFieldTarget.classList.add("demo-launcher__renewal-required--hidden")
+      }
       this.monthButtonsTarget.classList.remove("demo-launcher__month-buttons--hidden")
       this.monthsInputTarget.value = "2"
       this.highlightButton("2")

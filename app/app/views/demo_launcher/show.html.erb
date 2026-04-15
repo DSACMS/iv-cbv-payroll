@@ -179,6 +179,18 @@
               <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_renewal" value="renewal" <%= "checked" if params[:reporting_window] == "renewal" %> data-action="demo-launcher#selectWindow">
               <label class="usa-radio__label" for="reporting_window_renewal">Renewal</label>
             </div>
+            <div class="demo-launcher__renewal-required margin-top-2 <%= "demo-launcher__renewal-required--hidden" unless params[:reporting_window] == "renewal" %>" data-demo-launcher-target="renewalRequiredField">
+              <div class="demo-launcher__inline-field">
+                <input class="usa-input usa-input--sm" type="number" name="renewal_required_months"
+                       id="renewal_required_months" min="1" max="6" autocomplete="off"
+                       value="<%= params[:renewal_required_months] %>">
+                <span>renewal months required</span>
+                <span class="demo-launcher__hint-toggle" data-action="click->demo-launcher#toggleInlineHint"><svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg></span>
+              </div>
+              <div class="usa-hint demo-launcher__setting-hint" hidden>
+                Optional. For renewal flows, override how many months must meet requirements (N of M).
+              </div>
+            </div>
             <div class="usa-hint demo-launcher__separator">-- or --</div>
             <div class="demo-launcher__inline-field">
               <input class="usa-input usa-input--sm" type="number" name="reporting_window_months"
@@ -190,16 +202,6 @@
             </div>
             <div class="usa-hint demo-launcher__setting-hint" hidden>
               Specify the reporting window manually.
-            </div>
-            <div class="demo-launcher__inline-field margin-top-2">
-              <input class="usa-input usa-input--sm" type="number" name="renewal_required_months"
-                     id="renewal_required_months" min="1" max="6" autocomplete="off"
-                     value="<%= params[:renewal_required_months] %>">
-              <span>renewal months required</span>
-              <span class="demo-launcher__hint-toggle" data-action="click->demo-launcher#toggleInlineHint"><svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg></span>
-            </div>
-            <div class="usa-hint demo-launcher__setting-hint" hidden>
-              Optional. For renewal flows, override how many months must meet requirements (N of M).
             </div>
           <% end %>
           <%= render DemoLauncher::SettingComponent.new(

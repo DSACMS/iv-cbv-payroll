@@ -186,4 +186,10 @@
       flex-shrink: 0;
     }
   }
+
+  .demo-launcher__renewal-required {
+    &.demo-launcher__renewal-required--hidden {
+      display: none;
+    }
+  }
 }
