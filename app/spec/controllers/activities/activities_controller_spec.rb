@@ -210,60 +210,160 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
   end
 
   context "when activities are added for a renewal flow" do
-    let(:current_flow) do
-      create(
-        :activity_flow,
-        reporting_window_type: "renewal",
-        reporting_window_months: 6,
-        volunteering_activities_count: 0,
-        job_training_activities_count: 0,
-        education_activities_count: 0
-      )
+    context "when required months equals reporting window" do
+      let(:current_flow) do
+        create(
+          :activity_flow,
+          reporting_window_type: "renewal",
+          reporting_window_months: 6,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0
+        )
+      end
+
+      before do
+        activity = create(:volunteering_activity, activity_flow: current_flow)
+        create(
+          :volunteering_activity_month,
+          volunteering_activity: activity,
+          month: current_flow.reporting_window_range.begin,
+          hours: 20
+        )
+        session[:flow_id] = current_flow.id
+        session[:flow_type] = :activity
+        get :index
+      end
+
+      it "does not render renewal subtitle when required months equals reporting window" do
+        expect(response.body).not_to include("activity-flow-progress-indicator__description")
+      end
     end
 
-    before do
-      activity = create(:volunteering_activity, activity_flow: current_flow)
-      create(
-        :volunteering_activity_month,
-        volunteering_activity: activity,
-        month: current_flow.reporting_window_range.begin,
-        hours: 20
-      )
-      session[:flow_id] = current_flow.id
-      session[:flow_type] = :activity
-      get :index
-    end
+    context "when subset required months are configured and completed" do
+      let(:current_flow) do
+        stub_client_agency_config_value("sandbox", "renewal_required_months", 2)
+        create(
+          :activity_flow,
+          reporting_window_type: "renewal",
+          reporting_window_months: 6,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0
+        )
+      end
 
-    it "does not render renewal subtitle when required months equals reporting window" do
-      expect(response.body).not_to include("activity-flow-progress-indicator__description")
+      before do
+        activity = create(:volunteering_activity, activity_flow: current_flow)
+        create(
+          :volunteering_activity_month,
+          volunteering_activity: activity,
+          month: current_flow.reporting_months.first.beginning_of_month,
+          hours: 80
+        )
+        create(
+          :volunteering_activity_month,
+          volunteering_activity: activity,
+          month: current_flow.reporting_months.second.beginning_of_month,
+          hours: 80
+        )
+
+        session[:flow_id] = current_flow.id
+        session[:flow_type] = :activity
+        get :index
+      end
+
+      it "shows the completed hub state when required months are complete" do
+        page_text = Capybara.string(response.body).text
+
+        expect(page_text).to include(I18n.t("activities.hub.completed_state_title"))
+        expect(page_text).not_to include(I18n.t("activities.hub.in_progress_state_title"))
+      end
+
+      it "uses required-month completion text and shows renewal subtitle" do
+        rendered = Capybara.string(response.body)
+        indicator_title = rendered.find(".activity-flow-progress-indicator__title").text.squish
+
+        expect(indicator_title).to eq("2/2 months completed")
+        expect(rendered).to have_css(".activity-flow-progress-indicator__description")
+      end
     end
   end
 
   context "when no activities are added for a renewal flow" do
-    let(:current_flow) do
-      create(
-        :activity_flow,
-        reporting_window_type: "renewal",
-        reporting_window_months: 6,
-        volunteering_activities_count: 0,
-        job_training_activities_count: 0,
-        education_activities_count: 0
-      )
+    context "when required months equals reporting window" do
+      let(:current_flow) do
+        create(
+          :activity_flow,
+          reporting_window_type: "renewal",
+          reporting_window_months: 6,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0
+        )
+      end
+
+      before do
+        session[:flow_id] = current_flow.id
+        session[:flow_type] = :activity
+        get :index
+      end
+
+      it "shows renewal months-required copy in the empty state" do
+        page_text = Capybara.string(response.body).text
+
+        expect(page_text).to include(
+          I18n.t("activities.hub.empty_state_months_required_all", required_month_count: 6)
+        )
+      end
     end
+
+    context "when subset required months are configured" do
+      let(:current_flow) do
+        stub_client_agency_config_value("sandbox", "renewal_required_months", 3)
+        create(
+          :activity_flow,
+          reporting_window_type: "renewal",
+          reporting_window_months: 6,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0
+        )
+      end
+
+      before do
+        session[:flow_id] = current_flow.id
+        session[:flow_type] = :activity
+        get :index
+      end
+
+      it "shows the renewal 'any months' copy in the empty state" do
+        page_text = Capybara.string(response.body).text
+
+        expect(page_text).to include(
+          I18n.t("activities.hub.empty_state_months_required_any", required_month_count: 3)
+        )
+      end
+    end
+  end
+
+  context "when renewal required-month override is passed in params" do
+    let(:invitation) { create(:activity_flow_invitation, cbv_applicant: create(:cbv_applicant, :sandbox)) }
 
     before do
-      session[:flow_id] = current_flow.id
-      session[:flow_type] = :activity
-      get :index
+      allow(controller).to receive(:internal_environment?).and_return(true)
+      get :index, params: {
+        token: invitation.auth_token,
+        reporting_window: "renewal",
+        renewal_required_months: "2"
+      }
     end
 
-    it "shows renewal months-required copy in the empty state" do
-      page_text = Capybara.string(response.body).text
+    it "persists the required-month override on the flow" do
+      flow = ActivityFlow.find(session[:flow_id])
 
-      expect(page_text).to include(I18n.t("activities.hub.empty_state_months_required_label"))
-      expect(page_text).to include(
-        I18n.t("activities.hub.empty_state_months_required_all", required_month_count: 6)
-      )
+      expect(flow.renewal_required_months).to eq(2)
+      expect(flow.required_month_count).to eq(2)
     end
   end
 

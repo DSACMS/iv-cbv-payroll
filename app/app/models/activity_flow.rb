@@ -12,7 +12,7 @@ class ActivityFlow < Flow
   has_many :payroll_accounts, as: :flow, dependent: :destroy
   has_many :activity_flow_monthly_summaries, dependent: :destroy
 
-  before_create :set_default_reporting_window
+  before_create :set_default_reporting_window, :set_default_renewal_required_months
 
   def self.create_from_invitation(invitation, device_id, params = {})
     create(
@@ -100,6 +100,21 @@ class ActivityFlow < Flow
     reporting_window_type == "renewal"
   end
 
+  def required_month_count
+    window_months = reporting_window_months || calculate_reporting_window_months
+    return window_months unless renewal_reporting_window?
+
+    renewal_required_months || window_months
+  end
+
+  def set_required_month_count!(requested_count)
+    update!(renewal_required_months: requested_count)
+  end
+
+  def set_reporting_window_months!(requested_months)
+    update!(reporting_window_months: requested_months.to_i)
+  end
+
   private
 
   def set_default_reporting_window
@@ -111,5 +126,12 @@ class ActivityFlow < Flow
 
     client_agency = Rails.application.config.client_agencies[cbv_applicant&.client_agency_id]
     client_agency&.application_reporting_months || 1
+  end
+
+  def set_default_renewal_required_months
+    return unless renewal_reporting_window?
+
+    client_agency = Rails.application.config.client_agencies[cbv_applicant&.client_agency_id]
+    self.renewal_required_months ||= client_agency&.renewal_required_months || reporting_window_months
   end
 end

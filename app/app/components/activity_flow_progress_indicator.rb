@@ -1,13 +1,12 @@
 class ActivityFlowProgressIndicator < ViewComponent::Base
   def self.from_calculator(
     progress_calculator,
-    variant: :application,
-    required_month_count: nil
+    variant: :application
   )
     new(
       monthly_calculation_results: progress_calculator.monthly_results,
       variant: variant,
-      required_month_count: required_month_count
+      required_month_count: progress_calculator.required_month_count
     )
   end
 

@@ -30,6 +30,32 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     )
   end
 
+  describe ".from_calculator" do
+    it "uses the calculator required_month_count" do
+      monthly_results = [
+        ActivityFlowProgressCalculator::MonthlyResult.new(
+          month: Date.new(2025, 12, 1),
+          total_hours: 84,
+          meets_requirements: true
+        ),
+        ActivityFlowProgressCalculator::MonthlyResult.new(
+          month: Date.new(2026, 1, 1),
+          total_hours: 20,
+          meets_requirements: false
+        )
+      ]
+      calculator = instance_double(
+        ActivityFlowProgressCalculator,
+        monthly_results: monthly_results,
+        required_month_count: 1
+      )
+
+      render_inline(described_class.from_calculator(calculator, variant: :renewal))
+
+      expect(page).to have_css("h2", text: "1/1 months completed")
+    end
+  end
+
   it "renders the title without description for application variants" do
     render_inline(component)
 

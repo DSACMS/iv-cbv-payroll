@@ -14,6 +14,7 @@ RSpec.describe ClientAgencyConfig do
     let(:sample_config) { <<~YAML }
       - id: foo
         agency_name: Foo Agency Name
+        renewal_required_months: 2
         pinwheel:
           environment: foo
         argyle:
@@ -47,6 +48,11 @@ RSpec.describe ClientAgencyConfig do
       it "returns a key for that agency" do
         config = described_class.new(sample_config_path)
         expect(config["foo"].agency_name).to eq("Foo Agency Name")
+      end
+
+      it "returns renewal_required_months when configured" do
+        config = described_class.new(sample_config_path)
+        expect(config["foo"].renewal_required_months).to eq(2)
       end
     end
   end
@@ -143,6 +149,44 @@ RSpec.describe ClientAgencyConfig do
           expect do
             described_class.new(sample_config_path)
           end.to raise_error(ArgumentError, "Client Agency foo missing required attribute `transmission_method`")
+        end
+      end
+
+      context "invalid renewal required months" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            renewal_required_months: 0
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            transmission_method: shared_email
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo invalid value for renewal_required_months")
+        end
+      end
+
+      context "renewal required months above the max" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            renewal_required_months: 7
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            transmission_method: shared_email
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo invalid value for renewal_required_months")
         end
       end
     end

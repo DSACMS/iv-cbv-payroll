@@ -99,6 +99,54 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
     end
 
+    context "with renewal required-month thresholds" do
+      let(:flow) do
+        create(
+          :activity_flow,
+          reporting_window_type: "renewal",
+          reporting_window_months: 6,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0
+        )
+      end
+      let(:reporting_months) { flow.reporting_months }
+
+      before do
+        stub_client_agency_config_value("sandbox", "renewal_required_months", 2)
+      end
+
+      it "meets requirements when the required number of months meet threshold" do
+        activity = create(:volunteering_activity, activity_flow: flow)
+        create(:volunteering_activity_month, volunteering_activity: activity, month: reporting_months.first.beginning_of_month, hours: 80)
+        create(:volunteering_activity_month, volunteering_activity: activity, month: reporting_months.second.beginning_of_month, hours: 80)
+
+        expect(result.meets_requirements).to be(true)
+      end
+
+      it "does not meet requirements when completed months are below the required count" do
+        activity = create(:volunteering_activity, activity_flow: flow)
+        create(:volunteering_activity_month, volunteering_activity: activity, month: reporting_months.first.beginning_of_month, hours: 80)
+
+        expect(result.meets_requirements).to be(false)
+      end
+
+      it "applies the required-month threshold to routing requirements" do
+        validated_activity = create(:volunteering_activity, activity_flow: flow, data_source: "validated")
+        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
+        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.second.beginning_of_month, hours: 80)
+
+        expect(result.meets_routing_requirements).to be(true)
+      end
+
+      it "does not meet routing requirements when validated months are below the required count" do
+        validated_activity = create(:volunteering_activity, activity_flow: flow, data_source: "validated")
+        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
+
+        expect(result.meets_routing_requirements).to be(false)
+      end
+    end
+
     context "with employment" do
       let(:progress) { described_class.new(flow).overall_result }
 
