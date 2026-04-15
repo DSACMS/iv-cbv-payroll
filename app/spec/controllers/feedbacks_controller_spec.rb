@@ -32,7 +32,8 @@ RSpec.describe FeedbacksController, type: :controller do
           )
         )
         expect(response).to have_http_status(:redirect)
-        expected_url = "#{feedback_form_url}?usp=pp_url&#{ApplicationHelper::FEEDBACK_FORM_DEVICE_ID_ENTRY}=test-device-id-123"
+        agency_prefixed_device_id = "#{cbv_flow.cbv_applicant.client_agency_id}/test-device-id-123"
+        expected_url = "#{feedback_form_url}?usp=pp_url&#{ApplicationHelper::FEEDBACK_FORM_DEVICE_ID_ENTRY}=#{agency_prefixed_device_id}"
         expect(response.location).to eq(expected_url)
       end
 
