@@ -45,8 +45,7 @@ class Activities::JobTrainingController < Activities::BaseController
 
   def save_review
     @job_training_activity.update(review_params)
-    @job_training_activity.publish!
-    redirect_to after_activity_path
+    redirect_to after_activity_path(@job_training_activity)
   end
 
   def destroy

@@ -31,8 +31,9 @@ class Activities::BaseController < FlowController
     redirect_to root_url
   end
 
-  def after_activity_path
-    progress_result = progress_calculator.overall_result
+  def after_activity_path(activity = nil)
+    activity&.publish!
+    progress_result = ActivityFlowProgressCalculator.new(@flow).overall_result
     progress_result.meets_routing_requirements ? activities_flow_summary_path : activities_flow_root_path
   end
 

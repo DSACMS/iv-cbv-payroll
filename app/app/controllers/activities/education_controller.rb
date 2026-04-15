@@ -58,7 +58,7 @@ class Activities::EducationController < Activities::BaseController
           education_id: @education_activity, id: 0
         )
       else
-        redirect_to after_activity_path
+        redirect_to after_activity_path(@education_activity)
       end
     else
       redirect_to :edit, flash: { alert: t("activities.education.errors.unexpected") }
@@ -100,8 +100,12 @@ class Activities::EducationController < Activities::BaseController
 
   def save_review
     @education_activity.update(review_params)
-    @education_activity.publish!
-    redirect_to @education_activity.fully_self_attested? ? activities_flow_root_path : after_activity_path
+    if @education_activity.fully_self_attested?
+      @education_activity.publish!
+      redirect_to activities_flow_root_path
+    else
+      redirect_to after_activity_path(@education_activity)
+    end
   end
 
   def error
@@ -189,7 +193,7 @@ class Activities::EducationController < Activities::BaseController
     if @education_activity.partially_self_attested?
       edit_activities_flow_education_path(id: @education_activity.id)
     else
-      after_activity_path
+      after_activity_path(@education_activity)
     end
   end
 end
