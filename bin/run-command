@@ -10,6 +10,7 @@
 #     e.g. '[{ "name" : "DB_USER", "value" : "migrator" }]'
 #   --task_role_arn - the IAM role ARN that the task should assume. Overrides the
 #     task role specified in the task definition.
+#   --workspace - Terraform workspace to select (for PR environments)
 #
 # Positional parameters:
 #   app_name (required) - the name of subdirectory of /infra that holds the
@@ -27,6 +28,7 @@ set -euo pipefail
 # Parse optional parameters
 environment_variables=""
 task_role_arn=""
+workspace=""
 while :; do
   case "$1" in
     --environment-variables)
@@ -35,6 +37,10 @@ while :; do
       ;;
     --task-role-arn)
       task_role_arn="$2"
+      shift 2
+      ;;
+    --workspace)
+      workspace="$2"
       shift 2
       ;;
     --help)
@@ -64,10 +70,16 @@ echo "  environment=${environment}"
 echo "  command=${command}"
 echo "  environment_variables=${environment_variables:-}"
 echo "  task_role_arn=${task_role_arn:-}"
+echo "  workspace=${workspace:-}"
 echo
 
 # Initialize terraform and select workspace if specified
 ./bin/terraform-init "infra/${app_name}/service" "${environment}"
+
+if [ -n "${workspace}" ]; then
+  echo "Selecting Terraform workspace: ${workspace}"
+  terraform -chdir="infra/${app_name}/service" workspace select "${workspace}"
+fi
 
 # Use the same cluster, task definition, and network configuration that the application service uses
 cluster_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_cluster_name)
