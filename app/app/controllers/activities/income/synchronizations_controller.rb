@@ -1,6 +1,6 @@
 class Activities::Income::SynchronizationsController < Activities::BaseController
   before_action :set_payroll_account, only: %i[show update]
-  before_action :track_payroll_account_creation, only: %i[show]
+
   before_action :redirect_if_session_was_reset, only: %i[update]
   before_action :redirect_if_sync_finished, only: %i[show]
 
@@ -23,11 +23,6 @@ class Activities::Income::SynchronizationsController < Activities::BaseControlle
   end
 
   private
-
-  def track_payroll_account_creation
-    payroll_account = @flow.payroll_accounts.find_by(aggregator_account_id: params[:user][:account_id])
-    payroll_account&.update!(draft: true)
-  end
 
   def session_timeout_enabled?
     false
