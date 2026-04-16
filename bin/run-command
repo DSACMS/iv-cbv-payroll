@@ -79,7 +79,7 @@ echo
 # Initialize terraform and select workspace if specified
 # If a workspace is specified, reset to default first so that a stale
 # .terraform/environment from a previous run doesn't cause terraform-init to fail.
-if [ -n "${workspace}" ]; then
+if [ -n "${workspace}" ] && [ -d "infra/${app_name}/service/.terraform" ]; then
   echo "default" > "infra/${app_name}/service/.terraform/environment"
 fi
 ./bin/terraform-init "infra/${app_name}/service" "${environment}"
