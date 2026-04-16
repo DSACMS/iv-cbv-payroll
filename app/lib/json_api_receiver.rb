@@ -1,13 +1,9 @@
 #!/usr/bin/env ruby
 #
-# API receiver with signature verification
+# This API receiver logs JSON POST requests on port 4567 and verifies HMAC-sha512 signatures.
 #
-# This receiver logs JSON POST requests on port 4567 and verifies HMAC-sha512 signatures.
+# To run the server, see the instructions in README.md ("JSON API Testing").
 #
-# Dependencies: gem install sinatra
-#
-# Usage:
-#   JSON_API_KEY=your-api-key ruby json_api_receiver.rb
 
 require "sinatra"
 require "json"
