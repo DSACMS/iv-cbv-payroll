@@ -81,8 +81,9 @@ module ApplicationHelper
   end
 
   APPLICANT_FEEDBACK_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSdTdLUdhZbn6JcHvR_SN6zbIKhhPfVvs6aeJHz6UrZ9j-83AA/viewform"
-  APPLICANT_SURVEY_FORM = "https://forms.gle/M9jVQNue96rjQTbD9"
+  APPLICANT_SURVEY_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSeQsXvKS3KIKEedwcGxv-c2Qa11hvgr3vyZp1YdLsrQ1Td-qQ/viewform"
   FEEDBACK_FORM_DEVICE_ID_ENTRY = "entry.1176961978"
+  SURVEY_FORM_SESSION_ID_ENTRY = "entry.818699989"
 
   def feedback_form_url
     APPLICANT_FEEDBACK_FORM
