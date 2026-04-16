@@ -13,17 +13,16 @@
 ])) %>
 
 <h2><%= t("activities.education.review.credit_hours_section") %></h2>
-<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
-  <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
+<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
            .with_content(t("activities.summary.education.month")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.education.review.credit_hours")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.education.review.community_engagement_hours")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.education.review.edit")) %>
-  <% end %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+         .with_content(t("activities.education.review.credit_hours")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+         .with_content(t("activities.education.review.community_engagement_hours")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+         .with_content(t("activities.education.review.edit")) %>
+
   <% @education_activity.education_activity_months.order(:month).each_with_index do |activity_month, index| %>
     <% edit_path = edit_activities_flow_education_month_path(education_id: @education_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>

@@ -39,19 +39,21 @@
 <% if @cbv_flow.cbv_flow_invitation.blank? %>
 <h2><%= t(".your_information") %></h2>
 <p><%= agency_translation(".must_match", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-<div class="display-flex flex-justify font-body-md">
+<div class="display-flex flex-justify font-body-md maxw-table">
   <h3><%= t(".application_information") %></h3>
   <%= link_to t(".edit"), cbv_flow_applicant_information_path(force_show: true), class: "usa-link text-bold margin-0" %>
 </div>
-<%= render(TableComponent.new(is_responsive: true, class_names: "margin-top-2", thead_class_names: "", attributes: { "data-testid" => "paystub-table" })) do |table| %>
-  <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
-    <% row.with_data_cell(is_header: true).with_content(t(".question")) %>
-    <% row.with_data_cell(is_header: true).with_content(t(".your_answer")) %>
-  <% end %>
+<%= render(TableComponent.new(class_names: "margin-top-2", attributes: { "data-testid" => "paystub-table" })) do |table| %>
+  <%= table.with_header_cell(colspan: 1, class_names: "border-top-1px")
+         .with_content(t(".question")) %>
+  <%= table.with_header_cell(colspan: 1, class_names: "border-top-1px")
+         .with_content(t(".your_answer")) %>
   <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
     <% table.with_row do |row| %>
-      <% row.with_data_cell(data_label: t(".question"), class_names: "text-bold").with_content(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.prompt")) %>
-      <% row.with_data_cell(data_label: t(".your_answer")) do %>
+      <% prompt = t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.prompt") %>
+      <% row.with_data_cell(is_header: true, data_label: t(".question"))
+            .with_content(prompt) %>
+      <% row.with_data_cell(data_label: prompt) do %>
         <% if item == :date_of_birth %>
           <%= format_date(@cbv_flow.cbv_applicant[item]) %>
         <% else %>
@@ -61,19 +63,20 @@
     <% end %>
   <% end %>
 <% end %>
+
 <!-- Other jobs -->
-<div class="display-flex flex-justify font-body-md">
+<div class="display-flex flex-justify font-body-md maxw-table">
   <h3><%= t("cbv.summaries.show.other_jobs") %></h3>
   <%= link_to t("cbv.summaries.show.edit"), cbv_flow_other_job_path, class: "usa-link text-bold margin-0" %>
 </div>
-<%= render(TableComponent.new(is_responsive: true, class_names: "margin-top-2", thead_class_names: "", attributes: { "data-testid" => "other-jobs-table" })) do |table| %>
-  <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
-    <% row.with_data_cell(is_header: true).with_content(t(".question")) %>
-    <% row.with_data_cell(is_header: true).with_content(t(".your_answer")) %>
-  <% end %>
+<%= render(TableComponent.new(class_names: "margin-top-2", attributes: { "data-testid" => "other-jobs-table" })) do |table| %>
+  <%= table.with_header_cell(colspan: 1, class_names: "border-top-1px")
+         .with_content(t(".question")) %>
+  <%= table.with_header_cell(colspan: 1, class_names: "border-top-1px")
+         .with_content(t(".your_answer")) %>
   <% table.with_row do |row| %>
-    <% row.with_data_cell(data_label: t(".question"), class_names: "text-bold").with_content(t(".other_jobs_question")) %>
-    <% row.with_data_cell(data_label: t(".your_answer")).with_content(format_boolean(@cbv_flow.has_other_jobs)) %>
+    <% row.with_data_cell(is_header: true, data_label: t(".question")).with_content(t(".other_jobs_question")) %>
+    <% row.with_data_cell(data_label: t(".other_jobs_question")).with_content(format_boolean(@cbv_flow.has_other_jobs)) %>
   <% end %>
 <% end %>
 <% end %>

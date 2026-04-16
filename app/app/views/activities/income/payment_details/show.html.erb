@@ -19,11 +19,11 @@
       agency_acronym: agency_translation("shared.agency_acronym"),
     ) %>
 
-<%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @payroll_account, show_income: @is_w2_worker, use_activity_style: true)) %>
+<%= render(Report::EmploymentDetailsTableComponent.new(@aggregator_report, @payroll_account, show_income: @is_w2_worker)) %>
 
 <% if @is_w2_worker %>
   <% if @payroll_account_report.paystubs.any? %>
-    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, @payroll_account, use_activity_style: true)) %>
+    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, @payroll_account)) %>
   <% else %>
     <%= render Uswds::Alert.new(type: :info, heading: t(".none_found"), class: "margin-top-5") do %>
       <%= t(".none_found_description",
@@ -32,9 +32,9 @@
       ) %>
     <% end %>
   <% end %>
-  <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(@aggregator_report, @payroll_account, is_w2_worker: @is_w2_worker, pay_frequency_text: pay_frequency, use_activity_style: true)) %>
+  <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(@aggregator_report, @payroll_account, is_w2_worker: @is_w2_worker, pay_frequency_text: pay_frequency)) %>
 <% else %>
-  <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, @payroll_account, use_activity_style: true)) %>
+  <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, @payroll_account)) %>
 <% end %>
 
 <div class="usa-form-group margin-top-5">

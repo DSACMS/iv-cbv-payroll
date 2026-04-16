@@ -13,7 +13,7 @@
         <%= image_tag wicked_pdf_asset_base64(current_agency.logo_path) %>
       </div>
     <% else %>
-      <span class="text-middle font-sans-md text-no-wrap"><%= agency_translation(".pdf.agency_header_name") %></span>
+      <span class="text-middle font-sans-md"><%= agency_translation(".pdf.agency_header_name") %></span>
     <% end %>
   <% end %>
 </strong>
@@ -39,43 +39,71 @@
 <% end %>
 
 <%= render(TableComponent.new) do |table| %>
-  <%= table.with_header do %>
-    <h3 class="margin-0"><%= t(".pdf.shared.client_information") %></h3>
+  <%= table.with_header_cell(colspan: 2) do %>
+    <%= t(".pdf.shared.client_information") %>
   <% end %>
+
   <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
     <% if @cbv_flow.cbv_applicant[item].present? %>
       <% if item == :date_of_birth %>
-        <%= table.with_row(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html"), format_date(@cbv_flow.cbv_applicant[item])) %>
+        <%= table.with_row do |row| %>
+          <% row.with_data_cell.with_content(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html")) %>
+          <% row.with_data_cell.with_content(format_date(@cbv_flow.cbv_applicant[item])) %>
+        <% end %>
       <% else %>
-        <%= table.with_row(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html"), @cbv_flow.cbv_applicant[item]) %>
+        <%= table.with_row do |row| %>
+          <% row.with_data_cell.with_content(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html")) %>
+          <% row.with_data_cell.with_content(@cbv_flow.cbv_applicant[item]) %>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>
 
   <% if is_caseworker %>
     <% ClientAgency::CaseworkerReportSpecificFieldDecider.caseworker_specific_fields(@cbv_flow).each do |field_name, field_value| %>
-      <%= table.with_row(t(field_name), field_value) %>
+      <%= table.with_row do |row| %>
+        <% row.with_data_cell.with_content(t(field_name)) %>
+        <% row.with_data_cell.with_content(field_value) %>
+      <% end %>
     <% end %>
   <% end %>
   <% ClientAgency::CaseworkerReportSpecificFieldDecider.applicant_specific_fields(@cbv_flow).each do |field, value| %>
-    <%= table.with_row(t(field), value) %>
+    <%= table.with_row do |row| %>
+      <% row.with_data_cell.with_content(t(field)) %>
+      <% row.with_data_cell.with_content(value) %>
+    <% end %>
   <% end %>
 <% end %>
 
 <%= render(TableComponent.new) do |table| %>
-  <%= table.with_header do %>
+  <%= table.with_header_cell(colspan: 2) do %>
     <h3 class="margin-0"><%= t(".pdf.shared.report_details") %></h3>
   <% end %>
   <% if @cbv_flow.confirmation_code.present? %>
-    <%= table.with_row(t(".pdf.shared.confirmation_code"), @cbv_flow.confirmation_code) %>
+    <%= table.with_row do |row| %>
+      <% row.with_data_cell.with_content(t(".pdf.shared.confirmation_code")) %>
+      <% row.with_data_cell.with_content(@cbv_flow.confirmation_code) %>
+    <% end %>
   <% end %>
   <% unless current_agency?(:la_ldh) %>
-    <%= table.with_row(t(".application_or_recertification_date"), format_parsed_date(@cbv_flow.cbv_applicant.snap_application_date)) %>
+    <%= table.with_row do |row| %>
+      <% row.with_data_cell.with_content(t(".application_or_recertification_date")) %>
+      <% row.with_data_cell.with_content(format_parsed_date(@cbv_flow.cbv_applicant.snap_application_date)) %>
+    <% end %>
   <% end %>
-  <%= table.with_row(t(".pdf.client.date_created"), format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
-  <%= table.with_row(t(".pdf.client.date_range"), "#{format_parsed_date(aggregator_report.from_date)} to #{format_parsed_date(aggregator_report.to_date)}") %>
+  <%= table.with_row do |row| %>
+    <% row.with_data_cell.with_content(t(".pdf.client.date_created")) %>
+    <% row.with_data_cell.with_content(format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
+  <% end %>
+  <%= table.with_row do |row| %>
+    <% row.with_data_cell.with_content(t(".pdf.client.date_range")) %>
+    <% row.with_data_cell.with_content("#{format_parsed_date(aggregator_report.from_date)} to #{format_parsed_date(aggregator_report.to_date)}") %>
+  <% end %>
   <% if is_caseworker %>
-    <%= table.with_row(t(".pdf.caseworker.agreement_consent_timestamp"), @cbv_flow.consented_to_authorized_use_at) %>
+    <%= table.with_row do |row| %>
+      <% row.with_data_cell.with_content(t(".pdf.caseworker.agreement_consent_timestamp")) %>
+      <% row.with_data_cell.with_content(@cbv_flow.consented_to_authorized_use_at) %>
+    <% end %>
   <% end %>
 <% end %>
 
@@ -94,7 +122,7 @@
   <h3><%= t(".table_caption_no_name", number: index + 1) %>: <%= employer_name %></h3>
 
   <%= render(TableComponent.new) do |table| %>
-    <%= table.with_header do %>
+    <%= table.with_header_cell(colspan: 2) do %>
       <h4 class="margin-0">
         <% if employer_name %>
           <%= employer_name %> &mdash;
@@ -120,16 +148,15 @@
   <% end %>
 
   <% if is_w2_worker %>
-    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true, show_footnote: is_first_w2_job)) %>
+    <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_pdf: true, show_footnote: is_first_w2_job)) %>
     <h3><%= t(".pdf.shared.payments_and_deductions_header", employer_name: employer_name) %></h3>
     <% summary[:paystubs]&.each do |paystub| %>
-      <%= render(TableComponent.new(class_names: "payment-details-table")) do |table| %>
-        <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-          <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-                .with_content(t(".pdf.shared.pay_information")) %>
-          <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-                .with_content(t(".pdf.shared.details")) %>
-        <% end %>
+      <%= render(TableComponent.new(subdued_header: true)) do |table| %>
+        <%= table.with_header_cell
+              .with_content(t(".pdf.shared.pay_information")) %>
+        <%= table.with_header_cell
+              .with_content(t(".pdf.shared.details")) %>
+
         <%= table.with_data_point(:pay_date, paystub.pay_date) %>
         <% if summary[:income]&.pay_frequency %>
           <%= table.with_data_point(:pay_period_with_frequency, paystub.start, paystub.end, summary[:income]&.pay_frequency&.humanize, highlight: is_caseworker) %>
@@ -158,11 +185,13 @@
             <%= t(".none_found") %>
           </h4>
         <% end %>
-        <%= table.with_row(t(".none_found_confirmed")) %>
+        <%= table.with_row do |row| %>
+          <% row.with_data_cell.with_content(t(".none_found_confirmed")) %>
+        <% end %>
       <% end %>
     <% end %>
   <% else %>
-    <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_responsive: false, is_pdf: true, show_footnote: is_first_gig_job)) %>
+    <%= render(Report::GigMonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_pdf: true, show_footnote: is_first_gig_job)) %>
   <% end %>
 
   <% payroll_account = @cbv_flow.payroll_accounts.find_by(aggregator_account_id: account_id) %>

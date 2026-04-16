@@ -4,13 +4,12 @@ class Report::GigMonthlySummaryTableComponent < ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, is_responsive: true, is_caseworker: false, show_payments: true, show_footnote: true, show_header: true, is_pdf: false, use_activity_style: false)
+  def initialize(report, payroll_account, is_caseworker: false, show_payments: true, show_footnote: true, show_header: true, is_pdf: false)
     @report = report
     @show_payments = show_payments
     @show_footnote = show_footnote
     @show_header = show_header
     @is_pdf = is_pdf
-    @use_activity_style = use_activity_style
 
     # Note: payroll_account may either be the ID or the payroll_account object
     @account_id = payroll_account.class == String ? payroll_account : payroll_account.aggregator_account_id
@@ -18,7 +17,6 @@ class Report::GigMonthlySummaryTableComponent < ViewComponent::Base
     @paystubs = account_report&.paystubs
     @employer_name = account_report&.dig(:employment, :employer_name)
     @monthly_summary_data = ordered_monthly_summary_data(report.summarize_by_month[@account_id], @report.flow)
-    @is_responsive = is_responsive
     @is_caseworker = is_caseworker
   end
 

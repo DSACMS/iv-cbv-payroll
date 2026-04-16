@@ -54,17 +54,17 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
         expect(pinwheel_report.paystubs.length).to eq(1)
       end
 
-      context "with default (CBV) style" do
+      context "with column header style" do
         subject { render_inline(described_class.new(pinwheel_report, payroll_account)) }
 
         it "includes table header" do
           expect(subject.css("h2").to_html).to include "Employment information"
-          expect(subject.css("thead tr.subheader-row th").length).to eq(2)
+          expect(subject.css("thead tr th").length).to eq(2)
         end
 
         it "renders the correct column headers" do
-          expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Employment information"
-          expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
+          expect(subject.css("thead tr th:nth-child(1)").to_html).to include "Employer information"
+          expect(subject.css("thead tr th:nth-child(2)").to_html).to include "Your details"
         end
 
         it "renders employment details" do
@@ -85,20 +85,12 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
         end
       end
 
-      context "with activity style" do
-        subject { render_inline(described_class.new(pinwheel_report, payroll_account, use_activity_style: true)) }
-
-        it "uses column header style with activity-review-table class" do
-          expect(subject.at_css('table.activity-review-table')).not_to be_nil
-          expect(subject.css("thead tr th").length).to eq(2)
-          expect(subject.css("thead tr th:nth-child(1)").text).to include("Employer information")
-          expect(subject.css("thead tr th:nth-child(2)").text).to include("Your details")
-        end
-
-        it "renders employment details" do
-          expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "Employer phone"
-          expect(subject.css("tbody tr:nth-child(1) td:nth-child(2)").to_html).to include "+1612-659-7057"
-        end
+      it "uses column header style with usa-table class" do
+        result = render_inline(described_class.new(pinwheel_report, payroll_account))
+        expect(result.at_css('table.usa-table')).not_to be_nil
+        expect(result.css("thead tr th").length).to eq(2)
+        expect(result.css("thead tr th:nth-child(1)").text).to include("Employer information")
+        expect(result.css("thead tr th:nth-child(2)").text).to include("Your details")
       end
     end
   end
@@ -150,13 +142,13 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
 
       it "includes table header" do
         expect(subject.css("h2").to_html).to include "Employment information"
-        expect(subject.css("thead tr.subheader-row th").length).to eq(2)
+        expect(subject.css("thead tr th").length).to eq(2)
       end
 
       it "renders the correct column headers" do
         x = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Employment information"
-        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
+        expect(subject.css("thead tr th:nth-child(1)").to_html).to include "Employer information"
+        expect(subject.css("thead tr th:nth-child(2)").to_html).to include "Your details"
       end
 
       it "renders employment details" do
@@ -203,13 +195,13 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
 
       it "includes table header" do
         expect(subject.css("h2").to_html).to include "Employment information"
-        expect(subject.css("thead tr.subheader-row th").length).to eq(2)
+        expect(subject.css("thead tr th").length).to eq(2)
       end
 
       it "renders the correct column headers" do
         x = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Employment information"
-        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Your details"
+        expect(subject.css("thead tr th:nth-child(1)").to_html).to include "Employer information"
+        expect(subject.css("thead tr th:nth-child(2)").to_html).to include "Your details"
       end
 
       it "renders employment details" do

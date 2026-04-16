@@ -27,6 +27,18 @@
   max-width: none;
 }
 
+// Responsive heading adjustments for mobile
+@include at-media-max('tablet') {
+  h1 {
+    @include u-font-size("sans", 11);
+  }
+  h2 {
+    @include u-font-size("sans", 9);
+  }
+  h3 {
+    @include u-font-size("sans", 8);
+  }
+}
 
 // Make the navbar a bit taller on mobile, and increase the size of the "Menu"
 // button to compensate.
@@ -57,21 +69,78 @@ $mobile-navbar-height: 4rem;
   background-color: color("base-lightest");
 }
 
+/* *****************************************************************************
+ Tables
+ **************************************************************************** */
+$table-width: 44rem;
+.usa-table {
+  border: units(1px) solid color("ink");
+  max-width: $table-width;
+  width: 100%;
+
+  thead th {
+    background-color: color("blue-cool-5");
+    border-bottom: units(1px) solid color("ink");
+  }
+}
+
+.usa-table:not(.usa-table--multi-column) {
+  @include at-media("tablet") {
+    th {
+      width: 50%;
+    }
+  }
+}
+
+.usa-table--subdued-header thead th {
+  background-color: color("gray-cool-10");
+}
+
+.usa-table--stacked {
+  // Override a few behaviors for our two-column tables
+  &:not(.usa-table--multi-column) {
+    // Remove extra border above first row
+    tbody tr:first-child td {
+      border-top-width: 0;
+    }
+
+    // Remove extra border below rows
+    tbody tr {
+      border-bottom-width: 0;
+    }
+
+    // Hide the <th> items for two-column tables since the stacked tables add
+    // them back in via the data-label attribute.
+    @include at-media-max("mobile-lg") {
+      th {
+        display: none;
+      }
+    }
+  }
+
+  // Override stacked behavior in wkhtmltopdf - we don't want the responsive
+  // behavior of the stacked table to apply. This behavior shouldn't apply anyway
+  // because we set the viewport size to that of the desktop breakpoint, but there
+  // is some rendering bug that results in the table headers being misaligned even
+  // when the responsive styles are not applied.
+  .wkhtmltopdf & th,
+  .wkhtmltopdf & td {
+    @include at-media-max("mobile") {
+      display: none;
+    }
+  }
+}
+
 tr td:first-child {
   font-weight: bold;
 }
 
-// Responsive heading adjustments for mobile
-@include at-media-max('tablet') {
-  h1 {
-    @include u-font-size("sans", 11);
-  }
-  h2 {
-    @include u-font-size("sans", 9);
-  }
-  h3 {
-    @include u-font-size("sans", 8);
-  }
+/* *****************************************************************************
+ * Helper classes
+ **************************************************************************** */
+.maxw-table {
+  // USWDS-style helper for making other things the same size as a standard <table>
+  max-width: $table-width;
 }
 
 @include at-media-max('mobile-lg') {

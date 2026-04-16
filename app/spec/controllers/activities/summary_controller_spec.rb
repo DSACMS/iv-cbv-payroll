@@ -221,10 +221,22 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       doc = Capybara.string(response.body)
       expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
-      expect(response.body.scan("River College").count).to eq(1)
-      expect(response.body.scan(I18n.t("components.enrollment_term_table_component.enrollment_term")).count).to eq(2)
-      expect(response.body.scan(I18n.t("components.enrollment_term_table_component.enrollment_status")).count).to eq(5) # 2 contact info rows + 1 monthly header + 2 monthly data-labels
-      expect(response.body.scan(I18n.t("activities.summary.education.term_credit_hours")).count).to eq(3) # 1 monthly header + 2 monthly data-labels
+
+      contact_info_rows = doc.all("table").first.all("tbody tr")
+      expect(contact_info_rows.filter_map { |row|
+        row if row.first("th")&.text&.strip == I18n.t("components.enrollment_term_table_component.school_or_program")
+      }.size).to eq(1)
+      expect(contact_info_rows.map(&:text).grep(/River College/).size).to eq(1)
+      expect(contact_info_rows.filter_map { |row|
+        row if row.first("th")&.text&.strip == I18n.t("components.enrollment_term_table_component.enrollment_term")
+      }.size).to eq(2)
+      expect(contact_info_rows.filter_map { |row|
+        row if row.first("th")&.text&.strip == I18n.t("components.enrollment_term_table_component.enrollment_status")
+      }.size).to eq(2)
+
+      monthly_details_headers = doc.all("table").last.all("thead th").map { |cell| cell.text.strip }
+      expect(monthly_details_headers).to include(I18n.t("components.enrollment_term_table_component.enrollment_status"))
+      expect(monthly_details_headers).to include(I18n.t("activities.summary.education.term_credit_hours"))
 
       term_credit_rows = doc.all("table").last.all("tbody tr")
       expect(term_credit_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[3 6])
@@ -257,7 +269,11 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
       expect(response.body).to include("River College")
       expect(response.body).to include("Lake Tech")
-      expect(response.body.scan(I18n.t("components.enrollment_term_table_component.school_or_program")).count).to eq(2)
+
+      contact_info_rows = doc.all("table").first.all("tbody tr")
+      expect(contact_info_rows.filter_map { |row|
+        row if row.first("th")&.text&.strip == I18n.t("components.enrollment_term_table_component.school_or_program")
+      }.size).to eq(2)
 
       term_credit_rows = doc.all("table").last.all("tbody tr")
       expect(term_credit_rows.map { |row| row.all("th, td").last.text.strip }).to contain_exactly("3", "6")

@@ -1,12 +1,12 @@
-<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
-  <%= table.with_header_cell(is_header: true, scope: "col") { @field_header } %>
-  <%= table.with_header_cell(is_header: true, scope: "col") { @value_header } %>
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header_cell(scope: "col") { @field_header } %>
+  <%= table.with_header_cell(scope: "col") { @value_header } %>
   <% @rows.each do |row_data| %>
     <%= table.with_row do |row| %>
       <%= row.with_data_cell(is_header: true) do %>
         <%= row_data[:label] %>
       <% end %>
-      <%= row.with_data_cell do %>
+      <%= row.with_data_cell(data_label: row_data[:label]) do %>
         <%= display_value(row_data[:value]) %>
       <% end %>
     <% end %>
