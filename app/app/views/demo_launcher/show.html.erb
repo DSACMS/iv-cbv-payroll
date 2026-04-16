@@ -2,20 +2,9 @@
 <div class="grid-col-12 demo-launcher">
   <h1>Emmy Launcher 🏆🚀</h1>
   <div class="usa-hint demo-launcher__usa-hint">Configure settings and launch Emmy in a new tab.</div>
-  <%= form_with(url: "/demo", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "demo-launcher" }) do |f| %>
+  <%= form_with(url: "/demo", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "demo-launcher", action: "input->demo-launcher#invalidateShareLink change->demo-launcher#invalidateShareLink" }) do |f| %>
     <div class="demo-launcher__two-col">
       <div class="demo-launcher__left-col">
-        <div class="demo-launcher__launch">
-          <h2>Launch</h2>
-          <div class="demo-launcher__launch-buttons">
-            <button type="submit" name="launch_type" value="tokenized" formtarget="_blank" class="usa-button demo-launcher__launch-button">
-              Tokenized
-            </button>
-            <button type="submit" name="launch_type" value="generic" formtarget="_blank" class="usa-button demo-launcher__launch-button" data-demo-launcher-target="genericButton">
-              Generic
-            </button>
-          </div>
-        </div>
         <div class="demo-launcher__test-scenarios" data-demo-launcher-target="ceOnly">
           <h3 class="demo-launcher__section-label">Test Scenarios</h3>
           <div class="demo-launcher__scenario-radios">
@@ -238,5 +227,58 @@
         <% end %>
       </div>
     </div>
+
+    <section class="demo-launcher__launch-section">
+      <h2>Launch</h2>
+      <p class="usa-hint">Generate a tokenized or generic link, then copy it or open it in a new tab.</p>
+      <div class="demo-launcher__launch-buttons">
+        <button
+          type="submit"
+          name="launch_type"
+          value="tokenized"
+          class="usa-button demo-launcher__launch-button"
+          data-action="demo-launcher#generateShareLink"
+          data-demo-launcher-target="tokenizedButton">
+          Tokenized
+        </button>
+        <button
+          type="submit"
+          name="launch_type"
+          value="generic"
+          class="usa-button demo-launcher__launch-button"
+          data-action="demo-launcher#generateShareLink"
+          data-demo-launcher-target="genericButton">
+          Generic
+        </button>
+      </div>
+
+      <div class="demo-launcher__share-widget" hidden data-demo-launcher-target="shareWidget">
+        <h3 class="demo-launcher__setting-title" data-demo-launcher-target="shareLabel">Shareable link</h3>
+        <div class="demo-launcher__share-row">
+          <input
+            class="usa-input"
+            type="text"
+            id="generated_tokenized_url"
+            readonly
+            autocomplete="off"
+            data-demo-launcher-target="generatedUrl">
+              <button
+                type="button"
+                class="usa-button usa-button--outline"
+                data-action="demo-launcher#copyGeneratedLink"
+                data-demo-launcher-target="copyButton">
+                Copy link
+              </button>
+              <a
+                class="usa-button"
+                href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+                data-demo-launcher-target="openGeneratedLink">
+                Open in new tab
+              </a>
+            </div>
+          </div>
+        </section>
   <% end %>
 </div>

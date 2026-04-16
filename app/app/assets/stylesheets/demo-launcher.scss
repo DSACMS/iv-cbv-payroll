@@ -106,9 +106,42 @@
     margin: 0;
   }
 
+  .demo-launcher__launch-section {
+    padding-top: units(2);
+    border-top: 1px solid color("base-lighter");
+  }
+
+  .demo-launcher__share-widget {
+    margin-top: units(2);
+    padding: units(2);
+    border: 1px solid color("base-lighter");
+    border-radius: radius("md");
+    background-color: color("base-lightest");
+  }
+
+  .demo-launcher__share-row {
+    display: grid;
+    gap: units(1);
+    align-items: end;
+
+    @include at-media("tablet") {
+      grid-template-columns: minmax(0, 1fr) auto auto;
+    }
+
+    .usa-input,
+    .usa-button {
+      margin: 0;
+    }
+  }
+
+  .demo-launcher__share-status {
+    margin-top: units(1);
+    margin-bottom: 0;
+  }
+
   // -- Left column: test scenarios --
   .demo-launcher__test-scenarios {
-    margin-top: units(8);
+    margin-top: 0;
   }
 
   .demo-launcher__scenario-radios {
