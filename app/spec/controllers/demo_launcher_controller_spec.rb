@@ -38,8 +38,10 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(rendered).to match(/Fake Test Scenarios/)
       expect(rendered).to include('id="test_scenario_partial_enrollment_multi_term"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_taylor"')
+      expect(rendered).to include('id="test_scenario_renewal_half_time_last_4_of_6_avery"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_maya"')
       expect(rendered).to include('id="test_scenario_summer_term_carryover_sage"')
+      expect(rendered).to match(/Avery Testuser/)
       expect(rendered).to match(/Sage Testuser/)
       expect(rendered).to match(/Spring carryover for summer months/)
     end
@@ -423,6 +425,22 @@ RSpec.describe DemoLauncherController, type: :controller do
 
         invitation = ActivityFlowInvitation.last
         expect(invitation.reference_id).to eq("demo-partial_enrollment_taylor")
+        expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
+      end
+
+      it "supports launching Avery fake test user with four months of half-time coverage" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            test_scenario: "renewal_half_time_last_4_of_6_avery"
+          }
+        }.to change(ActivityFlowInvitation, :count).by(1)
+          .and not_change(ActivityFlow, :count)
+          .and not_change(EducationActivity, :count)
+          .and not_change(NscEnrollmentTerm, :count)
+
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.reference_id).to eq("demo-renewal_half_time_last_4_of_6_avery")
         expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
       end
 
