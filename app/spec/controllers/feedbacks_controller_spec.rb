@@ -8,6 +8,7 @@ RSpec.describe FeedbacksController, type: :controller do
 
     before do
       session[:flow_id] = cbv_flow.id
+      session[:flow_type] = :cbv
       allow(controller).to receive(:event_logger).and_return(event_logger)
       allow(event_logger).to receive(:track)
       allow(ApplicationController.helpers).to receive(:feedback_form_url).and_return(feedback_form_url)
@@ -65,6 +66,37 @@ RSpec.describe FeedbacksController, type: :controller do
 
         expect(response).to have_http_status(:redirect)
         expect(response.location).to eq(feedback_form_url)
+      end
+    end
+
+    context "with an activity flow session" do
+      let(:activity_flow) { create(:activity_flow, id: 123, cbv_applicant: create(:cbv_applicant, client_agency_id: "nh_dhhs")) }
+
+      before do
+        create(:cbv_flow, id: 123, cbv_applicant: create(:cbv_applicant, :la_ldh))
+        session[:flow_id] = activity_flow.id
+        session[:flow_type] = :activity
+        cookies.permanent.signed[:device_id] = "test-device-id-123"
+      end
+
+      it "uses the activity flow agency for the prefilled identifier" do
+        referer_url = "http://www.example.com/activities?client_agency_id=nh_dhhs"
+
+        get :show, params: { referer: referer_url }
+
+        expect(event_logger).to have_received(:track).with(
+          "ApplicantClickedFeedbackLink",
+          kind_of(ActionDispatch::Request),
+          hash_including(
+            referer: referer_url,
+            client_agency_id: "nh_dhhs",
+            cbv_flow_id: activity_flow.id,
+            cbv_applicant_id: activity_flow.cbv_applicant_id
+          )
+        )
+        agency_prefixed_device_id = CGI.escape("nh_dhhs/test-device-id-123")
+        expected_url = "#{feedback_form_url}?usp=pp_url&#{ApplicationHelper::FEEDBACK_FORM_DEVICE_ID_ENTRY}=#{agency_prefixed_device_id}"
+        expect(response.location).to eq(expected_url)
       end
     end
   end
