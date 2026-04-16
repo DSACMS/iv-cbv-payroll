@@ -5,7 +5,7 @@
   <%= account_report&.employment&.employer_name || t("shared.not_applicable") %>
 </p>
 <% if is_w2_worker %>
-  <%= render(Report::W2MonthlySummaryTableComponent.new(persisted_report, payroll_account, show_footnote: false, show_header: false)) %>
+  <%= render(Report::W2MonthlySummaryTableComponent.new(persisted_report, payroll_account, show_footnote: false, show_header: false, use_activity_style: true)) %>
 <% else %>
-  <%= render(Report::GigMonthlySummaryTableComponent.new(persisted_report, payroll_account, show_footnote: false, show_header: false, show_payments: false)) %>
+  <%= render(Report::GigMonthlySummaryTableComponent.new(persisted_report, payroll_account, show_footnote: false, show_header: false, show_payments: false, use_activity_style: true)) %>
 <% end %>

@@ -29,4 +29,8 @@ class VolunteeringActivity < Activity
   def document_upload_suggestion_text
     "activities.community_service.document_upload_suggestion_text_html"
   end
+
+  def document_upload_header_title_i18n_key
+    "activities.community_service.title_singular"
+  end
 end

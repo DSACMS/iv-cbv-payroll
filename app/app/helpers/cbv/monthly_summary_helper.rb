@@ -66,4 +66,11 @@ module Cbv::MonthlySummaryHelper
   def extract_dates(paystubs, gigs)
     (paystubs.map { |paystub| parse_date_safely(paystub.pay_date) } + gigs.map { |gig| parse_date_safely(gig.start_date) }).compact
   end
+
+  def ordered_monthly_summary_data(monthly_summary_data, flow)
+    return monthly_summary_data if monthly_summary_data.blank?
+    return monthly_summary_data unless flow.activity_month_order_oldest_first?
+
+    monthly_summary_data.sort_by { |month_string, _summary| month_string }.to_h
+  end
 end

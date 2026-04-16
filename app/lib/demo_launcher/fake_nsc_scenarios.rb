@@ -73,6 +73,24 @@ module DemoLauncher
           { school_name: "River College", enrollment_status: :less_than_half_time },
           { school_name: "River College", enrollment_status: :less_than_half_time }
         ]
+      ),
+      UserProfile.new(
+        scenario_key: "summer_term_carryover_sage",
+        first_name: "Sage",
+        last_name: "Testuser",
+        date_of_birth: Date.parse("1994-08-03"),
+        terms: [
+          {
+            school_name: "Coastal State College",
+            enrollment_status: :half_time,
+            term_type: :qualifying_spring
+          },
+          {
+            school_name: "Coastal State College",
+            enrollment_status: :less_than_half_time,
+            term_type: :summer_less_than_half_time
+          }
+        ]
       )
     ].freeze
 
@@ -133,12 +151,7 @@ module DemoLauncher
     def terms_for_profile(profile, reporting_window)
       if profile.terms.present?
         return profile.terms.map do |term_data|
-          covered_window = covered_window_for_profile(
-            profile,
-            reporting_window,
-            coverage_months: term_data[:coverage_months],
-            coverage_position: term_data[:coverage_position]
-          )
+          covered_window = covered_window_for_term_data(profile, reporting_window, term_data)
           {
             school_name: term_data[:school_name],
             enrollment_status: term_data[:enrollment_status],
@@ -157,6 +170,22 @@ module DemoLauncher
           term_begin: reporting_window.begin,
           term_end: reporting_window.end
         }
+      end
+    end
+
+    def covered_window_for_term_data(profile, reporting_window, term_data)
+      case term_data[:term_type]&.to_sym
+      when :qualifying_spring
+        Date.new(reporting_window.begin.year, 3, 1)..Date.new(reporting_window.begin.year, 6, 15)
+      when :summer_less_than_half_time
+        Date.new(reporting_window.begin.year, 7, 1)..Date.new(reporting_window.begin.year, 8, 15)
+      else
+        covered_window_for_profile(
+          profile,
+          reporting_window,
+          coverage_months: term_data[:coverage_months],
+          coverage_position: term_data[:coverage_position]
+        )
       end
     end
 

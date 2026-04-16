@@ -50,6 +50,14 @@ module DocumentUploadable
     "activities.document_uploads.new.title"
   end
 
+  # Required!
+  #
+  # Implement with the i18n key used for the activity header title on the
+  # document upload page.
+  def document_upload_header_title_i18n_key
+    raise NotImplementedError.new("#{self.class.name} must implement #document_upload_header_title_i18n_key")
+  end
+
   def document_upload_verification_items
     document_upload_months_to_verify.map do |month|
       {

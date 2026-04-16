@@ -20,7 +20,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     click_link I18n.t("activities.entries.show.continue")
 
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
     flow = ActivityFlow.last
 
     # Add a Community Service activity
@@ -57,7 +57,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "jane@example.com"
     click_button I18n.t("activities.community_service.review.save")
 
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
     expect(page).to have_content "Helping Hands"
 
     # Add a Work Program activity
@@ -96,7 +96,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     click_button I18n.t("activities.document_uploads.new.continue")
     verify_page(page, title: I18n.t("activities.work_programs.review.title", program_name: "Resume Workshop"))
     click_button I18n.t("activities.work_programs.review.save")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
     expect(page).to have_content "Resume Workshop"
 
     add_self_attested_employment_activity
@@ -107,7 +107,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 40)
 
     # Verify that the hub has the Community Service activity
-    expect(page).to have_content I18n.t("activities.hub.title")
+    expect(page).to have_content I18n.t("activities.hub.in_progress_state_title")
     expect(page).to have_content "Helping Hands"
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 20)
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 10)
@@ -130,6 +130,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.l(flow.reporting_months.first, format: :month)
     expect(page).to have_content I18n.l(flow.reporting_months.second, format: :month)
     expect(page).to have_content job_training.program_name
+    expect(page).to have_content "Gainesville Wrecking"
+    expect(page).to have_content "Donny Spears"
+    expect(page).to have_content "$500.00"
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
@@ -170,11 +173,18 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       click_button I18n.t("activities.employment.hours_input.continue")
     end
 
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: employer_name),
+      skip_axe_rules: %w[heading-order]
+    )
+    click_button I18n.t("activities.document_uploads.new.continue")
+
     # Review page
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: employer_name))
     click_button I18n.t("activities.employment.review.save")
 
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
   end
 
 
@@ -185,7 +195,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     click_link I18n.t("activities.entries.show.continue")
 
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     # Add an Employment activity
     within("[data-activity-type='employment']") do
@@ -239,7 +249,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     click_link I18n.t("activities.entries.show.continue")
 
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     # Add an Education activity
     within("[data-activity-type='education']") do
@@ -254,7 +264,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.education.error.retry_button")
 
     visit activities_flow_root_path
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
     expect(page).to have_content I18n.t("activities.hub.empty.education")
   end
 
@@ -265,14 +275,14 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     click_link I18n.t("activities.entries.show.continue")
 
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     current_flow = ActivityFlow.order(created_at: :desc).first
     education_activity = create(:education_activity, activity_flow: current_flow)
     create(:nsc_enrollment_term, education_activity:)
 
     visit activities_flow_root_path
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
     expect(page).to have_content "Test University"
 
     click_button I18n.t("activities.hub.review_and_submit")
@@ -294,7 +304,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     visit activities_flow_entry_path(client_agency_id: "sandbox")
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     current_flow = ActivityFlow.order(created_at: :desc).first
     education_activity = create(
@@ -312,7 +322,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     )
 
     visit activities_flow_root_path
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
     expect(page).to have_content "Test University"
     expect(page).to have_content(
       I18n.t(
@@ -330,7 +340,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     visit URI(root_url).request_uri
     visit activities_flow_entry_path(client_agency_id: "sandbox")
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     flow = ActivityFlow.last
     month1 = flow.reporting_months.first
@@ -378,7 +388,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Helping Hands"))
     click_button I18n.t("activities.community_service.review.save")
 
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
     expect(page).to have_content "Helping Hands"
 
     # --- Step 2: Edit the activity from the hub ---
@@ -402,7 +412,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # --- Step 3: Edit a single month from the review page ---
     # Click Edit on month 1 — should go to hours input and return directly to review
-    edit_links = all(".subheader-row a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links = all("td a", text: I18n.t("activities.community_service.review.edit"))
     edit_links.first.click
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
@@ -416,7 +426,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # --- Step 4: Validation guard — cannot set all months to 0 from review ---
     # First, set month 2 to 0 via edit from review
-    edit_links = all(".subheader-row a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links = all("td a", text: I18n.t("activities.community_service.review.edit"))
     edit_links.last.click
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
@@ -428,7 +438,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Updated Org"))
 
     # Now try to set month 1 to 0 — should fail validation
-    edit_links = all(".subheader-row a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links = all("td a", text: I18n.t("activities.community_service.review.edit"))
     edit_links.first.click
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
@@ -447,7 +457,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Updated Org"))
     click_button I18n.t("activities.hub.save")
 
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
     expect(page).to have_content "Updated Org"
   end
 

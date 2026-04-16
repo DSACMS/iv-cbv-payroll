@@ -30,4 +30,8 @@ class Flow < ApplicationRecord
   def after_payroll_sync_succeeded(_payroll_account, _report)
     nil
   end
+
+  def activity_month_order_oldest_first?
+    false
+  end
 end

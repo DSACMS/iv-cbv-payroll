@@ -199,4 +199,12 @@ class Activities::EducationController < Activities::BaseController
       after_activity_path
     end
   end
+
+  def summer_logic_applied?
+    terms = @education_activity.nsc_enrollment_terms
+    @education_activity.activity_flow.reporting_months.any? do |month_start|
+      EducationSummerCarryoverService.applies?(terms, month_start)
+    end
+  end
+  helper_method :summer_logic_applied?
 end

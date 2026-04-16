@@ -29,7 +29,7 @@
   <% end %>
 </p>
 
-<%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator, agency_translation("shared.agency_full_name"))) %>
+<%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator)) %>
 
 <hr class="border-gray-30 border-top-0 margin-bottom-4">
 
@@ -60,12 +60,17 @@
     <% when :work_programs %>
       <%= render partial: "activities/summary/job_training_table", locals: { activity: activity_data[:activity] } %>
     <% when :employment %>
-      <%= render partial: "activities/summary/employment_table",
-                 locals: { payroll_account: activity_data[:payroll_account], persisted_report: @persisted_report } %>
+      <% if activity_data[:payroll_account].present? %>
+        <%= render partial: "activities/summary/employment_table",
+                   locals: { payroll_account: activity_data[:payroll_account], persisted_report: @persisted_report } %>
+      <% else %>
+        <%= render partial: "activities/summary/self_attested_employment_table",
+                   locals: { activity: activity_data[:employment_activity] } %>
+      <% end %>
     <% end %>
 
     <% if activity_data[:type] == :employment %>
-      <% comment = activity_data[:payroll_account].additional_information %>
+      <% comment = activity_data[:payroll_account]&.additional_information || activity_data[:employment_activity]&.additional_comments %>
       <% if comment.present? %>
         <h3>
           <%= t("activities.summary.additional_comments") %>

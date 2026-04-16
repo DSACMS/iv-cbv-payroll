@@ -403,10 +403,91 @@ RSpec.describe ActivityFlowProgressCalculator do
 
     it "returns empty results for all months when no activities exist" do
       expect(result).to contain_exactly(
-        have_attributes(month: reporting_range_months.first, total_hours: 0, meets_requirements: false),
-        have_attributes(month: reporting_range_months.second, total_hours: 0, meets_requirements: false),
-        have_attributes(month: reporting_range_months.third, total_hours: 0, meets_requirements: false),
+        have_attributes(month: reporting_range_months.first, total_hours: 0, total_earnings_cents: 0, default_unit: :hours, meets_requirements: false),
+        have_attributes(month: reporting_range_months.second, total_hours: 0, total_earnings_cents: 0, default_unit: :hours, meets_requirements: false),
+        have_attributes(month: reporting_range_months.third, total_hours: 0, total_earnings_cents: 0, default_unit: :hours, meets_requirements: false),
       )
+    end
+
+    context "when a month is complete by earnings only" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 1) }
+      let(:month) { flow.reporting_window_range.begin }
+      let!(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "unit-test-account") }
+
+      before do
+        create(
+          :activity_flow_monthly_summary,
+          activity_flow: flow,
+          payroll_account: payroll_account,
+          month: month.beginning_of_month,
+          total_w2_hours: 77.0,
+          accrued_gross_earnings_cents: 597_00
+        )
+      end
+
+      it "uses dollars as the monthly default unit" do
+        monthly_result = result.first
+
+        expect(monthly_result).to have_attributes(
+          month: month,
+          total_hours: 77.0,
+          total_earnings_cents: 597_00,
+          default_unit: :dollars,
+          meets_requirements: true
+        )
+      end
+    end
+
+    context "when both hours and earnings meet thresholds" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 1) }
+      let(:month) { flow.reporting_window_range.begin }
+      let!(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "unit-test-account-2") }
+
+      before do
+        create(
+          :activity_flow_monthly_summary,
+          activity_flow: flow,
+          payroll_account: payroll_account,
+          month: month.beginning_of_month,
+          total_w2_hours: 82.0,
+          accrued_gross_earnings_cents: 620_00
+        )
+      end
+
+      it "keeps hours as the monthly default unit" do
+        monthly_result = result.first
+
+        expect(monthly_result).to have_attributes(
+          default_unit: :hours,
+          meets_requirements: true
+        )
+      end
+    end
+
+    context "when a month is below both thresholds" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 1) }
+      let(:month) { flow.reporting_window_range.begin }
+      let!(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "unit-test-account-3") }
+
+      before do
+        create(
+          :activity_flow_monthly_summary,
+          activity_flow: flow,
+          payroll_account: payroll_account,
+          month: month.beginning_of_month,
+          total_w2_hours: 77.0,
+          accrued_gross_earnings_cents: 570_00
+        )
+      end
+
+      it "uses hours as the default unit and remains incomplete" do
+        monthly_result = result.first
+
+        expect(monthly_result).to have_attributes(
+          default_unit: :hours,
+          meets_requirements: false
+        )
+      end
     end
 
     context "when there are job training activities within the reporting range" do
@@ -828,6 +909,83 @@ RSpec.describe ActivityFlowProgressCalculator do
         it "does not meet requirements (second month has 0 hours)" do
           expect(progress.meets_requirements).to be(false)
         end
+      end
+    end
+
+    context "when using spring enrollment for summer routing" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 2, education_activities_count: 0) }
+      let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }
+      let(:reporting_months) { flow.reporting_months.sort }
+
+      before do
+        flow.shift_reporting_window_start!("2025-07-01")
+        create(:nsc_enrollment_term,
+                  education_activity: education_activity,
+                  enrollment_status: "half_time",
+                  term_begin: Date.new(2025, 3, 1),
+                  term_end: Date.new(2025, 6, 15))
+        create(:nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "less_than_half_time",
+          term_begin: Date.new(2025, 7, 1),
+          term_end: Date.new(2025, 8, 15))
+      end
+
+
+      it "marks each summer reporting month complete" do
+        monthly_results = described_class.new(flow).monthly_results.sort_by(&:month)
+
+        expect(monthly_results.map(&:month)).to eq(reporting_months)
+        expect(monthly_results.map(&:total_hours)).to eq([ 80, 80 ])
+        expect(monthly_results).to all(have_attributes(meets_requirements: true))
+      end
+
+      it "meets routing requirements with validated spring carryover data" do
+        expect(progress.meets_requirements).to be(true)
+        expect(progress.meets_routing_requirements).to be(true)
+      end
+    end
+
+    context "when summer logic should outrank partial self-attestation in July" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 2, education_activities_count: 0) }
+      let(:education_activity) do
+        create(
+          :education_activity,
+          activity_flow: flow,
+          data_source: :partially_self_attested,
+          status: "succeeded"
+        )
+      end
+
+      before do
+        flow.shift_reporting_window_start!("2025-06-01")
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: Date.new(2025, 3, 1),
+          term_end: Date.new(2025, 6, 15)
+        )
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: Date.new(2025, 7, 1),
+          term_end: Date.new(2025, 8, 15)
+        )
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          credit_hours: 4,
+          term_begin: Date.new(2025, 6, 1),
+          term_end: Date.new(2025, 6, 30)
+        )
+      end
+
+      it "still meets routing requirements for the reporting range" do
+        expect(progress.meets_requirements).to be(true)
+        expect(progress.meets_routing_requirements).to be(true)
       end
     end
   end

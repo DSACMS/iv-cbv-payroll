@@ -181,12 +181,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
       get :show
 
       doc = Capybara.string(response.body)
-      expect(doc).to have_selector("table", count: 1)
+      expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
       expect(response.body).to include("Ada B Lovelace")
       expect(response.body).to include("River College")
       expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.less_than_half_time"))
 
-      term_credit_rows = doc.all("tr").select { |row| row.text.include?(I18n.t("activities.summary.education.term_credit_hours")) }
+      term_credit_rows = doc.all("table").last.all("tbody tr")
       expect(term_credit_rows.size).to eq(1)
       expect(term_credit_rows.first.all("th, td").last.text.strip).to eq("9")
     end
@@ -220,13 +220,13 @@ RSpec.describe Activities::SummaryController, type: :controller do
       get :show
 
       doc = Capybara.string(response.body)
-      expect(doc).to have_selector("table", count: 1)
+      expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
       expect(response.body.scan("River College").count).to eq(1)
       expect(response.body.scan(I18n.t("components.enrollment_term_table_component.enrollment_term")).count).to eq(2)
-      expect(response.body.scan(I18n.t("components.enrollment_term_table_component.enrollment_status")).count).to eq(2)
-      expect(response.body.scan(I18n.t("activities.summary.education.term_credit_hours")).count).to eq(2)
+      expect(response.body.scan(I18n.t("components.enrollment_term_table_component.enrollment_status")).count).to eq(5) # 2 contact info rows + 1 monthly header + 2 monthly data-labels
+      expect(response.body.scan(I18n.t("activities.summary.education.term_credit_hours")).count).to eq(3) # 1 monthly header + 2 monthly data-labels
 
-      term_credit_rows = doc.all("tr").select { |row| row.text.include?(I18n.t("activities.summary.education.term_credit_hours")) }
+      term_credit_rows = doc.all("table").last.all("tbody tr")
       expect(term_credit_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[3 6])
     end
 
@@ -254,12 +254,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
       get :show
 
       doc = Capybara.string(response.body)
-      expect(doc).to have_selector("table", count: 1)
+      expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
       expect(response.body).to include("River College")
       expect(response.body).to include("Lake Tech")
       expect(response.body.scan(I18n.t("components.enrollment_term_table_component.school_or_program")).count).to eq(2)
 
-      term_credit_rows = doc.all("tr").select { |row| row.text.include?(I18n.t("activities.summary.education.term_credit_hours")) }
+      term_credit_rows = doc.all("table").last.all("tbody tr")
       expect(term_credit_rows.map { |row| row.all("th, td").last.text.strip }).to contain_exactly("3", "6")
     end
 
@@ -299,6 +299,59 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(less_than_half_time_school_name)
       expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.half_time"))
       expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.less_than_half_time"))
+    end
+
+    context "with self-attested employment activities" do
+      it "includes self-attested employment in all_activities list" do
+        employment_activity = create(:employment_activity, activity_flow: activity_flow)
+        create(
+          :employment_activity_month,
+          employment_activity: employment_activity,
+          month: activity_flow.reporting_months.first.beginning_of_month,
+          hours: 40,
+          gross_income: 500
+        )
+
+        get :show
+
+        all_activities = assigns(:all_activities)
+        income_activity = all_activities.find { |a| a[:type] == :employment && a[:employment_activity].present? }
+        expect(income_activity).to be_present
+        expect(income_activity[:employment_activity]).to eq(employment_activity)
+      end
+
+      it "renders self-attested employment details and monthly values in the summary table" do
+        employment_activity = create(
+          :employment_activity,
+          activity_flow: activity_flow,
+          employer_name: "Gainesville Wrecking",
+          street_address: "942 W Harlan Ave",
+          city: "Gainesville",
+          state: "FL",
+          zip_code: "32601",
+          contact_name: "Donny Spears",
+          contact_email: "donny@gainesvillewrecking.com",
+          contact_phone_number: "(415) 344-8009"
+        )
+        activity_month = create(
+          :employment_activity_month,
+          employment_activity: employment_activity,
+          month: activity_flow.reporting_months.first.beginning_of_month,
+          hours: 40,
+          gross_income: 500
+        )
+
+        get :show
+
+        expect(response.body).to include(employment_activity.employer_name)
+        expect(response.body).to include(employment_activity.formatted_address)
+        expect(response.body).to include(employment_activity.contact_name)
+        expect(response.body).to include(employment_activity.contact_email)
+        expect(response.body).to include(employment_activity.contact_phone_number)
+        expect(response.body).to include(I18n.l(activity_month.month, format: :month))
+        expect(response.body).to include(ActionController::Base.helpers.number_to_currency(activity_month.gross_income))
+        expect(response.body).to include(activity_month.hours.to_s)
+      end
     end
 
     context "with payroll accounts" do
@@ -357,6 +410,46 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
         expect(response).to have_http_status(:ok)
       end
+    end
+
+    it "renders both self-attested and synced payroll employment when both are present" do
+      payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "acct-123")
+      latest_month = activity_flow.reporting_months.max
+      activity_flow.reporting_months.each do |month|
+        create(
+          :activity_flow_monthly_summary,
+          activity_flow: activity_flow,
+          payroll_account: payroll_account,
+          month: month.beginning_of_month,
+          employer_name: "Validated Employer",
+          employment_type: "w2",
+          total_w2_hours: (month == latest_month ? 35.0 : 0.0),
+          accrued_gross_earnings_cents: (month == latest_month ? 222_22 : 0),
+          paychecks_count: (month == latest_month ? 2 : 0)
+        )
+      end
+
+      self_attested = create(
+        :employment_activity,
+        activity_flow: activity_flow,
+        employer_name: "Self Attested Employer"
+      )
+      create(
+        :employment_activity_month,
+        employment_activity: self_attested,
+        month: activity_flow.reporting_months.first.beginning_of_month,
+        hours: 25,
+        gross_income: 450
+      )
+
+      get :show
+
+      expect(response.body).to include("Validated Employer")
+      expect(response.body).to include("Self Attested Employer")
+
+      employment_entries = assigns(:all_activities).select { |entry| entry[:type] == :employment }
+      expect(employment_entries).to include(hash_including(payroll_account: payroll_account))
+      expect(employment_entries).to include(hash_including(employment_activity: self_attested))
     end
 
     it "renders the legal agreement checkbox" do

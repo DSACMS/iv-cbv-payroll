@@ -28,9 +28,12 @@ class EducationActivity < Activity
     return :partially_self_attested if enrollment_terms.blank?
 
     all_months_have_half_time_or_above = reporting_months.all? do |month_start|
-      enrollment_terms.any? do |term|
-        term.half_time_or_above? && term.overlaps_month?(month_start)
-      end
+      terms_for_month = enrollment_terms.select { |term| term.overlaps_month?(month_start) }
+
+      # Consider an activity "validated" if all months are enrolled at least
+      # half-time, after taking into account the summer carryover logic.
+      terms_for_month.any?(&:half_time_or_above?) ||
+        EducationSummerCarryoverService.applies?(enrollment_terms, month_start)
     end
 
     all_months_have_half_time_or_above ? :validated : :partially_self_attested
@@ -105,6 +108,10 @@ class EducationActivity < Activity
     end
   end
 
+  def document_upload_header_title_i18n_key
+    "activities.education.title_singular"
+  end
+
   def document_upload_terms_to_verify
     return [] unless partially_self_attested?
 
@@ -136,20 +143,11 @@ class EducationActivity < Activity
   end
 
   def progress_hours_for_month(month_start)
-    return fully_self_attested_progress_hours_for_month(month_start) if fully_self_attested?
-    return partially_self_attested_progress_hours_for_month(month_start) if partially_self_attested?
-
-    validated_progress_hours_for_month(month_start)
+    progress_calculator.progress_hours_for_month(month_start)
   end
 
   def routing_hours_for_month(month_start)
-    return 0 if fully_self_attested?
-    return 0 unless sync_succeeded?
-
-    terms = terms_for_month(month_start)
-    return 0 if terms.empty?
-
-    month_has_half_time_or_above?(terms) ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0
+    progress_calculator.routing_hours_for_month(month_start)
   end
 
   private
@@ -157,49 +155,11 @@ class EducationActivity < Activity
   # No date column -- skip the inherited date validation from Activity
   def date_within_reporting_window; end
 
-  def fully_self_attested_progress_hours_for_month(month_start)
-    month = month_start.beginning_of_month
-    monthly_credit_hours = education_activity_months.find_by(month: month)&.hours
-
-    community_engagement_hours(monthly_credit_hours)
-  end
-
-  def partially_self_attested_progress_hours_for_month(month_start)
-    terms = terms_for_month(month_start)
-    return 0 if terms.empty?
-
-    return ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD if month_has_half_time_or_above?(terms)
-
-    monthly_credit_hours = terms
-      .select(&:less_than_half_time?)
-      .sum { |term| review_term_credit_hours(term) }
-
-    community_engagement_hours(monthly_credit_hours)
-  end
-
-  def validated_progress_hours_for_month(month_start)
-    return 0 unless sync_succeeded?
-
-    terms = terms_for_month(month_start)
-    return 0 if terms.empty?
-    return 0 unless month_has_half_time_or_above?(terms)
-
-    ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
-  end
-
-  def terms_for_month(month_start)
-    reporting_range = activity_flow.reporting_window_range
-
-    nsc_enrollment_terms.select do |term|
-      term.within_reporting_window?(reporting_range) && term.overlaps_month?(month_start)
-    end
-  end
-
-  def month_has_half_time_or_above?(terms)
-    terms.any?(&:half_time_or_above?)
-  end
-
   def document_upload_school_names
     document_upload_terms_to_verify.filter_map(&:school_name).uniq
+  end
+
+  def progress_calculator
+    @progress_calculator ||= EducationActivityProgressCalculator.new(self)
   end
 end

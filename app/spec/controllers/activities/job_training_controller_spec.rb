@@ -134,11 +134,25 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
   describe "GET #review" do
     let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow) }
 
+    before do
+      activity_flow.reporting_months.each do |month|
+        create(:job_training_activity_month, job_training_activity: job_training_activity, month: month.beginning_of_month, hours: 10)
+      end
+    end
+
     it "renders the review page" do
       get :review, params: { id: job_training_activity.id }
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(job_training_activity.program_name)
+    end
+
+    it "includes an edit link for each month" do
+      get :review, params: { id: job_training_activity.id }
+
+      expect(response.body).to include(
+        edit_activities_flow_job_training_month_path(job_training_id: job_training_activity, id: 0, from_review: 1)
+      )
     end
   end
 

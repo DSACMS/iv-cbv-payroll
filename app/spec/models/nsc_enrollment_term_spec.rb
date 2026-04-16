@@ -60,6 +60,41 @@ RSpec.describe NscEnrollmentTerm do
     end
   end
 
+  describe "#enrollment_status_display" do
+    it "returns the translated label for the enrollment status" do
+      term = described_class.new(enrollment_status: "three_quarter_time")
+
+      expect(term.enrollment_status_display).to eq(
+        I18n.t("components.enrollment_term_table_component.status.three_quarter_time")
+      )
+    end
+
+    it "falls back to not applicable for unknown statuses" do
+      term = described_class.new
+
+      allow(term).to receive(:enrollment_status).and_return("not_a_real_status")
+
+      expect(term.enrollment_status_display).to eq(I18n.t("shared.not_applicable"))
+    end
+  end
+
+  describe "#enrollment_priority" do
+    it "ranks higher enrollment statuses above lower ones" do
+      expect(described_class.new(enrollment_status: "full_time").enrollment_priority).to be >
+        described_class.new(enrollment_status: "half_time").enrollment_priority
+      expect(described_class.new(enrollment_status: "half_time").enrollment_priority).to be >
+        described_class.new(enrollment_status: "less_than_half_time").enrollment_priority
+    end
+
+    it "returns -1 for an unrecognized status" do
+      term = described_class.new
+
+      allow(term).to receive(:enrollment_status).and_return("not_a_real_status")
+
+      expect(term.enrollment_priority).to eq(-1)
+    end
+  end
+
   describe "#within_reporting_window?" do
     let(:range) { Date.new(2025, 1, 1)..Date.new(2025, 3, 31) }
 
@@ -81,6 +116,64 @@ RSpec.describe NscEnrollmentTerm do
     it "returns false when term is entirely after the range" do
       term = described_class.new(term_begin: Date.new(2025, 5, 1), term_end: Date.new(2025, 8, 1))
       expect(term.within_reporting_window?(range)).to be(false)
+    end
+  end
+
+  describe ".summer_month?" do
+    it "returns true for May through August" do
+      expect(described_class.summer_month?(Date.new(2025, 5, 1))).to be(true)
+      expect(described_class.summer_month?(Date.new(2025, 8, 1))).to be(true)
+    end
+
+    it "returns false outside May through August" do
+      expect(described_class.summer_month?(Date.new(2025, 4, 1))).to be(false)
+      expect(described_class.summer_month?(Date.new(2025, 9, 1))).to be(false)
+    end
+  end
+
+  describe "#spring_term?" do
+    it "returns true when the term ends between April 1 and June 30" do
+      term = described_class.new(term_begin: Date.new(2025, 1, 10), term_end: Date.new(2025, 6, 15))
+
+      expect(term.spring_term?).to be(true)
+    end
+
+    it "returns false when the term ends outside the spring window" do
+      term = described_class.new(term_begin: Date.new(2025, 1, 10), term_end: Date.new(2025, 7, 1))
+
+      expect(term.spring_term?).to be(false)
+    end
+
+    it "returns true for a May term even though May is also a summer month" do
+      term = described_class.new(term_begin: Date.new(2025, 5, 1), term_end: Date.new(2025, 5, 31))
+
+      expect(term.spring_term?).to be(true)
+    end
+
+    it "returns true for a June-starting term if it ends by June 30" do
+      term = described_class.new(term_begin: Date.new(2025, 6, 1), term_end: Date.new(2025, 6, 30))
+
+      expect(term.spring_term?).to be(true)
+    end
+  end
+
+  describe "#summer_term?" do
+    it "returns true for a term that starts in May" do
+      term = described_class.new(term_begin: Date.new(2025, 5, 1), term_end: Date.new(2025, 5, 31))
+
+      expect(term.summer_term?).to be(true)
+    end
+
+    it "returns true for a term that starts in June" do
+      term = described_class.new(term_begin: Date.new(2025, 6, 1), term_end: Date.new(2025, 8, 1))
+
+      expect(term.summer_term?).to be(true)
+    end
+
+    it "returns false for a term that starts before May" do
+      term = described_class.new(term_begin: Date.new(2025, 4, 15), term_end: Date.new(2025, 6, 30))
+
+      expect(term.summer_term?).to be(false)
     end
   end
 

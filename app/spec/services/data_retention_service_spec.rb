@@ -29,7 +29,7 @@ RSpec.describe DataRetentionService do
           service.redact_invitations
           expect(cbv_flow_invitation.reload).to have_attributes(
             email_address: "REDACTED@example.com",
-            auth_token: "REDACTED",
+            auth_token: cbv_flow_invitation.auth_token,
             redacted_at: within(1.second).of(Time.now)
           )
         end
@@ -48,6 +48,26 @@ RSpec.describe DataRetentionService do
           expect_any_instance_of(CbvFlowInvitation)
             .not_to receive(:redact!)
           service.redact_invitations
+        end
+      end
+    end
+
+    context "for a used invitation (with associated CbvFlows)" do
+      before do
+        CbvFlow.create_from_invitation(cbv_flow_invitation, "test_device_id")
+      end
+
+      context "after the deletion threshold" do
+        let(:now) { cbv_flow_invitation.expires_at + 7.days + 1.minute }
+
+        it "redacts the invitation without redacting the applicant" do
+          service.redact_invitations
+
+          expect(cbv_flow_invitation.reload).to have_attributes(
+            auth_token: cbv_flow_invitation.auth_token,
+            redacted_at: within(1.second).of(Time.now)
+          )
+          expect(cbv_flow_invitation.cbv_applicant.reload.redacted_at).to be_nil
         end
       end
     end
@@ -111,7 +131,7 @@ RSpec.describe DataRetentionService do
       it "redacts the associated invitation" do
         service.redact_incomplete_cbv_flows
         expect(cbv_flow_invitation.reload).to have_attributes(
-          auth_token: "REDACTED",
+          auth_token: cbv_flow_invitation.auth_token,
           redacted_at: within(1.second).of(now)
         )
       end
@@ -148,9 +168,14 @@ RSpec.describe DataRetentionService do
             .not_to change { cbv_flow.reload.attributes }
         end
 
-        it "does not redact the invitation" do
-          expect { service.redact_invitations }
-            .not_to change { cbv_flow_invitation.reload.attributes }
+        it "redacts the invitation without redacting the applicant" do
+          service.redact_invitations
+
+          expect(cbv_flow_invitation.reload).to have_attributes(
+            auth_token: cbv_flow_invitation.auth_token,
+            redacted_at: within(1.second).of(now)
+          )
+          expect(cbv_flow.cbv_applicant.reload.redacted_at).to be_nil
         end
       end
     end
@@ -248,12 +273,9 @@ RSpec.describe DataRetentionService do
         )
       end
 
-      it "redacts the associated invitation" do
+      it "does not redact the associated invitation before it expires" do
         service.redact_complete_cbv_flows
-        expect(cbv_flow_invitation.reload).to have_attributes(
-          auth_token: "REDACTED",
-          redacted_at: within(1.second).of(now)
-        )
+        expect(cbv_flow_invitation.reload.redacted_at).to be_nil
       end
 
       it "redacts the associated applicant" do

@@ -29,6 +29,26 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       # CVE-2026-28693 \
       imagemagick \
+      # CVE-2026-33416 \
+      libpng-dev \
+      # CVE-2026-4775 \
+      libtiff-dev \
+      # CVE-2026-2673 \
+      libssl-dev \
+      # CVE-2026-3497 \
+      openssh-client \
+    && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Auto-fix: OS package vulnerabilities detected by Trivy (managed automatically)
+# hadolint ignore=DL3008
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+      gir1.2-gdkpixbuf-2.0 \
+      libgdk-pixbuf-2.0-0 \
+      libgdk-pixbuf-2.0-dev \
+      libgdk-pixbuf2.0-bin \
+      libgdk-pixbuf2.0-common \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -96,6 +116,9 @@ RUN apt-get update -qq && \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
+RUN mkdir -p /rails/tmp /docs/app/rendered && \
+    echo 0 > /docs/app/rendered/.database-diagram-schema-version
+
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION} && \
     bundle config set --local without production && \
     bundle install && \
@@ -150,7 +173,6 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
         libgpgme11t64=1.24.2-3 \
         libvips42t64=8.16.1-1+b1 \
-        libpng-dev=1.6.48-1+deb13u3 \
         postgresql-client-17 \
         python-is-python3=3.13.3-1 \
         python3-venv=3.13.5-1 \
@@ -168,6 +190,11 @@ COPY --from=release-build /rails /rails
 # Clean up any unused gems and ensure we have the correct versions
 RUN bundle clean --force && \
     bundle install --no-cache
+
+# Pre-decompress the wkhtmltopdf binary so it doesn't need to happen at runtime
+# Prevents sporadic 500s on report generation, similar to known issue documented here:
+# https://github.com/zakird/wkhtmltopdf_binary_gem/issues/57
+RUN bundle exec wkhtmltopdf --version
 
 # Ensure all necessary directories exist
 RUN mkdir -p /rails/tmp/pids /rails/log /rails/db

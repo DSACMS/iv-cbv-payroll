@@ -151,12 +151,13 @@ en:
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (Optional)
-        additional_information_label: Share any comments or additional information that you’d like %{agency_acronym} to know. For example, the credit hours you are taking.
+        additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         continue: Save and continue
-        description_html: "<p>We have gathered your student enrollment details from %{reporting_window}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
+        description: We have gathered your student enrollment details from %{reporting_window}.
         enrollment_information: Enrollment information
-        enrollment_information_multiple: 'Enrollment status: %{school_name}'
+        enrollment_information_numbered: 'Enrollment #%{number} information'
         header: Review your student enrollment details
+        summer_logic_description: If you don’t have enough summer enrollment, we’ll use your spring enrollment to meet the community engagement requirement for the summer.
       error:
         description: 'We were unable to verify your student status with National Student Clearinghouse. To continue, you can:'
         enter_manually_button: Enter education manually
@@ -196,7 +197,7 @@ en:
         title: Tell us about your school or program
         zip_code: Zip code
       review:
-        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_description: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         additional_comments_title: Additional comments (optional)
         address: School address
         ce_explainer_body: If you are enrolled less than half-time, each credit hour counts as 4 hours toward the 80-hour community engagement requirement.
@@ -214,6 +215,7 @@ en:
         save: Save and add to report
         school_info: School information
         school_name: School or program
+        term: Term
         title: Review your student information for %{school_name}
         title_no_school_name: Review your student information
       show:
@@ -241,6 +243,8 @@ en:
         last_name: Last name
     employment:
       account_id: Account ID
+      document_upload_month_detail: "%{gross_income}, %{hours}"
+      document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:
         continue: Continue
         error_body: You need to add income and hours for at least one month to continue
@@ -314,17 +318,26 @@ en:
         hours: 'Community engagement hours: %{count}'
         no_employment_data: No payments found from this employer.
         not_enrolled: Not enrolled
-      description_html: "<strong>Reporting period:</strong> %{reporting_window}"
+      completed_state_description: "%{agency_name} will determine your eligibility based on the activities you've added to your report."
+      completed_state_title: You're ready to review and submit your report
       edit: Edit
       empty:
         community_service: No community service added
         education: No education added
         employment: No employment added
         work_programs: No work programs added
+      empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
+      empty_state_months_required_all: all %{required_month_count} months in the reporting period
+      empty_state_months_required_any: any %{required_month_count} months in the reporting period
+      empty_state_months_required_label: 'Months required:'
+      empty_state_reporting_period_label: 'Reporting period:'
+      empty_state_title: Build your community engagement report
+      in_progress_state_description: "%{agency_name} will determine your eligibility based on the activities you add to your report."
+      in_progress_state_title: Add more activities or continue to review and submit your report
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit
       save: Save changes
-      title: Add activities to your community engagement report
+      verification_info_link: What if I can't meet the requirements?
     income:
       employer_searches:
         employer:
@@ -465,7 +478,14 @@ en:
         school_name: School or program
         term_credit_hours: Term credit hours
       employment:
+        address: Address
+        contact_email: Contact email
+        contact_name: Contact name
+        contact_phone: Contact phone
         employer: Employer
+        gross_income: Gross income
+        hours_worked: Hours worked
+        month: Month
       job_training:
         address: Address
         contact_email: Contact email
@@ -476,6 +496,7 @@ en:
         program_name: Program name
         work_program_hours: Work program hours
       legal_agreement: Legal agreement
+      monthly_details: Monthly details
       submit: Submit to %{agency_name}
       title: Review and submit your %{benefit} community engagement report
     work_programs:
@@ -509,13 +530,12 @@ en:
       title: Work programs
       title_singular: Work Program
   activity_flow_progress_indicator:
-    description: We calculate your community engagement from the activities you add to your report.
-    description_complete: "%{agency_full_name} will determine your final eligibility based on the activities you’ve added to your report."
+    application_months_completed: "%{complete}/%{total} months completed"
     hours: hours
-    months_completed_html: "<strong>%{complete}</strong> / <strong>%{total}</strong> months completed"
+    renewal_months_completed: "%{complete}/%{required} months completed"
+    renewal_subtitle: Complete any %{required} months between %{start_month}-%{end_month} to meet requirements.
+    renewal_subtitle_no_range: Complete any %{required} months to meet requirements.
     title: Your %{month} progress
-    title_complete: You're ready to review and submit your report
-    title_multi_month: Your progress
   aggregator_strings:
     deductions:
       401k: 401k
@@ -586,7 +606,6 @@ en:
       footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
       greeting: Hello,
       header:
-        nh_dhhs: Test Agency has sent you an invitation to verify your income
         sandbox: Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
@@ -749,7 +768,7 @@ en:
         body_1: If you still need to verify your income, please submit your income information by visiting %{agency_acronym}'s website.
         cta_button_html:
           la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit LDH's website</a>
-          nh_dhhs: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at Test Agency</a>
+          nh_dhhs: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit NH DHHS's website</a>
           sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at Test Agency</a>
         title: Your invitation to verify income has expired
     missing_results:
@@ -1110,11 +1129,11 @@ en:
   shared:
     agency_acronym:
       la_ldh: LDH
-      nh_dhhs: TA
+      nh_dhhs: NH DHHS
       sandbox: TA
     agency_full_name:
       la_ldh: Louisiana Department of Health
-      nh_dhhs: New Hampshire Test Agency
+      nh_dhhs: NH DHHS Bureau of Family Assistance
       sandbox: Test Agency
     app_name:
       nh_dhhs: TAApp
@@ -1135,14 +1154,17 @@ en:
       aria_label: Main navigation
       cbv_flow_title:
         la_ldh: Department of Health
-        nh_dhhs: New Hampshire Test Agency
+        nh_dhhs: NH DHHS Bureau of Family Assistance
         sandbox: Test Agency
       close: Close
       help: Help
       log_out: Log out
+      logo_alt_text:
+        nh_dhhs: New Hampshire's logo image for the website
       preheader:
         default: A website in partnership with Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health
+        nh_dhhs: A website in partnership with NH DHHS Bureau of Family Assistance
       primary: Primary navigation
     hours:
       one: "%{count} hour"
@@ -1168,6 +1190,12 @@ en:
       sandbox: benefits
     select_placeholder: "- Select -"
     skip_link: Skip to main content
+    table_headers:
+      community_service_information: Community service information
+      education_information: Education information
+      employer_information: Employer information
+      work_program_information: Work program information
+      your_details: Your details
   time:
     formats:
       default: "%Y-%m-%d"

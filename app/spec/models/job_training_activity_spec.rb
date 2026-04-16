@@ -27,6 +27,14 @@ RSpec.describe JobTrainingActivity, type: :model do
     end
   end
 
+  describe "#document_upload_header_title_i18n_key" do
+    it "returns the job training header title translation key" do
+      activity = build(:job_training_activity)
+
+      expect(activity.document_upload_header_title_i18n_key).to eq("activities.work_programs.title_singular")
+    end
+  end
+
   describe "#document_upload_months_to_verify" do
     it "returns months from monthly hour records when present" do
       activity_flow = create(:activity_flow, reporting_window_months: 2, job_training_activities_count: 0)

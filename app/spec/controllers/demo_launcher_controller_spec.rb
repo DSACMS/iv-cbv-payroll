@@ -23,7 +23,7 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(rendered).to match(/Lynette Oyola/)
       expect(rendered).to match(/Currently enrolled.*1 school/)
       expect(rendered).to match(/Rick Banas/)
-      expect(rendered).to match(/Currently enrolled.*2 schools/)
+      expect(rendered).to match(/Enrolled half-time.*2 schools/)
       expect(rendered).to match(/Dominique Ricardo/)
       expect(rendered).to match(/Not currently enrolled/)
       expect(rendered).to match(/Linda Cooper/)
@@ -39,6 +39,9 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(rendered).to include('id="test_scenario_partial_enrollment_multi_term"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_taylor"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_maya"')
+      expect(rendered).to include('id="test_scenario_summer_term_carryover_sage"')
+      expect(rendered).to match(/Sage Testuser/)
+      expect(rendered).to match(/Spring carryover for summer months/)
     end
   end
 
@@ -414,6 +417,24 @@ RSpec.describe DemoLauncherController, type: :controller do
         invitation = ActivityFlowInvitation.last
         expect(invitation.reference_id).to eq("demo-partial_enrollment_maya")
         expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
+      end
+
+      it "supports launching the summer carryover fake test user" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            test_scenario: "summer_term_carryover_sage",
+            reporting_window_start: "07/01/2025"
+          }
+        }.to change(ActivityFlowInvitation, :count).by(1)
+          .and not_change(ActivityFlow, :count)
+          .and not_change(EducationActivity, :count)
+          .and not_change(NscEnrollmentTerm, :count)
+
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.reference_id).to eq("demo-summer_term_carryover_sage")
+        expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
+        expect(response.location).to include("reporting_window_start=2025-07-01")
       end
     end
 

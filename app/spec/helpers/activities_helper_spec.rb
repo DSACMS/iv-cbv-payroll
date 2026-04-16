@@ -1,6 +1,68 @@
 require "rails_helper"
 
 RSpec.describe ActivitiesHelper do
+  describe "activity hub display helpers" do
+    describe "#activity_hub_state" do
+      let(:meeting_result) { instance_double(ActivityFlowProgressCalculator::MonthlyResult, meets_requirements: true) }
+      let(:not_meeting_result) { instance_double(ActivityFlowProgressCalculator::MonthlyResult, meets_requirements: false) }
+
+      it "returns empty when no activities are added" do
+        state = helper.activity_hub_state(
+          any_activities_added: false,
+          monthly_results: [ meeting_result ]
+        )
+
+        expect(state).to eq(:empty)
+      end
+
+      it "returns completed when all months meet requirements" do
+        state = helper.activity_hub_state(
+          any_activities_added: true,
+          monthly_results: [ meeting_result, meeting_result ]
+        )
+
+        expect(state).to eq(:completed)
+      end
+
+      it "returns in_progress when any month does not meet requirements" do
+        state = helper.activity_hub_state(
+          any_activities_added: true,
+          monthly_results: [ meeting_result, not_meeting_result ]
+        )
+
+        expect(state).to eq(:in_progress)
+      end
+    end
+
+    describe "#activity_hub_title_key" do
+      it "maps empty state to empty-state title key" do
+        expect(helper.activity_hub_title_key(:empty)).to eq("activities.hub.empty_state_title")
+      end
+
+      it "maps completed state to completed-state title key" do
+        expect(helper.activity_hub_title_key(:completed)).to eq("activities.hub.completed_state_title")
+      end
+
+      it "maps in-progress state to in-progress title key" do
+        expect(helper.activity_hub_title_key(:in_progress)).to eq("activities.hub.in_progress_state_title")
+      end
+    end
+
+    describe "#activity_hub_description_key" do
+      it "maps completed state to completed-state description key" do
+        expect(helper.activity_hub_description_key(:completed)).to eq("activities.hub.completed_state_description")
+      end
+
+      it "maps in-progress state to in-progress description key" do
+        expect(helper.activity_hub_description_key(:in_progress)).to eq("activities.hub.in_progress_state_description")
+      end
+
+      it "maps empty state to in-progress description key" do
+        expect(helper.activity_hub_description_key(:empty)).to eq("activities.hub.in_progress_state_description")
+      end
+    end
+  end
+
   describe "#community_service_cards" do
     let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
     let(:first_month) { flow.reporting_window_range.begin.beginning_of_month }
@@ -145,6 +207,26 @@ RSpec.describe ActivitiesHelper do
       expect(second_month_data[:community_engagement_hours]).to eq(0)
     end
 
+    it "does not build a card for a term with no reporting-window overlap" do
+      activity = create(:education_activity, activity_flow: flow)
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Spring Only U",
+        enrollment_status: "half_time",
+        term_begin: first_month - 4.months,
+        term_end: first_month - 2.months)
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Summer U",
+        enrollment_status: "less_than_half_time",
+        term_begin: first_month,
+        term_end: second_month.end_of_month)
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      expect(result.map { |card| card[:name] }).to eq([ "Summer U" ])
+    end
+
     it "returns months in reverse chronological order" do
       activity = create(:education_activity, activity_flow: flow)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", term_begin: first_month, term_end: second_month.end_of_month)
@@ -155,41 +237,65 @@ RSpec.describe ActivitiesHelper do
       expect(months).to eq(months.sort.reverse)
     end
 
-    it "includes edit path to education edit" do
+    it "includes edit path to education review with from_edit for validated education" do
       activity = create(:education_activity, activity_flow: flow)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", term_begin: first_month, term_end: second_month.end_of_month)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
       expect(result.first[:edit_path]).to eq(
-        helper.edit_activities_flow_education_path(id: activity.id)
+        helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
       )
     end
 
-    it "includes edit path to term credit hours for partially self-attested education" do
+    it "includes edit path to education review for partially self-attested education" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", enrollment_status: "less_than_half_time", term_begin: first_month, term_end: second_month.end_of_month)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
       expect(result.first[:edit_path]).to eq(
-        helper.edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: 0)
+        helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
       )
     end
 
-    it "routes each partially self-attested education card to the matching term index" do
+    it "builds one partially self-attested card per school when a school has multiple terms" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
-      first_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "First School", term_begin: first_month, term_end: second_month.end_of_month)
-      second_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "Second School", term_begin: first_month, term_end: second_month.end_of_month)
+      create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: activity,
+        school_name: "River College",
+        term_begin: first_month,
+        term_end: first_month.end_of_month,
+        credit_hours: 3)
+      create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: activity,
+        school_name: "River College",
+        term_begin: second_month,
+        term_end: second_month.end_of_month,
+        credit_hours: 5)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
-      cards_by_name = result.index_by { |card| card[:name] }
 
-      expect(cards_by_name[first_term.school_name].fetch(:edit_path)).to eq(
-        helper.edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: 0)
+      expect(result.length).to eq(1)
+      expect(result.first[:name]).to eq("River College")
+      expect(result.first[:edit_path]).to eq(
+        helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
       )
-      expect(cards_by_name[second_term.school_name].fetch(:edit_path)).to eq(
-        helper.edit_activities_flow_education_term_credit_hour_path(education_id: activity.id, id: 1)
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: first_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
+          community_engagement_hours: 12,
+          credit_hours: 3,
+          show_credit_hours: true
+        },
+        {
+          month: second_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
+          community_engagement_hours: 20,
+          credit_hours: 5,
+          show_credit_hours: true
+        }
       )
     end
 
@@ -272,9 +378,90 @@ RSpec.describe ActivitiesHelper do
             { month: second_month, credit_hours: 6, community_engagement_hours: 24 },
             { month: first_month, credit_hours: 4, community_engagement_hours: 16 }
           ],
-          edit_path: helper.edit_activities_flow_education_month_path(education_id: activity.id, id: 0, from_edit: 1)
+          edit_path: helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
         }
       )
+    end
+
+    it "shows the spring enrollment status on the summer card when carryover applies" do
+      summer_flow = create(:activity_flow, reporting_window_months: 2, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      summer_flow.shift_reporting_window_start!("2025-07-01")
+      summer_months = summer_flow.reporting_months
+      activity = create(:education_activity, activity_flow: summer_flow, status: "succeeded")
+
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Coastal State College",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15))
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Coastal State College",
+        enrollment_status: "less_than_half_time",
+        term_begin: Date.new(2025, 7, 1),
+        term_end: Date.new(2025, 8, 15))
+
+      result = helper.education_cards([ activity.reload ], summer_months)
+
+      expect(result.length).to eq(1)
+      expect(result.first[:months].map { |month| month[:enrollment_status] })
+        .to all(eq(I18n.t("components.enrollment_term_table_component.status.half_time")))
+      expect(result.first[:months].map { |month| month[:community_engagement_hours] })
+        .to all(eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
+    end
+
+    it "shows the spring enrollment status on the summer card when no summer term exists" do
+      summer_flow = create(:activity_flow, reporting_window_months: 2, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      summer_flow.shift_reporting_window_start!("2025-07-01")
+      summer_months = summer_flow.reporting_months
+      activity = create(:education_activity, activity_flow: summer_flow, status: "succeeded")
+
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Coastal State College",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15))
+
+      result = helper.education_cards([ activity.reload ], summer_months)
+
+      expect(result.length).to eq(1)
+      expect(result.first[:months].map { |month| month[:enrollment_status] })
+        .to all(eq(I18n.t("components.enrollment_term_table_component.status.half_time")))
+      expect(result.first[:months].map { |month| month[:community_engagement_hours] })
+        .to all(eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
+    end
+
+    it "builds one validated card when two terms overlap the same reporting month" do
+      june_flow = create(:activity_flow, reporting_window_months: 2, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      june_flow.shift_reporting_window_start!("2025-06-01")
+      june_months = june_flow.reporting_months
+      activity = create(:education_activity, activity_flow: june_flow, status: "succeeded")
+
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Test University",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15))
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Test University",
+        enrollment_status: "less_than_half_time",
+        term_begin: Date.new(2025, 6, 1),
+        term_end: Date.new(2025, 7, 31))
+
+      result = helper.education_cards([ activity.reload ], june_months)
+
+      expect(result.length).to eq(1)
+      june_data = result.first[:months].find { |month| month[:month] == Date.new(2025, 6, 1) }
+      july_data = result.first[:months].find { |month| month[:month] == Date.new(2025, 7, 1) }
+
+      expect(june_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.half_time"))
+      expect(june_data[:community_engagement_hours]).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
+      expect(july_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.half_time"))
+      expect(july_data[:community_engagement_hours]).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
     end
   end
 

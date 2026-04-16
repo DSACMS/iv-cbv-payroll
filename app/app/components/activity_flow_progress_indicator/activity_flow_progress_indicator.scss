@@ -1,8 +1,44 @@
 @forward "uswds";
 @use "uswds" as *;
 
-.activity-flow-progress-indicator {
+.usa-card.activity-flow-progress-indicator__card {
   margin: units(2) 0 0;
+  padding-left: 0;
+  padding-right: 0;
+
+  .usa-card__container {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .usa-card__body {
+    padding: units(3);
+  }
+}
+
+.activity-flow-progress-indicator__title {
+  @include u-font("sans", "lg");
+
+  align-items: center;
+  display: flex;
+  font-weight: font-weight("bold");
+  gap: units(1);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.activity-flow-progress-indicator__description {
+  @include u-font("sans", "sm");
+
+  color: color("ink");
+  margin: units(1) 0 units(2);
+}
+
+.activity-flow-progress-indicator__months-completed {
+  @include u-font("sans", "md");
+
+  font-weight: font-weight("bold");
+  margin: 0 0 units(2);
 }
 
 .activity-flow-progress-indicator__progress-bar {
@@ -12,6 +48,10 @@
   display: block;
   height: units(2);
   width: 100%;
+
+  &:first-of-type {
+    margin-top: units(3);
+  }
 
   &--complete {
     border-color: color("success-dark");
@@ -34,8 +74,12 @@
   display: flex;
   font-weight: bold;
   justify-content: space-between;
-  line-height: 1.6;
+  line-height: 1.5;
   margin: units(1) 0 units(2);
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 }
 
 .activity-flow-progress-indicator__progress-amount {
@@ -48,7 +92,7 @@
 
 .activity-flow-progress-indicator__success-icon {
   color: color("success-dark");
-  height: 20px;
+  height: 18px;
   vertical-align: text-bottom;
-  width: 20px;
+  width: 18px;
 }

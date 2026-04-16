@@ -42,6 +42,7 @@
   agency_name: Department of Health and Human Services
   agency_contact_website: https://www.dhhs.nh.gov/
   agency_domain: <%= ENV["NH_DHHS_DOMAIN_NAME"] %>
+  logo_path: nh_dhhs_logo.png
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
   pinwheel:
     environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
@@ -53,6 +54,7 @@
     private_key: <%= ENV['NH_DHHS_SFTP_PRIVATE_KEY'].inspect %>
     url: <%= ENV['NH_DHHS_SFTP_URL'] %>
     sftp_directory: <%= ENV['NH_DHHS_SFTP_DIRECTORY'] %>
+    pdf_filename_format: CBV_%{case_number}_%{consent_timestamp}_%{confirmation_code}
   staff_portal_enabled: true
   pilot_ended: false
   sso:

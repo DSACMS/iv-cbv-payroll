@@ -206,6 +206,64 @@ RSpec.describe Activities::EducationController, type: :controller do
 
       expect(Capybara.string(response.body)).to have_button(I18n.t("activities.education.new.continue"))
     end
+
+    it "renders the summer logic description for partially self-attested activities when carryover applies" do
+      activity_flow.update!(created_at: Time.zone.local(2026, 9, 1), reporting_window_months: 3)
+      education_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        school_name: "University of Illinois",
+        enrollment_status: :half_time,
+        term_begin: Date.new(2026, 4, 1),
+        term_end: Date.new(2026, 6, 15)
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        school_name: "University of Illinois",
+        term_begin: Date.new(2026, 6, 1),
+        term_end: Date.new(2026, 8, 31)
+      )
+
+      get :edit, params: { id: education_activity.id }
+
+      expect(Capybara.string(response.body)).to have_text(I18n.t("activities.education.edit.summer_logic_description"))
+    end
+
+    it "renders numbered enrollment headers on the partially self-attested edit page" do
+      education_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        school_name: "Half Time School",
+        enrollment_status: :half_time
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        school_name: "Less Than Half School",
+        credit_hours: 4
+      )
+
+      get :edit, params: { id: education_activity.id }
+
+      doc = Capybara.string(response.body)
+      expect(doc).to have_text(I18n.t("activities.education.edit.enrollment_information_numbered", number: 1))
+      expect(doc).to have_text(I18n.t("activities.education.edit.enrollment_information_numbered", number: 2))
+    end
   end
 
   describe "DELETE #destroy" do
@@ -240,6 +298,16 @@ RSpec.describe Activities::EducationController, type: :controller do
 
         expect(response.body).to include("4")
         expect(response.body).to include("16")
+      end
+
+      it "includes an edit link for each month" do
+        create(:education_activity_month, education_activity: education_activity, month: activity_flow.reporting_months.first, hours: 4)
+
+        get :review, params: { id: education_activity.id }
+
+        expect(response.body).to include(
+          edit_activities_flow_education_month_path(education_id: education_activity, id: 0, from_review: 1)
+        )
       end
 
       it "renders an edit link to school info with from_review" do
@@ -278,7 +346,16 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response.body).to include(I18n.t("activities.education.review.credit_hours_section"))
         expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
         expect(response.body).to include(I18n.t("activities.education.review.ce_explainer_title"))
-        expect(doc).to have_text(I18n.t("activities.education.review.description", school_name: "University of Illinois"))
+        expect(doc).to have_text(
+          I18n.t("activities.education.review.description", school_name: "University of Illinois")
+        )
+        expect(doc).to have_text(
+          I18n.t(
+            "activities.education.review.additional_comments_description",
+            agency_name: I18n.t("shared.agency_full_name.sandbox")
+          )
+        )
+        expect(doc).not_to have_text(I18n.t("activities.education.edit.summer_logic_description"))
         expect(response.body).to include("0")
       end
 
@@ -335,8 +412,12 @@ RSpec.describe Activities::EducationController, type: :controller do
         get :review, params: { id: education_activity.id }
 
         doc = Capybara.string(response.body)
-        expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 1))
-        expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 2))
+        expect(response.body).to include(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
+        )
+        expect(response.body).to include(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
+        )
         expect(doc).to have_selector("h1", text: I18n.t("activities.education.review.title_no_school_name"))
         expect(doc).to have_text(
           I18n.t(
@@ -346,7 +427,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         )
         expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
         expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
-        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(1)
+        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(2)
       end
 
       it "renders term-hours tables for each enrollment when all enrollments are less-than-half-time" do
@@ -368,8 +449,12 @@ RSpec.describe Activities::EducationController, type: :controller do
         get :review, params: { id: education_activity.id }
 
         doc = Capybara.string(response.body)
-        expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 1))
-        expect(response.body).to include(I18n.t("activities.education.review.enrollment_information_numbered", number: 2))
+        expect(response.body).to include(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
+        )
+        expect(response.body).to include(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
+        )
         expect(doc).to have_selector("h1", text: I18n.t("activities.education.review.title_no_school_name"))
         expect(doc).to have_text(
           I18n.t(
@@ -378,8 +463,49 @@ RSpec.describe Activities::EducationController, type: :controller do
           )
         )
         expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 2)
-        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(2)
+        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(4)
         expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
+      end
+    end
+
+    context "when validated" do
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow)
+      end
+
+      before do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "Pine Valley College",
+          enrollment_status: :half_time
+        )
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "Riverside Community College",
+          enrollment_status: :full_time
+        )
+      end
+
+      it "renders validated enrollment info without edit links to entry pages" do
+        get :review, params: { id: education_activity.id, from_edit: 1 }
+
+        doc = Capybara.string(response.body)
+        expect(response).to have_http_status(:ok)
+        expect(doc).to have_selector("h1", text: I18n.t("activities.education.edit.header"))
+        expect(doc).to have_text(
+          I18n.t("activities.education.edit.description", reporting_window: activity_flow.reporting_window_display)
+        )
+        expect(doc).to have_text(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
+        )
+        expect(doc).to have_text(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
+        )
+        expect(doc).not_to have_link(I18n.t("activities.education.review.edit"))
+        expect(doc).not_to have_link(I18n.t("activities.hub.edit"))
+        expect(doc).to have_button(I18n.t("activities.hub.save"))
       end
     end
   end

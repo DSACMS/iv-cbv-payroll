@@ -31,11 +31,15 @@
 
 <%= uswds_form_with(model: @current_term,
       url: activities_flow_education_term_credit_hour_path(
-        education_id: @education_activity, id: @term_index),
+        education_id: @education_activity,
+        id: @term_index,
+        from_review: params[:from_review].presence,
+        from_edit: params[:from_edit].presence
+      ),
       method: :patch) do |f| %>
 
   <div data-controller="hours-input">
-    <% if @terms.length > 1 %>
+    <% if @show_no_hours_checkbox %>
       <div class="usa-checkbox">
         <%= check_box_tag :no_hours, "1", false,
               class: "usa-checkbox__input usa-checkbox__input--tile",
@@ -52,6 +56,7 @@
           label_class: "text-bold",
           data: { hours_input_target: "hoursField", action: "input->hours-input#input" } %>
 
-    <%= f.submit t("activities.education.term_credit_hours.continue") %>
+    <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t("activities.education.term_credit_hours.continue") %>
+    <%= f.submit submit_label %>
   </div>
 <% end %>

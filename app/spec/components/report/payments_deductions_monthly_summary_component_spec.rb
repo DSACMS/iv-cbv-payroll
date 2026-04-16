@@ -44,8 +44,6 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       end
 
       context "whose paystubs synced" do
-        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
-
         let(:supported_jobs) { %w[paystubs employment income shifts] }
         let(:errored_jobs) { [] }
 
@@ -54,20 +52,49 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
           pinwheel_report.fetch
         end
 
+        context "with default (CBV) style" do
+          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
-        it "pinwheel_report is properly fetched" do
-          expect(pinwheel_report.gigs.length).to eq(3)
-          expect(pinwheel_report.paystubs.length).to eq(1)
+          it "pinwheel_report is properly fetched" do
+            expect(pinwheel_report.gigs.length).to eq(3)
+            expect(pinwheel_report.paystubs.length).to eq(1)
+          end
+
+          it "includes the payments and deductions section with accordion and content" do
+            expect(subject.css("h2").to_html).to include "Payments and deductions"
+
+            accordion = subject.at_css('button.usa-accordion__button')
+            expect(accordion).not_to be_nil
+            expect(accordion.text).to include("December 2020")
+
+            expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
+          end
+
+          it "uses subheader row style (no thead column headers)" do
+            expect(subject.css("thead tr.subheader-row th").length).to eq(2)
+            expect(subject.css("thead tr th").length).to eq(2)
+          end
         end
 
-        it "includes the payments and deductions section with accordion and content" do
-          expect(subject.css("h2").to_html).to include "Payments and deductions"
+        context "with activity style" do
+          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly", use_activity_style: true)) }
 
-          accordion = subject.at_css('button.usa-accordion__button')
-          expect(accordion).not_to be_nil
-          expect(accordion.text).to include("December 2020")
+          it "includes the payments and deductions section with accordion and content" do
+            expect(subject.css("h2").to_html).to include "Payments and deductions"
 
-          expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
+            accordion = subject.at_css('button.usa-accordion__button')
+            expect(accordion).not_to be_nil
+            expect(accordion.text).to include("December 2020")
+
+            expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
+          end
+
+          it "uses column header style with activity-review-table class" do
+            expect(subject.at_css('table.activity-review-table')).not_to be_nil
+            expect(subject.css("thead tr th").length).to eq(2)
+            expect(subject.css("thead tr th:nth-child(1)").text).to include("Pay information")
+            expect(subject.css("thead tr th:nth-child(2)").text).to include("Your details")
+          end
         end
       end
 
@@ -152,6 +179,29 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         expect(accordion.text).to include("March 2025")
 
         expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
+      end
+
+      context "for an activity flow" do
+        let(:activity_flow) { create(:activity_flow, reporting_window_months: 3, cbv_applicant: cbv_applicant, created_at: current_time) }
+        let!(:payroll_account) do
+          create(
+            :payroll_account,
+            :argyle_fully_synced,
+            flow: activity_flow,
+            aggregator_account_id: account_id
+          )
+        end
+
+        it "renders month accordions in reporting window order (oldest first)" do
+          accordion_titles = subject.css("button.usa-accordion__button").map { |button| button.text.squish }
+          month_dates = accordion_titles.map do |title|
+            month_label = title.match(/[A-Za-z]+\s+\d{4}/).to_s
+            Date.strptime(month_label, "%B %Y")
+          end
+
+          expect(month_dates.length).to be >= 2
+          expect(month_dates).to eq(month_dates.sort)
+        end
       end
     end
 

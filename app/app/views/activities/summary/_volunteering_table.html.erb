@@ -1,4 +1,6 @@
-<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.community_service_information") } %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.summary.community_service.organization") %>
@@ -44,23 +46,18 @@
     <% end %>
   <% end %>
 
+<% end %>
+
+<h3><%= t("activities.summary.monthly_details") %></h3>
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.community_service.month") } %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.community_service.hours_served") } %>
   <% activity.activity_months.order(month: :asc).each do |activity_month| %>
     <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.summary.community_service.month") %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= I18n.l(activity_month.month, format: :month) %>
-      <% end %>
-    <% end %>
-
-    <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.summary.community_service.hours_served") %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= activity_month.hours %>
-      <% end %>
+      <%= row.with_data_cell(data_label: t("activities.summary.community_service.month"), is_header: true)
+             .with_content(I18n.l(activity_month.month, format: :month)) %>
+      <%= row.with_data_cell(data_label: t("activities.summary.community_service.hours_served"))
+             .with_content(activity_month.hours) %>
     <% end %>
   <% end %>
 <% end %>

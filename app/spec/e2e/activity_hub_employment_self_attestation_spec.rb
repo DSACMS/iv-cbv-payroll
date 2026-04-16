@@ -15,7 +15,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     visit URI(root_url).request_uri
     visit activities_flow_entry_path(client_agency_id: "sandbox")
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     flow = ActivityFlow.last
     month1 = flow.reporting_months.first
@@ -59,6 +59,14 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: month2_label), with: "300"
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: month2_label), with: "20"
     click_button I18n.t("activities.employment.hours_input.continue")
+
+    # Document upload page
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: "Gainesville Wrecking"),
+      skip_axe_rules: %w[heading-order]
+    )
+    click_button I18n.t("activities.document_uploads.new.continue")
 
     # Review page
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Gainesville Wrecking"))
@@ -108,7 +116,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     # --- Step 3: Edit a single month from the review page ---
     # Month edit links are inside .subheader-row; the employer edit link is outside the table
-    month_edit_links = all(".subheader-row a", text: I18n.t("activities.community_service.review.edit"))
+    month_edit_links = all("td a", text: I18n.t("activities.community_service.review.edit"))
     month_edit_links.first.click
 
     verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
@@ -124,7 +132,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     # --- Step 4: Validation guard — cannot zero out all months from review ---
     # Set month 2 to 0 via edit from review
-    month_edit_links = all(".subheader-row a", text: I18n.t("activities.community_service.review.edit"))
+    month_edit_links = all("td a", text: I18n.t("activities.community_service.review.edit"))
     month_edit_links.last.click
 
     verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
@@ -137,7 +145,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Updated Employer"))
 
     # Now try to set month 1 to 0 — should fail validation
-    month_edit_links = all(".subheader-row a", text: I18n.t("activities.community_service.review.edit"))
+    month_edit_links = all("td a", text: I18n.t("activities.community_service.review.edit"))
     month_edit_links.first.click
 
     verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
@@ -158,6 +166,6 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Updated Employer"))
     click_button I18n.t("activities.employment.review.save")
 
-    verify_page(page, title: I18n.t("activities.hub.title"))
+    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
   end
 end

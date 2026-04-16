@@ -1,4 +1,6 @@
-<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.education_information") } %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("components.enrollment_term_table_component.student_name_label") %>

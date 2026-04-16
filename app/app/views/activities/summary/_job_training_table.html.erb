@@ -1,4 +1,6 @@
-<%= render(TableComponent.new(is_responsive: true)) do |table| %>
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.work_program_information") } %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.summary.job_training.organization_provider_name") %>
@@ -53,44 +55,18 @@
     <% end %>
   <% end %>
 
-  <% month_hours_rows = activity.job_training_activity_months.order(:month) %>
-  <% if month_hours_rows.empty? %>
-    <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.summary.job_training.month") %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= t("shared.not_applicable") %>
-      <% end %>
-    <% end %>
+<% end %>
 
+<h3><%= t("activities.summary.monthly_details") %></h3>
+<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.job_training.month") } %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.job_training.work_program_hours") } %>
+  <% activity.job_training_activity_months.order(:month).each do |month_hours| %>
     <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.summary.job_training.work_program_hours") %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= t("shared.not_applicable") %>
-      <% end %>
-    <% end %>
-  <% else %>
-    <% month_hours_rows.each do |month_hours| %>
-      <%= table.with_row do |row| %>
-        <%= row.with_data_cell(is_header: true) do %>
-          <%= t("activities.summary.job_training.month") %>
-        <% end %>
-        <%= row.with_data_cell do %>
-          <%= I18n.l(month_hours.month, format: :month) %>
-        <% end %>
-      <% end %>
-
-      <%= table.with_row do |row| %>
-        <%= row.with_data_cell(is_header: true) do %>
-          <%= t("activities.summary.job_training.work_program_hours") %>
-        <% end %>
-        <%= row.with_data_cell do %>
-          <%= month_hours.hours %>
-        <% end %>
-      <% end %>
+      <%= row.with_data_cell(data_label: t("activities.summary.job_training.month"), is_header: true)
+             .with_content(I18n.l(month_hours.month, format: :month)) %>
+      <%= row.with_data_cell(data_label: t("activities.summary.job_training.work_program_hours"))
+             .with_content(month_hours.hours) %>
     <% end %>
   <% end %>
 <% end %>

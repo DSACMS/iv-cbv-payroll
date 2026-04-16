@@ -90,6 +90,26 @@ RSpec.describe ActivityFlow, type: :model do
     end
   end
 
+  describe "#activity_month_order_oldest_first?" do
+    it "returns true" do
+      expect(create(:activity_flow).activity_month_order_oldest_first?).to be true
+    end
+  end
+
+  describe "reporting window helpers" do
+    it "returns true for renewal_reporting_window? on renewal flows" do
+      flow = create(:activity_flow, reporting_window_type: "renewal")
+
+      expect(flow.renewal_reporting_window?).to be true
+    end
+
+    it "returns false for renewal_reporting_window? on application flows" do
+      flow = create(:activity_flow, reporting_window_type: "application")
+
+      expect(flow.renewal_reporting_window?).to be false
+    end
+  end
+
   describe "#after_payroll_sync_succeeded" do
     let(:flow) { create(:activity_flow, reporting_window_months: 1) }
     let(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "acct-1") }

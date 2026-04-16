@@ -67,6 +67,19 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       expect(response.body).not_to include("no_hours")
     end
 
+    it "threads from_review and from_edit in the form action" do
+      get :edit, params: { education_id: education_activity.id, id: 0, from_review: 1, from_edit: 1 }
+
+      expect(response.body).to include("from_review=1")
+      expect(response.body).to include("from_edit=1")
+    end
+
+    it "shows Save changes button when from_review is present" do
+      get :edit, params: { education_id: education_activity.id, id: 0, from_review: 1 }
+
+      expect(response.body).to include(I18n.t("activities.hub.save"))
+    end
+
     it "redirects to index 0 for an out-of-range index" do
       get :edit, params: { education_id: education_activity.id, id: 99 }
 
@@ -120,6 +133,21 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     end
   end
 
+  describe "GET #edit with mixed enrollment statuses" do
+    before do
+      create(:nsc_enrollment_term,
+        education_activity: education_activity,
+        enrollment_status: "half_time",
+        school_name: "Pine Valley College")
+    end
+
+    it "shows checkbox when half-time and less-than-half-time terms are both present" do
+      get :edit, params: { education_id: education_activity.id, id: 0 }
+
+      expect(response.body).to include("no_hours")
+    end
+  end
+
   describe "GET #edit back_url" do
     render_views false
 
@@ -160,6 +188,22 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
           )
         )
       end
+    end
+
+    it "sets back_url to review when from_review is present" do
+      get :edit, params: { education_id: education_activity.id, id: 0, from_review: 1 }
+
+      expect(assigns(:back_url)).to eq(
+        review_activities_flow_education_path(id: education_activity)
+      )
+    end
+
+    it "threads from_edit in back_url when from_review is present" do
+      get :edit, params: { education_id: education_activity.id, id: 0, from_review: 1, from_edit: 1 }
+
+      expect(assigns(:back_url)).to eq(
+        review_activities_flow_education_path(id: education_activity, from_edit: 1)
+      )
     end
   end
 
@@ -242,6 +286,33 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
           new_activities_flow_education_document_upload_path(education_id: education_activity)
         )
       end
+    end
+
+    it "redirects back to review when from_review is present" do
+      patch :update, params: {
+        education_id: education_activity.id,
+        id: 0,
+        from_review: 1,
+        nsc_enrollment_term: { credit_hours: 4 }
+      }
+
+      expect(response).to redirect_to(
+        review_activities_flow_education_path(id: education_activity)
+      )
+    end
+
+    it "threads from_edit when redirecting back to review from from_review flow" do
+      patch :update, params: {
+        education_id: education_activity.id,
+        id: 0,
+        from_review: 1,
+        from_edit: 1,
+        nsc_enrollment_term: { credit_hours: 4 }
+      }
+
+      expect(response).to redirect_to(
+        review_activities_flow_education_path(id: education_activity, from_edit: 1)
+      )
     end
   end
 

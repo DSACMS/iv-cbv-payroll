@@ -3,11 +3,19 @@ require "rails_helper"
 RSpec.describe NscDataFetcherService do
   include NscApiHelper
 
-  subject(:service) { described_class.new(education_activity: education_activity, environment: :test, logger: logger) }
+  subject(:service) do
+    described_class.new(
+      education_activity: education_activity,
+      environment: :test,
+      logger: logger,
+      response_transformer: response_transformer
+    )
+  end
 
   let(:activity_flow) { create(:activity_flow, identity: identity, education_activities_count: 0) }
   let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
   let(:logger) { Logger.new(StringIO.new) }
+  let(:response_transformer) { nil }
 
   before do
     stub_const("Aggregators::Sdk::NscService::ENVIRONMENTS", {
@@ -21,6 +29,7 @@ RSpec.describe NscDataFetcherService do
       }
     })
   end
+
 
   describe "#fetch" do
     before do
@@ -137,6 +146,31 @@ RSpec.describe NscDataFetcherService do
 
         expect(education_activity.nsc_enrollment_terms.count).to eq(0)
         expect(education_activity.reload.status).to eq("succeeded")
+      end
+    end
+
+    context "with a response transformer" do
+      let(:identity) { create(:identity, :nsc_lynette) }
+      let(:response_transformer) do
+        lambda do |response|
+          transformed = response.deep_dup
+          transformed["enrollmentDetails"].first["enrollmentData"].first["termBeginDate"] = "2024-01-01"
+          transformed["enrollmentDetails"].first["enrollmentData"].first["termEndDate"] = "2024-05-31"
+          transformed
+        end
+      end
+
+      before do
+        education_activity.activity_flow.update!(created_at: Date.new(2024, 3, 1), reporting_window_months: 1)
+        nsc_stub_request_education_search_response("lynette")
+      end
+
+      it "applies the transformed response before saving enrollment terms" do
+        service.fetch
+
+        term = education_activity.nsc_enrollment_terms.first
+        expect(term.term_begin).to eq(Date.parse("2024-01-01"))
+        expect(term.term_end).to eq(Date.parse("2024-05-31"))
       end
     end
 
