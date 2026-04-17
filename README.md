@@ -2,32 +2,42 @@
 
 Eligibility Made Easy (Emmy) using Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.
 
-## Project Vision
+## About the Project
 Eligibility Made Easy (Emmy) is a project to allow applicants to verify their income, education status, and community engagement directly using payroll providers and educational records. Emmy was developed and is supported by CMS in order to offer states a drop-in component for their application process to allow applicants to apply for state benefits more easily. This is part of a more comprehensive process to [improve data services for benefits delivery](https://assets.performance.gov/cx/files/OMB-CX-LifeExperience-FFS-ImprovingData.pdf).
 
-## Project Mission
 Emmy uses consent-based verification (CBV) with multiple data sources, making the process much faster and more efficient than a simple document-upload service. CBV enables additional cost avoidance by optimizing manual document review processes. Rather than having to process incorrect or blurry documents, consent-based verification produces an easily consumed report with essential information. Verification information is returned in a standardized format easy for other systems to process (JSON), allowing integration with existing state systems.
 
 Emmy is under active development by CMS, with new updates released on a 2-week cadence.
 ## Core Team
+
+The core team of Emmy is a small group of designers, developers, and strategiestss working for and with the Department of Health and Human Services. We're aided in our effort by members of the open source community.
+
 A list of core team members responsible for the code and documentation in this repository can be found in [COMMUNITY.md](COMMUNITY.md) and [CODEOWNERS.md](./CODEOWNERS.md).
 
 
 ## Documentation
 
 ### Repository Structure
-See [AGENTS.md](./app/AGENTS.md) for some information on repo structure.
+
+- [/.github](./.github) GitHub specific settings files and testing, linting, and CI/CD workflows
+- [/app](./app) the Emmy web application built using Rails
+- [/bin](./bin) scripts for managing infrastructure
+- [/docs](./docs) public documentation for developers
+- [/infra](./infra) contains infrastructure-as-code and documentation of replication steps for  Emmy environment
+- [/load_testing](./load_testing) load testing resources
+
+See [AGENTS.md](./app/AGENTS.md) for some more information on repo structure.
 
 ### Documentation
 
-Public documentation is in the [/docs](docs/) subfolder.
+Public documentation is in the [/docs](./docs/) subfolder.
 
 ### Architectural Decision Records
 
 Our ADRs are stored in [CMS Confluence.](https://confluenceent.cms.gov/pages/viewpage.action?pageId=693666588)
 
 ## Contributing
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+For a guide to running the Emmy project on your own, and submiting changes, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ### Community
 
@@ -37,16 +47,11 @@ We know that we can learn from a wide variety of communities, including those wh
 
 We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skillsets.
 
-## Community Guidelines
-See [COMMUNITY.md](./COMMUNITY.md).
-
-## Governance
-
-See [GOVERNANCE.md](./GOVERNANCE.md)
+For more information on how the Emmy team works with our community, see [COMMUNITY.md](./COMMUNITY.md) and [GOVERNANCE.md](./GOVERNANCE.md).
 
 ## Feedback
 
-If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know by sending an email to: ffs at nava pbc dot com. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
+If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know by sending an email to: ffs at nava pbc dot com. If you would like to comment on the tool itself, please let us know by [filing an issue on our GitHub repository](https://github.com/DSACMS/iv-cbv-payroll/issues/new/choose).
 
 ## Policies
 
@@ -82,5 +87,3 @@ This project is in the public domain within the United States, and copyright and
 
 All contributions to this project will be released under the CC0 dedication. By submitting a pull request or issue, you are agreeing to comply with this waiver of copyright interest.
 
-## Core team
-See [COMMUNITY.md](./COMMUNITY.md).
