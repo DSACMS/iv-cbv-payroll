@@ -1,7 +1,5 @@
 # Eligibility made easy (Emmy)
 
-## About the Project
-
 Eligibility Made Easy (Emmy) using Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.
 
 ## Project Vision
@@ -20,9 +18,9 @@ A list of core team members responsible for the code and documentation in this r
 ### Repository Structure
 See [AGENTS.md](./app/AGENTS.md) for some information on repo structure.
 
-### Documentation Index
+### Documentation
 
-Documentation is currently stored in [CMS Confluence.](https://confluenceent.cms.gov/display/SFIV/Consent-based+Verification+%28CBV%29+for+Payroll)
+Public documentation is in the [/docs](docs/) subfolder.
 
 ### Architectural Decision Records
 
