@@ -2,7 +2,7 @@
 
 Eligibility Made Easy (Emmy) is being developed in the open by CMS and its contractors. We use internal tools to track our work (bugs and feature enhancements).
 
-# Contribution Guidelines
+## Contribution Guidelines
 While every raised pull request will be reviewed by the Emmy team, in general we don’t accept PRs that
 * Don’t directly address an existing issue
 * Touch more than 10 files at a time
@@ -11,21 +11,132 @@ While every raised pull request will be reviewed by the Emmy team, in general we
 * Are untested / don’t pass our test suite / don’t pass our linters / don’t follow established style
 * Are entirely AI generated
 
-## Getting Started
+## Run Emmy for yourself
 
-### Team Specific Guidelines
+If you're new to Rails, see the [Getting Started with Rails](https://guides.rubyonrails.org/getting_started.html)
+guide for an introduction to the framework.
 
-<!-- TODO: This section helps contributors understand any team structure in the project (formal or informal.) Encouraged to point towards the MAINTAINERS.md file for further details.-->
+### Setup
 
-### Building dependencies
+Most developers on the team code using macOS, so we recommend that platform if possible. Some of these steps may not apply to other platforms.
 
-<!--- TODO: This step is often skipped, so don't forget to include the steps needed to install on your platform. If you project can be multi-platform, this is an excellent place for first time contributors to send patches!-->
+1. Install Xcode Command Line Tools: ```xcode-select --install```
+1. Install homebrew dependencies: `brew bundle`
+   * rbenv
+   * nodenv
+   * [redis]()
+   * [jq](https://stedolan.github.io/jq/)
+   * [PostgreSQL](https://www.postgresql.org/)
+   * [Dockerize](https://github.com/jwilder/dockerize)
+   * [ADR Tools](https://github.com/npryce/adr-tools)
+   * [Graphviz](https://voormedia.github.io/rails-erd/install.html): brew install graphviz
+   * [Chromedriver](https://sites.google.com/chromium.org/driver/)
+     * Chromedriver must be allowed to run. You can either do that by:
+       * The command line: `xattr -d com.apple.quarantine $(which chromedriver)` (this is the only option if you are on Big Sur)
+       * Manually: clicking "allow" when you run the integration tests for the first time and a dialogue opens up
+   * [Ngrok](https://ngrok.com/downloads): brew install ngrok/ngrok/ngrok
+     * Sign up for an account: https://dashboard.ngrok.com/signup
+     * run `ngrok config add-authtoken {token goes here}`
+   * [pre-commit](https://pre-commit.com/)
+     * This configures your local git to run linters locally during a git commit. See [#coding-style-and-linters](#coding-style-and-linters) for a summary of which ones we use.
+     * Run `pre-commit install` to opt-into running these linters. (They will run during CI regardless.)
+1. Set up rbenv and nodenv:
+   * `echo 'if which nodenv >/dev/null 2>/dev/null; then eval "$(nodenv init -)"; fi' >> ~/.zshrc`
+   * `echo 'if which rbenv >/dev/null 2>/dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc`
+   * Close & re-open your terminal
 
-### Building the Project
+**The following commands must be run in the `/app` directory**
+1. Install Ruby: `rbenv install`
+1. Install NodeJS `nodenv install`
+1. Install Ruby dependencies: `bundle install`
+1. Install JS dependencies
+   * `nodenv rehash`
+   * `npm install`
+1. Start postgres:
+   * `brew services start postgresql@12`
+1. Set up the environment variables you'll need.
+   * `cp .env.local.example .env.local`
+   * Follow directions in the .env.local file to set up your accounts and API keys for all necessary services.
+   * Ask another engineer for the shared credentials (they're in Nava's 1Password under "CBV .env.local Rails Secrets")
+1. Create database: `bin/rails db:create`
+1. Run migrations: `bin/rails db:migrate`
+1. Run the development server: `bin/dev`
+1. Visit the site: http://localhost:3000
 
-<!--- TODO: Be sure to include build scripts and instructions, not just the source code itself! -->
+### For analytics development
+#### First-time setup
+1. Navigate to the `analytics` directory: `cd app/analytics`
+1. Create the virtual environment: `python3 -m venv venv`
+1. Activate the environment: `source venv/bin/activate`
+1. Install dependencies: `pip install -r requirements.txt`
+1. Add the following to your .env.local; you can find the credentials in the FFS Engineering 1Password under Mixpanel Production Service Account.
+```
+# Jupyter / Mixpanel analytics
+MIXPANEL_PROJECT_ID=3511732
+MIXPANEL_SERVICE_ACCOUNT_USERNAME=
+MIXPANEL_SERVICE_ACCOUNT_SECRET=
+```
 
-### Workflow and Branching
+#### To start writing new analytics or running analyses
+6. Run `jupyter lab --NotebookApp.iopub_data_rate_limit=1.0e10` and open the analytics.ipynb file.
+6. Modify the date parameters to define the range of the data you'd like to download. These can be found in the first block of executable code marked with the comment "date range". They're parameters we feed to the Mixpanel API.
+6. Execute the first section with shift + enter. It will take a while to download all the events! Once you've run this once, you can proceed to run the other cells or write your own.
+
+#### Analytics development tips
+* Jupyter Notebooks are Python files that allow you to re-run cells of code easily. This first cell of code I wrote to pull a new dataset from our Mixpanel analytics platform. When developing analyses to run on that data set, we should start writing new cells below it. That way, when you want to get started, you can run the first cell just once to pull the data, and then you could run and re-run later cells as many times as you want to analyze that data.
+* Before committing changes to the ipynb file, it's a good idea to go to the Kernel menu and select "Restart Kernel and Clear Outputs of All Cells...". This deletes the results from running the cells as well as various pieces of metadata, which will allow us to commit just the code changes added in a cell.
+
+
+### Local Development
+
+Environment variables can be set in development using the [dotenv](https://github.com/bkeepers/dotenv) gem.
+
+Any changes to variables in `.env` that should not be checked into git should be set in `.env.local`.
+
+For a list of **which environment variables can be modified for local development**, see the comments in `.env.local`.
+
+If you wish to override a config globally for the `test` Rails environment you can set it in `.env.test.local`.
+However, any config that should be set on other machines should either go into `.env` or be explicitly set as part
+of the test.
+
+To run locally, use `bin/dev`
+
+To run database migrations on the test environment that is used by rpec tests, run `RAILS_ENV=test bin/rails db:schema:load`
+
+#### JSON API Testing
+
+To acceptance test the JSON API, you can run the independent **reference server implementation**.
+
+1. **Create an API key for the agency you want to test:**
+   ```bash
+   cd app
+   bin/rails 'users:create_api_token[agency_id]'
+   ```
+
+2. **Run the standalone test receiver:**
+   ```bash
+   JSON_API_KEY=$(bin/rails runner "puts User.api_key_for_agency('agency_id')") ruby lib/json_api_receiver.rb
+   ```
+
+3. **Configure Emmy App to POST to the reference server.** Add this to your `.env.local`:
+   ```bash
+   # For testing LA SFTP against sinatra reference implementation
+   LA_LDH_TRANSMISSION_METHOD=json_and_pdf
+   LA_LDH_INCOME_REPORT_URL=http://localhost:4567
+   LA_LDH_PDF_API_URL=http://localhost:4567/pdf
+   LA_LDH_INCOME_REPORT_APIKEY=foo
+   LA_LDH_INCLUDE_REPORT_PDF=false
+   LA_LDH_INCOME_REPORT_ACCOUNTCODE=foobar
+   ```
+
+This starts a standalone test server on port 4567 that logs incoming JSON data and verifies HMAC signatures. The receiver is completely independent and can be used as a reference implementation for agencies building their own JSON API endpoints.
+
+### Branching model
+When beginning work on a feature, create a new branch based off of `main` and make the commits for that feature there.
+
+We intend to use short-lived branches so as to minimize the cost of integrating each feature into the main branch.
+
+### Branch Workflow
 
 
 We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow/)
@@ -39,43 +150,9 @@ We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow
 7.  Wait for your change to be pulled into main
 8.  Delete your feature branch
 
-### Testing Conventions
+### Story Acceptance
 
-<!--- TODO: Discuss where tests can be found, how they are run, and what kind of tests/coverage strategy and goals the project has. -->
-
-### Coding Style and Linters
-
-<!--- TODO: HIGHLY ENCOURAGED. Specific tools will vary between different languages/frameworks (e.g. Black for python, esliint for JavaScript, etc...)
-
-1. Mention any style guides you adhere to (e.g. pep8, etc...)
-2. Mention any linters your project uses (e.g. flake8, jslint, etc...)
-3. Mention any naming conventions your project uses (e.g. Semantic Versioning, CamelCasing, etc...)
-4. Mention any other content guidelines the project adheres to (e.g. plainlanguage.gov, etc...)
-
--->
-
-### Writing Issues
-
-<!--- TODO: Example Issue Guides
-
-When creating an issue please try to adhere to the following format:
-
-    module-name: One line summary of the issue (less than 72 characters)
-
-    ### Expected behavior
-
-    As concisely as possible, describe the expected behavior.
-
-    ### Actual behavior
-
-    As concisely as possible, describe the observed behavior.
-
-    ### Steps to reproduce the behavior
-
-    List all relevant steps to reproduce the observed behavior.
-
-    see our .github/ISSUE_TEMPLATE.md for more examples.
--->
+We strive for all features to be acceptance tested prior to merge. The process is outline in the [Github PR Template](/.github/pull_request_template.md).
 
 ### Writing Pull Requests
 
@@ -178,11 +255,7 @@ authorship metadata will be preserved.
 
 ## Documentation
 
-<!-- TODO: Documentation Example
-
-We also welcome improvements to the project documentation or to the existing
-docs. Please file an [issue](https://github.com/{{ cookiecutter.project_org }}/{{ cookiecutter.project_repo_name }}/issues).
--->
+Place new documentation in the [/docs](docs/) repository 
 
 
 ## Policies
