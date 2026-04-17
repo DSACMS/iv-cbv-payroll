@@ -109,7 +109,7 @@ jobs:
             fi
             echo ""
             echo "Trivy identified OS packages with available CVE fixes. The auto-managed"
-            echo "\`RUN apt-get install\` block in the Dockerfile BASE stage has been updated:"
+            echo "\`RUN apt-get install\` block in the Dockerfile BASE stage has been updated with additional packages:"
             echo ""
             cat patch-summary.md
             echo "---"
