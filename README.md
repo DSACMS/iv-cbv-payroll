@@ -3,7 +3,9 @@
 Eligibility Made Easy (Emmy) using Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.
 
 ## About the Project
-Eligibility Made Easy (Emmy) is a project to allow applicants to verify their income, education status, and community engagement directly using payroll providers and educational records. Emmy was developed and is supported by CMS in order to offer states a drop-in component for their application process to allow applicants to apply for state benefits more easily. This is part of a more comprehensive process to [improve data services for benefits delivery](https://assets.performance.gov/cx/files/OMB-CX-LifeExperience-FFS-ImprovingData.pdf).
+Eligibility Made Easy (Emmy) is a project to allow applicants to verify their income, education status, and community engagement directly using payroll providers and educational records. Emmy was developed and is supported by CMS in order to offer states a drop-in component for their application process to allow applicants to apply for state benefits more easily. This is part of a more comprehensive process to [improve data services for benefits delivery](https://assets.performance.gov/cx/files/OMB-CX-LifeExperience-FFS-ImprovingData.pdf). 
+
+To learn more about the Emmy project, [check out our product page that explains the benefits of Emmy](https://www.cms.gov/medicaid-chip/community-engagement-support/eligibility-made-easy).
 
 Emmy uses consent-based verification (CBV) with multiple data sources, making the process much faster and more efficient than a simple document-upload service. CBV enables additional cost avoidance by optimizing manual document review processes. Rather than having to process incorrect or blurry documents, consent-based verification produces an easily consumed report with essential information. Verification information is returned in a standardized format easy for other systems to process (JSON), allowing integration with existing state systems.
 
