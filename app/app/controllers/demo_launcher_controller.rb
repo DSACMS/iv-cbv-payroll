@@ -10,10 +10,12 @@ class DemoLauncherController < ApplicationController
     client_agency_id = params[:client_agency_id]
     launch_type = params[:launch_type]
     overrides = if flow_type == "cbv"
-                  params.permit(:demo_timeout).select { |_, v| v.present? }
+                  params.permit(:demo_timeout)
                 else
-                  params.permit(:reporting_window, :reporting_window_months, :reporting_window_start, :demo_timeout).select { |_, v| v.present? }
-                end
+                  allowed_overrides = [ :reporting_window, :reporting_window_months, :reporting_window_start, :demo_timeout ]
+                  allowed_overrides << :renewal_required_months if params[:reporting_window] == "renewal"
+                  params.permit(*allowed_overrides)
+                end.select { |_, v| v.present? }
 
     if overrides[:reporting_window_start].present?
       overrides[:reporting_window_start] = normalize_date_param(overrides[:reporting_window_start])

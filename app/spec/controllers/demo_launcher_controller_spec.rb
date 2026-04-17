@@ -38,8 +38,10 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(rendered).to match(/Fake Test Scenarios/)
       expect(rendered).to include('id="test_scenario_partial_enrollment_multi_term"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_taylor"')
+      expect(rendered).to include('id="test_scenario_renewal_half_time_last_4_of_6_avery"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_maya"')
       expect(rendered).to include('id="test_scenario_summer_term_carryover_sage"')
+      expect(rendered).to match(/Avery Testuser/)
       expect(rendered).to match(/Sage Testuser/)
       expect(rendered).to match(/Spring carryover for summer months/)
     end
@@ -62,11 +64,13 @@ RSpec.describe DemoLauncherController, type: :controller do
           launch_type: "generic",
           reporting_window: "renewal",
           reporting_window_months: "6",
+          renewal_required_months: "2",
           demo_timeout: "10"
         }
         location = response.location
         expect(location).to include("reporting_window=renewal")
         expect(location).to include("reporting_window_months=6")
+        expect(location).to include("renewal_required_months=2")
         expect(location).to include("demo_timeout=10")
       end
 
@@ -86,11 +90,24 @@ RSpec.describe DemoLauncherController, type: :controller do
           launch_type: "generic",
           reporting_window: "application",
           reporting_window_months: "",
+          renewal_required_months: "",
           demo_timeout: ""
         }
         location = response.location
         expect(location).not_to include("reporting_window_months")
+        expect(location).not_to include("renewal_required_months")
         expect(location).not_to include("demo_timeout")
+      end
+
+      it "does not include renewal_required_months for non-renewal reporting windows" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "generic",
+          reporting_window: "application",
+          renewal_required_months: "2"
+        }
+
+        expect(response.location).not_to include("renewal_required_months")
       end
     end
 
@@ -115,10 +132,12 @@ RSpec.describe DemoLauncherController, type: :controller do
           client_agency_id: "sandbox",
           launch_type: "tokenized",
           reporting_window: "renewal",
+          renewal_required_months: "3",
           demo_timeout: "15"
         }
         location = response.location
         expect(location).to include("reporting_window=renewal")
+        expect(location).to include("renewal_required_months=3")
         expect(location).to include("demo_timeout=15")
       end
     end
@@ -152,12 +171,14 @@ RSpec.describe DemoLauncherController, type: :controller do
             launch_type: "generic",
             reporting_window: "application",
             reporting_window_months: "6",
+            renewal_required_months: "3",
             reporting_window_start: "2024-10-01",
             demo_timeout: "10"
           }
           location = response.location
           expect(location).not_to include("reporting_window")
           expect(location).not_to include("reporting_window_months")
+          expect(location).not_to include("renewal_required_months")
           expect(location).not_to include("reporting_window_start")
           expect(location).to include("demo_timeout=10")
         end
@@ -216,12 +237,14 @@ RSpec.describe DemoLauncherController, type: :controller do
             launch_type: "tokenized",
             reporting_window: "renewal",
             reporting_window_months: "3",
+            renewal_required_months: "2",
             reporting_window_start: "2024-10-01",
             demo_timeout: "15"
           }
           location = response.location
           expect(location).not_to include("reporting_window")
           expect(location).not_to include("reporting_window_months")
+          expect(location).not_to include("renewal_required_months")
           expect(location).not_to include("reporting_window_start")
           expect(location).to include("demo_timeout=15")
         end
@@ -305,11 +328,13 @@ RSpec.describe DemoLauncherController, type: :controller do
           client_agency_id: "sandbox",
           test_scenario: "rick",
           reporting_window: "renewal",
+          renewal_required_months: "2",
           reporting_window_start: "10/01/2024",
           demo_timeout: "20"
         }
         location = response.location
         expect(location).to include("reporting_window=renewal")
+        expect(location).to include("renewal_required_months=2")
         expect(location).to include("reporting_window_start=2024-10-01")
         expect(location).to include("demo_timeout=20")
       end
@@ -400,6 +425,22 @@ RSpec.describe DemoLauncherController, type: :controller do
 
         invitation = ActivityFlowInvitation.last
         expect(invitation.reference_id).to eq("demo-partial_enrollment_taylor")
+        expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
+      end
+
+      it "supports launching Avery fake test user with four months of half-time coverage" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            test_scenario: "renewal_half_time_last_4_of_6_avery"
+          }
+        }.to change(ActivityFlowInvitation, :count).by(1)
+          .and not_change(ActivityFlow, :count)
+          .and not_change(EducationActivity, :count)
+          .and not_change(NscEnrollmentTerm, :count)
+
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.reference_id).to eq("demo-renewal_half_time_last_4_of_6_avery")
         expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
       end
 
