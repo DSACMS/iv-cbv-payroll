@@ -1,28 +1,32 @@
 class ActivityFlowProgressIndicator < ViewComponent::Base
   def self.from_calculator(
     progress_calculator,
-    variant: :application
+    variant: :application,
+    show_unit_toggle: false
   )
     new(
       monthly_calculation_results: progress_calculator.monthly_results,
       variant: variant,
-      required_month_count: progress_calculator.required_month_count
+      required_month_count: progress_calculator.required_month_count,
+      show_unit_toggle: show_unit_toggle
     )
   end
 
   def initialize(
     monthly_calculation_results:,
     variant: :application,
-    required_month_count: nil
+    required_month_count: nil,
+    show_unit_toggle: false
   )
     @monthly_calculation_results = monthly_calculation_results
     @renewal = variant == :renewal
     @required_month_count = normalize_required_month_count(required_month_count)
+    @show_unit_toggle = show_unit_toggle
   end
 
-  def percent_complete(monthly_result)
-    progress_value = progress_value_for(monthly_result)
-    threshold_value = completion_threshold_for(monthly_result)
+  def percent_complete(monthly_result, unit:)
+    progress_value = progress_value_for(monthly_result, unit:)
+    threshold_value = completion_threshold_for(unit:)
 
     [
       (100.0 * progress_value) / threshold_value,
@@ -39,23 +43,23 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
     hours.round(1)
   end
 
-  def display_progress_amount(monthly_result)
-    if display_dollars?(monthly_result)
+  def display_progress_amount(monthly_result, unit:)
+    if unit == :dollars
       format_dollar_amount(monthly_result.total_earnings_cents)
     else
       format_hours(monthly_result.total_hours)
     end
   end
 
-  def display_completion_threshold(monthly_result)
-    if display_dollars?(monthly_result)
+  def display_completion_threshold(monthly_result, unit:)
+    if unit == :dollars
       format_dollar_amount(earnings_completion_threshold)
     else
       hours_completion_threshold
     end
   end
 
-  def display_hours_unit?(monthly_result) = !display_dollars?(monthly_result)
+  def display_hours_unit?(unit:) = unit == :hours
 
   def multi_month? = monthly_calculation_results.length > 1
 
@@ -81,23 +85,31 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
 
   def reporting_window_end_month = ordered_monthly_calculation_results.last&.month
 
+  def show_unit_toggle? = @show_unit_toggle
+
+  def can_toggle_units? = show_unit_toggle? && ordered_monthly_calculation_results.any? { |result| !result.meets_requirements }
+
+  def toggle_label(unit)
+    if multi_month?
+      unit == :hours ? t("activity_flow_progress_indicator.see_progress_in_dollars") : t("activity_flow_progress_indicator.see_progress_in_hours")
+    else
+      unit == :hours ? t("activity_flow_progress_indicator.switch_to_dollars") : t("activity_flow_progress_indicator.switch_to_hours")
+    end
+  end
+
   private
   attr_reader :monthly_calculation_results, :required_month_count
 
-  def display_dollars?(monthly_result)
-    monthly_result.default_unit == :dollars
-  end
-
-  def progress_value_for(monthly_result)
-    if display_dollars?(monthly_result)
+  def progress_value_for(monthly_result, unit:)
+    if unit == :dollars
       monthly_result.total_earnings_cents.to_f
     else
       monthly_result.total_hours.to_f
     end
   end
 
-  def completion_threshold_for(monthly_result)
-    if display_dollars?(monthly_result)
+  def completion_threshold_for(unit:)
+    if unit == :dollars
       earnings_completion_threshold
     else
       hours_completion_threshold

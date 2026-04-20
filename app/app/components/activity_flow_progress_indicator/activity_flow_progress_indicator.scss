@@ -34,13 +34,6 @@
   margin: units(1) 0 units(2);
 }
 
-.activity-flow-progress-indicator__months-completed {
-  @include u-font("sans", "md");
-
-  font-weight: font-weight("bold");
-  margin: 0 0 units(2);
-}
-
 .activity-flow-progress-indicator__progress-bar {
   background-color: color("primary-lighter");
   border-radius: 4px;
@@ -82,6 +75,10 @@
   }
 }
 
+.activity-flow-progress-indicator__progress-label {
+  min-height: 24px;
+}
+
 .activity-flow-progress-indicator__progress-amount {
   color: color("primary-vivid");
 
@@ -95,4 +92,22 @@
   height: 18px;
   vertical-align: text-bottom;
   width: 18px;
+}
+
+.activity-flow-progress-indicator__toggle {
+  @include u-font("sans", "sm");
+
+  color: color("primary");
+  font-weight: font-weight("normal");
+  line-height: 1;
+  text-decoration: underline;
+
+  &:hover {
+    color: color("primary-dark");
+  }
+}
+
+.activity-flow-progress-indicator__toggle[hidden],
+[data-progress-indicator-units-target="unitContent"][hidden] {
+  display: none !important;
 }

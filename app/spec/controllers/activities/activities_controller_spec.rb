@@ -67,6 +67,13 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(indicator_title).to eq("0/2 months completed")
       expect(rendered).not_to have_css(".activity-flow-progress-indicator__months-completed")
     end
+
+    it "does not show the unit toggle for non-employment activity-only flows" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).not_to have_css("[data-controller='progress-indicator-units']")
+      expect(rendered).not_to have_css(".activity-flow-progress-indicator__toggle")
+    end
   end
 
   context "when no activities are added" do
@@ -743,6 +750,13 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include("Gainesville Wrecking")
       expect(response.body).to include(I18n.t("activities.hub.cards.gross_income", amount: "$500.00"))
       expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 40))
+    end
+
+    it "shows the unit toggle for employment flows" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_css("[data-controller='progress-indicator-units']")
+      expect(rendered).to have_css(".activity-flow-progress-indicator__toggle")
     end
   end
 end

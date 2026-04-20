@@ -45,11 +45,13 @@
     <% end %>
 
     <% if any_activities_added %>
+      <% show_progress_unit_toggle = @employment_activities.any? || @employment_payroll_accounts.any? %>
       <div class="margin-top-4">
         <%= render(
           ActivityFlowProgressIndicator.from_calculator(
             progress_calculator,
-            variant: variant
+            variant: variant,
+            show_unit_toggle: show_progress_unit_toggle
           )
         ) %>
       </div>

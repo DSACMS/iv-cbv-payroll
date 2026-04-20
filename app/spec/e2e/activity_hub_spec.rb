@@ -105,6 +105,11 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Gainesville Wrecking"
     expect(page).to have_content I18n.t("activities.hub.cards.gross_income", amount: "$500.00")
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 40)
+    expect(page).to have_button(I18n.t("activity_flow_progress_indicator.see_progress_in_dollars"))
+
+    click_button I18n.t("activity_flow_progress_indicator.see_progress_in_dollars")
+    expect(page).to have_button(I18n.t("activity_flow_progress_indicator.see_progress_in_hours"))
+    expect(page).to have_content "$500 / $580"
 
     # Verify that the hub has the Community Service activity
     expect(page).to have_content I18n.t("activities.hub.in_progress_state_title")

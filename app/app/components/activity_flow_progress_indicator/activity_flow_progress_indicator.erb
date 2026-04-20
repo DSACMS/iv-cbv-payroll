@@ -1,6 +1,12 @@
 <%= render(Uswds::Card.new(class: "activity-flow-progress-indicator__card")) do |card| %>
   <% card.with_body do %>
-    <div class="activity-flow-progress-indicator">
+    <div
+      class="activity-flow-progress-indicator"
+      <% if can_toggle_units? %>
+        data-controller="progress-indicator-units"
+        data-progress-indicator-units-unit-value="hours"
+      <% end %>
+    >
       <h2 class="activity-flow-progress-indicator__title">
         <% if renewal? %>
           <% if complete? %>
@@ -38,18 +44,32 @@
       <% end %>
 
       <% ordered_monthly_calculation_results.each do |monthly_result| %>
+        <% completed_unit = monthly_result.default_unit || :hours %>
         <div class="activity-flow-progress-indicator__progress-bar
           <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-bar--complete<% end %>"
         >
-          <div class="activity-flow-progress-indicator__progress-bar-fill
-            <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-bar-fill--complete<% end %>"
-            style="width: <%= percent_complete(monthly_result) %>%"
-          >
-          </div>
+          <% if monthly_result.meets_requirements %>
+            <div
+              class="activity-flow-progress-indicator__progress-bar-fill activity-flow-progress-indicator__progress-bar-fill--complete"
+              style="width: <%= percent_complete(monthly_result, unit: completed_unit) %>%"
+            >
+            </div>
+          <% else %>
+            <% [ :hours, :dollars ].each do |unit| %>
+              <div
+                class="activity-flow-progress-indicator__progress-bar-fill"
+                style="width: <%= percent_complete(monthly_result, unit: unit) %>%"
+                data-progress-indicator-units-target="unitContent"
+                data-unit="<%= unit %>"
+                <% if unit != :hours %>hidden<% end %>
+              >
+              </div>
+            <% end %>
+          <% end %>
         </div>
 
         <div class="activity-flow-progress-indicator__progress-amount-container">
-          <span>
+          <span class="activity-flow-progress-indicator__progress-label">
             <% if multi_month? %>
               <% if monthly_result.meets_requirements %>
                 <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
@@ -57,26 +77,76 @@
                 </svg>
               <% end %>
               <%= l(monthly_result.month, format: :month) %>
+            <% elsif can_toggle_units? %>
+              <% [ :hours, :dollars ].each do |unit| %>
+                <button
+                  type="button"
+                  class="usa-button usa-button--unstyled activity-flow-progress-indicator__toggle"
+                  data-action="progress-indicator-units#toggle"
+                  data-progress-indicator-units-target="toggle"
+                  data-unit="<%= unit %>"
+                  data-next-unit="<%= unit == :hours ? :dollars : :hours %>"
+                  <% if unit != :hours %>hidden<% end %>
+                >
+                  <%= toggle_label(unit) %>
+                </button>
+              <% end %>
             <% end %>
           </span>
 
           <span>
-            <span class="activity-flow-progress-indicator__progress-amount
-                        <% if monthly_result.meets_requirements %>activity-flow-progress-indicator__progress-amount--complete<% end %>">
-              <% if monthly_result.meets_requirements && !multi_month? %>
-                <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
-                  <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
-                </svg>
-              <% end %>
+            <% if monthly_result.meets_requirements %>
+              <span class="activity-flow-progress-indicator__progress-amount activity-flow-progress-indicator__progress-amount--complete">
+                <% if !multi_month? %>
+                  <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
+                    <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
+                  </svg>
+                <% end %>
 
-              <%= display_progress_amount(monthly_result) %>
-            </span>
-            /
-            <%= display_completion_threshold(monthly_result) %>
-            <% if display_hours_unit?(monthly_result) %>
-              <%= t(".hours") %>
+                <%= display_progress_amount(monthly_result, unit: completed_unit) %>
+              </span>
+              /
+              <%= display_completion_threshold(monthly_result, unit: completed_unit) %>
+              <% if display_hours_unit?(unit: completed_unit) %>
+                <%= t(".hours") %>
+              <% end %>
+            <% else %>
+              <% [ :hours, :dollars ].each do |unit| %>
+                <span
+                  data-progress-indicator-units-target="unitContent"
+                  data-unit="<%= unit %>"
+                  <% if unit != :hours %>hidden<% end %>
+                >
+                  <span class="activity-flow-progress-indicator__progress-amount">
+                    <%= display_progress_amount(monthly_result, unit: unit) %>
+                  </span>
+                  /
+                  <%= display_completion_threshold(monthly_result, unit: unit) %>
+                  <% if display_hours_unit?(unit: unit) %>
+                    <%= t(".hours") %>
+                  <% end %>
+                </span>
+              <% end %>
             <% end %>
           </span>
+        </div>
+      <% end %>
+
+      <% if can_toggle_units? && multi_month? %>
+        <div class="display-flex flex-justify-center margin-top-1">
+          <% [ :hours, :dollars ].each do |unit| %>
+            <button
+              type="button"
+              class="usa-button usa-button--unstyled activity-flow-progress-indicator__toggle"
+              data-action="progress-indicator-units#toggle"
+              data-progress-indicator-units-target="toggle"
+              data-unit="<%= unit %>"
+              data-next-unit="<%= unit == :hours ? :dollars : :hours %>"
+              <% if unit != :hours %>hidden<% end %>
+            >
+              <%= toggle_label(unit) %>
+            </button>
+          <% end %>
         </div>
       <% end %>
     </div>
