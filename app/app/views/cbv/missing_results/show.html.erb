@@ -7,7 +7,7 @@
 <% else %>
   <p><%= t(".not_listed_p2", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   <%= t(".exit_button_html",
-    agency_contact_website: current_agency.agency_contact_website,
+    agency_missing_employers_website: current_agency.agency_missing_employers_website,
     agency_full_name: agency_translation("shared.agency_full_name")
   ) %>
 <% end %>
