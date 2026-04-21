@@ -3,7 +3,7 @@
 <h1><%= t(".header") %></h1>
 <p><%= t(".not_listed_p1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
 <% if @has_payroll_account %>
-  <p><%= t(".not_listed_p2_link_html", agency_url: agency_url, agency_acronym: agency_translation("shared.agency_acronym")) %></p>
+  <p><%= t(".not_listed_p2_link_html", agency_missing_employers_website: current_agency.agency_missing_employers_website, agency_acronym: agency_translation("shared.agency_acronym")) %></p>
 <% else %>
   <p><%= t(".not_listed_p2", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
   <%= t(".exit_button_html",

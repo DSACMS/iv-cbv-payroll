@@ -247,7 +247,7 @@ es:
         no_more_jobs: Si no tiene más trabajos que reportar
         not_listed_p1: Si su empleador o proveedor de nómina no están listados en este sitio, tendrá que compartir su información de ingresos por este trabajo directamente con %{agency_acronym}.
         not_listed_p2: Para obtener más información sobre cómo enviar los documentos requeridos, visite el sitio web de %{agency_acronym}.
-        not_listed_p2_link_html: Visite <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_acronym}</a> para obtener más información sobre cómo enviar documentos.
+        not_listed_p2_link_html: Visite <a href="%{agency_missing_employers_website}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_acronym}</a> para obtener más información sobre cómo enviar documentos.
         you_can_search: Puede buscar otro empleador o proveedor de nómina. Este sitio apoya a los empleadores con proveedores de nómina en línea o servicios basados en aplicaciones. Algunos ejemplos son Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft e Instacart.
     other_jobs:
       show:
