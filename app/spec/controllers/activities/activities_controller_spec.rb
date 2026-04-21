@@ -756,7 +756,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       rendered = Capybara.string(response.body)
 
       expect(rendered).to have_css("[data-controller='progress-indicator-units']")
-      expect(rendered).to have_css(".activity-flow-progress-indicator__toggle")
+      expect(rendered).to have_css("[data-progress-indicator-units-target='toggle']")
     end
   end
 end
