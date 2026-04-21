@@ -39,6 +39,7 @@ class ClientAgencyConfig
       id
       agency_name
       agency_contact_website
+      agency_missing_employers_website
       agency_domain
       authorized_emails
       caseworker_feedback_form
@@ -67,6 +68,9 @@ class ClientAgencyConfig
       @id = yaml["id"]
       @agency_name = yaml["agency_name"]
       @agency_contact_website = yaml["agency_contact_website"]
+      # Special override for nh_dhhs; verify whether this can be removed if
+      # that pilot config is removed:
+      @agency_missing_employers_website = yaml["agency_missing_employers_website"]
       @agency_domain = yaml["agency_domain"]
       @authorized_emails = yaml["authorized_emails"] || ""
       @caseworker_feedback_form = yaml["caseworker_feedback_form"]
