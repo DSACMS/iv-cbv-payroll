@@ -12,7 +12,7 @@ Emmy uses consent-based verification (CBV) with multiple data sources, making th
 Emmy is under active development by CMS, with new updates released on a 2-week cadence.
 ## Core Team
 
-The core team of Emmy is a small group of designers, developers, and strategiestss working for and with the Department of Health and Human Services. We're aided in our effort by members of the open source community.
+The core team of Emmy is a small group of technologists working at the Department of Health and Human Services. We're aided in our effort by members of the open source community.
 
 A list of core team members responsible for the code and documentation in this repository can be found in [COMMUNITY.md](COMMUNITY.md) and [CODEOWNERS.md](./CODEOWNERS.md).
 
