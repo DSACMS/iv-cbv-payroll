@@ -10,6 +10,10 @@ To learn more about the Emmy project, [check out our product page that explains 
 Emmy uses consent-based verification (CBV) with multiple data sources, making the process much faster and more efficient than a simple document-upload service. CBV enables additional cost avoidance by optimizing manual document review processes. Rather than having to process incorrect or blurry documents, consent-based verification produces an easily consumed report with essential information. Verification information is returned in a standardized format easy for other systems to process (JSON), allowing integration with existing state systems.
 
 Emmy is under active development by CMS, with new updates released on a 2-week cadence.
+
+## Contributing
+For a guide to running the Emmy project on your own, and submiting changes, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## Core Team
 
 The core team of Emmy is a small group of technologists working at the Department of Health and Human Services. We're aided in our effort by members of the open source community.
@@ -38,8 +42,7 @@ Public documentation is in the [/docs](./docs/) subfolder.
 
 Our ADRs are stored in [CMS Confluence.](https://confluenceent.cms.gov/pages/viewpage.action?pageId=693666588)
 
-## Contributing
-For a guide to running the Emmy project on your own, and submiting changes, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 
 ### Community
 
