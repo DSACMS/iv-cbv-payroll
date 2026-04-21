@@ -7,7 +7,8 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     described_class.new(
       monthly_calculation_results: monthly_calculation_results,
       variant: variant,
-      required_month_count: required_month_count
+      required_month_count: required_month_count,
+      show_unit_toggle: show_unit_toggle
     )
   end
 
@@ -23,6 +24,7 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
   let(:hours) { 40 }
   let(:variant) { :application }
   let(:required_month_count) { nil }
+  let(:show_unit_toggle) { false }
   let(:expected_title) do
     I18n.t(
       "activity_flow_progress_indicator.title",
@@ -53,6 +55,27 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
       render_inline(described_class.from_calculator(calculator, variant: :renewal))
 
       expect(page).to have_css("h2", text: "1/1 months completed")
+    end
+
+    it "passes show_unit_toggle through to the component" do
+      monthly_results = [
+        ActivityFlowProgressCalculator::MonthlyResult.new(
+          month: Date.new(2026, 1, 1),
+          total_hours: 40,
+          total_earnings_cents: 500_00,
+          default_unit: :hours,
+          meets_requirements: false
+        )
+      ]
+      calculator = instance_double(
+        ActivityFlowProgressCalculator,
+        monthly_results: monthly_results,
+        required_month_count: 1
+      )
+
+      render_inline(described_class.from_calculator(calculator, show_unit_toggle: true))
+
+      expect(page).to have_button(I18n.t("activity_flow_progress_indicator.switch_to_dollars"))
     end
   end
 
@@ -116,6 +139,37 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     end
   end
 
+  context "when unit toggle is enabled for a single incomplete month" do
+    let(:show_unit_toggle) { true }
+    let(:monthly_result) do
+      ActivityFlowProgressCalculator::MonthlyResult.new(
+        month: reporting_month,
+        total_hours: 40,
+        total_earnings_cents: 500_00,
+        default_unit: :hours,
+        meets_requirements: false
+      )
+    end
+
+    it "renders the single-month toggle in place of the label area" do
+      render_inline(component)
+
+      expect(page).to have_button(I18n.t("activity_flow_progress_indicator.switch_to_dollars"))
+      hours_unit_content_text = page
+        .all("[data-progress-indicator-units-target='unitContent'][data-unit='hours']", visible: :all)
+        .map { |node| node.text.squish }
+      dollars_unit_content_text = page
+        .all("[data-progress-indicator-units-target='unitContent'][data-unit='dollars'][hidden]", visible: :all)
+        .map { |node| node.text.squish }
+
+      expect(hours_unit_content_text).to include(
+        "40 / #{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD} " \
+        "#{I18n.t("activity_flow_progress_indicator.hours")}"
+      )
+      expect(dollars_unit_content_text).to include("$500 / $580")
+    end
+  end
+
   context "when hours and earnings both meet threshold" do
     let(:monthly_result) do
       ActivityFlowProgressCalculator::MonthlyResult.new(
@@ -131,8 +185,33 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
       render_inline(component)
 
       row_text = page.find(".activity-flow-progress-indicator__progress-amount-container").text.squish
-      expect(row_text).to include("82 / 80 #{I18n.t("activity_flow_progress_indicator.hours")}")
+      expect(row_text).to include(
+        "82 / #{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD} " \
+        "#{I18n.t("activity_flow_progress_indicator.hours")}"
+      )
       expect(row_text).not_to include("$620 / $580")
+    end
+  end
+
+  context "when a completed month omits default_unit" do
+    let(:monthly_result) do
+      ActivityFlowProgressCalculator::MonthlyResult.new(
+        month: reporting_month,
+        total_hours: 84,
+        total_earnings_cents: 620_00,
+        default_unit: nil,
+        meets_requirements: true
+      )
+    end
+
+    it "falls back to hours for the completed-month unit label" do
+      render_inline(component)
+
+      row_text = page.find(".activity-flow-progress-indicator__progress-amount-container").text.squish
+      expect(row_text).to include(
+        "84 / #{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD} " \
+        "#{I18n.t("activity_flow_progress_indicator.hours")}"
+      )
     end
   end
 
@@ -235,6 +314,66 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
       expect(page).to have_css("h2", text: "1/3 months completed")
       expect(page).not_to have_css(".activity-flow-progress-indicator__months-completed")
     end
+
+    context "when unit toggle is enabled" do
+      let(:show_unit_toggle) { true }
+      let(:monthly_calculation_results) do
+        [
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2025, 12, 1),
+            total_hours: 40,
+            total_earnings_cents: 500_00,
+            default_unit: :hours,
+            meets_requirements: false
+          ),
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2025, 11, 1),
+            total_hours: 77,
+            total_earnings_cents: 597_00,
+            default_unit: :dollars,
+            meets_requirements: true
+          ),
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2025, 10, 1),
+            total_hours: 10,
+            total_earnings_cents: 200_00,
+            default_unit: :hours,
+            meets_requirements: false
+          )
+        ]
+      end
+
+      it "renders the multi-month toggle link" do
+        render_inline(component)
+
+        expect(page).to have_button(I18n.t("activity_flow_progress_indicator.see_progress_in_dollars"))
+      end
+
+      it "shows incomplete months in hours by default and keeps completed months frozen" do
+        render_inline(component)
+        rows = page.all(".activity-flow-progress-indicator__progress-amount-container")
+        expect(rows.length).to eq(3)
+
+        expect(rows[0].text).to include("October")
+        october_hours_content_text = rows[0]
+          .all("[data-progress-indicator-units-target='unitContent'][data-unit='hours']", visible: :all)
+          .map { |node| node.text.squish }
+        expect(october_hours_content_text).to include(
+          "10 / #{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD} " \
+          "#{I18n.t("activity_flow_progress_indicator.hours")}"
+        )
+        expect(rows[1].text.squish).to include("November")
+        expect(rows[1].text.squish).to include("$597 / $580")
+        expect(rows[2].text).to include("December")
+        december_hours_content_text = rows[2]
+          .all("[data-progress-indicator-units-target='unitContent'][data-unit='hours']", visible: :all)
+          .map { |node| node.text.squish }
+        expect(december_hours_content_text).to include(
+          "40 / #{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD} " \
+          "#{I18n.t("activity_flow_progress_indicator.hours")}"
+        )
+      end
+    end
   end
 
   context "when variant is renewal" do
@@ -298,6 +437,16 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
         .map { |row| row.find("span", match: :first).text.strip }
 
       expect(month_labels).to eq([ "August", "September", "October", "November", "December", "January" ])
+    end
+
+    context "when unit toggle is enabled" do
+      let(:show_unit_toggle) { true }
+
+      it "renders the toggle link for renewal" do
+        render_inline(component)
+
+        expect(page).to have_button(I18n.t("activity_flow_progress_indicator.see_progress_in_dollars"))
+      end
     end
 
     context "when completed months are below the required count" do

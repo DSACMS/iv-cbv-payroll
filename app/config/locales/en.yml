@@ -535,6 +535,10 @@ en:
     renewal_months_completed: "%{complete}/%{required} months completed"
     renewal_subtitle: Complete any %{required} months between %{start_month}-%{end_month} to meet requirements.
     renewal_subtitle_no_range: Complete any %{required} months to meet requirements.
+    see_progress_in_dollars: See progress in $
+    see_progress_in_hours: See progress in hours
+    switch_to_dollars: Switch to $
+    switch_to_hours: Switch to hours
     title: Your %{month} progress
   aggregator_strings:
     deductions:
