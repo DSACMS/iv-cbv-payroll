@@ -13,7 +13,7 @@ class ActivityFlowMonthlySummary < ApplicationRecord
   # calculator and views expect (account_id => month => data).
   # Returns nil when data is incomplete so callers know to fall back to the API.
   def self.load_complete_summary_data(activity_flow:)
-    synced_accounts = activity_flow.payroll_accounts.select(&:sync_succeeded?)
+    synced_accounts = activity_flow.payroll_accounts.published.select(&:sync_succeeded?)
     return nil if synced_accounts.empty?
 
     months = activity_flow.reporting_months.map(&:beginning_of_month)
