@@ -105,6 +105,11 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Gainesville Wrecking"
     expect(page).to have_content I18n.t("activities.hub.cards.gross_income", amount: "$500.00")
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 40)
+    expect(page).to have_button(I18n.t("activity_flow_progress_indicator.see_progress_in_dollars"))
+
+    click_button I18n.t("activity_flow_progress_indicator.see_progress_in_dollars")
+    expect(page).to have_button(I18n.t("activity_flow_progress_indicator.see_progress_in_hours"))
+    expect(page).to have_content "$500 / $580"
 
     # Verify that the hub has the Community Service activity
     expect(page).to have_content I18n.t("activities.hub.in_progress_state_title")
@@ -412,7 +417,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # --- Step 3: Edit a single month from the review page ---
     # Click Edit on month 1 — should go to hours input and return directly to review
-    edit_links = all("td a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links = all("table a", text: I18n.t("activities.community_service.review.edit"))
     edit_links.first.click
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
@@ -426,7 +431,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # --- Step 4: Validation guard — cannot set all months to 0 from review ---
     # First, set month 2 to 0 via edit from review
-    edit_links = all("td a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links = all("table a", text: I18n.t("activities.community_service.review.edit"))
     edit_links.last.click
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",
@@ -438,7 +443,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.community_service.review.title", organization_name: "Updated Org"))
 
     # Now try to set month 1 to 0 — should fail validation
-    edit_links = all("td a", text: I18n.t("activities.community_service.review.edit"))
+    edit_links = all("table a", text: I18n.t("activities.community_service.review.edit"))
     edit_links.first.click
 
     verify_page(page, title: I18n.t("activities.community_service.hours_input.heading",

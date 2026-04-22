@@ -535,6 +535,10 @@ en:
     renewal_months_completed: "%{complete}/%{required} months completed"
     renewal_subtitle: Complete any %{required} months between %{start_month}-%{end_month} to meet requirements.
     renewal_subtitle_no_range: Complete any %{required} months to meet requirements.
+    see_progress_in_dollars: See progress in $
+    see_progress_in_hours: See progress in hours
+    switch_to_dollars: Switch to $
+    switch_to_hours: Switch to hours
     title: Your %{month} progress
   aggregator_strings:
     deductions:
@@ -776,13 +780,13 @@ en:
         back_button: Go back to employer search
         continue_button: Continue to review my report
         continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
-        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_full_name}</a>
+        exit_button_html: <a href="%{agency_missing_employers_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_full_name}</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         no_more_jobs: If you don't have more jobs to report
         not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with %{agency_acronym}.
         not_listed_p2: Visit %{agency_acronym}'s website for more information on how to submit documents.
-        not_listed_p2_link_html: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information on how to submit documents.
+        not_listed_p2_link_html: Visit <a href="%{agency_missing_employers_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     other_jobs:
       show:
@@ -828,7 +832,6 @@ en:
         payments_and_deductions_table_header: Payments and deductions
         subheader_html: "<p>We have gathered your payment records from the past %{report_data_range} from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report.</p>"
         unknown: Unknown
-        your_details: Your details
     submits:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
@@ -955,9 +958,6 @@ en:
         three_quarter_time: Three-quarter Time
       student_name_label: Name on school record
     report:
-      employment_details_table:
-        header:
-          your_details: Your details
       monthly_summary_table:
         accrued_gross_earnings: Accrued gross earnings
         compact:
@@ -1103,8 +1103,7 @@ en:
       refresh: Refresh page
     home:
       description_1: Report My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
-      description_2: Please note this pilot is currently available only to participants in Arizona and Louisiana.
-      description_3: Visit your agency's website for more information on how to submit proof of income for your benefits.
+      description_2: Visit your agency's website for more information on how to submit proof of income for your benefits.
       header: Welcome to Report My Income
       pilot_ended:
         la_ldh:

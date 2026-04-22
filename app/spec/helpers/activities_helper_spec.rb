@@ -32,6 +32,16 @@ RSpec.describe ActivitiesHelper do
 
         expect(state).to eq(:in_progress)
       end
+
+      it "returns completed when complete months meet the required-month threshold" do
+        state = helper.activity_hub_state(
+          any_activities_added: true,
+          monthly_results: [ meeting_result, meeting_result, not_meeting_result ],
+          required_month_count: 2
+        )
+
+        expect(state).to eq(:completed)
+      end
     end
 
     describe "#activity_hub_title_key" do

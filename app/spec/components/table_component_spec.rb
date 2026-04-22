@@ -6,7 +6,7 @@ RSpec.describe TableComponent, type: :component do
   include ViewComponent::TestHelpers
 
   subject(:result) do
-    table = described_class.new(attributes: table_attributes)
+    table = described_class.new(multi_column: multi_column, subdued_header: subdued_header, attributes: table_attributes)
     rows.each do |row_data|
       table.with_row do |row|
         row.with_data_cell.with_content(row_data)
@@ -16,8 +16,10 @@ RSpec.describe TableComponent, type: :component do
   end
 
   let(:table_attributes) { {} }
+  let(:multi_column) { false }
+  let(:subdued_header) { false }
   let(:rows) { [] }
-  let(:base_class) { "usa-table usa-table--borderless width-full" }
+  let(:base_class) { "usa-table usa-table--borderless usa-table--stacked" }
 
 
   context "when no rows are provided" do
@@ -33,6 +35,33 @@ RSpec.describe TableComponent, type: :component do
     it "renders a <table> element" do
       expect(result.css("table")).to be_present
       expect(result.text).to include("Cell content")
+      expect(result.css("table").first["class"]).to include(base_class)
+    end
+  end
+
+  context "when the table is not marked as multi-column" do
+    let(:rows) { [ "Cell content" ] }
+
+    it "does not add the multi-column class" do
+      expect(result.css("table").first["class"]).not_to include("usa-table--multi-column")
+    end
+  end
+
+  context "when the table is marked as multi-column" do
+    let(:rows) { [ "Cell content" ] }
+    let(:multi_column) { true }
+
+    it "adds the multi-column class" do
+      expect(result.css("table").first["class"]).to include("usa-table--multi-column")
+    end
+  end
+
+  context "when the table uses the subdued_header variant" do
+    let(:rows) { [ "Cell content" ] }
+    let(:subdued_header) { true }
+
+    it "adds the subdued header class" do
+      expect(result.css("table").first["class"]).to include("usa-table--subdued-header")
     end
   end
 
@@ -48,8 +77,8 @@ RSpec.describe TableComponent, type: :component do
   context "when header_cells are provided" do
     subject(:result) do
       render_inline(described_class.new) do |table|
-        table.with_header_cell(is_header: true, scope: "col") { "Col 1" }
-        table.with_header_cell(is_header: true, scope: "col") { "Col 2" }
+        table.with_header_cell(scope: "col") { "Col 1" }
+        table.with_header_cell(scope: "col") { "Col 2" }
         table.with_row { |row| row.with_data_cell.with_content("cell") }
       end
     end
@@ -58,6 +87,20 @@ RSpec.describe TableComponent, type: :component do
       expect(result.css("thead tr th[scope='col']").length).to eq(2)
       expect(result.css("thead tr th[scope='col']").first.text.strip).to eq("Col 1")
       expect(result.css("thead tr th[scope='col']").last.text.strip).to eq("Col 2")
+    end
+  end
+
+  context "when header cell content is provided without is_header" do
+    subject(:result) do
+      render_inline(described_class.new) do |table|
+        table.with_header_cell { "Header" }
+        table.with_row { |row| row.with_data_cell.with_content("cell") }
+      end
+    end
+
+    it "renders the slot as a table header cell" do
+      expect(result.css("thead tr th").text).to include("Header")
+      expect(result.css("thead tr td")).to be_empty
     end
   end
 end

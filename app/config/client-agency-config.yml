@@ -1,6 +1,7 @@
 - id: la_ldh
   agency_name: Department of Health
   agency_contact_website: https://ldh.la.gov/renew-medicaid
+  agency_missing_employers_website: https://ldh.la.gov/renew-medicaid
   agency_domain: <%= ENV["LA_LDH_DOMAIN_NAME"] %>
   # caseworker_feedback_form: n/a
   logo_path: ldh_logo.svg
@@ -41,6 +42,7 @@
 - id: nh_dhhs
   agency_name: Department of Health and Human Services
   agency_contact_website: https://www.dhhs.nh.gov/
+  agency_missing_employers_website: https://www.dhhs.nh.gov/programs-services/medicaid/medicaid-eligibility-unknown-employer
   agency_domain: <%= ENV["NH_DHHS_DOMAIN_NAME"] %>
   logo_path: nh_dhhs_logo.png
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
@@ -90,6 +92,7 @@
 - id: sandbox
   agency_name: Test Agency
   agency_contact_website: https://www.example.com/contact
+  agency_missing_employers_website: https://www.example.com/contact
   agency_domain: <%= ENV["SANDBOX_DOMAIN_NAME"] %>
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
   pinwheel:

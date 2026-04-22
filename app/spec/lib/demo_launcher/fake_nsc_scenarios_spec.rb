@@ -68,5 +68,26 @@ RSpec.describe DemoLauncher::FakeNscScenarios do
         )
       )
     end
+
+    it "limits Avery's half-time term to the last 4 months of a 6-month reporting window" do
+      identity = build(
+        :identity,
+        first_name: "Avery",
+        last_name: "Testuser",
+        date_of_birth: Date.parse("1992-11-30")
+      )
+      reporting_window = Date.new(2025, 9, 1)..Date.new(2026, 2, 28)
+
+      response = described_class.nsc_response_for(identity: identity, reporting_window: reporting_window)
+      terms = response.fetch("enrollmentDetails").flat_map { |enrollment| enrollment.fetch("enrollmentData") }
+
+      expect(terms).to include(
+        a_hash_including(
+          "termBeginDate" => "2025-11-01",
+          "termEndDate" => "2026-02-28",
+          "enrollmentStatus" => "H"
+        )
+      )
+    end
   end
 end

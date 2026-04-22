@@ -4,20 +4,15 @@
       <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
     </h2>
   <% end %>
-  <% table_options = @use_activity_style \
-      ? { is_responsive: @is_responsive, class_names: "activity-review-hours-table" } \
-      : { is_responsive: @is_responsive } %>
-  <%= render(TableComponent.new(**table_options)) do |table| %>
-    <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-             .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
-      <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-             .with_content(I18n.t("components.report.monthly_summary_table.w2.title_gross_income")) %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(I18n.t("components.report.monthly_summary_table.w2.title_number_of_paychecks")) %>
-      <%= row.with_data_cell(is_header: true)
-             .with_content(I18n.t("components.report.monthly_summary_table.w2.title_total_hours_worked")) %>
-    <% end %>
+  <%= render(TableComponent.new(multi_column: true)) do |table| %>
+    <%= table.with_header_cell
+           .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
+    <%= table.with_header_cell
+           .with_content(I18n.t("components.report.monthly_summary_table.w2.title_gross_income")) %>
+    <%= table.with_header_cell
+           .with_content(I18n.t("components.report.monthly_summary_table.w2.title_number_of_paychecks")) %>
+    <%= table.with_header_cell
+           .with_content(I18n.t("components.report.monthly_summary_table.w2.title_total_hours_worked")) %>
 
     <% if has_monthly_summary_results? %>
       <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>

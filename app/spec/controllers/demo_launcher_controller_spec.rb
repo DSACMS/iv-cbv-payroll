@@ -11,6 +11,14 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(response).to have_http_status(:success)
     end
 
+    it "renders the tokenized link share widget" do
+      get :show
+
+      expect(response.body).to include("Shareable link")
+      expect(response.body).to include("Copy link")
+      expect(response.body).to include("Open in new tab")
+    end
+
     it "sets the session to the activity flow so the header renders Emmy branding" do
       get :show
       expect(session[:flow_type]).to eq(:activity)
@@ -38,8 +46,10 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(rendered).to match(/Fake Test Scenarios/)
       expect(rendered).to include('id="test_scenario_partial_enrollment_multi_term"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_taylor"')
+      expect(rendered).to include('id="test_scenario_renewal_half_time_last_4_of_6_avery"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_maya"')
       expect(rendered).to include('id="test_scenario_summer_term_carryover_sage"')
+      expect(rendered).to match(/Avery Testuser/)
       expect(rendered).to match(/Sage Testuser/)
       expect(rendered).to match(/Spring carryover for summer months/)
     end
@@ -62,11 +72,13 @@ RSpec.describe DemoLauncherController, type: :controller do
           launch_type: "generic",
           reporting_window: "renewal",
           reporting_window_months: "6",
+          renewal_required_months: "2",
           demo_timeout: "10"
         }
         location = response.location
         expect(location).to include("reporting_window=renewal")
         expect(location).to include("reporting_window_months=6")
+        expect(location).to include("renewal_required_months=2")
         expect(location).to include("demo_timeout=10")
       end
 
@@ -86,11 +98,37 @@ RSpec.describe DemoLauncherController, type: :controller do
           launch_type: "generic",
           reporting_window: "application",
           reporting_window_months: "",
+          renewal_required_months: "",
           demo_timeout: ""
         }
         location = response.location
         expect(location).not_to include("reporting_window_months")
+        expect(location).not_to include("renewal_required_months")
         expect(location).not_to include("demo_timeout")
+      end
+
+      it "does not include renewal_required_months for non-renewal reporting windows" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "generic",
+          reporting_window: "application",
+          renewal_required_months: "2"
+        }
+
+        expect(response.location).not_to include("renewal_required_months")
+      end
+
+      it "returns the generated URL as JSON" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "generic",
+          reporting_window: "application"
+        }, format: :json
+
+        parsed_response = JSON.parse(response.body)
+
+        expect(response).to have_http_status(:success)
+        expect(parsed_response.fetch("url")).to include("/activities/links/sandbox")
       end
     end
 
@@ -115,11 +153,30 @@ RSpec.describe DemoLauncherController, type: :controller do
           client_agency_id: "sandbox",
           launch_type: "tokenized",
           reporting_window: "renewal",
+          renewal_required_months: "3",
           demo_timeout: "15"
         }
         location = response.location
         expect(location).to include("reporting_window=renewal")
+        expect(location).to include("renewal_required_months=3")
         expect(location).to include("demo_timeout=15")
+      end
+
+      it "returns the generated URL as JSON" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            launch_type: "tokenized",
+            reporting_window: "application"
+          }, format: :json
+        }.to change(ActivityFlowInvitation, :count).by(1)
+
+        invitation = ActivityFlowInvitation.last
+        parsed_response = JSON.parse(response.body)
+
+        expect(response).to have_http_status(:success)
+        expect(parsed_response).to include("url")
+        expect(parsed_response.fetch("url")).to include("/activities/start/#{invitation.auth_token}")
       end
     end
 
@@ -152,14 +209,31 @@ RSpec.describe DemoLauncherController, type: :controller do
             launch_type: "generic",
             reporting_window: "application",
             reporting_window_months: "6",
+            renewal_required_months: "3",
             reporting_window_start: "2024-10-01",
             demo_timeout: "10"
           }
           location = response.location
           expect(location).not_to include("reporting_window")
           expect(location).not_to include("reporting_window_months")
+          expect(location).not_to include("renewal_required_months")
           expect(location).not_to include("reporting_window_start")
           expect(location).to include("demo_timeout=10")
+        end
+
+        it "returns the generated CBV generic URL as JSON" do
+          post :create, params: {
+            flow_type: "cbv",
+            client_agency_id: "sandbox",
+            launch_type: "generic",
+            demo_timeout: "10"
+          }, format: :json
+
+          parsed_response = JSON.parse(response.body)
+
+          expect(response).to have_http_status(:success)
+          expect(parsed_response.fetch("url")).to include("/cbv/links/sandbox")
+          expect(parsed_response.fetch("url")).to include("demo_timeout=10")
         end
       end
 
@@ -216,12 +290,14 @@ RSpec.describe DemoLauncherController, type: :controller do
             launch_type: "tokenized",
             reporting_window: "renewal",
             reporting_window_months: "3",
+            renewal_required_months: "2",
             reporting_window_start: "2024-10-01",
             demo_timeout: "15"
           }
           location = response.location
           expect(location).not_to include("reporting_window")
           expect(location).not_to include("reporting_window_months")
+          expect(location).not_to include("renewal_required_months")
           expect(location).not_to include("reporting_window_start")
           expect(location).to include("demo_timeout=15")
         end
@@ -243,6 +319,24 @@ RSpec.describe DemoLauncherController, type: :controller do
           applicant = CbvApplicant.last
           expect(applicant.first_name).to eq("Demo")
           expect(applicant.last_name).to eq("User")
+        end
+
+        it "returns the generated CBV URL as JSON" do
+          expect {
+            post :create, params: {
+              flow_type: "cbv",
+              client_agency_id: "sandbox",
+              launch_type: "tokenized",
+              demo_timeout: "15"
+            }, format: :json
+          }.to change(CbvFlowInvitation, :count).by(1)
+
+          invitation = CbvFlowInvitation.last
+          parsed_response = JSON.parse(response.body)
+
+          expect(response).to have_http_status(:success)
+          expect(parsed_response.fetch("url")).to include("/start/#{invitation.auth_token}")
+          expect(parsed_response.fetch("url")).to include("demo_timeout=15")
         end
       end
     end
@@ -305,11 +399,13 @@ RSpec.describe DemoLauncherController, type: :controller do
           client_agency_id: "sandbox",
           test_scenario: "rick",
           reporting_window: "renewal",
+          renewal_required_months: "2",
           reporting_window_start: "10/01/2024",
           demo_timeout: "20"
         }
         location = response.location
         expect(location).to include("reporting_window=renewal")
+        expect(location).to include("renewal_required_months=2")
         expect(location).to include("reporting_window_start=2024-10-01")
         expect(location).to include("demo_timeout=20")
       end
@@ -400,6 +496,22 @@ RSpec.describe DemoLauncherController, type: :controller do
 
         invitation = ActivityFlowInvitation.last
         expect(invitation.reference_id).to eq("demo-partial_enrollment_taylor")
+        expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
+      end
+
+      it "supports launching Avery fake test user with four months of half-time coverage" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            test_scenario: "renewal_half_time_last_4_of_6_avery"
+          }
+        }.to change(ActivityFlowInvitation, :count).by(1)
+          .and not_change(ActivityFlow, :count)
+          .and not_change(EducationActivity, :count)
+          .and not_change(NscEnrollmentTerm, :count)
+
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.reference_id).to eq("demo-renewal_half_time_last_4_of_6_avery")
         expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
       end
 

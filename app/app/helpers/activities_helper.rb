@@ -1,8 +1,9 @@
 module ActivitiesHelper
-  def activity_hub_state(any_activities_added:, monthly_results:)
+  def activity_hub_state(any_activities_added:, monthly_results:, required_month_count: monthly_results.length)
     return :empty unless any_activities_added
 
-    monthly_results.all?(&:meets_requirements) ? :completed : :in_progress
+    complete_month_count = monthly_results.count(&:meets_requirements)
+    complete_month_count >= required_month_count ? :completed : :in_progress
   end
 
   def activity_hub_title_key(state)

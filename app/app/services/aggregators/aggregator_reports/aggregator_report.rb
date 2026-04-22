@@ -95,6 +95,12 @@ module Aggregators::AggregatorReports
                 pay_period_start: paystub.pay_period_start,
                 pay_period_end: paystub.pay_period_end,
                 pay_gross: paystub.gross_pay_amount || 0,
+                gross_pay_list: (paystub.earnings || []).map do |earning|
+                  {
+                    type: earning.category,
+                    amount: earning.amount
+                  }
+                end,
                 pay_gross_ytd: paystub.gross_pay_ytd,
                 pay_net: paystub.net_pay_amount,
                 hours_paid: paystub.hours,

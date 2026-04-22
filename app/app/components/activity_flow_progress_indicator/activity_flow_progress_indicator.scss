@@ -34,13 +34,6 @@
   margin: units(1) 0 units(2);
 }
 
-.activity-flow-progress-indicator__months-completed {
-  @include u-font("sans", "md");
-
-  font-weight: font-weight("bold");
-  margin: 0 0 units(2);
-}
-
 .activity-flow-progress-indicator__progress-bar {
   background-color: color("primary-lighter");
   border-radius: 4px;
@@ -95,4 +88,9 @@
   height: 18px;
   vertical-align: text-bottom;
   width: 18px;
+}
+
+[data-progress-indicator-units-target="toggle"][hidden],
+[data-progress-indicator-units-target="unitContent"][hidden] {
+  display: none !important;
 }

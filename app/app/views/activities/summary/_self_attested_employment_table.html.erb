@@ -1,62 +1,65 @@
-<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
-  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.employer_information") } %>
-  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.your_details") } %>
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.employer_information") } %>
+  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.employer") %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.employment.employer") %>
+      <%= header %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: header) do %>
       <%= activity.employer_name.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.address") %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.employment.address") %>
+      <%= header %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: header) do %>
       <%= activity.formatted_address.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.contact_name") %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.employment.contact_name") %>
+      <%= header %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: header) do %>
       <%= activity.contact_name.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.contact_email") %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.employment.contact_email") %>
+      <%= header %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: header) do %>
       <%= activity.contact_email.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
   <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.contact_phone") %>
     <%= row.with_data_cell(is_header: true) do %>
-      <%= t("activities.summary.employment.contact_phone") %>
+      <%= header %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: header) do %>
       <%= activity.contact_phone_number.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 <% end %>
 
 <h3><%= t("activities.summary.monthly_details") %></h3>
-<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-hours-table")) do |table| %>
-  <%= table.with_subheader_row(class_names: "subheader-row base-lightest") do |row| %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.summary.employment.month")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.summary.employment.gross_income")) %>
-    <%= row.with_data_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.summary.employment.hours_worked")) %>
-  <% end %>
+<%= render(TableComponent.new(multi_column: true)) do |table| %>
+  <%= table.with_header_cell(colspan: 1)
+         .with_content(t("activities.summary.employment.month")) %>
+  <%= table.with_header_cell(colspan: 1)
+         .with_content(t("activities.summary.employment.gross_income")) %>
+  <%= table.with_header_cell(colspan: 1)
+         .with_content(t("activities.summary.employment.hours_worked")) %>
 
   <% activity.employment_activity_months.order(:month).each do |activity_month| %>
     <%= table.with_row do |row| %>

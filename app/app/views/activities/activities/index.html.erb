@@ -1,6 +1,7 @@
 <% any_activities_added = @flow.any_activities_added? %>
 <% monthly_results = progress_calculator.monthly_results %>
-<% state = activity_hub_state(any_activities_added:, monthly_results:) %>
+<% required_month_count = progress_calculator.required_month_count %>
+<% state = activity_hub_state(any_activities_added:, monthly_results:, required_month_count:) %>
 <% variant = @flow.renewal_reporting_window? ? :renewal : :application %>
 <% title_key = activity_hub_title_key(state) %>
 <% description_key = activity_hub_description_key(state) %>
@@ -27,10 +28,10 @@
       </p>
 
       <% if variant == :renewal %>
-        <% months_required_key = monthly_results.length < @flow.reporting_window_months ? "activities.hub.empty_state_months_required_any" : "activities.hub.empty_state_months_required_all" %>
+        <% months_required_key = required_month_count < @flow.reporting_window_months ? "activities.hub.empty_state_months_required_any" : "activities.hub.empty_state_months_required_all" %>
         <p class="activity-hub-subheading">
           <strong><%= t("activities.hub.empty_state_months_required_label") %></strong>
-          <%= t(months_required_key, required_month_count: monthly_results.length) %>
+          <%= t(months_required_key, required_month_count: required_month_count) %>
         </p>
       <% end %>
 
@@ -44,11 +45,13 @@
     <% end %>
 
     <% if any_activities_added %>
+      <% show_progress_unit_toggle = @employment_activities.any? || @employment_payroll_accounts.any? %>
       <div class="margin-top-4">
         <%= render(
           ActivityFlowProgressIndicator.from_calculator(
             progress_calculator,
-            variant: variant
+            variant: variant,
+            show_unit_toggle: show_progress_unit_toggle
           )
         ) %>
       </div>

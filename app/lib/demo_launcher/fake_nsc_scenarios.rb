@@ -65,6 +65,16 @@ module DemoLauncher
         ]
       ),
       UserProfile.new(
+        scenario_key: "renewal_half_time_last_4_of_6_avery",
+        first_name: "Avery",
+        last_name: "Testuser",
+        date_of_birth: Date.parse("1992-11-30"),
+        coverage_months: 4,
+        terms: [
+          { school_name: "Cedar Grove College", enrollment_status: :half_time }
+        ]
+      ),
+      UserProfile.new(
         scenario_key: "partial_enrollment_maya",
         first_name: "Maya",
         last_name: "Testuser",

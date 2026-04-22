@@ -1,11 +1,11 @@
-<%= render(TableComponent.new(is_responsive: true, class_names: "activity-review-table", thead_class_names: "")) do |table| %>
-  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.education_information") } %>
-  <%= table.with_header_cell(is_header: true, scope: "col") { t("shared.table_headers.your_details") } %>
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.education_information") } %>
+  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("components.enrollment_term_table_component.student_name_label") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.student_name_label")) do %>
       <%= @nsc_enrollment_term.first_name %>
       <%= @nsc_enrollment_term.middle_name %>
       <%= @nsc_enrollment_term.last_name %>
@@ -16,7 +16,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("components.enrollment_term_table_component.school_or_program") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.school_or_program")) do %>
       <%= @nsc_enrollment_term.school_name.titlecase %>
     <% end %>
   <% end %>
@@ -25,7 +25,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("components.enrollment_term_table_component.enrollment_term") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_term")) do %>
       <%= helpers.format_date(@nsc_enrollment_term.term_begin) %>
       &dash;
       <%= helpers.format_date(@nsc_enrollment_term.term_end) %>
@@ -36,7 +36,7 @@
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("components.enrollment_term_table_component.enrollment_status") %>
     <% end %>
-    <%= row.with_data_cell do %>
+    <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_status")) do %>
       <%= enrollment_status_text(@nsc_enrollment_term.enrollment_status) %>
     <% end %>
   <% end %>

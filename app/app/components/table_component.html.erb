@@ -1,5 +1,5 @@
 <%= tag.table(**@attributes.merge(class: @class_names)) do %>
-  <thead class="<%= @thead_class_names %>">
+  <thead>
     <% if header.present? %>
       <tr>
         <%= header %>
@@ -8,9 +8,6 @@
       <tr>
         <% header_cells.each { |cell| concat(cell) } %>
       </tr>
-    <% end %>
-    <% if subheader_row.present? %>
-      <%= subheader_row %>
     <% end %>
   </thead>
   <tbody>

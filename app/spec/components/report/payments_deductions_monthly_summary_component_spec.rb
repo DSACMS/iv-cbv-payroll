@@ -52,8 +52,8 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
           pinwheel_report.fetch
         end
 
-        context "with default (CBV) style" do
-          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+        context "with column header style" do
+          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
           it "pinwheel_report is properly fetched" do
             expect(pinwheel_report.gigs.length).to eq(3)
@@ -70,27 +70,8 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
             expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
           end
 
-          it "uses subheader row style (no thead column headers)" do
-            expect(subject.css("thead tr.subheader-row th").length).to eq(2)
-            expect(subject.css("thead tr th").length).to eq(2)
-          end
-        end
-
-        context "with activity style" do
-          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly", use_activity_style: true)) }
-
-          it "includes the payments and deductions section with accordion and content" do
-            expect(subject.css("h2").to_html).to include "Payments and deductions"
-
-            accordion = subject.at_css('button.usa-accordion__button')
-            expect(accordion).not_to be_nil
-            expect(accordion.text).to include("December 2020")
-
-            expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
-          end
-
-          it "uses column header style with activity-review-table class" do
-            expect(subject.at_css('table.activity-review-table')).not_to be_nil
+          it "uses column header style with usa-table class" do
+            expect(subject.at_css('table.usa-table')).not_to be_nil
             expect(subject.css("thead tr th").length).to eq(2)
             expect(subject.css("thead tr th:nth-child(1)").text).to include("Pay information")
             expect(subject.css("thead tr th:nth-child(2)").text).to include("Your details")
@@ -99,7 +80,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       end
 
       context "whose paystubs failed to sync" do
-        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
         let(:supported_jobs) { %w[paystubs employment income] }
         let(:errored_jobs) { [ "paystubs" ] }
@@ -158,7 +139,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
     end
 
     context "with bob, a gig-worker whose paystubs synced" do
-      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+      subject { render_inline(described_class.new(argyle_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
       before do
         argyle_stub_request_paystubs_response("bob")
@@ -216,7 +197,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
       it "raises an error without the paystubs data" do
         expect {
-          render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly"))
+          render_inline(described_class.new(argyle_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly"))
         }.to raise_error(RuntimeError, "No employments found that match account_id 019571bc-2f60-3955-d972-dbadfe0913a8")
       end
     end

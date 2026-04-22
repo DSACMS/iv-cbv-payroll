@@ -2,20 +2,9 @@
 <div class="grid-col-12 demo-launcher">
   <h1>Emmy Launcher 🏆🚀</h1>
   <div class="usa-hint demo-launcher__usa-hint">Configure settings and launch Emmy in a new tab.</div>
-  <%= form_with(url: "/demo", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "demo-launcher" }) do |f| %>
+  <%= form_with(url: "/demo", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "demo-launcher", action: "input->demo-launcher#invalidateShareLink change->demo-launcher#invalidateShareLink" }) do |f| %>
     <div class="demo-launcher__two-col">
       <div class="demo-launcher__left-col">
-        <div class="demo-launcher__launch">
-          <h2>Launch</h2>
-          <div class="demo-launcher__launch-buttons">
-            <button type="submit" name="launch_type" value="tokenized" formtarget="_blank" class="usa-button demo-launcher__launch-button">
-              Tokenized
-            </button>
-            <button type="submit" name="launch_type" value="generic" formtarget="_blank" class="usa-button demo-launcher__launch-button" data-demo-launcher-target="genericButton">
-              Generic
-            </button>
-          </div>
-        </div>
         <div class="demo-launcher__test-scenarios" data-demo-launcher-target="ceOnly">
           <h3 class="demo-launcher__section-label">Test Scenarios</h3>
           <div class="demo-launcher__scenario-radios">
@@ -115,6 +104,15 @@
             </div>
             <div class="usa-radio">
               <input class="usa-radio__input usa-radio__input--tile" type="radio"
+                     name="test_scenario" id="test_scenario_renewal_half_time_last_4_of_6_avery" value="renewal_half_time_last_4_of_6_avery"
+                     data-action="demo-launcher#selectScenario">
+              <label class="usa-radio__label" for="test_scenario_renewal_half_time_last_4_of_6_avery">
+                <strong>Avery Testuser</strong>
+                <span class="demo-launcher__scenario-desc">Half-time enrollment covering 4 of 6 months (for renewal required-month testing)</span>
+              </label>
+            </div>
+            <div class="usa-radio">
+              <input class="usa-radio__input usa-radio__input--tile" type="radio"
                      name="test_scenario" id="test_scenario_partial_enrollment_maya" value="partial_enrollment_maya"
                      data-action="demo-launcher#selectScenario">
               <label class="usa-radio__label" for="test_scenario_partial_enrollment_maya">
@@ -179,6 +177,18 @@
               <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_renewal" value="renewal" <%= "checked" if params[:reporting_window] == "renewal" %> data-action="demo-launcher#selectWindow">
               <label class="usa-radio__label" for="reporting_window_renewal">Renewal</label>
             </div>
+            <div class="demo-launcher__renewal-required margin-top-2 <%= "demo-launcher__renewal-required--hidden" unless params[:reporting_window] == "renewal" %>" data-demo-launcher-target="renewalRequiredField">
+              <div class="demo-launcher__inline-field">
+                <input class="usa-input usa-input--sm" type="number" name="renewal_required_months"
+                       id="renewal_required_months" min="1" max="6" autocomplete="off"
+                       value="<%= params[:renewal_required_months] %>">
+                <span>renewal months required</span>
+                <span class="demo-launcher__hint-toggle" data-action="click->demo-launcher#toggleInlineHint"><svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg></span>
+              </div>
+              <div class="usa-hint demo-launcher__setting-hint" hidden>
+                Optional. For renewal flows, override how many months must meet requirements (N of M).
+              </div>
+            </div>
             <div class="usa-hint demo-launcher__separator">-- or --</div>
             <div class="demo-launcher__inline-field">
               <input class="usa-input usa-input--sm" type="number" name="reporting_window_months"
@@ -217,5 +227,58 @@
         <% end %>
       </div>
     </div>
+
+    <section class="demo-launcher__launch-section">
+      <h2>Launch</h2>
+      <p class="usa-hint">Generate a tokenized or generic link, then copy it or open it in a new tab.</p>
+      <div class="demo-launcher__launch-buttons">
+        <button
+          type="submit"
+          name="launch_type"
+          value="tokenized"
+          class="usa-button demo-launcher__launch-button"
+          data-action="demo-launcher#generateShareLink"
+          data-demo-launcher-target="tokenizedButton">
+          Tokenized
+        </button>
+        <button
+          type="submit"
+          name="launch_type"
+          value="generic"
+          class="usa-button demo-launcher__launch-button"
+          data-action="demo-launcher#generateShareLink"
+          data-demo-launcher-target="genericButton">
+          Generic
+        </button>
+      </div>
+
+      <div class="demo-launcher__share-widget" hidden data-demo-launcher-target="shareWidget">
+        <h3 class="demo-launcher__setting-title" data-demo-launcher-target="shareLabel">Shareable link</h3>
+        <div class="demo-launcher__share-row">
+          <input
+            class="usa-input"
+            type="text"
+            id="generated_tokenized_url"
+            readonly
+            autocomplete="off"
+            data-demo-launcher-target="generatedUrl">
+          <button
+            type="button"
+            class="usa-button usa-button--outline"
+            data-action="demo-launcher#copyGeneratedLink"
+            data-demo-launcher-target="copyButton">
+            Copy link
+          </button>
+          <a
+            class="usa-button"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-demo-launcher-target="openGeneratedLink">
+            Open in new tab
+          </a>
+        </div>
+      </div>
+    </section>
   <% end %>
 </div>

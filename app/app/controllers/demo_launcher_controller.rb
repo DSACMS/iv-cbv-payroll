@@ -6,18 +6,11 @@ class DemoLauncherController < ApplicationController
   end
 
   def create
-    flow_type = params[:flow_type]
-    client_agency_id = params[:client_agency_id]
-    launch_type = params[:launch_type]
-    overrides = if flow_type == "cbv"
-                  params.permit(:demo_timeout).select { |_, v| v.present? }
-                else
-                  params.permit(:reporting_window, :reporting_window_months, :reporting_window_start, :demo_timeout).select { |_, v| v.present? }
-                end
-
-    if overrides[:reporting_window_start].present?
-      overrides[:reporting_window_start] = normalize_date_param(overrides[:reporting_window_start])
-    end
+    flow_type = launcher_params[:flow_type]
+    client_agency_id = launcher_params[:client_agency_id]
+    launch_type = launcher_params[:launch_type]
+    test_scenario = launcher_params[:test_scenario]
+    overrides = launch_overrides(flow_type)
 
     url = if flow_type == "cbv"
             if launch_type == "generic"
@@ -25,17 +18,21 @@ class DemoLauncherController < ApplicationController
             else
               build_cbv_tokenized_url(client_agency_id, overrides)
             end
-          elsif params[:test_scenario].in?(FAKE_SCENARIO_KEYS)
-            build_fake_test_scenario_url(params[:test_scenario], client_agency_id, overrides)
-          elsif params[:test_scenario].present?
-            build_test_scenario_url(params[:test_scenario], client_agency_id, overrides)
+          elsif test_scenario.in?(FAKE_SCENARIO_KEYS)
+            build_fake_test_scenario_url(test_scenario, client_agency_id, overrides)
+          elsif test_scenario.present?
+            build_test_scenario_url(test_scenario, client_agency_id, overrides)
           elsif launch_type == "generic"
             build_generic_url(client_agency_id, overrides)
           else
             build_tokenized_url(client_agency_id, overrides)
           end
 
-    redirect_to url, allow_other_host: true
+    if request.format.json?
+      render json: { url: url }
+    else
+      redirect_to url, allow_other_host: true
+    end
   end
 
   private
@@ -57,6 +54,36 @@ class DemoLauncherController < ApplicationController
     else
       date_str
     end
+  end
+
+  def launch_overrides(flow_type)
+    overrides = if flow_type == "cbv"
+                  launcher_params.slice(:demo_timeout).select { |_, v| v.present? }
+                else
+                  allowed_overrides = [ :reporting_window, :reporting_window_months, :reporting_window_start, :demo_timeout ]
+                  allowed_overrides << :renewal_required_months if launcher_params[:reporting_window] == "renewal"
+                  launcher_params.slice(*allowed_overrides).select { |_, v| v.present? }
+                end
+
+    if overrides[:reporting_window_start].present?
+      overrides[:reporting_window_start] = normalize_date_param(overrides[:reporting_window_start])
+    end
+
+    overrides
+  end
+
+  def launcher_params
+    params.fetch(:demo_launcher, params).permit(
+      :test_scenario,
+      :flow_type,
+      :client_agency_id,
+      :reporting_window,
+      :reporting_window_months,
+      :renewal_required_months,
+      :reporting_window_start,
+      :demo_timeout,
+      :launch_type
+    )
   end
 
   def build_cbv_generic_url(client_agency_id, overrides)
