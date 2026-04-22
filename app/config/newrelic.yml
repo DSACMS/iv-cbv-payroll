@@ -58,6 +58,12 @@ common: &default_settings
   # Logging level for log/newrelic_agent.log
   log_level: info
 
+  instrumentation:
+    # Disable SemanticLogger integration as we use SemanticLogger's NewRelic
+    # forwarder, which works better (doesn't give a 500 error when reporting an
+    # exception).
+    semantic_logger: disabled
+
   # Instrument CBV custom rake tasks:
   rake:
     tasks: [ "data_deletion:.+", "weekly_reports:.+" ]
