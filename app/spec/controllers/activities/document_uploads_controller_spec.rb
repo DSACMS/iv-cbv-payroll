@@ -59,6 +59,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("shared.hours", count: 6))
       expect(response.body).to include(activities_flow_community_service_document_uploads_path)
       expect(response.body).not_to include(I18n.t("components.document_uploads.heading", document_count: 0))
+      expect(response.body).to include(I18n.t("activities.document_uploads.new.input_label"))
     end
 
     it "renders the upload form for a job training activity" do

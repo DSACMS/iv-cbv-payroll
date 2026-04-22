@@ -538,6 +538,7 @@ input#invitation_link {
  */
 .document-uploads {
   margin-bottom: units(4);
+  margin-top: units(4);
 }
 .document-uploads__heading {
   margin-bottom: units(2);
@@ -554,11 +555,8 @@ input#invitation_link {
   display: flex;
   gap: units(2);
   justify-content: space-between;
-  padding-bottom: units(2);
-  padding-top: units(2);
-}
-.document-uploads__item:first-child {
-  padding-top: 0;
+  padding-bottom: units(1);
+  padding-top: units(1);
 }
 .document-uploads__file {
   display: flex;
@@ -573,9 +571,9 @@ input#invitation_link {
   box-sizing: content-box;
   color: color("primary");
   flex-shrink: 0;
-  height: units(4);
+  height: 1.5rem;
   padding: units(1);
-  width: units(4);
+  width: 1.5rem;
 }
 .document-uploads__filename {
   @include u-font("sans", 4);

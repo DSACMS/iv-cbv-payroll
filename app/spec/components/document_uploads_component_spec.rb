@@ -15,7 +15,7 @@ RSpec.describe DocumentUploadsComponent, type: :component do
       ])
     )
 
-    expect(result).to have_text("Documents uploaded (2)")
+    expect(result).to have_text("Previously uploaded documents (2)")
     expect(result).to have_text("verification.pdf")
     expect(result).to have_text("paystub.jpg")
     expect(result).to have_element(:use, href: /.svg#file_present/)

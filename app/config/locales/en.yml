@@ -142,7 +142,7 @@ en:
         continue: Continue to review
         description: 'Upload documents that verify the information you entered for:'
         input_hint: Select PDF, PNG, JPG, or HEIC files
-        input_label: Documents
+        input_label: Add documents
         suggestion_text_html: "<ul><li>Document Type Placeholder 1</li><li>Document Type Placeholder 2</li><li>Document Type Placeholder 3</li></ul>"
         suggestion_title: Suggested documents
         title: Upload supporting documents for %{name}
@@ -947,7 +947,7 @@ en:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
   components:
     document_uploads:
-      heading: Documents uploaded (%{document_count})
+      heading: Previously uploaded documents (%{document_count})
       remove_file: Remove file
     enrollment_term_table_component:
       enrollment_status: Enrollment status
