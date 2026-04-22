@@ -17,6 +17,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     # Start at the activity hub
     visit URI(root_url).request_uri
     visit activities_flow_entry_path(client_agency_id: "sandbox")
+    verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     click_link I18n.t("activities.entries.show.continue")
     verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
@@ -66,7 +67,20 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     click_button I18n.t("activities.education.review.save")
     verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
 
+    education_activity = EducationActivity.last
+    visit new_activities_flow_education_document_upload_path(education_id: education_activity)
+    verify_page(
+      page,
+      title: I18n.t("activities.document_uploads.new.title", name: "University of Illinois"),
+      skip_axe_rules: %w[heading-order]
+    )
+    expect(page).to have_content(I18n.t("components.document_uploads.heading", document_count: 1))
+    expect(page).to have_content("document_upload.pdf")
+    click_link I18n.t("components.document_uploads.remove_file")
+    expect(page).not_to have_content("document_upload.pdf")
+
     # --- Step 3: Edit from the hub card → review (no back button) → edit school info → review ---
+    visit activities_flow_root_path
     within("[data-activity-type='education']") do
       click_link I18n.t("activities.hub.edit")
     end

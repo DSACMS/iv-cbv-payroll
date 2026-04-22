@@ -3,7 +3,7 @@
     <h2 class="margin-y-0"><%= section_title %></h2>
     <%= button_to add_path, class: "usa-button usa-button--outline", method: :get do %>
       <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-        <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#add_circle_outline") %>"></use>
+        <use xlink:href="<%= uswds_sprite_icon_href("add_circle_outline") %>"></use>
       </svg>
       <%= t("activities.hub.add") %>
     <% end %>

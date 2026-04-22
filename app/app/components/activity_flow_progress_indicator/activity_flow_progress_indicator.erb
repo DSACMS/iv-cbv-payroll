@@ -1,5 +1,6 @@
 <%= render(Uswds::Card.new(class: "activity-flow-progress-indicator__card")) do |card| %>
   <% card.with_body do %>
+    <% success_icon_href = helpers.uswds_sprite_icon_href("check_circle") %>
     <div
       class="activity-flow-progress-indicator"
       <% if can_toggle_units? %>
@@ -11,14 +12,14 @@
         <% if renewal? %>
           <% if complete? %>
             <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
-              <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
+              <use xlink:href="<%= success_icon_href %>"></use>
             </svg>
           <% end %>
           <%= t(".renewal_months_completed", complete: complete_month_count, required: required_month_count) %>
         <% elsif multi_month? %>
           <% if complete? %>
             <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
-              <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
+              <use xlink:href="<%= success_icon_href %>"></use>
             </svg>
           <% end %>
           <%= t(".application_months_completed", complete: complete_month_count, total: total_month_count) %>
@@ -73,7 +74,7 @@
             <% if multi_month? %>
               <% if monthly_result.meets_requirements %>
                 <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
-                  <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
+                  <use xlink:href="<%= success_icon_href %>"></use>
                 </svg>
               <% end %>
               <%= l(monthly_result.month, format: :month) %>
@@ -99,7 +100,7 @@
               <span class="activity-flow-progress-indicator__progress-amount activity-flow-progress-indicator__progress-amount--complete">
                 <% if !multi_month? %>
                   <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
-                    <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
+                    <use xlink:href="<%= success_icon_href %>"></use>
                   </svg>
                 <% end %>
 

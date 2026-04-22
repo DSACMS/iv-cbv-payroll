@@ -536,20 +536,56 @@ input#invitation_link {
 /*
  * Document upload page
  */
-.document-uploads__preview {
+.document-uploads {
+  margin-bottom: units(4);
+}
+.document-uploads__heading {
+  margin-bottom: units(2);
+  margin-top: 0;
+}
+.document-uploads__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.document-uploads__item {
+  align-items: center;
+  border-bottom: 1px solid color("gray-cool-20");
+  display: flex;
+  gap: units(2);
+  justify-content: space-between;
+  padding-bottom: units(2);
+  padding-top: units(2);
+}
+.document-uploads__item:first-child {
+  padding-top: 0;
+}
+.document-uploads__file {
   display: flex;
   align-items: center;
+  gap: units(2);
+  min-width: 0;
 }
-.document-uploads__preview-icon {
+.document-uploads__icon {
+  background-color: color("blue-warm-5");
+  border: 1px solid color("blue-warm-20v");
+  border-radius: radius("md");
   box-sizing: content-box;
-  color: color("gray-cool-40");
+  color: color("primary");
   flex-shrink: 0;
   height: units(4);
   padding: units(1);
   width: units(4);
 }
-.document-uploads__preview-filename {
-  @include u-font("sans", 2);
+.document-uploads__filename {
+  @include u-font("sans", 4);
+  line-height: line-height("sans", 4);
   overflow: hidden;
   word-break: break-word;
+}
+.document-uploads__remove-link {
+  flex-shrink: 0;
+  @include u-font("sans", 4);
+  color: color("secondary-dark");
+  line-height: line-height("sans", 4);
 }

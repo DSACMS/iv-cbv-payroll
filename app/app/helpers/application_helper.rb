@@ -31,6 +31,20 @@ module ApplicationHelper
     current_agency&.activity_types&.[](type.to_sym)
   end
 
+  def safe_asset_path(source)
+    asset_path(source)
+  rescue Sprockets::Rails::Helper::AssetNotFound
+    "/#{source.delete_prefix("/")}"
+  end
+
+  def uswds_sprite_icon_href(icon_name)
+    "#{safe_asset_path("@uswds/uswds/dist/img/sprite.svg")}##{icon_name}"
+  end
+
+  def uswds_icon_image_path(icon_name)
+    safe_asset_path("@uswds/uswds/dist/img/usa-icons/#{icon_name}.svg")
+  end
+
   # Render a translation that is specific to the current client agency. Define
   # client agency-specific translations as:
   #

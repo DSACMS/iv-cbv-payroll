@@ -946,6 +946,9 @@ en:
       status:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
   components:
+    document_uploads:
+      heading: Documents uploaded (%{document_count})
+      remove_file: Remove file
     enrollment_term_table_component:
       enrollment_status: Enrollment status
       enrollment_term: Enrollment term

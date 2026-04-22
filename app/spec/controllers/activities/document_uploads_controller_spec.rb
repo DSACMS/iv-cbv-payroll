@@ -19,6 +19,19 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
     Rails.application.config.active_storage.service = :local
     session[:flow_id] = activity_flow.id
     session[:flow_type] = :activity
+    allow_any_instance_of(ActionView::Base).to receive(:stylesheet_link_tag).and_return("")
+    allow_any_instance_of(ActionView::Base).to receive(:javascript_include_tag).and_return("")
+    allow_any_instance_of(ActionView::Base).to receive(:image_tag).and_return("")
+    allow_any_instance_of(ActionView::Base).to receive(:asset_path).and_wrap_original do |original, source, *args|
+      if source.to_s.start_with?("@uswds/uswds/dist/img/sprite.svg")
+        "/assets/sprite.svg"
+      else
+        original.call(source, *args)
+      end
+    end
+    allow_any_instance_of(ActivityFlowHeaderComponent).to receive(:asset_path).and_return("/assets/sprite.svg")
+    allow_any_instance_of(DocumentUploadsComponent).to receive(:asset_path).and_return("/assets/sprite.svg")
+    allow_any_instance_of(LinkWithIconComponent).to receive(:asset_path).and_return("/assets/sprite.svg")
   end
 
   describe "GET #new" do
@@ -45,6 +58,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: "Local Food Bank"))
       expect(response.body).to include(I18n.t("shared.hours", count: 6))
       expect(response.body).to include(activities_flow_community_service_document_uploads_path)
+      expect(response.body).not_to include(I18n.t("components.document_uploads.heading", document_count: 0))
     end
 
     it "renders the upload form for a job training activity" do
@@ -136,7 +150,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).not_to include(I18n.t("activities.document_uploads.new.title", name: "University A"))
     end
 
-    it "falls back to the file icon when an existing upload preview cannot be processed" do
+    it "renders previously uploaded documents in the uploaded documents area" do
       volunteering_activity = create(
         :volunteering_activity,
         activity_flow: activity_flow,
@@ -148,12 +162,13 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         filename: "verification.pdf",
         content_type: "application/pdf"
       )
-      allow_any_instance_of(ActiveStorage::Attachment).to receive(:preview).and_raise(StandardError, "preview failed")
 
       get :new, params: { community_service_id: volunteering_activity.id }
 
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("components.document_uploads.heading", document_count: 1))
       expect(response.body).to include("verification.pdf")
+      expect(response.body).to include(I18n.t("components.document_uploads.remove_file"))
       expect(response.body).to include("file_present")
     end
   end
@@ -220,6 +235,85 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       expect(response).to render_template(:new)
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe "DELETE #destroy" do
+    it "removes an uploaded volunteering document and redirects back to the upload page" do
+      volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
+      volunteering_activity.document_uploads.attach(
+        io: StringIO.new("%PDF-1.4"),
+        filename: "verification.pdf",
+        content_type: "application/pdf"
+      )
+      attachment_id = volunteering_activity.document_uploads_attachments.first.id
+
+      expect do
+        delete :destroy, params: { community_service_id: volunteering_activity.id, id: attachment_id }
+      end.to change { volunteering_activity.reload.document_uploads.count }.by(-1)
+
+      expect(response).to redirect_to(
+        new_activities_flow_community_service_document_upload_path(community_service_id: volunteering_activity)
+      )
+    end
+
+    it "removes an uploaded job training document and redirects back to the upload page" do
+      job_training_activity = create(:job_training_activity, activity_flow: activity_flow)
+      job_training_activity.document_uploads.attach(
+        io: StringIO.new("%PDF-1.4"),
+        filename: "verification.pdf",
+        content_type: "application/pdf"
+      )
+      attachment_id = job_training_activity.document_uploads_attachments.first.id
+
+      expect do
+        delete :destroy, params: { job_training_id: job_training_activity.id, id: attachment_id }
+      end.to change { job_training_activity.reload.document_uploads.count }.by(-1)
+
+      expect(response).to redirect_to(
+        new_activities_flow_job_training_document_upload_path(job_training_id: job_training_activity)
+      )
+    end
+
+    it "removes an uploaded education document and redirects back to the upload page" do
+      education_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :fully_self_attested,
+        school_name: "University of Illinois"
+      )
+      education_activity.document_uploads.attach(
+        io: StringIO.new("%PDF-1.4"),
+        filename: "verification.pdf",
+        content_type: "application/pdf"
+      )
+      attachment_id = education_activity.document_uploads_attachments.first.id
+
+      expect do
+        delete :destroy, params: { education_id: education_activity.id, id: attachment_id }
+      end.to change { education_activity.reload.document_uploads.count }.by(-1)
+
+      expect(response).to redirect_to(
+        new_activities_flow_education_document_upload_path(education_id: education_activity)
+      )
+    end
+
+    it "removes an uploaded employment document and redirects back to the upload page" do
+      employment_activity = create(:employment_activity, activity_flow: activity_flow)
+      employment_activity.document_uploads.attach(
+        io: StringIO.new("%PDF-1.4"),
+        filename: "verification.pdf",
+        content_type: "application/pdf"
+      )
+      attachment_id = employment_activity.document_uploads_attachments.first.id
+
+      expect do
+        delete :destroy, params: { employment_id: employment_activity.id, id: attachment_id }
+      end.to change { employment_activity.reload.document_uploads.count }.by(-1)
+
+      expect(response).to redirect_to(
+        new_activities_flow_income_employment_document_upload_path(employment_id: employment_activity)
+      )
     end
   end
 
