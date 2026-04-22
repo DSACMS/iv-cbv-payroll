@@ -12,7 +12,7 @@ class DocumentUploadsComponent < ViewComponent::Base
   attr_reader :documents, :heading_level
 
   def heading_text
-    I18n.t("components.document_uploads.heading", document_count: documents.count)
+    I18n.t("activities.document_uploads.heading", document_count: documents.count)
   end
 
   def show_remove_file?

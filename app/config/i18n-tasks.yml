@@ -148,10 +148,7 @@ ignore_missing:
     - "activity_flow_progress_indicator.*"
     - "activerecord.errors.models.volunteering_activity_month.*" # Self attestation hours entry error messages
     - "activerecord.errors.models.job_training_activity_month.*" # Self attestation hours entry error messages
-    # Header logo alt text
     - "shared.header.logo_alt_text.nh_dhhs"
-    - "components.document_uploads.heading"
-    - "components.document_uploads.remove_file"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string

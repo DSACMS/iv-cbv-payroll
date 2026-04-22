@@ -58,7 +58,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: "Local Food Bank"))
       expect(response.body).to include(I18n.t("shared.hours", count: 6))
       expect(response.body).to include(activities_flow_community_service_document_uploads_path)
-      expect(response.body).not_to include(I18n.t("components.document_uploads.heading", document_count: 0))
+      expect(response.body).not_to include(I18n.t("activities.document_uploads.heading", document_count: 0))
       expect(response.body).to include(I18n.t("activities.document_uploads.new.input_label"))
     end
 
@@ -167,9 +167,9 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       get :new, params: { community_service_id: volunteering_activity.id }
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("components.document_uploads.heading", document_count: 1))
+      expect(response.body).to include(I18n.t("activities.document_uploads.heading", document_count: 1))
       expect(response.body).to include("verification.pdf")
-      expect(response.body).to include(I18n.t("components.document_uploads.remove_file"))
+      expect(response.body).to include(I18n.t("activities.document_uploads.remove_file"))
       expect(response.body).to include("file_present")
     end
   end

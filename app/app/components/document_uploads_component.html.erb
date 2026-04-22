@@ -14,7 +14,7 @@
         </div>
 
         <% if show_remove_file? && remove_path_for(document).present? %>
-          <%= link_to t("components.document_uploads.remove_file"),
+          <%= link_to t("activities.document_uploads.remove_file"),
                 remove_path_for(document),
                 class: "usa-link document-uploads__remove-link",
                 data: { turbo_method: :delete } %>
