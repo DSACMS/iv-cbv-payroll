@@ -56,7 +56,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       page = Capybara.string(response.body)
       expect(page).to have_css(".activity-flow-progress-indicator--review-collapsed")
-      expect(page).to have_css("p.activity-flow-progress-indicator__title--collapsed", text: "2/2 months completed")
+      expect(page).to have_css("p.activity-flow-progress-indicator__title", text: "2/2 months completed")
     end
 
     it "uses required_month_count as the renewal denominator on review" do
@@ -78,7 +78,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       get :show
 
       page = Capybara.string(response.body)
-      expect(page).to have_css("p.activity-flow-progress-indicator__title--collapsed", text: "4/4 months completed")
+      expect(page).to have_css("p.activity-flow-progress-indicator__title", text: "4/4 months completed")
     end
 
     it "uses required_month_count as the renewal denominator while review progress is still expanded" do

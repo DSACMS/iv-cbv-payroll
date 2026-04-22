@@ -71,9 +71,9 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
 
   def completed_months_label
     if renewal?
-      t(".renewal_months_completed", complete: complete_month_count, required: required_month_count)
+      t("activity_flow_progress_indicator.renewal_months_completed", complete: complete_month_count, required: required_month_count)
     else
-      t(".application_months_completed", complete: complete_month_count, total: total_month_count)
+      t("activity_flow_progress_indicator.application_months_completed", complete: complete_month_count, total: total_month_count)
     end
   end
 
