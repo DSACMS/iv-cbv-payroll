@@ -8,7 +8,8 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
       monthly_calculation_results: monthly_calculation_results,
       variant: variant,
       required_month_count: required_month_count,
-      show_unit_toggle: show_unit_toggle
+      show_unit_toggle: show_unit_toggle,
+      display_variant: display_variant
     )
   end
 
@@ -25,6 +26,7 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
   let(:variant) { :application }
   let(:required_month_count) { nil }
   let(:show_unit_toggle) { false }
+  let(:display_variant) { :default }
   let(:expected_title) do
     I18n.t(
       "activity_flow_progress_indicator.title",
@@ -76,6 +78,134 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
       render_inline(described_class.from_calculator(calculator, show_unit_toggle: true))
 
       expect(page).to have_button(I18n.t("activity_flow_progress_indicator.switch_to_dollars"))
+    end
+
+    it "forwards display_variant" do
+      monthly_results = [
+        ActivityFlowProgressCalculator::MonthlyResult.new(
+          month: Date.new(2025, 12, 1),
+          total_hours: 84,
+          meets_requirements: true
+        ),
+        ActivityFlowProgressCalculator::MonthlyResult.new(
+          month: Date.new(2026, 1, 1),
+          total_hours: 20,
+          meets_requirements: false
+        )
+      ]
+      calculator = instance_double(
+        ActivityFlowProgressCalculator,
+        monthly_results: monthly_results,
+        required_month_count: 1
+      )
+
+      render_inline(described_class.from_calculator(calculator, display_variant: :review))
+
+      expect(page).to have_css(".activity-flow-progress-indicator__card--review")
+    end
+  end
+
+  context "when display variant is review" do
+    let(:display_variant) { :review }
+    let(:monthly_calculation_results) do
+      [
+        ActivityFlowProgressCalculator::MonthlyResult.new(
+          month: Date.new(2025, 12, 1),
+          total_hours: 20,
+          meets_requirements: false
+        ),
+        ActivityFlowProgressCalculator::MonthlyResult.new(
+          month: Date.new(2026, 1, 1),
+          total_hours: 84,
+          meets_requirements: true
+        )
+      ]
+    end
+
+    it "renders a review-width card with the months completed title" do
+      render_inline(component)
+
+      expect(page).to have_css(".activity-flow-progress-indicator__card--review")
+      expect(page).to have_css("h2", text: "1/2 months completed")
+      expect(page).to have_css(".activity-flow-progress-indicator__progress-bar", count: 2)
+    end
+
+    context "when there is a single incomplete month" do
+      let(:monthly_calculation_results) do
+        [
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2026, 1, 1),
+            total_hours: 20,
+            meets_requirements: false
+          )
+        ]
+      end
+
+      it "uses the months completed title on the review page" do
+        render_inline(component)
+
+        expect(page).to have_css("h2.activity-flow-progress-indicator__title", text: "0/1 months completed")
+      end
+    end
+
+    context "when unit toggle is enabled for incomplete months" do
+      let(:show_unit_toggle) { true }
+      let(:monthly_calculation_results) do
+        [
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2025, 12, 1),
+            total_hours: 40,
+            total_earnings_cents: 500_00,
+            default_unit: :hours,
+            meets_requirements: false
+          ),
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2026, 1, 1),
+            total_hours: 20,
+            total_earnings_cents: 200_00,
+            default_unit: :hours,
+            meets_requirements: false
+          )
+        ]
+      end
+
+      it "renders the toggle inside the review card" do
+        render_inline(component)
+
+        expect(page).to have_css(".activity-flow-progress-indicator__card--review [data-controller='progress-indicator-units']")
+        expect(page).to have_button(I18n.t("activity_flow_progress_indicator.see_progress_in_dollars"))
+      end
+    end
+
+    context "when all months are complete" do
+      let(:monthly_calculation_results) do
+        [
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2025, 12, 1),
+            total_hours: 84,
+            meets_requirements: true
+          ),
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2026, 1, 1),
+            total_hours: 90,
+            meets_requirements: true
+          )
+        ]
+      end
+
+      it "renders the collapsed completed message instead of progress bars" do
+        render_inline(component)
+
+        expect(page).to have_css(".activity-flow-progress-indicator--review-collapsed", text: "2/2 months completed")
+        expect(page).not_to have_css(".activity-flow-progress-indicator__progress-bar")
+      end
+
+      it "does not render the unit toggle controller in the collapsed state" do
+        render_inline(component)
+
+        expect(page).not_to have_css("[data-controller='progress-indicator-units']")
+        expect(page).not_to have_css("[data-progress-indicator-units-target='toggle']")
+      end
     end
   end
 
@@ -489,6 +619,61 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
         render_inline(component)
 
         expect(page).to have_css("h2", text: "2/3 months completed")
+      end
+    end
+
+    context "when display variant is review and requirements are met" do
+      let(:display_variant) { :review }
+
+      it "uses required_month_count in the collapsed review message" do
+        render_inline(component)
+
+        expect(page).to have_css(".activity-flow-progress-indicator--review-collapsed")
+        expect(page).to have_css("p.activity-flow-progress-indicator__title", text: "4/3 months completed")
+      end
+    end
+
+    context "when display variant is review and the renewal is incomplete" do
+      let(:display_variant) { :review }
+      let(:monthly_calculation_results) do
+        [
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2026, 1, 1),
+            total_hours: 0,
+            meets_requirements: false
+          ),
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2025, 12, 1),
+            total_hours: 90,
+            meets_requirements: true
+          ),
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2025, 11, 1),
+            total_hours: 95,
+            meets_requirements: true
+          ),
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2025, 10, 1),
+            total_hours: 40,
+            meets_requirements: false
+          ),
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2025, 9, 1),
+            total_hours: 20,
+            meets_requirements: false
+          ),
+          ActivityFlowProgressCalculator::MonthlyResult.new(
+            month: Date.new(2025, 8, 1),
+            total_hours: 35,
+            meets_requirements: false
+          )
+        ]
+      end
+
+      it "omits the renewal subtitle on the review page" do
+        render_inline(component)
+
+        expect(page).not_to have_css(".activity-flow-progress-indicator__description")
       end
     end
 

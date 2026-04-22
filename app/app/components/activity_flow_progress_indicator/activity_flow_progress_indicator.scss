@@ -16,6 +16,14 @@
   }
 }
 
+.activity-flow-progress-indicator--review-collapsed {
+  background-color: color("success-lighter");
+  border: 1px solid color("success-dark");
+  border-radius: radius("md");
+  margin-top: units(2);
+  padding: units(3);
+}
+
 .activity-flow-progress-indicator__title {
   @include u-font("sans", "lg");
 

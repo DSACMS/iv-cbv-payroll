@@ -2,13 +2,15 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
   def self.from_calculator(
     progress_calculator,
     variant: :application,
-    show_unit_toggle: false
+    show_unit_toggle: false,
+    display_variant: :default
   )
     new(
       monthly_calculation_results: progress_calculator.monthly_results,
       variant: variant,
       required_month_count: progress_calculator.required_month_count,
-      show_unit_toggle: show_unit_toggle
+      show_unit_toggle: show_unit_toggle,
+      display_variant: display_variant
     )
   end
 
@@ -16,10 +18,12 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
     monthly_calculation_results:,
     variant: :application,
     required_month_count: nil,
-    show_unit_toggle: false
+    show_unit_toggle: false,
+    display_variant: :default
   )
     @monthly_calculation_results = monthly_calculation_results
     @renewal = variant == :renewal
+    @review = display_variant == :review
     @required_month_count = normalize_required_month_count(required_month_count)
     @show_unit_toggle = show_unit_toggle
   end
@@ -64,6 +68,18 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
   def multi_month? = monthly_calculation_results.length > 1
 
   def complete_month_count = monthly_calculation_results.count(&:meets_requirements)
+
+  def completed_months_label
+    if renewal?
+      t(".renewal_months_completed", complete: complete_month_count, required: required_month_count)
+    else
+      t(".application_months_completed", complete: complete_month_count, total: total_month_count)
+    end
+  end
+
+  def collapsed? = review? && complete?
+
+  def review? = @review
 
   def total_month_count = monthly_calculation_results.length
 

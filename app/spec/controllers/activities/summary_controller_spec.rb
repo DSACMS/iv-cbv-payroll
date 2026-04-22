@@ -22,6 +22,89 @@ RSpec.describe Activities::SummaryController, type: :controller do
   end
 
   describe "GET #show" do
+    it "renders the review progress indicator at table width" do
+      activity_flow.update!(reporting_window_months: 2)
+      activity = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Scoped")
+      create(:volunteering_activity_month, volunteering_activity: activity, month: activity_flow.reporting_months.first, hours: 80)
+      create(:volunteering_activity_month, volunteering_activity: activity, month: activity_flow.reporting_months.second, hours: 0)
+
+      get :show
+
+      page = Capybara.string(response.body)
+      expect(page).to have_css(".activity-flow-progress-indicator__card--review")
+      expect(page).to have_css("h2.activity-flow-progress-indicator__title", text: "1/2 months completed")
+    end
+
+    it "does not show the unit toggle for non-employment activity-only flows" do
+      activity_flow.update!(reporting_window_months: 2)
+      activity = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Scoped")
+      create(:volunteering_activity_month, volunteering_activity: activity, month: activity_flow.reporting_months.first, hours: 80)
+
+      get :show
+
+      page = Capybara.string(response.body)
+      expect(page).not_to have_css("[data-controller='progress-indicator-units']")
+    end
+
+    it "renders the collapsed review message when all review months are complete" do
+      activity_flow.update!(reporting_window_months: 2)
+      activity = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Scoped")
+      create(:volunteering_activity_month, volunteering_activity: activity, month: activity_flow.reporting_months.first, hours: 80)
+      create(:volunteering_activity_month, volunteering_activity: activity, month: activity_flow.reporting_months.second, hours: 80)
+
+      get :show
+
+      page = Capybara.string(response.body)
+      expect(page).to have_css(".activity-flow-progress-indicator--review-collapsed")
+      expect(page).to have_css("p.activity-flow-progress-indicator__title--collapsed", text: "2/2 months completed")
+    end
+
+    it "uses required_month_count as the renewal denominator on review" do
+      activity_flow.update!(
+        reporting_window_type: "renewal",
+        reporting_window_months: 6,
+        renewal_required_months: 4
+      )
+      activity = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Scoped")
+
+      activity_flow.reporting_months.first(4).each do |month|
+        create(:volunteering_activity_month, volunteering_activity: activity, month: month, hours: 80)
+      end
+
+      activity_flow.reporting_months.last(2).each do |month|
+        create(:volunteering_activity_month, volunteering_activity: activity, month: month, hours: 0)
+      end
+
+      get :show
+
+      page = Capybara.string(response.body)
+      expect(page).to have_css("p.activity-flow-progress-indicator__title--collapsed", text: "4/4 months completed")
+    end
+
+    it "uses required_month_count as the renewal denominator while review progress is still expanded" do
+      activity_flow.update!(
+        reporting_window_type: "renewal",
+        reporting_window_months: 6,
+        renewal_required_months: 4
+      )
+      activity = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Scoped")
+
+      activity_flow.reporting_months.first(3).each do |month|
+        create(:volunteering_activity_month, volunteering_activity: activity, month: month, hours: 80)
+      end
+
+      activity_flow.reporting_months.last(3).each do |month|
+        create(:volunteering_activity_month, volunteering_activity: activity, month: month, hours: 0)
+      end
+
+      get :show
+
+      page = Capybara.string(response.body)
+      expect(page).to have_css(".activity-flow-progress-indicator__card--review")
+      expect(page).to have_css("h2.activity-flow-progress-indicator__title", text: "3/4 months completed")
+      expect(page).to have_css(".activity-flow-progress-indicator__progress-bar")
+    end
+
     it "only shows activities belonging to the current activity flow" do
       visible_volunteering = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Scoped", hours: 1)
       create(:volunteering_activity, activity_flow: other_flow, organization_name: "Ignored", hours: 2)
@@ -368,6 +451,23 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(response.body).to include(ActionController::Base.helpers.number_to_currency(activity_month.gross_income))
         expect(response.body).to include(activity_month.hours.to_s)
       end
+
+      it "shows the unit toggle on the review page" do
+        employment_activity = create(:employment_activity, activity_flow: activity_flow)
+        create(
+          :employment_activity_month,
+          employment_activity: employment_activity,
+          month: activity_flow.reporting_months.first.beginning_of_month,
+          hours: 40,
+          gross_income: 500
+        )
+
+        get :show
+
+        page = Capybara.string(response.body)
+        expect(page).to have_css("[data-controller='progress-indicator-units']")
+        expect(page).to have_css("[data-progress-indicator-units-target='toggle']")
+      end
     end
 
     context "with payroll accounts" do
@@ -416,6 +516,30 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
         expect(response.body).to include("Acme Employer")
         expect(response.body).to include("$123.45")
+      end
+
+      it "shows the unit toggle on the review page" do
+        payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "acct-123")
+        latest_month = activity_flow.reporting_months.max
+        activity_flow.reporting_months.each do |month|
+          create(
+            :activity_flow_monthly_summary,
+            activity_flow: activity_flow,
+            payroll_account: payroll_account,
+            month: month.beginning_of_month,
+            employer_name: "Acme Employer",
+            employment_type: "w2",
+            total_w2_hours: (month == latest_month ? 35.0 : 0.0),
+            accrued_gross_earnings_cents: (month == latest_month ? 222_22 : 0),
+            paychecks_count: (month == latest_month ? 2 : 0)
+          )
+        end
+
+        get :show
+
+        page = Capybara.string(response.body)
+        expect(page).to have_css("[data-controller='progress-indicator-units']")
+        expect(page).to have_css("[data-progress-indicator-units-target='toggle']")
       end
 
       it "renders successfully when no summaries are persisted" do
