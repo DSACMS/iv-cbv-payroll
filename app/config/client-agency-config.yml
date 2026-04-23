@@ -133,3 +133,42 @@
     community_service: true
     work_programs: true
     employment: true
+
+- id: research
+  agency_name: Example State Department of Health
+  agency_contact_website: https://www.example.com/contact
+  agency_missing_employers_website: https://www.example.com/contact
+  agency_domain: <%= ENV["RESEARCH_DOMAIN_NAME"] %>
+  caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform # sandbox
+  pinwheel:
+    environment: <%= ENV["RESEARCH_PINWHEEL_ENVIRONMENT"] %>
+  argyle:
+    environment: <%= ENV["RESEARCH_ARGYLE_ENVIRONMENT"] %>
+  transmission_method: shared_email
+  transmission_method_configuration:
+    email: <%= ENV['SLACK_TEST_EMAIL'] %>
+  staff_portal_enabled: true
+  pilot_ended: false
+  sso:
+    client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
+    client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
+    tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
+    scope: "openid"
+    name: "sandbox"
+  pay_income_days:
+    w2: 90
+    gig: 90
+  application_reporting_months: 2
+  invitation_valid_days: 14
+  weekly_report:
+    recipient: ffs-eng@navapbc.com
+  applicant_attributes:
+    case_number:
+      required: true
+    date_of_birth:
+      required: true
+  activity_types:
+    education: true
+    community_service: true
+    work_programs: true
+    employment: true
