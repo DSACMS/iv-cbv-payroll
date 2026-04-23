@@ -3,12 +3,12 @@
 <% if collapsed? %>
   <% success_icon_href = helpers.uswds_sprite_icon_href("check_circle") %>
   <div class="activity-flow-progress-indicator activity-flow-progress-indicator--review-collapsed <%= review_width_class %>">
-    <h3 class="activity-flow-progress-indicator__title">
+    <h2 class="activity-flow-progress-indicator__title">
       <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
         <use xlink:href="<%= success_icon_href %>"></use>
       </svg>
       <%= completed_months_label %>
-    </h3>
+    </h2>
   </div>
 <% else %>
   <% card_classes = [ "activity-flow-progress-indicator__card", review_width_class ] %>
@@ -23,7 +23,7 @@
           data-progress-indicator-units-unit-value="hours"
         <% end %>
       >
-        <h3 class="activity-flow-progress-indicator__title">
+        <h2 class="activity-flow-progress-indicator__title">
           <% if review? || renewal? || multi_month? %>
             <% if complete? %>
               <svg class="usa-icon activity-flow-progress-indicator__success-icon" aria-hidden="true" focusable="false" role="img">
@@ -35,7 +35,7 @@
             <% first_month = ordered_monthly_calculation_results.first.month %>
             <%= t(".title", month: l(first_month, format: :month)) %>
           <% end %>
-        </h3>
+        </h2>
 
         <% if renewal_requires_subset_months? && !review? %>
           <p class="activity-flow-progress-indicator__description">
