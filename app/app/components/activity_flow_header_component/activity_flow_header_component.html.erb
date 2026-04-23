@@ -1,6 +1,8 @@
 <div class="activity-flow-header"
      data-controller="activity-flow-header"
      data-activity-flow-header-exit-url-value="<%= exit_url %>">
+  <% close_icon_href = helpers.uswds_sprite_icon_href("close") %>
+  <% back_icon_href = helpers.uswds_sprite_icon_href("navigate_before") %>
 
   <div class="activity-header-title">
     <div class="activity-header-title__inner">
@@ -11,7 +13,7 @@
          class="activity-header-title__exit-link">
         <%= t("activities.activity_header_component.exit") %>
         <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#close") %>"></use>
+          <use xlink:href="<%= close_icon_href %>"></use>
         </svg>
       </a>
     </div>
@@ -49,7 +51,7 @@
               aria-label="Close this window"
               data-close-modal>
         <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-          <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#close") %>"></use>
+          <use xlink:href="<%= close_icon_href %>"></use>
         </svg>
       </button>
     </div>
@@ -69,7 +71,7 @@
   <div class="back-nav">
     <%= link_to back_url, class: "back-nav__link" do %>
       <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
-        <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#navigate_before") %>"></use>
+        <use xlink:href="<%= back_icon_href %>"></use>
       </svg>
       <%= t("activities.activity_header_component.back") %>
     <% end %>

@@ -2,7 +2,7 @@ class Activities::DocumentUploadsController < Activities::BaseController
   before_action :set_activity
   before_action :set_back_url, only: %i[new]
 
-  helper_method :upload_path, :document_upload_preview_url
+  helper_method :upload_path, :remove_document_upload_path
 
   def new
   end
@@ -18,6 +18,12 @@ class Activities::DocumentUploadsController < Activities::BaseController
     else
       render :new
     end
+  end
+
+  def destroy
+    @activity.document_uploads_attachments.find(params[:id]).purge
+
+    redirect_to upload_page_path
   end
 
   private
@@ -109,12 +115,67 @@ class Activities::DocumentUploadsController < Activities::BaseController
     end
   end
 
-  def document_upload_preview_url(attachment)
-    return unless attachment.previewable?
+  def upload_page_path
+    if params[:community_service_id]
+      new_activities_flow_community_service_document_upload_path(
+        community_service_id: @activity,
+        from_edit: params[:from_edit].presence
+      )
+    elsif params[:job_training_id]
+      new_activities_flow_job_training_document_upload_path(
+        job_training_id: @activity,
+        from_edit: params[:from_edit].presence
+      )
+    elsif params[:education_id]
+      new_activities_flow_education_document_upload_path(
+        education_id: @activity,
+        from_edit: params[:from_edit].presence
+      )
+    elsif params[:employment_id]
+      new_activities_flow_income_employment_document_upload_path(
+        employment_id: @activity,
+        from_edit: params[:from_edit].presence
+      )
+    else
+      raise <<~ERROR
+        No activity param matched in DocumentUploadsController#upload_page_path.
+        Make sure to add it there if you're adding DocumentUploadable to a
+        new activity type.
+      ERROR
+    end
+  end
 
-    attachment.preview(resize_to_limit: [ 40, 40 ]).processed.url
-  rescue StandardError => e
-    Rails.logger.warn("Document upload preview unavailable for attachment #{attachment.id}: #{e.class}: #{e.message}")
-    nil
+  def remove_document_upload_path(attachment)
+    if params[:community_service_id]
+      activities_flow_community_service_document_upload_path(
+        community_service_id: @activity,
+        id: attachment,
+        from_edit: params[:from_edit].presence
+      )
+    elsif params[:job_training_id]
+      activities_flow_job_training_document_upload_path(
+        job_training_id: @activity,
+        id: attachment,
+        from_edit: params[:from_edit].presence
+      )
+    elsif params[:education_id]
+      activities_flow_education_document_upload_path(
+        education_id: @activity,
+        id: attachment,
+        from_edit: params[:from_edit].presence
+      )
+    elsif params[:employment_id]
+      activities_flow_income_employment_document_upload_path(
+        employment_id: @activity,
+        id: attachment,
+        from_edit: params[:from_edit].presence
+      )
+    else
+      raise <<~ERROR
+        No activity param matched in DocumentUploadsController#remove_document_upload_path.
+        Make sure to add it there if you're adding DocumentUploadable to a
+        new activity type.
+      ERROR
+    end
   end
 end

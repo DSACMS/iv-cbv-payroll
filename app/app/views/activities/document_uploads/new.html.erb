@@ -29,34 +29,30 @@
   <% end %>
 </ul>
 
+<% if @activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: @activity.document_uploads.map do |attachment|
+      {
+        filename: attachment.filename.to_s,
+        remove_path: remove_document_upload_path(attachment)
+      }
+    end,
+    show_remove_file: true
+  ) %>
+<% end %>
+
 <%= form_with(builder: UswdsFormBuilder, scope: :activity, model: @activity, url: upload_path, method: :post) do |f| %>
   <% if @activity.document_uploads.any? %>
-    <p>Uploaded Documents:</p>
-
-    <ul class="padding-0">
-      <% @activity.document_uploads.each do |attachment| %>
-        <%# Add hidden fields for the existing uploads so Rails won't delete them if the form is submitted a second time: %>
-        <%= f.hidden_field :document_uploads, multiple: true, value: attachment.signed_id %>
-
-        <li class="document-uploads__preview">
-          <% if (preview_url = document_upload_preview_url(attachment)) %>
-            <%= preview_url %>
-          <% else %>
-            <svg class="usa-icon document-uploads__preview-icon" aria-hidden="true" focusable="false" role="img">
-              <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#file_present") %>"></use>
-            </svg>
-          <% end %>
-          <span class="document-uploads__preview-filename">
-            <%= attachment.filename %>
-          </span>
-        </li>
-      <% end %>
-    </ul>
+    <% @activity.document_uploads.each do |attachment| %>
+      <%# Keep existing uploads attached when the form is re-submitted with new files. %>
+      <%= f.hidden_field :document_uploads, multiple: true, value: attachment.signed_id %>
+    <% end %>
   <% end %>
 
   <%= f.file_field :document_uploads,
       multiple: true,
       label: t(".input_label"),
+      label_class: "font-heading-lg text-bold",
       hint: t(".input_hint"),
       accept: "image/*,.pdf" %>
 

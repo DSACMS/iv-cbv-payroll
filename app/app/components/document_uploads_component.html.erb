@@ -1,0 +1,25 @@
+<section class="document-uploads" aria-labelledby="document-uploads-heading">
+  <%= content_tag :"h#{heading_level}", heading_text, id: "document-uploads-heading", class: "document-uploads__heading" %>
+
+  <ul class="document-uploads__list">
+    <% documents.each do |document| %>
+      <li class="document-uploads__item">
+        <div class="document-uploads__file">
+          <svg class="usa-icon document-uploads__icon" aria-hidden="true" focusable="false" role="img">
+            <use href="<%= icon_path %>"></use>
+          </svg>
+          <span class="document-uploads__filename">
+            <%= filename_for(document) %>
+          </span>
+        </div>
+
+        <% if show_remove_file? && remove_path_for(document).present? %>
+          <%= link_to t("activities.document_uploads.remove_file"),
+                remove_path_for(document),
+                class: "usa-link document-uploads__remove-link",
+                data: { turbo_method: :delete } %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</section>
