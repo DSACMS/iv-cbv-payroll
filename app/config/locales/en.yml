@@ -678,7 +678,7 @@ en:
           case_number:
             blank: Enter your Medicaid case number.
             help_text: You can find your case number on notices from Example Department of Health. It can be up to 13 digits long.
-            prompt: Medicaid case number (optional)
+            prompt: Medicaid case number
             super_one_html: Medicaid case number<sup>1</sup>
           date_of_birth:
             blank: Enter your date of birth.
