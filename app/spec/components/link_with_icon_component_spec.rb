@@ -3,6 +3,10 @@
 require "rails_helper"
 
 RSpec.describe LinkWithIconComponent, type: :component do
+  before do
+    allow_any_instance_of(described_class).to receive(:asset_path).and_return("/assets/sprite.svg")
+  end
+
   describe '#link_with_icon' do
     let(:result) { render_inline(described_class.new('View Details', url: '/details')) }
 

@@ -53,7 +53,7 @@
     </div>
     <nav aria-label="<%= t("shared.header.primary") %>" class="usa-nav cbv-header__nav">
       <button class="usa-nav__close">
-        <%= image_tag "@uswds/uswds/dist/img/usa-icons/close.svg", role: "img", alt: t("shared.header.close") %>
+        <%= image_tag uswds_icon_image_path("close"), role: "img", alt: t("shared.header.close") %>
       </button>
       <ul class="usa-nav__primary usa-accordion">
         <% if user_signed_in? %>

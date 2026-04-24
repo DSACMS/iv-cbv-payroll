@@ -16,14 +16,18 @@
   }
 }
 
-.activity-flow-progress-indicator__title {
-  @include u-font("sans", "lg");
+.activity-flow-progress-indicator--review-collapsed {
+  background-color: color("success-lighter");
+  border: 1px solid color("success-dark");
+  border-radius: radius("md");
+  margin-top: units(2);
+  padding: units(3);
+}
 
+.activity-flow-progress-indicator__title {
   align-items: center;
   display: flex;
-  font-weight: font-weight("bold");
   gap: units(1);
-  line-height: 1.3;
   margin: 0;
 }
 

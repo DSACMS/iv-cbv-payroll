@@ -49,4 +49,22 @@ describe("ProgressIndicatorUnitsController", () => {
     expect(hoursToggle.hidden).toBe(false)
     expect(document.activeElement).toBe(hoursToggle)
   })
+
+  it("toggles visible content to match the selected unit", () => {
+    const dollarsToggle = document.querySelector("[data-next-unit='dollars']")
+    const hoursContent = document.querySelector(
+      "[data-unit='hours'][data-progress-indicator-units-target='unitContent']"
+    )
+    const dollarsContent = document.querySelector(
+      "[data-unit='dollars'][data-progress-indicator-units-target='unitContent']"
+    )
+
+    expect(hoursContent.hidden).toBe(false)
+    expect(dollarsContent.hidden).toBe(true)
+
+    dollarsToggle.click()
+
+    expect(hoursContent.hidden).toBe(true)
+    expect(dollarsContent.hidden).toBe(false)
+  })
 })
