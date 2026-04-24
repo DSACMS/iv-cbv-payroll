@@ -44,6 +44,13 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(activity).to have_attributes(expected)
     end
 
+    it "creates the activity as a draft" do
+      post :create, params: volunteering_params
+
+      activity = activity_flow.volunteering_activities.last
+      expect(activity.draft).to be(true)
+    end
+
     it "stores optional fields when provided" do
       post :create, params: volunteering_params.deep_merge(
         volunteering_activity: {
@@ -135,6 +142,14 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
       expect(volunteering_activity.reload.additional_comments).to eq("Some notes")
       expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "publishes the activity" do
+      volunteering_activity.update!(draft: true)
+
+      patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "" } }
+
+      expect(volunteering_activity.reload.draft).to be(false)
     end
   end
 

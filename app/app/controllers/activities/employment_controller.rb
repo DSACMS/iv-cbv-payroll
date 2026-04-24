@@ -17,7 +17,7 @@ class Activities::EmploymentController < Activities::BaseController
   end
 
   def create
-    @employment_activity = @flow.employment_activities.new(employment_activity_params)
+    @employment_activity = @flow.employment_activities.new(employment_activity_params.merge(draft: true))
     if @employment_activity.save
       redirect_to edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: 0)
     else
@@ -49,6 +49,7 @@ class Activities::EmploymentController < Activities::BaseController
 
   def save_review
     @employment_activity.update(review_params)
+    @employment_activity.publish!
     redirect_to after_activity_path
   end
 

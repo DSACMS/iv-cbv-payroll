@@ -201,28 +201,23 @@ RSpec.describe ActivityFlow, type: :model do
       expect(flow.any_activities_added?).to be false
     end
 
-    it "returns false when flow has an education activity without enrollment data" do
-      create(:education_activity, activity_flow: flow)
+    it "returns false when flow only has draft activities" do
+      create(:volunteering_activity, activity_flow: flow, draft: true)
 
       expect(flow.any_activities_added?).to be false
-    end
-
-    it "returns true when flow has an education activity with enrollment data" do
-      education_activity = create(:education_activity, activity_flow: flow)
-      create(:nsc_enrollment_term, education_activity:)
-
-      expect(flow.any_activities_added?).to be true
     end
 
     [
       [ :volunteering_activity, :activity_flow ],
       [ :job_training_activity, :activity_flow ],
+      [ :education_activity, :activity_flow ],
+      [ :employment_activity, :activity_flow ],
       [ :payroll_account, :flow ]
     ].each do |factory_name, flow_attribute|
       activity_name = factory_name.to_s.humanize.downcase
 
-      it "returns true when flow includes #{activity_name}" do
-        create(factory_name, flow_attribute => flow)
+      it "returns true when flow includes a published #{activity_name}" do
+        create(factory_name, flow_attribute => flow, draft: false)
         expect(flow.any_activities_added?).to be true
       end
     end

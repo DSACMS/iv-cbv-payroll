@@ -13,6 +13,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   def create
     @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(type: :pinwheel, aggregator_account_id: params["payload"]["account_id"]) do |new_payroll_account|
       new_payroll_account.supported_jobs = get_supported_jobs(params["payload"]["platform_id"])
+      new_payroll_account.draft = true if @cbv_flow.is_a?(ActivityFlow)
     end
 
     @webhook_event = WebhookEvent.create!(

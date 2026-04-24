@@ -73,6 +73,12 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           expect(PayrollAccount.last.flow).to eq(cbv_flow)
           expect(PayrollAccount.last.flow).to be_a(ActivityFlow)
         end
+
+        it "marks the payroll account as draft" do
+          post :create, params: valid_params
+
+          expect(PayrollAccount.last.draft).to be(true)
+        end
       end
 
       context "when the webhook signature is incorrect" do

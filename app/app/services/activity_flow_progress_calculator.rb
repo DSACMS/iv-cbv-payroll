@@ -10,10 +10,10 @@ class ActivityFlowProgressCalculator
   def initialize(activity_flow)
     @activity_flow = activity_flow
     @required_month_count = activity_flow.required_month_count
-    @volunteering_activities = activity_flow.volunteering_activities
-    @job_training_activities = activity_flow.job_training_activities
-    @education_activities = activity_flow.education_activities
-    @employment_activities = activity_flow.employment_activities
+    @volunteering_activities = activity_flow.volunteering_activities.published
+    @job_training_activities = activity_flow.job_training_activities.published
+    @education_activities = activity_flow.education_activities.published
+    @employment_activities = activity_flow.employment_activities.published
   end
 
   def overall_result
@@ -202,7 +202,10 @@ class ActivityFlowProgressCalculator
   end
 
   def validated_account_ids
-    @validated_account_ids ||= @activity_flow.payroll_accounts.select(&:validated?).map(&:aggregator_account_id).compact
+    @validated_account_ids ||= @activity_flow.payroll_accounts.published
+      .select(&:validated?)
+      .map(&:aggregator_account_id)
+      .compact
   end
 
   def monthly_summaries

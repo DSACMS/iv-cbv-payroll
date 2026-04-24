@@ -1,4 +1,6 @@
 class PayrollAccount::Argyle < PayrollAccount
+  before_destroy :safely_delete_aggregator_account
+
   scope :awaiting_fully_synced_webhook, -> do
     joins(<<~SQL).where(webhook_events: { id: nil })
       LEFT OUTER JOIN webhook_events
@@ -59,14 +61,22 @@ class PayrollAccount::Argyle < PayrollAccount
     account_connected_at || created_at
   end
 
-  def redact!
+  def safely_delete_aggregator_account
+    delete_aggregator_account
+  rescue => ex
+    Rails.logger.error "Unable to delete Argyle account #{aggregator_account_id}: #{ex.message}"
+  end
+
+  def delete_aggregator_account
     argyle_environment = Rails.application.config.client_agencies[flow.cbv_applicant.client_agency_id].argyle_environment
     argyle = Aggregators::Sdk::ArgyleService.new(argyle_environment)
-    begin
-      argyle.delete_account_api(account: aggregator_account_id)
-    rescue Faraday::ResourceNotFound
-      # Account already deleted on Argyle's side — safe to proceed with local redaction
-    end
+    argyle.delete_account_api(account: aggregator_account_id)
+  rescue Faraday::ResourceNotFound
+    # Account already deleted on Argyle's side
+  end
+
+  def redact!
+    delete_aggregator_account
     update_column(:additional_information, Redactable::REDACTION_REPLACEMENTS[:string])
     touch(:redacted_at)
   rescue => ex

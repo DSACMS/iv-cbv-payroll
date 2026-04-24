@@ -22,6 +22,7 @@ class Webhooks::Argyle::EventsController < ApplicationController
       payroll_account = @flow.payroll_accounts.find_or_create_by(type: :argyle, aggregator_account_id: account_id) do |new_payroll_account|
         new_payroll_account.synchronization_status = :in_progress
         new_payroll_account.supported_jobs = Aggregators::Webhooks::Argyle.get_supported_jobs
+        new_payroll_account.draft = true if @flow.is_a?(ActivityFlow)
       end
 
       webhook_event = create_webhook_event_for_account(params["event"], payroll_account)

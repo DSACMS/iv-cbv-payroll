@@ -54,7 +54,7 @@ module ActivitiesHelper
       {
         name: employer_name,
         months: months,
-        edit_path: activities_flow_income_payment_details_path(user: { account_id: account.aggregator_account_id })
+        edit_path: activities_flow_income_payment_details_path(user: { account_id: account.aggregator_account_id }, from_edit: 1)
       }
     end
   end

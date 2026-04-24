@@ -5,6 +5,12 @@ class Activity < ApplicationRecord
 
   enum :data_source, { self_attested: "self_attested", validated: "validated" }, default: :self_attested
 
+  scope :published, -> { where(draft: false) }
+
+  def publish!
+    update!(draft: false)
+  end
+
   validate :date_within_reporting_window
 
   def date=(value)

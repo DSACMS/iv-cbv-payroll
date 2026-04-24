@@ -167,6 +167,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_13_203000) do
     t.datetime "created_at", null: false
     t.integer "credit_hours"
     t.string "data_source", default: "validated", null: false
+    t.boolean "draft", default: false, null: false
     t.string "school_name"
     t.string "state"
     t.string "status", default: "unknown"
@@ -195,6 +196,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_13_203000) do
     t.string "contact_phone_number"
     t.datetime "created_at", null: false
     t.string "data_source", default: "self_attested", null: false
+    t.boolean "draft", default: false, null: false
     t.string "employer_name"
     t.boolean "is_self_employed", default: false
     t.string "state"
@@ -233,6 +235,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_13_203000) do
     t.string "contact_phone_number"
     t.datetime "created_at", null: false
     t.string "data_source", default: "self_attested", null: false
+    t.boolean "draft", default: false, null: false
     t.string "organization_address"
     t.string "organization_name"
     t.string "program_name"
@@ -273,6 +276,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_13_203000) do
     t.string "aggregator_account_id"
     t.datetime "created_at", null: false
     t.string "data_source", default: "validated", null: false
+    t.boolean "draft", default: false, null: false
     t.bigint "flow_id", null: false
     t.string "flow_type"
     t.datetime "income_synced_at", precision: nil
@@ -436,6 +440,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_13_203000) do
     t.datetime "created_at", null: false
     t.string "data_source", default: "self_attested", null: false
     t.date "date"
+    t.boolean "draft", default: false, null: false
     t.integer "hours"
     t.string "organization_name"
     t.string "state"

@@ -503,11 +503,11 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:name]).to eq("ACME Corp")
     end
 
-    it "includes edit path to payment details" do
+    it "includes edit path to payment details with from_edit" do
       result = helper.employment_cards([ payroll_account ], mock_report, reporting_range)
 
       expect(result.first[:edit_path]).to eq(
-        helper.activities_flow_income_payment_details_path(user: { account_id: account_id })
+        helper.activities_flow_income_payment_details_path(user: { account_id: account_id }, from_edit: 1)
       )
     end
 
