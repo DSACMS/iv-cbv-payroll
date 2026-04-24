@@ -91,7 +91,7 @@
       <% date_value = activity.date ? l(activity.date) : not_provided %>
       <%= table.with_row do |row| %>
         <% row.with_data_cell.with_content(activity.organization_name.presence || not_provided) %>
-        <% row.with_data_cell.with_content(activity.hours || 0) %>
+        <% row.with_data_cell.with_content(activity.volunteering_activity_months.sum(:hours)) %>
         <% row.with_data_cell.with_content(date_value) %>
       <% end %>
     <% end %>
