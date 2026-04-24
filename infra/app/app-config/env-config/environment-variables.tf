@@ -164,6 +164,10 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-pinwheel-environment"
     },
+    RESEARCH_PINWHEEL_ENVIRONMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/research-pinwheel-environment"
+    },
 
 
     # Argyle Configuration:
@@ -174,6 +178,10 @@ locals {
     SANDBOX_ARGYLE_ENVIRONMENT = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-argyle-environment"
+    },
+    RESEARCH_ARGYLE_ENVIRONMENT = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/research-argyle-environment"
     },
     ARGYLE_API_TOKEN_SANDBOX_ID = {
       manage_method     = "manual"
@@ -230,6 +238,10 @@ locals {
     SANDBOX_DOMAIN_NAME = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/sandbox-domain-name"
+    }
+    RESEARCH_DOMAIN_NAME = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/research-domain-name"
     }
 
     # Education API Credentials

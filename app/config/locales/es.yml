@@ -127,6 +127,18 @@ es:
             blank: Escriba su segundo nombre.
             prompt: Segundo nombre
             super_one_html: Segundo nombre<sup>1</sup>
+      research:
+        fields:
+          case_number:
+            blank: Escriba su número de caso de Medicaid.
+            help_text: Puede encontrar su número de caso en las notificaciones que ha recibido del Departamento de Salud de Ejemplo. El número puede tener hasta 13 dígitos.
+            prompt: Número de caso de Medicaid (opcional)
+            super_one_html: Número de caso de Medicaid<sup>1</sup>
+          date_of_birth:
+            blank: Escriba su fecha de nacimiento.
+            help_text: 'Por ejemplo: 19 de enero de 2000'
+            prompt: Su fecha de nacimiento
+            super_one_html: Fecha de nacimiento<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -232,9 +244,7 @@ es:
       show:
         body_1: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_acronym}.
         cta_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del LDH</a>
-          nh_dhhs: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del NH DHHS</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Obtenga más información en la Agencia de pruebas</a>
+          default: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del %{agency_acronym}</a>
         title: Su invitación para verificar ingresos ha expirado
     missing_results:
       show:
@@ -306,7 +316,8 @@ es:
         pdf:
           agency_header_name:
             la_ldh: Department of Health
-            nh_dhhs: Test Agency
+            nh_dhhs: NH DHHS Bureau of Family Assistance
+            research: Example Department of Health
             sandbox: Test Agency
           caseworker:
             doc_id: Doc ID
@@ -611,20 +622,22 @@ es:
     agency_acronym:
       la_ldh: LDH
       nh_dhhs: NH DHHS
+      research: EDOH
       sandbox: TA
     agency_full_name:
       la_ldh: Departamento de Salud de Luisiana
       nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
+      research: Departamento de Salud de Ejemplo
       sandbox: Agencia de pruebas
     app_name:
-      nh_dhhs: TAApp
-      sandbox: TAApp
+      default: TAApp
     banner:
       lock: Candado
       locked_padlock: Un candado cerrado
     benefit:
       la_ldh: Medicaid
       nh_dhhs: Medicaid
+      research: Medicaid
       sandbox: Medicaid
     footer:
       feedback: Compartir comentarios
@@ -633,6 +646,7 @@ es:
       cbv_flow_title:
         la_ldh: Departamento de Salud
         nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
+        research: Departamento de Salud de Ejemplo
         sandbox: Agencia de pruebas
       close: Cerrar
       help: Ayuda
@@ -663,6 +677,7 @@ es:
     reporting_purpose:
       la_ldh: beneficios
       nh_dhhs: beneficios
+      research: beneficios
       sandbox: beneficios
     select_placeholder: "- Seleccione -"
     skip_link: Saltar al contenido principal

@@ -36,6 +36,13 @@ en:
             date_of_birth:
               future_date: Date of birth must be today or in the past
               invalid_date: Enter a valid date of birth
+        cbv_applicant/research:
+          attributes:
+            case_number:
+              invalid_format: Enter the case number format, i.e. 00012345678A.
+            date_of_birth:
+              future_date: Date of birth must be today or in the past
+              invalid_date: Enter a valid date of birth
         cbv_applicant/sandbox:
           attributes:
             agency_id_number:
@@ -668,6 +675,18 @@ en:
             blank: Enter your middle name.
             prompt: Middle name
             super_one_html: Middle name<sup>1</sup>
+      research:
+        fields:
+          case_number:
+            blank: Enter your Medicaid case number.
+            help_text: You can find your case number on notices from Example Department of Health. It can be up to 13 digits long.
+            prompt: Medicaid case number
+            super_one_html: Medicaid case number<sup>1</sup>
+          date_of_birth:
+            blank: Enter your date of birth.
+            help_text: 'For example: January 19 2000'
+            prompt: Your date of birth
+            super_one_html: Date of birth<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -773,9 +792,7 @@ en:
       show:
         body_1: If you still need to verify your income, please submit your income information by visiting %{agency_acronym}'s website.
         cta_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit LDH's website</a>
-          nh_dhhs: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit NH DHHS's website</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at Test Agency</a>
+          default: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit %{agency_acronym}'s website</a>
         title: Your invitation to verify income has expired
     missing_results:
       show:
@@ -847,7 +864,8 @@ en:
         pdf:
           agency_header_name:
             la_ldh: Department of Health
-            nh_dhhs: Test Agency
+            nh_dhhs: NH DHHS Bureau of Family Assistance
+            research: Example Department of Health
             sandbox: Test Agency
           caseworker:
             agreement_consent_timestamp: Agreement Consent Timestamp
@@ -1131,20 +1149,22 @@ en:
     agency_acronym:
       la_ldh: LDH
       nh_dhhs: NH DHHS
+      research: EDOH
       sandbox: TA
     agency_full_name:
       la_ldh: Louisiana Department of Health
       nh_dhhs: NH DHHS Bureau of Family Assistance
+      research: Example Department of Health
       sandbox: Test Agency
     app_name:
-      nh_dhhs: TAApp
-      sandbox: TAApp
+      default: TAApp
     banner:
       lock: Lock
       locked_padlock: A locked padlock
     benefit:
       la_ldh: Medicaid
       nh_dhhs: Medicaid
+      research: Medicaid
       sandbox: Medicaid
     credit_hours:
       one: "%{count} credit hour"
@@ -1156,6 +1176,7 @@ en:
       cbv_flow_title:
         la_ldh: Department of Health
         nh_dhhs: NH DHHS Bureau of Family Assistance
+        research: Example Department of Health
         sandbox: Test Agency
       close: Close
       help: Help
@@ -1188,6 +1209,7 @@ en:
     reporting_purpose:
       la_ldh: benefits
       nh_dhhs: benefits
+      research: benefits
       sandbox: benefits
     select_placeholder: "- Select -"
     skip_link: Skip to main content
