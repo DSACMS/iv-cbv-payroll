@@ -8,6 +8,13 @@
   margin-bottom: units(4);
   margin-top: units(4);
 }
+.document-uploads--full-width {
+  max-width: 44rem;
+
+  .document-uploads__item {
+    max-width: none;
+  }
+}
 .document-uploads__heading {
   margin-bottom: units(2);
   margin-top: 0;

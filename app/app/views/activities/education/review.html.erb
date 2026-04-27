@@ -40,6 +40,18 @@
   <%= render "review_validated" %>
 <% end %>
 
+<% if @education_activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: @education_activity.document_uploads.map { |a| { filename: a.filename.to_s } },
+    edit_path: new_activities_flow_education_document_upload_path(
+      education_id: @education_activity,
+      from_review: 1,
+      from_edit: params[:from_edit].presence
+    ),
+    full_width: true
+  ) %>
+<% end %>
+
 <%= form_with model: @education_activity,
       url: save_review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence),
       method: :patch,

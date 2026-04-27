@@ -610,6 +610,67 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include("back-nav")
       expect(response.body).to have_link(href: activities_flow_root_path)
     end
+
+    context "with previously uploaded documents across activity types" do
+      before do
+        Rails.application.config.active_storage.service = :local
+      end
+
+      it "renders each activity's uploaded documents, read-only, without edit links" do
+        volunteering = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Food Bank", hours: 1)
+        volunteering.document_uploads.attach(
+          io: StringIO.new("%PDF-1.4"),
+          filename: "volunteer-hours.pdf",
+          content_type: "application/pdf"
+        )
+
+        job_training = create(:job_training_activity, activity_flow: activity_flow, program_name: "Workshop", hours: 6)
+        job_training.document_uploads.attach(
+          io: StringIO.new("%PDF-1.4"),
+          filename: "training-cert.pdf",
+          content_type: "application/pdf"
+        )
+
+        education = create(
+          :education_activity,
+          activity_flow: activity_flow,
+          data_source: :fully_self_attested,
+          school_name: "University"
+        )
+        create(:education_activity_month, education_activity: education, month: activity_flow.reporting_months.first, hours: 4)
+        education.document_uploads.attach(
+          io: StringIO.new("%PDF-1.4"),
+          filename: "transcript.pdf",
+          content_type: "application/pdf"
+        )
+
+        employment = create(:employment_activity, activity_flow: activity_flow)
+        create(
+          :employment_activity_month,
+          employment_activity: employment,
+          month: activity_flow.reporting_months.first.beginning_of_month,
+          hours: 40,
+          gross_income: 500
+        )
+        employment.document_uploads.attach(
+          io: StringIO.new("%PDF-1.4"),
+          filename: "paystub.pdf",
+          content_type: "application/pdf"
+        )
+
+        get :show
+
+        expect(response.body).to include("volunteer-hours.pdf")
+        expect(response.body).to include("training-cert.pdf")
+        expect(response.body).to include("transcript.pdf")
+        expect(response.body).to include("paystub.pdf")
+        expect(response.body).not_to include(I18n.t("activities.document_uploads.remove_file"))
+        expect(response.body).not_to include(new_activities_flow_income_employment_document_upload_path(employment_id: employment))
+        expect(response.body).not_to include(new_activities_flow_community_service_document_upload_path(community_service_id: volunteering))
+        expect(response.body).not_to include(new_activities_flow_job_training_document_upload_path(job_training_id: job_training))
+        expect(response.body).not_to include(new_activities_flow_education_document_upload_path(education_id: education))
+      end
+    end
   end
 
   describe "PATCH #update" do

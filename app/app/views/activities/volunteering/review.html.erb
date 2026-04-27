@@ -54,6 +54,18 @@
   <% end %>
 <% end %>
 
+<% if @volunteering_activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: @volunteering_activity.document_uploads.map { |a| { filename: a.filename.to_s } },
+    edit_path: new_activities_flow_community_service_document_upload_path(
+      community_service_id: @volunteering_activity,
+      from_review: 1,
+      from_edit: params[:from_edit].presence
+    ),
+    full_width: true
+  ) %>
+<% end %>
+
 <%= form_with model: @volunteering_activity,
       url: save_review_activities_flow_community_service_path(id: @volunteering_activity, from_edit: params[:from_edit].presence),
       method: :patch,
