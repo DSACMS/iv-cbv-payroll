@@ -1,5 +1,12 @@
-<section class="document-uploads" aria-labelledby="document-uploads-heading">
-  <%= content_tag :"h#{heading_level}", heading_text, id: "document-uploads-heading", class: "document-uploads__heading" %>
+<section class="<%= section_class %>" aria-labelledby="document-uploads-heading">
+  <% if edit_path.present? %>
+    <div class="display-flex flex-justify activity-review-edit-header">
+      <%= content_tag :"h#{heading_level}", heading_text, id: "document-uploads-heading", class: "document-uploads__heading margin-y-0" %>
+      <%= link_to edit_label, edit_path, class: "usa-link" %>
+    </div>
+  <% else %>
+    <%= content_tag :"h#{heading_level}", heading_text, id: "document-uploads-heading", class: "document-uploads__heading" %>
+  <% end %>
 
   <ul class="document-uploads__list">
     <% documents.each do |document| %>

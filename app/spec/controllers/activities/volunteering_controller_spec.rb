@@ -125,6 +125,36 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
         edit_activities_flow_community_service_month_path(community_service_id: volunteering_activity, id: 0, from_review: 1)
       )
     end
+
+    context "with previously uploaded documents" do
+      before do
+        Rails.application.config.active_storage.service = :local
+        volunteering_activity.document_uploads.attach(
+          io: StringIO.new("%PDF-1.4"),
+          filename: "verification.pdf",
+          content_type: "application/pdf"
+        )
+      end
+
+      it "renders the uploaded documents section with an edit link" do
+        get :review, params: { id: volunteering_activity.id }
+
+        expect(response.body).to include(I18n.t("activities.document_uploads.heading", document_count: 1))
+        expect(response.body).to include("verification.pdf")
+        expect(response.body).to include(
+          new_activities_flow_community_service_document_upload_path(community_service_id: volunteering_activity, from_review: 1)
+        )
+        expect(response.body).not_to include(I18n.t("activities.document_uploads.remove_file"))
+      end
+    end
+
+    context "without uploaded documents" do
+      it "does not render the uploaded documents heading" do
+        get :review, params: { id: volunteering_activity.id }
+
+        expect(response.body).not_to include(I18n.t("activities.document_uploads.heading", document_count: 0))
+      end
+    end
   end
 
   describe "PATCH #save_review" do
