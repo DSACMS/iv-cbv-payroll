@@ -99,13 +99,13 @@ class Activities::DocumentUploadsController < Activities::BaseController
 
   def upload_path
     if params[:community_service_id]
-      activities_flow_community_service_document_uploads_path(from_edit: params[:from_edit].presence)
+      activities_flow_community_service_document_uploads_path(from_edit: params[:from_edit].presence, from_review: params[:from_review].presence)
     elsif params[:job_training_id]
-      activities_flow_job_training_document_uploads_path(from_edit: params[:from_edit].presence)
+      activities_flow_job_training_document_uploads_path(from_edit: params[:from_edit].presence, from_review: params[:from_review].presence)
     elsif params[:education_id]
-      activities_flow_education_document_uploads_path(from_edit: params[:from_edit].presence)
+      activities_flow_education_document_uploads_path(from_edit: params[:from_edit].presence, from_review: params[:from_review].presence)
     elsif params[:employment_id]
-      activities_flow_income_employment_document_uploads_path(from_edit: params[:from_edit].presence)
+      activities_flow_income_employment_document_uploads_path(from_edit: params[:from_edit].presence, from_review: params[:from_review].presence)
     else
       raise <<~ERROR
         No activity param matched in DocumentUploadsController#upload_path.
@@ -119,22 +119,26 @@ class Activities::DocumentUploadsController < Activities::BaseController
     if params[:community_service_id]
       new_activities_flow_community_service_document_upload_path(
         community_service_id: @activity,
-        from_edit: params[:from_edit].presence
+        from_edit: params[:from_edit].presence,
+        from_review: params[:from_review].presence
       )
     elsif params[:job_training_id]
       new_activities_flow_job_training_document_upload_path(
         job_training_id: @activity,
-        from_edit: params[:from_edit].presence
+        from_edit: params[:from_edit].presence,
+        from_review: params[:from_review].presence
       )
     elsif params[:education_id]
       new_activities_flow_education_document_upload_path(
         education_id: @activity,
-        from_edit: params[:from_edit].presence
+        from_edit: params[:from_edit].presence,
+        from_review: params[:from_review].presence
       )
     elsif params[:employment_id]
       new_activities_flow_income_employment_document_upload_path(
         employment_id: @activity,
-        from_edit: params[:from_edit].presence
+        from_edit: params[:from_edit].presence,
+        from_review: params[:from_review].presence
       )
     else
       raise <<~ERROR

@@ -63,5 +63,6 @@
       <%= t(@activity.document_upload_suggestion_text) %>
     <% end %>
   <% end %>
-  <%= f.submit t(".continue") %>
+  <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t(".continue") %>
+  <%= f.submit submit_label %>
 <% end %>
