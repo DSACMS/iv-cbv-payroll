@@ -58,8 +58,19 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: "Local Food Bank"))
       expect(response.body).to include(I18n.t("shared.hours", count: 6))
       expect(response.body).to include(activities_flow_community_service_document_uploads_path)
-      expect(response.body).not_to include(I18n.t("activities.document_uploads.heading", document_count: 0))
+      expect(response.body).not_to include(I18n.t("activities.document_uploads.heading_previous", document_count: 0))
       expect(response.body).to include(I18n.t("activities.document_uploads.new.input_label"))
+    end
+
+    it "shows the Save changes label and preserves from_review in the form action when from_review is set" do
+      volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, hours: 6)
+
+      get :new, params: { community_service_id: volunteering_activity.id, from_review: 1 }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("activities.hub.save"))
+      expect(response.body).to include(activities_flow_community_service_document_uploads_path(from_review: 1))
     end
 
     it "renders the upload form for a job training activity" do
@@ -167,7 +178,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       get :new, params: { community_service_id: volunteering_activity.id }
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.document_uploads.heading", document_count: 1))
+      expect(response.body).to include(I18n.t("activities.document_uploads.heading_previous", document_count: 1))
       expect(response.body).to include("verification.pdf")
       expect(response.body).to include(I18n.t("activities.document_uploads.remove_file"))
       expect(response.body).to include("file_present")
@@ -314,6 +325,22 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       expect(response).to redirect_to(
         new_activities_flow_income_employment_document_upload_path(employment_id: employment_activity)
+      )
+    end
+
+    it "preserves from_review in the redirect when removing during edit-from-review" do
+      volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
+      volunteering_activity.document_uploads.attach(
+        io: StringIO.new("%PDF-1.4"),
+        filename: "verification.pdf",
+        content_type: "application/pdf"
+      )
+      attachment_id = volunteering_activity.document_uploads_attachments.first.id
+
+      delete :destroy, params: { community_service_id: volunteering_activity.id, id: attachment_id, from_review: 1 }
+
+      expect(response).to redirect_to(
+        new_activities_flow_community_service_document_upload_path(community_service_id: volunteering_activity, from_review: 1)
       )
     end
   end

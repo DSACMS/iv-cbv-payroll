@@ -104,6 +104,18 @@
   <% end %>
 <% end %>
 
+<% if @job_training_activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: @job_training_activity.document_uploads.map { |a| { filename: a.filename.to_s } },
+    edit_path: new_activities_flow_job_training_document_upload_path(
+      job_training_id: @job_training_activity,
+      from_review: 1,
+      from_edit: params[:from_edit].presence
+    ),
+    full_width: true
+  ) %>
+<% end %>
+
 <%= form_with model: @job_training_activity,
       url: save_review_activities_flow_job_training_path(id: @job_training_activity, from_edit: params[:from_edit].presence),
       method: :patch,
