@@ -138,7 +138,8 @@ en:
       title_singular: Community service
       zip_code: Zip code
     document_uploads:
-      heading: Previously uploaded documents (%{document_count})
+      heading: Uploaded documents (%{document_count})
+      heading_previous: Previously uploaded documents (%{document_count})
       new:
         continue: Continue to review
         description: 'Upload documents that verify the information you entered for:'
