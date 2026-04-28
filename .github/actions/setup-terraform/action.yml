@@ -6,7 +6,7 @@ runs:
     - name: Get .terraform-version
       id: get-terraform-version
       run: |
-        terraform_version="$(cat .terraform-version)"
+        terraform_version="$(cat infra/.terraform-version)"
         echo "Terraform version: ${terraform_version}"
         echo "terraform_version=${terraform_version}" >> "$GITHUB_OUTPUT"
       shell: bash
