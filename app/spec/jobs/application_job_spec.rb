@@ -13,6 +13,7 @@ RSpec.describe ApplicationJob do
       expect(NewRelic::Agent).to receive(:record_custom_event).with(
         "SolidQueueJobFailed",
         hash_including(
+          is_silenced: false,
           executions: 1,
           max_attempts: 5,
           job_id: anything
@@ -43,6 +44,29 @@ RSpec.describe ApplicationJob do
       )
 
       MaxAttemptsOverrideTestJob.perform_now
+    end
+
+    class SilentlyRetriableTestJob < ApplicationJob
+      def perform
+        raise ApplicationJob::SilencedError, "retry silently"
+      end
+    end
+
+    it "records silenceable errors with silenced=true" do
+      expect(NewRelic::Agent).to receive(:record_custom_event).with(
+        "SolidQueueJobFailed",
+        hash_including(
+          error_message: "retry silently",
+          is_silenced: true
+        )
+      )
+      SilentlyRetriableTestJob.perform_now
+    end
+
+    it "still retries silenceable errors" do
+      expect do
+        SilentlyRetriableTestJob.perform_now
+      end.to have_enqueued_job(SilentlyRetriableTestJob)
     end
   end
 

@@ -76,6 +76,7 @@ common: &default_settings
       - "ActionController::RoutingError"
       - "ActionController::UnknownHttpMethod"
       - "ActionDispatch::Http::MimeNegotiation::InvalidType"
+      - "ApplicationJob::SilencedError"
 
 
 # Environment-specific settings are in this section.

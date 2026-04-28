@@ -22,6 +22,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
   let(:fake_event_logger) { instance_double(GenericEventTracker, track: nil) }
   let(:mocked_client_logo_path) { "ldh_logo.svg" }
+  let(:mocked_client_agency_id) { mocked_client_id }
 
   let(:cbv_flow) do
     create(:cbv_flow,
@@ -46,7 +47,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
 
     allow_any_instance_of(described_class).to receive(:current_agency).and_return(mock_client_agency)
-    allow(mock_client_agency).to receive_messages(id: mocked_client_id, logo_path: mocked_client_logo_path, transmission_method: transmission_method, transmission_method_configuration: transmission_method_configuration)
+    allow(mock_client_agency).to receive_messages(id: mocked_client_agency_id, logo_path: mocked_client_logo_path, transmission_method: transmission_method, transmission_method_configuration: transmission_method_configuration)
 
     allow_any_instance_of(described_class)
       .to receive(:event_logger)
@@ -291,6 +292,56 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
+    end
+
+    context "when transmission fails with a silenceable error" do
+      let(:transmission_method) { Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD }
+      let(:error_message) { "Unexpected response from agency: code=403 message=Forbidden body=" }
+
+      before do
+        allow(NewRelic::Agent).to receive(:record_custom_event)
+        allow_any_instance_of(Transmitters::HttpPdfTransmitter)
+          .to receive(:deliver)
+          .and_raise(ApplicationJob::SilencedError, error_message)
+      end
+
+      it "retries and reports the failure as silenced" do
+        expect do
+          described_class.perform_now(cbv_flow.id)
+        end.to have_enqueued_job(described_class)
+
+        expect(NewRelic::Agent).to have_received(:record_custom_event).with(
+          "SolidQueueJobFailed",
+          hash_including(
+            error_message: error_message,
+            is_silenced: true
+          )
+        )
+      end
+    end
+
+    context "when transmission fails with a non-silenced error" do
+      let(:transmission_method) { Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD }
+      let(:error_message) { "Unexpected response from agency: code=500 message=Internal Server Error body=" }
+
+      before do
+        allow(NewRelic::Agent).to receive(:record_custom_event)
+        allow_any_instance_of(Transmitters::HttpPdfTransmitter)
+          .to receive(:deliver)
+          .and_raise(Transmitters::HttpPdfTransmitter::HttpPdfTransmitterError, error_message)
+      end
+
+      it "still reports to NewRelic" do
+        described_class.perform_now(cbv_flow.id)
+
+        expect(NewRelic::Agent).to have_received(:record_custom_event).with(
+          "SolidQueueJobFailed",
+          hash_including(
+            error_message: error_message,
+            is_silenced: false
+          )
+        )
+      end
     end
   end
 
