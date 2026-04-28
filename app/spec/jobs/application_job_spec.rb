@@ -27,6 +27,23 @@ RSpec.describe ApplicationJob do
         TestJob.perform_now
       end.to have_enqueued_job(TestJob)
     end
+
+    class MaxAttemptsOverrideTestJob < ApplicationJob
+      self.max_attempts = 99
+
+      def perform
+        raise StandardError, "failed"
+      end
+    end
+
+    it "reports the subclass's overridden max_attempts in the NewRelic event" do
+      expect(NewRelic::Agent).to receive(:record_custom_event).with(
+        "SolidQueueJobFailed",
+        hash_including(max_attempts: 99)
+      )
+
+      MaxAttemptsOverrideTestJob.perform_now
+    end
   end
 
   describe "#with_flow_tags" do

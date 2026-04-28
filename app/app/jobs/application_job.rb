@@ -3,6 +3,8 @@ class ApplicationJob < ActiveJob::Base
 
   retry_on Exception, wait: :polynomially_longer, attempts: 5
 
+  class_attribute :max_attempts, default: 5
+
   def event_logger
     @event_logger ||= GenericEventTracker.new
   end
@@ -42,7 +44,7 @@ class ApplicationJob < ActiveJob::Base
       error_class: error.class.name,
       error_message: error.message,
       executions: self.executions,
-      max_attempts: 5
+      max_attempts: self.class.max_attempts
     }.merge(trace_metadata))
     raise error
   end
