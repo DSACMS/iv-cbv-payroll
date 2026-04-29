@@ -3,6 +3,14 @@ class CaseWorkerTransmitterJob < ApplicationJob
 
   queue_as :default
 
+  RETRY_WAITS = [ 5.minutes, 10.minutes, 30.minutes, 1.hour, 4.hours ].freeze
+
+  retry_on Exception,
+    attempts: RETRY_WAITS.size + 1,
+    wait: ->(executions) { RETRY_WAITS[executions - 1] || RETRY_WAITS.last }
+
+  self.max_attempts = RETRY_WAITS.size + 1
+
   limits_concurrency to: 1,
     key: ->(flow_id) {
       flow = CbvFlow.find(flow_id)

@@ -293,4 +293,58 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
     end
   end
+
+  describe "retry schedule" do
+    let(:transmission_method) { "shared_email" }
+    let(:invalid_flow_id) { 99_999_999 }
+    let(:retry_test_time) { Time.zone.parse("2026-04-28 10:00:00") }
+
+    around do |ex|
+      Timecop.freeze(retry_test_time, &ex)
+    end
+
+    before do
+      ActiveJob::Base.queue_adapter.enqueued_jobs.clear
+    end
+
+    it "exposes a RETRY_WAITS constant matching the agreed schedule" do
+      expect(described_class::RETRY_WAITS).to eq(
+        [ 5.minutes, 10.minutes, 30.minutes, 1.hour, 4.hours ]
+      )
+    end
+
+    it "schedules each retry with the wait corresponding to that execution" do
+      schedule = [
+        [ 0, 5.minutes ],
+        [ 1, 10.minutes ],
+        [ 2, 30.minutes ],
+        [ 3, 1.hour ],
+        [ 4, 4.hours ]
+      ]
+
+      schedule.each do |prev_failures, expected_wait|
+        job = described_class.new(invalid_flow_id)
+        job.exception_executions["[Exception]"] = prev_failures
+
+        expect { job.perform_now }
+          .to have_enqueued_job(described_class)
+          .with(invalid_flow_id)
+          .at(retry_test_time + expected_wait)
+
+        ActiveJob::Base.queue_adapter.enqueued_jobs.clear
+      end
+    end
+
+    it "raises after the final attempt is exhausted (no further retry enqueued)" do
+      job = described_class.new(invalid_flow_id)
+      job.exception_executions["[Exception]"] = described_class::RETRY_WAITS.size
+
+      expect { job.perform_now }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(ActiveJob::Base.queue_adapter.enqueued_jobs).to be_empty
+    end
+
+    it "sets max_attempts to RETRY_WAITS.size + 1 so the NewRelic event reports correctly" do
+      expect(described_class.max_attempts).to eq(described_class::RETRY_WAITS.size + 1)
+    end
+  end
 end
