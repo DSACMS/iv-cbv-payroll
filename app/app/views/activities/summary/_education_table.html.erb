@@ -7,3 +7,11 @@
     <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
   <% end %>
 <% end %>
+
+<% if activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: activity.document_uploads.map { |a| { filename: a.filename.to_s } },
+    heading_level: 3,
+    full_width: true
+  ) %>
+<% end %>

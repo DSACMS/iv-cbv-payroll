@@ -54,6 +54,18 @@
   <% end %>
 <% end %>
 
+<% if @employment_activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: @employment_activity.document_uploads.map { |a| { filename: a.filename.to_s } },
+    edit_path: new_activities_flow_income_employment_document_upload_path(
+      employment_id: @employment_activity,
+      from_review: 1,
+      from_edit: params[:from_edit].presence
+    ),
+    full_width: true
+  ) %>
+<% end %>
+
 <%= form_with model: @employment_activity,
       url: save_review_activities_flow_income_employment_path(id: @employment_activity, from_edit: params[:from_edit].presence),
       method: :patch,

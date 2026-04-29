@@ -15,7 +15,7 @@ RSpec.describe DocumentUploadsComponent, type: :component do
       ])
     )
 
-    expect(result).to have_text("Previously uploaded documents (2)")
+    expect(result).to have_text("Uploaded documents (2)")
     expect(result).to have_text("verification.pdf")
     expect(result).to have_text("paystub.jpg")
     expect(result).to have_element(:use, href: /.svg#file_present/)
@@ -32,5 +32,29 @@ RSpec.describe DocumentUploadsComponent, type: :component do
 
     expect(result).to have_link("Remove file", href: "/documents/1")
     expect(result.to_html).to include('data-turbo-method="delete"')
+  end
+
+  it "renders an edit link next to the heading when edit_path is provided" do
+    result = render_inline(
+      described_class.new(
+        documents: [ { filename: "verification.pdf" } ],
+        edit_path: "/activities/employment/1/document_uploads/new"
+      )
+    )
+
+    expect(result).to have_link("Edit", href: "/activities/employment/1/document_uploads/new")
+    expect(result).not_to have_text("Remove file")
+  end
+
+  it "uses the provided edit_label when given" do
+    result = render_inline(
+      described_class.new(
+        documents: [ { filename: "verification.pdf" } ],
+        edit_path: "/edit",
+        edit_label: "Change documents"
+      )
+    )
+
+    expect(result).to have_link("Change documents", href: "/edit")
   end
 end

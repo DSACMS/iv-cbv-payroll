@@ -37,7 +37,8 @@
         remove_path: remove_document_upload_path(attachment)
       }
     end,
-    show_remove_file: true
+    show_remove_file: true,
+    previously_uploaded: true
   ) %>
 <% end %>
 
@@ -62,5 +63,6 @@
       <%= t(@activity.document_upload_suggestion_text) %>
     <% end %>
   <% end %>
-  <%= f.submit t(".continue") %>
+  <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t(".continue") %>
+  <%= f.submit submit_label %>
 <% end %>

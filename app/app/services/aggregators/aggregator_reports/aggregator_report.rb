@@ -95,7 +95,9 @@ module Aggregators::AggregatorReports
                 pay_period_start: paystub.pay_period_start,
                 pay_period_end: paystub.pay_period_end,
                 pay_gross: paystub.gross_pay_amount || 0,
-                gross_pay_list: (paystub.earnings || []).map do |earning|
+                gross_pay_list: (paystub.earnings || []).filter_map do |earning|
+                  next if earning.amount.nil?
+
                   {
                     type: earning.category,
                     amount: earning.amount

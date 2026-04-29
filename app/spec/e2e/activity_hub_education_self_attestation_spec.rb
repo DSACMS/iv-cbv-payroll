@@ -74,7 +74,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
       title: I18n.t("activities.document_uploads.new.title", name: "University of Illinois"),
       skip_axe_rules: %w[heading-order]
     )
-    expect(page).to have_content(I18n.t("activities.document_uploads.heading", document_count: 1))
+    expect(page).to have_content(I18n.t("activities.document_uploads.heading_previous", document_count: 1))
     expect(page).to have_content("document_upload.pdf")
     click_link I18n.t("activities.document_uploads.remove_file")
     expect(page).not_to have_content("document_upload.pdf")
