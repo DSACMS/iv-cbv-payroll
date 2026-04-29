@@ -469,7 +469,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows enrollment data and not the empty-state copy" do
+    it "shows only enrollment data and not the empty-state copy" do
       expect(response.body).to include("Test University")
       expect(response.body).to include(
         I18n.t(
@@ -477,7 +477,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           status: I18n.t("components.enrollment_term_table_component.status.half_time")
         )
       )
-      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.hours", count: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
       expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 12))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
@@ -507,7 +507,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows enrollment status with saved credit hours and CE hours on the education card" do
+    it "shows only enrollment status on the education card" do
       expect(response.body).to include("Test University")
       expect(response.body).to include(
         I18n.t(
@@ -515,8 +515,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         )
       )
-      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
-      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 16))
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.hours", count: 16))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
 
@@ -567,13 +567,19 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "renders one card for the school with both months of data" do
+    it "renders one card for the school with enrollment data for both months" do
       education_cards = Nokogiri::HTML.parse(response.body).css("[data-activity-type='education'] .activity-hub-card")
 
       expect(education_cards.length).to eq(1)
       expect(response.body).to include("River College")
-      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 3))
-      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 5))
+      expect(response.body.scan(
+        I18n.t(
+          "activities.hub.cards.enrollment_status",
+          status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        )
+      ).length).to eq(2)
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 3))
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 5))
     end
   end
 
@@ -617,7 +623,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows all enrollment statuses on education cards and uses 80 hours in monthly progress" do
+    it "shows only the qualifying enrollment on education cards and uses the sufficient enrollment progress label" do
       expect(response.body).to include(half_time_school_name)
       expect(response.body).not_to include(less_than_half_time_school_name)
       expect(response.body).to include(
@@ -632,9 +638,9 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         )
       )
-      progress_text = /80\s*\/\s*#{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD}\s*#{I18n.t("activity_flow_progress_indicator.hours")}/
       page_text = Capybara.string(response.body).text
-      expect(page_text.scan(progress_text).count).to eq(2)
+      expect(page_text.scan(I18n.t("activity_flow_progress_indicator.sufficiently_enrolled")).count).to eq(2)
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.hours", count: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
     end
   end
 

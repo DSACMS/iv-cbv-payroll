@@ -195,10 +195,16 @@ RSpec.describe ActivitiesHelper do
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
-      result.first[:months].each do |month_data|
-        expect(month_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.full_time"))
-        expect(month_data[:community_engagement_hours]).to eq(80)
-      end
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: first_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.full_time")
+        },
+        {
+          month: second_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.full_time")
+        }
+      )
     end
 
     it "shows 'Not enrolled' for months without overlapping terms" do
@@ -212,9 +218,9 @@ RSpec.describe ActivitiesHelper do
       first_month_data = result.first[:months].find { |m| m[:month] == first_month }
 
       expect(first_month_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.half_time"))
-      expect(first_month_data[:community_engagement_hours]).to eq(80)
+      expect(first_month_data).not_to have_key(:community_engagement_hours)
       expect(second_month_data[:enrollment_status]).to eq(I18n.t("activities.hub.cards.not_enrolled"))
-      expect(second_month_data[:community_engagement_hours]).to eq(0)
+      expect(second_month_data).not_to have_key(:community_engagement_hours)
     end
 
     it "does not build a card for a term with no reporting-window overlap" do
@@ -294,22 +300,16 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:months]).to contain_exactly(
         {
           month: first_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
-          community_engagement_hours: 12,
-          credit_hours: 3,
-          show_credit_hours: true
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         },
         {
           month: second_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
-          community_engagement_hours: 20,
-          credit_hours: 5,
-          show_credit_hours: true
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         }
       )
     end
 
-    it "shows saved term credit hours for partially self-attested months" do
+    it "shows enrollment status only for partially self-attested months" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
       create(
         :nsc_enrollment_term,
@@ -323,11 +323,16 @@ RSpec.describe ActivitiesHelper do
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
-      result.first[:months].each do |month_data|
-        expect(month_data[:credit_hours]).to eq(6)
-        expect(month_data[:community_engagement_hours]).to eq(24)
-        expect(month_data[:show_credit_hours]).to be(true)
-      end
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: first_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        },
+        {
+          month: second_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        }
+      )
     end
 
     it "only includes overlapping months for partially self-attested terms" do
@@ -345,10 +350,15 @@ RSpec.describe ActivitiesHelper do
       result = helper.education_cards([ activity.reload ], reporting_months)
 
       expect(result.first[:months].map { |m| m[:month] }).to eq([ first_month ])
-      expect(result.first[:months].first[:credit_hours]).to eq(4)
+      expect(result.first[:months].first).to eq(
+        {
+          month: first_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        }
+      )
     end
 
-    it "shows saved term credit hours for enrolled partially self-attested months" do
+    it "shows enrollment status only for enrolled partially self-attested months" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
       create(
         :nsc_enrollment_term,
@@ -362,11 +372,16 @@ RSpec.describe ActivitiesHelper do
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
-      result.first[:months].each do |month_data|
-        expect(month_data[:credit_hours]).to eq(5)
-        expect(month_data[:community_engagement_hours]).to eq(20)
-        expect(month_data[:show_credit_hours]).to be(true)
-      end
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: first_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.enrolled")
+        },
+        {
+          month: second_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.enrolled")
+        }
+      )
     end
 
     it "builds a fully self-attested card from activity months" do
@@ -415,10 +430,16 @@ RSpec.describe ActivitiesHelper do
       result = helper.education_cards([ activity.reload ], summer_months)
 
       expect(result.length).to eq(1)
-      expect(result.first[:months].map { |month| month[:enrollment_status] })
-        .to all(eq(I18n.t("components.enrollment_term_table_component.status.half_time")))
-      expect(result.first[:months].map { |month| month[:community_engagement_hours] })
-        .to all(eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: Date.new(2025, 7, 1),
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        },
+        {
+          month: Date.new(2025, 8, 1),
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        }
+      )
     end
 
     it "shows the spring enrollment status on the summer card when no summer term exists" do
@@ -437,10 +458,16 @@ RSpec.describe ActivitiesHelper do
       result = helper.education_cards([ activity.reload ], summer_months)
 
       expect(result.length).to eq(1)
-      expect(result.first[:months].map { |month| month[:enrollment_status] })
-        .to all(eq(I18n.t("components.enrollment_term_table_component.status.half_time")))
-      expect(result.first[:months].map { |month| month[:community_engagement_hours] })
-        .to all(eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: Date.new(2025, 7, 1),
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        },
+        {
+          month: Date.new(2025, 8, 1),
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        }
+      )
     end
 
     it "builds one validated card when two terms overlap the same reporting month" do
@@ -469,9 +496,9 @@ RSpec.describe ActivitiesHelper do
       july_data = result.first[:months].find { |month| month[:month] == Date.new(2025, 7, 1) }
 
       expect(june_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.half_time"))
-      expect(june_data[:community_engagement_hours]).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
+      expect(june_data).not_to have_key(:community_engagement_hours)
       expect(july_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.half_time"))
-      expect(july_data[:community_engagement_hours]).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
+      expect(july_data).not_to have_key(:community_engagement_hours)
     end
   end
 

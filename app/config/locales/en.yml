@@ -547,6 +547,7 @@ en:
     renewal_subtitle_no_range: Complete any %{required} months to meet requirements.
     see_progress_in_dollars: See progress in $
     see_progress_in_hours: See progress in hours
+    sufficiently_enrolled: Sufficiently enrolled
     switch_to_dollars: Switch to $
     switch_to_hours: Switch to hours
     title: Your %{month} progress
