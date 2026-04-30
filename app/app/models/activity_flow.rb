@@ -1,4 +1,6 @@
 class ActivityFlow < Flow
+  include DemoLauncherOverrides
+
   belongs_to :cbv_applicant
   belongs_to :identity, optional: true
   belongs_to :activity_flow_invitation, optional: true
@@ -10,7 +12,7 @@ class ActivityFlow < Flow
   has_many :payroll_accounts, as: :flow, dependent: :destroy
   has_many :activity_flow_monthly_summaries, dependent: :destroy
 
-  before_create :set_default_reporting_window
+  before_create :set_default_reporting_window, :set_default_renewal_required_months
 
   def self.create_from_invitation(invitation, device_id, params = {})
     create(
@@ -44,24 +46,29 @@ class ActivityFlow < Flow
 
   def reporting_window_display
     range = reporting_window_range
-    start_display = I18n.l(range.begin, format: :month_year)
     end_display = I18n.l(range.end, format: :month_year)
 
-    return start_display if start_display == end_display
+    if range.begin.year == range.end.year
+      start_display = I18n.l(range.begin, format: :month)
+    else
+      start_display = I18n.l(range.begin, format: :month_year)
+    end
+
+    return end_display if start_display == end_display
 
     "#{start_display} - #{end_display}"
   end
 
-  def complete?
-    completed_at.present?
+  def any_activities_added?
+    volunteering_activities.published.exists? ||
+      job_training_activities.published.exists? ||
+      education_activities.published.exists? ||
+      employment_activities.published.exists? ||
+      payroll_accounts.published.exists?
   end
 
-  def any_activities_added?
-    education_activities.where.associated(:nsc_enrollment_terms).exists? ||
-      volunteering_activities.exists? ||
-      job_training_activities.exists? ||
-      employment_activities.exists? ||
-      payroll_accounts.exists?
+  def complete?
+    completed_at.present?
   end
 
   def invitation_id
@@ -84,6 +91,29 @@ class ActivityFlow < Flow
     { w2: days, gig: days }
   end
 
+  def activity_month_order_oldest_first?
+    true
+  end
+
+  def renewal_reporting_window?
+    reporting_window_type == "renewal"
+  end
+
+  def required_month_count
+    window_months = reporting_window_months || calculate_reporting_window_months
+    return window_months unless renewal_reporting_window?
+
+    renewal_required_months || window_months
+  end
+
+  def set_required_month_count!(requested_count)
+    update!(renewal_required_months: requested_count)
+  end
+
+  def set_reporting_window_months!(requested_months)
+    update!(reporting_window_months: requested_months.to_i)
+  end
+
   private
 
   def set_default_reporting_window
@@ -91,9 +121,16 @@ class ActivityFlow < Flow
   end
 
   def calculate_reporting_window_months
-    return 6 if reporting_window_type == "renewal"
+    return 6 if renewal_reporting_window?
 
     client_agency = Rails.application.config.client_agencies[cbv_applicant&.client_agency_id]
     client_agency&.application_reporting_months || 1
+  end
+
+  def set_default_renewal_required_months
+    return unless renewal_reporting_window?
+
+    client_agency = Rails.application.config.client_agencies[cbv_applicant&.client_agency_id]
+    self.renewal_required_months ||= client_agency&.renewal_required_months || reporting_window_months
   end
 end

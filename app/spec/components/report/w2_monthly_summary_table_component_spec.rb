@@ -48,6 +48,7 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
         pinwheel_stub_request_end_user_account_response
         pinwheel_stub_request_platform_response
         pinwheel_stub_request_end_user_paystubs_response
+        pinwheel_stub_request_shifts_response
         pinwheel_stub_request_income_metadata_response if supported_jobs.include?("income")
         pinwheel_stub_request_employment_info_response
         pinwheel_report.fetch
@@ -60,27 +61,27 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
 
       it "includes table header" do
         expect(subject.css("h2").to_html).to include "Monthly summary"
-        expect(subject.css("thead tr.subheader-row th").length).to eq(4)
+        expect(subject.css("thead tr th").length).to eq(4)
       end
 
       it "renders the Month column with the correct date format" do
         x = render_inline(described_class.new(pinwheel_report, payroll_account))
-        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
+        expect(subject.css("thead tr th:nth-child(1)").to_html).to include "Month"
         expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "December 2020"
       end
 
       it "renders the Gross income column with the correct currency format" do
-        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Gross income"
+        expect(subject.css("thead tr th:nth-child(2)").to_html).to include "Gross income"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(2)").to_html).to include "$4,807.20"
       end
 
       it "renders the number of payments column with the correct currency format" do
-        expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Number of paychecks"
+        expect(subject.css("thead tr th:nth-child(3)").to_html).to include "Number of paychecks"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "1"
       end
 
       it "renders the Total hours worked column with correct summation" do
-        expect(subject.css("thead tr.subheader-row th:nth-child(4)").to_html).to include "Total hours worked"
+        expect(subject.css("thead tr th:nth-child(4)").to_html).to include "Total hours worked"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(4)").to_html).to include "80.0"
       end
     end
@@ -132,18 +133,18 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
 
       it "includes table header" do
         expect(subject.css("h2").to_html).to include "Monthly summary"
-        expect(subject.css("thead tr.subheader-row th").length).to eq(4)
+        expect(subject.css("thead tr th").length).to eq(4)
       end
 
       it "renders the Month column with the correct date format" do
-        expect(subject.css("thead tr.subheader-row th:nth-child(1)").to_html).to include "Month"
+        expect(subject.css("thead tr th:nth-child(1)").to_html).to include "Month"
         expect(subject.css("tbody tr:nth-child(1) th:nth-child(1)").to_html).to include "March 2025"
         expect(subject.css("tbody tr:nth-child(2) th:nth-child(1)").to_html).to include "February 2025"
         expect(subject.css("tbody tr:nth-child(3) th:nth-child(1)").to_html).to include "January 2025"
       end
 
       it "renders the Gross income column with the correct currency format" do
-        expect(subject.css("thead tr.subheader-row th:nth-child(2)").to_html).to include "Gross income"
+        expect(subject.css("thead tr th:nth-child(2)").to_html).to include "Gross income"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(2)").to_html).to include "$1,518.97"
         expect(subject.css("tbody tr:nth-child(2) td:nth-child(2)").to_html).to include "$2,998.53"
         expect(subject.css("tbody tr:nth-child(3) td:nth-child(2)").to_html).to include "$3,679.88"
@@ -152,7 +153,7 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
       it "renders the Number of Paychecks column with correct summation" do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
 
-        expect(subject.css("thead tr.subheader-row th:nth-child(3)").to_html).to include "Number of paychecks"
+        expect(subject.css("thead tr th:nth-child(3)").to_html).to include "Number of paychecks"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(3)").to_html).to include "1"
         expect(subject.css("tbody tr:nth-child(2) td:nth-child(3)").to_html).to include "2"
         expect(subject.css("tbody tr:nth-child(3) td:nth-child(3)").to_html).to include "2"
@@ -161,7 +162,7 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
       it "renders the Total hours worked column with correct summation" do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
 
-        expect(subject.css("thead tr.subheader-row th:nth-child(4)").to_html).to include "Total hours worked"
+        expect(subject.css("thead tr th:nth-child(4)").to_html).to include "Total hours worked"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(4)").to_html).to include "65.6"
         expect(subject.css("tbody tr:nth-child(2) td:nth-child(4)").to_html).to include "117.7"
         expect(subject.css("tbody tr:nth-child(3) td:nth-child(4)").to_html).to include "158.9"
@@ -172,6 +173,26 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
         expect(subject.to_html).to include('"Gross income" is the pay')
         expect(subject.to_html).to include('"Number of paychecks" is how many times')
         expect(subject.to_html).to include('"Total hours worked" are the total number')
+      end
+
+      context "for an activity flow" do
+        let(:activity_flow) { create(:activity_flow, reporting_window_months: 3, cbv_applicant: cbv_applicant, created_at: current_time) }
+        let!(:payroll_account) do
+          create(
+            :payroll_account,
+            :argyle_fully_synced,
+            flow: activity_flow,
+            aggregator_account_id: account_id
+          )
+        end
+
+        it "renders months in reporting window order (oldest first)" do
+          month_labels = subject.css("tbody tr th[scope='row']").map { |header| header.text.lines.first.strip }
+          month_dates = month_labels.map { |label| Date.strptime(label, "%B %Y") }
+
+          expect(month_dates.length).to be >= 2
+          expect(month_dates).to eq(month_dates.sort)
+        end
       end
     end
 
@@ -199,7 +220,7 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
 
       it "includes table header" do
         expect(subject.css("h2").to_html).to include "Monthly summary"
-        expect(subject.css("thead tr.subheader-row th").length).to eq(4)
+        expect(subject.css("thead tr th").length).to eq(4)
       end
 
       it "renders the error message with no paystubs" do

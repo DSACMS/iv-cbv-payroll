@@ -1,0 +1,82 @@
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.employer_information") } %>
+  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
+  <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.employer") %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= header %>
+    <% end %>
+    <%= row.with_data_cell(data_label: header) do %>
+      <%= activity.employer_name.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.address") %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= header %>
+    <% end %>
+    <%= row.with_data_cell(data_label: header) do %>
+      <%= activity.formatted_address.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.contact_name") %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= header %>
+    <% end %>
+    <%= row.with_data_cell(data_label: header) do %>
+      <%= activity.contact_name.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.contact_email") %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= header %>
+    <% end %>
+    <%= row.with_data_cell(data_label: header) do %>
+      <%= activity.contact_email.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+  <%= table.with_row do |row| %>
+    <% header = t("activities.summary.employment.contact_phone") %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= header %>
+    <% end %>
+    <%= row.with_data_cell(data_label: header) do %>
+      <%= activity.contact_phone_number.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<h3><%= t("activities.summary.monthly_details") %></h3>
+<%= render(TableComponent.new(multi_column: true)) do |table| %>
+  <%= table.with_header_cell(colspan: 1)
+         .with_content(t("activities.summary.employment.month")) %>
+  <%= table.with_header_cell(colspan: 1)
+         .with_content(t("activities.summary.employment.gross_income")) %>
+  <%= table.with_header_cell(colspan: 1)
+         .with_content(t("activities.summary.employment.hours_worked")) %>
+
+  <% activity.employment_activity_months.order(:month).each do |activity_month| %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(data_label: t("activities.summary.employment.month"), is_header: true)
+             .with_content(I18n.l(activity_month.month, format: :month)) %>
+      <%= row.with_data_cell(data_label: t("activities.summary.employment.gross_income"))
+             .with_content(number_to_currency(activity_month.gross_income)) %>
+      <%= row.with_data_cell(data_label: t("activities.summary.employment.hours_worked"))
+             .with_content(activity_month.hours) %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: activity.document_uploads.map { |a| { filename: a.filename.to_s } },
+    heading_level: 3,
+    full_width: true
+  ) %>
+<% end %>

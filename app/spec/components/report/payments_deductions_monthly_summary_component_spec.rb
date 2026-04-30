@@ -44,8 +44,6 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
       end
 
       context "whose paystubs synced" do
-        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
-
         let(:supported_jobs) { %w[paystubs employment income shifts] }
         let(:errored_jobs) { [] }
 
@@ -54,25 +52,35 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
           pinwheel_report.fetch
         end
 
+        context "with column header style" do
+          subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
-        it "pinwheel_report is properly fetched" do
-          expect(pinwheel_report.gigs.length).to eq(3)
-          expect(pinwheel_report.paystubs.length).to eq(1)
-        end
+          it "pinwheel_report is properly fetched" do
+            expect(pinwheel_report.gigs.length).to eq(3)
+            expect(pinwheel_report.paystubs.length).to eq(1)
+          end
 
-        it "includes the payments and deductions section with accordion and content" do
-          expect(subject.css("h2").to_html).to include "Payments and deductions"
+          it "includes the payments and deductions section with accordion and content" do
+            expect(subject.css("h2").to_html).to include "Payments and deductions"
 
-          accordion = subject.at_css('button.usa-accordion__button')
-          expect(accordion).not_to be_nil
-          expect(accordion.text).to include("December 2020")
+            accordion = subject.at_css('button.usa-accordion__button')
+            expect(accordion).not_to be_nil
+            expect(accordion.text).to include("December 2020")
 
-          expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
+            expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
+          end
+
+          it "uses column header style with usa-table class" do
+            expect(subject.at_css('table.usa-table')).not_to be_nil
+            expect(subject.css("thead tr th").length).to eq(2)
+            expect(subject.css("thead tr th:nth-child(1)").text).to include("Pay information")
+            expect(subject.css("thead tr th:nth-child(2)").text).to include("Your details")
+          end
         end
       end
 
       context "whose paystubs failed to sync" do
-        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+        subject { render_inline(described_class.new(pinwheel_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
         let(:supported_jobs) { %w[paystubs employment income] }
         let(:errored_jobs) { [ "paystubs" ] }
@@ -131,7 +139,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
     end
 
     context "with bob, a gig-worker whose paystubs synced" do
-      subject { render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly")) }
+      subject { render_inline(described_class.new(argyle_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly")) }
 
       before do
         argyle_stub_request_paystubs_response("bob")
@@ -153,6 +161,29 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
         expect(subject.at_css('div.usa-accordion__content').at_css('table')).not_to be_nil
       end
+
+      context "for an activity flow" do
+        let(:activity_flow) { create(:activity_flow, reporting_window_months: 3, cbv_applicant: cbv_applicant, created_at: current_time) }
+        let!(:payroll_account) do
+          create(
+            :payroll_account,
+            :argyle_fully_synced,
+            flow: activity_flow,
+            aggregator_account_id: account_id
+          )
+        end
+
+        it "renders month accordions in reporting window order (oldest first)" do
+          accordion_titles = subject.css("button.usa-accordion__button").map { |button| button.text.squish }
+          month_dates = accordion_titles.map do |title|
+            month_label = title.match(/[A-Za-z]+\s+\d{4}/).to_s
+            Date.strptime(month_label, "%B %Y")
+          end
+
+          expect(month_dates.length).to be >= 2
+          expect(month_dates).to eq(month_dates.sort)
+        end
+      end
     end
 
     context "with bob, a gig-worker whose paystubs failed to sync" do
@@ -166,7 +197,7 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
 
       it "raises an error without the paystubs data" do
         expect {
-          render_inline(described_class.new(argyle_report, payroll_account, is_responsive: true, is_w2_worker: false, pay_frequency_text: "monthly"))
+          render_inline(described_class.new(argyle_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly"))
         }.to raise_error(RuntimeError, "No employments found that match account_id 019571bc-2f60-3955-d972-dbadfe0913a8")
       end
     end

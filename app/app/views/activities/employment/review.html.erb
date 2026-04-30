@@ -1,0 +1,82 @@
+<% content_for :title, t("activities.employment.review.title", employer_name: @employment_activity.employer_name) %>
+
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.employment.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: @back_url
+  ) %>
+<% end %>
+
+<h1>
+  <%= t("activities.employment.review.title", employer_name: @employment_activity.employer_name) %>
+</h1>
+<p>
+  <%= t("activities.employment.review.description", employer_name: @employment_activity.employer_name) %>
+</p>
+
+<div class="display-flex flex-justify activity-review-edit-header">
+  <h2 class="margin-y-0"><%= t("activities.employment.review.employer_info") %></h2>
+  <%= link_to t("activities.hub.edit"),
+        edit_activities_flow_income_employment_path(id: @employment_activity, from_review: 1, from_edit: params[:from_edit].presence),
+        class: "usa-link" %>
+</div>
+<%= render(ContactInfoReviewTableComponent.new(field_header: t("shared.table_headers.employer_information"), value_header: t("shared.table_headers.your_details"), rows: [
+  { label: t("activities.employment.review.name"), value: @employment_activity.employer_name },
+  { label: t("activities.employment.review.address"), value: @employment_activity.formatted_address },
+  { label: t("activities.employment.review.contact_name"), value: @employment_activity.contact_name },
+  { label: t("activities.employment.review.contact_email"), value: @employment_activity.contact_email },
+  { label: t("activities.employment.review.contact_phone"), value: @employment_activity.contact_phone_number }
+])) %>
+
+<h2><%= t("activities.employment.review.hours_and_income") %></h2>
+<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+  <%= table.with_header_cell.with_content(t("activities.summary.employment.month")) %>
+  <%= table.with_header_cell.with_content(t("activities.employment.review.gross_income")) %>
+  <%= table.with_header_cell(class_names: "text-no-wrap").with_content(t("activities.employment.review.hours_worked")) %>
+  <%= table.with_header_cell.with_content(t("activities.hub.edit")) %>
+
+  <% @employment_activity.employment_activity_months.order(:month).each_with_index do |activity_month, index| %>
+    <% edit_path = edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(data_label: t("activities.summary.employment.month"), is_header: true) do %>
+        <%= I18n.l(activity_month.month, format: :month) %>
+        <%= link_to t("activities.hub.edit"), edit_path, class: "usa-link mobile-edit-link" %>
+      <% end %>
+      <%= row.with_data_cell(data_label: t("activities.employment.review.gross_income"))
+             .with_content(number_to_currency(activity_month.gross_income)) %>
+      <%= row.with_data_cell(data_label: t("activities.employment.review.hours_worked"))
+             .with_content(activity_month.hours) %>
+      <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
+        <%= link_to t("activities.hub.edit"), edit_path, class: "usa-link" %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if @employment_activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: @employment_activity.document_uploads.map { |a| { filename: a.filename.to_s } },
+    edit_path: new_activities_flow_income_employment_document_upload_path(
+      employment_id: @employment_activity,
+      from_review: 1,
+      from_edit: params[:from_edit].presence
+    ),
+    full_width: true
+  ) %>
+<% end %>
+
+<%= form_with model: @employment_activity,
+      url: save_review_activities_flow_income_employment_path(id: @employment_activity, from_edit: params[:from_edit].presence),
+      method: :patch,
+      class: "usa-form usa-form--large" do |form| %>
+  <h2><%= t("activities.employment.review.additional_comments_title") %></h2>
+  <%= form.label :additional_comments,
+        t("activities.employment.review.additional_comments_description",
+          agency_name: agency_translation("shared.agency_full_name")),
+        class: "usa-label" %>
+  <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
+
+  <% submit_label = params[:from_edit].present? ? t("activities.hub.save") : t("activities.employment.review.save") %>
+  <%= form.submit submit_label, class: "usa-button usa-button--primary" %>
+<% end %>

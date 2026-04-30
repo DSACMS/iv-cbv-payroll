@@ -44,6 +44,13 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       expect(activity).to have_attributes(expected)
     end
 
+    it "creates the activity as a draft" do
+      post :create, params: volunteering_params
+
+      activity = activity_flow.volunteering_activities.last
+      expect(activity.draft).to be(true)
+    end
+
     it "stores optional fields when provided" do
       post :create, params: volunteering_params.deep_merge(
         volunteering_activity: {
@@ -76,7 +83,25 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: "Updated Org" } }
 
       expect(volunteering_activity.reload.organization_name).to eq("Updated Org")
+      expect(response).to redirect_to(edit_activities_flow_community_service_month_path(community_service_id: volunteering_activity, id: 0))
+    end
+
+    it "redirects to review when from_review is present" do
+      patch :update, params: { id: volunteering_activity.id, from_review: 1, volunteering_activity: { organization_name: "Updated Org" } }
+
+      expect(response).to redirect_to(review_activities_flow_community_service_path(id: volunteering_activity))
+    end
+
+    it "threads from_edit through to the redirect" do
+      patch :update, params: { id: volunteering_activity.id, from_edit: 1, volunteering_activity: { organization_name: "Updated Org" } }
+
       expect(response).to redirect_to(edit_activities_flow_community_service_month_path(community_service_id: volunteering_activity, id: 0, from_edit: 1))
+    end
+
+    it "threads from_edit through the from_review redirect" do
+      patch :update, params: { id: volunteering_activity.id, from_review: 1, from_edit: 1, volunteering_activity: { organization_name: "Updated Org" } }
+
+      expect(response).to redirect_to(review_activities_flow_community_service_path(id: volunteering_activity, from_edit: 1))
     end
   end
 
@@ -97,6 +122,46 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
       expect(response.body).to include("25")
     end
+
+    it "includes an edit link for each month" do
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.first, hours: 25)
+
+      get :review, params: { id: volunteering_activity.id }
+
+      expect(response.body).to include(
+        edit_activities_flow_community_service_month_path(community_service_id: volunteering_activity, id: 0, from_review: 1)
+      )
+    end
+
+    context "with previously uploaded documents" do
+      before do
+        Rails.application.config.active_storage.service = :local
+        volunteering_activity.document_uploads.attach(
+          io: StringIO.new("%PDF-1.4"),
+          filename: "verification.pdf",
+          content_type: "application/pdf"
+        )
+      end
+
+      it "renders the uploaded documents section with an edit link" do
+        get :review, params: { id: volunteering_activity.id }
+
+        expect(response.body).to include(I18n.t("activities.document_uploads.heading", document_count: 1))
+        expect(response.body).to include("verification.pdf")
+        expect(response.body).to include(
+          new_activities_flow_community_service_document_upload_path(community_service_id: volunteering_activity, from_review: 1)
+        )
+        expect(response.body).not_to include(I18n.t("activities.document_uploads.remove_file"))
+      end
+    end
+
+    context "without uploaded documents" do
+      it "does not render the uploaded documents heading" do
+        get :review, params: { id: volunteering_activity.id }
+
+        expect(response.body).not_to include(I18n.t("activities.document_uploads.heading", document_count: 0))
+      end
+    end
   end
 
   describe "PATCH #save_review" do
@@ -107,6 +172,14 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
       expect(volunteering_activity.reload.additional_comments).to eq("Some notes")
       expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "publishes the activity" do
+      volunteering_activity.update!(draft: true)
+
+      patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "" } }
+
+      expect(volunteering_activity.reload.draft).to be(false)
     end
   end
 

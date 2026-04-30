@@ -41,6 +41,29 @@ module DocumentUploadable
   # Override this method to give different suggested document types in
   # the "Suggested documents" accordion.
   def document_upload_suggestion_text
-    I18n.t("activities.document_uploads.new.suggestion_text_html")
+    "activities.document_uploads.new.suggestion_text_html"
+  end
+
+  # Override when an activity should use a different title key.
+  # Default is "Upload supporting documents for %{name}".
+  def document_upload_title_i18n_key
+    "activities.document_uploads.new.title"
+  end
+
+  # Required!
+  #
+  # Implement with the i18n key used for the activity header title on the
+  # document upload page.
+  def document_upload_header_title_i18n_key
+    raise NotImplementedError.new("#{self.class.name} must implement #document_upload_header_title_i18n_key")
+  end
+
+  def document_upload_verification_items
+    document_upload_months_to_verify.map do |month|
+      {
+        label: I18n.l(month, format: :month),
+        details: document_upload_details_for_month(month)
+      }
+    end
   end
 end

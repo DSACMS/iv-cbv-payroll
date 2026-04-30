@@ -1,10 +1,41 @@
 @forward "uswds";
 @use "uswds" as *;
 
-$progress-bar-max-width: 30rem;
+.usa-card.activity-flow-progress-indicator__card {
+  margin: units(2) 0 0;
+  padding-left: 0;
+  padding-right: 0;
 
-.activity-flow-progress-indicator {
-  margin: units(2) 0 units(4);
+  .usa-card__container {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .usa-card__body {
+    padding: units(3);
+  }
+}
+
+.activity-flow-progress-indicator--review-collapsed {
+  background-color: color("success-lighter");
+  border: 1px solid color("success-dark");
+  border-radius: radius("md");
+  margin-top: units(2);
+  padding: units(3);
+}
+
+.activity-flow-progress-indicator__title {
+  align-items: center;
+  display: flex;
+  gap: units(1);
+  margin: 0;
+}
+
+.activity-flow-progress-indicator__description {
+  @include u-font("sans", "sm");
+
+  color: color("ink");
+  margin: units(1) 0 units(2);
 }
 
 .activity-flow-progress-indicator__progress-bar {
@@ -12,39 +43,39 @@ $progress-bar-max-width: 30rem;
   border-radius: 4px;
   border: 1px solid color("primary-vivid");
   display: block;
-  height: 1rem;
+  height: units(2);
   width: 100%;
 
-  @include at-media("tablet") {
-    width: $progress-bar-max-width;
-  }
-
-  &::before {
-    background-color: color("primary-vivid");
-    content: "";
-    display: block;
-    height: 100%;
-    width: attr(data-percent %);
+  &:first-of-type {
+    margin-top: units(3);
   }
 
   &--complete {
     border-color: color("success-dark");
     background-color: color("success-dark");
+  }
+}
 
-    &::before {
-      background-color: color("success-dark");
-    }
+.activity-flow-progress-indicator__progress-bar-fill {
+  background-color: color("primary-vivid");
+  height: 100%;
+
+  &--complete {
+    background-color: color("success-dark");
   }
 }
 
 .activity-flow-progress-indicator__progress-amount-container {
+  @include u-font("sans", "sm");
+
   display: flex;
   font-weight: bold;
   justify-content: space-between;
-  margin-top: units(1);
+  line-height: 1.5;
+  margin: units(1) 0 units(2);
 
-  @include at-media("tablet") {
-    width: $progress-bar-max-width;
+  &:last-of-type {
+    margin-bottom: 0;
   }
 }
 
@@ -58,7 +89,12 @@ $progress-bar-max-width: 30rem;
 
 .activity-flow-progress-indicator__success-icon {
   color: color("success-dark");
-  height: 20px;
+  height: 18px;
   vertical-align: text-bottom;
-  width: 20px;
+  width: 18px;
+}
+
+[data-progress-indicator-units-target="toggle"][hidden],
+[data-progress-indicator-units-target="unitContent"][hidden] {
+  display: none !important;
 }

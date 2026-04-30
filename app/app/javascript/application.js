@@ -16,4 +16,8 @@ document.addEventListener("turbo:render", () => {
     const behavior = components[key]
     behavior.on(target)
   })
+
+  // USWDS component re-initialization can cause the browser to scroll away
+  // from the top after Turbo's own scroll handling. Reset on the next frame.
+  requestAnimationFrame(() => window.scrollTo(0, 0))
 })

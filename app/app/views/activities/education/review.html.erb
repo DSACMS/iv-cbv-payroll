@@ -1,0 +1,68 @@
+<% if @education_activity.validated? %>
+  <% title = t("activities.education.edit.header") %>
+  <% description = t("activities.education.edit.description", reporting_window: @flow.reporting_window_display) %>
+<% else %>
+  <% review_school_name = if @education_activity.fully_self_attested?
+                            @education_activity.school_name
+                          else
+                            @education_activity.review_header_school_name.presence || t("shared.not_applicable")
+                          end %>
+  <% hide_school_name_in_header = !@education_activity.fully_self_attested? && @education_activity.nsc_enrollment_terms.many? %>
+  <% title = if hide_school_name_in_header
+               t("activities.education.review.title_no_school_name")
+             else
+               t("activities.education.review.title", school_name: review_school_name)
+             end %>
+  <% description = t("activities.education.review.description", school_name: @education_activity.review_description_school_names) %>
+<% end %>
+<% content_for :title, title %>
+
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.education.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: @back_url
+  ) %>
+<% end %>
+
+<h1>
+  <%= title %>
+</h1>
+<p>
+  <%= description %>
+</p>
+
+<% if @education_activity.partially_self_attested? %>
+  <%= render "review_partially_self_attested" %>
+<% elsif @education_activity.fully_self_attested? %>
+  <%= render "review_fully_self_attested" %>
+<% else %>
+  <%= render "review_validated" %>
+<% end %>
+
+<% if @education_activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: @education_activity.document_uploads.map { |a| { filename: a.filename.to_s } },
+    edit_path: new_activities_flow_education_document_upload_path(
+      education_id: @education_activity,
+      from_review: 1,
+      from_edit: params[:from_edit].presence
+    ),
+    full_width: true
+  ) %>
+<% end %>
+
+<%= form_with model: @education_activity,
+      url: save_review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence),
+      method: :patch,
+      class: "usa-form usa-form--large" do |form| %>
+  <h2><%= t("activities.education.review.additional_comments_title") %></h2>
+  <%= form.label :additional_comments,
+        t("activities.education.review.additional_comments_description",
+          agency_name: agency_translation("shared.agency_full_name")),
+        class: "usa-label" %>
+  <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
+
+  <% submit_label = params[:from_edit].present? ? t("activities.hub.save") : t("activities.education.review.save") %>
+  <%= form.submit submit_label, class: "usa-button usa-button--primary" %>
+<% end %>

@@ -5,6 +5,7 @@ RSpec.describe Api::ArgyleController do
 
   describe "#create" do
     let(:cbv_flow) { create(:cbv_flow) }
+
     # get the argyle user id and item e.g. payroll/provider to include in the fetch_user_api_response stub
     let(:argyle_user_id) { argyle_load_relative_json_file('', 'response_create_user.json')["id"] }
     let(:argyle_item_id) { argyle_user_property_for("bob", "user", "items_connected").first }
@@ -40,9 +41,9 @@ RSpec.describe Api::ArgyleController do
 
       it "tracks a Mixpanel event" do
         expect(EventTrackingJob).to receive(:perform_later).with("ApplicantBeganLinkingEmployer", anything, hash_including(
-            cbv_flow_id: cbv_flow.id,
-            invitation_id: cbv_flow.cbv_flow_invitation_id,
-          ))
+          cbv_flow_id: cbv_flow.id,
+          invitation_id: cbv_flow.cbv_flow_invitation_id,
+        ))
         post :create, params: valid_params
       end
 
@@ -163,6 +164,76 @@ RSpec.describe Api::ArgyleController do
           post :create, params: valid_params
 
           expect(response).to redirect_to(cbv_flow_payment_details_path(user: { account_id: argyle_account_id }))
+        end
+      end
+    end
+
+    context "for an ActivityFlow" do
+      let(:flow) { create(:activity_flow) }
+
+      before do
+        session[:flow_id] = flow.id
+        session[:flow_type] = :activity
+
+        stub_create_user_response
+        argyle_stub_request_empty_accounts_response
+      end
+
+      it "creates a user with Argyle, returning its token" do
+        post :create, params: valid_params
+
+        expect(JSON.parse(response.body))
+          .to include("user" => { "user_token" => be_a(String) })
+      end
+
+      context "when the payroll account or employer has already been linked" do
+        before do
+          flow.update(argyle_user_id: argyle_user_id)
+
+          stub_create_user_response
+          stub_create_user_token_response
+
+          allow_any_instance_of(Aggregators::Sdk::ArgyleService)
+            .to receive(:fetch_accounts_api)
+            .with(user: argyle_user_id, item: argyle_item_id)
+            .and_return({ "results" => [ { "id" => argyle_account_id, "item" => argyle_item_id } ] })
+        end
+
+        context "if the payroll account is fully synced" do
+          it "redirects to the payment_details page" do
+            create(:payroll_account, :argyle_fully_synced, flow: flow, aggregator_account_id: argyle_account_id)
+
+            post :create, params: valid_params
+
+            expect(response).to redirect_to(activities_flow_income_payment_details_path(user: { account_id: argyle_account_id }))
+          end
+        end
+
+        context "if the payroll sync is in progress" do
+          it "returns the token for the existing argyle user without redirecting" do
+            create(:payroll_account, :argyle_sync_in_progress, flow: flow, aggregator_account_id: argyle_account_id)
+
+            post :create, params: valid_params
+
+            expect(JSON.parse(response.body))
+              .to include("user" => { "user_token" => be_a(String) })
+          end
+
+          context "after receiving the accounts.connected webhook" do
+            let(:payroll_account) do
+              create(:payroll_account, :argyle_sync_in_progress, flow: flow, aggregator_account_id: argyle_account_id)
+            end
+
+            before do
+              create(:webhook_event, payroll_account: payroll_account, event_name: "accounts.connected")
+            end
+
+            it "redirects to the synchronizations page" do
+              post :create, params: valid_params
+
+              expect(response).to redirect_to(activities_flow_income_synchronizations_path(user: { account_id: payroll_account.aggregator_account_id }))
+            end
+          end
         end
       end
     end

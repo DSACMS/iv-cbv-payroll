@@ -1,5 +1,16 @@
 <% content_for :title, t("activities.summary.title", benefit: agency_translation("shared.benefit")) %>
 
+<% content_for :activity_flow_header do %>
+  <div class="back-nav">
+    <%= link_to activities_flow_root_path, class: "back-nav__link" do %>
+      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
+        <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#navigate_before") %>"></use>
+      </svg>
+      <%= t("activities.activity_header_component.back") %>
+    <% end %>
+  </div>
+<% end %>
+
 <h1>
   <%= t("activities.summary.title", benefit: agency_translation("shared.benefit")) %>
 </h1>
@@ -18,15 +29,26 @@
   <% end %>
 </p>
 
-<%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator, agency_translation("shared.agency_full_name"))) %>
+<% show_progress_unit_toggle = @self_attested_employment_activities.any? || @employment_payroll_accounts.any? %>
 
-<hr class="border-gray-30 border-top-0 margin-bottom-4">
+<%= render(
+  ActivityFlowProgressIndicator.from_calculator(
+    progress_calculator,
+    variant: @flow.renewal_reporting_window? ? :renewal : :application,
+    show_unit_toggle: show_progress_unit_toggle,
+    display_variant: :review
+  )
+) %>
 
 <div class="margin-top-4">
 <% @all_activities.each_with_index do |activity_data, index| %>
   <section>
     <h2>
-      <% activity_type_label = t("activities.#{activity_data[:type]}.title") %>
+      <%# i18n-tasks-use t("activities.education.title_singular") %>
+      <%# i18n-tasks-use t("activities.employment.title_singular") %>
+      <%# i18n-tasks-use t("activities.community_service.title_singular") %>
+      <%# i18n-tasks-use t("activities.work_programs.title_singular") %>
+      <% activity_type_label = t("activities.#{activity_data[:type]}.title_singular") %>
       <% if @all_activities.size > 1 %>
         <%= t("activities.summary.activity_header_numbered",
               number: index + 1,
@@ -39,20 +61,23 @@
 
     <% case activity_data[:type] %>
     <% when :education %>
-      <% activity_data[:activity].nsc_enrollment_terms.each do |enrollment_term| %>
-        <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
-      <% end %>
+      <%= render partial: "activities/summary/education_table", locals: { activity: activity_data[:activity] } %>
     <% when :community_service %>
       <%= render partial: "activities/summary/volunteering_table", locals: { activity: activity_data[:activity] } %>
     <% when :work_programs %>
       <%= render partial: "activities/summary/job_training_table", locals: { activity: activity_data[:activity] } %>
     <% when :employment %>
-      <%= render partial: "activities/summary/employment_table",
-                 locals: { payroll_account: activity_data[:payroll_account], persisted_report: @persisted_report } %>
+      <% if activity_data[:payroll_account].present? %>
+        <%= render partial: "activities/summary/employment_table",
+                   locals: { payroll_account: activity_data[:payroll_account], persisted_report: @persisted_report } %>
+      <% else %>
+        <%= render partial: "activities/summary/self_attested_employment_table",
+                   locals: { activity: activity_data[:employment_activity] } %>
+      <% end %>
     <% end %>
 
     <% if activity_data[:type] == :employment %>
-      <% comment = activity_data[:payroll_account].additional_information %>
+      <% comment = activity_data[:payroll_account]&.additional_information || activity_data[:employment_activity]&.additional_comments %>
       <% if comment.present? %>
         <h3>
           <%= t("activities.summary.additional_comments") %>
@@ -78,7 +103,7 @@
     <%= t("activities.summary.legal_agreement") %>
   </h2>
 
-  <%= form_with model: @flow, url: activities_flow_submit_path, method: :patch, builder: UswdsFormBuilder do |f| %>
+  <%= form_with model: @flow, url: activities_flow_summary_path, method: :patch, builder: UswdsFormBuilder do |f| %>
     <%= f.check_box :consent_to_submit, {
       label: t("activities.summary.consent_label_html",
                agency_name: agency_translation("shared.agency_full_name"),

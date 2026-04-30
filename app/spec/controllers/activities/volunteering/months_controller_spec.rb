@@ -28,6 +28,16 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
       expect(response).to redirect_to(new_activities_flow_community_service_document_upload_path(community_service_id: volunteering_activity.id))
     end
 
+    context "when validation fails (0 hours on single-month flow)" do
+      it "re-renders edit with back_url assigned and back-nav present in HTML" do
+        patch :update, params: { community_service_id: volunteering_activity.id, id: 0, volunteering_activity_month: { hours: 0 } }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(assigns(:back_url)).to be_present
+        expect(response.body).to include("back-nav")
+      end
+    end
+
     context "with multiple reporting months" do
       let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
 

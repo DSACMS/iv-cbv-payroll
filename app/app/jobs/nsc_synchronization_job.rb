@@ -16,7 +16,30 @@ class NscSynchronizationJob < ApplicationJob
       Rails.logger.warn "Duplicate #{self.class.name} enqueued for already-fetched EducationActivity ID #{@education_activity.id}"
     end
 
-    nsc_service = NscDataFetcherService.new(education_activity: @education_activity)
-    nsc_service.fetch
+    data_fetcher_service.fetch
+  end
+
+  private
+
+  def data_fetcher_service
+    if use_demo_fake_data_fetcher?
+      DemoLauncher::FakeNscDataFetcherService.new(education_activity: @education_activity)
+    elsif use_demo_forward_dating_service?
+      DemoLauncher::NscForwardDatingService.new(education_activity: @education_activity)
+    else
+      NscDataFetcherService.new(education_activity: @education_activity)
+    end
+  end
+
+  def use_demo_fake_data_fetcher?
+    return false unless Rails.application.config.is_internal_environment
+
+    DemoLauncher::FakeNscScenarios.by_identity(@education_activity.activity_flow.identity).present?
+  end
+
+  def use_demo_forward_dating_service?
+    return false unless Rails.application.config.is_internal_environment
+
+    DemoLauncher::NscForwardDatingService.applicable?(@education_activity)
   end
 end

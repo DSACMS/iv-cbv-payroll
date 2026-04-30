@@ -1,0 +1,32 @@
+<% form_url ||= education_activity.persisted? ? activities_flow_education_path(id: education_activity, from_review: params[:from_review].presence, from_edit: params[:from_edit].presence) : activities_flow_education_index_path %>
+<%= uswds_form_with(model: education_activity, url: form_url) do |f| %>
+  <h2><%= t("activities.education.new.school_section_title") %></h2>
+  <%= f.text_field :school_name,
+        label: t("activities.education.new.school_name"),
+        hint: t("activities.education.new.school_name_hint") %>
+  <%= f.text_field :street_address, label: t("activities.education.new.street_address") %>
+  <%= f.text_field :street_address_line_2,
+        label: t("activities.education.new.street_address_line_2"),
+        optional: true %>
+  <%= f.text_field :city, label: t("activities.education.new.city") %>
+  <%= f.combo_box :state,
+        us_state_and_territory_options,
+        { label: t("activities.education.new.state") } %>
+  <%= f.text_field :zip_code, label: t("activities.education.new.zip_code"), width: "lg" %>
+
+  <hr class="margin-y-5 border-base-light border-top-0">
+
+  <h2><%= t("activities.education.new.contact_section_title") %></h2>
+  <%= f.text_field :contact_name,
+        label: t("activities.education.new.contact_name"),
+        optional: true %>
+  <%= f.email_field :contact_email,
+        label: t("activities.education.new.contact_email"),
+        optional: true %>
+  <%= f.phone_field :contact_phone_number,
+        label: t("activities.education.new.contact_phone_number"),
+        optional: true %>
+
+  <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t("activities.education.new.continue") %>
+  <%= f.submit submit_label %>
+<% end %>

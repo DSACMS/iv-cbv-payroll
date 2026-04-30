@@ -3,11 +3,19 @@ require "rails_helper"
 RSpec.describe NscDataFetcherService do
   include NscApiHelper
 
-  subject(:service) { described_class.new(education_activity: education_activity, environment: :test, logger: logger) }
+  subject(:service) do
+    described_class.new(
+      education_activity: education_activity,
+      environment: :test,
+      logger: logger,
+      response_transformer: response_transformer
+    )
+  end
 
   let(:activity_flow) { create(:activity_flow, identity: identity, education_activities_count: 0) }
   let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
   let(:logger) { Logger.new(StringIO.new) }
+  let(:response_transformer) { nil }
 
   before do
     stub_const("Aggregators::Sdk::NscService::ENVIRONMENTS", {
@@ -21,6 +29,7 @@ RSpec.describe NscDataFetcherService do
       }
     })
   end
+
 
   describe "#fetch" do
     before do
@@ -46,6 +55,12 @@ RSpec.describe NscDataFetcherService do
         service.fetch
 
         expect(education_activity.nsc_enrollment_terms).to be_empty
+      end
+
+      it "does not change data_source" do
+        service.fetch
+
+        expect(education_activity.reload.data_source).to eq("validated")
       end
     end
 
@@ -75,13 +90,19 @@ RSpec.describe NscDataFetcherService do
             term_end: Date.parse("2024-11-19"),
           )
       end
+
+      it "sets data_source to partially_self_attested for enrolled (not half_time_or_above)" do
+        service.fetch
+
+        expect(education_activity.reload.data_source).to eq("partially_self_attested")
+      end
     end
 
     context "when there are multiple enrollments (Rick)" do
       let(:identity) { create(:identity, :nsc_rick) }
 
       before do
-        education_activity.activity_flow.update!(created_at: Date.new(2024, 7, 15), reporting_window_months: 6)
+        education_activity.activity_flow.update!(created_at: Date.new(2024, 8, 1), reporting_window_months: 2)
         nsc_stub_request_education_search_response("rick_banas")
       end
 
@@ -89,6 +110,12 @@ RSpec.describe NscDataFetcherService do
         service.fetch
 
         expect(education_activity.nsc_enrollment_terms.count).to eq(2)
+      end
+
+      it "sets data_source to validated for half_time enrollment" do
+        service.fetch
+
+        expect(education_activity.reload.data_source).to eq("validated")
       end
     end
 
@@ -122,37 +149,48 @@ RSpec.describe NscDataFetcherService do
       end
     end
 
-    context "when in an internal environment (demo date shifting)" do
-      before do
-        allow(Rails.application.config).to receive(:is_internal_environment).and_return(true)
+    context "with a response transformer" do
+      let(:identity) { create(:identity, :nsc_lynette) }
+      let(:response_transformer) do
+        lambda do |response|
+          transformed = response.deep_dup
+          transformed["enrollmentDetails"].first["enrollmentData"].first["termBeginDate"] = "2024-01-01"
+          transformed["enrollmentDetails"].first["enrollmentData"].first["termEndDate"] = "2024-05-31"
+          transformed
+        end
       end
 
-      context "for Lynette (one CC enrollment)" do
+      before do
+        education_activity.activity_flow.update!(created_at: Date.new(2024, 3, 1), reporting_window_months: 1)
+        nsc_stub_request_education_search_response("lynette")
+      end
+
+      it "applies the transformed response before saving enrollment terms" do
+        service.fetch
+
+        term = education_activity.nsc_enrollment_terms.first
+        expect(term.term_begin).to eq(Date.parse("2024-01-01"))
+        expect(term.term_end).to eq(Date.parse("2024-05-31"))
+      end
+    end
+
+    context "when the reporting window is shifted to overlap with fixture data" do
+      context "for Lynette (one CC enrollment, term May 31 – Nov 19, 2024)" do
         let(:identity) { create(:identity, :nsc_lynette) }
 
         before do
-          education_activity.activity_flow.update!(created_at: Date.today, reporting_window_months: 6)
+          # Window: 2024-06-01..2024-11-30 — overlaps with Lynette's term
+          education_activity.activity_flow.update!(created_at: Date.new(2024, 12, 1), reporting_window_months: 6)
           nsc_stub_request_education_search_response("lynette")
         end
 
-        it "shifts CC enrollment term dates to overlap with the previous month" do
+        it "finds the enrollment term within the shifted window" do
           service.fetch
 
           term = education_activity.nsc_enrollment_terms.first
-          previous_month_range = (Date.today.beginning_of_month - 1.month)..Date.today.beginning_of_month.prev_day
-
           expect(term).to be_present
-          expect(term.term_end).to be >= previous_month_range.begin
-        end
-
-        it "preserves the term duration" do
-          # Original: 2024-05-31 to 2024-11-19 = 172 days
-          original_duration = Date.parse("2024-11-19") - Date.parse("2024-05-31")
-
-          service.fetch
-
-          term = education_activity.nsc_enrollment_terms.first
-          expect(term.term_end - term.term_begin).to eq(original_duration)
+          expect(term.term_begin).to eq(Date.parse("2024-05-31"))
+          expect(term.term_end).to eq(Date.parse("2024-11-19"))
         end
 
         it "preserves the enrollment status and structure" do
@@ -163,22 +201,23 @@ RSpec.describe NscDataFetcherService do
         end
       end
 
-      context "for Rick (two CC enrollments at different schools)" do
+      context "for Rick (two CC enrollments at different schools, terms Jun–Nov 2024)" do
         let(:identity) { create(:identity, :nsc_rick) }
 
         before do
-          education_activity.activity_flow.update!(created_at: Date.today, reporting_window_months: 6)
+          # Window: 2024-06-01..2024-11-30 — overlaps with both of Rick's terms
+          education_activity.activity_flow.update!(created_at: Date.new(2024, 12, 1), reporting_window_months: 6)
           nsc_stub_request_education_search_response("rick_banas")
         end
 
-        it "shifts dates for both CC enrollments by the same offset" do
+        it "finds both enrollment terms within the shifted window" do
           service.fetch
 
           terms = education_activity.nsc_enrollment_terms.order(:term_begin)
           expect(terms.count).to eq(2)
 
-          # The original offset between the two term start dates should be preserved
-          # Original: school1 starts 2024-06-19, school2 starts 2024-05-31 => 19 day difference
+          # Original offset between term start dates is preserved
+          # school2 starts 2024-05-31, school1 starts 2024-06-19 => 19 day difference
           expect((terms.last.term_begin - terms.first.term_begin).to_i).to eq(19)
         end
       end
@@ -204,7 +243,7 @@ RSpec.describe NscDataFetcherService do
           nsc_stub_request_education_search_response("dominique_ricardo")
         end
 
-        it "does not shift dates for CN enrollments and finds no current enrollments" do
+        it "does not save CN enrollments even when window overlaps" do
           service.fetch
 
           expect(education_activity.reload.status).to eq("no_enrollments")

@@ -150,8 +150,16 @@ class FlowController < ApplicationController
   def apply_demo_overrides
     return unless internal_environment?
 
-    if params[:reporting_window_months].present? && @flow.is_a?(ActivityFlow)
-      @flow.update!(reporting_window_months: params[:reporting_window_months].to_i)
+    if params[:reporting_window_months].present?
+      @flow.set_reporting_window_months!(params[:reporting_window_months])
+    end
+
+    if params[:renewal_required_months].present?
+      @flow.set_required_month_count!(params[:renewal_required_months])
+    end
+
+    if params[:reporting_window_start].present?
+      @flow.shift_reporting_window_start!(params[:reporting_window_start])
     end
 
     if params[:demo_timeout].present?

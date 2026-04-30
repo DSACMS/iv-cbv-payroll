@@ -5,12 +5,13 @@ on:
 
 jobs:
   reviewer-lottery:
+    if: github.actor != 'dependabot[bot]'
     name: Add random reviewer via Reviewer Lottery
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: uesteibar/reviewer-lottery@v3
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}

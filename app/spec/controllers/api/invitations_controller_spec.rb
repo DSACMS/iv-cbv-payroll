@@ -53,24 +53,6 @@ RSpec.describe Api::InvitationsController do
       expect(invitation.client_agency_id).to eq(client_agency_id.to_s)
     end
 
-    context "when inviting a user in AZ DES" do
-      let(:client_agency_id) { "az_des".to_sym }
-
-      it "creates an invitation" do
-        expect { subject }
-          .to change(CbvFlowInvitation, :count).by(1)
-          .and change(CbvApplicant, :count).by(1)
-
-        invitation = CbvFlowInvitation.last
-        expect(invitation.client_agency_id).to eq(client_agency_id.to_s)
-
-        applicant = invitation.cbv_applicant
-        expect(applicant.client_agency_id).to eq("az_des")
-        expect(applicant.income_changes.length).to eq(2)
-        expect(applicant.income_changes[0]["member_name"]).to eq("Mark Scout")
-      end
-    end
-
     context "when inviting a user in LA LDH" do
       let(:client_agency_id) { "la_ldh".to_sym }
       let(:valid_params) do

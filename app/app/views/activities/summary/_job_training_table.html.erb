@@ -1,57 +1,81 @@
-<%= render(TableComponent.new(is_responsive: true)) do |table| %>
-  <%= table.with_subheader_row(class_names: "subheader-row base-lightest border-top-1px") do |row| %>
-    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.job_training.header")) %>
-    <% row.with_data_cell(is_header: true).with_content(t("activities.summary.your_details")) %>
+<%= render(TableComponent.new) do |table| %>
+  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.work_program_information") } %>
+  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.job_training.organization_provider_name") %>
+    <% end %>
+    <%= row.with_data_cell(data_label: t("activities.summary.job_training.organization_provider_name")) do %>
+      <%= activity.organization_name.presence || t("shared.not_applicable") %>
+    <% end %>
   <% end %>
+
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
       <%= t("activities.summary.job_training.program_name") %>
     <% end %>
-    <%= row.with_data_cell do %>
-      <%= activity.program_name %>
+    <%= row.with_data_cell(data_label: t("activities.summary.job_training.program_name")) do %>
+      <%= activity.program_name.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
-  <% if activity.organization_address.present? %>
-    <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.summary.job_training.organization_address") %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= activity.organization_address %>
-      <% end %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.job_training.address") %>
+    <% end %>
+    <%= row.with_data_cell(data_label: t("activities.summary.job_training.address")) do %>
+      <%= activity.formatted_address.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
-  <% month_hours_rows = activity.job_training_activity_months.order(:month) %>
-  <% if month_hours_rows.empty? %>
-    <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.summary.job_training.month") %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= t("shared.not_applicable") %>
-      <% end %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.job_training.contact_name") %>
+    <% end %>
+    <%= row.with_data_cell(data_label: t("activities.summary.job_training.contact_name")) do %>
+      <%= activity.contact_name.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
 
-  <% month_hours_rows.each do |month_hours| %>
-    <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.summary.job_training.month") %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= I18n.l(month_hours.month, format: :month) %>
-      <% end %>
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.job_training.contact_email") %>
     <% end %>
-
-    <%= table.with_row do |row| %>
-      <%= row.with_data_cell(is_header: true) do %>
-        <%= t("activities.summary.job_training.hours_attended") %>
-      <% end %>
-      <%= row.with_data_cell do %>
-        <%= month_hours.hours %>
-      <% end %>
+    <%= row.with_data_cell(data_label: t("activities.summary.job_training.contact_email")) do %>
+      <%= activity.contact_email.presence || t("shared.not_applicable") %>
     <% end %>
   <% end %>
+
+  <%= table.with_row do |row| %>
+    <%= row.with_data_cell(is_header: true) do %>
+      <%= t("activities.summary.job_training.contact_phone") %>
+    <% end %>
+    <%= row.with_data_cell(data_label: t("activities.summary.job_training.contact_email")) do %>
+      <%= activity.contact_phone_number.presence || t("shared.not_applicable") %>
+    <% end %>
+  <% end %>
+
+<% end %>
+
+<h3><%= t("activities.summary.monthly_details") %></h3>
+<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.job_training.month") } %>
+  <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.job_training.work_program_hours") } %>
+
+  <% activity.job_training_activity_months.order(:month).each do |month_hours| %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(data_label: t("activities.summary.job_training.month"), is_header: true)
+             .with_content(I18n.l(month_hours.month, format: :month)) %>
+      <%= row.with_data_cell(data_label: t("activities.summary.job_training.work_program_hours"))
+             .with_content(month_hours.hours) %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: activity.document_uploads.map { |a| { filename: a.filename.to_s } },
+    heading_level: 3,
+    full_width: true
+  ) %>
 <% end %>

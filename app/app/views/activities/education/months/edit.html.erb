@@ -1,0 +1,25 @@
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.education.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: @back_url
+  ) %>
+<% end %>
+
+<% from_review = params[:from_review].present? %>
+<% from_edit = params[:from_edit].present? %>
+<% description_key = @months.length > 1 ? "description_multi_month" : "description" %>
+<%= render "shared/hours_input",
+    activity_month: @activity_month,
+    form_url: activities_flow_education_month_path(education_id: @education_activity, id: @month_index, from_review: from_review ? 1 : nil, from_edit: from_edit ? 1 : nil),
+    activity_name: @education_activity.school_name,
+    current_month: @current_month,
+    months: @months,
+    month_index: @month_index,
+    error: @error,
+    t_scope: "activities.education.hours_input",
+    description: t("activities.education.hours_input.#{description_key}",
+      agency_acronym: agency_translation("shared.agency_acronym"),
+      reporting_window: @flow.reporting_window_display,
+      month: l(@current_month, format: :month_year)),
+    submit_label: from_review ? t("activities.hub.save") : nil %>

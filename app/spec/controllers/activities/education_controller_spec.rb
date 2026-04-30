@@ -10,6 +10,8 @@ RSpec.describe Activities::EducationController, type: :controller do
     create(
       :activity_flow,
       education_activities_count: 0,
+      volunteering_activities_count: 0,
+      job_training_activities_count: 0,
       with_identity: true
     )
   }
@@ -19,9 +21,9 @@ RSpec.describe Activities::EducationController, type: :controller do
     session[:flow_type] = :activity
   end
 
-  describe "GET #new" do
+  describe "GET #verify" do
     it "renders the user's details" do
-      get :new
+      get :verify
 
       expect(response.body).to have_content(activity_flow.identity.first_name)
       expect(response.body).to have_content(activity_flow.identity.last_name)
@@ -30,12 +32,44 @@ RSpec.describe Activities::EducationController, type: :controller do
   end
 
   describe "POST #create" do
-    it "creates a new EducationActivity and redirects to #show" do
+    it "creates a validated EducationActivity and redirects to #show" do
       expect { post :create }
         .to change(EducationActivity, :count)
         .by(1)
 
+      expect(EducationActivity.last.data_source).to eq("validated")
       expect(response).to redirect_to(activities_flow_education_path(id: EducationActivity.last.id))
+    end
+
+    it "creates the validated activity as a draft" do
+      post :create
+
+      activity = EducationActivity.last
+      expect(activity.draft).to be(true)
+    end
+
+    it "creates a self-attested EducationActivity and redirects to month 0" do
+      expect {
+        post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
+      }.to change(EducationActivity, :count).by(1)
+
+      activity = EducationActivity.last
+      expect(activity.data_source).to eq("fully_self_attested")
+      expect(activity.school_name).to eq("Test University")
+      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: activity.id, id: 0))
+    end
+
+    it "creates the self-attested activity as a draft" do
+      post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
+
+      activity = EducationActivity.last
+      expect(activity.draft).to be(true)
+    end
+
+    it "re-renders the form when self-attested params are invalid" do
+      post :create, params: { education_activity: { school_name: "" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
@@ -48,7 +82,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to have_http_status(:ok)
     end
 
-    context "when the EducationActivity sync found no enrollments" do
+    context "when the EducationActivity has no enrollments" do
       before do
         education_activity.update(status: :no_enrollments)
         allow(controller).to receive(:testing_synchronization_page?)
@@ -76,17 +110,48 @@ RSpec.describe Activities::EducationController, type: :controller do
       end
     end
 
-    context "when the EducationActivity sync succeeded" do
+    context "when the EducationActivity has succeeded" do
       before do
         education_activity.update(status: :succeeded)
         allow(controller).to receive(:testing_synchronization_page?)
           .and_return(false)
       end
 
-      it "redirects to the edit page" do
+      it "redirects via after_activity_path" do
         get :show, params: { id: education_activity.id }
 
-        expect(response).to redirect_to(edit_activities_flow_education_path(id: education_activity.id))
+        expect(response).to redirect_to(activities_flow_root_path)
+      end
+    end
+
+    context "when the EducationActivity has succeeded and routing requirements are met" do
+      before do
+        education_activity.update(status: :succeeded)
+        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: :half_time)
+        allow(controller).to receive(:testing_synchronization_page?).and_return(false)
+      end
+
+      it "redirects to summary" do
+        get :show, params: { id: education_activity.id }
+
+        expect(response).to redirect_to(activities_flow_summary_path)
+      end
+    end
+
+    context "when the EducationActivity is partially self-attested and succeeded" do
+      before do
+        education_activity.update(status: :succeeded, data_source: :partially_self_attested)
+        create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity)
+        allow(controller).to receive(:testing_synchronization_page?)
+          .and_return(false)
+      end
+
+      it "redirects to education edit to review NSC enrollment details first" do
+        get :show, params: { id: education_activity.id }
+
+        expect(response).to redirect_to(
+          edit_activities_flow_education_path(id: education_activity.id)
+        )
       end
     end
   end
@@ -96,9 +161,108 @@ RSpec.describe Activities::EducationController, type: :controller do
       get :error
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to have_content("Enter education manually")
-      expect(response.body).to have_content("Retry student verification")
-      expect(response.body).to have_link("Retry student verification", href: new_activities_flow_education_path)
+      expect(response.body).to have_content(I18n.t("activities.education.error.enter_manually_button"))
+      expect(response.body).to have_content(I18n.t("activities.education.error.retry_button"))
+      expect(response.body).to have_link(I18n.t("activities.education.error.enter_manually_button"), href: new_activities_flow_education_path)
+    end
+  end
+
+  describe "GET #new" do
+    it "renders the self-attestation education form" do
+      get :new
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to have_content(I18n.t("activities.education.new.title"))
+    end
+  end
+
+  describe "GET #edit" do
+    let(:self_attested_activity) do
+      create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "Test University")
+    end
+
+    it "renders the fully self-attested education info form for fully self-attested activities" do
+      get :edit, params: { id: self_attested_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("activities.education.new.edit_title"))
+      expect(Capybara.string(response.body)).to have_field("education_activity_school_name", with: "Test University")
+    end
+
+    it "raises RecordNotFound when the activity is missing" do
+      expect {
+        get :edit, params: { id: "99999999" }
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "renders Save button when from_review is present" do
+      get :edit, params: { id: self_attested_activity.id, from_review: 1 }
+
+      expect(Capybara.string(response.body)).to have_button(I18n.t("activities.hub.save"))
+    end
+
+    it "renders Continue button when from_review is absent" do
+      get :edit, params: { id: self_attested_activity.id }
+
+      expect(Capybara.string(response.body)).to have_button(I18n.t("activities.education.new.continue"))
+    end
+
+    it "renders the summer logic description for partially self-attested activities when carryover applies" do
+      activity_flow.update!(created_at: Time.zone.local(2026, 9, 1), reporting_window_months: 3)
+      education_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        school_name: "University of Illinois",
+        enrollment_status: :half_time,
+        term_begin: Date.new(2026, 4, 1),
+        term_end: Date.new(2026, 6, 15)
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        school_name: "University of Illinois",
+        term_begin: Date.new(2026, 6, 1),
+        term_end: Date.new(2026, 8, 31)
+      )
+
+      get :edit, params: { id: education_activity.id }
+
+      expect(Capybara.string(response.body)).to have_text(I18n.t("activities.education.edit.summer_logic_description"))
+    end
+
+    it "renders numbered enrollment headers on the partially self-attested edit page" do
+      education_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        school_name: "Half Time School",
+        enrollment_status: :half_time
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        school_name: "Less Than Half School",
+        credit_hours: 4
+      )
+
+      get :edit, params: { id: education_activity.id }
+
+      doc = Capybara.string(response.body)
+      expect(doc).to have_text(I18n.t("activities.education.edit.enrollment_information_numbered", number: 1))
+      expect(doc).to have_text(I18n.t("activities.education.edit.enrollment_information_numbered", number: 2))
     end
   end
 
@@ -111,6 +275,365 @@ RSpec.describe Activities::EducationController, type: :controller do
       end.to change(activity_flow.education_activities, :count).by(-1)
 
       expect(response).to redirect_to(activities_flow_root_path)
+    end
+  end
+
+  describe "GET #review" do
+    context "when fully self-attested" do
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
+      end
+
+      it "renders the review page" do
+        get :review, params: { id: education_activity.id }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(education_activity.school_name)
+      end
+
+      it "displays education activity months" do
+        create(:education_activity_month, education_activity: education_activity, month: activity_flow.reporting_months.first, hours: 4)
+
+        get :review, params: { id: education_activity.id }
+
+        expect(response.body).to include("4")
+        expect(response.body).to include("16")
+      end
+
+      it "includes an edit link for each month" do
+        create(:education_activity_month, education_activity: education_activity, month: activity_flow.reporting_months.first, hours: 4)
+
+        get :review, params: { id: education_activity.id }
+
+        expect(response.body).to include(
+          edit_activities_flow_education_month_path(education_id: education_activity, id: 0, from_review: 1)
+        )
+      end
+
+      it "renders an edit link to school info with from_review" do
+        get :review, params: { id: education_activity.id }
+
+        doc = Capybara.string(response.body)
+        edit_link = doc.find("a", text: I18n.t("activities.hub.edit"))
+        expect(edit_link[:href]).to include("from_review=1")
+      end
+
+      context "with previously uploaded documents" do
+        before do
+          Rails.application.config.active_storage.service = :local
+          education_activity.document_uploads.attach(
+            io: StringIO.new("%PDF-1.4"),
+            filename: "verification.pdf",
+            content_type: "application/pdf"
+          )
+        end
+
+        it "renders the uploaded documents section with an edit link" do
+          get :review, params: { id: education_activity.id }
+
+          expect(response.body).to include(I18n.t("activities.document_uploads.heading", document_count: 1))
+          expect(response.body).to include("verification.pdf")
+          expect(response.body).to include(
+            new_activities_flow_education_document_upload_path(education_id: education_activity, from_review: 1)
+          )
+          expect(response.body).not_to include(I18n.t("activities.document_uploads.remove_file"))
+        end
+      end
+
+      context "without uploaded documents" do
+        it "does not render the uploaded documents heading" do
+          get :review, params: { id: education_activity.id }
+
+          expect(response.body).not_to include(I18n.t("activities.document_uploads.heading", document_count: 0))
+        end
+      end
+    end
+
+    context "when partially self-attested" do
+      let(:education_activity) do
+        create(
+          :education_activity,
+          activity_flow: activity_flow,
+          data_source: :partially_self_attested,
+          status: :succeeded
+        )
+      end
+
+      it "renders enrollment review details for a single enrollment and fallback term hours" do
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "University of Illinois"
+        )
+
+        get :review, params: { id: education_activity.id }
+
+        doc = Capybara.string(response.body)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(I18n.t("activities.education.review.enrollment_information"))
+        expect(response.body).to include(I18n.t("components.enrollment_term_table_component.school_or_program"))
+        expect(response.body).to include(I18n.t("activities.education.review.credit_hours_section"))
+        expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
+        expect(response.body).to include(I18n.t("activities.education.review.ce_explainer_title"))
+        expect(doc).to have_text(
+          I18n.t("activities.education.review.description", school_name: "University of Illinois")
+        )
+        expect(doc).to have_text(
+          I18n.t(
+            "activities.education.review.additional_comments_description",
+            agency_name: I18n.t("shared.agency_full_name.sandbox")
+          )
+        )
+        expect(doc).not_to have_text(I18n.t("activities.education.edit.summer_logic_description"))
+        expect(response.body).to include("0")
+      end
+
+      it "renders term-hours table for an enrolled term" do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "University of Illinois",
+          enrollment_status: :enrolled,
+          credit_hours: 4
+        )
+
+        get :review, params: { id: education_activity.id }
+
+        doc = Capybara.string(response.body)
+        expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
+        expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
+      end
+
+      it "renders term-hours edit link to the term credit-hours screen" do
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "University of Illinois"
+        )
+
+        get :review, params: { id: education_activity.id }
+
+        expect(response.body).to include(
+          edit_activities_flow_education_term_credit_hour_path(
+            education_id: education_activity.id,
+            id: 0,
+            from_review: 1
+          )
+        )
+      end
+
+      it "renders multiple enrollments and only shows term-hours table for less-than-half-time terms" do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "Half Time School",
+          enrollment_status: :half_time
+        )
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "Less Than Half School",
+          credit_hours: 4
+        )
+
+        get :review, params: { id: education_activity.id }
+
+        doc = Capybara.string(response.body)
+        expect(response.body).to include(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
+        )
+        expect(response.body).to include(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
+        )
+        expect(doc).to have_selector("h1", text: I18n.t("activities.education.review.title_no_school_name"))
+        expect(doc).to have_text(
+          I18n.t(
+            "activities.education.review.description",
+            school_name: "Half Time School and Less Than Half School"
+          )
+        )
+        expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
+        expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
+        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(2)
+      end
+
+      it "renders term-hours tables for each enrollment when all enrollments are less-than-half-time" do
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "School One",
+          credit_hours: 3
+        )
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "School Two",
+          credit_hours: 5
+        )
+
+        get :review, params: { id: education_activity.id }
+
+        doc = Capybara.string(response.body)
+        expect(response.body).to include(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
+        )
+        expect(response.body).to include(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
+        )
+        expect(doc).to have_selector("h1", text: I18n.t("activities.education.review.title_no_school_name"))
+        expect(doc).to have_text(
+          I18n.t(
+            "activities.education.review.description",
+            school_name: "School One and School Two"
+          )
+        )
+        expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 2)
+        expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(4)
+        expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
+      end
+    end
+
+    context "when validated" do
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow)
+      end
+
+      before do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "Pine Valley College",
+          enrollment_status: :half_time
+        )
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          school_name: "Riverside Community College",
+          enrollment_status: :full_time
+        )
+      end
+
+      it "renders validated enrollment info without edit links to entry pages" do
+        get :review, params: { id: education_activity.id, from_edit: 1 }
+
+        doc = Capybara.string(response.body)
+        expect(response).to have_http_status(:ok)
+        expect(doc).to have_selector("h1", text: I18n.t("activities.education.edit.header"))
+        expect(doc).to have_text(
+          I18n.t("activities.education.edit.description", reporting_window: activity_flow.reporting_window_display)
+        )
+        expect(doc).to have_text(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 1)
+        )
+        expect(doc).to have_text(
+          I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
+        )
+        expect(doc).not_to have_link(I18n.t("activities.education.review.edit"))
+        expect(doc).not_to have_link(I18n.t("activities.hub.edit"))
+        expect(doc).to have_button(I18n.t("activities.hub.save"))
+      end
+    end
+  end
+
+  describe "PATCH #save_review" do
+    let(:education_activity) do
+      create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
+    end
+
+    it "saves additional comments and redirects to the hub" do
+      patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "Some notes" } }
+
+      expect(education_activity.reload.additional_comments).to eq("Some notes")
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "publishes the activity" do
+      education_activity.update!(draft: true)
+
+      patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
+
+      expect(education_activity.reload.draft).to be(false)
+    end
+
+    context "when validated mixed enrollment has half-time-or-above in each reporting month" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          reporting_window_months: 2,
+          education_activities_count: 0,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          with_identity: true
+        )
+      end
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :validated, status: :succeeded)
+      end
+
+      before do
+        first_month = activity_flow.reporting_months.first
+        second_month = activity_flow.reporting_months.second
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: :half_time,
+          term_begin: first_month,
+          term_end: second_month.end_of_month
+        )
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          term_begin: first_month,
+          term_end: second_month.end_of_month
+        )
+      end
+
+      it "redirects to summary" do
+        patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "Mixed statuses" } }
+
+        expect(response).to redirect_to(activities_flow_summary_path)
+      end
+    end
+
+    context "when no half-time-or-above status is present" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          reporting_window_months: 2,
+          education_activities_count: 0,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          with_identity: true
+        )
+      end
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :partially_self_attested, status: :succeeded)
+      end
+
+      before do
+        first_month = activity_flow.reporting_months.first
+        second_month = activity_flow.reporting_months.second
+        create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          credit_hours: 0,
+          term_begin: first_month,
+          term_end: second_month.end_of_month
+        )
+      end
+
+      it "redirects to activity hub" do
+        patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "All less than half-time" } }
+
+        expect(response).to redirect_to(activities_flow_root_path)
+      end
     end
   end
 
@@ -138,7 +661,8 @@ RSpec.describe Activities::EducationController, type: :controller do
         meets_requirements: false,
         meets_routing_requirements: false
       )
-      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+      calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+      allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
 
       patch :update, params: {
         id: education_activity.id,
@@ -154,7 +678,8 @@ RSpec.describe Activities::EducationController, type: :controller do
         meets_requirements: true,
         meets_routing_requirements: false
       )
-      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+      calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+      allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
 
       patch :update, params: {
         id: education_activity.id,
@@ -170,7 +695,8 @@ RSpec.describe Activities::EducationController, type: :controller do
         meets_requirements: true,
         meets_routing_requirements: true
       )
-      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+      calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+      allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
 
       patch :update, params: {
         id: education_activity.id,
@@ -178,6 +704,204 @@ RSpec.describe Activities::EducationController, type: :controller do
       }
 
       expect(response).to redirect_to(activities_flow_summary_path)
+    end
+
+    it "redirects partially self-attested activities to term credit hours" do
+      partially_self_attested_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+      create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: partially_self_attested_activity,
+        school_name: "State University")
+
+      patch :update, params: {
+        id: partially_self_attested_activity.id,
+        education_activity: { additional_comments: "Needs docs" }
+      }
+
+      expect(response).to redirect_to(
+        edit_activities_flow_education_term_credit_hour_path(education_id: partially_self_attested_activity.id, id: 0)
+      )
+    end
+
+    context "when validated activity has less-than-half-time terms" do
+      let(:validated_activity) { create(:education_activity, activity_flow: activity_flow, status: :succeeded) }
+
+      before do
+        create(:nsc_enrollment_term, :less_than_half_time,
+          education_activity: validated_activity,
+          school_name: "State University")
+        result = ActivityFlowProgressCalculator::OverallResult.new(
+          total_hours: 0,
+          meets_requirements: false,
+          meets_routing_requirements: false
+        )
+        calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
+      end
+
+      it "redirects to after_activity_path (not term credit hours)" do
+        patch :update, params: {
+          id: validated_activity.id,
+          education_activity: { additional_comments: "test" }
+        }
+
+        expect(response).to redirect_to(activities_flow_root_path)
+      end
+    end
+
+    context "when validated activity has mixed half-time and less-than-half-time terms" do
+      let(:validated_activity) { create(:education_activity, activity_flow: activity_flow, status: :succeeded) }
+
+      before do
+        create(:nsc_enrollment_term,
+          education_activity: validated_activity,
+          enrollment_status: "half_time",
+          school_name: "Pine Valley College")
+        create(:nsc_enrollment_term, :less_than_half_time,
+          education_activity: validated_activity,
+          school_name: "Riverside Community College")
+        result = ActivityFlowProgressCalculator::OverallResult.new(
+          total_hours: 80,
+          meets_requirements: true,
+          meets_routing_requirements: true
+        )
+        calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
+      end
+
+      it "redirects to summary" do
+        patch :update, params: {
+          id: validated_activity.id,
+          education_activity: { additional_comments: "test" }
+        }
+
+        expect(response).to redirect_to(activities_flow_summary_path)
+      end
+    end
+
+    context "when validated activity has only half-time-or-above terms" do
+      let(:validated_activity) { create(:education_activity, activity_flow: activity_flow, status: :succeeded) }
+
+      before do
+        create(:nsc_enrollment_term,
+          education_activity: validated_activity,
+          enrollment_status: "half_time",
+          school_name: "State University")
+
+        result = ActivityFlowProgressCalculator::OverallResult.new(
+          total_hours: 0,
+          meets_requirements: false,
+          meets_routing_requirements: false
+        )
+        calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
+      end
+
+      it "redirects to after_activity_path (not term credit hours)" do
+        patch :update, params: {
+          id: validated_activity.id,
+          education_activity: { additional_comments: "test" }
+        }
+
+        expect(response).to redirect_to(activities_flow_root_path)
+      end
+    end
+
+    it "updates fully self-attested education info and redirects to month 0" do
+      fully_self_attested_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :fully_self_attested,
+        school_name: "Old School"
+      )
+
+      patch :update, params: {
+        id: fully_self_attested_activity.id,
+        education_activity: {
+          school_name: "New School",
+          city: "New City",
+          state: "CA",
+          zip_code: "90001",
+          street_address: "123 Main St"
+        }
+      }
+
+      expect(fully_self_attested_activity.reload.school_name).to eq("New School")
+      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: fully_self_attested_activity, id: 0))
+    end
+
+    it "redirects self-attested to review when from_review is present" do
+      self_attested_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :fully_self_attested,
+        school_name: "Old School"
+      )
+
+      patch :update, params: {
+        id: self_attested_activity.id,
+        from_review: 1,
+        education_activity: {
+          school_name: "New School",
+          city: "New City",
+          state: "CA",
+          zip_code: "90001",
+          street_address: "123 Main St"
+        }
+      }
+
+      expect(response).to redirect_to(review_activities_flow_education_path(id: self_attested_activity))
+    end
+
+    it "threads from_edit to review when from_review is present" do
+      self_attested_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :fully_self_attested,
+        school_name: "Old School"
+      )
+
+      patch :update, params: {
+        id: self_attested_activity.id,
+        from_review: 1,
+        from_edit: 1,
+        education_activity: {
+          school_name: "New School",
+          city: "New City",
+          state: "CA",
+          zip_code: "90001",
+          street_address: "123 Main St"
+        }
+      }
+
+      expect(response).to redirect_to(review_activities_flow_education_path(id: self_attested_activity, from_edit: 1))
+    end
+
+    it "threads from_edit to month 0 when from_review is absent" do
+      self_attested_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :fully_self_attested,
+        school_name: "Old School"
+      )
+
+      patch :update, params: {
+        id: self_attested_activity.id,
+        from_edit: 1,
+        education_activity: {
+          school_name: "New School",
+          city: "New City",
+          state: "CA",
+          zip_code: "90001",
+          street_address: "123 Main St"
+        }
+      }
+
+      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: self_attested_activity, id: 0, from_edit: 1))
     end
   end
 end

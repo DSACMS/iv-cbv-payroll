@@ -5,11 +5,11 @@ Eligibility made easy
 
 Eligibility Made Easy (Emmy) using Consent-Based Verification (CBV) is a prototype that allows benefit applicants to verify their income directly using payroll providers. It is currently being piloted for testing and validation purposes.
 
- ## Project Vision 
+ ## Project Vision
 Eligibility Made Easy (Emmy) is a project to allow applicants to verify their income and community engagement directly using payroll providers and educational records. Emmy was developed and is supported by CMS in order to offer states a drop-in component for their application process to allow applicants to apply for state benefits more easily. This is part of a more comprehensive process to [improve data services for benefits delivery](https://assets.performance.gov/cx/files/OMB-CX-LifeExperience-FFS-ImprovingData.pdf).
 
- ## Project Mission 
-Emmy uses consent-based verification (CBV) with multiple data sources, making the process much faster and more efficient than a simple document-upload service. CBV enables additional cost avoidance by optimizing manual document review processes. Rather than having to process incorrect or blurry documents, consent-based verification produces an easily consumed report with essential information. Verification information is returned in a standardized format easy for other systems to process (JSON), allowing integration with existing state systems. 
+ ## Project Mission
+Emmy uses consent-based verification (CBV) with multiple data sources, making the process much faster and more efficient than a simple document-upload service. CBV enables additional cost avoidance by optimizing manual document review processes. Rather than having to process incorrect or blurry documents, consent-based verification produces an easily consumed report with essential information. Verification information is returned in a standardized format easy for other systems to process (JSON), allowing integration with existing state systems.
 
 Emmy is under active development by CMS, with new updates released on a 2-week cadence.
 # Core Team
@@ -110,15 +110,28 @@ To run database migrations on the test environment that is used by rpec tests, r
 
 ### JSON API Testing
 
+To acceptance test the JSON API, you can run the independent **reference server implementation**.
+
 1. **Create an API key for the agency you want to test:**
    ```bash
    cd app
-   rails 'users:create_api_token[agency_name]'
+   bin/rails 'users:create_api_token[agency_id]'
    ```
 
 2. **Run the standalone test receiver:**
    ```bash
-   JSON_API_KEY=$(rails runner "puts User.api_key_for_agency('agency_name')") ruby lib/json_api_receiver.rb
+   JSON_API_KEY=$(bin/rails runner "puts User.api_key_for_agency('agency_id')") ruby lib/json_api_receiver.rb
+   ```
+
+3. **Configure Emmy App to POST to the reference server.** Add this to your `.env.local`:
+   ```bash
+   # For testing LA SFTP against sinatra reference implementation
+   LA_LDH_TRANSMISSION_METHOD=json_and_pdf
+   LA_LDH_INCOME_REPORT_URL=http://localhost:4567
+   LA_LDH_PDF_API_URL=http://localhost:4567/pdf
+   LA_LDH_INCOME_REPORT_APIKEY=foo
+   LA_LDH_INCLUDE_REPORT_PDF=false
+   LA_LDH_INCOME_REPORT_ACCOUNTCODE=foobar
    ```
 
 This starts a standalone test server on port 4567 that logs incoming JSON data and verifies HMAC signatures. The receiver is completely independent and can be used as a reference implementation for agencies building their own JSON API endpoints.
@@ -172,7 +185,7 @@ For more information on usage and helpful rake tasks to manage locale files, see
 
 The CBV pilot project is architected to be multi-tenant across jurisdictions we
 are actively piloting with. Each jurisdiction's agency is configured as a
-"client agency" in app/config/client-agency-config.yml and has a short "id", e.g. "az_des", "la_ldh",
+"client agency" in app/config/client-agency-config.yml and has a short "id", e.g. "la_ldh",
 and "sandbox".
 
 We often need to adjust copy specific to each client agency. The preferred way to do it
@@ -190,7 +203,6 @@ And the corresponding locale file:
 
 ```yaml
 learn_more_html:
-  az_des: Learn more about <strong>Arizona Department of Economic Security</strong>
   la_ldh: Learn more about <strong>Louisiana Department of Health</strong>
   sandbox: Learn more about <strong>CBV Test Agency</strong>
   default: Learn more about <strong>Default Agency</strong>
@@ -270,7 +282,7 @@ If you're new to CBV, here's a summary of how to get started navigating the app.
 1. Search for your employer. When you select one, the local page will show you some fake credentials at the very bottom of the screen. Use these to sign in.
 1. Finally, you should be able to complete the applicant flow, including looking at the PDF.
 1. To complete the caseworker flow, add `?is_caseworker=true` to the /cbv/summary.pdf path to see the PDF that gets sent (it's different from the one we send the applicant!)
-1. Note: You can switch to a different pilot partner (state) by going to the irb prompt and running `CbvFlow.last.update(client_agency_id: 'az_des')`. Right now you can only pass it `az_des`, `la_ldh`, or `sandbox`.
+1. Note: You can switch to a different pilot partner (state) by going to the irb prompt and running `CbvFlow.last.update(client_agency_id: 'la_ldh')`. Right now you can only pass it `la_ldh` or `sandbox`.
 
 ## Automated E2E Testing
 We achieve End-to-End (E2E) testing by using `capybara` (which in turn uses `selenium`) to simulate a real user completing the CBV flow.
@@ -453,9 +465,6 @@ See [GOVERNANCE.md](./GOVERNANCE.md)
 ## Feedback
 
 If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know by sending an email to: ffs at nava pbc dot com. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
-
-## Glossary
-Information about terminology and acronyms used in this documentation may be found in [GLOSSARY.md](GLOSSARY.md).
 
 ## Policies
 

@@ -8,18 +8,18 @@ RSpec.describe TranslationService do
   let(:existing_translations_path) { tmp_dir.join('en.yml') }
   let(:current_locale_translations_path) { tmp_dir.join('es.yml') }
   let(:csv_contents) { @csv_contents }
-  let(:logger_double) { instance_spy(Logger) }
-  let(:log_messages) { [] }
+  let(:log_output) { StringIO.new }
+  let(:test_logger) { Logger.new(log_output) }
 
   before do
     setup_test_environment
     mock_translation_service_methods
-    allow(Rails).to receive(:logger).and_return(logger_double)
-    allow(logger_double).to receive(:info) { |message| log_messages << message }
-    allow(logger_double).to receive(:warn) { |message| log_messages << message }
+    @original_logger = Rails.logger
+    Rails.logger = test_logger
   end
 
   after do
+    Rails.logger = @original_logger
     FileUtils.rm_rf(tmp_dir)
   end
 
@@ -41,17 +41,18 @@ RSpec.describe TranslationService do
         expect(yaml_content['es']['test']).not_to have_key('key4')
 
         # Verify logging
-        expect(logger_double).to have_received(:info).with(/Attempting to read CSV file:/)
-        expect(logger_double).to have_received(:info).with(/Processing: Key:/).at_least(:once)
-        expect(logger_double).to have_received(:info).with(/Total rows processed:/)
-        expect(logger_double).to have_received(:info).with(/Successfully Imported:/)
-        expect(logger_double).to have_received(:info).with(/Empty rows skipped:/)
-        expect(logger_double).to have_received(:info).with(/Rows skipped by conditions:/)
-        expect(logger_double).to have_received(:info).with(/Failed imports:/)
-        expect(logger_double).to have_received(:info).with(/Collisions detected:/)
-        expect(logger_double).to have_received(:info).with(/\nCollisions Details:/)
-        expect(logger_double).to have_received(:info).with(/Key: .*?, Old Value: .*?, New Value: .*?/).at_least(:once)
-        expect(logger_double).to have_received(:info).with(/es translations have been generated and saved to/)
+        log = log_output.string
+        expect(log).to match(/Attempting to read CSV file:/)
+        expect(log).to match(/Processing: Key:/)
+        expect(log).to match(/Total rows processed:/)
+        expect(log).to match(/Successfully Imported:/)
+        expect(log).to match(/Empty rows skipped:/)
+        expect(log).to match(/Rows skipped by conditions:/)
+        expect(log).to match(/Failed imports:/)
+        expect(log).to match(/Collisions detected:/)
+        expect(log).to match(/Collisions Details:/)
+        expect(log).to match(/Key: .*?, Old Value: .*?, New Value: .*?/)
+        expect(log).to match(/es translations have been generated and saved to/)
       end
     end
 
@@ -64,8 +65,9 @@ RSpec.describe TranslationService do
         yaml_content = YAML.load_file(output_path)
         expect(yaml_content['es']['test']['key2']).to eq('Mundo') # Overwritten
 
-        expect(logger_double).to have_received(:warn).with(/Overwriting existing translation for key/)
-        expect(logger_double).not_to have_received(:warn).with(/Collision detected for key/)
+        log = log_output.string
+        expect(log).to match(/Overwriting existing translation for key/)
+        expect(log).not_to match(/Collision detected for key/)
       end
     end
   end

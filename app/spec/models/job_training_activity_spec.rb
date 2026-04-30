@@ -20,10 +20,18 @@ RSpec.describe JobTrainingActivity, type: :model do
   end
 
   describe "#document_upload_suggestion_text" do
-    it "returns job training specific suggested documents" do
+    it "returns the job training suggestion translation key" do
       activity = build(:job_training_activity)
 
-      expect(activity.document_upload_suggestion_text).to include("Signed statement on organization letterhead verifying hours")
+      expect(activity.document_upload_suggestion_text).to eq("activities.job_training.document_upload_suggestion_text_html")
+    end
+  end
+
+  describe "#document_upload_header_title_i18n_key" do
+    it "returns the job training header title translation key" do
+      activity = build(:job_training_activity)
+
+      expect(activity.document_upload_header_title_i18n_key).to eq("activities.work_programs.title_singular")
     end
   end
 
@@ -43,6 +51,38 @@ RSpec.describe JobTrainingActivity, type: :model do
       activity = create(:job_training_activity)
 
       expect(activity.document_upload_months_to_verify).to eq([])
+    end
+  end
+
+  describe "#formatted_address" do
+    let(:base_address_attrs) do
+      { street_address: "123 Main St", city: "Springfield", state: "IL", zip_code: "62701" }
+    end
+
+    it "joins street, city, state, and zip into a single line" do
+      activity = create(:job_training_activity, base_address_attrs)
+
+      expect(activity.formatted_address).to eq("123 Main St, Springfield, IL 62701")
+    end
+
+    it "includes street_address_line_2 when present" do
+      activity = create(:job_training_activity, base_address_attrs.merge(street_address_line_2: "Suite 200"))
+
+      expect(activity.formatted_address).to eq("123 Main St, Suite 200, Springfield, IL 62701")
+    end
+
+    it "falls back to organization_address when structured fields are blank" do
+      activity = create(
+        :job_training_activity,
+        street_address: nil,
+        street_address_line_2: nil,
+        city: nil,
+        state: nil,
+        zip_code: nil,
+        organization_address: "Legacy Address"
+      )
+
+      expect(activity.formatted_address).to eq("Legacy Address")
     end
   end
 end

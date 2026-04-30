@@ -95,4 +95,10 @@ RSpec.describe CbvFlow, type: :model do
       expect(cbv_flow.aggregator_lookback_days).to be_nil
     end
   end
+
+  describe "#activity_month_order_oldest_first?" do
+    it "returns false" do
+      expect(cbv_flow.activity_month_order_oldest_first?).to be false
+    end
+  end
 end

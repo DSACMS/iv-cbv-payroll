@@ -1,131 +1,211 @@
-<% content_for :title, t("activities.hub.title") %>
+<% any_activities_added = @flow.any_activities_added? %>
+<% monthly_results = progress_calculator.monthly_results %>
+<% required_month_count = progress_calculator.required_month_count %>
+<% state = activity_hub_state(any_activities_added:, monthly_results:, required_month_count:) %>
+<% variant = @flow.renewal_reporting_window? ? :renewal : :application %>
+<% title_key = activity_hub_title_key(state) %>
+<% description_key = activity_hub_description_key(state) %>
+<%# i18n-tasks-use t("activities.hub.empty_state_title") %>
+<%# i18n-tasks-use t("activities.hub.completed_state_title") %>
+<%# i18n-tasks-use t("activities.hub.in_progress_state_title") %>
+<%# i18n-tasks-use t("activities.hub.completed_state_description", agency_name: "Test Agency") %>
+<%# i18n-tasks-use t("activities.hub.in_progress_state_description", agency_name: "Test Agency") %>
+<%# i18n-tasks-use t("activities.hub.empty_state_months_required_any", required_month_count: 3) %>
+<%# i18n-tasks-use t("activities.hub.empty_state_months_required_all", required_month_count: 6) %>
 
-<h1>
-  <%= t("activities.hub.title") %>
-</h1>
-<p>
-  <%= t("activities.hub.description", agency_name: agency_translation("shared.agency_full_name"), reporting_window: @flow.reporting_window_display) %>
-</p>
+<% content_for :title, t(title_key) %>
 
-<% if display_progress_indicator?(progress_calculator) %>
-  <%= render(ActivityFlowProgressIndicator.from_calculator(progress_calculator, agency_translation("shared.agency_full_name"))) %>
+<div class="activity-hub-columns">
+  <div class="activity-hub-columns__progress">
+    <h1>
+      <%= t(title_key) %>
+    </h1>
 
-  <hr class="border-gray-30 border-top-0 activity-hub-divider">
-<% end %>
+    <% if state == :empty %>
+      <p class="activity-hub-subheading margin-top-2">
+        <strong><%= t("activities.hub.empty_state_reporting_period_label") %></strong>
+        <%= @flow.reporting_window_display %>
+      </p>
 
-<% if activity_type_enabled?(:employment) %>
-  <% persisted_report = @persisted_report; employment_activities = @employment_activities %>
-  <% employment_card_data = combined_employment_card_data(
-    reporting_range: @flow.reporting_window_range,
-    payroll_accounts: @employment_payroll_accounts,
-    persisted_report:,
-    employment_activities:
-  ) %>
-  <%= render "activities/activities/activity_section",
-        activity_type: "employment",
-        section_title: t("activities.employment.title"),
-        add_path: activities_flow_income_employer_search_path,
-        empty_message: t("activities.hub.empty.employment"),
-        cards: employment_card_data do %>
-    <% employment_card_data.each do |card_data| %>
-      <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
-        <% card.with_body do %>
-          <% card_data[:months].each do |month_data| %>
-            <div class="margin-bottom-2">
-              <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
-              <p class="margin-y-0"><%= t("activities.hub.cards.gross_income", amount: number_to_currency(month_data[:gross_earnings] / 100.0)) %></p>
-              <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
-            </div>
+      <% if variant == :renewal %>
+        <% months_required_key = required_month_count < @flow.reporting_window_months ? "activities.hub.empty_state_months_required_any" : "activities.hub.empty_state_months_required_all" %>
+        <p class="activity-hub-subheading">
+          <strong><%= t("activities.hub.empty_state_months_required_label") %></strong>
+          <%= t(months_required_key, required_month_count: required_month_count) %>
+        </p>
+      <% end %>
+
+      <p class="activity-hub-subheading">
+        <%= t("activities.hub.empty_state_description", reporting_window: @flow.reporting_window_display) %>
+      </p>
+    <% else %>
+      <p class="activity-hub-subheading margin-top-2">
+        <%= t(description_key, agency_name: agency_translation("shared.agency_full_name")) %>
+      </p>
+    <% end %>
+
+    <% if any_activities_added %>
+      <% show_progress_unit_toggle = @employment_activities.any? || @employment_payroll_accounts.any? %>
+      <div class="margin-top-4">
+        <%= render(
+          ActivityFlowProgressIndicator.from_calculator(
+            progress_calculator,
+            variant: variant,
+            show_unit_toggle: show_progress_unit_toggle
+          )
+        ) %>
+      </div>
+
+      <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+
+      <% if state == :in_progress %>
+        <p class="margin-top-2 text-center text-primary font-sans-sm text-underline">
+          <%= t("activities.hub.verification_info_link") %>
+        </p>
+      <% end %>
+    <% end %>
+
+  </div>
+  <div class="activity-hub-columns__activities">
+    <% if activity_type_enabled?(:employment) %>
+      <% persisted_report = @persisted_report; employment_activities = @employment_activities %>
+      <% employment_card_data = combined_employment_card_data(
+        reporting_range: @flow.reporting_window_range,
+        payroll_accounts: @employment_payroll_accounts,
+        persisted_report:,
+        employment_activities:
+      ) %>
+      <%= render "activities/activities/activity_section",
+            activity_type: "employment",
+            section_title: t("activities.employment.title"),
+            add_path: activities_flow_income_employer_search_path,
+            empty_message: t("activities.hub.empty.employment"),
+            cards: employment_card_data do %>
+        <% employment_card_data.each do |card_data| %>
+          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+            <% card.with_header do %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+            <% end %>
+            <% card.with_body do %>
+              <% if card_data[:months].none? %>
+                <div class="margin-top-2">
+                  <%= t("activities.hub.cards.no_employment_data") %>
+                </div>
+              <% end %>
+              <% card_data[:months].each do |month_data| %>
+                <div class="activity-month-details">
+                  <div class="activity-month-details__month">
+                    <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
+                  </div>
+                  <div class="activity-month-details__data">
+                    <p class="margin-y-0"><%= t("activities.hub.cards.gross_income", amount: number_to_currency(month_data[:gross_earnings] / 100.0)) %></p>
+                    <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
           <% end %>
-        <% end %>
-        <% card.with_footer do %>
-          <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
         <% end %>
       <% end %>
     <% end %>
-  <% end %>
-<% end %>
 
-<% if activity_type_enabled?(:education) %>
-  <%# Selecting educations with nsc_enrollment_terms filters out NSC responses where no data was found. %>
-  <% education_card_data = education_cards(@education_activities_with_terms || [], progress_calculator.reporting_months) %>
-  <%= render "activities/activities/activity_section",
-        activity_type: "education",
-        section_title: t("activities.education.title"),
-        add_path: new_activities_flow_education_path,
-        empty_message: t("activities.hub.empty.education"),
-        cards: education_card_data do %>
-    <% education_card_data.each do |card_data| %>
-      <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
-        <% card.with_body do %>
-          <% card_data[:months].each do |month_data| %>
-            <div class="margin-bottom-2">
-              <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
-              <p class="margin-y-0"><%= t("activities.hub.cards.enrollment_status", status: month_data[:enrollment_status]) %></p>
-              <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
-            </div>
+    <% if activity_type_enabled?(:education) %>
+      <% education_card_data = education_cards(@education_activities || [], progress_calculator.reporting_months) %>
+      <%= render "activities/activities/activity_section",
+            activity_type: "education",
+            section_title: t("activities.education.title"),
+            add_path: verify_activities_flow_education_index_path,
+            empty_message: t("activities.hub.empty.education"),
+            cards: education_card_data do %>
+        <% education_card_data.each do |card_data| %>
+          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+            <% card.with_header do %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+            <% end %>
+            <% card.with_body do %>
+              <% card_data[:months].each do |month_data| %>
+                <div class="activity-month-details">
+                  <div class="activity-month-details__month">
+                    <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
+                  </div>
+                  <div class="activity-month-details__data">
+                    <% if month_data[:enrollment_status].present? %>
+                      <p class="margin-y-0"><%= t("activities.hub.cards.enrollment_status", status: month_data[:enrollment_status]) %></p>
+                      <% if month_data[:show_credit_hours] %>
+                        <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
+                      <% end %>
+                      <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:community_engagement_hours]) %></p>
+                    <% else %>
+                      <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
+                      <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:community_engagement_hours]) %></p>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
           <% end %>
-        <% end %>
-        <% card.with_footer do %>
-          <%= link_to t("activities.hub.edit"), edit_activities_flow_education_path(id: card_data[:activity].id), class: "usa-link" %>
         <% end %>
       <% end %>
     <% end %>
-  <% end %>
-<% end %>
 
-<% if activity_type_enabled?(:community_service) %>
-  <% community_service_card_data = community_service_cards(@community_service_activities) %>
-  <%= render "activities/activities/activity_section",
-        activity_type: "community_service",
-        section_title: t("activities.community_service.title"),
-        add_path: new_activities_flow_community_service_path,
-        empty_message: t("activities.hub.empty.community_service"),
-        cards: community_service_card_data do %>
-    <% community_service_card_data.each do |card_data| %>
-      <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
-        <% card.with_body do %>
-          <% card_data[:months].each do |month_data| %>
-            <div class="margin-bottom-2">
-              <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
-              <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
-            </div>
+    <% if activity_type_enabled?(:community_service) %>
+      <% community_service_card_data = community_service_cards(@community_service_activities) %>
+      <%= render "activities/activities/activity_section",
+            activity_type: "community_service",
+            section_title: t("activities.community_service.title"),
+            add_path: new_activities_flow_community_service_path,
+            empty_message: t("activities.hub.empty.community_service"),
+            cards: community_service_card_data do %>
+        <% community_service_card_data.each do |card_data| %>
+          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+            <% card.with_header do %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+            <% end %>
+            <% card.with_body do %>
+              <% card_data[:months].each do |month_data| %>
+                <div class="activity-month-details">
+                  <div class="activity-month-details__month">
+                    <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
+                  </div>
+                  <div class="activity-month-details__data">
+                    <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
           <% end %>
-        <% end %>
-        <% card.with_footer do %>
-          <%= link_to t("activities.hub.edit"), edit_activities_flow_community_service_path(id: card_data[:activity].id), class: "usa-link" %>
         <% end %>
       <% end %>
     <% end %>
-  <% end %>
-<% end %>
 
-<% if activity_type_enabled?(:work_programs) %>
-  <% work_programs_card_data = work_program_cards(@work_programs_activities) %>
-  <%= render "activities/activities/activity_section",
-        activity_type: "work_programs",
-        section_title: t("activities.work_programs.title"),
-        add_path: new_activities_flow_job_training_path,
-        empty_message: t("activities.hub.empty.work_programs"),
-        cards: work_programs_card_data do %>
-    <% work_programs_card_data.each do |card_data| %>
-      <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
-        <% card.with_body do %>
-          <% card_data[:months].each do |month_data| %>
-            <div class="margin-bottom-2">
-              <p class="margin-y-0"><strong><%= I18n.l(month_data[:month], format: :month_year) %></strong></p>
-              <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
-            </div>
+    <% if activity_type_enabled?(:work_programs) %>
+      <% work_programs_card_data = work_program_cards(@work_programs_activities) %>
+      <%= render "activities/activities/activity_section",
+            activity_type: "work_programs",
+            section_title: t("activities.work_programs.title"),
+            add_path: new_activities_flow_job_training_path,
+            empty_message: t("activities.hub.empty.work_programs"),
+            cards: work_programs_card_data do %>
+        <% work_programs_card_data.each do |card_data| %>
+          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+            <% card.with_header do %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+            <% end %>
+            <% card.with_body do %>
+              <% card_data[:months].each do |month_data| %>
+                <div class="activity-month-details">
+                  <div class="activity-month-details__month">
+                    <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
+                  </div>
+                  <div class="activity-month-details__data">
+                    <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
           <% end %>
-        <% end %>
-        <% card.with_footer do %>
-          <%= link_to t("activities.hub.edit"), edit_activities_flow_job_training_path(id: card_data[:activity].id), class: "usa-link" %>
         <% end %>
       <% end %>
     <% end %>
-  <% end %>
-<% end %>
-
-<% if @flow.any_activities_added? %>
-  <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button margin-top-4", method: :get %>
-<% end %>
+  </div>
+</div>

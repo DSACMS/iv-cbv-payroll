@@ -23,7 +23,7 @@ class Transmitters::HttpPdfTransmitter < Transmitters::BasePdfTransmitter
     req.content_length = pdf_output.file_size
     req.body = payload
 
-    req["X-IVAAS-Timestamp"] = Time.now.to_i
+    req["X-IVAAS-Timestamp"] = timestamp
     req["X-IVAAS-Signature"] = signature
     req["X-IVAAS-Confirmation-Code"] = cbv_flow.confirmation_code
 
@@ -39,9 +39,24 @@ class Transmitters::HttpPdfTransmitter < Transmitters::BasePdfTransmitter
     end
 
     unless res.is_a?(Net::HTTPSuccess)
-      Rails.logger.error "Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}"
-      raise HttpPdfTransmitterError.new("Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}")
+      raise_response_error!(res, HttpPdfTransmitterError)
     end
+  end
+
+  private
+
+  def raise_response_error!(response, default_error_class)
+    message = "Unexpected response from agency: code=#{response.code} message=#{response.message} body=#{response.body}"
+    Rails.logger.error message
+
+    error_class = silence_errors_from_response_codes.include?(response.code.to_s) ?
+      ApplicationJob::SilencedError :
+      default_error_class
+    raise error_class, message
+  end
+
+  def silence_errors_from_response_codes
+    Array(@current_agency.transmission_method_configuration["silently_retry_error_codes"]).map(&:to_s)
   end
 
   class HttpPdfTransmitterError < StandardError; end

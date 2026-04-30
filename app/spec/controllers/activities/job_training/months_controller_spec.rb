@@ -32,6 +32,8 @@ RSpec.describe Activities::JobTraining::MonthsController, type: :controller do
       patch :update, params: { job_training_id: job_training_activity.id, id: 0, no_hours: "1" }
 
       expect(response).to have_http_status(:unprocessable_content)
+      expect(assigns(:back_url)).to be_present
+      expect(response.body).to include("back-nav")
     end
 
     context "with multiple reporting months" do
@@ -67,6 +69,18 @@ RSpec.describe Activities::JobTraining::MonthsController, type: :controller do
         patch :update, params: { job_training_id: job_training_activity.id, id: 2, no_hours: "1" }
 
         expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: job_training_activity.id))
+      end
+    end
+
+    context "when editing from review" do
+      let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
+
+      it "redirects back to the review page" do
+        create(:job_training_activity_month, job_training_activity: job_training_activity, month: activity_flow.reporting_months.second, hours: 10)
+
+        patch :update, params: { job_training_id: job_training_activity.id, id: 0, from_review: 1, job_training_activity_month: { hours: 15 } }
+
+        expect(response).to redirect_to(review_activities_flow_job_training_path(id: job_training_activity))
       end
     end
   end

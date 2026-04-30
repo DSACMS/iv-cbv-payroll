@@ -35,8 +35,7 @@ class CbvFlowInvitation < ApplicationRecord
 
   include Redactable
   has_redactable_fields(
-    email_address: :email,
-    auth_token: :string
+    email_address: :email
   )
 
   scope :unstarted, -> { left_outer_joins(:cbv_flows).where(cbv_flows: { id: nil }) }
@@ -73,7 +72,7 @@ class CbvFlowInvitation < ApplicationRecord
   end
 
   def applicant_information
-    return if client_agency_id == "az_des" || client_agency_id == "la_ldh"
+    return if client_agency_id == "la_ldh"
 
     errors.add(:'cbv_applicant.first_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.first_name.blank")) if cbv_applicant.first_name.blank?
     errors.add(:'cbv_applicant.last_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.last_name.blank")) if cbv_applicant.last_name.blank?

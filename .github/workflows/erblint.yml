@@ -9,7 +9,7 @@ jobs:
     name: Erblint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up Ruby & Javascript
         uses: ./.github/actions/setup-languages
       - name: Run Erblint

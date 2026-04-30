@@ -40,6 +40,8 @@ class CbvFlowNavigator
       cbv_flow_payment_details_path(**params)
     when :synchronization_failures
       cbv_flow_synchronization_failures_path
+    else
+      raise "Unknown income_sync_path step: #{step}"
     end
   end
 end

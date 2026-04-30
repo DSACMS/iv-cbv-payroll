@@ -73,6 +73,12 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           expect(PayrollAccount.last.flow).to eq(cbv_flow)
           expect(PayrollAccount.last.flow).to be_a(ActivityFlow)
         end
+
+        it "marks the payroll account as draft" do
+          post :create, params: valid_params
+
+          expect(PayrollAccount.last.draft).to be(true)
+        end
       end
 
       context "when the webhook signature is incorrect" do
@@ -246,6 +252,40 @@ RSpec.describe Webhooks::Pinwheel::EventsController do
           )
 
           post :create, params: valid_params
+        end
+
+        {
+          "identity has no phone numbers" => {
+            stub: :pinwheel_stub_request_identity_response_without_phone_numbers,
+            expected: { identity_phone_numbers_count: 0 }
+          },
+          "identity has no emails" => {
+            stub: :pinwheel_stub_request_identity_response_without_emails,
+            expected: { identity_emails_count: 0 }
+          },
+          "paystubs have null deductions, earnings, and hours_by_earning_category" => {
+            stub: :pinwheel_stub_request_multiple_paystubs_response_with_null_subfields,
+            expected: {
+              paystubs_deductions_count: 0,
+              paystubs_earnings_count: 0,
+              paystubs_hours_by_earning_category_count: 0
+            }
+          }
+        }.each do |description, config|
+          context "when #{description}" do
+            before { send(config[:stub]) }
+
+            it "does not raise and reports zero counts for null fields" do
+              expect(event_logger).to receive(:track).with("ApplicantReportMetUsefulRequirements", anything, anything)
+              expect(event_logger).to receive(:track).with(
+                "ApplicantFinishedPinwheelSync",
+                anything,
+                include(config[:expected])
+              )
+
+              post :create, params: valid_params
+            end
+          end
         end
 
         context "when not meeting the useful report validations" do

@@ -1,4 +1,12 @@
-<% content_for :title, t("activities.job_training.new.title") %>
+<% content_for :title, t("activities.job_training.edit_title") %>
 
-<h1><%= t("activities.job_training.new.title") %></h1>
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.work_programs.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: @back_url
+  ) %>
+<% end %>
+
+<h1><%= t("activities.job_training.edit_title") %></h1>
 <%= render "form", job_training_activity: @job_training_activity %>

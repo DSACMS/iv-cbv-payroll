@@ -1,41 +1,7 @@
-- id: az_des
-  agency_name: Department of Economic Security/Family Assistance Administration
-  agency_contact_website: https://myfamilybenefits.azdes.gov/
-  agency_domain: <%= ENV["AZ_DES_DOMAIN_NAME"] %>
-  # No caseworker feedback form since they will only be interacting with the PDFs
-  # caseworker_feedback_form: null
-  pinwheel:
-    environment: <%= ENV["AZ_DES_PINWHEEL_ENVIRONMENT"] %>
-  argyle:
-    environment: <%= ENV["AZ_DES_ARGYLE_ENVIRONMENT"] %>
-  transmission_method: sftp
-  transmission_method_configuration:
-    user: <%= ENV['AZ_DES_SFTP_USER'] %>
-    password: <%= ENV['AZ_DES_SFTP_PASSWORD'] %>
-    url: <%= ENV['AZ_DES_SFTP_URL'] %>
-    sftp_directory: <%= ENV['AZ_DES_SFTP_DIRECTORY'] %>
-    csv_summary_reports_enabled: false
-  staff_portal_enabled: false
-  pilot_ended: false
-  generic_links_disabled: true
-  sso:
-    client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
-    client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
-    tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
-    scope: "openid"
-    name: "az_des"
-  pay_income_days:
-    w2: 90
-    gig: 182
-  invitation_valid_days: 10
-  logo_path: des_logo.png
-  weekly_report:
-    recipient: <%= ENV['AZ_DES_WEEKLY_REPORT_RECIPIENTS'] %>
-    report_variant: invitations
-
 - id: la_ldh
   agency_name: Department of Health
   agency_contact_website: https://ldh.la.gov/renew-medicaid
+  agency_missing_employers_website: https://ldh.la.gov/renew-medicaid
   agency_domain: <%= ENV["LA_LDH_DOMAIN_NAME"] %>
   # caseworker_feedback_form: n/a
   logo_path: ldh_logo.svg
@@ -48,6 +14,10 @@
   transmission_method_configuration:
     json_api_url: <%= ENV["LA_LDH_INCOME_REPORT_URL"] %>
     pdf_api_url: <%= ENV["LA_LDH_PDF_API_URL"] %>
+    silently_retry_error_codes:
+      - 403
+      - 408
+      - 502
     custom_headers:
       X-Gateway-APIKey: <%= ENV["LA_LDH_INCOME_REPORT_APIKEY"] %>
       AccountCode: <%= ENV["LA_LDH_INCOME_REPORT_ACCOUNTCODE"] %>
@@ -76,7 +46,58 @@
 - id: nh_dhhs
   agency_name: Department of Health and Human Services
   agency_contact_website: https://www.dhhs.nh.gov/
+  agency_missing_employers_website: https://www.dhhs.nh.gov/programs-services/medicaid/medicaid-eligibility-unknown-employer
   agency_domain: <%= ENV["NH_DHHS_DOMAIN_NAME"] %>
+  logo_path: nh_dhhs_logo.png
+  caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
+  pinwheel:
+    environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
+  argyle:
+    environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
+  transmission_method: sftp
+  transmission_method_configuration:
+    user: <%= ENV['NH_DHHS_SFTP_USER'] %>
+    private_key: <%= ENV['NH_DHHS_SFTP_PRIVATE_KEY'].inspect %>
+    url: <%= ENV['NH_DHHS_SFTP_URL'] %>
+    sftp_directory: <%= ENV['NH_DHHS_SFTP_DIRECTORY'] %>
+    pdf_filename_format: CBV_%{case_number}_%{consent_timestamp}_%{confirmation_code}
+  staff_portal_enabled: true
+  pilot_ended: false
+  sso:
+    client_id:     <%= ENV["AZURE_SANDBOX_CLIENT_ID"] %>
+    client_secret: <%= ENV["AZURE_SANDBOX_CLIENT_SECRET"] %>
+    tenant_id:     <%= ENV["AZURE_SANDBOX_TENANT_ID"] %>
+    scope: "openid"
+    name: "sandbox"
+  pay_income_days:
+    w2: 90
+    gig: 90
+  application_reporting_months: 2
+  invitation_valid_days: 30
+  weekly_report:
+    recipient: ffs-eng@navapbc.com
+  applicant_attributes:
+    first_name:
+      required: true
+    middle_name:
+      required: false
+    last_name:
+      required: true
+    case_number:
+      required: true
+    date_of_birth:
+      required: true
+  activity_types:
+    education: true
+    community_service: true
+    work_programs: true
+    employment: true
+
+- id: sandbox
+  agency_name: Test Agency
+  agency_contact_website: https://www.example.com/contact
+  agency_missing_employers_website: https://www.example.com/contact
+  agency_domain: <%= ENV["SANDBOX_DOMAIN_NAME"] %>
   caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
   pinwheel:
     environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
@@ -117,15 +138,16 @@
     work_programs: true
     employment: true
 
-- id: sandbox
-  agency_name: Test Agency
+- id: research
+  agency_name: Example State Department of Health
   agency_contact_website: https://www.example.com/contact
-  agency_domain: <%= ENV["SANDBOX_DOMAIN_NAME"] %>
-  caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform
+  agency_missing_employers_website: https://www.example.com/contact
+  agency_domain: <%= ENV["RESEARCH_DOMAIN_NAME"] %>
+  caseworker_feedback_form: https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform # sandbox
   pinwheel:
-    environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
+    environment: <%= ENV["RESEARCH_PINWHEEL_ENVIRONMENT"] %>
   argyle:
-    environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
+    environment: <%= ENV["RESEARCH_ARGYLE_ENVIRONMENT"] %>
   transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
@@ -145,12 +167,6 @@
   weekly_report:
     recipient: ffs-eng@navapbc.com
   applicant_attributes:
-    first_name:
-      required: true
-    middle_name:
-      required: false
-    last_name:
-      required: true
     case_number:
       required: true
     date_of_birth:

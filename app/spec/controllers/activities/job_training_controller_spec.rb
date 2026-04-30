@@ -51,6 +51,13 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: created_activity.id, id: 0))
     end
 
+    it "creates the activity as a draft" do
+      post :create, params: job_training_params
+
+      activity = activity_flow.job_training_activities.last
+      expect(activity.draft).to be(true)
+    end
+
     it "redirects to month 0 when total hours are below the threshold" do
       create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Local Food Bank", hours: 78)
 
@@ -91,18 +98,110 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       get :edit, params: { id: job_training_activity.id }
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.job_training.new.title"))
+      expect(response.body).to include(I18n.t("activities.job_training.edit_title"))
     end
   end
 
   describe "PATCH #update" do
     let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow) }
 
-    it "updates the activity and redirects to month 0 in edit mode" do
+    it "updates the activity and redirects to month 0" do
       patch :update, params: { id: job_training_activity.id, job_training_activity: { contact_name: "Taylor Smith" } }
 
       expect(job_training_activity.reload.contact_name).to eq("Taylor Smith")
+      expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: job_training_activity.id, id: 0))
+    end
+
+    it "redirects to review when from_review is present" do
+      patch :update, params: { id: job_training_activity.id, from_review: 1, job_training_activity: { contact_name: "Taylor Smith" } }
+
+      expect(response).to redirect_to(review_activities_flow_job_training_path(id: job_training_activity))
+    end
+
+    it "threads from_edit through to the redirect" do
+      patch :update, params: { id: job_training_activity.id, from_edit: 1, job_training_activity: { contact_name: "Taylor Smith" } }
+
       expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: job_training_activity.id, id: 0, from_edit: 1))
+    end
+
+    it "threads from_edit through the from_review redirect" do
+      patch :update, params: { id: job_training_activity.id, from_review: 1, from_edit: 1, job_training_activity: { contact_name: "Taylor Smith" } }
+
+      expect(response).to redirect_to(review_activities_flow_job_training_path(id: job_training_activity, from_edit: 1))
+    end
+  end
+
+  describe "GET #review" do
+    let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow) }
+
+    before do
+      activity_flow.reporting_months.each do |month|
+        create(:job_training_activity_month, job_training_activity: job_training_activity, month: month.beginning_of_month, hours: 10)
+      end
+    end
+
+    it "renders the review page" do
+      get :review, params: { id: job_training_activity.id }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(job_training_activity.program_name)
+    end
+
+    it "includes an edit link for each month" do
+      get :review, params: { id: job_training_activity.id }
+
+      expect(response.body).to include(
+        edit_activities_flow_job_training_month_path(job_training_id: job_training_activity, id: 0, from_review: 1)
+      )
+    end
+
+    context "with previously uploaded documents" do
+      before do
+        Rails.application.config.active_storage.service = :local
+        job_training_activity.document_uploads.attach(
+          io: StringIO.new("%PDF-1.4"),
+          filename: "verification.pdf",
+          content_type: "application/pdf"
+        )
+      end
+
+      it "renders the uploaded documents section with an edit link" do
+        get :review, params: { id: job_training_activity.id }
+
+        expect(response.body).to include(I18n.t("activities.document_uploads.heading", document_count: 1))
+        expect(response.body).to include("verification.pdf")
+        expect(response.body).to include(
+          new_activities_flow_job_training_document_upload_path(job_training_id: job_training_activity, from_review: 1)
+        )
+        expect(response.body).not_to include(I18n.t("activities.document_uploads.remove_file"))
+      end
+    end
+
+    context "without uploaded documents" do
+      it "does not render the uploaded documents heading" do
+        get :review, params: { id: job_training_activity.id }
+
+        expect(response.body).not_to include(I18n.t("activities.document_uploads.heading", document_count: 0))
+      end
+    end
+  end
+
+  describe "PATCH #save_review" do
+    let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow) }
+
+    it "saves additional comments and redirects to the hub" do
+      patch :save_review, params: { id: job_training_activity.id, job_training_activity: { additional_comments: "Some notes" } }
+
+      expect(job_training_activity.reload.additional_comments).to eq("Some notes")
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "publishes the activity" do
+      job_training_activity.update!(draft: true)
+
+      patch :save_review, params: { id: job_training_activity.id, job_training_activity: { additional_comments: "" } }
+
+      expect(job_training_activity.reload.draft).to be(false)
     end
   end
 

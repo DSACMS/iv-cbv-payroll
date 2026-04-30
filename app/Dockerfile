@@ -13,7 +13,7 @@
 #      > make release-build OPTS="--tag iv-cbv-payroll:latest"
 # 5. Ensure that `wkhtmltopdf` runs:
 #      > docker run iv-cbv-payroll:latest bundle exec wkhtmltopdf --version
-ARG RUBY_VERSION=3.4.5
+ARG RUBY_VERSION=3.4.9
 
 
 ##########################################################################################
@@ -27,31 +27,29 @@ FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
-      # CVE-2025-55154 CVE-2025-55298 \
+      # CVE-2026-28693 \
       imagemagick \
-      # CVE-2025-22113 \
-      linux-libc-dev \
-      # CVE-2025-9230 CVE-2025-9231 CVE-2025-9232 \
-      openssl \
-      # CVE-2025-9900 \
-      libtiff-dev libtiff6 libtiffxx6 \
-      # CVE-2025-9086 \
-      curl \
-      # CVE-2025-9714 \
-      libxml2 libxml2-dev \
-      # CVE-2025-68973 \
-      gnupg \
-      # CVE-2025-13601 \
-      libgio-2.0-dev \
-      # CVE-2025-13601 \
-      gir1.2-glib-2.0 \
-      # CVE-2025-68973 \
-      dirmngr \
-      # CVE-2025-11411 \
-      libunbound8 \
-      # CVE-2025-14831 CVE-2025-9820 \
-      libgnutls-dane0t64 libgnutls-openssl27t64 libgnutls28-dev libgnutls30t64 \
-      && \
+      # CVE-2026-33416 \
+      libpng-dev \
+      # CVE-2026-4775 \
+      libtiff-dev \
+      # CVE-2026-2673 \
+      libssl-dev \
+      # CVE-2026-3497 \
+      openssh-client \
+    && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Auto-fix: OS package vulnerabilities detected by Trivy (managed automatically)
+# hadolint ignore=DL3008
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+      gir1.2-gdkpixbuf-2.0 \
+      libgdk-pixbuf-2.0-0 \
+      libgdk-pixbuf-2.0-dev \
+      libgdk-pixbuf2.0-bin \
+      libgdk-pixbuf2.0-common \
+    && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Rails app lives here
@@ -77,7 +75,7 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
       build-essential=12.12 \
       git=1:2.47.3-0+deb13u1 \
-      libpq-dev=17.6-0+deb13u1 \
+      libpq-dev=17.9-0+deb13u1 \
       npm=9.2.0~ds1-3 \
       pkg-config=1.8.1-4 \
     && \
@@ -117,6 +115,9 @@ RUN apt-get update -qq && \
       graphviz=2.42.4-3 \
       && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+RUN mkdir -p /rails/tmp /docs/app/rendered && \
+    echo 0 > /docs/app/rendered/.database-diagram-schema-version
 
 RUN gem install bundler --no-document -v ${BUNDLER_VERSION} && \
     bundle config set --local without production && \
@@ -163,7 +164,7 @@ ENV PIDFILE="/rails/tmp/pids/server.pid"
 # To debug a missing package version (i.e. if one of these versions gets
 # superceded in the upstream package repo), run:
 #
-#   docker run -ti registry.docker.com/library/ruby:3.3.5 bash
+#   docker run -ti registry.docker.com/library/ruby:3.4.9 bash
 #   apt-get install [package]
 #
 # and notice the version that was installed.
@@ -171,22 +172,13 @@ ENV PIDFILE="/rails/tmp/pids/server.pid"
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
         libgpgme11t64=1.24.2-3 \
-        libvips42=8.16.1-1+b1 \
-        libpng-dev=1.6.48-1+deb13u3 \
+        libvips42t64=8.16.1-1+b1 \
         postgresql-client-17 \
         python-is-python3=3.13.3-1 \
         python3-venv=3.13.5-1 \
         python3-pip=25.1.1+dfsg-1 \
         && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Remove base gems for security vulnerabilities
-# GHSA-4xqq-m2hx-25v8, GHSA-c2f4-jgmc-q2r5, GHSA-j4pr-3wm6-xx2r
-RUN gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 debug && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 rss && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 rexml && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 uri && \
-    gem uninstall -i /usr/local/lib/ruby/gems/3.4.0 net-imap || true
 
 # Install custom db migrate script
 COPY bin/db-migrate /usr/bin/
@@ -198,6 +190,11 @@ COPY --from=release-build /rails /rails
 # Clean up any unused gems and ensure we have the correct versions
 RUN bundle clean --force && \
     bundle install --no-cache
+
+# Pre-decompress the wkhtmltopdf binary so it doesn't need to happen at runtime
+# Prevents sporadic 500s on report generation, similar to known issue documented here:
+# https://github.com/zakird/wkhtmltopdf_binary_gem/issues/57
+RUN bundle exec wkhtmltopdf --version
 
 # Ensure all necessary directories exist
 RUN mkdir -p /rails/tmp/pids /rails/log /rails/db

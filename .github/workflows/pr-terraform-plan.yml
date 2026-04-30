@@ -36,7 +36,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Set up Terraform
       uses: ./.github/actions/setup-terraform
@@ -51,7 +51,7 @@ jobs:
       run: ${{ matrix.terraform-cmd }}
 
     - name: Comment Terraform plan if changed
-      uses: borchero/terraform-plan-comment@v2
+      uses: borchero/terraform-plan-comment@v3
       with:
         token: ${{ github.token }}
         working-directory: ${{ matrix.working-directory }}

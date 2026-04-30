@@ -14,10 +14,6 @@ en:
               blank: Enter the client's last name.
             snap_application_date:
               invalid_date: Enter today's date or the date you contacted the client.
-        cbv_applicant/az_des:
-          attributes:
-            case_number:
-              blank: Enter the client's case number.
         cbv_applicant/la_ldh:
           attributes:
             case_number:
@@ -37,6 +33,13 @@ en:
               invalid_format: Enter the case number in the ANGIE/sPOS format, i.e. 00012345678A.
             client_id_number:
               invalid_format: Enter the client's CIN in the correct format, XX00000X.
+            date_of_birth:
+              future_date: Date of birth must be today or in the past
+              invalid_date: Enter a valid date of birth
+        cbv_applicant/research:
+          attributes:
+            case_number:
+              invalid_format: Enter the case number format, i.e. 00012345678A.
             date_of_birth:
               future_date: Date of birth must be today or in the past
               invalid_date: Enter a valid date of birth
@@ -61,6 +64,10 @@ en:
               invalid_format: Enter an email address in the correct format, like name@example.com
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
+        education_activity:
+          attributes:
+            school_name:
+              blank: Enter the school or program name.
         job_training_activity:
           attributes:
             organization_name:
@@ -82,6 +89,14 @@ en:
               greater_than_or_equal_to: Hours must be 0 or more
               not_an_integer: Hours must be a whole number
   activities:
+    activity_header_component:
+      back: Back
+      exit: Exit
+      modal:
+        back_button: Back
+        body: Your progress adding this activity will not be saved.
+        exit_link: Exit without saving
+        heading: Are you sure you want to exit?
     community_service:
       city: City
       continue: Continue
@@ -116,7 +131,7 @@ en:
         coordinator_email: Coordinator's email
         coordinator_name: Coordinator's name
         coordinator_phone: Coordinator's phone number
-        description: Review all the information you've added for %{organization_name} before adding it to your Community Engagement Report.
+        description: Review all the information you've added for %{organization_name} before adding it to your community engagement report.
         edit: Edit
         hours_section: Community service hours
         name: Name
@@ -127,25 +142,32 @@ en:
       street_address: Street address
       street_address_line_2: Street address line 2
       title: Community service
+      title_singular: Community service
       zip_code: Zip code
     document_uploads:
+      heading: Uploaded documents (%{document_count})
+      heading_previous: Previously uploaded documents (%{document_count})
       new:
         continue: Continue to review
         description: 'Upload documents that verify the information you entered for:'
         input_hint: Select PDF, PNG, JPG, or HEIC files
-        input_label: Documents
+        input_label: Add documents
         suggestion_text_html: "<ul><li>Document Type Placeholder 1</li><li>Document Type Placeholder 2</li><li>Document Type Placeholder 3</li></ul>"
         suggestion_title: Suggested documents
         title: Upload supporting documents for %{name}
+        title_generic: Upload supporting documents
+      remove_file: Remove file
     education:
+      document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (Optional)
-        additional_information_label: Share any comments or additional information that you’d like %{agency_acronym} to know. For example, the credit hours you are taking.
+        additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         continue: Save and continue
-        description_html: "<p>We have gathered your student enrollment details from %{reporting_window}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
+        description: We have gathered your student enrollment details from %{reporting_window}.
         enrollment_information: Enrollment information
-        enrollment_information_multiple: 'Enrollment status: %{school_name}'
+        enrollment_information_numbered: 'Enrollment #%{number} information'
         header: Review your student enrollment details
+        summer_logic_description: If you don’t have enough summer enrollment, we’ll use your spring enrollment to meet the community engagement requirement for the summer.
       error:
         description: 'We were unable to verify your student status with National Student Clearinghouse. To continue, you can:'
         enter_manually_button: Enter education manually
@@ -153,25 +175,86 @@ en:
         option_enter_manually: Enter your education information manually
         option_retry: Re-try verifying your student status with the National Student Clearinghouse
         retry_button: Retry student verification
-      error_no_data: No education information available
       errors:
         unexpected: An unexpected error occurred. Please try again.
+      hours_input:
+        continue: Continue
+        description: "%{agency_acronym} needs your community engagement for %{reporting_window}. Add the total number of credit hours you were taking."
+        description_multi_month: "%{agency_acronym} needs your community engagement for %{reporting_window}. If you were enrolled as a student in %{month}, add the number of credit hours you were taking."
+        error_body: You need to add credit hours to continue.
+        error_body_multi_month: You need to add credit hours for at least one month to continue.
+        error_heading: No hours entered
+        field_error: Add hours for at least one month
+        heading: Add your %{month} credit hours for %{organization}
+        hours_label: "%{month} credit hours"
+        month_indicator: Month %{current} / %{total}
+        no_hours_checkbox: I didn't take any credit hours at %{organization} in %{month}
+        title: Credit hours
       new:
-        continue: Verify enrollment
-        date_of_birth: Date of birth
-        description: We use National Student Clearinghouse to verify that you are a student. This is a trusted third-party data source.
-        first_name: First name
-        header: Let's verify your student enrollment
-        last_name: Last name
+        city: City
+        contact_email: Contact email
+        contact_name: School contact name
+        contact_phone_number: Contact phone number
+        contact_section_title: School contact information
+        continue: Continue
+        edit_title: Edit Education Activity
+        school_name: School or program name
+        school_name_hint: Enter the full and official name
+        school_section_title: School information
+        state: State
+        street_address: Street address
+        street_address_line_2: Street address line 2
+        title: Tell us about your school or program
+        zip_code: Zip code
+      review:
+        additional_comments_description: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
+        additional_comments_title: Additional comments (optional)
+        address: School address
+        ce_explainer_body: If you are enrolled less than half-time, each credit hour counts as 4 hours toward the 80-hour community engagement requirement.
+        ce_explainer_title: How credit hours are counted towards community engagement
+        community_engagement_hours: Community engagement hours
+        contact_email: School contact email
+        contact_name: School contact name
+        contact_phone: School contact phone number
+        credit_hours: Credit hours
+        credit_hours_section: Credit hours
+        description: Review all the information you've added for %{school_name} before adding it to your community engagement report.
+        edit: Edit
+        enrollment_information: Enrollment information
+        enrollment_information_numbered: 'Enrollment #%{number} information'
+        save: Save and add to report
+        school_info: School information
+        school_name: School or program
+        term: Term
+        title: Review your student information for %{school_name}
+        title_no_school_name: Review your student information
       show:
         enrollment_dates: Enrollment dates
         enrollment_status: Enrollment status
         fetching_education_description: This may take a few seconds. Please keep this window open while we work on this.
         header: We're gathering your details from National Student Clearinghouse
         school_or_program: School or program
+      term_credit_hours:
+        body_conversion: We will convert these credit hours into your community engagement progress.
+        body_html: Enter the number of credit hours you were taking in the term from %{term_begin} to %{term_end}.
+        continue: Continue
+        heading: Add your credit hours for %{school_name}
+        hours_label: Term credit hours
+        no_hours_checkbox: I didn't take any classes at %{school_name} this term
+        term_date_range: 'Term: %{range}'
       title: Education
+      title_singular: Education
+      verify:
+        continue: Verify enrollment
+        date_of_birth: Date of birth
+        description: We use National Student Clearinghouse to verify that you are a student. This is a trusted third-party data source.
+        first_name: First name
+        header: Let's verify your student enrollment
+        last_name: Last name
     employment:
       account_id: Account ID
+      document_upload_month_detail: "%{gross_income}, %{hours}"
+      document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:
         continue: Continue
         error_body: You need to add income and hours for at least one month to continue
@@ -186,8 +269,24 @@ en:
         month_indicator: Month %{current} / %{total}
         no_hours_checkbox: No %{month} income from %{organization}
         title: Employment hours and income
+      review:
+        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_title: Additional comments (optional)
+        address: Address
+        contact_email: Employer contact email
+        contact_name: Employer contact name
+        contact_phone: Employer contact phone number
+        description: Review all the information you've added for %{employer_name} before adding it to your Community Engagement Report.
+        employer_info: Employer information
+        gross_income: Gross income
+        hours_and_income: Hours and income
+        hours_worked: Hours worked
+        name: Name
+        save: Save and add to my report
+        title: Review your employment information for %{employer_name}
       synchronization_status: Status
       title: Employment
+      title_singular: Employment
     employment_info:
       city: City
       contact_email: Employer contact email
@@ -197,6 +296,7 @@ en:
       continue: Continue
       edit_title: Edit Employment Activity
       employer_name: Employer or business name
+      employer_name_error: Add your employer or business name
       employer_name_hint: If you work for yourself, enter "Self-employed"
       employer_section_title: Employer or business information
       self_employed: I'm self-employed
@@ -223,23 +323,82 @@ en:
       add: Add
       cards:
         credit_hours: 'Credit hours: %{amount}'
-        enrollment_status: 'Enrollment status: %{status}'
+        enrollment_status: 'Enrollment: %{status}'
         gross_income: 'Gross income: %{amount}'
-        hours: 'Hours: %{count}'
+        hours: 'Community engagement hours: %{count}'
+        no_employment_data: No payments found from this employer.
         not_enrolled: Not enrolled
-      description: "%{agency_name} needs you to report your Community Engagement for %{reporting_window}."
+      completed_state_description: "%{agency_name} will determine your eligibility based on the activities you've added to your report."
+      completed_state_title: You're ready to review and submit your report
       edit: Edit
       empty:
         community_service: No community service added
         education: No education added
         employment: No employment added
         work_programs: No work programs added
+      empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
+      empty_state_months_required_all: all %{required_month_count} months in the reporting period
+      empty_state_months_required_any: any %{required_month_count} months in the reporting period
+      empty_state_months_required_label: 'Months required:'
+      empty_state_reporting_period_label: 'Reporting period:'
+      empty_state_title: Build your community engagement report
+      in_progress_state_description: "%{agency_name} will determine your eligibility based on the activities you add to your report."
+      in_progress_state_title: Add more activities or continue to review and submit your report
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit
       save: Save changes
-      title: Add activities to your Community Engagement report
+      verification_info_link: What if I can't meet the requirements?
+    income:
+      employer_searches:
+        employer:
+          add_employment_manually: Add employment manually
+          cant_find_employer: Can't find your employer or business?
+          no_results_body: You will need to enter information about your employment manually. You will also need to upload documents like pay stubs.
+          no_results_title: We couldn't find your employer or business.
+          results:
+            one: 1 result
+            other: "%{count} results"
+          search_subheader: Please select your employer or business from the list below.
+          select: Select
+        show:
+          add_employment_manually: Add employment manually
+          alert:
+            heading: Can't connect to your payroll provider?
+          app_based_providers: App-based providers
+          header: Search for your employer
+          payroll_providers: Payroll providers
+          popular_providers: Popular providers
+          search: Search
+          search_label: Search for the employer or business you want to add. If you can't find it, you can add it manually.
+      error_no_access: You don't have permission to access that information
+      payment_details:
+        show:
+          additional_information_header: Additional information
+          additional_information_label: Share any comments or additional information about the details above that you'd like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
+          continue: Continue
+          header: Review your information from %{employer_name}
+          header_no_employer_name: Your information from your employer
+          none_found: We didn't find any payments from this employer
+          none_found_description: This typically happens when you haven't received income from this job between %{start_date} and %{end_date}. If you believe this is an error, add a comment below.
+          subheader_html: "<p>We have gathered your records from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
+          unknown: Unknown
+      synchronization_failures:
+        show:
+          add_employment_manually: Add employment manually
+          back_to_search: Back to employer search
+          description: 'We were unable to connect to your employer''s system due to an error. To continue, you can:'
+          option_1: Go back to employer search to retry adding this employer.
+          option_2: Go back to employer search to add another job.
+          option_3: Submit your income information for this employer directly to %{agency_acronym}.
+          title: We couldn't access your employer information
+      synchronizations:
+        show:
+          header: We’re gathering details from your employer
+        status:
+          fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
     job_training:
       document_upload_suggestion_text_html: "<ul><li>Signed statement on organization letterhead verifying hours</li><li>Signed monthly log of participation</li><li>Program tuition receipt</li></ul>"
+      edit_title: Edit Work Program Activity
       form:
         city: City
         contact_email: Contact email
@@ -291,14 +450,14 @@ en:
         total_hours: Total hours reported
         work_programs_count: Work program activities
         work_programs_section: Work program and education
-      title: Submit your Medicaid Community Engagement report
+      title: Submit your Medicaid community engagement report
     success:
       show:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
         done_for_now: You're done for now. %{agency_full_name} will review your information and contact you if needed.
         download_pdf: Download my report
         survey: Take the 3 question survey
-        title: Your Community Engagement report was successfully sent to %{agency_acronym}
+        title: Your community engagement report was successfully sent to %{agency_acronym}
         whats_next: What's next?
         whats_next_1_li_1: We recommend saving your report for your records.
         whats_next_1_title: Download your report for your records.
@@ -319,18 +478,37 @@ en:
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
       description: The report below has your community engagement information from %{start_date} to %{end_date}. Please review before sending to %{agency_name}.
       description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
-      employment:
-        employer: Employer
-      job_training:
-        header: Work Program information
-        hours_attended: Hours attended
+      education:
+        address: School address
+        contact_email: School contact email
+        contact_name: School contact name
+        contact_phone: School contact phone number
+        credit_hours: Credit hours
         month: Month
-        organization_address: Organization address
+        school_name: School or program
+        term_credit_hours: Term credit hours
+      employment:
+        address: Address
+        contact_email: Contact email
+        contact_name: Contact name
+        contact_phone: Contact phone
+        employer: Employer
+        gross_income: Gross income
+        hours_worked: Hours worked
+        month: Month
+      job_training:
+        address: Address
+        contact_email: Contact email
+        contact_name: Contact name
+        contact_phone: Contact phone
+        month: Month
+        organization_provider_name: Organization/Provider name
         program_name: Program name
+        work_program_hours: Work program hours
       legal_agreement: Legal agreement
+      monthly_details: Monthly details
       submit: Submit to %{agency_name}
-      title: Review and submit your %{benefit} Community Engagement report
-      your_details: Your details
+      title: Review and submit your %{benefit} community engagement report
     work_programs:
       hours_input:
         continue: Continue
@@ -343,15 +521,35 @@ en:
         month_indicator: Month %{current} / %{total}
         no_hours_checkbox: No work program hours with %{organization} in %{month}
         title: Work program hours
+      review:
+        additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
+        additional_comments_title: Additional comments (optional)
+        address: Address
+        contact_email: Contact email
+        contact_name: Contact name
+        contact_phone: Contact phone number
+        description: Review all the information you've added for %{program_name} before adding it to your Community Engagement Report.
+        edit: Edit
+        hours_section: Work program hours
+        organization_info: Work program information
+        organization_name: Organization or provider name
+        program_name: Program name
+        save: Save and add to my report
+        title: Review your work program information for %{program_name}
+        work_program_hours: Work program hours
       title: Work programs
+      title_singular: Work Program
   activity_flow_progress_indicator:
-    description: We calculate your community engagement from the activities you add to your report.
-    description_complete: "%{agency_full_name} will determine your final eligibility based on the activities you’ve added to your report."
+    application_months_completed: "%{complete}/%{total} months completed"
     hours: hours
-    months_completed_html: "<strong>%{complete}</strong> / <strong>%{total}</strong> months completed"
+    renewal_months_completed: "%{complete}/%{required} months completed"
+    renewal_subtitle: Complete any %{required} months between %{start_month}-%{end_month} to meet requirements.
+    renewal_subtitle_no_range: Complete any %{required} months to meet requirements.
+    see_progress_in_dollars: See progress in $
+    see_progress_in_hours: See progress in hours
+    switch_to_dollars: Switch to $
+    switch_to_hours: Switch to hours
     title: Your %{month} progress
-    title_complete: You're ready to review and submit your report
-    title_multi_month: Your progress
   aggregator_strings:
     deductions:
       401k: 401k
@@ -422,7 +620,6 @@ en:
       footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
       greeting: Hello,
       header:
-        nh_dhhs: Test Agency has sent you an invitation to verify your income
         sandbox: Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
@@ -479,6 +676,18 @@ en:
             blank: Enter your middle name.
             prompt: Middle name
             super_one_html: Middle name<sup>1</sup>
+      research:
+        fields:
+          case_number:
+            blank: Enter your Medicaid case number.
+            help_text: You can find your case number on notices from Example Department of Health. It can be up to 13 digits long.
+            prompt: Medicaid case number
+            super_one_html: Medicaid case number<sup>1</sup>
+          date_of_birth:
+            blank: Enter your date of birth.
+            help_text: 'For example: January 19 2000'
+            prompt: Your date of birth
+            super_one_html: Date of birth<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -513,15 +722,6 @@ en:
         error_updating_applicant: An error occurred while updating the applicant information. Please try again.
     employer_searches:
       show:
-        activity_flow:
-          add_employment_manually: Add employment manually
-          alert:
-            heading: Can't connect to your payroll provider?
-          cant_find_employer: Can't find your employer or business?
-          header: Search for your employer
-          no_results_body: You will need to enter information about your employment manually. You will also need to upload documents like pay stubs.
-          no_results_title: We couldn't find your employer or business.
-          search_label: Enter the name of your employer. If you work for yourself, enter the name of your business.
         alert:
           heading: Need help connecting to your payroll provider?
           help_options: Get help here.
@@ -593,22 +793,20 @@ en:
       show:
         body_1: If you still need to verify your income, please submit your income information by visiting %{agency_acronym}'s website.
         cta_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit LDH's website</a>
-          nh_dhhs: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at Test Agency</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at Test Agency</a>
+          default: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit %{agency_acronym}'s website</a>
         title: Your invitation to verify income has expired
     missing_results:
       show:
         back_button: Go back to employer search
         continue_button: Continue to review my report
         continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
-        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_full_name}</a>
+        exit_button_html: <a href="%{agency_missing_employers_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_full_name}</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         no_more_jobs: If you don't have more jobs to report
         not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with %{agency_acronym}.
         not_listed_p2: Visit %{agency_acronym}'s website for more information on how to submit documents.
-        not_listed_p2_link_html: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information on how to submit documents.
+        not_listed_p2_link_html: Visit <a href="%{agency_missing_employers_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     other_jobs:
       show:
@@ -623,11 +821,6 @@ en:
         radio_yes: Yes, I will report other income directly to %{agency_acronym}
     payment_details:
       show:
-        activity_flow:
-          additional_information_label: Share any comments or additional information about the details above that you'd like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
-          header: Review your information from %{employer_name}
-          header_no_employer_name: Your information from your employer
-          subheader_html: "<p>We have gathered your records from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
         additional_information_header: Additional comments (Optional)
         additional_information_label: Share any comments or additional information about the income details above that you’d like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
         continue: Continue
@@ -659,13 +852,11 @@ en:
         payments_and_deductions_table_header: Payments and deductions
         subheader_html: "<p>We have gathered your payment records from the past %{report_data_range} from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your income report.</p>"
         unknown: Unknown
-        your_details: Your details
     submits:
       show:
         additional_information_title: Is there anything else you'd like your caseworker to know about your income?
         application_or_recertification_date: SNAP application or recertification interview date
         consent_checkbox_label_html:
-          az_des: Check this box to affirm under penalty of perjury that the information provided by you is true and complete to the best of your knowledge.<ul class="margin-y-2"><li>You agree to tell %{agency_acronym} about:<ul><li>any other income not included in this report,</li><li>or any errors found in the information gathered with this tool.</li></ul></li><li>You understand that providing accurate and complete information is your responsibility.</li><li>Any false or missing information may result in:<ul><li>an overpayment, which you must repay to %{agency_acronym},</li><li>or program disqualification.</li></ul></li></ul>By sending this report, you authorize its use for income verification by %{agency_acronym} and authorized personnel.
           default: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the %{agency_full_name} of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized %{agency_acronym} personnel.'
         legal_header: Legal agreement
         none_found: We didn't find any payments from this employer.
@@ -673,9 +864,9 @@ en:
         page_header: Submit your income report
         pdf:
           agency_header_name:
-            az_des: Department of Economic Security
             la_ldh: Department of Health
-            nh_dhhs: Test Agency
+            nh_dhhs: NH DHHS Bureau of Family Assistance
+            research: Example Department of Health
             sandbox: Test Agency
           caseworker:
             agreement_consent_timestamp: Agreement Consent Timestamp
@@ -772,8 +963,6 @@ en:
         income: Income
         paystubs: Paystubs
       show:
-        activity_flow:
-          header: We’re gathering details from your employer
         header: We’re gathering your payment details from your employer
       status:
         fetching_payroll_description: This may take a few minutes. Please keep this window open while we work on this.
@@ -790,9 +979,6 @@ en:
         three_quarter_time: Three-quarter Time
       student_name_label: Name on school record
     report:
-      employment_details_table:
-        header:
-          your_details: Your details
       monthly_summary_table:
         accrued_gross_earnings: Accrued gross earnings
         compact:
@@ -822,6 +1008,8 @@ en:
   continue: Continue
   date:
     formats:
+      abbreviated_month: "%b"
+      abbreviated_month_year: "%b %Y"
       default: "%Y-%m-%d"
       long: "%B %-d, %Y"
       month: "%B"
@@ -936,8 +1124,7 @@ en:
       refresh: Refresh page
     home:
       description_1: Report My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
-      description_2: Please note this pilot is currently available only to participants in Arizona and Louisiana.
-      description_3: Visit your agency's website for more information on how to submit proof of income for your benefits.
+      description_2: Visit your agency's website for more information on how to submit proof of income for your benefits.
       header: Welcome to Report My Income
       pilot_ended:
         la_ldh:
@@ -961,43 +1148,46 @@ en:
       title: Your session has timed out
   shared:
     agency_acronym:
-      az_des: DES/FAA
       la_ldh: LDH
-      nh_dhhs: TA
+      nh_dhhs: NH DHHS
+      research: EDOH
       sandbox: TA
     agency_full_name:
-      az_des: Department of Economic Security/Family Assistance Administration
       la_ldh: Louisiana Department of Health
-      nh_dhhs: Test Agency
+      nh_dhhs: NH DHHS Bureau of Family Assistance
+      research: Example Department of Health
       sandbox: Test Agency
     app_name:
-      az_des: MyFamilyBenefits
-      nh_dhhs: TAApp
-      sandbox: TAApp
+      default: TAApp
     banner:
       lock: Lock
       locked_padlock: A locked padlock
     benefit:
-      az_des: Nutrition Assistance
       la_ldh: Medicaid
       nh_dhhs: Medicaid
+      research: Medicaid
       sandbox: Medicaid
+    credit_hours:
+      one: "%{count} credit hour"
+      other: "%{count} credit hours"
     footer:
       feedback: Share feedback
     header:
       aria_label: Main navigation
       cbv_flow_title:
-        az_des: Department of Economic Security
         la_ldh: Department of Health
-        nh_dhhs: Test Agency
+        nh_dhhs: NH DHHS Bureau of Family Assistance
+        research: Example Department of Health
         sandbox: Test Agency
       close: Close
       help: Help
       log_out: Log out
+      logo_alt_text:
+        nh_dhhs: New Hampshire's logo image for the website
       preheader:
-        az_des: A website in partnership with the Arizona Department of Economic Security.
         default: A website in partnership with Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health
+        nh_dhhs: A website in partnership with NH DHHS Bureau of Family Assistance
       primary: Primary navigation
     hours:
       one: "%{count} hour"
@@ -1018,12 +1208,18 @@ en:
       ninety_days: 90 days
       six_months: 6 months
     reporting_purpose:
-      az_des: Mid Approval Contact form
       la_ldh: benefits
       nh_dhhs: benefits
+      research: benefits
       sandbox: benefits
     select_placeholder: "- Select -"
     skip_link: Skip to main content
+    table_headers:
+      community_service_information: Community service information
+      education_information: Education information
+      employer_information: Employer information
+      work_program_information: Work program information
+      your_details: Your details
   time:
     formats:
       default: "%Y-%m-%d"

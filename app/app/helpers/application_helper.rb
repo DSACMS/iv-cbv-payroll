@@ -31,11 +31,18 @@ module ApplicationHelper
     current_agency&.activity_types&.[](type.to_sym)
   end
 
+  def uswds_sprite_icon_href(icon_name)
+    "#{asset_path("@uswds/uswds/dist/img/sprite.svg")}##{icon_name}"
+  end
+
+  def uswds_icon_image_path(icon_name)
+    asset_path("@uswds/uswds/dist/img/usa-icons/#{icon_name}.svg")
+  end
+
   # Render a translation that is specific to the current client agency. Define
   # client agency-specific translations as:
   #
   # foo:
-  #   az_des: Some String
   #   la_ldh: Other String
   #   default: Default String
   #
@@ -81,8 +88,10 @@ module ApplicationHelper
     end
   end
 
-  APPLICANT_FEEDBACK_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSfrUiz0oWE5jbXjPfl-idQQGPgxKplqFtcKq08UOhTaEa2k6A/viewform"
-  APPLICANT_SURVEY_FORM = "https://forms.gle/M9jVQNue96rjQTbD9"
+  APPLICANT_FEEDBACK_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSdTdLUdhZbn6JcHvR_SN6zbIKhhPfVvs6aeJHz6UrZ9j-83AA/viewform"
+  APPLICANT_SURVEY_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSeQsXvKS3KIKEedwcGxv-c2Qa11hvgr3vyZp1YdLsrQ1Td-qQ/viewform"
+  FEEDBACK_FORM_DEVICE_ID_ENTRY = "entry.1176961978"
+  SURVEY_FORM_SESSION_ID_ENTRY = "entry.818699989"
 
   def feedback_form_url
     APPLICANT_FEEDBACK_FORM
@@ -102,7 +111,7 @@ module ApplicationHelper
     options[:data] ||= {}
     options[:data][:turbo_frame] = "_top"
 
-    turbo_frame_tag(model) do
+    turbo_frame_tag(model, target: "_top") do
       form_with(model: model, scope: scope, url: url, format: format, **options, &block)
     end
   end

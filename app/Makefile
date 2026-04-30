@@ -23,7 +23,7 @@ __check_defined = \
 # Constants
 ##################################################
 
-APP_NAME := app-rails
+APP_NAME := app_rails
 
 # Support other container tools like `finch`
 ifdef CONTAINER_CMD
@@ -80,8 +80,8 @@ export RUN_UID
 ##################################################
 
 
-.env: local.env.example
-	@([ -f .env ] && echo ".env file already exists, but local.env.example is newer (or you just switched branches), check for any updates" && touch .env) || cp local.env.example .env
+.env: .env.local.example
+	@([ -f .env ] && echo ".env file already exists, but .env.local.example is newer (or you just switched branches), check for any updates" && touch .env) || cp .env.local.example .env
 
 init-container: ## Initialize the project for running in a container
 init-container: .env build init-db
@@ -90,7 +90,7 @@ init-native: ## Initialize the project for running natively
 init-native: .env deps-native init-db
 
 init-db: ## Initialize the project database
-init-db: .env db-up wait-on-db db-migrate db-test-prepare db-seed
+init-db: .env db-up db-migrate db-test-prepare db-seed
 
 deps-native: ## Install dependencies
 	bundle install
@@ -141,7 +141,7 @@ stop-containers: ## Stop Docker
 ##################################################
 
 db-up: ## Run just the database container
-	$(DOCKER_CMD) compose up --remove-orphans --detach database
+	$(DOCKER_CMD) compose up --remove-orphans --detach postgres
 
 db-migrate: ## Run database migrations
 	$(RAILS_RUN_CMD) db:migrate
@@ -157,9 +157,6 @@ db-reset: ## Reset the database
 
 db-console: ## Access the rails db console
 	$(RAILS_RUN_CMD) dbconsole
-
-wait-on-db:
-	./bin/wait-for-local-postgres.sh
 
 ##################################################
 # Testing

@@ -12,6 +12,8 @@ import CbvEntryPageController from "./cbv/entry_page_controller.js"
 import DemoLauncherController from "./demo_launcher_controller.js"
 import HoursInputController from "./hours_input_controller.js"
 import SelfEmployedController from "./self_employed_controller.js"
+import ActivityFlowHeaderController from "./activity_flow_header_controller.js"
+import ProgressIndicatorUnitsController from "./progress_indicator_units_controller.js"
 
 application.register("cbv-employer-search", CbvEmployerSearch)
 application.register("polling", PollingController)
@@ -25,6 +27,8 @@ application.register("session-timeout", SessionTimeoutPageController)
 application.register("demo-launcher", DemoLauncherController)
 application.register("hours-input", HoursInputController)
 application.register("self-employed", SelfEmployedController)
+application.register("activity-flow-header", ActivityFlowHeaderController)
+application.register("progress-indicator-units", ProgressIndicatorUnitsController)
 
 Turbo.StreamActions.redirect = function () {
   Turbo.visit(this.target)

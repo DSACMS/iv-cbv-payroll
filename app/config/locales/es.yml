@@ -77,7 +77,6 @@ es:
       footer: Este es un mensaje generado automáticamente desde su agencia de SNAP. Por favor no conteste a este correo electrónico.
       greeting: "¡Hola!"
       header:
-        nh_dhhs: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
         sandbox: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
       subject:
         default: Verifique sus ingresos para su solicitud o renovación de SNAP
@@ -128,6 +127,18 @@ es:
             blank: Escriba su segundo nombre.
             prompt: Segundo nombre
             super_one_html: Segundo nombre<sup>1</sup>
+      research:
+        fields:
+          case_number:
+            blank: Escriba su número de caso de Medicaid.
+            help_text: Puede encontrar su número de caso en las notificaciones que ha recibido del Departamento de Salud de Ejemplo. El número puede tener hasta 13 dígitos.
+            prompt: Número de caso de Medicaid (opcional)
+            super_one_html: Número de caso de Medicaid<sup>1</sup>
+          date_of_birth:
+            blank: Escriba su fecha de nacimiento.
+            help_text: 'Por ejemplo: 19 de enero de 2000'
+            prompt: Su fecha de nacimiento
+            super_one_html: Fecha de nacimiento<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -233,22 +244,20 @@ es:
       show:
         body_1: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_acronym}.
         cta_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del LDH</a>
-          nh_dhhs: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Obtenga más información en la Agencia de pruebas</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Obtenga más información en la Agencia de pruebas</a>
+          default: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del %{agency_acronym}</a>
         title: Su invitación para verificar ingresos ha expirado
     missing_results:
       show:
         back_button: Regrese a la búsqueda del empleador
         continue_button: Continúe a «Revisar mi reporte»
         continue_to_review: Continúe a revisar la información de ingresos que pudo encontrar antes de enviarla a %{agency_acronym}.
-        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Salir y acceder a %{agency_full_name}</a>
+        exit_button_html: <a href="%{agency_missing_employers_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Salir y acceder a %{agency_full_name}</a>
         header: Cómo reportar ingresos si su empleador o proveedor de nómina no figura en la lista
         more_jobs: Si tiene más trabajos que reportar
         no_more_jobs: Si no tiene más trabajos que reportar
         not_listed_p1: Si su empleador o proveedor de nómina no están listados en este sitio, tendrá que compartir su información de ingresos por este trabajo directamente con %{agency_acronym}.
         not_listed_p2: Para obtener más información sobre cómo enviar los documentos requeridos, visite el sitio web de %{agency_acronym}.
-        not_listed_p2_link_html: Visite <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_acronym}</a> para obtener más información sobre cómo enviar documentos.
+        not_listed_p2_link_html: Visite <a href="%{agency_missing_employers_website}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_acronym}</a> para obtener más información sobre cómo enviar documentos.
         you_can_search: Puede buscar otro empleador o proveedor de nómina. Este sitio apoya a los empleadores con proveedores de nómina en línea o servicios basados en aplicaciones. Algunos ejemplos son Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft e Instacart.
     other_jobs:
       show:
@@ -294,13 +303,11 @@ es:
         payments_and_deductions_table_header: Pagos y deducciones
         subheader_html: "<p>Hemos recopilado sus registros de pago del último %{report_data_range}, desde el %{start_date} hasta el %{end_date}.</p><p>Por favor, revise su información. Si falta información o si es incorrecta, deja un comentario para %{agency_acronym}. Su comentario se incluirá en su reporte de ingresos.</p>"
         unknown: Desconocido
-        your_details: Tus datos
     submits:
       show:
         additional_information_title: "¿Existe algún otro detalle que le gustaría que su asistente de caso conozca en relación con sus ingresos?"
         application_or_recertification_date: SNAP application or recertification interview date
         consent_checkbox_label_html:
-          az_des: Marque esta casilla para confirmar, bajo pena de perjurio, que la información proporcionada es, a su leal saber y entender, verdadera y está completa.<ul class="margin-y-2"><li>Se compromete a informar %{agency_acronym} de cualquiera de lo siguiente:<ul><li>cualquier otro ingreso que no esté incluido en este informe;</li><li>o cualquier error que haya detectado en la información recopilada con esta herramienta.</li></ul></li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa.</li><li>Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear las siguientes consecuencias:<ul><li>un sobrepago, que debe reembolsar a %{agency_acronym};</li><li>o una inhabilitación para participar en el programa.</li></ul></li></ul>Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte de %{agency_acronym} y del personal autorizado de esta agencia.
           default: 'Marque esta casilla para confirmar lo siguiente: <ul class="margin-y-2"><li>La información proporcionada es, a su leal saber y entender, verdadera y está completa.</li><li>Se compromete a informar a %{agency_full_name} de cualquier otro ingreso que no esté incluido en este informe o cualquier discrepancia que haya detectado en la información recopilada con esta herramienta.</li><li>Comprende que usted es el único responsable de proporcionar información precisa y completa. Por este motivo, cualquier información falsa o que no conste en el informe puede acarrear consecuencias legales.</li></ul> Al enviar este informe, autoriza su uso para fines de verificación de ingresos por parte del personal autorizado de %{agency_acronym}.'
         legal_header: Acuerdo Legal
         none_found: No encontramos ningún pago de este empleador.
@@ -308,9 +315,9 @@ es:
         page_header: Envíe su reporte de ingresos
         pdf:
           agency_header_name:
-            az_des: Department of Economic Security
             la_ldh: Department of Health
-            nh_dhhs: Test Agency
+            nh_dhhs: NH DHHS Bureau of Family Assistance
+            research: Example Department of Health
             sandbox: Test Agency
           caseworker:
             doc_id: Doc ID
@@ -400,9 +407,6 @@ es:
         fetching_payroll_description: Esto puede tardar algunos minutos. Mantenga abierta esta ventana mientras trabajamos en esto.
   components:
     report:
-      employment_details_table:
-        header:
-          your_details: Sus datos
       monthly_summary_table:
         accrued_gross_earnings: Ganancias brutas acumuladas
         compact:
@@ -462,6 +466,8 @@ es:
     - viernes
     - sábado
     formats:
+      abbreviated_month: "%b"
+      abbreviated_month_year: "%b %Y"
       default: "%-d/%-m/%Y"
       long: "%-d de %B de %Y"
       month: "%B"
@@ -590,8 +596,7 @@ es:
       refresh: Actualizar página
     home:
       description_1: Reportar Mis Ingresos es una herramienta nueva que se diseñó para ayudarlo a vincular directamente los datos relacionados con sus ingresos con su agencia de beneficios. En este momento estamos probando esta herramienta para garantizar que funcione efectivamente.
-      description_2: Tenga en cuenta que, en este momento, este programa piloto solo está disponible para participantes que residan en Arizona y Louisiana.
-      description_3: Para obtener más información sobre cómo presentar comprobantes de ingresos para sus beneficios, visite el sitio web de su agencia.
+      description_2: Para obtener más información sobre cómo presentar comprobantes de ingresos para sus beneficios, visite el sitio web de su agencia.
       header: Bienvenido a Reportar Mis Ingresos
       pilot_ended:
         la_ldh:
@@ -615,43 +620,41 @@ es:
       title: Su sesión ha terminado.
   shared:
     agency_acronym:
-      az_des: DES/FAA
       la_ldh: LDH
-      nh_dhhs: TA
+      nh_dhhs: NH DHHS
+      research: EDOH
       sandbox: TA
     agency_full_name:
-      az_des: Departamento de Seguridad Económica de Arizona/Administración de Asistencia Familiar
       la_ldh: Departamento de Salud de Luisiana
-      nh_dhhs: Agencia de pruebas
+      nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
+      research: Departamento de Salud de Ejemplo
       sandbox: Agencia de pruebas
     app_name:
-      az_des: MyFamilyBenefits
-      nh_dhhs: TAApp
-      sandbox: TAApp
+      default: TAApp
     banner:
       lock: Candado
       locked_padlock: Un candado cerrado
     benefit:
-      az_des: Asistencia Nutricional
       la_ldh: Medicaid
       nh_dhhs: Medicaid
+      research: Medicaid
       sandbox: Medicaid
     footer:
       feedback: Compartir comentarios
     header:
       aria_label: Menú principal
       cbv_flow_title:
-        az_des: Departamento de Seguridad Económica
         la_ldh: Departamento de Salud
-        nh_dhhs: Agencia de pruebas
+        nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
+        research: Departamento de Salud de Ejemplo
         sandbox: Agencia de pruebas
       close: Cerrar
       help: Ayuda
       log_out: Cerrar sesión
       preheader:
-        az_des: Un sitio web en colaboración con el Departamento de Seguridad Económica de Arizona.
         default: Un sitio web en colaboración con la Agencia de pruebas.
         la_ldh: Un sitio web en colaboración con el Departamento de Salud de Luisiana
+        nh_dhhs: Un sitio web en colaboración con la NH DHHS Oficina de Asistencia Familiar (BFA)
       primary: Menú principal
     hours:
       one: "%{count} hora"
@@ -672,9 +675,9 @@ es:
       ninety_days: 90 días
       six_months: 6 meses
     reporting_purpose:
-      az_des: Formulario de contacto para aprobaciones intermedias
       la_ldh: beneficios
       nh_dhhs: beneficios
+      research: beneficios
       sandbox: beneficios
     select_placeholder: "- Seleccione -"
     skip_link: Saltar al contenido principal

@@ -1,12 +1,13 @@
 <%= tag.table(**@attributes.merge(class: @class_names)) do %>
-  <thead class="<%= @thead_class_names %>">
-    <tr>
-      <% if header.present? %>
+  <thead>
+    <% if header.present? %>
+      <tr>
         <%= header %>
-      <% end %>
-    </tr>
-    <% if subheader_row.present? %>
-      <%= subheader_row %>
+      </tr>
+    <% elsif header_cells.any? %>
+      <tr>
+        <% header_cells.each { |cell| concat(cell) } %>
+      </tr>
     <% end %>
   </thead>
   <tbody>

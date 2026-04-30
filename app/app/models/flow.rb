@@ -30,4 +30,20 @@ class Flow < ApplicationRecord
   def after_payroll_sync_succeeded(_payroll_account, _report)
     nil
   end
+
+  def activity_month_order_oldest_first?
+    false
+  end
+
+  def set_required_month_count!(_requested_count)
+    nil
+  end
+
+  def set_reporting_window_months!(_requested_months)
+    nil
+  end
+
+  def shift_reporting_window_start!(_date_str)
+    nil
+  end
 end

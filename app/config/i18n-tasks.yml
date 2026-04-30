@@ -137,14 +137,18 @@ ignore_missing:
     # LA wind down content
     - "pages.home.pilot_ended.la_ldh.*"
     # Activity Hub flow pages/models
+    - "shared.credit_hours*"
     - "activities.*"
     - "cbv.*.activity_flow.*" # ActivityFlow copy overrides in controllers/views from CBV flow
     - "activerecord.errors.models.job_training_activity.*"
+    - "activerecord.errors.models.education_activity.*"
     - "activerecord.errors.models.volunteering_activity.*"
     - "components.enrollment_term_table_component.*"
+    - "shared.table_headers.*"
     - "activity_flow_progress_indicator.*"
     - "activerecord.errors.models.volunteering_activity_month.*" # Self attestation hours entry error messages
     - "activerecord.errors.models.job_training_activity_month.*" # Self attestation hours entry error messages
+    - "shared.header.logo_alt_text.nh_dhhs"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
@@ -152,7 +156,7 @@ ignore_missing:
 ## Consider these keys used:
 ignore_unused:
   all:
-    - "*.{sandbox,az_des,la_ldh,default,nh_dhhs}" # site-specific translations
+    - "*.{sandbox,la_ldh,default,nh_dhhs,research}" # site-specific translations
     - "activerecord.errors.*"                     # model errors are not always explicitly used
     - "date.*"                                    # date formats are not always explicitly used
     - "time.*"                                    # time formats are not always explicitly used

@@ -31,6 +31,7 @@ else
     # skip transitions. This prevents axe matchers (for accessibility/contrast
     # checking) from running on partially-opened modals.
     options.add_argument("--force-prefers-reduced-motion")
+    options.add_argument("--window-size=1280,1024")
 
     Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
   end

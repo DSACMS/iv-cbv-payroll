@@ -143,6 +143,65 @@ FactoryBot.define do
         )
       ] }
     end
+
+    trait :hydrated_with_deductions do
+      account_name = "account1"
+      full_name = "Guy"
+      ssn = "XXX-XX-2222"
+      employer_name = "Company"
+      employment_status = "inactive"
+      employer_phone_number = "604-555-2222"
+      pay_period_start = Date.new(2015, 1, 1)
+      pay_date = pay_period_start.iso8601
+      pay_period_end = Date.new(2015, 1, 2)
+      pay = 2222
+      hours_paid = 20.0
+      identities { [
+        Aggregators::ResponseObjects::Identity.new(
+          account_id: account_name,
+          full_name: full_name,
+          ssn: ssn,
+        )
+      ] }
+      employments { [
+        Aggregators::ResponseObjects::Employment.new(
+          account_id: account_name,
+          employer_name: employer_name,
+          start_date: Date.new(2015, 1, 1).iso8601,
+          termination_date: Date.new(2015, 1, 2).iso8601,
+          status: employment_status,
+          employment_type: "gig",
+          account_source: "pinwheel_payroll_provider",
+          employer_phone_number: employer_phone_number,
+          employer_address: "1234 Main St Edmonton AB V5K 0A1",
+        )
+      ] }
+      incomes { [
+        Aggregators::ResponseObjects::Income.new(
+          account_id: account_name,
+          pay_frequency: "variable",
+          compensation_amount: 200,
+          compensation_unit: "hour"
+        )
+      ] }
+      paystubs { [
+        Aggregators::ResponseObjects::Paystub.new(
+          account_id: account_name,
+          gross_pay_amount: pay,
+          net_pay_amount: pay,
+          gross_pay_ytd: pay,
+          pay_period_start: pay_period_start,
+          pay_period_end: pay_period_end,
+          pay_date: pay_date,
+          hours: hours_paid,
+          deductions:
+            [
+              { category: "401k", tax: "pre_tax", amount: "222" },
+              { category: "dental", tax: "unknown", amount: "22" }
+            ]
+        )
+      ] }
+    end
   end
 
   factory :argyle_report, class: 'Aggregators::AggregatorReports::ArgyleReport' do

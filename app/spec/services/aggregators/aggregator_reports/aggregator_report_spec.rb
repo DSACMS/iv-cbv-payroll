@@ -141,10 +141,23 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
     let(:comment) { "cool stuff" }
     let(:cbv_flow) { create(:cbv_flow, has_other_jobs: false) }
     let(:report) { build(:pinwheel_report, :hydrated, :with_pinwheel_account) }
+    let(:earnings) do
+      [
+        Aggregators::ResponseObjects::Earning.new(
+          category: "salary",
+          amount: 10_000
+        ),
+        Aggregators::ResponseObjects::Earning.new(
+          category: "tips",
+          amount: 2_345
+        )
+      ]
+    end
 
     before do
       report.payroll_accounts.first.flow = cbv_flow
       report.payroll_accounts.first.update!(additional_information: comment)
+      report.paystubs.first.earnings = earnings
     end
 
     it 'income information' do
@@ -171,9 +184,20 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
                 pay_period_start: Date.new(2014, 1, 1),
                 pay_period_end: Date.new(2014, 1, 2),
                 pay_gross: 12345,
+                gross_pay_list: [
+                  {
+                    type: "salary",
+                    amount: 10_000
+                  },
+                  {
+                    type: "tips",
+                    amount: 2_345
+                  }
+                ],
                 pay_gross_ytd: 12345,
                 pay_net: 12345,
-                hours_paid: 12.0
+                hours_paid: 12.0,
+                deductions: []
               }
             ]
           }
@@ -202,6 +226,48 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
       expect(result[:employments].first[:paystubs]).to eq([])
     end
 
+    context "when a paystub has no earnings" do
+      before do
+        report.paystubs.first.earnings = nil
+      end
+
+      it "renders gross_pay_list as an empty array" do
+        expect(report.income_report[:employments].first[:paystubs].first[:gross_pay_list]).to eq([])
+      end
+    end
+
+    context "when a paystub has earnings with null amounts" do
+      before do
+        report.paystubs.first.earnings = [
+          Aggregators::ResponseObjects::Earning.new(
+            category: "salary",
+            amount: 10_000
+          ),
+          Aggregators::ResponseObjects::Earning.new(
+            category: "bonus",
+            amount: nil
+          ),
+          Aggregators::ResponseObjects::Earning.new(
+            category: "tips",
+            amount: 0
+          )
+        ]
+      end
+
+      it "excludes only the null amount entries from gross_pay_list" do
+        expect(report.income_report[:employments].first[:paystubs].first[:gross_pay_list]).to eq([
+          {
+            type: "salary",
+            amount: 10_000
+          },
+          {
+            type: "tips",
+            amount: 0
+          }
+        ])
+      end
+    end
+
     context "when a paystub has null gross_pay_amount" do
       before do
         report.paystubs.first.gross_pay_amount = nil
@@ -210,6 +276,57 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
       it "coerces to zero (because this field is required for LA)" do
         expect(report.income_report[:employments].first[:paystubs].first[:pay_gross]).to eq(0)
       end
+    end
+  end
+
+  describe '#income_report with deductions' do
+    let(:comment) { "Work work work" }
+    let(:cbv_flow) { create(:cbv_flow, has_other_jobs: false) }
+    let(:report) { build(:pinwheel_report, :hydrated_with_deductions, :with_pinwheel_account) }
+
+    before do
+      report.payroll_accounts.first.flow = cbv_flow
+      report.payroll_accounts.first.update!(additional_information: comment)
+    end
+
+    it 'income information' do
+      expect(report.income_report).to eq(
+        has_other_jobs: false,
+        employments: [
+          {
+            applicant_full_name: "Guy",
+            applicant_ssn: "XXX-XX-2222",
+            applicant_extra_comments: "Work work work",
+            employer_name: "Company",
+            employer_phone: "604-555-2222",
+            employer_address: "1234 Main St Edmonton AB V5K 0A1",
+            employment_status: "inactive",
+            employment_type: "gig",
+            employment_start_date: Date.new(2015, 1, 1).iso8601,
+            employment_end_date: Date.new(2015, 1, 2).iso8601,
+            pay_frequency: "variable",
+            compensation_amount: 200,
+            compensation_unit: "hour",
+            paystubs: [
+              {
+                pay_date: Date.new(2015, 1, 1).iso8601,
+                pay_period_start: Date.new(2015, 1, 1),
+                pay_period_end: Date.new(2015, 1, 2),
+                pay_gross: 2222,
+                gross_pay_list: [],
+                pay_gross_ytd: 2222,
+                pay_net: 2222,
+                hours_paid: 20.0,
+                deductions:
+                  [
+                    { category: "401k", tax: "pre_tax", amount: "222" },
+                    { category: "dental", tax: "unknown", amount: "22" }
+                  ]
+              }
+            ]
+          }
+        ]
+      )
     end
   end
 end

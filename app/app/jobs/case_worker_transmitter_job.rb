@@ -3,6 +3,25 @@ class CaseWorkerTransmitterJob < ApplicationJob
 
   queue_as :default
 
+  RETRY_WAITS = [ 5.minutes, 10.minutes, 30.minutes, 1.hour, 4.hours ].freeze
+
+  retry_on Exception,
+    attempts: RETRY_WAITS.size + 1,
+    wait: ->(executions) { RETRY_WAITS[executions - 1] || RETRY_WAITS.last }
+
+  self.max_attempts = RETRY_WAITS.size + 1
+
+  limits_concurrency to: 1,
+    key: ->(flow_id) {
+      flow = CbvFlow.find(flow_id)
+      if flow.cbv_applicant.client_agency_id == "nh_dhhs"
+        flow.cbv_applicant.client_agency_id
+      else
+        flow_id
+      end
+    },
+    duration: 2.minutes
+
   def perform(cbv_flow_id)
     @cbv_flow = CbvFlow.find(cbv_flow_id)
     @current_agency = current_agency(@cbv_flow)
@@ -14,7 +33,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
       @cbv_flow.touch(:transmitted_at)
 
       track_transmitted_event(CbvFlow.find(cbv_flow_id), aggregator_report.paystubs)
-      enqueue_agency_name_matching_job(CbvFlow.find(cbv_flow_id))
     end
   end
 
@@ -35,12 +53,6 @@ class CaseWorkerTransmitterJob < ApplicationJob
     else
       raise "Unsupported transmission method: #{@current_agency.transmission_method}"
     end
-  end
-
-  def enqueue_agency_name_matching_job(cbv_flow)
-    return unless cbv_flow.cbv_applicant.agency_expected_names.any?
-
-    MatchAgencyNamesJob.perform_later(cbv_flow.id)
   end
 
   def track_transmitted_event(cbv_flow, payments)

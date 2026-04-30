@@ -1,4 +1,4 @@
-<%= uswds_form_with(model: volunteering_activity, url: volunteering_activity.persisted? ? activities_flow_community_service_path(id: volunteering_activity.id) : activities_flow_community_service_index_path) do |f| %>
+<%= uswds_form_with(model: volunteering_activity, url: volunteering_activity.persisted? ? activities_flow_community_service_path(id: volunteering_activity.id, from_review: params[:from_review].presence, from_edit: params[:from_edit].presence) : activities_flow_community_service_index_path) do |f| %>
   <h2><%= t("activities.community_service.organization_section_title") %></h2>
   <%= f.text_field :organization_name,
         label: t("activities.community_service.organization_name"),
@@ -22,5 +22,6 @@
         label: t("activities.community_service.coordinator_phone_number"),
         optional: true %>
 
-  <%= f.submit t("activities.community_service.continue") %>
+  <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t("activities.community_service.continue") %>
+  <%= f.submit submit_label %>
 <% end %>

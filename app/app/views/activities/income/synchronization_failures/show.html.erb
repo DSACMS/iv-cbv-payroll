@@ -1,0 +1,28 @@
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.employment.title_singular"),
+    exit_url: activities_flow_root_path
+  ) %>
+<% end %>
+
+<% content_for :title, t(".title") %>
+<h1><%= t(".title") %></h1>
+
+<p>
+  <%= t(".description") %>
+</p>
+
+<ol>
+  <li><%= t(".option_1") %></li>
+  <li><%= t(".option_2") %></li>
+  <li><%= t(".option_3", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
+</ol>
+
+<ul class="usa-button-group margin-top-5">
+  <li class="usa-button-group__item margin-bottom-0">
+    <%= link_to t(".back_to_search"), @back_to_search_path, class: "usa-button usa-button--outline" %>
+  </li>
+  <li class="usa-button-group__item margin-bottom-0">
+    <%= link_to t(".add_employment_manually"), new_activities_flow_income_employment_path, class: "usa-button", data: { turbo_frame: "_top" } %>
+  </li>
+</ul>

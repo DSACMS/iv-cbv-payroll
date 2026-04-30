@@ -1,0 +1,17 @@
+<% if activity.fully_self_attested? %>
+  <%= render "activities/summary/fully_self_attested_education_table", activity: activity %>
+<% elsif activity.partially_self_attested? %>
+  <%= render "activities/summary/partially_self_attested_education_table", activity: activity %>
+<% else %>
+  <% activity.nsc_enrollment_terms.each do |enrollment_term| %>
+    <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
+  <% end %>
+<% end %>
+
+<% if activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: activity.document_uploads.map { |a| { filename: a.filename.to_s } },
+    heading_level: 3,
+    full_width: true
+  ) %>
+<% end %>

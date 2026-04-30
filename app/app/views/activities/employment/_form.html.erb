@@ -1,4 +1,4 @@
-<%= uswds_form_with(model: employment_activity, url: employment_activity.persisted? ? activities_flow_income_employment_path(id: employment_activity.id) : activities_flow_income_employment_index_path) do |f| %>
+<%= uswds_form_with(model: employment_activity, url: employment_activity.persisted? ? activities_flow_income_employment_path(id: employment_activity.id, from_review: params[:from_review].presence, from_edit: params[:from_edit].presence) : activities_flow_income_employment_index_path) do |f| %>
   <h2><%= t("activities.employment_info.employer_section_title") %></h2>
   <%= f.text_field :employer_name,
         label: t("activities.employment_info.employer_name"),
@@ -33,5 +33,6 @@
           data: { "self-employed-target": "contactPhone" } %>
   </div>
 
-  <%= f.submit t("activities.employment_info.continue") %>
+  <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t("activities.employment_info.continue") %>
+  <%= f.submit submit_label %>
 <% end %>

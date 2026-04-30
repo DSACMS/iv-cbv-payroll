@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_13_203000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -85,6 +85,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
     t.string "device_id"
     t.uuid "end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.bigint "identity_id"
+    t.integer "renewal_required_months"
     t.integer "reporting_window_months"
     t.string "reporting_window_type"
     t.datetime "updated_at", null: false
@@ -159,22 +160,43 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
   create_table "education_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
     t.text "additional_comments"
+    t.string "city"
+    t.string "contact_email"
+    t.string "contact_name"
+    t.string "contact_phone_number"
     t.datetime "created_at", null: false
     t.integer "credit_hours"
     t.string "data_source", default: "validated", null: false
+    t.boolean "draft", default: false, null: false
+    t.string "school_name"
+    t.string "state"
     t.string "status", default: "unknown"
+    t.string "street_address"
+    t.string "street_address_line_2"
     t.datetime "updated_at", null: false
+    t.string "zip_code"
     t.index ["activity_flow_id"], name: "index_education_activities_on_activity_flow_id"
+  end
+
+  create_table "education_activity_months", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "education_activity_id", null: false
+    t.integer "hours", default: 0, null: false
+    t.date "month", null: false
+    t.datetime "updated_at", null: false
+    t.index ["education_activity_id"], name: "index_education_activity_months_on_education_activity_id"
   end
 
   create_table "employment_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
+    t.text "additional_comments"
     t.string "city"
     t.string "contact_email"
     t.string "contact_name"
     t.string "contact_phone_number"
     t.datetime "created_at", null: false
     t.string "data_source", default: "self_attested", null: false
+    t.boolean "draft", default: false, null: false
     t.string "employer_name"
     t.boolean "is_self_employed", default: false
     t.string "state"
@@ -206,12 +228,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
 
   create_table "job_training_activities", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
+    t.text "additional_comments"
     t.string "city"
     t.string "contact_email"
     t.string "contact_name"
     t.string "contact_phone_number"
     t.datetime "created_at", null: false
     t.string "data_source", default: "self_attested", null: false
+    t.boolean "draft", default: false, null: false
     t.string "organization_address"
     t.string "organization_name"
     t.string "program_name"
@@ -234,6 +258,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
 
   create_table "nsc_enrollment_terms", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.integer "credit_hours"
     t.bigint "education_activity_id"
     t.string "enrollment_status", null: false
     t.string "first_name"
@@ -251,6 +276,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
     t.string "aggregator_account_id"
     t.datetime "created_at", null: false
     t.string "data_source", default: "validated", null: false
+    t.boolean "draft", default: false, null: false
     t.bigint "flow_id", null: false
     t.string "flow_type"
     t.datetime "income_synced_at", precision: nil
@@ -414,6 +440,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
     t.datetime "created_at", null: false
     t.string "data_source", default: "self_attested", null: false
     t.date "date"
+    t.boolean "draft", default: false, null: false
     t.integer "hours"
     t.string "organization_name"
     t.string "state"
@@ -453,6 +480,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_221414) do
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "education_activities", "activity_flows"
+  add_foreign_key "education_activity_months", "education_activities"
   add_foreign_key "employment_activities", "activity_flows"
   add_foreign_key "employment_activity_months", "employment_activities"
   add_foreign_key "job_training_activities", "activity_flows"

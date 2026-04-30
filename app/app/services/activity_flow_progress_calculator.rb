@@ -5,31 +5,36 @@ class ActivityFlowProgressCalculator
   PER_MONTH_EARNINGS_THRESHOLD = 580_00 # in cents
 
   OverallResult = Struct.new(:total_hours, :meets_requirements, :meets_routing_requirements, keyword_init: true)
-  MonthlyResult = Struct.new(:month, :total_hours, :meets_requirements, keyword_init: true)
+  MonthlyResult = Struct.new(:month, :total_hours, :total_earnings_cents, :default_unit, :meets_requirements, keyword_init: true)
 
   def initialize(activity_flow)
     @activity_flow = activity_flow
-    @volunteering_activities = activity_flow.volunteering_activities
-    @job_training_activities = activity_flow.job_training_activities
-    @education_activities = activity_flow.education_activities
+    @required_month_count = activity_flow.required_month_count
+    @volunteering_activities = activity_flow.volunteering_activities.published
+    @job_training_activities = activity_flow.job_training_activities.published
+    @education_activities = activity_flow.education_activities.published
+    @employment_activities = activity_flow.employment_activities.published
   end
 
   def overall_result
     OverallResult.new(
       total_hours: total_hours,
-      meets_requirements: each_month_meets_threshold?,
-      meets_routing_requirements: each_month_meets_threshold_with_validated_data?
+      meets_requirements: required_months_meet_threshold?,
+      meets_routing_requirements: required_months_meet_threshold_with_validated_data?
     )
   end
 
   def monthly_results
     reporting_months.map do |month|
       hours = hours_for_month(month)
+      earnings_cents = earnings_for_month(month)
 
       MonthlyResult.new(
         month: month,
         total_hours: hours,
-        meets_requirements: hours >= PER_MONTH_HOURS_THRESHOLD
+        total_earnings_cents: earnings_cents,
+        default_unit: default_unit_for_month(hours: hours, earnings_cents: earnings_cents),
+        meets_requirements: hours >= PER_MONTH_HOURS_THRESHOLD || earnings_cents >= PER_MONTH_EARNINGS_THRESHOLD
       )
     end
   end
@@ -37,6 +42,8 @@ class ActivityFlowProgressCalculator
   def reporting_months
     @activity_flow.reporting_months
   end
+
+  attr_reader :required_month_count
 
   private
 
@@ -54,18 +61,22 @@ class ActivityFlowProgressCalculator
     reporting_months.sum { |month_start| education_hours_for_month(month_start) }
   end
 
-  def each_month_meets_threshold?
-    reporting_months.all? do |month_start|
+  def required_months_meet_threshold?
+    reporting_months.count do |month_start|
       hours_for_month(month_start) >= PER_MONTH_HOURS_THRESHOLD ||
         earnings_for_month(month_start) >= PER_MONTH_EARNINGS_THRESHOLD
-    end
+    end >= required_month_count
   end
 
-  def each_month_meets_threshold_with_validated_data?
-    reporting_months.all? do |month_start|
+  def required_months_meet_threshold_with_validated_data?
+    reporting_months.count do |month_start|
       validated_hours_for_month(month_start) >= PER_MONTH_HOURS_THRESHOLD ||
         validated_earnings_for_month(month_start) >= PER_MONTH_EARNINGS_THRESHOLD
-    end
+    end >= required_month_count
+  end
+
+  def default_unit_for_month(hours:, earnings_cents:)
+    earnings_cents >= PER_MONTH_EARNINGS_THRESHOLD && hours < PER_MONTH_HOURS_THRESHOLD ? :dollars : :hours
   end
 
   def hours_for_month(month_start)
@@ -94,36 +105,56 @@ class ActivityFlowProgressCalculator
   def employment_hours_for_month(month_start)
     month_key = month_start.strftime("%Y-%m")
 
-    monthly_summaries.sum do |_account_id, months|
+    payroll_hours = monthly_summaries.sum do |_account_id, months|
       month_data = months[month_key]
       next 0 unless month_data
 
       month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f
     end
+
+    payroll_hours + self_attested_employment_hours_for_month(month_start)
   end
 
   def total_employment_hours
-    monthly_summaries.sum do |_account_id, months|
+    payroll_hours = monthly_summaries.sum do |_account_id, months|
       months.sum do |_month_key, month_data|
         month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f
       end
     end
+
+    payroll_hours + reporting_months.sum { |month_start| self_attested_employment_hours_for_month(month_start) }
   end
 
   def earnings_for_month(month_start)
     month_key = month_start.strftime("%Y-%m")
 
-    monthly_summaries.sum do |_account_id, months|
+    payroll_earnings = monthly_summaries.sum do |_account_id, months|
       month_data = months[month_key]
       next 0 unless month_data
 
       month_data[:accrued_gross_earnings].to_i
     end
+
+    payroll_earnings + self_attested_employment_earnings_for_month(month_start)
+  end
+
+  def self_attested_employment_hours_for_month(month_start)
+    @employment_activities.sum do |activity|
+      activity.employment_activity_months.where(month: month_start.beginning_of_month).sum(:hours)
+    end
+  end
+
+  def self_attested_employment_earnings_for_month(month_start)
+    dollars = @employment_activities.sum do |activity|
+      activity.employment_activity_months.where(month: month_start.beginning_of_month).sum(:gross_income)
+    end
+
+    dollars * 100
   end
 
   def validated_hours_for_month(month_start)
     validated_employment_hours_for_month(month_start) +
-      validated_education_hours_for_month(month_start) +
+      routing_education_hours_for_month(month_start) +
       validated_volunteering_hours_for_month(month_start) +
       validated_training_hours_for_month(month_start)
   end
@@ -150,10 +181,8 @@ class ActivityFlowProgressCalculator
     end
   end
 
-  def validated_education_hours_for_month(month_start)
-    @education_activities
-      .select(&:validated?)
-      .sum { |education| education.progress_hours_for_month(month_start) }
+  def routing_education_hours_for_month(month_start)
+    @education_activities.sum { |education| education.routing_hours_for_month(month_start) }
   end
 
   def validated_training_hours_for_month(month_start)
@@ -173,7 +202,10 @@ class ActivityFlowProgressCalculator
   end
 
   def validated_account_ids
-    @validated_account_ids ||= @activity_flow.payroll_accounts.select(&:validated?).map(&:aggregator_account_id).compact
+    @validated_account_ids ||= @activity_flow.payroll_accounts.published
+      .select(&:validated?)
+      .map(&:aggregator_account_id)
+      .compact
   end
 
   def monthly_summaries

@@ -13,7 +13,7 @@ class Cbv::SummariesController < Cbv::BaseController
   def check_aggregator_report
     if @aggregator_report.nil?
       Rails.logger.error "Aggregator report nil for #{@cbv_flow.id}. User reached summary page without successfully synced payroll accounts."
-      redirect_to cbv_flow_synchronization_failures_path
+      redirect_to flow_navigator.income_sync_path(:synchronization_failures)
     end
   end
 

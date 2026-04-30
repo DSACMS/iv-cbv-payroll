@@ -1,0 +1,10 @@
+<%= turbo_frame_tag "synchronization" do %>
+  <p>
+    <%= t(".fetching_payroll_description") %>
+  </p>
+    <div class="grid-container">
+    <% if @payroll_account.present? %>
+      <%= render partial: "cbv/synchronizations/indicators", locals: { payroll_account: @payroll_account } %>
+    <% end %>
+  </div>
+<% end %>
