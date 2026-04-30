@@ -512,6 +512,113 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
     end
 
+    context "when a month is complete through sufficient education enrollment" do
+      let(:flow) do
+        create(
+          :activity_flow,
+          reporting_window_months: 1,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0
+        )
+      end
+      let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }
+
+      before do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: flow.reporting_months.first,
+          term_end: flow.reporting_months.first.end_of_month
+        )
+      end
+
+      it "marks the monthly result with sufficient enrollment" do
+        expect(result.first).to have_attributes(
+          total_hours: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
+          meets_requirements: true,
+          sufficient_enrollment: true
+        )
+      end
+    end
+
+    context "when a month is complete through self-attested education credit hours" do
+      let(:flow) do
+        create(
+          :activity_flow,
+          reporting_window_months: 1,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0
+        )
+      end
+      let(:education_activity) do
+        create(
+          :education_activity,
+          activity_flow: flow,
+          data_source: :fully_self_attested,
+          status: "unknown",
+          school_name: "Test U"
+        )
+      end
+
+      before do
+        create(
+          :education_activity_month,
+          education_activity: education_activity,
+          month: flow.reporting_months.first.beginning_of_month,
+          hours: 20
+        )
+      end
+
+      it "does not mark the monthly result with sufficient enrollment" do
+        expect(result.first).to have_attributes(
+          total_hours: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
+          meets_requirements: true,
+          sufficient_enrollment: false
+        )
+      end
+    end
+
+    context "when a month has sufficient education enrollment and volunteering hours" do
+      let(:flow) do
+        create(
+          :activity_flow,
+          reporting_window_months: 1,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0
+        )
+      end
+      let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }
+      let(:volunteering_activity) { create(:volunteering_activity, activity_flow: flow) }
+
+      before do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: flow.reporting_months.first,
+          term_end: flow.reporting_months.first.end_of_month
+        )
+        create(
+          :volunteering_activity_month,
+          volunteering_activity: volunteering_activity,
+          month: flow.reporting_months.first.beginning_of_month,
+          hours: 30
+        )
+      end
+
+      it "keeps sufficient enrollment while including other activity hours" do
+        expect(result.first).to have_attributes(
+          total_hours: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD + 30,
+          meets_requirements: true,
+          sufficient_enrollment: true
+        )
+      end
+    end
+
     context "when a month is below both thresholds" do
       let(:flow) { create(:activity_flow, reporting_window_months: 1) }
       let(:month) { flow.reporting_window_range.begin }

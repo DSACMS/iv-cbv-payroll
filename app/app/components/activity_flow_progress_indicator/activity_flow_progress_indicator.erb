@@ -112,12 +112,18 @@
                     </svg>
                   <% end %>
 
-                  <%= display_progress_amount(monthly_result, unit: completed_unit) %>
+                  <% if sufficient_enrollment_label?(monthly_result, unit: completed_unit) %>
+                    <%= t(".sufficiently_enrolled") %>
+                  <% else %>
+                    <%= display_progress_amount(monthly_result, unit: completed_unit) %>
+                  <% end %>
                 </span>
-                /
-                <%= display_completion_threshold(monthly_result, unit: completed_unit) %>
-                <% if display_hours_unit?(unit: completed_unit) %>
-                  <%= t(".hours") %>
+                <% unless sufficient_enrollment_label?(monthly_result, unit: completed_unit) %>
+                  /
+                  <%= display_completion_threshold(monthly_result, unit: completed_unit) %>
+                  <% if display_hours_unit?(unit: completed_unit) %>
+                    <%= t(".hours") %>
+                  <% end %>
                 <% end %>
               <% else %>
                 <% [ :hours, :dollars ].each do |unit| %>

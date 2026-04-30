@@ -65,6 +65,10 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
 
   def display_hours_unit?(unit:) = unit == :hours
 
+  def sufficient_enrollment_label?(monthly_result, unit:)
+    unit == :hours && monthly_result.sufficient_enrollment
+  end
+
   def multi_month? = monthly_calculation_results.length > 1
 
   def complete_month_count = monthly_calculation_results.count(&:meets_requirements)

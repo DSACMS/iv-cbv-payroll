@@ -221,4 +221,59 @@ RSpec.describe EducationActivityProgressCalculator do
       end
     end
   end
+
+  describe "#sufficient_enrollment_for_month?" do
+    it "returns true when the month has half-time or above enrollment" do
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        enrollment_status: "half_time",
+        term_begin: month_start,
+        term_end: month_start.end_of_month
+      )
+
+      expect(calculator).to be_sufficient_enrollment_for_month(month_start)
+    end
+
+    it "returns false when the month uses self-attested credit hours" do
+      education_activity.update!(data_source: :fully_self_attested, school_name: "Test U", status: "unknown")
+      create(
+        :education_activity_month,
+        education_activity: education_activity,
+        month: month_start.beginning_of_month,
+        # 20 credit hours * CREDIT_HOUR_CE_MULTIPLIER (4) meets the 80-hour threshold.
+        hours: 20
+      )
+
+      expect(calculator).not_to be_sufficient_enrollment_for_month(month_start)
+    end
+
+    it "returns true when summer carryover applies" do
+      flow.update!(reporting_window_months: 2)
+      flow.shift_reporting_window_start!("2025-07-01")
+      july = Date.new(2025, 7, 1)
+      create(
+        :nsc_enrollment_term,
+        education_activity: education_activity,
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15)
+      )
+
+      expect(calculator).to be_sufficient_enrollment_for_month(july)
+    end
+
+    it "returns false when the month has less-than-half-time enrollment" do
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education_activity,
+        term_begin: month_start,
+        term_end: month_start.end_of_month,
+        credit_hours: 20
+      )
+
+      expect(calculator).not_to be_sufficient_enrollment_for_month(month_start)
+    end
+  end
 end

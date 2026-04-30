@@ -60,21 +60,14 @@ class EducationActivityCardBuilder
   def validated_month_data(month_start:, effective_term:)
     {
       month: month_start,
-      enrollment_status: effective_term ? effective_term.enrollment_status_display : I18n.t("activities.hub.cards.not_enrolled"),
-      community_engagement_hours: effective_term&.half_time_or_above? ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0,
-      credit_hours: nil,
-      show_credit_hours: false
+      enrollment_status: effective_term ? effective_term.enrollment_status_display : I18n.t("activities.hub.cards.not_enrolled")
     }
   end
 
   def partial_self_attested_month_data(term:, month_start:)
-    credit_hours = @activity.review_term_credit_hours(term)
     {
       month: month_start,
-      enrollment_status: term.enrollment_status_display,
-      community_engagement_hours: @activity.community_engagement_hours(credit_hours),
-      credit_hours: credit_hours,
-      show_credit_hours: true
+      enrollment_status: term.enrollment_status_display
     }
   end
 

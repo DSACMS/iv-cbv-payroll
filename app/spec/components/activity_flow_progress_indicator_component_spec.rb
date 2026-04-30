@@ -323,6 +323,56 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     end
   end
 
+  context "when a completed month has sufficient education enrollment" do
+    let(:monthly_result) do
+      ActivityFlowProgressCalculator::MonthlyResult.new(
+        month: reporting_month,
+        total_hours: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
+        total_earnings_cents: 0,
+        default_unit: :hours,
+        meets_requirements: true,
+        sufficient_enrollment: true
+      )
+    end
+
+    it "renders the sufficient enrollment label instead of hours progress" do
+      render_inline(component)
+
+      row_text = page.find(".activity-flow-progress-indicator__progress-amount-container").text.squish
+      expect(row_text).to include(I18n.t("activity_flow_progress_indicator.sufficiently_enrolled"))
+      expect(row_text).not_to include(
+        "#{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD} / " \
+        "#{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD} " \
+        "#{I18n.t("activity_flow_progress_indicator.hours")}"
+      )
+    end
+  end
+
+  context "when a completed month does not have sufficient education enrollment" do
+    let(:monthly_result) do
+      ActivityFlowProgressCalculator::MonthlyResult.new(
+        month: reporting_month,
+        total_hours: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
+        total_earnings_cents: 0,
+        default_unit: :hours,
+        meets_requirements: true,
+        sufficient_enrollment: false
+      )
+    end
+
+    it "renders hours progress" do
+      render_inline(component)
+
+      row_text = page.find(".activity-flow-progress-indicator__progress-amount-container").text.squish
+      expect(row_text).to include(
+        "#{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD} / " \
+        "#{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD} " \
+        "#{I18n.t("activity_flow_progress_indicator.hours")}"
+      )
+      expect(row_text).not_to include(I18n.t("activity_flow_progress_indicator.sufficiently_enrolled"))
+    end
+  end
+
   context "when a completed month omits default_unit" do
     let(:monthly_result) do
       ActivityFlowProgressCalculator::MonthlyResult.new(
