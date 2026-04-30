@@ -1,0 +1,229 @@
+<% content_for :title, "Emmy Launcher" %>
+<div class="launcher-page"
+     data-controller="launcher"
+     data-launcher-flow-value="activity"
+     data-launcher-window-value="application"
+     data-launcher-months-value="2"
+     data-launcher-status-value="lynette">
+  <div class="launcher__utility">
+    <div class="launcher__utility-left">
+      <span class="launcher__utility-dot" aria-hidden="true"></span>
+      <span>Emmy Launcher</span>
+      <span class="launcher__utility-env">env: sandbox</span>
+    </div>
+    <div class="launcher__utility-left">
+      <span class="launcher__utility-pill">Demo</span>
+    </div>
+  </div>
+
+  <%= form_with(url: "/test", method: :post, html: { class: "launcher__main", autocomplete: "off" }, data: { turbo: false, launcher_target: "form" }) do |f| %>
+    <div class="launcher__title">
+      <span class="launcher__title-emoji" aria-hidden="true">🏆🚀</span>
+      <h1>Emmy launcher</h1>
+    </div>
+    <p class="launcher__subtitle">For demos with states and external stakeholders.</p>
+
+    <%= hidden_field_tag :flow_type, "activity", data: { launcher_target: "flowInput" } %>
+    <%= hidden_field_tag :reporting_window, "application", data: { launcher_target: "windowInput" } %>
+    <%= hidden_field_tag :reporting_window_months, "2", data: { launcher_target: "monthsInput" } %>
+    <%= hidden_field_tag :test_scenario, "lynette", data: { launcher_target: "statusInput" } %>
+
+    <div class="launcher__step">
+      <div class="launcher__step-header">
+        <span class="launcher__step-num">1.</span>
+        <h2 class="launcher__step-title">Flow type</h2>
+        <button type="button" class="launcher__step-help" aria-label="More info: Flow type">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 5.5a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 12 7.5Zm1.5 10h-3v-1h1v-4h-1v-1h2.5v5h0.5Z"/></svg>
+          <span class="launcher__step-tip" role="tooltip">Which Emmy workflow to launch. CE checks community engagement; IV checks income verification.</span>
+        </button>
+      </div>
+      <div class="launcher__radio-row">
+        <% [
+             [ "activity", "Community engagement", "Verify enrollment through NSC or self-attestation." ],
+             [ "cbv",      "Income verification",  "Verify income through payroll data or uploads." ]
+           ].each do |value, title, desc| %>
+          <div class="launcher__rcard"
+               role="radio"
+               tabindex="0"
+               aria-checked="<%= value == "activity" %>"
+               data-launcher-target="flowCard"
+               data-value="<%= value %>"
+               data-action="click->launcher#selectFlow keydown.enter->launcher#selectFlow keydown.space->launcher#selectFlow">
+            <span class="launcher__rcard-radio" aria-hidden="true"></span>
+            <div class="launcher__rcard-body">
+              <div class="launcher__rcard-title"><%= title %></div>
+              <div class="launcher__rcard-desc"><%= desc %></div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="launcher__step">
+      <div class="launcher__step-header">
+        <span class="launcher__step-num">2.</span>
+        <h2 class="launcher__step-title">Agency</h2>
+        <button type="button" class="launcher__step-help" aria-label="More info: Agency">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 5.5a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 12 7.5Zm1.5 10h-3v-1h1v-4h-1v-1h2.5v5h0.5Z"/></svg>
+          <span class="launcher__step-tip" role="tooltip">The state or sandbox environment Emmy will launch against.</span>
+        </button>
+      </div>
+      <select class="launcher__select"
+              name="client_agency_id"
+              id="launcher_client_agency_id"
+              data-launcher-target="agencySelect"
+              data-action="change->launcher#selectAgency">
+        <% Rails.application.config.client_agencies.client_agency_ids.each do |agency_id| %>
+          <option value="<%= agency_id %>" <%= "selected" if agency_id == "sandbox" %>><%= agency_id %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div class="launcher__step">
+      <div class="launcher__step-header">
+        <span class="launcher__step-num">3.</span>
+        <h2 class="launcher__step-title">Reporting window</h2>
+        <button type="button" class="launcher__step-help" aria-label="More info: Reporting window">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 5.5a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 12 7.5Zm1.5 10h-3v-1h1v-4h-1v-1h2.5v5h0.5Z"/></svg>
+          <span class="launcher__step-tip" role="tooltip">The span of time Emmy reviews. Application windows are set by the state; Renewal is a fixed 6 months.</span>
+        </button>
+      </div>
+      <div class="launcher__radio-col">
+        <div class="launcher__rcard launcher__rcard--selected"
+             role="radio"
+             tabindex="0"
+             aria-checked="true"
+             data-launcher-target="windowCard"
+             data-value="application"
+             data-action="click->launcher#selectWindow keydown.enter->launcher#selectWindow keydown.space->launcher#selectWindow">
+          <span class="launcher__rcard-radio" aria-hidden="true"></span>
+          <div class="launcher__rcard-body">
+            <div class="launcher__rcard-title">Application</div>
+            <div class="launcher__rcard-extra" data-launcher-show-when="application">
+              <div class="launcher__months">
+                <% [ 1, 2, 3 ].each do |m| %>
+                  <button type="button"
+                          class="launcher__month-pill <%= "launcher__month-pill--active" if m == 2 %>"
+                          data-launcher-target="monthPill"
+                          data-value="<%= m %>"
+                          data-action="click->launcher#selectMonths">
+                    <%= m %> month<%= "s" if m > 1 %>
+                  </button>
+                <% end %>
+              </div>
+              <p class="launcher__months-note">The application reporting window is configurable by the state.</p>
+            </div>
+          </div>
+        </div>
+        <div class="launcher__rcard"
+             role="radio"
+             tabindex="0"
+             aria-checked="false"
+             data-launcher-target="windowCard"
+             data-value="renewal"
+             data-action="click->launcher#selectWindow keydown.enter->launcher#selectWindow keydown.space->launcher#selectWindow">
+          <span class="launcher__rcard-radio" aria-hidden="true"></span>
+          <div class="launcher__rcard-body">
+            <div class="launcher__rcard-title">
+              Renewal
+              <span class="launcher__rcard-meta">(6 months)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="launcher__step" data-launcher-show-when="ce">
+      <div class="launcher__step-header">
+        <span class="launcher__step-num">4.</span>
+        <h2 class="launcher__step-title">Student status</h2>
+        <button type="button" class="launcher__step-help" aria-label="More info: Student status">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 5.5a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 12 7.5Zm1.5 10h-3v-1h1v-4h-1v-1h2.5v5h0.5Z"/></svg>
+          <span class="launcher__step-tip" role="tooltip">Whether the National Student Clearinghouse returns a match for the demo user.</span>
+        </button>
+      </div>
+      <div class="launcher__radio-col">
+        <% [
+             [ "lynette", "NSC enrollment found",   "Enrollment is verified automatically via the National Student Clearinghouse." ],
+             [ "linda",   "No NSC enrollment found", "Client walks through self-attesting their enrollment." ]
+           ].each do |value, title, desc| %>
+          <div class="launcher__rcard <%= "launcher__rcard--selected" if value == "lynette" %>"
+               role="radio"
+               tabindex="0"
+               aria-checked="<%= value == "lynette" %>"
+               data-launcher-target="statusCard"
+               data-value="<%= value %>"
+               data-action="click->launcher#selectStatus keydown.enter->launcher#selectStatus keydown.space->launcher#selectStatus">
+            <span class="launcher__rcard-radio" aria-hidden="true"></span>
+            <div class="launcher__rcard-body">
+              <div class="launcher__rcard-title"><%= title %></div>
+              <div class="launcher__rcard-desc"><%= desc %></div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="launcher__launch">
+      <button type="submit"
+              name="launch_type"
+              value="tokenized"
+              class="launcher__launch-primary"
+              data-launcher-target="launchPrimary"
+              data-launch-type="tokenized"
+              data-action="launcher#launch">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7ZM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7Z"/></svg>
+        Launch tokenized demo
+      </button>
+      <button type="submit"
+              name="launch_type"
+              value="generic"
+              class="launcher__launch-alt"
+              disabled
+              data-launcher-target="launchAlt"
+              data-launch-type="generic"
+              data-action="launcher#launch">
+        Generic link
+      </button>
+      <span class="launcher__launch-note" data-launcher-target="launchNote">Not supported for CE yet</span>
+    </div>
+
+    <div class="launcher__linkcard" hidden data-launcher-target="linkCard">
+      <p class="launcher__linkcard-label">Tokenized demo link</p>
+      <div class="launcher__linkcard-row">
+        <input type="text"
+               class="launcher__linkcard-input"
+               readonly
+               autocomplete="off"
+               data-launcher-target="linkInput"
+               aria-label="Generated demo link">
+        <button type="button"
+                class="launcher__linkcard-btn"
+                data-action="launcher#copy">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1Zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H8V7h11v14Z"/></svg>
+          Copy
+        </button>
+        <a class="launcher__linkcard-btn launcher__linkcard-btn--primary"
+           href="#"
+           target="_blank"
+           rel="noopener noreferrer"
+           data-launcher-target="linkOpen">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7ZM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7Z"/></svg>
+          Open in new tab
+        </a>
+      </div>
+      <p class="launcher__linkcard-copied" hidden data-launcher-target="linkCopied">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        Link copied to clipboard.
+      </p>
+    </div>
+
+    <div class="launcher__help-footer">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm1 17h-2v-2h2v2Zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26A2 2 0 1 0 10 9H8a4 4 0 1 1 7.07 2.25Z"/></svg>
+      <div>
+        <strong>New to Emmy?</strong>
+        Each option above has a hint — hover the <em>i</em> for a quick explanation.
+      </div>
+    </div>
+  <% end %>
+</div>

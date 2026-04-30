@@ -1,0 +1,432 @@
+@forward "uswds";
+@use "uswds" as *;
+
+// Basic Demo Launcher (/launcher) — page styles, scoped to .launcher-page.
+.launcher-page {
+  color: color("ink");
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  // Utility bar
+  .launcher__utility {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 24px;
+    background: color("gray-cool-3");
+    border-bottom: 1px solid color("base-lighter");
+    font-size: 13px;
+    color: color("base");
+  }
+  .launcher__utility-left { display: flex; align-items: center; gap: 10px; }
+  .launcher__utility-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: color("success");
+    display: inline-block;
+  }
+  .launcher__utility-env {
+    font-family: family("mono");
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  .launcher__utility-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 10px;
+    border-radius: 99rem;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: color("primary");
+    color: white;
+  }
+
+  // Main column
+  .launcher__main {
+    padding: 40px 48px 64px;
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+
+  // Title block
+  .launcher__title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 0 0 8px;
+    flex-wrap: wrap;
+  }
+  .launcher__title h1 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0;
+    color: color("ink");
+  }
+  .launcher__title-emoji {
+    font-size: 26px;
+    line-height: 1;
+    transform: translateY(-2px);
+  }
+  .launcher__subtitle {
+    margin: 0 0 16px;
+    font-size: 16px;
+    color: color("base");
+    line-height: 1.5;
+  }
+
+  // Step block
+  .launcher__step { margin-bottom: 32px; }
+  .launcher__step-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .launcher__step-num {
+    font-size: 18px;
+    font-weight: 700;
+    color: color("ink");
+  }
+  .launcher__step-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: color("ink");
+    margin: 0;
+  }
+  .launcher__step-help {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    color: color("primary");
+    cursor: help;
+    position: relative;
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+  .launcher__step-help svg { width: 16px; height: 16px; }
+  .launcher__step-help:hover { color: color("primary-dark"); }
+  .launcher__step-help:hover .launcher__step-tip,
+  .launcher__step-help:focus-visible .launcher__step-tip { display: block; }
+  .launcher__step-tip {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    background: color("ink");
+    color: white;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+    width: 260px;
+    border-radius: 2px;
+    text-align: left;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+  }
+  .launcher__step-tip::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: color("ink");
+  }
+
+  // Radio cards
+  .launcher__radio-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .launcher__radio-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .launcher__rcard {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: white;
+    border: 2px solid color("gray-cool-20");
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.15s ease-in-out;
+    text-align: left;
+    width: 100%;
+    color: color("ink");
+  }
+  .launcher__rcard:hover {
+    border-color: color("primary");
+    background: color("blue-5");
+  }
+  .launcher__rcard--selected {
+    border-color: color("primary");
+    background: color("blue-5");
+    box-shadow: inset 0 0 0 2px color("primary");
+  }
+  .launcher__rcard-radio {
+    flex: 0 0 20px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid color("gray-cool-40");
+    background: white;
+    margin-top: 2px;
+    position: relative;
+  }
+  .launcher__rcard--selected .launcher__rcard-radio {
+    border-color: color("primary");
+  }
+  .launcher__rcard--selected .launcher__rcard-radio::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background: color("primary");
+    border-radius: 50%;
+  }
+  .launcher__rcard-body { flex: 1; min-width: 0; display: block; }
+  .launcher__rcard-title {
+    display: block;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0;
+    color: color("ink");
+    line-height: 1.3;
+  }
+  .launcher__rcard-desc {
+    display: block;
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: color("base");
+    line-height: 1.5;
+  }
+  .launcher__rcard-meta {
+    font-weight: 400;
+    font-size: 14px;
+    color: color("base");
+  }
+  .launcher__rcard-extra { display: block; margin-top: 8px; }
+
+  // Months pills inside Application card
+  .launcher__months {
+    margin: 10px 0 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .launcher__month-pill {
+    border: 2px solid color("primary");
+    background: white;
+    color: color("primary");
+    font-weight: 700;
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.15s ease-in-out;
+  }
+  .launcher__month-pill:hover { background: color("blue-5"); }
+  .launcher__month-pill--active {
+    background: color("primary");
+    color: white;
+  }
+  .launcher__months-note {
+    margin: 8px 0 0 32px;
+    font-size: 13px;
+    color: color("base");
+  }
+
+  // Agency select
+  .launcher__select {
+    width: 100%;
+    max-width: 320px;
+    padding: 8px 12px;
+    font-size: 15px;
+    border: 2px solid color("ink");
+    background: white;
+    border-radius: 0;
+    color: color("ink");
+  }
+
+  // Launch row
+  .launcher__launch {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 40px;
+    border-top: 1px solid color("base-lighter");
+    padding-top: 24px;
+  }
+  .launcher__launch-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    font-size: 17px;
+    font-weight: 700;
+    border: 0;
+    border-radius: 4px 0 0 4px;
+    background: color("primary");
+    color: white;
+    cursor: pointer;
+    transition: 0.15s ease-in-out;
+  }
+  .launcher__launch-primary:hover { background: color("primary-dark"); }
+  .launcher__launch-primary svg { width: 18px; height: 18px; }
+  .launcher__launch-primary:disabled {
+    background: color("gray-cool-20");
+    cursor: not-allowed;
+  }
+  .launcher__launch-alt {
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    border: 2px solid color("primary");
+    border-left: 0;
+    border-radius: 0 4px 4px 0;
+    background: white;
+    color: color("primary");
+    cursor: pointer;
+    transition: 0.15s ease-in-out;
+  }
+  .launcher__launch-alt:hover { background: color("blue-5"); }
+  .launcher__launch-alt:disabled {
+    color: color("base-light");
+    border-color: color("gray-cool-20");
+    background: color("gray-cool-3");
+    cursor: not-allowed;
+  }
+  .launcher__launch-note {
+    margin-left: 16px;
+    font-size: 13px;
+    color: color("base");
+    align-self: center;
+    line-height: 1.4;
+  }
+  .launcher__launch-note[hidden] { display: none; }
+
+  // Link card (shown after launch)
+  .launcher__linkcard {
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid color("base-lighter");
+    background: color("gray-cool-2");
+    border-radius: 4px;
+  }
+  .launcher__linkcard[hidden] { display: none; }
+  .launcher__linkcard-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: color("base");
+    margin: 0 0 8px;
+  }
+  .launcher__linkcard-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .launcher__linkcard-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid color("gray-cool-20");
+    background: white;
+    font-family: family("mono");
+    font-size: 13px;
+    color: color("ink");
+    border-radius: 2px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .launcher__linkcard-btn {
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    border: 2px solid color("primary");
+    background: white;
+    color: color("primary");
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: 0.15s ease-in-out;
+    text-decoration: none;
+  }
+  .launcher__linkcard-btn:hover { background: color("blue-5"); }
+  .launcher__linkcard-btn--primary {
+    background: color("primary");
+    color: white;
+  }
+  .launcher__linkcard-btn--primary:hover {
+    background: color("primary-dark");
+    color: white;
+  }
+  .launcher__linkcard-btn svg { width: 14px; height: 14px; }
+  .launcher__linkcard-copied {
+    margin-top: 10px;
+    font-size: 13px;
+    color: color("success-darker");
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .launcher__linkcard-copied[hidden] { display: none; }
+  .launcher__linkcard-copied svg { width: 14px; height: 14px; }
+
+  // Help footer
+  .launcher__help-footer {
+    margin-top: 48px;
+    padding: 16px 20px;
+    background: color("blue-5");
+    border-left: 4px solid color("primary");
+    font-size: 14px;
+    color: color("ink");
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-radius: 0 4px 4px 0;
+  }
+  .launcher__help-footer svg {
+    width: 20px; height: 20px;
+    color: color("primary");
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .launcher__help-footer strong { display: block; margin-bottom: 2px; }
+  .launcher__help-footer a {
+    color: color("primary");
+    font-weight: 700;
+  }
+
+  // Visibility helpers driven by Stimulus data values on the .launcher-page root
+  [data-launcher-show-when="ce"] {
+    display: none;
+  }
+  &[data-launcher-flow-value="activity"] [data-launcher-show-when="ce"] {
+    display: revert;
+  }
+  &[data-launcher-window-value="renewal"] [data-launcher-show-when="application"] {
+    display: none;
+  }
+}

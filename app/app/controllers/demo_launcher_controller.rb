@@ -5,6 +5,10 @@ class DemoLauncherController < ApplicationController
     set_flow_session(nil, :activity)
   end
 
+  def launcher
+    set_flow_session(nil, :activity)
+  end
+
   def create
     flow_type = launcher_params[:flow_type]
     client_agency_id = launcher_params[:client_agency_id]
