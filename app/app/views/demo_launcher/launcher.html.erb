@@ -146,8 +146,10 @@
       <div class="usa-hint launcher__step-hint" hidden>Select whether the National Student Clearinghouse returns a match for this demo user.</div>
       <div class="launcher__radio-col">
         <% [
-             [ "lynette", "NSC enrollment found",   "Enrollment is verified automatically via the National Student Clearinghouse." ],
-             [ "linda",   "No NSC enrollment found", "Client walks through self-attesting their enrollment." ]
+             [ "lynette",                            "Enrolled full time",            "Full-time enrollment verified automatically via the National Student Clearinghouse." ],
+             [ "renewal_half_time_last_4_of_6_avery", "Enrolled half-time",           "Half-time enrollment covering 4 of 6 months (good for renewal required-month testing)." ],
+             [ "partial_enrollment_maya",             "Enrolled less-than-half-time", "Less-than-half-time enrollment (same school in multiple terms)." ],
+             [ "linda",                               "No NSC enrollment found",      "Client walks through self-attesting their enrollment." ]
            ].each do |value, title, desc| %>
           <div class="launcher__rcard <%= "launcher__rcard--selected" if value == "lynette" %>"
                role="radio"

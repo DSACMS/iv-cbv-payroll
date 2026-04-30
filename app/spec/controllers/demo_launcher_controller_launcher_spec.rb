@@ -60,9 +60,13 @@ RSpec.describe DemoLauncherController, type: :controller do
     it "renders the student-status options mapping to NSC test scenarios" do
       get :launcher
       body = response.body
-      expect(body).to include("NSC enrollment found")
+      expect(body).to include("Enrolled full time")
+      expect(body).to include("Enrolled half-time")
+      expect(body).to include("Enrolled less-than-half-time")
       expect(body).to include("No NSC enrollment found")
       expect(body).to include('value="lynette"')
+      expect(body).to include('value="renewal_half_time_last_4_of_6_avery"')
+      expect(body).to include('value="partial_enrollment_maya"')
       expect(body).to include('value="linda"')
     end
 
