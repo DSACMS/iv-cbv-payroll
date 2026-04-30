@@ -50,6 +50,13 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(body).to include("3 months")
     end
 
+    it "renders the optional renewal_required_months input inside the Renewal card" do
+      get :launcher
+      body = response.body
+      expect(body).to include('name="renewal_required_months"')
+      expect(body).to include("renewal months required")
+    end
+
     it "renders the student-status options mapping to NSC test scenarios" do
       get :launcher
       body = response.body

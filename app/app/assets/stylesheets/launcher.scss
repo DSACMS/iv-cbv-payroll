@@ -186,6 +186,25 @@
     color: color("base");
   }
 
+  // Inline field used for the optional renewal_required_months input
+  .launcher__inline-field {
+    margin: 10px 0 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+  .launcher__inline-input {
+    width: 72px;
+    padding: 6px 10px;
+    border: 2px solid color("ink");
+    background: white;
+    border-radius: 0;
+    font-size: 14px;
+    font-family: inherit;
+    color: color("ink");
+  }
+
   // Agency select
   .launcher__select {
     width: 100%;
@@ -334,7 +353,8 @@
   }
 
   // Visibility helpers driven by Stimulus data values on the .launcher-page root
-  [data-launcher-show-when="ce"] {
+  [data-launcher-show-when="ce"],
+  [data-launcher-show-when="renewal"] {
     display: none;
   }
   &[data-launcher-flow-value="activity"] [data-launcher-show-when="ce"] {
@@ -342,5 +362,8 @@
   }
   &[data-launcher-window-value="renewal"] [data-launcher-show-when="application"] {
     display: none;
+  }
+  &[data-launcher-window-value="renewal"] [data-launcher-show-when="renewal"] {
+    display: revert;
   }
 }

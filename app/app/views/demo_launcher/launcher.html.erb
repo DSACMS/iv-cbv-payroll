@@ -25,7 +25,7 @@
           <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
         </button>
       </div>
-      <div class="usa-hint launcher__step-hint" hidden>Which Emmy workflow to launch. CE checks community engagement; IV checks income verification.</div>
+      <div class="usa-hint launcher__step-hint" hidden>Select which Emmy flow to launch.</div>
       <div class="launcher__radio-row">
         <% [
              [ "activity", "Community engagement", "Verify enrollment through NSC or self-attestation." ],
@@ -56,7 +56,7 @@
           <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
         </button>
       </div>
-      <div class="usa-hint launcher__step-hint" hidden>The state or sandbox environment Emmy will launch against.</div>
+      <div class="usa-hint launcher__step-hint" hidden>Select the agency the flow will use.</div>
       <select class="launcher__select"
               name="client_agency_id"
               id="launcher_client_agency_id"
@@ -76,7 +76,7 @@
           <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
         </button>
       </div>
-      <div class="usa-hint launcher__step-hint" hidden>The span of time Emmy reviews. Application windows are set by the state; Renewal is a fixed 6 months.</div>
+      <div class="usa-hint launcher__step-hint" hidden>Select the type of flow you want to create. This determines the number of months in the reporting window.</div>
       <div class="launcher__radio-col">
         <div class="launcher__rcard launcher__rcard--selected"
              role="radio"
@@ -117,6 +117,19 @@
               Renewal
               <span class="launcher__rcard-meta">(6 months)</span>
             </div>
+            <div class="launcher__rcard-extra" data-launcher-show-when="renewal">
+              <div class="launcher__inline-field">
+                <input type="number"
+                       class="launcher__inline-input"
+                       name="renewal_required_months"
+                       id="launcher_renewal_required_months"
+                       min="1"
+                       max="6"
+                       autocomplete="off">
+                <label for="launcher_renewal_required_months">renewal months required</label>
+              </div>
+              <p class="launcher__months-note">Specify the number of months in the window that must meet engagement requirements. This is configurable by the state. The default is 6.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -130,7 +143,7 @@
           <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
         </button>
       </div>
-      <div class="usa-hint launcher__step-hint" hidden>Whether the National Student Clearinghouse returns a match for the demo user.</div>
+      <div class="usa-hint launcher__step-hint" hidden>Select whether the National Student Clearinghouse returns a match for this demo user.</div>
       <div class="launcher__radio-col">
         <% [
              [ "lynette", "NSC enrollment found",   "Enrollment is verified automatically via the National Student Clearinghouse." ],
