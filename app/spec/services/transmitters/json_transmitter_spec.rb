@@ -85,6 +85,23 @@ RSpec.describe Transmitters::JsonTransmitter do
     end
   end
 
+  context "when the response code is configured to be silenced" do
+    let(:transmission_method_configuration) do
+      super().merge("silently_retry_error_codes" => [ 403, 408, 502 ])
+    end
+
+    it "raises a silenceable error" do
+      stub_request(:post, transmission_method_configuration["json_api_url"])
+        .to_return(status: [ 408, "Request Timeout" ], body: "Request Timeout")
+
+      expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }
+        .to raise_error(
+          ApplicationJob::SilencedError,
+          /code=408 message=Request Timeout body=Request Timeout/
+        )
+    end
+  end
+
   context 'signature generation' do
     it 'generates signature with the request body' do
       expect(JsonApiSignature).to receive(:generate).with(

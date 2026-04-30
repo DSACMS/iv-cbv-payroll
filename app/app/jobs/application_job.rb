@@ -1,4 +1,6 @@
 class ApplicationJob < ActiveJob::Base
+  class SilencedError < StandardError; end
+
   around_perform :with_error_reporting
 
   retry_on Exception, wait: :polynomially_longer, attempts: 5
@@ -43,6 +45,7 @@ class ApplicationJob < ActiveJob::Base
       failed_at: Time.now.to_s,
       error_class: error.class.name,
       error_message: error.message,
+      is_silenced: error.is_a?(ApplicationJob::SilencedError),
       executions: self.executions,
       max_attempts: self.class.max_attempts
     }.merge(trace_metadata))
