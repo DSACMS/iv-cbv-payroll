@@ -9,43 +9,6 @@
 
   *, *::before, *::after { box-sizing: border-box; }
 
-  // Utility bar
-  .launcher__utility {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 24px;
-    background: color("gray-cool-3");
-    border-bottom: 1px solid color("base-lighter");
-    font-size: 13px;
-    color: color("base");
-  }
-  .launcher__utility-left { display: flex; align-items: center; gap: 10px; }
-  .launcher__utility-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: color("success");
-    display: inline-block;
-  }
-  .launcher__utility-env {
-    font-family: family("mono");
-    font-size: 12px;
-    letter-spacing: 0.04em;
-  }
-  .launcher__utility-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 2px 10px;
-    border-radius: 99rem;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    background: color("primary");
-    color: white;
-  }
-
   // Main column
   .launcher__main {
     padding: 40px 48px 64px;
@@ -104,46 +67,18 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 18px; height: 18px;
-    border-radius: 50%;
     color: color("primary");
-    cursor: help;
-    position: relative;
+    cursor: pointer;
     background: transparent;
     border: 0;
     padding: 0;
   }
-  .launcher__step-help svg { width: 16px; height: 16px; }
+  .launcher__step-help .usa-icon { width: 18px; height: 18px; }
   .launcher__step-help:hover { color: color("primary-dark"); }
-  .launcher__step-help:hover .launcher__step-tip,
-  .launcher__step-help:focus-visible .launcher__step-tip { display: block; }
-  .launcher__step-tip {
-    display: none;
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 5;
-    background: color("ink");
-    color: white;
-    padding: 8px 12px;
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.4;
-    width: 260px;
-    border-radius: 2px;
-    text-align: left;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+  .launcher__step-hint {
+    margin: 0 0 12px;
   }
-  .launcher__step-tip::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-bottom-color: color("ink");
-  }
+  .launcher__step-hint[hidden] { display: none; }
 
   // Radio cards
   .launcher__radio-row {
@@ -266,57 +201,36 @@
   // Launch row
   .launcher__launch {
     display: flex;
-    align-items: stretch;
-    gap: 0;
+    align-items: center;
+    gap: 8px;
     margin-top: 40px;
     border-top: 1px solid color("base-lighter");
     padding-top: 24px;
   }
-  .launcher__launch-primary {
+  .launcher__launch-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
     padding: 14px 28px;
     font-size: 17px;
     font-weight: 700;
     border: 0;
-    border-radius: 4px 0 0 4px;
+    border-radius: 4px;
     background: color("primary");
     color: white;
     cursor: pointer;
     transition: 0.15s ease-in-out;
   }
-  .launcher__launch-primary:hover { background: color("primary-dark"); }
-  .launcher__launch-primary svg { width: 18px; height: 18px; }
-  .launcher__launch-primary:disabled {
+  .launcher__launch-btn:hover { background: color("primary-dark"); }
+  .launcher__launch-btn:disabled {
     background: color("gray-cool-20");
-    cursor: not-allowed;
-  }
-  .launcher__launch-alt {
-    padding: 14px 18px;
-    font-size: 15px;
-    font-weight: 700;
-    border: 2px solid color("primary");
-    border-left: 0;
-    border-radius: 0 4px 4px 0;
-    background: white;
-    color: color("primary");
-    cursor: pointer;
-    transition: 0.15s ease-in-out;
-  }
-  .launcher__launch-alt:hover { background: color("blue-5"); }
-  .launcher__launch-alt:disabled {
     color: color("base-light");
-    border-color: color("gray-cool-20");
-    background: color("gray-cool-3");
     cursor: not-allowed;
   }
   .launcher__launch-note {
-    margin-left: 16px;
+    margin-left: 8px;
     font-size: 13px;
     color: color("base");
-    align-self: center;
     line-height: 1.4;
   }
   .launcher__launch-note[hidden] { display: none; }

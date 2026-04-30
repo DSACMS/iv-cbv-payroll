@@ -5,17 +5,6 @@
      data-launcher-window-value="application"
      data-launcher-months-value="2"
      data-launcher-status-value="lynette">
-  <div class="launcher__utility">
-    <div class="launcher__utility-left">
-      <span class="launcher__utility-dot" aria-hidden="true"></span>
-      <span>Emmy Launcher</span>
-      <span class="launcher__utility-env">env: sandbox</span>
-    </div>
-    <div class="launcher__utility-left">
-      <span class="launcher__utility-pill">Demo</span>
-    </div>
-  </div>
-
   <%= form_with(url: "/test", method: :post, html: { class: "launcher__main", autocomplete: "off" }, data: { turbo: false, launcher_target: "form" }) do |f| %>
     <div class="launcher__title">
       <span class="launcher__title-emoji" aria-hidden="true">🏆🚀</span>
@@ -32,11 +21,11 @@
       <div class="launcher__step-header">
         <span class="launcher__step-num">1.</span>
         <h2 class="launcher__step-title">Flow type</h2>
-        <button type="button" class="launcher__step-help" aria-label="More info: Flow type">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 5.5a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 12 7.5Zm1.5 10h-3v-1h1v-4h-1v-1h2.5v5h0.5Z"/></svg>
-          <span class="launcher__step-tip" role="tooltip">Which Emmy workflow to launch. CE checks community engagement; IV checks income verification.</span>
+        <button type="button" class="launcher__step-help" aria-label="More info: Flow type" data-action="launcher#toggleHint">
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
         </button>
       </div>
+      <div class="usa-hint launcher__step-hint" hidden>Which Emmy workflow to launch. CE checks community engagement; IV checks income verification.</div>
       <div class="launcher__radio-row">
         <% [
              [ "activity", "Community engagement", "Verify enrollment through NSC or self-attestation." ],
@@ -63,11 +52,11 @@
       <div class="launcher__step-header">
         <span class="launcher__step-num">2.</span>
         <h2 class="launcher__step-title">Agency</h2>
-        <button type="button" class="launcher__step-help" aria-label="More info: Agency">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 5.5a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 12 7.5Zm1.5 10h-3v-1h1v-4h-1v-1h2.5v5h0.5Z"/></svg>
-          <span class="launcher__step-tip" role="tooltip">The state or sandbox environment Emmy will launch against.</span>
+        <button type="button" class="launcher__step-help" aria-label="More info: Agency" data-action="launcher#toggleHint">
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
         </button>
       </div>
+      <div class="usa-hint launcher__step-hint" hidden>The state or sandbox environment Emmy will launch against.</div>
       <select class="launcher__select"
               name="client_agency_id"
               id="launcher_client_agency_id"
@@ -83,11 +72,11 @@
       <div class="launcher__step-header">
         <span class="launcher__step-num">3.</span>
         <h2 class="launcher__step-title">Reporting window</h2>
-        <button type="button" class="launcher__step-help" aria-label="More info: Reporting window">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 5.5a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 12 7.5Zm1.5 10h-3v-1h1v-4h-1v-1h2.5v5h0.5Z"/></svg>
-          <span class="launcher__step-tip" role="tooltip">The span of time Emmy reviews. Application windows are set by the state; Renewal is a fixed 6 months.</span>
+        <button type="button" class="launcher__step-help" aria-label="More info: Reporting window" data-action="launcher#toggleHint">
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
         </button>
       </div>
+      <div class="usa-hint launcher__step-hint" hidden>The span of time Emmy reviews. Application windows are set by the state; Renewal is a fixed 6 months.</div>
       <div class="launcher__radio-col">
         <div class="launcher__rcard launcher__rcard--selected"
              role="radio"
@@ -137,11 +126,11 @@
       <div class="launcher__step-header">
         <span class="launcher__step-num">4.</span>
         <h2 class="launcher__step-title">Student status</h2>
-        <button type="button" class="launcher__step-help" aria-label="More info: Student status">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 5.5a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 12 7.5Zm1.5 10h-3v-1h1v-4h-1v-1h2.5v5h0.5Z"/></svg>
-          <span class="launcher__step-tip" role="tooltip">Whether the National Student Clearinghouse returns a match for the demo user.</span>
+        <button type="button" class="launcher__step-help" aria-label="More info: Student status" data-action="launcher#toggleHint">
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
         </button>
       </div>
+      <div class="usa-hint launcher__step-hint" hidden>Whether the National Student Clearinghouse returns a match for the demo user.</div>
       <div class="launcher__radio-col">
         <% [
              [ "lynette", "NSC enrollment found",   "Enrollment is verified automatically via the National Student Clearinghouse." ],
@@ -168,22 +157,20 @@
       <button type="submit"
               name="launch_type"
               value="tokenized"
-              class="launcher__launch-primary"
-              data-launcher-target="launchPrimary"
+              class="launcher__launch-btn"
               data-launch-type="tokenized"
               data-action="launcher#launch">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7ZM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7Z"/></svg>
-        Launch tokenized demo
+        Tokenized
       </button>
       <button type="submit"
               name="launch_type"
               value="generic"
-              class="launcher__launch-alt"
+              class="launcher__launch-btn"
               disabled
               data-launcher-target="launchAlt"
               data-launch-type="generic"
               data-action="launcher#launch">
-        Generic link
+        Generic
       </button>
       <span class="launcher__launch-note" data-launcher-target="launchNote">Not supported for CE yet</span>
     </div>
@@ -222,7 +209,7 @@
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm1 17h-2v-2h2v2Zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26A2 2 0 1 0 10 9H8a4 4 0 1 1 7.07 2.25Z"/></svg>
       <div>
         <strong>New to Emmy?</strong>
-        Each option above has a hint — hover the <em>i</em> for a quick explanation.
+        Each option above has a hint — tap the <em>i</em> for a quick explanation.
       </div>
     </div>
   <% end %>

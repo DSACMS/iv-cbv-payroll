@@ -63,8 +63,8 @@ RSpec.describe DemoLauncherController, type: :controller do
       get :launcher
       body = response.body
       expect(body).to match(%r{<form[^>]+action="/test"})
-      expect(body).to include("Launch tokenized demo")
-      expect(body).to include("Generic link")
+      expect(body).to include("Tokenized")
+      expect(body).to include("Generic")
     end
 
     it "sets the flow session to activity so the layout renders Emmy branding" do

@@ -13,7 +13,6 @@ export default class extends Controller {
     "monthsInput",
     "statusInput",
     "agencySelect",
-    "launchPrimary",
     "launchAlt",
     "launchNote",
     "linkCard",
@@ -71,6 +70,12 @@ export default class extends Controller {
 
   selectAgency() {
     this.invalidateLink()
+  }
+
+  toggleHint(event) {
+    const step = event.currentTarget.closest(".launcher__step")
+    const hint = step?.querySelector(".launcher__step-hint")
+    if (hint) hint.hidden = !hint.hidden
   }
 
   async launch(event) {
