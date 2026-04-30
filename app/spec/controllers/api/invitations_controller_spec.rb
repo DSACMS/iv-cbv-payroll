@@ -155,5 +155,59 @@ RSpec.describe Api::InvitationsController do
         expect(parsed_response["errors"].map { |e| e["field"] }).to include("language")
       end
     end
+
+    context "with pre-populated volunteering activities" do
+      let(:volunteering_entry) do
+        {
+          type: "volunteering",
+          organization_name: "Red Cross",
+          street_address: "123 Main St",
+          city: "Boston",
+          state: "MA",
+          zip_code: "02101",
+          coordinator_name: "Pat Smith",
+          coordinator_email: "pat@redcross.org",
+          coordinator_phone_number: "555-0100"
+        }
+      end
+      let(:params_with_activities) { valid_params.merge(activities: [ volunteering_entry ]) }
+
+      it "mints both invitations and returns activity_tokenized_url" do
+        expect {
+          post :create, params: params_with_activities
+        }.to change(CbvFlowInvitation, :count).by(1)
+          .and change(ActivityFlowInvitation, :count).by(1)
+
+        expect(response).to have_http_status(:created)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response).to include("tokenized_url", "activity_tokenized_url")
+        expect(parsed_response["activity_tokenized_url"]).to include("activities/start")
+
+        activity_invitation = ActivityFlowInvitation.last
+        expect(activity_invitation.cbv_applicant).to eq(CbvFlowInvitation.last.cbv_applicant)
+        expect(activity_invitation.pre_populated_activities.length).to eq(1)
+        expect(activity_invitation.pre_populated_activities.first["organization_name"]).to eq("Red Cross")
+      end
+
+      it "returns errors when an activity entry is missing organization_name" do
+        invalid_entry = volunteering_entry.except(:organization_name)
+
+        post :create, params: valid_params.merge(activities: [ invalid_entry ])
+
+        expect(response).to have_http_status(:unprocessable_content)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response["errors"].map { |e| e["field"] })
+          .to include("activities[0].organization_name")
+      end
+
+      it "returns errors for unsupported activity types" do
+        post :create, params: valid_params.merge(activities: [ volunteering_entry.merge(type: "knitting") ])
+
+        expect(response).to have_http_status(:unprocessable_content)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response["errors"].map { |e| e["field"] })
+          .to include("activities[0].type")
+      end
+    end
   end
 end

@@ -5,7 +5,8 @@ class Api::InvitationsController < ApplicationController
   before_action :authenticate
 
   def create
-    @cbv_flow_invitation = CbvInvitationService.new(event_logger)
+    cbv_invitation_service = CbvInvitationService.new(event_logger)
+    @cbv_flow_invitation = cbv_invitation_service
       .invite(cbv_flow_invitation_params, @current_user, delivery_method: nil)
 
     errors = @cbv_flow_invitation.errors
@@ -13,12 +14,28 @@ class Api::InvitationsController < ApplicationController
       return render json: errors_to_json(errors), status: :unprocessable_content
     end
 
-    render json: {
+    if pre_populated_activities_param.any?
+      @activity_flow_invitation = cbv_invitation_service
+        .invite_to_activity_flow(@cbv_flow_invitation, pre_populated_activities_param)
+
+      activity_errors = @activity_flow_invitation.errors
+      if activity_errors.any?
+        return render json: errors_to_json(activity_errors), status: :unprocessable_content
+      end
+    end
+
+    response_body = {
       tokenized_url: @cbv_flow_invitation.to_url,
       expiration_date: @cbv_flow_invitation.expires_at_local,
       language: @cbv_flow_invitation.language,
       agency_partner_metadata: allowed_metadata_params
-    }, status: :created
+    }
+
+    if @activity_flow_invitation
+      response_body[:activity_tokenized_url] = @activity_flow_invitation.to_url
+    end
+
+    render json: response_body, status: :created
   end
 
   private
@@ -28,7 +45,7 @@ class Api::InvitationsController < ApplicationController
 
     # Permit top-level params of the invitation itself, while merging back in
     # the allowed applicant attributes.
-    permitted = params.without(:client_agency_id, :agency_partner_metadata).permit(:language, :email_address, :user_id)
+    permitted = params.without(:client_agency_id, :agency_partner_metadata, :activities).permit(:language, :email_address, :user_id)
     permitted.deep_merge!(
       client_agency_id: client_agency_id,
       email_address: @current_user.email,
@@ -37,6 +54,16 @@ class Api::InvitationsController < ApplicationController
         **allowed_metadata_params.permit!
       }
     )
+  end
+
+  def pre_populated_activities_param
+    return [] unless params[:activities].is_a?(Array)
+
+    params[:activities].map do |entry|
+      next {} unless entry.respond_to?(:permit)
+
+      entry.permit(:type, *VolunteeringActivity::PRE_POPULATED_FIELDS).to_h
+    end
   end
 
   def allowed_metadata_params
@@ -56,18 +83,24 @@ class Api::InvitationsController < ApplicationController
   def errors_to_json(errors)
     # Generates a Hash of attribute => error_message and translates the
     # internal names of objects (cbv_applicant) to the external names
-    # (agency_partner_metadata)
+    # (agency_partner_metadata, activities)
     error_messages = errors.map do |error|
       next if error.attribute == :cbv_applicant
 
       error_message = error.message
+      attribute_name = error.attribute.to_s
+
+      if attribute_name.start_with?("pre_populated_activities")
+        external_name = attribute_name.sub("pre_populated_activities", "activities")
+        next { field: external_name, message: error_message }
+      end
 
       case error
       when ActiveModel::NestedError
-        prefix, attribute_name = error.attribute.to_s.split(".")
+        prefix, attr_name = attribute_name.split(".")
         prefix = "agency_partner_metadata" if prefix == "cbv_applicant"
 
-        { field: "#{prefix}.#{attribute_name}", message: error_message }
+        { field: "#{prefix}.#{attr_name}", message: error_message }
       else
         { field: error.attribute, message: error_message }
       end

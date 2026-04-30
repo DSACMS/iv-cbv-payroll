@@ -15,12 +15,35 @@ class ActivityFlow < Flow
   before_create :set_default_reporting_window, :set_default_renewal_required_months
 
   def self.create_from_invitation(invitation, device_id, params = {})
-    create(
+    flow = create(
       activity_flow_invitation: invitation,
       cbv_applicant: invitation.cbv_applicant || CbvApplicant.create(client_agency_id: invitation.client_agency_id),
       device_id: device_id,
       **flow_attributes_from_params(params)
     )
+
+    hydrate_pre_populated_activities!(flow, invitation) if flow.persisted?
+
+    flow
+  end
+
+  def self.hydrate_pre_populated_activities!(flow, invitation)
+    return unless invitation.respond_to?(:pre_populated_activities)
+    entries = invitation.pre_populated_activities
+    return unless entries.is_a?(Array)
+    return if entries.empty?
+    return if flow.volunteering_activities.exists?
+
+    entries.each do |entry|
+      attrs = entry.respond_to?(:stringify_keys) ? entry.stringify_keys : entry.to_h.stringify_keys
+      case attrs["type"].to_s
+      when "volunteering"
+        flow.volunteering_activities.create(
+          attrs.slice(*VolunteeringActivity::PRE_POPULATED_FIELDS)
+            .merge("draft" => true, "data_source" => "validated")
+        )
+      end
+    end
   end
 
   def self.flow_attributes_from_params(params)

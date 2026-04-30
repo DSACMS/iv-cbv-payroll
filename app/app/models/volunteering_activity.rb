@@ -2,6 +2,20 @@ class VolunteeringActivity < Activity
   include HasActivityMonths
   include DocumentUploadable
 
+  # Fields agencies can pre-populate via the API. Mirrors the form's
+  # permitted params (organization + coordinator info, no monthly hours).
+  PRE_POPULATED_FIELDS = %w[
+    organization_name
+    street_address
+    street_address_line_2
+    city
+    state
+    zip_code
+    coordinator_name
+    coordinator_email
+    coordinator_phone_number
+  ].freeze
+
   has_many :volunteering_activity_months, dependent: :destroy
   has_activity_months :volunteering_activity_months
 

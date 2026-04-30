@@ -322,12 +322,14 @@ en:
     hub:
       add: Add
       cards:
+        complete_action: Complete
         credit_hours: 'Credit hours: %{amount}'
         enrollment_status: 'Enrollment: %{status}'
         gross_income: 'Gross income: %{amount}'
         hours: 'Community engagement hours: %{count}'
         no_employment_data: No payments found from this employer.
         not_enrolled: Not enrolled
+        pre_populated_notice: Your agency provided this activity. Complete the missing information to add it to your report.
       completed_state_description: "%{agency_name} will determine your eligibility based on the activities you've added to your report."
       completed_state_title: You're ready to review and submit your report
       edit: Edit
