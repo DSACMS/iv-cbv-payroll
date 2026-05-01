@@ -77,6 +77,30 @@ RSpec.describe ActivityFlow, type: :model do
       end
     end
 
+    context "with pre_populated_activities including monthly hours" do
+      let(:in_window_date) { described_class.expected_reporting_window_range("sandbox").end.beginning_of_month.iso8601 }
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          {
+            "type" => "volunteering",
+            "organization_name" => "Red Cross",
+            "months" => [
+              { "month" => in_window_date, "hours" => 10 }
+            ]
+          }
+        ])
+      end
+
+      it "hydrates VolunteeringActivityMonth records from the months array" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        activity = flow.volunteering_activities.first
+        months = activity.volunteering_activity_months.order(:month)
+        expect(months.map(&:hours)).to eq([ 10 ])
+        expect(months.map { |m| m.month.iso8601 }).to eq([ in_window_date ])
+      end
+    end
+
     it "creates no activities when pre_populated_activities is empty" do
       invitation = create(:activity_flow_invitation, pre_populated_activities: [])
 

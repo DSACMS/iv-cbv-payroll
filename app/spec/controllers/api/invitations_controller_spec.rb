@@ -208,6 +208,35 @@ RSpec.describe Api::InvitationsController do
         expect(parsed_response["errors"].map { |e| e["field"] })
           .to include("activities[0].type")
       end
+
+      it "rejects month dates outside the reporting window" do
+        out_of_window = (Date.current + 60.days).iso8601
+        entry_with_bad_month = volunteering_entry.merge(
+          months: [ { month: out_of_window, hours: 4 } ]
+        )
+
+        post :create, params: valid_params.merge(activities: [ entry_with_bad_month ])
+
+        expect(response).to have_http_status(:unprocessable_content)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response["errors"].map { |e| e["field"] })
+          .to include("activities[0].months[0].month")
+      end
+
+      it "persists pre-populated monthly hours on the activity invitation" do
+        in_window = ActivityFlow.expected_reporting_window_range("sandbox").end.beginning_of_month.iso8601
+        entry_with_months = volunteering_entry.merge(
+          months: [ { month: in_window, hours: 10 } ]
+        )
+
+        post :create, params: valid_params.merge(activities: [ entry_with_months ])
+
+        expect(response).to have_http_status(:created)
+        invitation = ActivityFlowInvitation.last
+        persisted_months = invitation.pre_populated_activities.first["months"]
+        expect(persisted_months.length).to eq(1)
+        expect(persisted_months.map { |m| m["hours"].to_i }).to eq([ 10 ])
+      end
     end
   end
 end

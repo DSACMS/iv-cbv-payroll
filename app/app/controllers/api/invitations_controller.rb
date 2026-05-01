@@ -62,7 +62,11 @@ class Api::InvitationsController < ApplicationController
     params[:activities].map do |entry|
       next {} unless entry.respond_to?(:permit)
 
-      entry.permit(:type, *VolunteeringActivity::FIELDS).to_h
+      entry.permit(
+        :type,
+        *VolunteeringActivity::FIELDS,
+        months: VolunteeringActivityMonth::FIELDS.map(&:to_sym)
+      ).to_h
     end
   end
 
