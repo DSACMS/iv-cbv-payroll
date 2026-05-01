@@ -39,7 +39,7 @@ class ActivityFlow < Flow
       case attrs["type"].to_s
       when "volunteering"
         flow.volunteering_activities.create(
-          attrs.slice(*VolunteeringActivity::PRE_POPULATED_FIELDS)
+          attrs.slice(*VolunteeringActivity::FIELDS)
             .merge("draft" => true, "data_source" => "validated")
         )
       end

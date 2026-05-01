@@ -62,7 +62,7 @@ class Api::InvitationsController < ApplicationController
     params[:activities].map do |entry|
       next {} unless entry.respond_to?(:permit)
 
-      entry.permit(:type, *VolunteeringActivity::PRE_POPULATED_FIELDS).to_h
+      entry.permit(:type, *VolunteeringActivity::FIELDS).to_h
     end
   end
 

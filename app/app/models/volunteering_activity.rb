@@ -2,9 +2,7 @@ class VolunteeringActivity < Activity
   include HasActivityMonths
   include DocumentUploadable
 
-  # Fields agencies can pre-populate via the API. Mirrors the form's
-  # permitted params (organization + coordinator info, no monthly hours).
-  PRE_POPULATED_FIELDS = %w[
+  FIELDS = %w[
     organization_name
     street_address
     street_address_line_2
