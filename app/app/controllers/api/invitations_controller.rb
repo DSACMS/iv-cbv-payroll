@@ -14,7 +14,7 @@ class Api::InvitationsController < ApplicationController
       return render json: errors_to_json(errors), status: :unprocessable_content
     end
 
-    if pre_populated_activities_param.any?
+    if prefilled_activities_enabled? && pre_populated_activities_param.any?
       @activity_flow_invitation = cbv_invitation_service
         .invite_to_activity_flow(@cbv_flow_invitation, pre_populated_activities_param)
 
@@ -54,6 +54,10 @@ class Api::InvitationsController < ApplicationController
         **allowed_metadata_params.permit!
       }
     )
+  end
+
+  def prefilled_activities_enabled?
+    Rails.application.config.client_agencies[@current_user.client_agency_id]&.prefilled_activities_enabled
   end
 
   def pre_populated_activities_param

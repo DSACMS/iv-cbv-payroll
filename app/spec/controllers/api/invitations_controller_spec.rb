@@ -237,6 +237,24 @@ RSpec.describe Api::InvitationsController do
         expect(persisted_months.length).to eq(1)
         expect(persisted_months.map { |m| m["hours"].to_i }).to eq([ 10 ])
       end
+
+      context "when prefilled_activities_enabled is false for the agency" do
+        before do
+          stub_client_agency_config_value("sandbox", :prefilled_activities_enabled, false)
+        end
+
+        it "ignores activities, mints only the cbv invitation, and omits activity_tokenized_url" do
+          expect {
+            post :create, params: params_with_activities
+          }.to change(CbvFlowInvitation, :count).by(1)
+            .and not_change(ActivityFlowInvitation, :count)
+
+          expect(response).to have_http_status(:created)
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response).to include("tokenized_url")
+          expect(parsed_response).not_to have_key("activity_tokenized_url")
+        end
+      end
     end
   end
 end
