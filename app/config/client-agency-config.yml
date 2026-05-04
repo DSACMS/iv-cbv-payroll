@@ -137,6 +137,7 @@
     community_service: true
     work_programs: true
     employment: true
+  prefilled_activities_enabled: true
 
 - id: research
   agency_name: Example State Department of Health

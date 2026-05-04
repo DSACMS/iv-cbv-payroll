@@ -6,6 +6,7 @@ class Activities::ActivitiesController < Activities::BaseController
     end
 
     @community_service_activities = @flow.volunteering_activities.published.order(created_at: :desc)
+    @community_service_draft_activities = @flow.volunteering_activities.where(draft: true, data_source: "validated").order(created_at: :desc)
     @work_programs_activities = @flow.job_training_activities.published.order(created_at: :desc)
     @education_activities = @flow.education_activities.published.order(created_at: :desc)
 

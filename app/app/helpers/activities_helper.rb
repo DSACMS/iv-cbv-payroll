@@ -103,6 +103,20 @@ module ActivitiesHelper
     end
   end
 
+  def community_service_draft_cards(activities)
+    activities.map do |activity|
+      months = activity.volunteering_activity_months.order(:month).map do |vam|
+        { month: vam.month, hours: vam.hours }
+      end
+      {
+        name: activity.organization_name,
+        months: months,
+        edit_path: edit_activities_flow_community_service_path(id: activity.id),
+        pre_populated: true
+      }
+    end
+  end
+
   def work_program_cards(activities)
     activities.map do |activity|
       months = activity.job_training_activity_months.order(:month).map do |activity_month|
