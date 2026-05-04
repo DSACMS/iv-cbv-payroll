@@ -247,8 +247,8 @@ RSpec.describe Api::InvitationsController do
           expect {
             post :create, params: params_with_activities
           }.to change(CbvFlowInvitation, :count).by(1)
-            .and not_change(ActivityFlowInvitation, :count)
 
+          expect(ActivityFlowInvitation.count).to eq(0)
           expect(response).to have_http_status(:created)
           parsed_response = JSON.parse(response.body)
           expect(parsed_response).to include("tokenized_url")
