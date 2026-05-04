@@ -42,12 +42,14 @@ module ActivitiesHelper
       months = account_months
         .sort_by { |month_key, _| month_key }
         .reverse
-        .map do |month_key, month_data|
+        .filter_map do |month_key, month_data|
+          next unless active_employment_month?(month_data)
+
           month_date = Date.parse("#{month_key}-01")
           {
             month: month_date,
             gross_earnings: month_data[:accrued_gross_earnings].to_i,
-            hours: (month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f).round
+            hours: activity_card_hours(total_employment_hours(month_data))
           }
         end
 
@@ -61,11 +63,13 @@ module ActivitiesHelper
 
   def employment_activity_cards(activities)
     activities.map do |activity|
-      months = activity.employment_activity_months.order(:month).map do |month|
+      months = activity.employment_activity_months.sort_by(&:month).filter_map do |month|
+        next unless month.gross_income.positive? || month.hours.positive?
+
         {
           month: month.month,
           gross_earnings: month.gross_income * 100,
-          hours: month.hours
+          hours: activity_card_hours(month.hours)
         }
       end
       {
@@ -92,8 +96,10 @@ module ActivitiesHelper
 
   def community_service_cards(activities)
     activities.map do |activity|
-      months = activity.volunteering_activity_months.order(:month).map do |vam|
-        { month: vam.month, hours: vam.hours }
+      months = activity.volunteering_activity_months.sort_by(&:month).filter_map do |activity_month|
+        next unless activity_month.hours.positive?
+
+        { month: activity_month.month, hours: activity_card_hours(activity_month.hours) }
       end
       {
         name: activity.organization_name,
@@ -105,8 +111,10 @@ module ActivitiesHelper
 
   def work_program_cards(activities)
     activities.map do |activity|
-      months = activity.job_training_activity_months.order(:month).map do |activity_month|
-        { month: activity_month.month, hours: activity_month.hours }
+      months = activity.job_training_activity_months.sort_by(&:month).filter_map do |activity_month|
+        next unless activity_month.hours.positive?
+
+        { month: activity_month.month, hours: activity_card_hours(activity_month.hours) }
       end
       {
         name: activity.program_name,
@@ -114,5 +122,22 @@ module ActivitiesHelper
         edit_path: review_activities_flow_job_training_path(id: activity.id, from_edit: 1)
       }
     end
+  end
+
+  private
+
+  def activity_card_hours(hours)
+    rounded_hours = hours.to_f.round(1)
+    return rounded_hours.to_i if rounded_hours == rounded_hours.to_i
+
+    rounded_hours
+  end
+
+  def active_employment_month?(month_data)
+    month_data[:accrued_gross_earnings].to_i.positive? || total_employment_hours(month_data).positive?
+  end
+
+  def total_employment_hours(month_data)
+    month_data[:total_w2_hours].to_f + month_data[:total_gig_hours].to_f
   end
 end
