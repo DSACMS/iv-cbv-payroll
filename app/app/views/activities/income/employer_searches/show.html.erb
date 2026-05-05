@@ -30,7 +30,7 @@
                 class: "usa-search usa-search--big margin-y-4",
                 html: { role: "search" } do |f| %>
 
-    <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>
+    <%= f.label :query, t(".query_label"), class: "usa-sr-only" %>
     <%= f.text_field :query, value: @query, class: "usa-input", type: "search" %>
     <button
       class="usa-button"
@@ -45,7 +45,7 @@
 
   <% end %>
 
-  <%= render partial: "employer", locals: { employer: @employers } %>
+  <%= render partial: "employer", locals: { employers: @employers, search_results_page: search_results_page } %>
 
   <%= form_with url: next_path,
                 method: :get,

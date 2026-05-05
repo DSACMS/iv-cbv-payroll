@@ -368,6 +368,7 @@ en:
           header: Search for your employer
           payroll_providers: Payroll providers
           popular_providers: Popular providers
+          query_label: Search for your employer
           search: Search
           search_label: Search for the employer or business you want to add. If you can't find it, you can add it manually.
           search_results_header: Select your employer
