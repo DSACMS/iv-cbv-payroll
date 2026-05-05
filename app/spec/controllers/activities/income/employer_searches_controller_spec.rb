@@ -61,10 +61,18 @@ RSpec.describe Activities::Income::EmployerSearchesController do
         get :show, params: { query: "results" }
       end
 
-      it "shows the add employment manually button instead of the employer not listed link" do
+      it "renders the search results page" do
         get :show, params: { query: "results" }
 
+        expect(response.body).to include(I18n.t("activities.income.employer_searches.show.search_results_header"))
+        expect(response.body).to include(I18n.t("activities.income.employer_searches.employer.results", count: 8))
+        expect(response.body).to include(I18n.t("activities.income.employer_searches.employer.search_subheader"))
+        expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.income.employer_searches.employer.cant_find_employer")))
         expect(response.body).to include(I18n.t("activities.income.employer_searches.employer.add_employment_manually"))
+        assert_select "input[name=query][value=results]", count: 1
+        assert_select ".usa-card", count: 8
+        assert_select ".usa-card button", text: I18n.t("activities.income.employer_searches.employer.select"), count: 8
+        expect(response.body).not_to include(I18n.t("activities.income.employer_searches.show.popular_providers"))
         expect(response.body).not_to include(I18n.t("cbv.employer_searches.show.employer_not_listed"))
       end
     end
