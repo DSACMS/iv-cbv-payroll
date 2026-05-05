@@ -25,14 +25,12 @@
     font-size: 32px;
     font-weight: 700;
     line-height: 1.15;
-    letter-spacing: -0.01em;
     margin: 0;
     color: color("ink");
   }
   .launcher__title-emoji {
     font-size: 26px;
     line-height: 1;
-    transform: translateY(-2px);
   }
   .launcher__subtitle {
     margin: 0 0 units(2);
@@ -230,7 +228,6 @@
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
     color: color("base");
     margin: 0 0 units(1);
   }
