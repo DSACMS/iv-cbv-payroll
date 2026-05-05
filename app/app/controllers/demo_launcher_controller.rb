@@ -1,13 +1,10 @@
 class DemoLauncherController < ApplicationController
   helper_method :session_timeout_enabled?
+  before_action :set_demo_flow, only: [ :show, :launcher ]
 
-  def show
-    set_flow_session(nil, :activity)
-  end
+  def show; end
 
-  def launcher
-    set_flow_session(nil, :activity)
-  end
+  def launcher; end
 
   def create
     flow_type = launcher_params[:flow_type]
@@ -40,6 +37,10 @@ class DemoLauncherController < ApplicationController
   end
 
   private
+
+  def set_demo_flow
+    set_flow_session(nil, :activity)
+  end
 
   def session_timeout_enabled?
     false

@@ -4,14 +4,11 @@
 // Basic Demo Launcher (/launcher) — page styles, scoped to .launcher-page.
 .launcher-page {
   color: color("ink");
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  *, *::before, *::after { box-sizing: border-box; }
+  counter-reset: step;
 
   // Main column
   .launcher__main {
-    padding: 40px 48px 64px;
+    padding: units(5) units(6) units(8);
     max-width: 1040px;
     margin: 0 auto;
   }
@@ -20,8 +17,8 @@
   .launcher__title {
     display: flex;
     align-items: baseline;
-    gap: 12px;
-    margin: 0 0 8px;
+    gap: units(1.5);
+    margin: 0 0 units(1);
     flex-wrap: wrap;
   }
   .launcher__title h1 {
@@ -38,24 +35,29 @@
     transform: translateY(-2px);
   }
   .launcher__subtitle {
-    margin: 0 0 16px;
+    margin: 0 0 units(2);
     font-size: 16px;
     color: color("base");
     line-height: 1.5;
   }
 
   // Step block
-  .launcher__step { margin-bottom: 32px; }
+  .launcher__step { margin-bottom: units(4); }
   .launcher__step-header {
     display: flex;
     align-items: baseline;
     gap: 10px;
-    margin-bottom: 12px;
+    margin-bottom: units(1.5);
   }
+  // counter-increment is on ::before so display:none parent steps don't advance the count
   .launcher__step-num {
     font-size: 18px;
     font-weight: 700;
     color: color("ink");
+    &::before {
+      counter-increment: step;
+      content: counter(step) ".";
+    }
   }
   .launcher__step-title {
     font-size: 18px;
@@ -75,27 +77,25 @@
   }
   .launcher__step-help .usa-icon { width: 18px; height: 18px; }
   .launcher__step-help:hover { color: color("primary-dark"); }
-  .launcher__step-hint {
-    margin: 0 0 12px;
-  }
+  .launcher__step-hint { margin: 0 0 units(1.5); }
   .launcher__step-hint[hidden] { display: none; }
 
   // Radio cards
   .launcher__radio-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: units(1.5);
   }
   .launcher__radio-col {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: units(1.5);
   }
   .launcher__rcard {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 14px 16px;
+    gap: units(1.5);
+    padding: 14px units(2);
     background: white;
     border: 2px solid color("gray-cool-20");
     border-radius: 4px;
@@ -116,16 +116,15 @@
   }
   .launcher__rcard-radio {
     flex: 0 0 20px;
-    width: 20px; height: 20px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     border: 2px solid color("gray-cool-40");
     background: white;
     margin-top: 2px;
     position: relative;
   }
-  .launcher__rcard--selected .launcher__rcard-radio {
-    border-color: color("primary");
-  }
+  .launcher__rcard--selected .launcher__rcard-radio { border-color: color("primary"); }
   .launcher__rcard--selected .launcher__rcard-radio::after {
     content: '';
     position: absolute;
@@ -149,19 +148,15 @@
     color: color("base");
     line-height: 1.5;
   }
-  .launcher__rcard-meta {
-    font-weight: 400;
-    font-size: 14px;
-    color: color("base");
-  }
-  .launcher__rcard-extra { display: block; margin-top: 8px; }
+  .launcher__rcard-meta { font-weight: 400; font-size: 14px; color: color("base"); }
+  .launcher__rcard-extra { display: block; margin-top: units(1); }
 
-  // Months pills inside Application card
+  // Month pills inside Application card
   .launcher__months {
-    margin: 10px 0 0 32px;
+    margin: 10px 0 0 units(4);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: units(1);
     flex-wrap: wrap;
   }
   .launcher__month-pill {
@@ -170,28 +165,25 @@
     color: color("primary");
     font-weight: 700;
     font-size: 14px;
-    padding: 8px 14px;
+    padding: units(1) 14px;
     border-radius: 4px;
     cursor: pointer;
     transition: 0.15s ease-in-out;
   }
   .launcher__month-pill:hover { background: color("blue-5"); }
-  .launcher__month-pill--active {
-    background: color("primary");
-    color: white;
-  }
+  .launcher__month-pill--active { background: color("primary"); color: white; }
   .launcher__months-note {
-    margin: 8px 0 0 32px;
+    margin: units(1) 0 0 units(4);
     font-size: 13px;
     color: color("base");
   }
 
-  // Inline field used for the optional renewal_required_months input
+  // Inline field for the optional renewal_required_months input
   .launcher__inline-field {
-    margin: 10px 0 0 32px;
+    margin: 10px 0 0 units(4);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: units(1);
     font-size: 14px;
   }
   .launcher__inline-input {
@@ -205,49 +197,20 @@
     color: color("ink");
   }
 
-  // Agency select
-  .launcher__select {
-    width: 100%;
-    max-width: 320px;
-    padding: 8px 12px;
-    font-size: 15px;
-    border: 2px solid color("ink");
-    background: white;
-    border-radius: 0;
-    color: color("ink");
-  }
+  // Agency select — constrains width; usa-select handles all other styling
+  .launcher__agency-select { max-width: 320px; }
 
-  // Launch row
+  // Launch row — buttons are usa-button / usa-button--outline
   .launcher__launch {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 40px;
+    gap: units(1);
+    margin-top: units(5);
     border-top: 1px solid color("base-lighter");
-    padding-top: 24px;
-  }
-  .launcher__launch-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 14px 28px;
-    font-size: 17px;
-    font-weight: 700;
-    border: 0;
-    border-radius: 4px;
-    background: color("primary");
-    color: white;
-    cursor: pointer;
-    transition: 0.15s ease-in-out;
-  }
-  .launcher__launch-btn:hover { background: color("primary-dark"); }
-  .launcher__launch-btn:disabled {
-    background: color("gray-cool-20");
-    color: color("base-light");
-    cursor: not-allowed;
+    padding-top: units(3);
   }
   .launcher__launch-note {
-    margin-left: 8px;
+    margin-left: units(1);
     font-size: 13px;
     color: color("base");
     line-height: 1.4;
@@ -256,8 +219,8 @@
 
   // Link card (shown after launch)
   .launcher__linkcard {
-    margin-top: 20px;
-    padding: 16px;
+    margin-top: units(2.5);
+    padding: units(2);
     border: 1px solid color("base-lighter");
     background: color("gray-cool-2");
     border-radius: 4px;
@@ -269,16 +232,16 @@
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: color("base");
-    margin: 0 0 8px;
+    margin: 0 0 units(1);
   }
   .launcher__linkcard-row {
     display: flex;
-    gap: 8px;
+    gap: units(1);
     align-items: stretch;
   }
   .launcher__linkcard-input {
     flex: 1;
-    padding: 10px 12px;
+    padding: 10px units(1.5);
     border: 1px solid color("gray-cool-20");
     background: white;
     font-family: family("mono");
@@ -291,7 +254,7 @@
     white-space: nowrap;
   }
   .launcher__linkcard-btn {
-    padding: 8px 14px;
+    padding: units(1) 14px;
     font-size: 14px;
     font-weight: 700;
     border: 2px solid color("primary");
@@ -307,14 +270,8 @@
     text-decoration: none;
   }
   .launcher__linkcard-btn:hover { background: color("blue-5"); }
-  .launcher__linkcard-btn--primary {
-    background: color("primary");
-    color: white;
-  }
-  .launcher__linkcard-btn--primary:hover {
-    background: color("primary-dark");
-    color: white;
-  }
+  .launcher__linkcard-btn--primary { background: color("primary"); color: white; }
+  .launcher__linkcard-btn--primary:hover { background: color("primary-dark"); color: white; }
   .launcher__linkcard-btn svg { width: 14px; height: 14px; }
   .launcher__linkcard-copied {
     margin-top: 10px;
@@ -329,41 +286,33 @@
 
   // Help footer
   .launcher__help-footer {
-    margin-top: 48px;
-    padding: 16px 20px;
+    margin-top: units(6);
+    padding: units(2) units(2.5);
     background: color("blue-5");
     border-left: 4px solid color("primary");
     font-size: 14px;
     color: color("ink");
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: units(1.5);
     border-radius: 0 4px 4px 0;
   }
   .launcher__help-footer svg {
-    width: 20px; height: 20px;
+    width: 20px;
+    height: 20px;
     color: color("primary");
     flex-shrink: 0;
     margin-top: 2px;
   }
   .launcher__help-footer strong { display: block; margin-bottom: 2px; }
-  .launcher__help-footer a {
-    color: color("primary");
-    font-weight: 700;
-  }
+  .launcher__help-footer a { color: color("primary"); font-weight: 700; }
 
   // Visibility helpers driven by Stimulus data values on the .launcher-page root
   [data-launcher-show-when="ce"],
   [data-launcher-show-when="renewal"] {
     display: none;
   }
-  &[data-launcher-flow-value="activity"] [data-launcher-show-when="ce"] {
-    display: revert;
-  }
-  &[data-launcher-window-value="renewal"] [data-launcher-show-when="application"] {
-    display: none;
-  }
-  &[data-launcher-window-value="renewal"] [data-launcher-show-when="renewal"] {
-    display: revert;
-  }
+  &[data-launcher-flow-value="activity"] [data-launcher-show-when="ce"] { display: revert; }
+  &[data-launcher-window-value="renewal"] [data-launcher-show-when="application"] { display: none; }
+  &[data-launcher-window-value="renewal"] [data-launcher-show-when="renewal"] { display: revert; }
 }

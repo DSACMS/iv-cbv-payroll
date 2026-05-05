@@ -5,12 +5,14 @@
      data-launcher-window-value="application"
      data-launcher-months-value="2"
      data-launcher-status-value="lynette">
-  <%= form_with(url: "/test", method: :post, html: { class: "launcher__main", autocomplete: "off" }, data: { turbo: false, launcher_target: "form" }) do |f| %>
+  <%= form_with(url: "/launcher", method: :post, html: { class: "launcher__main", autocomplete: "off" }, data: { turbo: false, launcher_target: "form" }) do |f| %>
     <div class="launcher__title">
       <span class="launcher__title-emoji" aria-hidden="true">🏆🚀</span>
       <h1>Emmy launcher</h1>
     </div>
-    <p class="launcher__subtitle">For demos with states and external stakeholders.</p>
+    <p class="launcher__subtitle">
+      For demos with states and external stakeholders.
+    </p>
 
     <%= hidden_field_tag :flow_type, "activity", data: { launcher_target: "flowInput" } %>
     <%= hidden_field_tag :reporting_window, "application", data: { launcher_target: "windowInput" } %>
@@ -19,7 +21,7 @@
 
     <div class="launcher__step">
       <div class="launcher__step-header">
-        <span class="launcher__step-num">1.</span>
+        <span class="launcher__step-num"></span>
         <h2 class="launcher__step-title">Flow type</h2>
         <button type="button" class="launcher__step-help" aria-label="More info: Flow type" data-action="launcher#toggleHint">
           <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
@@ -40,8 +42,12 @@
                data-action="click->launcher#selectFlow keydown.enter->launcher#selectFlow keydown.space->launcher#selectFlow">
             <span class="launcher__rcard-radio" aria-hidden="true"></span>
             <div class="launcher__rcard-body">
-              <div class="launcher__rcard-title"><%= title %></div>
-              <div class="launcher__rcard-desc"><%= desc %></div>
+              <div class="launcher__rcard-title">
+                <%= title %>
+              </div>
+              <div class="launcher__rcard-desc">
+                <%= desc %>
+              </div>
             </div>
           </div>
         <% end %>
@@ -50,14 +56,14 @@
 
     <div class="launcher__step">
       <div class="launcher__step-header">
-        <span class="launcher__step-num">2.</span>
+        <span class="launcher__step-num"></span>
         <h2 class="launcher__step-title">Agency</h2>
         <button type="button" class="launcher__step-help" aria-label="More info: Agency" data-action="launcher#toggleHint">
           <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
         </button>
       </div>
       <div class="usa-hint launcher__step-hint" hidden>Select the agency the flow will use.</div>
-      <select class="launcher__select"
+      <select class="usa-select launcher__agency-select"
               name="client_agency_id"
               id="launcher_client_agency_id"
               data-launcher-target="agencySelect"
@@ -70,13 +76,15 @@
 
     <div class="launcher__step">
       <div class="launcher__step-header">
-        <span class="launcher__step-num">3.</span>
+        <span class="launcher__step-num"></span>
         <h2 class="launcher__step-title">Reporting window</h2>
         <button type="button" class="launcher__step-help" aria-label="More info: Reporting window" data-action="launcher#toggleHint">
           <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
         </button>
       </div>
-      <div class="usa-hint launcher__step-hint" hidden>Select the type of flow you want to create. This determines the number of months in the reporting window.</div>
+      <div class="usa-hint launcher__step-hint" hidden>
+        Select the type of flow you want to create. This determines the number of months in the reporting window.
+      </div>
       <div class="launcher__radio-col">
         <div class="launcher__rcard launcher__rcard--selected"
              role="radio"
@@ -87,7 +95,9 @@
              data-action="click->launcher#selectWindow keydown.enter->launcher#selectWindow keydown.space->launcher#selectWindow">
           <span class="launcher__rcard-radio" aria-hidden="true"></span>
           <div class="launcher__rcard-body">
-            <div class="launcher__rcard-title">Application</div>
+            <div class="launcher__rcard-title">
+              Application
+            </div>
             <div class="launcher__rcard-extra" data-launcher-show-when="application">
               <div class="launcher__months">
                 <% [ 1, 2, 3 ].each do |m| %>
@@ -100,7 +110,9 @@
                   </button>
                 <% end %>
               </div>
-              <p class="launcher__months-note">The application reporting window is configurable by the state.</p>
+              <p class="launcher__months-note">
+                The application reporting window is configurable by the state.
+              </p>
             </div>
           </div>
         </div>
@@ -128,7 +140,9 @@
                        autocomplete="off">
                 <label for="launcher_renewal_required_months">renewal months required</label>
               </div>
-              <p class="launcher__months-note">Specify the number of months in the window that must meet engagement requirements. This is configurable by the state. The default is 6.</p>
+              <p class="launcher__months-note">
+                Specify the number of months in the window that must meet engagement requirements. This is configurable by the state. The default is 6.
+              </p>
             </div>
           </div>
         </div>
@@ -137,16 +151,18 @@
 
     <div class="launcher__step" data-launcher-show-when="ce">
       <div class="launcher__step-header">
-        <span class="launcher__step-num">4.</span>
+        <span class="launcher__step-num"></span>
         <h2 class="launcher__step-title">Student status</h2>
         <button type="button" class="launcher__step-help" aria-label="More info: Student status" data-action="launcher#toggleHint">
           <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
         </button>
       </div>
-      <div class="usa-hint launcher__step-hint" hidden>Select whether the National Student Clearinghouse returns a match for this demo user.</div>
+      <div class="usa-hint launcher__step-hint" hidden>
+        Select whether the National Student Clearinghouse returns a match for this demo user.
+      </div>
       <div class="launcher__radio-col">
         <% [
-             [ "lynette",                            "Enrolled full time",            "Full-time enrollment verified automatically via the National Student Clearinghouse." ],
+             [ "lynette",                             "Enrolled full time",           "Full-time enrollment verified automatically via the National Student Clearinghouse." ],
              [ "renewal_half_time_last_4_of_6_avery", "Enrolled half-time",           "Half-time enrollment covering 4 of 6 months (good for renewal required-month testing)." ],
              [ "partial_enrollment_maya",             "Enrolled less-than-half-time", "Less-than-half-time enrollment (same school in multiple terms)." ],
              [ "linda",                               "No NSC enrollment found",      "Client walks through self-attesting their enrollment." ]
@@ -160,8 +176,12 @@
                data-action="click->launcher#selectStatus keydown.enter->launcher#selectStatus keydown.space->launcher#selectStatus">
             <span class="launcher__rcard-radio" aria-hidden="true"></span>
             <div class="launcher__rcard-body">
-              <div class="launcher__rcard-title"><%= title %></div>
-              <div class="launcher__rcard-desc"><%= desc %></div>
+              <div class="launcher__rcard-title">
+                <%= title %>
+              </div>
+              <div class="launcher__rcard-desc">
+                <%= desc %>
+              </div>
             </div>
           </div>
         <% end %>
@@ -172,7 +192,7 @@
       <button type="submit"
               name="launch_type"
               value="tokenized"
-              class="launcher__launch-btn"
+              class="usa-button"
               data-launch-type="tokenized"
               data-action="launcher#launch">
         Tokenized
@@ -180,7 +200,7 @@
       <button type="submit"
               name="launch_type"
               value="generic"
-              class="launcher__launch-btn"
+              class="usa-button usa-button--outline"
               disabled
               data-launcher-target="launchAlt"
               data-launch-type="generic"

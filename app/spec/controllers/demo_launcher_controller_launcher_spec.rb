@@ -70,10 +70,10 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(body).to include('value="linda"')
     end
 
-    it "renders the launch buttons posting to /test" do
+    it "renders the launch buttons posting to /launcher" do
       get :launcher
       body = response.body
-      expect(body).to match(%r{<form[^>]+action="/test"})
+      expect(body).to match(%r{<form[^>]+action="/launcher"})
       expect(body).to include("Tokenized")
       expect(body).to include("Generic")
     end
@@ -81,6 +81,39 @@ RSpec.describe DemoLauncherController, type: :controller do
     it "sets the flow session to activity so the layout renders Emmy branding" do
       get :launcher
       expect(session[:flow_type]).to eq(:activity)
+    end
+  end
+
+  describe "POST #create" do
+    context "with cbv flow and generic launch type" do
+      it "returns JSON with a url containing the client agency" do
+        post :create, params: {
+          flow_type: "cbv",
+          client_agency_id: "sandbox",
+          launch_type: "generic"
+        }, format: :json
+
+        expect(response).to have_http_status(:success)
+        json = JSON.parse(response.body)
+        expect(json["url"]).to be_present
+        expect(json["url"]).to include("sandbox")
+      end
+    end
+
+    context "with activity flow and tokenized launch type" do
+      it "returns JSON with a url" do
+        post :create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          reporting_window: "application",
+          reporting_window_months: "2"
+        }, format: :json
+
+        expect(response).to have_http_status(:success)
+        json = JSON.parse(response.body)
+        expect(json["url"]).to be_present
+      end
     end
   end
 end
