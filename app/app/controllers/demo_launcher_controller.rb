@@ -1,8 +1,8 @@
 class DemoLauncherController < ApplicationController
   helper_method :session_timeout_enabled?
-  before_action :set_demo_flow, only: [ :show, :launcher ]
+  before_action :set_demo_flow, only: [ :advanced, :launcher ]
 
-  def show; end
+  def advanced; end
 
   def launcher; end
 
@@ -25,6 +25,73 @@ class DemoLauncherController < ApplicationController
             build_test_scenario_url(test_scenario, client_agency_id, overrides)
           elsif launch_type == "generic"
             build_generic_url(client_agency_id, overrides)
+          else
+            build_tokenized_url(client_agency_id, overrides)
+          end
+
+    if request.format.json?
+      render json: { url: url }
+    else
+      redirect_to url, allow_other_host: true
+    end
+  end
+
+  def simple_create
+    raw = params.fetch(:demo_launcher, params)
+    if raw.key?(:reporting_window_start) || raw.key?(:demo_timeout)
+      return render json: { error: "Parameter not allowed" }, status: :unprocessable_entity
+    end
+
+    permitted = simple_launcher_params
+
+    unless permitted[:flow_type].in?(%w[cbv activity])
+      return render json: { error: "Invalid flow_type" }, status: :unprocessable_entity
+    end
+
+    unless permitted[:client_agency_id].in?(Rails.application.config.client_agencies.client_agency_ids)
+      return render json: { error: "Invalid client_agency_id" }, status: :unprocessable_entity
+    end
+
+    if permitted[:reporting_window].present? && !permitted[:reporting_window].in?(%w[application renewal])
+      return render json: { error: "Invalid reporting_window" }, status: :unprocessable_entity
+    end
+
+    if permitted[:reporting_window_months].present? && !permitted[:reporting_window_months].to_i.between?(1, 3)
+      return render json: { error: "reporting_window_months must be between 1 and 3" }, status: :unprocessable_entity
+    end
+
+    if permitted[:renewal_required_months].present? && !permitted[:renewal_required_months].to_i.between?(1, 6)
+      return render json: { error: "renewal_required_months must be between 1 and 6" }, status: :unprocessable_entity
+    end
+
+    if permitted[:test_scenario].present? && !permitted[:test_scenario].in?(FAKE_SCENARIO_KEYS + TEST_SCENARIOS.keys)
+      return render json: { error: "Invalid test_scenario" }, status: :unprocessable_entity
+    end
+
+    unless permitted[:launch_type].in?(%w[generic tokenized])
+      return render json: { error: "Invalid launch_type" }, status: :unprocessable_entity
+    end
+
+    if permitted[:launch_type] == "generic" && permitted[:flow_type] == "activity"
+      return render json: { error: "Generic launch is not supported for activity flow" }, status: :unprocessable_entity
+    end
+
+    flow_type = permitted[:flow_type]
+    client_agency_id = permitted[:client_agency_id]
+    launch_type = permitted[:launch_type]
+    test_scenario = permitted[:test_scenario]
+    overrides = simple_launch_overrides(flow_type)
+
+    url = if flow_type == "cbv"
+            if launch_type == "generic"
+              build_cbv_generic_url(client_agency_id, overrides)
+            else
+              build_cbv_tokenized_url(client_agency_id, overrides)
+            end
+          elsif test_scenario.in?(FAKE_SCENARIO_KEYS)
+            build_fake_test_scenario_url(test_scenario, client_agency_id, overrides)
+          elsif test_scenario.present?
+            build_test_scenario_url(test_scenario, client_agency_id, overrides)
           else
             build_tokenized_url(client_agency_id, overrides)
           end
@@ -204,5 +271,25 @@ class DemoLauncherController < ApplicationController
       **launcher_url_options,
       **merged_overrides
     )
+  end
+
+  def simple_launcher_params
+    params.fetch(:demo_launcher, params).permit(
+      :flow_type,
+      :client_agency_id,
+      :reporting_window,
+      :reporting_window_months,
+      :renewal_required_months,
+      :test_scenario,
+      :launch_type
+    )
+  end
+
+  def simple_launch_overrides(flow_type)
+    return {} if flow_type == "cbv"
+
+    allowed_overrides = [ :reporting_window, :reporting_window_months ]
+    allowed_overrides << :renewal_required_months if simple_launcher_params[:reporting_window] == "renewal"
+    simple_launcher_params.slice(*allowed_overrides).select { |_, v| v.present? }
   end
 end

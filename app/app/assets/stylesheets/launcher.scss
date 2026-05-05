@@ -269,7 +269,7 @@
   .launcher__linkcard-btn:hover { background: color("blue-5"); }
   .launcher__linkcard-btn--primary { background: color("primary"); color: white; }
   .launcher__linkcard-btn--primary:hover { background: color("primary-dark"); color: white; }
-  .launcher__linkcard-btn svg { width: 14px; height: 14px; }
+  .launcher__linkcard-btn .usa-icon { width: 14px; height: 14px; }
   .launcher__linkcard-copied {
     margin-top: 10px;
     font-size: 13px;
@@ -279,7 +279,7 @@
     gap: 6px;
   }
   .launcher__linkcard-copied[hidden] { display: none; }
-  .launcher__linkcard-copied svg { width: 14px; height: 14px; }
+  .launcher__linkcard-copied .usa-icon { width: 14px; height: 14px; }
 
   // Help footer
   .launcher__help-footer {
@@ -294,7 +294,7 @@
     gap: units(1.5);
     border-radius: 0 4px 4px 0;
   }
-  .launcher__help-footer svg {
+  .launcher__help-footer .usa-icon {
     width: 20px;
     height: 20px;
     color: color("primary");

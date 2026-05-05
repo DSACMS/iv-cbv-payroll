@@ -149,8 +149,8 @@ Rails.application.routes.draw do
   if Rails.application.config.is_internal_environment
     mount Lookbook::Engine, at: "/lookbook"
     get  "/launcher",          to: "demo_launcher#launcher"
-    post "/launcher",          to: "demo_launcher#create"
-    get  "/launcher/advanced", to: "demo_launcher#show"
+    post "/launcher",          to: "demo_launcher#simple_create"
+    get  "/launcher/advanced", to: "demo_launcher#advanced"
     post "/launcher/advanced", to: "demo_launcher#create"
     get  "/demo",              to: redirect("/launcher")
   end

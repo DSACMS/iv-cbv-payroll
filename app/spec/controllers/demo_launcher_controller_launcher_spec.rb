@@ -116,4 +116,214 @@ RSpec.describe DemoLauncherController, type: :controller do
       end
     end
   end
+
+  describe "POST #simple_create" do
+    context "with valid activity/tokenized params" do
+      it "returns 200 with a url" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          reporting_window: "application",
+          reporting_window_months: "2"
+        }, format: :json
+
+        expect(response).to have_http_status(:success)
+        expect(JSON.parse(response.body)["url"]).to be_present
+      end
+    end
+
+    context "with valid cbv/generic params" do
+      it "returns 200 with a url" do
+        post :simple_create, params: {
+          flow_type: "cbv",
+          client_agency_id: "sandbox",
+          launch_type: "generic"
+        }, format: :json
+
+        expect(response).to have_http_status(:success)
+        expect(JSON.parse(response.body)["url"]).to be_present
+      end
+    end
+
+    context "when reporting_window_start is present" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          reporting_window_start: "2024-01-01"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "when demo_timeout is present" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          demo_timeout: "5"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "when flow_type is not cbv or activity" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "hacked",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "when client_agency_id is not a configured agency" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "not_a_real_agency",
+          launch_type: "tokenized"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "when reporting_window is an unrecognized value" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          reporting_window: "bogus"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "when reporting_window_months is below 1" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          reporting_window_months: "0"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "when reporting_window_months is above 3" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          reporting_window_months: "4"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "when launch_type is generic and flow_type is activity" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "generic"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "when launch_type is not generic or tokenized" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "sneaky"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "with a valid nsc test_scenario for activity flow" do
+      it "returns 200 with a url" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          test_scenario: "lynette"
+        }, format: :json
+
+        expect(response).to have_http_status(:success)
+        expect(JSON.parse(response.body)["url"]).to be_present
+      end
+    end
+
+    context "when test_scenario is an unknown key" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          test_scenario: "evil_scenario"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "when renewal_required_months is below 1" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          reporting_window: "renewal",
+          renewal_required_months: "0"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "when renewal_required_months is above 6" do
+      it "returns 422 with an error" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          reporting_window: "renewal",
+          renewal_required_months: "7"
+        }, format: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+  end
 end
