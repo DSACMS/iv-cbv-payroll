@@ -56,8 +56,7 @@ module Uswds
         card.with_body do
           safe_join([
             validated_education_month_section("January 2026", "Half-time", "80"),
-            validated_education_month_section("December 2025", "Half-time", "80"),
-            validated_education_month_section("November 2025", "Not enrolled", "0")
+            validated_education_month_section("December 2025", "Half-time", "80")
           ])
         end
       end
