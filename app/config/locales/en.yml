@@ -383,8 +383,8 @@ en:
           header: Review your information from %{employer_name}
           header_no_employer_name: Your information from your employer
           none_found: We didn't find any payments from this employer
-          none_found_description: This typically happens when you haven't received income from this job between %{start_date} and %{end_date}. If you believe this is an error, add a comment below.
-          subheader_html: "<p>We have gathered your records from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
+          none_found_description: This typically happens when you haven't received income from this job between %{start_month} and %{end_month}. If you believe this is an error, add a comment below.
+          subheader_html: "<p>We have gathered your records from %{start_month} to %{end_month}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
           unknown: Unknown
       synchronization_failures:
         show:

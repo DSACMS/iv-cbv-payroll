@@ -51,6 +51,15 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         expect(response.body).to include("back-nav")
       end
 
+      it "describes the reporting window with month labels" do
+        get :show, params: { user: { account_id: account_id } }
+
+        start_month = I18n.l(flow.reporting_window_range.begin, format: :month_year)
+        end_month = I18n.l(flow.reporting_window_range.end, format: :month_year)
+
+        expect(response.body).to include("We have gathered your records from #{start_month} to #{end_month}.")
+      end
+
       it "tracks viewed payment details with activity_flow_id" do
         allow(EventTrackingJob).to receive(:perform_later).with(TrackEvent::CbvPageView, anything, anything)
         expect(EventTrackingJob).to receive(:perform_later).with(TrackEvent::ApplicantViewedPaymentDetails, anything, hash_including(
@@ -111,6 +120,13 @@ RSpec.describe Activities::Income::PaymentDetailsController do
       it "renders successfully" do
         expect(response).to be_successful
         expect(response.body).to have_text(I18n.t("activities.income.payment_details.show.none_found"))
+      end
+
+      it "describes the missing income range with month labels" do
+        start_month = I18n.l(flow.reporting_window_range.begin, format: :month_year)
+        end_month = I18n.l(flow.reporting_window_range.end, format: :month_year)
+
+        expect(response.body).to include("between #{start_month} and #{end_month}")
       end
     end
   end

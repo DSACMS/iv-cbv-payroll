@@ -13,9 +13,13 @@
   <%= header %>
 </h1>
 
+<% reporting_window_range = @flow.reporting_window_range %>
+<% reporting_window_start_month = l(reporting_window_range.begin, format: :month_year) %>
+<% reporting_window_end_month = l(reporting_window_range.end, format: :month_year) %>
+
 <%= t(".subheader_html",
-      start_date: format_date(@aggregator_report.from_date),
-      end_date: format_date(@aggregator_report.to_date),
+      start_month: reporting_window_start_month,
+      end_month: reporting_window_end_month,
       agency_acronym: agency_translation("shared.agency_acronym"),
     ) %>
 
@@ -27,8 +31,8 @@
   <% else %>
     <%= render Uswds::Alert.new(type: :info, heading: t(".none_found"), class: "margin-top-5") do %>
       <%= t(".none_found_description",
-        start_date: format_date(@aggregator_report.from_date),
-        end_date: format_date(@aggregator_report.to_date),
+        start_month: reporting_window_start_month,
+        end_month: reporting_window_end_month,
       ) %>
     <% end %>
   <% end %>
