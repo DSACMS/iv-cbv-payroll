@@ -109,6 +109,22 @@ module ActivitiesHelper
     end
   end
 
+  def community_service_draft_cards(activities)
+    activities.map do |activity|
+      months = activity.volunteering_activity_months.sort_by(&:month).filter_map do |activity_month|
+        next unless activity_month.hours.positive?
+
+        { month: activity_month.month, hours: activity_card_hours(activity_month.hours) }
+      end
+      {
+        name: activity.organization_name,
+        months: months,
+        edit_path: edit_activities_flow_community_service_path(id: activity.id),
+        pre_populated: true
+      }
+    end
+  end
+
   def work_program_cards(activities)
     activities.map do |activity|
       months = activity.job_training_activity_months.sort_by(&:month).filter_map do |activity_month|

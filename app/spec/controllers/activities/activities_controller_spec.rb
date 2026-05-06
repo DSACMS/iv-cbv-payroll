@@ -136,6 +136,15 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
     end
+
+    it "surfaces only validated drafts (API pre-populated) on the hub, not self-attested user drafts" do
+      api_draft = create(:volunteering_activity, activity_flow: current_flow, draft: true, data_source: "validated")
+      _user_draft = create(:volunteering_activity, activity_flow: current_flow, draft: true, data_source: "self_attested")
+
+      get :index
+
+      expect(assigns(:community_service_draft_activities)).to contain_exactly(api_draft)
+    end
   end
 
   context "when no activities are added" do

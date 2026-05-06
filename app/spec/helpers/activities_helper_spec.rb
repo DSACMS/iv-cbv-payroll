@@ -140,6 +140,26 @@ RSpec.describe ActivitiesHelper do
     end
   end
 
+  describe "#community_service_draft_cards" do
+    let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+    let(:first_month) { flow.reporting_window_range.begin.beginning_of_month }
+
+    it "filters out months with no hours" do
+      activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", draft: true, data_source: "validated")
+      create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 0)
+      create(:volunteering_activity_month, volunteering_activity: activity, month: first_month + 1.month, hours: 5)
+
+      result = helper.community_service_draft_cards([ activity ])
+
+      expect(result.first).to include(
+        name: "Food Pantry",
+        months: [ { month: first_month + 1.month, hours: 5 } ],
+        edit_path: helper.edit_activities_flow_community_service_path(id: activity.id),
+        pre_populated: true
+      )
+    end
+  end
+
   describe "#work_program_cards" do
     let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
     let(:first_month) { flow.reporting_months.first.beginning_of_month }

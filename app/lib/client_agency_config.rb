@@ -62,6 +62,7 @@ class ClientAgencyConfig
       applicant_attributes
       generic_links_disabled
       activity_types
+      prefilled_activities_enabled
     ])
 
     def initialize(yaml)
@@ -92,6 +93,7 @@ class ClientAgencyConfig
       @applicant_attributes = yaml["applicant_attributes"] || {}
       @generic_links_disabled = yaml["generic_links_disabled"]
       @activity_types = yaml["activity_types"]&.symbolize_keys || {}
+      @prefilled_activities_enabled = yaml["prefilled_activities_enabled"] || false
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?
