@@ -12,6 +12,8 @@ require "json"
 require "open-uri"
 require "open3"
 
+NO_CHANGES_PLACEHOLDER = "  • No changes, nothing to review!"
+
 def linkify_jira(text)
   linked_text = text.gsub(/\(#(\d+)\)/) do
     "([##{$1}](https://github.com/DSACMS/iv-cbv-payroll/pull/#{$1}))"
@@ -74,20 +76,12 @@ def copy_to_clipboard(text)
   IO.popen("pbcopy", "w") { |io| io.write(text) }
 end
 
-def append_changes(output, heading, changes)
-  return output if changes.empty?
+def append_changes(output, heading, changes, empty_message: nil)
+  return output if changes.empty? && empty_message.nil?
 
-  output << "#{heading}\n"
-  changes.each do |change|
-    output << "#{linkify_jira("  • #{change}")}\n"
-  end
-  output
-end
-
-def append_changes_with_placeholder(output, heading, changes)
   output << "#{heading}\n"
   if changes.empty?
-    output << "  • No changes, nothing to review!\n"
+    output << "#{empty_message}\n"
   else
     changes.each do |change|
       output << "#{linkify_jira("  • #{change}")}\n"
@@ -158,8 +152,18 @@ output = +""
 output << "🚀 Will deploy `#{current_sha[0, 7]}` to production: 🚀 (cc #{tags})\n"
 output << "🧪 *[Launch the demo →](https://la-verify-demo.navapbc.cloud/demo)*\n\n"
 append_changes(output, "👥 *User facing changes to Emmy Income + Emmy CE*", both_changes)
-append_changes_with_placeholder(output, "📝 *Emmy Income only user facing changes*", income_changes)
-append_changes_with_placeholder(output, "🏆 *Emmy CE only user facing changes*", ce_changes)
+append_changes(
+  output,
+  "📝 *Emmy Income only user facing changes*",
+  income_changes,
+  empty_message: NO_CHANGES_PLACEHOLDER
+)
+append_changes(
+  output,
+  "🏆 *Emmy CE only user facing changes*",
+  ce_changes,
+  empty_message: NO_CHANGES_PLACEHOLDER
+)
 append_changes(output, "⚙️ *Other/Maintenance (Not user facing)*", other_changes)
 output << "\n"
 output << "See the [full diff on Github](https://github.com/DSACMS/iv-cbv-payroll/compare/#{prod[0, 7]}..#{current_sha[0, 7]}).\n"
