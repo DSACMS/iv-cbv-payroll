@@ -16,8 +16,7 @@ ignore:
   - fix-state: not-fixed
   - fix-state: wont-fix
   - fix-state: unknown
-  # TODO: Remove once we upgrade Ruby and these gem versions are no longer included by default.
-  - vulnerability: GHSA-q339-8rmv-2mhv # Ruby "erb" version 4.0.4
 
 exclude:
   - '/rails/node_modules/@esbuild/*/bin/esbuild' # Ignore this go binary since it is only used in the asset build process
+  - '/usr/local/lib/ruby/gems/*/specifications/**/*.gemspec' # Ignore system rubygems since we use bundler to install more recent versions
