@@ -427,6 +427,19 @@ RSpec.describe ActivityFlowProgressIndicator, type: :component do
     )
   end
 
+  context "when hours round to a whole number" do
+    let(:hours) { 2.04 }
+
+    it "renders whole hours without decimals" do
+      render_inline(component)
+
+      expect(page).to have_css(
+        ".activity-flow-progress-indicator__progress-amount",
+        text: "2"
+      )
+    end
+  end
+
   context "when hours are fractional" do
     let(:hours) { 10.55 }
 
