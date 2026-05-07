@@ -9,11 +9,28 @@
 <% if employers.any? %>
   <div class="usa-card-group margin-top-4">
     <% employers.each do |employer| %>
-      <div class="usa-card desktop:grid-col-6">
+      <div class="usa-card usa-card--flag usa-card--media-right desktop:grid-col-6">
         <div class="usa-card__container">
           <div class="usa-card__header">
             <h3 class="usa-card__heading"><%= employer.name %></h3>
           </div>
+          <% if employer.logo_url.present? %>
+            <% logo_url = employer.logo_url.to_s.sub(/\Ahttp:\/\//, "https://") %>
+
+            <div class="usa-card__media usa-card__media--inset display-flex flex-justify-center">
+              <div class="usa-card__img cbv-employer-card__img">
+                <img
+                  src="<%= logo_url %>"
+                  alt="<%= employer.name %> logo"
+                >
+              </div>
+            </div>
+          <% else %>
+            <div class="usa-card__media usa-card__media--inset display-flex flex-justify-center">
+              <div class="usa-card__img cbv-employer-card__img">
+              </div>
+            </div>
+          <% end %>
           <div class="usa-card__footer">
             <button
               data-action="click->cbv-employer-search#select"
@@ -23,7 +40,7 @@
               data-name="<%= employer.name %>"
               data-cbv-employer-search-target="employerButton"
               data-provider-name="<%= employer.provider_name %>"
-              class="usa-button usa-button--outline width-auto"
+              class="usa-button usa-button--outline"
               type="button"
               aria-label="<%= employer.name %>"
             >
