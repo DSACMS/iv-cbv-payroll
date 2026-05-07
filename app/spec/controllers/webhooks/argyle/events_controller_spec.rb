@@ -429,6 +429,12 @@ RSpec.describe Webhooks::Argyle::EventsController, type: :controller do
         expect(payroll_account.flow).to eq(cbv_flow)
         expect(cbv_flow).to be_a(ActivityFlow)
       end
+
+      it "marks the payroll account as draft" do
+        process_webhook("accounts.connected")
+
+        expect(PayrollAccount.last.draft).to be(true)
+      end
     end
   end
 end

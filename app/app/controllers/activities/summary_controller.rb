@@ -32,11 +32,11 @@ class Activities::SummaryController < Activities::BaseController
   end
 
   def load_summary_data
-    @community_service_activities = @flow.volunteering_activities.order(created_at: :asc)
-    @work_programs_activities = @flow.job_training_activities.order(created_at: :asc)
-    @education_activities = @flow.education_activities.order(created_at: :asc)
-    @employment_payroll_accounts = @flow.payroll_accounts.select(&:sync_succeeded?)
-    @self_attested_employment_activities = @flow.employment_activities.order(created_at: :asc)
+    @community_service_activities = @flow.volunteering_activities.published.order(created_at: :asc)
+    @work_programs_activities = @flow.job_training_activities.published.order(created_at: :asc)
+    @education_activities = @flow.education_activities.published.order(created_at: :asc)
+    @employment_payroll_accounts = @flow.payroll_accounts.published.select(&:sync_succeeded?)
+    @self_attested_employment_activities = @flow.employment_activities.published.order(created_at: :asc)
     @persisted_report = PersistedReportAdapter.new(@flow)
     @all_activities = build_activities_list
   end

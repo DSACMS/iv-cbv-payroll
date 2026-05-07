@@ -18,7 +18,7 @@ gem "csv"
 gem "pg", "~> 1.6"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 8.0.0"
+gem "puma", "~> 8.0.1"
 
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem "jsbundling-rails"
@@ -54,7 +54,7 @@ gem "bootsnap", require: false
 gem "device_detector"
 
 # Used to generate mock identity data in all environments
-gem "faker", "~> 3.6"
+gem "faker", "~> 3.8"
 
 # Use Sass to process CSS
 # gem "sassc-rails"
@@ -84,7 +84,7 @@ gem "stackprof"
 gem "rexml", "~> 3.4.2"
 gem "gpgme", "~> 2.0"
 gem "pdf-reader", "~> 2.15.1"
-gem "net-imap", "0.6.3"   # Fixing GHSA-j3g3-5qv5-52m
+gem "net-imap", "0.6.4"   # Fixing GHSA-j3g3-5qv5-52m
 gem "cgi", ">= 0.4.2"     # Fixing GHSA-mhwm-jh88-3gjf
 gem "thor", ">= 1.4.0"    # Fixing GHSA-mqcp-p2hv-vw6x
 

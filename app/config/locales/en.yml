@@ -36,6 +36,13 @@ en:
             date_of_birth:
               future_date: Date of birth must be today or in the past
               invalid_date: Enter a valid date of birth
+        cbv_applicant/research:
+          attributes:
+            case_number:
+              invalid_format: Enter the case number format, i.e. 00012345678A.
+            date_of_birth:
+              future_date: Date of birth must be today or in the past
+              invalid_date: Enter a valid date of birth
         cbv_applicant/sandbox:
           attributes:
             agency_id_number:
@@ -138,15 +145,18 @@ en:
       title_singular: Community service
       zip_code: Zip code
     document_uploads:
+      heading: Uploaded documents (%{document_count})
+      heading_previous: Previously uploaded documents (%{document_count})
       new:
         continue: Continue to review
         description: 'Upload documents that verify the information you entered for:'
         input_hint: Select PDF, PNG, JPG, or HEIC files
-        input_label: Documents
+        input_label: Add documents
         suggestion_text_html: "<ul><li>Document Type Placeholder 1</li><li>Document Type Placeholder 2</li><li>Document Type Placeholder 3</li></ul>"
         suggestion_title: Suggested documents
         title: Upload supporting documents for %{name}
         title_generic: Upload supporting documents
+      remove_file: Remove file
     education:
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
@@ -312,12 +322,13 @@ en:
     hub:
       add: Add
       cards:
+        complete_action: Complete
         credit_hours: 'Credit hours: %{amount}'
         enrollment_status: 'Enrollment: %{status}'
         gross_income: 'Gross income: %{amount}'
         hours: 'Community engagement hours: %{count}'
         no_employment_data: No payments found from this employer.
-        not_enrolled: Not enrolled
+        pre_populated_notice: Your agency provided this activity. Complete the missing information to add it to your report.
       completed_state_description: "%{agency_name} will determine your eligibility based on the activities you've added to your report."
       completed_state_title: You're ready to review and submit your report
       edit: Edit
@@ -346,9 +357,9 @@ en:
           no_results_body: You will need to enter information about your employment manually. You will also need to upload documents like pay stubs.
           no_results_title: We couldn't find your employer or business.
           results:
-            one: 1 result
-            other: "%{count} results"
-          search_subheader: Please select your employer or business from the list below.
+            one: We found 1 result
+            other: We found %{count} results
+          search_subheader: Select your employer from the list. Then, follow the screens to sign in. Use the login credentials you use to view your pay stubs online.
           select: Select
         show:
           add_employment_manually: Add employment manually
@@ -358,8 +369,10 @@ en:
           header: Search for your employer
           payroll_providers: Payroll providers
           popular_providers: Popular providers
+          query_label: Search for your employer
           search: Search
           search_label: Search for the employer or business you want to add. If you can't find it, you can add it manually.
+          search_results_header: Select your employer
       error_no_access: You don't have permission to access that information
       payment_details:
         show:
@@ -535,6 +548,11 @@ en:
     renewal_months_completed: "%{complete}/%{required} months completed"
     renewal_subtitle: Complete any %{required} months between %{start_month}-%{end_month} to meet requirements.
     renewal_subtitle_no_range: Complete any %{required} months to meet requirements.
+    see_progress_in_dollars: See progress in $
+    see_progress_in_hours: See progress in hours
+    sufficiently_enrolled: Sufficiently enrolled
+    switch_to_dollars: Switch to $
+    switch_to_hours: Switch to hours
     title: Your %{month} progress
   aggregator_strings:
     deductions:
@@ -662,6 +680,18 @@ en:
             blank: Enter your middle name.
             prompt: Middle name
             super_one_html: Middle name<sup>1</sup>
+      research:
+        fields:
+          case_number:
+            blank: Enter your Medicaid case number.
+            help_text: You can find your case number on notices from Example Department of Health. It can be up to 13 digits long.
+            prompt: Medicaid case number
+            super_one_html: Medicaid case number<sup>1</sup>
+          date_of_birth:
+            blank: Enter your date of birth.
+            help_text: 'For example: January 19 2000'
+            prompt: Your date of birth
+            super_one_html: Date of birth<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -767,22 +797,20 @@ en:
       show:
         body_1: If you still need to verify your income, please submit your income information by visiting %{agency_acronym}'s website.
         cta_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit LDH's website</a>
-          nh_dhhs: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit NH DHHS's website</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Learn more at Test Agency</a>
+          default: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visit %{agency_acronym}'s website</a>
         title: Your invitation to verify income has expired
     missing_results:
       show:
         back_button: Go back to employer search
         continue_button: Continue to review my report
         continue_to_review: Continue to review the income information you were able to find before you submit it to %{agency_acronym}.
-        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_full_name}</a>
+        exit_button_html: <a href="%{agency_missing_employers_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Exit and go to %{agency_full_name}</a>
         header: How to report income if your employer or payroll provider isn’t listed
         more_jobs: If you have more jobs to report
         no_more_jobs: If you don't have more jobs to report
         not_listed_p1: If your employer or payroll provider isn’t listed on this site, you’ll need to share your income information for this job directly with %{agency_acronym}.
         not_listed_p2: Visit %{agency_acronym}'s website for more information on how to submit documents.
-        not_listed_p2_link_html: Visit <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information on how to submit documents.
+        not_listed_p2_link_html: Visit <a href="%{agency_missing_employers_website}" target="_blank" rel="noopener noreferrer">%{agency_acronym}'s website</a> for more information on how to submit documents.
         you_can_search: You can search for another employer or payroll provider. This site supports employers with online payroll providers or app-based services. Examples include Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft, and Instacart.
     other_jobs:
       show:
@@ -841,7 +869,8 @@ en:
         pdf:
           agency_header_name:
             la_ldh: Department of Health
-            nh_dhhs: Test Agency
+            nh_dhhs: NH DHHS Bureau of Family Assistance
+            research: Example Department of Health
             sandbox: Test Agency
           caseworker:
             agreement_consent_timestamp: Agreement Consent Timestamp
@@ -1099,8 +1128,7 @@ en:
       refresh: Refresh page
     home:
       description_1: Report My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
-      description_2: Please note this pilot is currently available only to participants in Arizona and Louisiana.
-      description_3: Visit your agency's website for more information on how to submit proof of income for your benefits.
+      description_2: Visit your agency's website for more information on how to submit proof of income for your benefits.
       header: Welcome to Report My Income
       pilot_ended:
         la_ldh:
@@ -1126,20 +1154,22 @@ en:
     agency_acronym:
       la_ldh: LDH
       nh_dhhs: NH DHHS
+      research: EDOH
       sandbox: TA
     agency_full_name:
       la_ldh: Louisiana Department of Health
       nh_dhhs: NH DHHS Bureau of Family Assistance
+      research: Example Department of Health
       sandbox: Test Agency
     app_name:
-      nh_dhhs: TAApp
-      sandbox: TAApp
+      default: TAApp
     banner:
       lock: Lock
       locked_padlock: A locked padlock
     benefit:
       la_ldh: Medicaid
       nh_dhhs: Medicaid
+      research: Medicaid
       sandbox: Medicaid
     credit_hours:
       one: "%{count} credit hour"
@@ -1151,6 +1181,7 @@ en:
       cbv_flow_title:
         la_ldh: Department of Health
         nh_dhhs: NH DHHS Bureau of Family Assistance
+        research: Example Department of Health
         sandbox: Test Agency
       close: Close
       help: Help
@@ -1183,6 +1214,7 @@ en:
     reporting_purpose:
       la_ldh: benefits
       nh_dhhs: benefits
+      research: benefits
       sandbox: benefits
     select_placeholder: "- Select -"
     skip_link: Skip to main content

@@ -122,6 +122,32 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
         expect(failing_pdf_request).to have_been_made.once
       end
 
+      context "when the PDF status code is configured to be silenced" do
+        let(:transmission_method_configuration) do
+          super().merge("silently_retry_error_codes" => [ 403, 408, 502 ])
+        end
+
+        it "re-raises a silenceable error" do
+          json_request = stub_request(:post, transmission_method_configuration["json_api_url"])
+            .with(headers: { 'Content-Type' => 'application/json' })
+            .to_return(status: 200)
+
+          failing_pdf_request = stub_request(:post, transmission_method_configuration["pdf_api_url"])
+            .with(headers: { 'Content-Type' => 'application/pdf' })
+            .with(body: pdf_output.content)
+            .to_return(status: [ 502, "Bad Gateway" ], body: "Bad Gateway")
+
+          expect { subject.deliver }
+            .to raise_error(
+              ApplicationJob::SilencedError,
+              /code=502 message=Bad Gateway body=Bad Gateway/
+            )
+
+          expect(json_request).to have_been_made.once
+          expect(failing_pdf_request).to have_been_made.once
+        end
+      end
+
       it 'does not retry JSON transmission when job retries after PDF failure' do
         json_request = stub_request(:post, transmission_method_configuration["json_api_url"])
           .with(headers: { 'Content-Type' => 'application/json' })

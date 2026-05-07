@@ -39,6 +39,7 @@ class ClientAgencyConfig
       id
       agency_name
       agency_contact_website
+      agency_missing_employers_website
       agency_domain
       authorized_emails
       caseworker_feedback_form
@@ -61,12 +62,16 @@ class ClientAgencyConfig
       applicant_attributes
       generic_links_disabled
       activity_types
+      prefilled_activities_enabled
     ])
 
     def initialize(yaml)
       @id = yaml["id"]
       @agency_name = yaml["agency_name"]
       @agency_contact_website = yaml["agency_contact_website"]
+      # Special override for nh_dhhs; verify whether this can be removed if
+      # that pilot config is removed:
+      @agency_missing_employers_website = yaml["agency_missing_employers_website"]
       @agency_domain = yaml["agency_domain"]
       @authorized_emails = yaml["authorized_emails"] || ""
       @caseworker_feedback_form = yaml["caseworker_feedback_form"]
@@ -88,6 +93,7 @@ class ClientAgencyConfig
       @applicant_attributes = yaml["applicant_attributes"] || {}
       @generic_links_disabled = yaml["generic_links_disabled"]
       @activity_types = yaml["activity_types"]&.symbolize_keys || {}
+      @prefilled_activities_enabled = yaml["prefilled_activities_enabled"] || false
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?

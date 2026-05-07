@@ -24,7 +24,13 @@ RSpec.describe Cbv::SynchronizationFailuresController do
 
       it "shows cta button" do
         get :show
-        expect(response.body).to include I18n.t("cbv.expired_invitations.show.cta_button_html.sandbox")
+        expect(response.body).to include(
+          I18n.t(
+            "cbv.expired_invitations.show.cta_button_html.default",
+            agency_acronym: I18n.t("shared.agency_acronym.sandbox"),
+            agency_url: "https://www.example.com/contact"
+          )
+        )
       end
     end
   end

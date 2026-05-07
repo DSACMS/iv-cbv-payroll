@@ -8,4 +8,8 @@ class ActivityFlowHeaderComponent < ViewComponent::Base
     @exit_url = exit_url
     @back_url = back_url
   end
+
+  def confirm_on_exit?
+    helpers.params[:from_edit].blank?
+  end
 end

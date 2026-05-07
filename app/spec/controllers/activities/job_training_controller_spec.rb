@@ -51,6 +51,13 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: created_activity.id, id: 0))
     end
 
+    it "creates the activity as a draft" do
+      post :create, params: job_training_params
+
+      activity = activity_flow.job_training_activities.last
+      expect(activity.draft).to be(true)
+    end
+
     it "redirects to month 0 when total hours are below the threshold" do
       create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Local Food Bank", hours: 78)
 
@@ -147,6 +154,36 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
         edit_activities_flow_job_training_month_path(job_training_id: job_training_activity, id: 0, from_review: 1)
       )
     end
+
+    context "with previously uploaded documents" do
+      before do
+        Rails.application.config.active_storage.service = :local
+        job_training_activity.document_uploads.attach(
+          io: StringIO.new("%PDF-1.4"),
+          filename: "verification.pdf",
+          content_type: "application/pdf"
+        )
+      end
+
+      it "renders the uploaded documents section with an edit link" do
+        get :review, params: { id: job_training_activity.id }
+
+        expect(response.body).to include(I18n.t("activities.document_uploads.heading", document_count: 1))
+        expect(response.body).to include("verification.pdf")
+        expect(response.body).to include(
+          new_activities_flow_job_training_document_upload_path(job_training_id: job_training_activity, from_review: 1)
+        )
+        expect(response.body).not_to include(I18n.t("activities.document_uploads.remove_file"))
+      end
+    end
+
+    context "without uploaded documents" do
+      it "does not render the uploaded documents heading" do
+        get :review, params: { id: job_training_activity.id }
+
+        expect(response.body).not_to include(I18n.t("activities.document_uploads.heading", document_count: 0))
+      end
+    end
   end
 
   describe "PATCH #save_review" do
@@ -157,6 +194,14 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
       expect(job_training_activity.reload.additional_comments).to eq("Some notes")
       expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "publishes the activity" do
+      job_training_activity.update!(draft: true)
+
+      patch :save_review, params: { id: job_training_activity.id, job_training_activity: { additional_comments: "" } }
+
+      expect(job_training_activity.reload.draft).to be(false)
     end
   end
 

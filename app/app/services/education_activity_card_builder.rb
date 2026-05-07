@@ -21,8 +21,11 @@ class EducationActivityCardBuilder
 
   def fully_self_attested_cards
     months_by_date = @activity.education_activity_months.index_by(&:month)
-    months = @reporting_months.reverse.map do |month_start|
+    months = @reporting_months.reverse.filter_map do |month_start|
       activity_month = months_by_date[month_start.beginning_of_month]
+      next unless activity_month
+      next unless education_credit_hours(activity_month).positive?
+
       self_attested_month_data(activity_month: activity_month, month_start: month_start)
     end
 
@@ -45,8 +48,10 @@ class EducationActivityCardBuilder
 
   def validated_card(overlapping_terms)
     school_name = overlapping_terms.first.school_name&.titlecase || I18n.t("activities.education.title")
-    months = @reporting_months.reverse.map do |month_start|
+    months = @reporting_months.reverse.filter_map do |month_start|
       effective_term = EducationSummerCarryoverService.effective_term_for_month(overlapping_terms, month_start)
+      next unless effective_term
+
       validated_month_data(month_start: month_start, effective_term: effective_term)
     end
 
@@ -60,21 +65,14 @@ class EducationActivityCardBuilder
   def validated_month_data(month_start:, effective_term:)
     {
       month: month_start,
-      enrollment_status: effective_term ? effective_term.enrollment_status_display : I18n.t("activities.hub.cards.not_enrolled"),
-      community_engagement_hours: effective_term&.half_time_or_above? ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : 0,
-      credit_hours: nil,
-      show_credit_hours: false
+      enrollment_status: effective_term.enrollment_status_display
     }
   end
 
   def partial_self_attested_month_data(term:, month_start:)
-    credit_hours = @activity.review_term_credit_hours(term)
     {
       month: month_start,
-      enrollment_status: term.enrollment_status_display,
-      community_engagement_hours: @activity.community_engagement_hours(credit_hours),
-      credit_hours: credit_hours,
-      show_credit_hours: true
+      enrollment_status: term.enrollment_status_display
     }
   end
 
@@ -102,6 +100,7 @@ class EducationActivityCardBuilder
     @reporting_months.reverse.filter_map do |month_start|
       effective_term = effective_school_term_for_month(school_terms, month_start)
       next unless effective_term
+      next if effective_term.less_than_half_time? && @activity.review_term_credit_hours(effective_term).zero?
 
       if effective_term.less_than_half_time?
         partial_self_attested_month_data(term: effective_term, month_start: month_start)

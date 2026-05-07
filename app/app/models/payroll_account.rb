@@ -11,7 +11,8 @@ class PayrollAccount < ApplicationRecord
 
   belongs_to :flow, polymorphic: true
   validates :flow, presence: true
-  has_many :webhook_events
+  has_many :webhook_events, dependent: :destroy
+  has_many :activity_flow_monthly_summaries, dependent: :destroy
 
   enum :data_source, { self_attested: "self_attested", validated: "validated" }, default: :validated
 
@@ -21,6 +22,12 @@ class PayrollAccount < ApplicationRecord
     succeeded: "succeeded", # defines the method: sync_succeeded?
     failed: "failed" # defines the method: sync_failed?
   }, prefix: "sync"
+
+  scope :published, -> { where(draft: false) }
+
+  def publish!
+    update!(draft: false)
+  end
 
   # Returns whether we have received all expected webhooks for the sync
   # process, regardless of whether any of them are errors.

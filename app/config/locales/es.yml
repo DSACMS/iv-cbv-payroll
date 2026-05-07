@@ -127,6 +127,18 @@ es:
             blank: Escriba su segundo nombre.
             prompt: Segundo nombre
             super_one_html: Segundo nombre<sup>1</sup>
+      research:
+        fields:
+          case_number:
+            blank: Escriba su número de caso de Medicaid.
+            help_text: Puede encontrar su número de caso en las notificaciones que ha recibido del Departamento de Salud de Ejemplo. El número puede tener hasta 13 dígitos.
+            prompt: Número de caso de Medicaid (opcional)
+            super_one_html: Número de caso de Medicaid<sup>1</sup>
+          date_of_birth:
+            blank: Escriba su fecha de nacimiento.
+            help_text: 'Por ejemplo: 19 de enero de 2000'
+            prompt: Su fecha de nacimiento
+            super_one_html: Fecha de nacimiento<sup>1</sup>
       sandbox:
         fields:
           case_number:
@@ -232,22 +244,20 @@ es:
       show:
         body_1: Si todavía no termina de verificar sus ingresos, envíe su información de ingresos desde el mismo sitio web de %{agency_acronym}.
         cta_button_html:
-          la_ldh: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del LDH</a>
-          nh_dhhs: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del NH DHHS</a>
-          sandbox: <a href="https://www.mass.gov/guides/how-to-contact-dta" class="usa-button" target="_blank" rel="noopener noreferrer">Obtenga más información en la Agencia de pruebas</a>
+          default: <a href="%{agency_url}" class="usa-button" target="_blank" rel="noopener noreferrer">Visite el sitio web del %{agency_acronym}</a>
         title: Su invitación para verificar ingresos ha expirado
     missing_results:
       show:
         back_button: Regrese a la búsqueda del empleador
         continue_button: Continúe a «Revisar mi reporte»
         continue_to_review: Continúe a revisar la información de ingresos que pudo encontrar antes de enviarla a %{agency_acronym}.
-        exit_button_html: <a href="%{agency_contact_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Salir y acceder a %{agency_full_name}</a>
+        exit_button_html: <a href="%{agency_missing_employers_website}" class="usa-button" target="_blank" rel="noopener noreferrer">Salir y acceder a %{agency_full_name}</a>
         header: Cómo reportar ingresos si su empleador o proveedor de nómina no figura en la lista
         more_jobs: Si tiene más trabajos que reportar
         no_more_jobs: Si no tiene más trabajos que reportar
         not_listed_p1: Si su empleador o proveedor de nómina no están listados en este sitio, tendrá que compartir su información de ingresos por este trabajo directamente con %{agency_acronym}.
         not_listed_p2: Para obtener más información sobre cómo enviar los documentos requeridos, visite el sitio web de %{agency_acronym}.
-        not_listed_p2_link_html: Visite <a href="%{agency_url}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_acronym}</a> para obtener más información sobre cómo enviar documentos.
+        not_listed_p2_link_html: Visite <a href="%{agency_missing_employers_website}" target="_blank" rel="noopener noreferrer">el sitio web del %{agency_acronym}</a> para obtener más información sobre cómo enviar documentos.
         you_can_search: Puede buscar otro empleador o proveedor de nómina. Este sitio apoya a los empleadores con proveedores de nómina en línea o servicios basados en aplicaciones. Algunos ejemplos son Amazon, Walmart, McDonald’s, Uber, DoorDash, Lyft e Instacart.
     other_jobs:
       show:
@@ -306,7 +316,8 @@ es:
         pdf:
           agency_header_name:
             la_ldh: Department of Health
-            nh_dhhs: Test Agency
+            nh_dhhs: NH DHHS Bureau of Family Assistance
+            research: Example Department of Health
             sandbox: Test Agency
           caseworker:
             doc_id: Doc ID
@@ -585,8 +596,7 @@ es:
       refresh: Actualizar página
     home:
       description_1: Reportar Mis Ingresos es una herramienta nueva que se diseñó para ayudarlo a vincular directamente los datos relacionados con sus ingresos con su agencia de beneficios. En este momento estamos probando esta herramienta para garantizar que funcione efectivamente.
-      description_2: Tenga en cuenta que, en este momento, este programa piloto solo está disponible para participantes que residan en Arizona y Louisiana.
-      description_3: Para obtener más información sobre cómo presentar comprobantes de ingresos para sus beneficios, visite el sitio web de su agencia.
+      description_2: Para obtener más información sobre cómo presentar comprobantes de ingresos para sus beneficios, visite el sitio web de su agencia.
       header: Bienvenido a Reportar Mis Ingresos
       pilot_ended:
         la_ldh:
@@ -612,20 +622,22 @@ es:
     agency_acronym:
       la_ldh: LDH
       nh_dhhs: NH DHHS
+      research: EDOH
       sandbox: TA
     agency_full_name:
       la_ldh: Departamento de Salud de Luisiana
       nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
+      research: Departamento de Salud de Ejemplo
       sandbox: Agencia de pruebas
     app_name:
-      nh_dhhs: TAApp
-      sandbox: TAApp
+      default: TAApp
     banner:
       lock: Candado
       locked_padlock: Un candado cerrado
     benefit:
       la_ldh: Medicaid
       nh_dhhs: Medicaid
+      research: Medicaid
       sandbox: Medicaid
     footer:
       feedback: Compartir comentarios
@@ -634,6 +646,7 @@ es:
       cbv_flow_title:
         la_ldh: Departamento de Salud
         nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
+        research: Departamento de Salud de Ejemplo
         sandbox: Agencia de pruebas
       close: Cerrar
       help: Ayuda
@@ -664,6 +677,7 @@ es:
     reporting_purpose:
       la_ldh: beneficios
       nh_dhhs: beneficios
+      research: beneficios
       sandbox: beneficios
     select_placeholder: "- Seleccione -"
     skip_link: Saltar al contenido principal

@@ -97,9 +97,8 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
         meets_requirements: false,
         meets_routing_requirements: false
       )
-      allow(controller).to receive(:progress_calculator).and_return(
-        instance_double(ActivityFlowProgressCalculator, overall_result: result)
-      )
+      calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+      allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
 
       get :edit, params: { education_id: education_activity.id, id: 0 }
 

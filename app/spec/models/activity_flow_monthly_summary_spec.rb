@@ -181,6 +181,40 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
       end
     end
 
+    context "when a draft payroll account has persisted summaries" do
+      let!(:draft_account) do
+        create(:payroll_account, :pinwheel_fully_synced, flow: flow, aggregator_account_id: "draft-acct", draft: true)
+      end
+
+      before do
+        flow.reporting_months.each do |month|
+          create(:activity_flow_monthly_summary,
+            activity_flow: flow,
+            payroll_account: payroll_account,
+            month: month.beginning_of_month,
+            employer_name: "Published Employer",
+            total_w2_hours: 40.0,
+            accrued_gross_earnings_cents: 100_00)
+
+          create(:activity_flow_monthly_summary,
+            activity_flow: flow,
+            payroll_account: draft_account,
+            month: month.beginning_of_month,
+            employer_name: "Draft Employer",
+            total_w2_hours: 50.0,
+            accrued_gross_earnings_cents: 200_00)
+        end
+      end
+
+      it "excludes the draft account's data from the returned summaries" do
+        allow(AggregatorReportFetcher).to receive(:new).and_raise("should not fetch")
+        result = described_class.by_account_with_fallback(activity_flow: flow)
+
+        expect(result.keys).to eq([ "acct-1" ])
+        expect(result).not_to have_key("draft-acct")
+      end
+    end
+
     context "when there is no report available" do
       before do
         allow(AggregatorReportFetcher).to receive(:new).with(flow).and_return(double(report: nil))

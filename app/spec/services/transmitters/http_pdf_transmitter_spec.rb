@@ -99,5 +99,43 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
         expect(api_request).to have_been_made
       end
     end
+
+    context "when the response code is configured to be silenced" do
+      let(:transmission_method_configuration) do
+        super().merge("silently_retry_error_codes" => [ 403, 408, 502 ])
+      end
+
+      it "raises a silenceable error" do
+        stub_request(
+          :post,
+          transmission_method_configuration["pdf_api_url"]
+        ).to_return(status: [ 403, "Forbidden" ], body: "Forbidden")
+
+        expect { subject.deliver }
+          .to raise_error(
+            ApplicationJob::SilencedError,
+            /code=403 message=Forbidden body=Forbidden/
+          )
+      end
+    end
+
+    context "when the response code is not configured to retry silently" do
+      let(:transmission_method_configuration) do
+        super().merge("silently_retry_error_codes" => [ 403, 408, 502 ])
+      end
+
+      it "raises the transmitter-specific error" do
+        stub_request(
+          :post,
+          transmission_method_configuration["pdf_api_url"]
+        ).to_return(status: [ 500, "Internal Server Error" ], body: "Internal Server Error")
+
+        expect { subject.deliver }
+          .to raise_error(
+            Transmitters::HttpPdfTransmitter::HttpPdfTransmitterError,
+            /code=500 message=Internal Server Error body=Internal Server Error/
+          )
+      end
+    end
   end
 end

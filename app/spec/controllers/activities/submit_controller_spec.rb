@@ -41,5 +41,17 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(pdf_text).to include(test_confirmation_code)
       expect(pdf_text).to include(I18n.l(frozen_time, format: :long))
     end
+
+    it "renders community service hours from monthly records in the PDF" do
+      activity_flow.update!(completed_at: frozen_time, confirmation_code: test_confirmation_code)
+      volunteering = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Food Pantry", hours: nil)
+      create(:volunteering_activity_month, volunteering_activity: volunteering, month: activity_flow.reporting_window_range.begin, hours: 17)
+      create(:volunteering_activity_month, volunteering_activity: volunteering, month: activity_flow.reporting_window_range.begin + 1.month, hours: 19)
+
+      get :show, format: :pdf
+
+      pdf_text = extract_pdf_text(response)
+      expect(pdf_text).to match(/Food Pantry\s+36/)
+    end
   end
 end
