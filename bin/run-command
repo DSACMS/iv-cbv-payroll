@@ -87,6 +87,11 @@ if [ -n "${workspace}" ]; then
   terraform -chdir="infra/${app_name}/service" workspace select "${workspace}"
 fi
 
+if [ -n "${workspace}" ]; then
+  echo "Selecting Terraform workspace: ${workspace}"
+  terraform -chdir="infra/${app_name}/service" workspace select "${workspace}"
+fi
+
 # Use the same cluster, task definition, and network configuration that the application service uses
 cluster_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_cluster_name)
 service_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_name)

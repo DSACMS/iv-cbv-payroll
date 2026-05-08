@@ -30,6 +30,13 @@ echo "::group::Apply changes to environment using image tag: ${image_tag}"
 terraform -chdir="infra/${app_name}/service" apply -input=false -auto-approve -var="environment_name=${environment}" -var="image_tag=${image_tag}"
 echo "::endgroup::"
 
+echo "::group::Run database migrations"
+./bin/run-database-migrations --workspace "${workspace}" "${app_name}" "${image_tag}" "${environment}"
+echo "::endgroup::"
+
+# Re-select workspace after run-database-migrations reinitializes terraform
+terraform -chdir="infra/${app_name}/service" workspace select "${workspace}"
+
 cluster_name="$(terraform -chdir="infra/$app_name/service" output -raw service_cluster_name)"
 service_name="$(terraform -chdir="infra/$app_name/service" output -raw service_name)"
 echo "Wait for service ${service_name} to become stable"
