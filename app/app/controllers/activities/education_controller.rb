@@ -193,7 +193,7 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def education_sync_success_path
-    if @education_activity.partially_self_attested?
+    if @education_activity.partially_self_attested? || @education_activity.validated?
       edit_activities_flow_education_path(id: @education_activity.id)
     else
       after_activity_path

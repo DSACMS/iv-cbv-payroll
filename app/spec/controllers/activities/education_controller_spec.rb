@@ -110,31 +110,19 @@ RSpec.describe Activities::EducationController, type: :controller do
       end
     end
 
-    context "when the EducationActivity has succeeded" do
-      before do
-        education_activity.update(status: :succeeded)
-        allow(controller).to receive(:testing_synchronization_page?)
-          .and_return(false)
-      end
-
-      it "redirects via after_activity_path" do
-        get :show, params: { id: education_activity.id }
-
-        expect(response).to redirect_to(activities_flow_root_path)
-      end
-    end
-
-    context "when the EducationActivity has succeeded and routing requirements are met" do
+    context "when the EducationActivity is validated and succeeded" do
       before do
         education_activity.update(status: :succeeded)
         create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: :half_time)
         allow(controller).to receive(:testing_synchronization_page?).and_return(false)
       end
 
-      it "redirects to summary" do
+      it "redirects to education edit to review NSC enrollment details first" do
         get :show, params: { id: education_activity.id }
 
-        expect(response).to redirect_to(activities_flow_summary_path)
+        expect(response).to redirect_to(
+          edit_activities_flow_education_path(id: education_activity.id)
+        )
       end
     end
 
