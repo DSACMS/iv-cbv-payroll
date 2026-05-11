@@ -32,6 +32,9 @@ gem "stimulus-rails"
 # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
 gem "cssbundling-rails"
 gem "premailer-rails"
+# Pin css_parser to 1.x: premailer 1.23.0 still uses positional args
+# deprecated by css_parser 2.x. Drop when premailer ships a fix.
+gem "css_parser", "~> 1.17"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
