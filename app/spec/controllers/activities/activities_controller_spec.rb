@@ -184,6 +184,32 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       )
     end
 
+    context "with a single-month reporting window" do
+      let(:current_flow) do
+        create(
+          :activity_flow,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_months: 1
+        )
+      end
+
+      it "shows the empty-state reporting period with one month label" do
+        page_text = Capybara.string(response.body).text
+        reporting_month = I18n.l(current_flow.reporting_window_range.begin, format: :month_year)
+
+        expect(page_text).to include(I18n.t("activities.hub.empty_state_reporting_period_label"))
+        expect(page_text).to include(reporting_month)
+        expect(page_text).to include(
+          I18n.t(
+            "activities.hub.empty_state_description_single_month",
+            reporting_window: reporting_month
+          )
+        )
+      end
+    end
+
     it "renders the two-column container" do
       expect(response.body).to include("activity-hub-columns")
     end
