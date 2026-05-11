@@ -51,13 +51,22 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         expect(response.body).to include("back-nav")
       end
 
-      it "describes the reporting window with month labels" do
+      it "describes a multi-month reporting window with month labels" do
         get :show, params: { user: { account_id: account_id } }
 
         start_month = I18n.l(flow.reporting_window_range.begin, format: :month_year)
         end_month = I18n.l(flow.reporting_window_range.end, format: :month_year)
 
         expect(response.body).to include("We have gathered your records from #{start_month} to #{end_month}.")
+      end
+
+      it "describes a single-month reporting window with one month label" do
+        flow.update!(reporting_window_months: 1)
+
+        get :show, params: { user: { account_id: account_id } }
+
+        month = I18n.l(flow.reporting_window_range.begin, format: :month_year)
+        expect(response.body).to include("We have gathered your records for #{month}.")
       end
 
       it "tracks viewed payment details with activity_flow_id" do

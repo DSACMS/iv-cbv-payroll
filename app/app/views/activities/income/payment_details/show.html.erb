@@ -16,8 +16,12 @@
 <% reporting_window_range = @flow.reporting_window_range %>
 <% reporting_window_start_month = l(reporting_window_range.begin, format: :month_year) %>
 <% reporting_window_end_month = l(reporting_window_range.end, format: :month_year) %>
+<% subheader_key = reporting_window_start_month == reporting_window_end_month ? ".subheader_single_month_html" : ".subheader_html" %>
+<%# i18n-tasks-use t('activities.income.payment_details.show.subheader_html') %>
+<%# i18n-tasks-use t('activities.income.payment_details.show.subheader_single_month_html') %>
 
-<%= t(".subheader_html",
+<%= t(subheader_key,
+      month: reporting_window_start_month,
       start_month: reporting_window_start_month,
       end_month: reporting_window_end_month,
       agency_acronym: agency_translation("shared.agency_acronym"),

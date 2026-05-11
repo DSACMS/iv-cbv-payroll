@@ -385,6 +385,7 @@ en:
           none_found: We didn't find any payments from this employer
           none_found_description: This typically happens when you haven't received income from this job between %{start_month} and %{end_month}. If you believe this is an error, add a comment below.
           subheader_html: "<p>We have gathered your records from %{start_month} to %{end_month}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
+          subheader_single_month_html: "<p>We have gathered your records for %{month}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
           unknown: Unknown
       synchronization_failures:
         show:
