@@ -33,6 +33,8 @@ When developing on the Rails app, ensure you are always in the `app` subdirector
 - Prefer writing controller tests over request specs.
 - Make sure to update our Capybara/Selenium end-to-end tests. They are in `spec/e2e`. When running these tests, you have to prefix the command with `E2E_RUN_TESTS=1`.
 - In end-to-end specs, use `verify_page` after each navigation to assert page headers/titles as you move through flows.
+- For faster local iteration, create an `.rspec-local` (gitignored) with `--fail-fast=3` or similar overrides.
+- Profile factory and SQL cost with `FACTORY_PROF=flamegraph bin/rspec spec/some_dir` or `EVENT_PROF=sql.active_record bin/rspec spec/some_dir` (test-prof).
 
 ## Translations (i18n) Guidelines
 - We use standard Rails i18n with a few process customizations.

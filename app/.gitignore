@@ -39,6 +39,9 @@ Brewfile.lock.json
 # Ignore rspec examples status file
 spec/examples.txt
 
+# Per-developer RSpec overrides (e.g. --fail-fast)
+.rspec-local
+
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
