@@ -9,7 +9,9 @@ module E2e
     def verify_page(page, title:, wait: Capybara.default_max_wait_time, skip_axe_rules: [])
       wait_for_idle(page)
 
-      expect(page).to have_content(title, wait: wait)
+      retry_on_transient_selenium_page_error do
+        expect(page).to have_content(title, wait: wait)
+      end
 
       # Verify page has no missing translations
       Capybara.using_wait_time(0) do
@@ -63,6 +65,21 @@ module E2e
         const callback = arguments[arguments.length - 1];
         window.requestIdleCallback(callback, { timeout: 2000 });
       JS
+    end
+
+    def retry_on_transient_selenium_page_error(max_attempts: 3)
+      attempts = 0
+
+      begin
+        attempts += 1
+        yield
+      rescue Selenium::WebDriver::Error::UnknownError => e
+        raise unless e.message.include?("Node with given id does not belong to the document")
+        raise if attempts >= max_attempts
+
+        sleep 0.1
+        retry
+      end
     end
   end
 end

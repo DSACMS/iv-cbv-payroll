@@ -39,6 +39,75 @@ RSpec.describe ActivityFlow, type: :model do
 
       expect(flow.cbv_applicant).to eq(cbv_applicant)
     end
+
+    context "with pre_populated_activities on the invitation" do
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          {
+            "type" => "volunteering",
+            "organization_name" => "Red Cross",
+            "street_address" => "123 Main St",
+            "city" => "Boston",
+            "state" => "MA",
+            "zip_code" => "02101",
+            "coordinator_name" => "Pat Smith",
+            "coordinator_email" => "pat@redcross.org",
+            "coordinator_phone_number" => "555-0100"
+          }
+        ])
+      end
+
+      it "hydrates a draft volunteering activity from the invitation payload" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        expect(flow.volunteering_activities.count).to eq(1)
+        activity = flow.volunteering_activities.first
+        expect(activity).to be_draft
+        expect(activity.data_source).to eq("validated")
+        expect(activity.organization_name).to eq("Red Cross")
+        expect(activity.coordinator_email).to eq("pat@redcross.org")
+      end
+
+      it "is idempotent — does not double-hydrate if activities already exist on the flow" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+        expect(flow.volunteering_activities.count).to eq(1)
+
+        described_class.hydrate_pre_populated_activities!(flow, invitation)
+        expect(flow.volunteering_activities.reload.count).to eq(1)
+      end
+    end
+
+    context "with pre_populated_activities including monthly hours" do
+      let(:in_window_date) { described_class.expected_reporting_window_range("sandbox").end.beginning_of_month.iso8601 }
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          {
+            "type" => "volunteering",
+            "organization_name" => "Red Cross",
+            "months" => [
+              { "month" => in_window_date, "hours" => 10 }
+            ]
+          }
+        ])
+      end
+
+      it "hydrates VolunteeringActivityMonth records from the months array" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        activity = flow.volunteering_activities.first
+        months = activity.volunteering_activity_months.order(:month)
+        expect(months.map(&:hours)).to eq([ 10 ])
+        expect(months.map { |m| m.month.iso8601 }).to eq([ in_window_date ])
+      end
+    end
+
+    it "creates no activities when pre_populated_activities is empty" do
+      invitation = create(:activity_flow_invitation, pre_populated_activities: [])
+
+      flow = described_class.create_from_invitation(invitation, device_id)
+
+      expect(flow.volunteering_activities).to be_empty
+    end
   end
 
   describe "reporting_window" do
@@ -201,28 +270,23 @@ RSpec.describe ActivityFlow, type: :model do
       expect(flow.any_activities_added?).to be false
     end
 
-    it "returns false when flow has an education activity without enrollment data" do
-      create(:education_activity, activity_flow: flow)
+    it "returns false when flow only has draft activities" do
+      create(:volunteering_activity, activity_flow: flow, draft: true)
 
       expect(flow.any_activities_added?).to be false
-    end
-
-    it "returns true when flow has an education activity with enrollment data" do
-      education_activity = create(:education_activity, activity_flow: flow)
-      create(:nsc_enrollment_term, education_activity:)
-
-      expect(flow.any_activities_added?).to be true
     end
 
     [
       [ :volunteering_activity, :activity_flow ],
       [ :job_training_activity, :activity_flow ],
+      [ :education_activity, :activity_flow ],
+      [ :employment_activity, :activity_flow ],
       [ :payroll_account, :flow ]
     ].each do |factory_name, flow_attribute|
       activity_name = factory_name.to_s.humanize.downcase
 
-      it "returns true when flow includes #{activity_name}" do
-        create(factory_name, flow_attribute => flow)
+      it "returns true when flow includes a published #{activity_name}" do
+        create(factory_name, flow_attribute => flow, draft: false)
         expect(flow.any_activities_added?).to be true
       end
     end

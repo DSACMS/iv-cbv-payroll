@@ -16,7 +16,7 @@ class Activities::VolunteeringController < Activities::BaseController
   end
 
   def create
-    @volunteering_activity = @flow.volunteering_activities.new(volunteering_activity_params)
+    @volunteering_activity = @flow.volunteering_activities.new(volunteering_activity_params.merge(draft: true))
     if @volunteering_activity.save
       redirect_to edit_activities_flow_community_service_month_path(community_service_id: @volunteering_activity, id: 0)
     else
@@ -45,6 +45,7 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def save_review
     @volunteering_activity.update(review_params)
+    @volunteering_activity.publish!
     redirect_to after_activity_path
   end
 
@@ -78,10 +79,6 @@ class Activities::VolunteeringController < Activities::BaseController
   end
 
   def volunteering_activity_params
-    params.require(:volunteering_activity).permit(
-      :organization_name, :street_address, :street_address_line_2,
-      :city, :state, :zip_code,
-      :coordinator_name, :coordinator_email, :coordinator_phone_number
-    )
+    params.require(:volunteering_activity).permit(*VolunteeringActivity::FIELDS)
   end
 end

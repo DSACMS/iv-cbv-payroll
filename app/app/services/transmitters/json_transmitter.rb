@@ -26,8 +26,7 @@ class Transmitters::JsonTransmitter
       @cbv_flow.touch(:json_transmitted_at)
       "ok"
     else
-      Rails.logger.error "Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}"
-      raise JsonTransmitterError.new("Unexpected response from agency: code=#{res.code} message=#{res.message} body=#{res.body}")
+      raise_response_error!(res, JsonTransmitterError)
     end
   end
 
@@ -43,6 +42,20 @@ class Transmitters::JsonTransmitter
   end
 
   private
+
+  def raise_response_error!(response, default_error_class)
+    message = "Unexpected response from agency: code=#{response.code} message=#{response.message} body=#{response.body}"
+    Rails.logger.error message
+
+    error_class = silence_errors_from_response_codes.include?(response.code.to_s) ?
+      ApplicationJob::SilencedError :
+      default_error_class
+    raise error_class, message
+  end
+
+  def silence_errors_from_response_codes
+    Array(@current_agency.transmission_method_configuration["silently_retry_error_codes"]).map(&:to_s)
+  end
 
   def _payload
     agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) do |attr|

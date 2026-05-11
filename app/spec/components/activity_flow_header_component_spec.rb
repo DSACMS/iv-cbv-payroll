@@ -24,6 +24,24 @@ RSpec.describe ActivityFlowHeaderComponent, type: :component do
     expect(page).to have_css("[data-activity-flow-header-exit-url-value='#{exit_url}']")
   end
 
+  describe "confirm-on-exit Stimulus value" do
+    context "when there is no from_edit param (creation flow)" do
+      it "is true so the modal always appears on exit" do
+        render_inline(component)
+        expect(page).to have_css("[data-activity-flow-header-confirm-on-exit-value='true']")
+      end
+    end
+
+    context "when from_edit is present (editing a saved activity)" do
+      it "is false so the modal only appears when the form is dirty" do
+        with_request_url("/activities?from_edit=1") do
+          render_inline(component)
+          expect(page).to have_css("[data-activity-flow-header-confirm-on-exit-value='false']")
+        end
+      end
+    end
+  end
+
   it "renders the exit confirmation modal" do
     render_inline(component)
     expect(page).to have_css("#exit-confirmation-modal")

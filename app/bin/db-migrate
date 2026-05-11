@@ -6,4 +6,9 @@ echo "  DB_USER=$DB_USER"
 echo "  DB_NAME=$DB_NAME"
 echo "  DB_SCHEMA=$DB_SCHEMA"
 
+if [ -n "$DB_SCHEMA" ] && [ "$DB_SCHEMA" != "public" ] && [ "$DB_SCHEMA" != "app" ]; then
+  echo "Creating schema $DB_SCHEMA if it doesn't exist..."
+  ./bin/rake db:create_schema
+fi
+
 ./bin/rake --trace db:migrate

@@ -5,6 +5,7 @@
 @forward "activity_hub.scss";
 @forward "cbv.scss";
 @forward "demo-launcher.scss";
+@forward "document_uploads.scss";
 
 /* Import styling from ViewComponents */
 @forward "../../components/activity_flow_progress_indicator/activity_flow_progress_indicator.scss";

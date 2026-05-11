@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static values = { exitUrl: String }
+  static values = { exitUrl: String, confirmOnExit: Boolean }
 
   connect() {
     this.isDirty = false
@@ -24,7 +24,7 @@ export default class extends Controller {
 
   handleExit(event) {
     event.preventDefault()
-    if (this.isDirty) {
+    if (this.confirmOnExitValue || this.isDirty) {
       this.element.querySelector("[data-open-modal]").click()
     } else {
       window.location.href = this.exitUrlValue

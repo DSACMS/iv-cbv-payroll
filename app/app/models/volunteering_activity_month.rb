@@ -1,4 +1,6 @@
 class VolunteeringActivityMonth < ApplicationRecord
+  FIELDS = %w[month hours].freeze
+
   belongs_to :volunteering_activity
 
   validates :month, presence: true

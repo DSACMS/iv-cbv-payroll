@@ -67,6 +67,84 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(indicator_title).to eq("0/2 months completed")
       expect(rendered).not_to have_css(".activity-flow-progress-indicator__months-completed")
     end
+
+    it "does not show the unit toggle for non-employment activity-only flows" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).not_to have_css("[data-controller='progress-indicator-units']")
+      expect(rendered).not_to have_css(".activity-flow-progress-indicator__toggle")
+    end
+  end
+
+  describe "hiding draft activities on the hub" do
+    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+
+    before do
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+    end
+
+    it "hides draft activities from the hub" do
+      completed = create(:volunteering_activity, activity_flow: current_flow, draft: false)
+      _draft = create(:volunteering_activity, activity_flow: current_flow, draft: true)
+
+      get :index
+
+      expect(assigns(:community_service_activities)).to contain_exactly(completed)
+    end
+
+    it "shows all published activities" do
+      activity = create(:volunteering_activity, activity_flow: current_flow, draft: false)
+
+      get :index
+
+      expect(assigns(:community_service_activities)).to contain_exactly(activity)
+    end
+
+    it "only hides draft activities of the matching type" do
+      _draft_volunteering = create(:volunteering_activity, activity_flow: current_flow, draft: true)
+      published_job_training = create(:job_training_activity, activity_flow: current_flow, draft: false)
+
+      get :index
+
+      expect(assigns(:community_service_activities)).to be_empty
+      expect(assigns(:work_programs_activities)).to contain_exactly(published_job_training)
+    end
+
+    it "hides draft payroll accounts from the hub" do
+      kept = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow, draft: false)
+      _draft = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow, draft: true)
+
+      get :index
+
+      expect(assigns(:employment_payroll_accounts)).to contain_exactly(kept)
+    end
+
+    it "hides review and submit when the only activity is a draft" do
+      create(:volunteering_activity, activity_flow: current_flow, draft: true)
+
+      get :index
+
+      expect(response.body).not_to include(I18n.t("activities.hub.review_and_submit"))
+    end
+
+    it "shows review and submit when a published activity exists alongside a draft" do
+      create(:volunteering_activity, activity_flow: current_flow, draft: false)
+      create(:job_training_activity, activity_flow: current_flow, draft: true)
+
+      get :index
+
+      expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
+    end
+
+    it "surfaces only validated drafts (API pre-populated) on the hub, not self-attested user drafts" do
+      api_draft = create(:volunteering_activity, activity_flow: current_flow, draft: true, data_source: "validated")
+      _user_draft = create(:volunteering_activity, activity_flow: current_flow, draft: true, data_source: "self_attested")
+
+      get :index
+
+      expect(assigns(:community_service_draft_activities)).to contain_exactly(api_draft)
+    end
   end
 
   context "when no activities are added" do
@@ -400,7 +478,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows enrollment data and not the empty-state copy" do
+    it "shows only enrollment data and not the empty-state copy" do
       expect(response.body).to include("Test University")
       expect(response.body).to include(
         I18n.t(
@@ -408,7 +486,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           status: I18n.t("components.enrollment_term_table_component.status.half_time")
         )
       )
-      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.hours", count: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
       expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 12))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
@@ -438,7 +516,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows enrollment status with saved credit hours and CE hours on the education card" do
+    it "shows only enrollment status on the education card" do
       expect(response.body).to include("Test University")
       expect(response.body).to include(
         I18n.t(
@@ -446,8 +524,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         )
       )
-      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
-      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 16))
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.hours", count: 16))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
 
@@ -498,13 +576,19 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "renders one card for the school with both months of data" do
+    it "renders one card for the school with enrollment data for both months" do
       education_cards = Nokogiri::HTML.parse(response.body).css("[data-activity-type='education'] .activity-hub-card")
 
       expect(education_cards.length).to eq(1)
       expect(response.body).to include("River College")
-      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 3))
-      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 5))
+      expect(response.body.scan(
+        I18n.t(
+          "activities.hub.cards.enrollment_status",
+          status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        )
+      ).length).to eq(2)
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 3))
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 5))
     end
   end
 
@@ -548,7 +632,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows all enrollment statuses on education cards and uses 80 hours in monthly progress" do
+    it "shows only the qualifying enrollment on education cards and uses the sufficient enrollment progress label" do
       expect(response.body).to include(half_time_school_name)
       expect(response.body).not_to include(less_than_half_time_school_name)
       expect(response.body).to include(
@@ -563,9 +647,9 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         )
       )
-      progress_text = /80\s*\/\s*#{ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD}\s*#{I18n.t("activity_flow_progress_indicator.hours")}/
       page_text = Capybara.string(response.body).text
-      expect(page_text.scan(progress_text).count).to eq(2)
+      expect(page_text.scan(I18n.t("activity_flow_progress_indicator.sufficiently_enrolled")).count).to eq(2)
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.hours", count: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
     end
   end
 
@@ -743,6 +827,13 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include("Gainesville Wrecking")
       expect(response.body).to include(I18n.t("activities.hub.cards.gross_income", amount: "$500.00"))
       expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 40))
+    end
+
+    it "shows the unit toggle for employment flows" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_css("[data-controller='progress-indicator-units']")
+      expect(rendered).to have_css("[data-progress-indicator-units-target='toggle']")
     end
   end
 end

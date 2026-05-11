@@ -41,6 +41,13 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to redirect_to(activities_flow_education_path(id: EducationActivity.last.id))
     end
 
+    it "creates the validated activity as a draft" do
+      post :create
+
+      activity = EducationActivity.last
+      expect(activity.draft).to be(true)
+    end
+
     it "creates a self-attested EducationActivity and redirects to month 0" do
       expect {
         post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
@@ -50,6 +57,13 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(activity.data_source).to eq("fully_self_attested")
       expect(activity.school_name).to eq("Test University")
       expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: activity.id, id: 0))
+    end
+
+    it "creates the self-attested activity as a draft" do
+      post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
+
+      activity = EducationActivity.last
+      expect(activity.draft).to be(true)
     end
 
     it "re-renders the form when self-attested params are invalid" do
@@ -303,6 +317,36 @@ RSpec.describe Activities::EducationController, type: :controller do
         edit_link = doc.find("a", text: I18n.t("activities.hub.edit"))
         expect(edit_link[:href]).to include("from_review=1")
       end
+
+      context "with previously uploaded documents" do
+        before do
+          Rails.application.config.active_storage.service = :local
+          education_activity.document_uploads.attach(
+            io: StringIO.new("%PDF-1.4"),
+            filename: "verification.pdf",
+            content_type: "application/pdf"
+          )
+        end
+
+        it "renders the uploaded documents section with an edit link" do
+          get :review, params: { id: education_activity.id }
+
+          expect(response.body).to include(I18n.t("activities.document_uploads.heading", document_count: 1))
+          expect(response.body).to include("verification.pdf")
+          expect(response.body).to include(
+            new_activities_flow_education_document_upload_path(education_id: education_activity, from_review: 1)
+          )
+          expect(response.body).not_to include(I18n.t("activities.document_uploads.remove_file"))
+        end
+      end
+
+      context "without uploaded documents" do
+        it "does not render the uploaded documents heading" do
+          get :review, params: { id: education_activity.id }
+
+          expect(response.body).not_to include(I18n.t("activities.document_uploads.heading", document_count: 0))
+        end
+      end
     end
 
     context "when partially self-attested" do
@@ -508,6 +552,14 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
+    it "publishes the activity" do
+      education_activity.update!(draft: true)
+
+      patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
+
+      expect(education_activity.reload.draft).to be(false)
+    end
+
     context "when validated mixed enrollment has half-time-or-above in each reporting month" do
       let(:activity_flow) do
         create(
@@ -609,7 +661,8 @@ RSpec.describe Activities::EducationController, type: :controller do
         meets_requirements: false,
         meets_routing_requirements: false
       )
-      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+      calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+      allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
 
       patch :update, params: {
         id: education_activity.id,
@@ -625,7 +678,8 @@ RSpec.describe Activities::EducationController, type: :controller do
         meets_requirements: true,
         meets_routing_requirements: false
       )
-      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+      calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+      allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
 
       patch :update, params: {
         id: education_activity.id,
@@ -641,7 +695,8 @@ RSpec.describe Activities::EducationController, type: :controller do
         meets_requirements: true,
         meets_routing_requirements: true
       )
-      allow(controller).to receive(:progress_calculator).and_return(instance_double(ActivityFlowProgressCalculator, overall_result: result))
+      calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+      allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
 
       patch :update, params: {
         id: education_activity.id,
@@ -684,9 +739,8 @@ RSpec.describe Activities::EducationController, type: :controller do
           meets_requirements: false,
           meets_routing_requirements: false
         )
-        allow(controller).to receive(:progress_calculator).and_return(
-          instance_double(ActivityFlowProgressCalculator, overall_result: result)
-        )
+        calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
       end
 
       it "redirects to after_activity_path (not term credit hours)" do
@@ -715,9 +769,8 @@ RSpec.describe Activities::EducationController, type: :controller do
           meets_requirements: true,
           meets_routing_requirements: true
         )
-        allow(controller).to receive(:progress_calculator).and_return(
-          instance_double(ActivityFlowProgressCalculator, overall_result: result)
-        )
+        calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
       end
 
       it "redirects to summary" do
@@ -744,9 +797,8 @@ RSpec.describe Activities::EducationController, type: :controller do
           meets_requirements: false,
           meets_routing_requirements: false
         )
-        allow(controller).to receive(:progress_calculator).and_return(
-          instance_double(ActivityFlowProgressCalculator, overall_result: result)
-        )
+        calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
+        allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
       end
 
       it "redirects to after_activity_path (not term credit hours)" do

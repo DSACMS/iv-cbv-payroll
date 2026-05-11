@@ -105,6 +105,11 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Gainesville Wrecking"
     expect(page).to have_content I18n.t("activities.hub.cards.gross_income", amount: "$500.00")
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 40)
+    expect(page).to have_button(I18n.t("activity_flow_progress_indicator.see_progress_in_dollars"))
+
+    click_button I18n.t("activity_flow_progress_indicator.see_progress_in_dollars")
+    expect(page).to have_button(I18n.t("activity_flow_progress_indicator.see_progress_in_hours"))
+    expect(page).to have_content "$500 / $580"
 
     # Verify that the hub has the Community Service activity
     expect(page).to have_content I18n.t("activities.hub.in_progress_state_title")
@@ -299,7 +304,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
   end
 
-  it "shows less-than-half-time education card details on the hub" do
+  it "shows less-than-half-time education enrollment on the hub" do
     visit URI(root_url).request_uri
     visit activities_flow_entry_path(client_agency_id: "sandbox")
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
@@ -330,8 +335,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
         status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
       )
     )
-    expect(page).to have_content I18n.t("activities.hub.cards.credit_hours", amount: 4)
-    expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 16)
+    expect(page).to have_no_content I18n.t("activities.hub.cards.credit_hours", amount: 4)
+    expect(page).to have_no_content I18n.t("activities.hub.cards.hours", count: 16)
   end
 
   it "supports editing a community service activity through the full flow" do # rubocop:disable RSpec/ExampleLength

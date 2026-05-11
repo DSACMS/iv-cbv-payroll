@@ -22,6 +22,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   let(:pinwheel_report) { build(:pinwheel_report, :with_pinwheel_account) }
   let(:fake_event_logger) { instance_double(GenericEventTracker, track: nil) }
   let(:mocked_client_logo_path) { "ldh_logo.svg" }
+  let(:mocked_client_agency_id) { mocked_client_id }
 
   let(:cbv_flow) do
     create(:cbv_flow,
@@ -46,7 +47,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
 
     allow_any_instance_of(described_class).to receive(:current_agency).and_return(mock_client_agency)
-    allow(mock_client_agency).to receive_messages(id: mocked_client_id, logo_path: mocked_client_logo_path, transmission_method: transmission_method, transmission_method_configuration: transmission_method_configuration)
+    allow(mock_client_agency).to receive_messages(id: mocked_client_agency_id, logo_path: mocked_client_logo_path, transmission_method: transmission_method, transmission_method_configuration: transmission_method_configuration)
 
     allow_any_instance_of(described_class)
       .to receive(:event_logger)
@@ -291,6 +292,110 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
 
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
+    end
+
+    context "when transmission fails with a silenceable error" do
+      let(:transmission_method) { Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD }
+      let(:error_message) { "Unexpected response from agency: code=403 message=Forbidden body=" }
+
+      before do
+        allow(NewRelic::Agent).to receive(:record_custom_event)
+        allow_any_instance_of(Transmitters::HttpPdfTransmitter)
+          .to receive(:deliver)
+          .and_raise(ApplicationJob::SilencedError, error_message)
+      end
+
+      it "retries and reports the failure as silenced" do
+        expect do
+          described_class.perform_now(cbv_flow.id)
+        end.to have_enqueued_job(described_class)
+
+        expect(NewRelic::Agent).to have_received(:record_custom_event).with(
+          "SolidQueueJobFailed",
+          hash_including(
+            error_message: error_message,
+            is_silenced: true
+          )
+        )
+      end
+    end
+
+    context "when transmission fails with a non-silenced error" do
+      let(:transmission_method) { Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD }
+      let(:error_message) { "Unexpected response from agency: code=500 message=Internal Server Error body=" }
+
+      before do
+        allow(NewRelic::Agent).to receive(:record_custom_event)
+        allow_any_instance_of(Transmitters::HttpPdfTransmitter)
+          .to receive(:deliver)
+          .and_raise(Transmitters::HttpPdfTransmitter::HttpPdfTransmitterError, error_message)
+      end
+
+      it "still reports to NewRelic" do
+        described_class.perform_now(cbv_flow.id)
+
+        expect(NewRelic::Agent).to have_received(:record_custom_event).with(
+          "SolidQueueJobFailed",
+          hash_including(
+            error_message: error_message,
+            is_silenced: false
+          )
+        )
+      end
+    end
+  end
+
+  describe "retry schedule" do
+    let(:transmission_method) { "shared_email" }
+    let(:invalid_flow_id) { 99_999_999 }
+    let(:retry_test_time) { Time.zone.parse("2026-04-28 10:00:00") }
+
+    around do |ex|
+      Timecop.freeze(retry_test_time, &ex)
+    end
+
+    before do
+      ActiveJob::Base.queue_adapter.enqueued_jobs.clear
+    end
+
+    it "exposes a RETRY_WAITS constant matching the agreed schedule" do
+      expect(described_class::RETRY_WAITS).to eq(
+        [ 5.minutes, 10.minutes, 30.minutes, 1.hour, 4.hours ]
+      )
+    end
+
+    it "schedules each retry with the wait corresponding to that execution" do
+      schedule = [
+        [ 0, 5.minutes ],
+        [ 1, 10.minutes ],
+        [ 2, 30.minutes ],
+        [ 3, 1.hour ],
+        [ 4, 4.hours ]
+      ]
+
+      schedule.each do |prev_failures, expected_wait|
+        job = described_class.new(invalid_flow_id)
+        job.exception_executions["[Exception]"] = prev_failures
+
+        expect { job.perform_now }
+          .to have_enqueued_job(described_class)
+          .with(invalid_flow_id)
+          .at(retry_test_time + expected_wait)
+
+        ActiveJob::Base.queue_adapter.enqueued_jobs.clear
+      end
+    end
+
+    it "raises after the final attempt is exhausted (no further retry enqueued)" do
+      job = described_class.new(invalid_flow_id)
+      job.exception_executions["[Exception]"] = described_class::RETRY_WAITS.size
+
+      expect { job.perform_now }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(ActiveJob::Base.queue_adapter.enqueued_jobs).to be_empty
+    end
+
+    it "sets max_attempts to RETRY_WAITS.size + 1 so the NewRelic event reports correctly" do
+      expect(described_class.max_attempts).to eq(described_class::RETRY_WAITS.size + 1)
     end
   end
 end

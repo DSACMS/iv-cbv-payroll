@@ -236,6 +236,38 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
       end
     end
 
+    context "when a paystub has earnings with null amounts" do
+      before do
+        report.paystubs.first.earnings = [
+          Aggregators::ResponseObjects::Earning.new(
+            category: "salary",
+            amount: 10_000
+          ),
+          Aggregators::ResponseObjects::Earning.new(
+            category: "bonus",
+            amount: nil
+          ),
+          Aggregators::ResponseObjects::Earning.new(
+            category: "tips",
+            amount: 0
+          )
+        ]
+      end
+
+      it "excludes only the null amount entries from gross_pay_list" do
+        expect(report.income_report[:employments].first[:paystubs].first[:gross_pay_list]).to eq([
+          {
+            type: "salary",
+            amount: 10_000
+          },
+          {
+            type: "tips",
+            amount: 0
+          }
+        ])
+      end
+    end
+
     context "when a paystub has null gross_pay_amount" do
       before do
         report.paystubs.first.gross_pay_amount = nil

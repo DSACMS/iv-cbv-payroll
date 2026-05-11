@@ -1,0 +1,5 @@
+#!/bin/sh
+echo "Dropping schema..."
+echo "  DB_SCHEMA=$DB_SCHEMA"
+
+./bin/rake db:drop_schema

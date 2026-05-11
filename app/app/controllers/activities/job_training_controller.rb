@@ -16,7 +16,7 @@ class Activities::JobTrainingController < Activities::BaseController
   end
 
   def create
-    @job_training_activity = @flow.job_training_activities.new(job_training_activity_params)
+    @job_training_activity = @flow.job_training_activities.new(job_training_activity_params.merge(draft: true))
     if @job_training_activity.save
       redirect_to edit_activities_flow_job_training_month_path(job_training_id: @job_training_activity, id: 0)
     else
@@ -45,6 +45,7 @@ class Activities::JobTrainingController < Activities::BaseController
 
   def save_review
     @job_training_activity.update(review_params)
+    @job_training_activity.publish!
     redirect_to after_activity_path
   end
 

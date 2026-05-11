@@ -89,6 +89,13 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       activity = activity_flow.employment_activities.last
       expect(activity.data_source).to eq("self_attested")
     end
+
+    it "creates the activity as a draft" do
+      post :create, params: employment_params
+
+      activity = activity_flow.employment_activities.last
+      expect(activity.draft).to be(true)
+    end
   end
 
   describe "PATCH #update" do
@@ -205,6 +212,36 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 0, from_review: 1)
       )
     end
+
+    context "with previously uploaded documents" do
+      before do
+        Rails.application.config.active_storage.service = :local
+        employment_activity.document_uploads.attach(
+          io: StringIO.new("%PDF-1.4"),
+          filename: "verification.pdf",
+          content_type: "application/pdf"
+        )
+      end
+
+      it "renders the uploaded documents section with an edit link" do
+        get :review, params: { id: employment_activity.id }
+
+        expect(response.body).to include(I18n.t("activities.document_uploads.heading", document_count: 1))
+        expect(response.body).to include("verification.pdf")
+        expect(response.body).to include(
+          new_activities_flow_income_employment_document_upload_path(employment_id: employment_activity, from_review: 1)
+        )
+        expect(response.body).not_to include(I18n.t("activities.document_uploads.remove_file"))
+      end
+    end
+
+    context "without uploaded documents" do
+      it "does not render the uploaded documents heading" do
+        get :review, params: { id: employment_activity.id }
+
+        expect(response.body).not_to include(I18n.t("activities.document_uploads.heading", document_count: 0))
+      end
+    end
   end
 
   describe "PATCH #save_review" do
@@ -221,6 +258,14 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
       expect(employment_activity.reload.additional_comments).to eq("Some notes")
       expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "publishes the activity" do
+      employment_activity.update!(draft: true)
+
+      patch :save_review, params: { id: employment_activity.id, employment_activity: { additional_comments: "" } }
+
+      expect(employment_activity.reload.draft).to be(false)
     end
   end
 end

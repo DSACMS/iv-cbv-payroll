@@ -1,5 +1,5 @@
 class EducationActivityProgressCalculator
-  MonthHours = Struct.new(:progress, :routing, keyword_init: true)
+  MonthHours = Struct.new(:progress, :routing, :sufficient_enrollment, keyword_init: true)
 
   def initialize(education_activity)
     @education_activity = education_activity
@@ -11,6 +11,10 @@ class EducationActivityProgressCalculator
 
   def routing_hours_for_month(month_start)
     monthly_hours_for(month_start).routing
+  end
+
+  def sufficient_enrollment_for_month?(month_start)
+    !!monthly_hours_for(month_start).sufficient_enrollment
   end
 
   private
@@ -49,13 +53,15 @@ class EducationActivityProgressCalculator
       # complete progress and routing calculation.
       MonthHours.new(
         progress: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
-        routing: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
+        routing: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
+        sufficient_enrollment: true
       )
     elsif month_has_half_time_or_above?(terms)
       # For activities where NSC returns half-time or greater, that's complete.
       MonthHours.new(
         progress: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
-        routing: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
+        routing: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
+        sufficient_enrollment: true
       )
     elsif @education_activity.partially_self_attested? && terms.present?
       # For partially self-attested activities (where the user had to

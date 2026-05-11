@@ -146,6 +146,17 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         .to(comment)
     end
 
+    it "publishes the payroll account" do
+      payroll_account.update!(draft: true)
+
+      patch :update, params: {
+        user: { account_id: account_id },
+        payroll_account: { additional_information: comment }
+      }
+
+      expect(payroll_account.reload.draft).to be(false)
+    end
+
     it "tracks saved payment details with activity_flow_id" do
       allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSavedPaymentDetails", anything, hash_including(

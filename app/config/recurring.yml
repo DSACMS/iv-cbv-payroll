@@ -5,3 +5,6 @@ production:
   record_newrelic_queue_metrics:
     class: RecordBatchedNewrelicMetricsJob
     schedule: every minute
+  draft_cleanup:
+    class: DraftCleanupJob
+    schedule: every hour

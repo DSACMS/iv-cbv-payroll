@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { fetchInternal } from "../utilities/fetchInternal"
 
 export default class extends Controller {
   static targets = [
@@ -8,6 +9,12 @@ export default class extends Controller {
     "datePickerWrapper",
     "genericButton",
     "renewalRequiredField",
+    "tokenizedButton",
+    "shareWidget",
+    "shareLabel",
+    "copyButton",
+    "generatedUrl",
+    "openGeneratedLink",
   ]
 
   connect() {
@@ -48,6 +55,60 @@ export default class extends Controller {
     const months = event.currentTarget.dataset.months
     this.monthsInputTarget.value = months
     this.highlightButton(months)
+  }
+
+  invalidateShareLink(event) {
+    if (event.target === this.generatedUrlTarget) return
+
+    this.shareWidgetTarget.hidden = true
+    this.generatedUrlTarget.value = ""
+    this.openGeneratedLinkTarget.href = "#"
+    this.resetCopyButton()
+  }
+
+  async generateShareLink(event) {
+    event.preventDefault()
+
+    const button = event.currentTarget
+    const launchType = button.value
+    button.disabled = true
+
+    try {
+      const formData = new FormData(this.element)
+      formData.set("launch_type", launchType)
+      const { url } = await fetchInternal(this.element.action, {
+        method: this.element.method.toUpperCase(),
+        headers: {
+          Accept: "application/json",
+        },
+        body: JSON.stringify(Object.fromEntries(formData.entries())),
+        credentials: "same-origin",
+      })
+      this.generatedUrlTarget.value = url
+      this.openGeneratedLinkTarget.href = url
+      this.shareLabelTarget.textContent = `${this.humanizeLaunchType(launchType)} link`
+      this.shareWidgetTarget.hidden = false
+      this.resetCopyButton()
+    } catch (_error) {
+      this.resetCopyButton()
+    } finally {
+      button.disabled = false
+    }
+  }
+
+  async copyGeneratedLink() {
+    const url = this.generatedUrlTarget.value
+    if (!url) return
+
+    try {
+      await navigator.clipboard.writeText(url)
+      this.showCopiedState()
+    } catch (_error) {
+      this.generatedUrlTarget.focus()
+      this.generatedUrlTarget.select()
+      document.execCommand("copy")
+      this.showCopiedState()
+    }
   }
 
   // private
@@ -110,6 +171,26 @@ export default class extends Controller {
   updateGenericButton(disabled) {
     if (!this.hasGenericButtonTarget) return
     this.genericButtonTarget.disabled = disabled
+  }
+
+  humanizeLaunchType(launchType) {
+    return launchType === "generic" ? "Generic" : "Tokenized"
+  }
+
+  resetCopyButton() {
+    if (!this.hasCopyButtonTarget) return
+
+    this.copyButtonTarget.textContent = "Copy link"
+    this.copyButtonTarget.classList.add("usa-button--outline")
+    this.copyButtonTarget.classList.remove("usa-button--success")
+  }
+
+  showCopiedState() {
+    if (!this.hasCopyButtonTarget) return
+
+    this.copyButtonTarget.textContent = "Link copied"
+    this.copyButtonTarget.classList.remove("usa-button--outline")
+    this.copyButtonTarget.classList.add("usa-button--success")
   }
 
   applyWindow(value) {

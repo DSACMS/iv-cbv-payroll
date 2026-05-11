@@ -150,6 +150,10 @@ class EducationActivity < Activity
     progress_calculator.routing_hours_for_month(month_start)
   end
 
+  def sufficient_enrollment_for_month?(month_start)
+    progress_calculator.sufficient_enrollment_for_month?(month_start)
+  end
+
   private
 
   # No date column -- skip the inherited date validation from Activity
