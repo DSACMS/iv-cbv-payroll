@@ -49,9 +49,12 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(rendered).to include('id="test_scenario_renewal_half_time_last_4_of_6_avery"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_maya"')
       expect(rendered).to include('id="test_scenario_summer_term_carryover_sage"')
+      expect(rendered).to include('id="test_scenario_spring_fall_no_summer_morgan"')
       expect(rendered).to match(/Avery Testuser/)
       expect(rendered).to match(/Sage Testuser/)
+      expect(rendered).to match(/Morgan Testuser/)
       expect(rendered).to match(/Spring carryover for summer months/)
+      expect(rendered).to match(/Spring and fall enrollment with no summer term/)
     end
   end
 
@@ -547,6 +550,24 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(invitation.reference_id).to eq("demo-summer_term_carryover_sage")
         expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
         expect(response.location).to include("reporting_window_start=2025-07-01")
+      end
+
+      it "supports launching the spring and fall no-summer fake test user" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            test_scenario: "spring_fall_no_summer_morgan",
+            reporting_window_start: "06/01/2025"
+          }
+        }.to change(ActivityFlowInvitation, :count).by(1)
+          .and not_change(ActivityFlow, :count)
+          .and not_change(EducationActivity, :count)
+          .and not_change(NscEnrollmentTerm, :count)
+
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.reference_id).to eq("demo-spring_fall_no_summer_morgan")
+        expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
+        expect(response.location).to include("reporting_window_start=2025-06-01")
       end
     end
 

@@ -11,7 +11,7 @@ class EducationActivityCardBuilder
 
     return partially_self_attested_build if @activity.partially_self_attested?
 
-    validated_terms = validated_terms_for_reporting_months
+    validated_terms = terms_for_reporting_months
     return [] if validated_terms.empty?
 
     [ validated_card(validated_terms) ]
@@ -111,21 +111,18 @@ class EducationActivityCardBuilder
   end
 
   def effective_school_term_for_month(school_terms, month_start)
-    school_terms
-      .select { |term| term.overlaps_month?(month_start) }
-      .max_by(&:enrollment_priority)
+    EducationSummerCarryoverService.effective_term_for_month(school_terms, month_start)
   end
 
   def partially_self_attested_build
-    overlapping_terms = @activity.nsc_enrollment_terms
-      .select { |term| @reporting_months.any? { |month_start| term.overlaps_month?(month_start) } }
+    terms = terms_for_reporting_months
 
-    return [] if overlapping_terms.empty?
+    return [] if terms.empty?
 
-    partially_self_attested_cards(overlapping_terms)
+    partially_self_attested_cards(terms)
   end
 
-  def validated_terms_for_reporting_months
+  def terms_for_reporting_months
     overlapping_terms = @activity.nsc_enrollment_terms
       .select { |term| @reporting_months.any? { |month_start| term.overlaps_month?(month_start) } }
     carryover_terms = @reporting_months.filter_map do |month_start|

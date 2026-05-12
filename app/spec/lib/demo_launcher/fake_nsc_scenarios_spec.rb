@@ -69,6 +69,38 @@ RSpec.describe DemoLauncher::FakeNscScenarios do
       )
     end
 
+    it "builds Morgan with spring and fall terms but no summer term" do
+      identity = build(
+        :identity,
+        first_name: "Morgan",
+        last_name: "Testuser",
+        date_of_birth: Date.parse("1994-12-09")
+      )
+      reporting_window = Date.new(2025, 6, 1)..Date.new(2025, 9, 30)
+
+      response = described_class.nsc_response_for(identity: identity, reporting_window: reporting_window)
+      terms = response.fetch("enrollmentDetails").flat_map { |enrollment| enrollment.fetch("enrollmentData") }
+
+      expect(terms).to include(
+        a_hash_including(
+          "termBeginDate" => "2025-03-01",
+          "termEndDate" => "2025-06-15",
+          "enrollmentStatus" => "H"
+        ),
+        a_hash_including(
+          "termBeginDate" => "2025-09-01",
+          "termEndDate" => "2025-12-15",
+          "enrollmentStatus" => "H"
+        )
+      )
+      expect(terms).not_to include(
+        a_hash_including(
+          "termBeginDate" => "2025-07-01",
+          "termEndDate" => "2025-08-15"
+        )
+      )
+    end
+
     it "limits Avery's half-time term to the last 4 months of a 6-month reporting window" do
       identity = build(
         :identity,

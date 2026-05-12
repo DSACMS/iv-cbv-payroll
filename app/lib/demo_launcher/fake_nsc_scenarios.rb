@@ -101,6 +101,24 @@ module DemoLauncher
             term_type: :summer_less_than_half_time
           }
         ]
+      ),
+      UserProfile.new(
+        scenario_key: "spring_fall_no_summer_morgan",
+        first_name: "Morgan",
+        last_name: "Testuser",
+        date_of_birth: Date.parse("1994-12-09"),
+        terms: [
+          {
+            school_name: "Coastal State College",
+            enrollment_status: :half_time,
+            term_type: :qualifying_spring
+          },
+          {
+            school_name: "Coastal State College",
+            enrollment_status: :half_time,
+            term_type: :fall_half_time
+          }
+        ]
       )
     ].freeze
 
@@ -189,6 +207,8 @@ module DemoLauncher
         Date.new(reporting_window.begin.year, 3, 1)..Date.new(reporting_window.begin.year, 6, 15)
       when :summer_less_than_half_time
         Date.new(reporting_window.begin.year, 7, 1)..Date.new(reporting_window.begin.year, 8, 15)
+      when :fall_half_time
+        Date.new(reporting_window.begin.year, 9, 1)..Date.new(reporting_window.begin.year, 12, 15)
       else
         covered_window_for_profile(
           profile,

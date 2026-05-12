@@ -1101,6 +1101,41 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
     end
 
+    context "when using spring enrollment for summer routing with no summer term" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 4, education_activities_count: 0) }
+      let(:education_activity) do
+        create(
+          :education_activity,
+          activity_flow: flow,
+          data_source: :partially_self_attested,
+          status: "succeeded"
+        )
+      end
+
+      before do
+        flow.shift_reporting_window_start!("2025-07-01")
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: Date.new(2025, 3, 1),
+          term_end: Date.new(2025, 6, 15)
+        )
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: Date.new(2025, 9, 1),
+          term_end: Date.new(2025, 12, 15)
+        )
+      end
+
+      it "meets routing requirements with spring carryover and fall enrollment" do
+        expect(progress.meets_requirements).to be(true)
+        expect(progress.meets_routing_requirements).to be(true)
+      end
+    end
+
     context "when summer logic should outrank partial self-attestation in July" do
       let(:flow) { create(:activity_flow, reporting_window_months: 2, education_activities_count: 0) }
       let(:education_activity) do
