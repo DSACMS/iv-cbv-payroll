@@ -30,7 +30,8 @@ class EducationActivityProgressCalculator
   end
 
   def monthly_hours_for_reporting_month(month_start)
-    terms = terms_for_month(month_start)
+    resolved_month = reporting_month_resolver.result_for(month_start)
+    terms = resolved_month.terms
 
     # Buckle up, here's the logic to determine how many hours to credit the
     # user for. The routing hours may be different so that we can force the
@@ -47,17 +48,8 @@ class EducationActivityProgressCalculator
       # For activities where NSC failed, we return empty so that they'll be
       # treated as partially self-attested.
       MonthHours.new(progress: 0, routing: 0)
-    elsif EducationSummerCarryoverService.applies?(@education_activity.nsc_enrollment_terms, month_start)
-      # For activities where the summer carryover logic applies (so therefore a
-      # spring term qualifies the user for the summer months), we return a
-      # complete progress and routing calculation.
-      MonthHours.new(
-        progress: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
-        routing: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
-        sufficient_enrollment: true
-      )
-    elsif month_has_half_time_or_above?(terms)
-      # For activities where NSC returns half-time or greater, that's complete.
+    elsif resolved_month.sufficient_enrollment?
+      # Half-time-or-greater NSC enrollment, including spring carryover for summer months, is complete.
       MonthHours.new(
         progress: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
         routing: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
@@ -84,15 +76,10 @@ class EducationActivityProgressCalculator
     )
   end
 
-  def terms_for_month(month_start)
-    reporting_range = @education_activity.activity_flow.reporting_window_range
-
-    @education_activity.nsc_enrollment_terms.select do |term|
-      term.within_reporting_window?(reporting_range) && term.overlaps_month?(month_start)
-    end
-  end
-
-  def month_has_half_time_or_above?(terms)
-    terms.any?(&:half_time_or_above?)
+  def reporting_month_resolver
+    @reporting_month_resolver ||= EducationReportingMonthResolver.new(
+      terms: @education_activity.nsc_enrollment_terms,
+      reporting_months: @education_activity.activity_flow.reporting_months
+    )
   end
 end

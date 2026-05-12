@@ -218,6 +218,21 @@ RSpec.describe EducationActivity do
         described_class.data_source_from_nsc_results([ spring_term, summer_term ], reporting_months: [ june, july ])
       ).to eq(:validated)
     end
+
+    it "returns :validated when summer months are sandwiched between spring and fall terms" do
+      reporting_months = [
+        Date.new(2025, 6, 1),
+        Date.new(2025, 7, 1),
+        Date.new(2025, 8, 1),
+        Date.new(2025, 9, 1)
+      ]
+      spring_term = term(status: "half_time", begin_date: Date.new(2025, 3, 1), end_date: Date.new(2025, 6, 15))
+      fall_term = term(status: "half_time", begin_date: Date.new(2025, 9, 1), end_date: Date.new(2025, 12, 15))
+
+      expect(
+        described_class.data_source_from_nsc_results([ spring_term, fall_term ], reporting_months: reporting_months)
+      ).to eq(:validated)
+    end
   end
 
   describe "data_source enum" do
