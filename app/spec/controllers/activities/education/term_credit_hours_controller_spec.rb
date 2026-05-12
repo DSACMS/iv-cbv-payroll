@@ -218,7 +218,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       expect(less_than_half_time_term.reload.credit_hours).to eq(4)
     end
 
-    it "saves 0 when no_hours checkbox is selected" do
+    it "renders an error when no credit hours are entered for a single term" do
       patch :update, params: {
         education_id: education_activity.id,
         id: 0,
@@ -226,7 +226,22 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
         nsc_enrollment_term: { credit_hours: "" }
       }
 
-      expect(less_than_half_time_term.reload.credit_hours).to eq(0)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_heading"))
+      expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_body_multi_month"))
+      expect(response.body).to include(I18n.t("activities.education.term_credit_hours.field_error"))
+      expect(less_than_half_time_term.reload.credit_hours).to be_nil
+    end
+
+    it "renders an error when 0 credit hours are entered for a single term" do
+      patch :update, params: {
+        education_id: education_activity.id,
+        id: 0,
+        nsc_enrollment_term: { credit_hours: 0 }
+      }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(less_than_half_time_term.reload.credit_hours).to be_nil
     end
 
     it "redirects to document upload on the final term" do
@@ -242,6 +257,15 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     end
 
     context "with multiple terms" do
+      let(:second_less_than_half_time_term) {
+        range = activity_flow.reporting_window_range
+
+        create(:nsc_enrollment_term, :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "State University",
+          term_begin: range.begin + 3.months,
+          term_end: range.end)
+      }
       let(:activity_flow) {
         create(
           :activity_flow,
@@ -253,12 +277,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       }
 
       before do
-        range = activity_flow.reporting_window_range
-        create(:nsc_enrollment_term, :less_than_half_time,
-          education_activity: education_activity,
-          school_name: "State University",
-          term_begin: range.begin + 3.months,
-          term_end: range.end)
+        second_less_than_half_time_term
       end
 
       it "redirects to the next term when not the last term" do
@@ -275,6 +294,22 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
         )
       end
 
+      it "saves 0 when no_hours checkbox is selected before the final term" do
+        patch :update, params: {
+          education_id: education_activity.id,
+          id: 0,
+          no_hours: "1",
+          nsc_enrollment_term: { credit_hours: "" }
+        }
+
+        expect(response).to redirect_to(
+          edit_activities_flow_education_term_credit_hour_path(
+            education_id: education_activity, id: 1
+          )
+        )
+        expect(less_than_half_time_term.reload.credit_hours).to eq(0)
+      end
+
       it "redirects to document upload on the final term" do
         patch :update, params: {
           education_id: education_activity.id,
@@ -285,6 +320,39 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
         expect(response).to redirect_to(
           new_activities_flow_education_document_upload_path(education_id: education_activity)
         )
+      end
+
+      it "renders an error on the final term when all terms have 0 credit hours" do
+        less_than_half_time_term.update!(credit_hours: 0)
+
+        patch :update, params: {
+          education_id: education_activity.id,
+          id: 1,
+          no_hours: "1",
+          nsc_enrollment_term: { credit_hours: "" }
+        }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_heading"))
+        expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_body_multi_month"))
+        expect(response.body).to include(I18n.t("activities.education.term_credit_hours.field_error"))
+        expect(second_less_than_half_time_term.reload.credit_hours).to be_nil
+      end
+
+      it "redirects to document upload on the final term when a previous term has credit hours" do
+        less_than_half_time_term.update!(credit_hours: 4)
+
+        patch :update, params: {
+          education_id: education_activity.id,
+          id: 1,
+          no_hours: "1",
+          nsc_enrollment_term: { credit_hours: "" }
+        }
+
+        expect(response).to redirect_to(
+          new_activities_flow_education_document_upload_path(education_id: education_activity)
+        )
+        expect(second_less_than_half_time_term.reload.credit_hours).to eq(0)
       end
     end
 
@@ -313,6 +381,20 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       expect(response).to redirect_to(
         review_activities_flow_education_path(id: education_activity, from_edit: 1)
       )
+    end
+
+    it "renders an error when from_review edit leaves all terms with 0 credit hours" do
+      patch :update, params: {
+        education_id: education_activity.id,
+        id: 0,
+        from_review: 1,
+        no_hours: "1",
+        nsc_enrollment_term: { credit_hours: "" }
+      }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_heading"))
+      expect(less_than_half_time_term.reload.credit_hours).to be_nil
     end
   end
 

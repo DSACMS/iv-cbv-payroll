@@ -1,16 +1,19 @@
 class Activities::Education::TermCreditHoursController < Activities::BaseController
   before_action :set_education_activity
   before_action :set_term_credit_hours_vars, only: %i[edit update]
-  before_action :set_back_url, only: %i[edit]
+  before_action :set_back_url, only: %i[edit update]
 
   def edit
   end
 
   def update
-    if params[:no_hours] == "1"
-      @current_term.credit_hours = 0
-    else
-      @current_term.credit_hours = term_credit_hours_params[:credit_hours].to_i
+    assign_term_credit_hours_submission_values
+
+    if !valid_term_credit_hours_submission?
+      @error = true
+      add_term_credit_hours_submission_errors
+      render :edit, status: :unprocessable_content
+      return
     end
 
     @current_term.save!
@@ -36,6 +39,30 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
   end
 
   private
+
+  def assign_term_credit_hours_submission_values
+    if params[:no_hours] == "1"
+      @current_term.credit_hours = 0
+    else
+      @current_term.credit_hours = term_credit_hours_params[:credit_hours].to_i
+    end
+  end
+
+  def valid_term_credit_hours_submission?
+    hours = @current_term.credit_hours.to_i
+
+    if @terms.length == 1
+      hours > 0
+    elsif params[:from_review].present? || @term_index == @terms.length - 1
+      @terms.sum { |term| term.id == @current_term.id ? hours : term.credit_hours.to_i } > 0
+    else
+      true
+    end
+  end
+
+  def add_term_credit_hours_submission_errors
+    @current_term.errors.add(:credit_hours, I18n.t("activities.education.term_credit_hours.field_error"))
+  end
 
   def set_education_activity
     @education_activity = @flow.education_activities.find(params[:education_id])
