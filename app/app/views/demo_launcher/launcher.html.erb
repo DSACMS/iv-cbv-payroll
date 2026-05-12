@@ -7,8 +7,8 @@
      data-launcher-status-value="lynette">
   <%= form_with(url: "/launcher", method: :post, html: { class: "launcher__main", autocomplete: "off" }, data: { turbo: false, launcher_target: "form" }) do |f| %>
     <div class="launcher__title">
-      <span class="launcher__title-emoji" aria-hidden="true">🏆🚀</span>
       <h1>Emmy launcher</h1>
+      <span class="launcher__title-emoji" aria-hidden="true">🏆🚀</span>
     </div>
     <p class="launcher__subtitle">
       For demos with states and external stakeholders.
@@ -207,7 +207,6 @@
               data-action="launcher#launch">
         Generic
       </button>
-      <span class="launcher__launch-note" data-launcher-target="launchNote">Not supported for CE yet</span>
     </div>
 
     <div class="launcher__linkcard" hidden data-launcher-target="linkCard">

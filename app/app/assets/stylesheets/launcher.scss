@@ -83,6 +83,7 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: units(1.5);
+    @include at-media-max("mobile-lg") { grid-template-columns: 1fr; }
   }
   .launcher__radio-col {
     display: flex;
@@ -235,6 +236,8 @@
     display: flex;
     gap: units(1);
     align-items: stretch;
+    flex-wrap: wrap;
+    @include at-media-max("mobile-lg") { flex-direction: column; }
   }
   .launcher__linkcard-input {
     flex: 1;

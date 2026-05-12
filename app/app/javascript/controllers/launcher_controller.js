@@ -14,7 +14,6 @@ export default class extends Controller {
     "statusInput",
     "agencySelect",
     "launchAlt",
-    "launchNote",
     "linkCard",
     "linkLabel",
     "linkInput",
@@ -124,7 +123,6 @@ export default class extends Controller {
     this.element.dataset.launcherFlowValue = this.flowValue
     const isCe = this.flowValue === "activity"
     this.launchAltTarget.disabled = isCe
-    this.launchNoteTarget.hidden = !isCe
   }
 
   applyWindowVisibility() {
