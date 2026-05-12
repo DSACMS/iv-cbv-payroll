@@ -1,5 +1,8 @@
 module E2e
   module TestHelpers
+    # Tracks paths already axe-checked in this process, for AXE_MODE=sample.
+    AXED_PATHS = Set.new
+
     # Verify that the page is correct: having the expected title, no missing
     # translations, and everything else.
     #
@@ -37,13 +40,27 @@ module E2e
       expect(page.title).to end_with("| #{pilot_name}")
       expect(page.title).not_to eq("| #{pilot_name}")
 
-      # Check accessibility of every page with Axe matchers.
-      #
-      # This verifies against Axe's default ruleset, which is WCAG 2.1 Level A
-      # & AA as well as an additional handful of best practices:
-      #
-      # https://github.com/dequelabs/axe-core/blob/master/doc/rule-descriptions.md
-      expect(page).to be_axe_clean.skipping(skip_axe_rules)
+      run_axe_check(page, current_path, skip_axe_rules)
+    end
+
+    # Check accessibility with Axe matchers.
+    #
+    # AXE_MODE controls coverage:
+    # - "sample" (default): one check per unique path across the whole run
+    # - "full": check every time verify_page is called (use in nightly job)
+    # - "off": skip entirely (use for fast local iteration)
+    #
+    # Axe's default ruleset covers WCAG 2.1 Level A & AA plus best practices:
+    # https://github.com/dequelabs/axe-core/blob/master/doc/rule-descriptions.md
+    def run_axe_check(page, current_path, skip_axe_rules)
+      case ENV.fetch("AXE_MODE", "sample")
+      when "off"
+        nil
+      when "full"
+        expect(page).to be_axe_clean.skipping(skip_axe_rules)
+      else
+        expect(page).to be_axe_clean.skipping(skip_axe_rules) if AXED_PATHS.add?(current_path)
+      end
     end
 
     # This method needs to be included in E2E tests using Pinwheel to make sure

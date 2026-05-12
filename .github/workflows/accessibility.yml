@@ -1,15 +1,16 @@
-name: rspec tests
+name: nightly accessibility scan
 
 on:
-  pull_request:
-    paths: ['app/**']
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  rspec:
-    name: Rspec
+  axe:
+    name: E2E Accessibility (full)
     runs-on: ubuntu-22.04
     services:
       postgres:
@@ -33,10 +34,15 @@ jobs:
         with:
           rails_env: test
 
-      - name: Run rspec
+      - name: Install chromedriver
+        uses: nanasess/setup-chromedriver@v2
+
+      - name: Run e2e with full axe coverage
         working-directory: app
         env:
           RAILS_ENV: test
           DATABASE_URL: ${{ steps.setup.outputs.database_url }}
           RAILS_MASTER_KEY: 0f5db7adba61669d4cc45dfa6b2464d7
-        run: bundle exec rspec
+          E2E_RUN_TESTS: 1
+          AXE_MODE: full
+        run: bin/rspec ./spec/e2e
