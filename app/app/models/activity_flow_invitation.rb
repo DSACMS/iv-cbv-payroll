@@ -1,5 +1,5 @@
 class ActivityFlowInvitation < ApplicationRecord
-  SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES = %w[volunteering].freeze
+  SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES = %w[volunteering employment].freeze
 
   belongs_to :cbv_applicant, optional: true
   has_many :activity_flows
@@ -39,9 +39,17 @@ class ActivityFlowInvitation < ApplicationRecord
         next
       end
 
-      organization_name = entry["organization_name"] || entry[:organization_name]
-      if organization_name.blank?
-        errors.add("pre_populated_activities[#{idx}].organization_name", "can't be blank")
+      case type.to_s
+      when "volunteering"
+        organization_name = entry["organization_name"] || entry[:organization_name]
+        if organization_name.blank?
+          errors.add("pre_populated_activities[#{idx}].organization_name", "can't be blank")
+        end
+      when "employment"
+        employer_name = entry["employer_name"] || entry[:employer_name]
+        if employer_name.blank?
+          errors.add("pre_populated_activities[#{idx}].employer_name", "can't be blank")
+        end
       end
     end
   end

@@ -59,6 +59,24 @@ RSpec.describe ActivityFlowInvitation, type: :model do
 
       expect(invitation).to be_valid
     end
+
+    it "is valid with a well-formed employment entry" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "employment", "employer_name" => "Acme Corp" }
+      ])
+
+      expect(invitation).to be_valid
+    end
+
+    it "is invalid when an employment entry is missing employer_name" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "employment" }
+      ])
+
+      expect(invitation).not_to be_valid
+      expect(invitation.errors.attribute_names.map(&:to_s))
+        .to include("pre_populated_activities[0].employer_name")
+    end
   end
 
   describe "month-in-window validation" do
