@@ -306,10 +306,12 @@
 
   // Visibility helpers driven by Stimulus data values on the .launcher-page root
   [data-launcher-show-when="ce"],
+  [data-launcher-show-when="activity"],
   [data-launcher-show-when="renewal"] {
     display: none;
   }
   &[data-launcher-flow-value="activity"] [data-launcher-show-when="ce"] { display: revert; }
+  &[data-launcher-flow-value="activity"] [data-launcher-show-when="activity"] { display: revert; }
   &[data-launcher-window-value="renewal"] [data-launcher-show-when="application"] { display: none; }
   &[data-launcher-window-value="renewal"] [data-launcher-show-when="renewal"] { display: revert; }
 }
