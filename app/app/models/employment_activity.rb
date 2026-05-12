@@ -2,6 +2,18 @@ class EmploymentActivity < Activity
   include HasActivityMonths
   include DocumentUploadable
 
+  FIELDS = %w[
+    employer_name
+    street_address
+    street_address_line_2
+    city
+    state
+    zip_code
+    contact_name
+    contact_email
+    contact_phone_number
+  ].freeze
+
   has_many :employment_activity_months, dependent: :destroy
   has_activity_months :employment_activity_months
 
