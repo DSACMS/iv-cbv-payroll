@@ -70,10 +70,12 @@ RSpec.describe FeedbacksController, type: :controller do
     end
 
     context "with an activity flow session" do
-      let(:activity_flow) { create(:activity_flow, id: 123, cbv_applicant: create(:cbv_applicant, client_agency_id: "nh_dhhs")) }
+      let(:activity_flow) { create(:activity_flow, cbv_applicant: create(:cbv_applicant, client_agency_id: "nh_dhhs")) }
 
       before do
-        create(:cbv_flow, id: 123, cbv_applicant: create(:cbv_applicant, :la_ldh))
+        # Force an id collision: a CbvFlow with the same id as the ActivityFlow.
+        # Verifies the controller resolves the flow by `session[:flow_type]`, not by id alone.
+        create(:cbv_flow, id: activity_flow.id, cbv_applicant: create(:cbv_applicant, :la_ldh))
         session[:flow_id] = activity_flow.id
         session[:flow_type] = :activity
         cookies.permanent.signed[:device_id] = "test-device-id-123"
