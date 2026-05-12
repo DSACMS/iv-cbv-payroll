@@ -6,8 +6,13 @@ on:
 
 jobs:
   rspec:
-    name: Rspec
+    name: Rspec (${{ matrix.ci_node_index }}/${{ matrix.ci_node_total }})
     runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        ci_node_total: [4]
+        ci_node_index: [1, 2, 3, 4]
     services:
       postgres:
         image: postgres
@@ -30,10 +35,16 @@ jobs:
         with:
           rails_env: test
 
-      - name: Run rspec
+      - name: Run rspec (shard ${{ matrix.ci_node_index }}/${{ matrix.ci_node_total }})
         working-directory: app
         env:
           RAILS_ENV: test
           DATABASE_URL: ${{ steps.setup.outputs.database_url }}
           RAILS_MASTER_KEY: 0f5db7adba61669d4cc45dfa6b2464d7
-        run: bundle exec rspec
+        run: |
+          bundle exec parallel_test spec/ \
+            --type rspec \
+            -n ${{ matrix.ci_node_total }} \
+            --only-group ${{ matrix.ci_node_index }} \
+            --group-by filesize \
+            --exclude-pattern '^spec/e2e/'

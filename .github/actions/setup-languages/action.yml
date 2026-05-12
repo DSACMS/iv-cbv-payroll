@@ -9,14 +9,6 @@ runs:
         working-directory: app
         bundler-cache: true
 
-    - name: Restore bootsnap cache
-      uses: actions/cache@v4
-      with:
-        path: app/tmp/cache/bootsnap
-        key: bootsnap-${{ runner.os }}-${{ hashFiles('app/Gemfile.lock') }}-${{ github.sha }}
-        restore-keys: |
-          bootsnap-${{ runner.os }}-${{ hashFiles('app/Gemfile.lock') }}-
-
     - name: Set up node
       uses: actions/setup-node@v4
       with:
