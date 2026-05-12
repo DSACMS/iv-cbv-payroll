@@ -33,10 +33,27 @@ jobs:
         with:
           rails_env: test
 
-      - name: Run rspec
+      - name: Set up parallel test databases
         working-directory: app
         env:
           RAILS_ENV: test
-          DATABASE_URL: ${{ steps.setup.outputs.database_url }}
+          DB_HOST: localhost
+          DB_USERNAME: cidbuser
+          DB_PASSWORD: postgres
+        run: |
+          bundle exec rake parallel:create[4]
+          bundle exec rake parallel:load_schema[4]
+
+      - name: Run rspec (in-job parallel, 4 processes)
+        working-directory: app
+        env:
+          RAILS_ENV: test
+          DB_HOST: localhost
+          DB_USERNAME: cidbuser
+          DB_PASSWORD: postgres
           RAILS_MASTER_KEY: 0f5db7adba61669d4cc45dfa6b2464d7
-        run: bundle exec rspec
+        run: |
+          bundle exec parallel_test spec/ \
+            --type rspec \
+            -n 4 \
+            --exclude-pattern '^spec/e2e/'
