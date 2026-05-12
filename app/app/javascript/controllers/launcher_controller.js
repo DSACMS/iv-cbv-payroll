@@ -16,6 +16,7 @@ export default class extends Controller {
     "launchAlt",
     "launchNote",
     "linkCard",
+    "linkLabel",
     "linkInput",
     "linkOpen",
     "linkCopied",
@@ -95,6 +96,8 @@ export default class extends Controller {
       })
       this.linkInputTarget.value = url
       this.linkOpenTarget.href = url
+      this.linkLabelTarget.textContent =
+        launchType === "generic" ? "Generic link" : "Tokenized link"
       this.linkCardTarget.hidden = false
       this.linkCopiedTarget.hidden = true
     } finally {

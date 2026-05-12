@@ -228,17 +228,32 @@ RSpec.describe DemoLauncherController, type: :controller do
       end
     end
 
-    context "when reporting_window_months is above 3" do
+    context "when reporting_window_months is above 6" do
       it "returns 422 with an error" do
         post :simple_create, params: {
           flow_type: "activity",
           client_agency_id: "sandbox",
           launch_type: "tokenized",
-          reporting_window_months: "4"
+          reporting_window_months: "7"
         }, format: :json
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(JSON.parse(response.body)["error"]).to be_present
+      end
+    end
+
+    context "with renewal window and reporting_window_months of 6" do
+      it "returns 200 with a url" do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          reporting_window: "renewal",
+          reporting_window_months: "6"
+        }, format: :json
+
+        expect(response).to have_http_status(:success)
+        expect(JSON.parse(response.body)["url"]).to be_present
       end
     end
 

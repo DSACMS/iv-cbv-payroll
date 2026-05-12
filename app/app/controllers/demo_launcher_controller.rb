@@ -56,8 +56,8 @@ class DemoLauncherController < ApplicationController
       return render json: { error: "Invalid reporting_window" }, status: :unprocessable_entity
     end
 
-    if permitted[:reporting_window_months].present? && !permitted[:reporting_window_months].to_i.between?(1, 3)
-      return render json: { error: "reporting_window_months must be between 1 and 3" }, status: :unprocessable_entity
+    if permitted[:reporting_window_months].present? && !permitted[:reporting_window_months].to_i.between?(1, 6)
+      return render json: { error: "reporting_window_months must be between 1 and 6" }, status: :unprocessable_entity
     end
 
     if permitted[:renewal_required_months].present? && !permitted[:renewal_required_months].to_i.between?(1, 6)
