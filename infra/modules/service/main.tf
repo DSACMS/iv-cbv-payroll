@@ -10,9 +10,16 @@ locals {
   task_executor_role_name = "${var.service_name}-task-executor"
   image_url               = "${var.image_repository_url}:${var.image_tag}"
 
+  # PR review apps use a per-PR subdomain under the wildcard cert
+  # (see dns.tf#pr_subdomain) so HTTPS-validating callers can reach them.
+  effective_domain_name = coalesce(
+    var.pr_subdomain,
+    var.is_temporary ? aws_lb.alb.dns_name : tostring(var.domain_name),
+  )
+
   base_environment_variables = concat(
     [
-      { name : "DOMAIN_NAME", value : var.is_temporary ? aws_lb.alb.dns_name : tostring(var.domain_name) },
+      { name : "DOMAIN_NAME", value : local.effective_domain_name },
       { name : "PORT", value : tostring(var.container_port) },
       { name : "AWS_DEFAULT_REGION", value : data.aws_region.current.name },
       { name : "AWS_REGION", value : data.aws_region.current.name },

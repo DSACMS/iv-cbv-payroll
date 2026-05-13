@@ -141,6 +141,12 @@ variable "memory" {
   description = "Amount (in MiB) of memory used by the task. e.g. 2048"
 }
 
+variable "pr_subdomain" {
+  description = "For PR review apps: a per-PR hostname (e.g. p-1709.navapbc.cloud) covered by the env-level ACM cert. When set, a Route53 alias to the PR ALB is created and used as DOMAIN_NAME so HTTPS-validating callers (Pinwheel/Argyle webhooks) can reach the PR env."
+  type        = string
+  default     = null
+}
+
 variable "private_subnet_ids" {
   type        = list(any)
   description = "Private subnet ids in VPC"

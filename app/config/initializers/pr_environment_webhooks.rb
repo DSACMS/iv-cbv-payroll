@@ -13,7 +13,7 @@ Rails.application.config.to_prepare do
   Rails.application.config.pr_env_webhooks_initialization_error = nil
 
   domain = ENV["DOMAIN_NAME"]
-  pr_match = domain&.match(/\Ap-(\d+)-app-dev/)
+  pr_match = domain&.match(/\Ap-(\d+)\.navapbc\.cloud\z/)
 
   if Rails.env.production? && pr_match && defined?(::Rails::Server)
     begin
