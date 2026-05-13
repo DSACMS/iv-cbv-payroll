@@ -138,6 +138,31 @@ RSpec.describe ActivityFlow, type: :model do
       end
     end
 
+    context "with pre_populated_activities including employment monthly hours and income" do
+      let(:in_window_date) { described_class.expected_reporting_window_range("sandbox").end.beginning_of_month.iso8601 }
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          {
+            "type" => "employment",
+            "employer_name" => "Acme Corp",
+            "months" => [
+              { "month" => in_window_date, "hours" => 40, "gross_income" => 3000 }
+            ]
+          }
+        ])
+      end
+
+      it "hydrates EmploymentActivityMonth records from the months array" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        activity = flow.employment_activities.first
+        months = activity.employment_activity_months.order(:month)
+        expect(months.map(&:hours)).to eq([ 40 ])
+        expect(months.map(&:gross_income)).to eq([ 3000 ])
+        expect(months.map { |m| m.month.iso8601 }).to eq([ in_window_date ])
+      end
+    end
+
     context "with a mixed volunteering and employment invitation" do
       let(:invitation) do
         create(:activity_flow_invitation, pre_populated_activities: [
