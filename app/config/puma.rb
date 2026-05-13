@@ -41,3 +41,7 @@ preload_app!
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
+
+# Run Solid Queue inside Puma on environments that lack a dedicated worker
+# (per-PR review apps, where `aws_ecs_service.solid_queue` has count=0).
+plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"] == "true"

@@ -178,8 +178,9 @@ RUN apt-get update -qq && \
         && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install custom db migrate script
+# Install custom database scripts
 COPY bin/db-migrate /usr/bin/
+COPY bin/db-drop-schema /usr/bin/
 
 # Copy built artifacts: gems, application, binary dependencies
 COPY --from=release-build /usr/local/bundle /usr/local/bundle

@@ -62,8 +62,8 @@ module IvCbvPayroll
         ENV["DOMAIN_NAME"] == "verify-demo.navapbc.cloud" ||
         # "Demo" deployed environment
         ENV["DOMAIN_NAME"] == "demo.reportmyincome.org" ||
-        # PR review apps
-        ENV["DOMAIN_NAME"].match?(/^p-\d+-app-dev/)
+        # PR review apps (e.g. p-1709.navapbc.cloud)
+        ENV["DOMAIN_NAME"].match?(/\Ap-\d+\.navapbc\.cloud\z/)
       )
     )
 

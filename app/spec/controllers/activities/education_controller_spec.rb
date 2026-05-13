@@ -110,37 +110,31 @@ RSpec.describe Activities::EducationController, type: :controller do
       end
     end
 
-    context "when the EducationActivity has succeeded" do
+    context "when the EducationActivity is validated and succeeded" do
       before do
-        education_activity.update(status: :succeeded)
-        allow(controller).to receive(:testing_synchronization_page?)
-          .and_return(false)
-      end
-
-      it "redirects via after_activity_path" do
-        get :show, params: { id: education_activity.id }
-
-        expect(response).to redirect_to(activities_flow_root_path)
-      end
-    end
-
-    context "when the EducationActivity has succeeded and routing requirements are met" do
-      before do
-        education_activity.update(status: :succeeded)
+        education_activity.update(status: :succeeded, draft: true)
         create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: :half_time)
         allow(controller).to receive(:testing_synchronization_page?).and_return(false)
       end
 
-      it "redirects to summary" do
+      it "redirects to education edit to review NSC enrollment details first" do
         get :show, params: { id: education_activity.id }
 
-        expect(response).to redirect_to(activities_flow_summary_path)
+        expect(response).to redirect_to(
+          edit_activities_flow_education_path(id: education_activity.id)
+        )
+      end
+
+      it "does not publish the activity (defers until the review form is submitted)" do
+        get :show, params: { id: education_activity.id }
+
+        expect(education_activity.reload.draft).to be(true)
       end
     end
 
     context "when the EducationActivity is partially self-attested and succeeded" do
       before do
-        education_activity.update(status: :succeeded, data_source: :partially_self_attested)
+        education_activity.update(status: :succeeded, data_source: :partially_self_attested, draft: true)
         create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity)
         allow(controller).to receive(:testing_synchronization_page?)
           .and_return(false)
@@ -152,6 +146,44 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response).to redirect_to(
           edit_activities_flow_education_path(id: education_activity.id)
         )
+      end
+
+      it "does not publish the activity (defers until the review form is submitted)" do
+        get :show, params: { id: education_activity.id }
+
+        expect(education_activity.reload.draft).to be(true)
+      end
+    end
+  end
+
+  describe "PATCH #sync" do
+    let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
+
+    context "when the EducationActivity is validated and succeeded" do
+      before do
+        education_activity.update(status: :succeeded, draft: true)
+        create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: :half_time)
+        allow(controller).to receive(:testing_synchronization_page?).and_return(false)
+      end
+
+      it "does not publish the activity (defers until the review form is submitted)" do
+        patch :sync, params: { education_id: education_activity.id }, format: :turbo_stream
+
+        expect(education_activity.reload.draft).to be(true)
+      end
+    end
+
+    context "when the EducationActivity is partially self-attested and succeeded" do
+      before do
+        education_activity.update(status: :succeeded, data_source: :partially_self_attested, draft: true)
+        create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity)
+        allow(controller).to receive(:testing_synchronization_page?).and_return(false)
+      end
+
+      it "does not publish the activity (defers until the review form is submitted)" do
+        patch :sync, params: { education_id: education_activity.id }, format: :turbo_stream
+
+        expect(education_activity.reload.draft).to be(true)
       end
     end
   end

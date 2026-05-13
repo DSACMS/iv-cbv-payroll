@@ -43,6 +43,23 @@ echo "Wait for service ${service_name} to become stable"
 aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
 
 service_endpoint="$(terraform -chdir="infra/${app_name}/service" output -raw service_endpoint)"
+
+# Wait for DNS propagation + HTTPS readiness before declaring the env ready.
+# The PR subdomain is a freshly-created Route53 alias under the wildcard cert;
+# until it resolves and the ALB serves /health, Pinwheel webhook delivery and
+# user requests will fail. Bound to 5 minutes to avoid hanging CI indefinitely.
+echo "::group::Wait for ${service_endpoint} to become reachable"
+deadline=$(($(date +%s) + 300))
+until curl --silent --show-error --fail --max-time 5 "${service_endpoint}/health" > /dev/null; do
+  if [ "$(date +%s)" -gt "${deadline}" ]; then
+    echo "Timed out waiting for ${service_endpoint}/health"
+    exit 1
+  fi
+  echo "  ${service_endpoint}/health not ready yet, retrying in 10s..."
+  sleep 10
+done
+echo "${service_endpoint}/health is responding 200"
+echo "::endgroup::"
 pr_info=$(cat <<EOF
 <!-- begin PR environment info -->
 ## Preview environment

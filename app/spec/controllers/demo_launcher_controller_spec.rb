@@ -5,14 +5,14 @@ RSpec::Matchers.define_negated_matcher :not_change, :change
 RSpec.describe DemoLauncherController, type: :controller do
   render_views
 
-  describe "GET #show" do
+  describe "GET #advanced" do
     it "renders the show template" do
-      get :show
+      get :advanced
       expect(response).to have_http_status(:success)
     end
 
     it "renders the tokenized link share widget" do
-      get :show
+      get :advanced
 
       expect(response.body).to include("Shareable link")
       expect(response.body).to include("Copy link")
@@ -20,12 +20,12 @@ RSpec.describe DemoLauncherController, type: :controller do
     end
 
     it "sets the session to the activity flow so the header renders Emmy branding" do
-      get :show
+      get :advanced
       expect(session[:flow_type]).to eq(:activity)
     end
 
     it "displays test scenario radio options", :aggregate_failures do
-      get :show
+      get :advanced
       rendered = response.body
       expect(rendered).to match(/Test Scenarios/i)
       expect(rendered).to match(/Lynette Oyola/)
@@ -41,7 +41,7 @@ RSpec.describe DemoLauncherController, type: :controller do
     end
 
     it "displays fake test scenario options with single and multi-term" do
-      get :show
+      get :advanced
       rendered = response.body
       expect(rendered).to match(/Fake Test Scenarios/)
       expect(rendered).to include('id="test_scenario_partial_enrollment_multi_term"')
