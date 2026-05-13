@@ -30,8 +30,8 @@
       <div class="usa-hint launcher__step-hint" hidden>Select which Emmy flow to launch.</div>
       <div class="launcher__radio-row">
         <% [
-             [ "activity", "Community engagement", "Verify enrollment through NSC or self-attestation." ],
-             [ "cbv",      "Income verification",  "Verify income through payroll data or uploads." ]
+             [ "activity", "Community engagement", "Verify community engagement, including employment, education, community service, and work programs." ],
+             [ "cbv",      "Income verification",  "Verify income by providing payroll data." ]
            ].each do |value, title, desc| %>
           <div class="launcher__rcard"
                role="radio"
@@ -164,7 +164,7 @@
         <% [
              [ "lynette",                             "Enrolled full time",           "Full-time enrollment verified automatically via the National Student Clearinghouse." ],
              [ "renewal_half_time_last_4_of_6_avery", "Enrolled half-time",           "Half-time enrollment covering 4 of 6 months (good for renewal required-month testing)." ],
-             [ "partial_enrollment_maya",             "Enrolled less-than-half-time", "Less-than-half-time enrollment (same school in multiple terms)." ],
+             [ "partial_enrollment_maya",             "Enrolled less-than-half-time", "Less-than-half-time enrollment (sends user through partially self-attested flow)." ],
              [ "linda",                               "No NSC enrollment found",      "Client walks through self-attesting their enrollment." ]
            ].each do |value, title, desc| %>
           <div class="launcher__rcard <%= "launcher__rcard--selected" if value == "lynette" %>"
