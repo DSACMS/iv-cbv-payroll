@@ -225,6 +225,61 @@
             <span>minutes</span>
           </div>
         <% end %>
+        <div data-demo-launcher-target="ceOnly">
+          <%= render DemoLauncher::SettingComponent.new(title: "Pre-populated activities", hint: "Specify what data should appear automatically when visiting the hub for the first time. This is used to simulate the state sending us the data they have for this applicant. Note that this only works with tokenized links.") do %>
+            <div class="demo-launcher__activity-rows">
+              <div class="demo-launcher__activity-row">
+                <div class="demo-launcher__activity-header">
+                  <div class="usa-checkbox">
+                    <input class="usa-checkbox__input" type="checkbox" id="volunteering_enabled" name="volunteering_enabled" value="1"
+                           data-action="change->demo-launcher#toggleActivity">
+                    <label class="usa-checkbox__label" for="volunteering_enabled">Volunteering</label>
+                  </div>
+                </div>
+                <div class="demo-launcher__activity-fields demo-launcher__activity-fields--hidden">
+                  <div class="demo-launcher__activity-fields-grid">
+                    <div>
+                      <label class="usa-label" for="volunteering_organization_name">Org name</label>
+                      <input class="usa-input" type="text" id="volunteering_organization_name" name="volunteering_organization_name" value="Red Cross" autocomplete="off">
+                    </div>
+                    <div>
+                      <label class="usa-label" for="volunteering_hours_per_month">Hours / month</label>
+                      <input class="usa-input usa-input--sm" type="number" id="volunteering_hours_per_month" name="volunteering_hours_per_month" value="12" min="1" autocomplete="off">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="demo-launcher__activity-row">
+                <div class="demo-launcher__activity-header">
+                  <div class="usa-checkbox">
+                    <input class="usa-checkbox__input" type="checkbox" id="employment_enabled" name="employment_enabled" value="1"
+                           data-action="change->demo-launcher#toggleActivity">
+                    <label class="usa-checkbox__label" for="employment_enabled">Employment</label>
+                  </div>
+                </div>
+                <div class="demo-launcher__activity-fields demo-launcher__activity-fields--hidden">
+                  <div class="demo-launcher__activity-fields-grid">
+                    <div>
+                      <label class="usa-label" for="employment_employer_name">Employer name</label>
+                      <input class="usa-input" type="text" id="employment_employer_name" name="employment_employer_name" value="Acme Corp" autocomplete="off">
+                    </div>
+                    <div>
+                      <label class="usa-label" for="employment_hours_per_month">Hours / month</label>
+                      <input class="usa-input usa-input--sm" type="number" id="employment_hours_per_month" name="employment_hours_per_month" value="40" min="1" autocomplete="off">
+                    </div>
+                    <div>
+                      <label class="usa-label" for="employment_gross_income_per_month">Gross income / month</label>
+                      <div class="demo-launcher__inline-field">
+                        <span>$</span>
+                        <input class="usa-input usa-input--sm" type="number" id="employment_gross_income_per_month" name="employment_gross_income_per_month" value="1200" min="0" autocomplete="off">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
       </div>
     </div>
 
