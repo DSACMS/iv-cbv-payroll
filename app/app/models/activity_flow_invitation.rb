@@ -39,17 +39,10 @@ class ActivityFlowInvitation < ApplicationRecord
         next
       end
 
-      case type.to_s
-      when "volunteering"
-        organization_name = entry["organization_name"] || entry[:organization_name]
-        if organization_name.blank?
-          errors.add("pre_populated_activities[#{idx}].organization_name", "can't be blank")
-        end
-      when "employment"
-        employer_name = entry["employer_name"] || entry[:employer_name]
-        if employer_name.blank?
-          errors.add("pre_populated_activities[#{idx}].employer_name", "can't be blank")
-        end
+      name_field = { "volunteering" => "organization_name", "employment" => "employer_name" }[type.to_s]
+      name = entry[name_field] || entry[name_field.to_sym]
+      if name.blank?
+        errors.add("pre_populated_activities[#{idx}].#{name_field}", "can't be blank")
       end
     end
   end
