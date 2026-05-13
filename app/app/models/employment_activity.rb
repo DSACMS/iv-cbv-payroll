@@ -4,6 +4,7 @@ class EmploymentActivity < Activity
 
   FIELDS = %w[
     employer_name
+    is_self_employed
     street_address
     street_address_line_2
     city

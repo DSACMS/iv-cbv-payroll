@@ -94,6 +94,6 @@ class Activities::EmploymentController < Activities::BaseController
   end
 
   def employment_activity_params
-    params.require(:employment_activity).permit(*EmploymentActivity::FIELDS, :is_self_employed)
+    params.require(:employment_activity).permit(*EmploymentActivity::FIELDS)
   end
 end
