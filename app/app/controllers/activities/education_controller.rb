@@ -35,7 +35,6 @@ class Activities::EducationController < Activities::BaseController
     if @education_activity.sync_failed? || @education_activity.sync_no_enrollments?
       redirect_to activities_flow_education_error_path
     elsif @education_activity.sync_succeeded? && !testing_synchronization_page?
-      @education_activity.publish! unless @education_activity.partially_self_attested?
       redirect_to education_sync_success_path
     else
       # sync is still in progress — render the polling page
@@ -89,7 +88,6 @@ class Activities::EducationController < Activities::BaseController
     elsif @wait_time < ARTIFICIAL_DELAY && !testing_synchronization_page?
       render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
     else
-      @education_activity.publish! unless @education_activity.partially_self_attested?
       render turbo_stream: turbo_stream.action(:redirect, education_sync_success_path)
     end
   end
@@ -193,7 +191,7 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def education_sync_success_path
-    if @education_activity.partially_self_attested?
+    if @education_activity.partially_self_attested? || @education_activity.validated?
       edit_activities_flow_education_path(id: @education_activity.id)
     else
       after_activity_path

@@ -1,0 +1,250 @@
+<% content_for :title, "Emmy Launcher" %>
+<div class="launcher-page"
+     data-controller="launcher"
+     data-launcher-flow-value="activity"
+     data-launcher-window-value="application"
+     data-launcher-months-value="2"
+     data-launcher-status-value="lynette">
+  <%= form_with(url: "/launcher", method: :post, html: { class: "launcher__main", autocomplete: "off" }, data: { turbo: false, launcher_target: "form" }) do |f| %>
+    <div class="launcher__title">
+      <h1>Emmy launcher</h1>
+      <span class="launcher__title-emoji" aria-hidden="true">🏆🚀</span>
+    </div>
+    <p class="launcher__subtitle">
+      For demos with states and external stakeholders.
+    </p>
+
+    <%= hidden_field_tag :flow_type, "activity", data: { launcher_target: "flowInput" } %>
+    <%= hidden_field_tag :reporting_window, "application", data: { launcher_target: "windowInput" } %>
+    <%= hidden_field_tag :reporting_window_months, "2", data: { launcher_target: "monthsInput" } %>
+    <%= hidden_field_tag :test_scenario, "lynette", data: { launcher_target: "statusInput" } %>
+
+    <div class="launcher__step">
+      <div class="launcher__step-header">
+        <span class="launcher__step-num"></span>
+        <h2 class="launcher__step-title">Flow type</h2>
+        <button type="button" class="launcher__step-help" aria-label="More info: Flow type" data-action="launcher#toggleHint">
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
+        </button>
+      </div>
+      <div class="usa-hint launcher__step-hint" hidden>Select which Emmy flow to launch.</div>
+      <div class="launcher__radio-row">
+        <% [
+             [ "activity", "Community engagement", "Verify community engagement, including employment, education, community service, and work programs." ],
+             [ "cbv",      "Income verification",  "Verify income by providing payroll data." ]
+           ].each do |value, title, desc| %>
+          <div class="launcher__rcard"
+               role="radio"
+               tabindex="0"
+               aria-checked="<%= value == "activity" %>"
+               data-launcher-target="flowCard"
+               data-value="<%= value %>"
+               data-action="click->launcher#selectFlow keydown.enter->launcher#selectFlow keydown.space->launcher#selectFlow">
+            <span class="launcher__rcard-radio" aria-hidden="true"></span>
+            <div class="launcher__rcard-body">
+              <div class="launcher__rcard-title">
+                <%= title %>
+              </div>
+              <div class="launcher__rcard-desc">
+                <%= desc %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="launcher__step">
+      <div class="launcher__step-header">
+        <span class="launcher__step-num"></span>
+        <h2 class="launcher__step-title">Agency</h2>
+        <button type="button" class="launcher__step-help" aria-label="More info: Agency" data-action="launcher#toggleHint">
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
+        </button>
+      </div>
+      <div class="usa-hint launcher__step-hint" hidden>Select the agency the flow will use.</div>
+      <select class="usa-select launcher__agency-select"
+              name="client_agency_id"
+              id="launcher_client_agency_id"
+              data-launcher-target="agencySelect"
+              data-action="change->launcher#selectAgency">
+        <% Rails.application.config.client_agencies.client_agency_ids.each do |agency_id| %>
+          <option value="<%= agency_id %>" <%= "selected" if agency_id == "sandbox" %>><%= agency_id %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div class="launcher__step" data-launcher-show-when="activity">
+      <div class="launcher__step-header">
+        <span class="launcher__step-num"></span>
+        <h2 class="launcher__step-title">Reporting window</h2>
+        <button type="button" class="launcher__step-help" aria-label="More info: Reporting window" data-action="launcher#toggleHint">
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
+        </button>
+      </div>
+      <div class="usa-hint launcher__step-hint" hidden>
+        Select the type of flow you want to create. This determines the number of months in the reporting window.
+      </div>
+      <div class="launcher__radio-col">
+        <div class="launcher__rcard launcher__rcard--selected"
+             role="radio"
+             tabindex="0"
+             aria-checked="true"
+             data-launcher-target="windowCard"
+             data-value="application"
+             data-action="click->launcher#selectWindow keydown.enter->launcher#selectWindow keydown.space->launcher#selectWindow">
+          <span class="launcher__rcard-radio" aria-hidden="true"></span>
+          <div class="launcher__rcard-body">
+            <div class="launcher__rcard-title">
+              Application
+            </div>
+            <div class="launcher__rcard-extra" data-launcher-show-when="application">
+              <div class="launcher__months">
+                <% [ 1, 2, 3 ].each do |m| %>
+                  <button type="button"
+                          class="launcher__month-pill <%= "launcher__month-pill--active" if m == 2 %>"
+                          data-launcher-target="monthPill"
+                          data-value="<%= m %>"
+                          data-action="click->launcher#selectMonths">
+                    <%= m %> month<%= "s" if m > 1 %>
+                  </button>
+                <% end %>
+              </div>
+              <p class="launcher__months-note">
+                The application reporting window is configurable by the state.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="launcher__rcard"
+             role="radio"
+             tabindex="0"
+             aria-checked="false"
+             data-launcher-target="windowCard"
+             data-value="renewal"
+             data-action="click->launcher#selectWindow keydown.enter->launcher#selectWindow keydown.space->launcher#selectWindow">
+          <span class="launcher__rcard-radio" aria-hidden="true"></span>
+          <div class="launcher__rcard-body">
+            <div class="launcher__rcard-title">
+              Renewal
+              <span class="launcher__rcard-meta">(6 months)</span>
+            </div>
+            <div class="launcher__rcard-extra" data-launcher-show-when="renewal">
+              <div class="launcher__inline-field">
+                <input type="number"
+                       class="launcher__inline-input"
+                       name="renewal_required_months"
+                       id="launcher_renewal_required_months"
+                       min="1"
+                       max="6"
+                       autocomplete="off">
+                <label for="launcher_renewal_required_months">renewal months required</label>
+              </div>
+              <p class="launcher__months-note">
+                Specify the number of months in the window that must meet engagement requirements. This is configurable by the state. The default is 6.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="launcher__step" data-launcher-show-when="ce">
+      <div class="launcher__step-header">
+        <span class="launcher__step-num"></span>
+        <h2 class="launcher__step-title">Student status</h2>
+        <button type="button" class="launcher__step-help" aria-label="More info: Student status" data-action="launcher#toggleHint">
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg>
+        </button>
+      </div>
+      <div class="usa-hint launcher__step-hint" hidden>
+        Select whether the National Student Clearinghouse returns a match for this demo user.
+      </div>
+      <div class="launcher__radio-col">
+        <% [
+             [ "lynette",                             "Enrolled full time",           "Full-time enrollment verified automatically via the National Student Clearinghouse." ],
+             [ "renewal_half_time_last_4_of_6_avery", "Enrolled half-time",           "Half-time enrollment covering 4 of 6 months (good for renewal required-month testing)." ],
+             [ "partial_enrollment_maya",             "Enrolled less-than-half-time", "Less-than-half-time enrollment (sends user through partially self-attested flow)." ],
+             [ "linda",                               "No NSC enrollment found",      "Enrollment unable to be verified via NSC (sends user through self-attestation flow)." ]
+           ].each do |value, title, desc| %>
+          <div class="launcher__rcard <%= "launcher__rcard--selected" if value == "lynette" %>"
+               role="radio"
+               tabindex="0"
+               aria-checked="<%= value == "lynette" %>"
+               data-launcher-target="statusCard"
+               data-value="<%= value %>"
+               data-action="click->launcher#selectStatus keydown.enter->launcher#selectStatus keydown.space->launcher#selectStatus">
+            <span class="launcher__rcard-radio" aria-hidden="true"></span>
+            <div class="launcher__rcard-body">
+              <div class="launcher__rcard-title">
+                <%= title %>
+              </div>
+              <div class="launcher__rcard-desc">
+                <%= desc %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="launcher__launch">
+      <button type="submit"
+              name="launch_type"
+              value="tokenized"
+              class="usa-button"
+              data-launch-type="tokenized"
+              data-action="launcher#launch">
+        Tokenized
+      </button>
+      <button type="submit"
+              name="launch_type"
+              value="generic"
+              class="usa-button"
+              disabled
+              data-launcher-target="launchAlt"
+              data-launch-type="generic"
+              data-action="launcher#launch">
+        Generic
+      </button>
+    </div>
+
+    <div class="launcher__linkcard" hidden data-launcher-target="linkCard">
+      <p class="launcher__linkcard-label" data-launcher-target="linkLabel">Tokenized link</p>
+      <div class="launcher__linkcard-row">
+        <input type="text"
+               class="launcher__linkcard-input"
+               readonly
+               autocomplete="off"
+               data-launcher-target="linkInput"
+               aria-label="Generated demo link">
+        <button type="button"
+                class="launcher__linkcard-btn"
+                data-action="launcher#copy">
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#content_copy") %>"></use></svg>
+          Copy
+        </button>
+        <a class="launcher__linkcard-btn launcher__linkcard-btn--primary"
+           href="#"
+           target="_blank"
+           rel="noopener noreferrer"
+           data-launcher-target="linkOpen">
+          <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#launch") %>"></use></svg>
+          Open in new tab
+        </a>
+      </div>
+      <p class="launcher__linkcard-copied" hidden data-launcher-target="linkCopied">
+        <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check") %>"></use></svg>
+        Link copied to clipboard.
+      </p>
+    </div>
+
+    <div class="launcher__help-footer">
+      <svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#help") %>"></use></svg>
+      <div>
+        <strong>New to Emmy?</strong>
+        Each option above has a hint — tap the <em>i</em> for a quick explanation.
+      </div>
+    </div>
+  <% end %>
+</div>
