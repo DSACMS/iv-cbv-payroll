@@ -181,6 +181,11 @@ module "service" {
   certificate_arn    = local.service_config.enable_https ? data.aws_acm_certificate.certificate[0].arn : null
   additional_domains = local.service_config.additional_domains
 
+  # PR review apps need a hostname covered by the env-level wildcard cert so
+  # external webhooks (Pinwheel/Argyle) can deliver over HTTPS. The cert SAN
+  # `*.navapbc.cloud` covers single-label subdomains like `p-1709`.
+  pr_subdomain = local.is_temporary ? "${terraform.workspace}.navapbc.cloud" : null
+
   cpu                               = local.service_config.cpu
   memory                            = local.service_config.memory
   desired_instance_count            = local.is_temporary ? 1 : local.service_config.desired_instance_count
