@@ -122,5 +122,31 @@ RSpec.describe ActivityFlowInvitation, type: :model do
       expect(invitation.errors.attribute_names.map(&:to_s))
         .to include("pre_populated_activities[0].months[0].month")
     end
+
+    it "is valid when an employment entry's months fall within the expected reporting window" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        {
+          "type" => "employment",
+          "employer_name" => "Acme Corp",
+          "months" => [ { "month" => in_window_date, "hours" => 40, "gross_income" => 3000 } ]
+        }
+      ])
+
+      expect(invitation).to be_valid
+    end
+
+    it "is invalid when an employment entry's month falls outside the expected reporting window" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        {
+          "type" => "employment",
+          "employer_name" => "Acme Corp",
+          "months" => [ { "month" => out_of_window_date, "hours" => 40, "gross_income" => 3000 } ]
+        }
+      ])
+
+      expect(invitation).not_to be_valid
+      expect(invitation.errors.attribute_names.map(&:to_s))
+        .to include("pre_populated_activities[0].months[0].month")
+    end
   end
 end

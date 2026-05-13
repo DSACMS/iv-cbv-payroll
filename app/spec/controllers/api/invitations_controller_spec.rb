@@ -295,6 +295,18 @@ RSpec.describe Api::InvitationsController do
         expect(parsed_response["errors"].map { |e| e["field"] })
           .to include("activities[0].employer_name")
       end
+
+      it "returns an error when an employment month falls outside the reporting window" do
+        out_of_window_date = (Date.current + 60.days).iso8601
+        entry_with_bad_month = employment_entry.merge(months: [ { month: out_of_window_date, hours: 40, gross_income: 3000 } ])
+
+        post :create, params: valid_params.merge(activities: [ entry_with_bad_month ])
+
+        expect(response).to have_http_status(:unprocessable_content)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response["errors"].map { |e| e["field"] })
+          .to include("activities[0].months[0].month")
+      end
     end
   end
 end

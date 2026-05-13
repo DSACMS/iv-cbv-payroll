@@ -162,6 +162,28 @@ RSpec.describe ActivitiesHelper do
     it "returns empty array for empty input" do
       expect(helper.employment_activity_draft_cards([])).to eq([])
     end
+
+    it "includes month data when employment_activity_months have hours or gross_income" do
+      activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp", draft: true, data_source: "validated")
+      first_month = flow.reporting_months.first.beginning_of_month
+      create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 20, gross_income: 500)
+
+      result = helper.employment_activity_draft_cards([ activity ])
+
+      expect(result.first[:months]).to eq([
+        { month: first_month, gross_earnings: 50_000, hours: 20 }
+      ])
+    end
+
+    it "excludes months where both hours and gross_income are zero" do
+      activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp", draft: true, data_source: "validated")
+      first_month = flow.reporting_months.first.beginning_of_month
+      create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 0, gross_income: 0)
+
+      result = helper.employment_activity_draft_cards([ activity ])
+
+      expect(result.first[:months]).to be_empty
+    end
   end
 
   describe "#community_service_draft_cards" do
