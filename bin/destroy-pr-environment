@@ -27,6 +27,16 @@ if ! terraform -chdir="infra/${app_name}/service" workspace select "${workspace}
   exit 0
 fi
 
+echo "::group::Remove webhook subscriptions"
+./bin/run-command \
+  --workspace "${workspace}" \
+  --environment-variables "[{\"name\":\"PR_NUMBER\",\"value\":\"${pr_number}\"}]" \
+  "${app_name}" "${environment}" '["bin/rails", "pr_webhooks:destroy"]'
+echo "::endgroup::"
+
+# Re-select workspace after run-command reinitializes terraform
+terraform -chdir="infra/${app_name}/service" workspace select "${workspace}"
+
 echo "::group::Drop PR database schema"
 terraform -chdir="infra/${app_name}/app-config" init > /dev/null
 terraform -chdir="infra/${app_name}/app-config" apply -auto-approve > /dev/null

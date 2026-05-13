@@ -5,6 +5,7 @@ echo "  DB_PORT=$DB_PORT"
 echo "  DB_USER=$DB_USER"
 echo "  DB_NAME=$DB_NAME"
 echo "  DB_SCHEMA=$DB_SCHEMA"
+echo "  APP_USER=$APP_USER"
 
 if [ -n "$DB_SCHEMA" ] && [ "$DB_SCHEMA" != "public" ] && [ "$DB_SCHEMA" != "app" ]; then
   echo "Creating schema $DB_SCHEMA if it doesn't exist..."
@@ -12,3 +13,8 @@ if [ -n "$DB_SCHEMA" ] && [ "$DB_SCHEMA" != "public" ] && [ "$DB_SCHEMA" != "app
 fi
 
 ./bin/rake --trace db:migrate
+
+if [ -n "$DB_SCHEMA" ] && [ "$DB_SCHEMA" != "public" ] && [ "$DB_SCHEMA" != "app" ] && [ -n "$APP_USER" ]; then
+  echo "Granting app user '$APP_USER' privileges on $DB_SCHEMA..."
+  ./bin/rake db:grant_app_access
+fi
