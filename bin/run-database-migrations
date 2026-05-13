@@ -54,6 +54,7 @@ if [ "${has_database}" = "false" ]; then
 fi
 
 db_migrator_user=$(terraform -chdir="infra/${app_name}/app-config" output -json environment_configs | jq -r ".${environment}.database_config.migrator_username")
+db_app_user=$(terraform -chdir="infra/${app_name}/app-config" output -json environment_configs | jq -r ".${environment}.database_config.app_username")
 
 ./bin/terraform-init "infra/${app_name}/service" "${environment}"
 
@@ -91,7 +92,8 @@ command='["db-migrate"]'
 
 # Indent the later lines more to make the output of run-command prettier
 environment_variables=$(cat << EOF
-[{ "name" : "DB_USER", "value" : "${db_migrator_user}" }]
+[{ "name" : "DB_USER", "value" : "${db_migrator_user}" },
+                        { "name" : "APP_USER", "value" : "${db_app_user}" }]
 EOF
 )
 
