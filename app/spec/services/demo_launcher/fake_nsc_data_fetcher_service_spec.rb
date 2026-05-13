@@ -51,5 +51,31 @@ RSpec.describe DemoLauncher::FakeNscDataFetcherService do
         expect(education_activity.reload.data_source).to eq("partially_self_attested")
       end
     end
+
+    context "with spring and fall terms but no summer term" do
+      let(:identity) do
+        create(
+          :identity,
+          first_name: "Morgan",
+          last_name: "Testuser",
+          date_of_birth: Date.parse("1994-12-09")
+        )
+      end
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          identity: identity,
+          education_activities_count: 0,
+          created_at: Date.new(2025, 10, 1),
+          reporting_window_months: 4
+        )
+      end
+
+      it "sets data_source to validated" do
+        service.fetch
+
+        expect(education_activity.reload.data_source).to eq("validated")
+      end
+    end
   end
 end
