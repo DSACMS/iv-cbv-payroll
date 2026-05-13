@@ -44,6 +44,8 @@ RUN apt-get update -qq && \
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
+      liblcms2-2 \
+      liblcms2-dev \
       linux-libc-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives

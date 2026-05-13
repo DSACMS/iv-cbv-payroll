@@ -7,7 +7,7 @@ Emmy was created to address a growing gap: states are being asked to verify elig
 
 Emmy includes two components that can be used together or independently, depending on state needs:
 
-**Emmy App** — a direct-to-beneficiary web application that provides Medicaid clients with a simple, human-centered way to complete eligibility-related tasks. Designed with an applicant-first approach, the Emmy App guides users through reporting and verifying information — starting with Community Engagement (CE) activities and income — connects to trusted data sources to reduce redundant questions, and generates a standardized, audit-ready evidence package for the state.
+**Emmy App** — a web application that allows states to implement tools for Medicaid clients with a simple, human-centered way to complete eligibility-related tasks. Designed with an applicant-first approach, the Emmy App guides users through reporting and verifying information — starting with Community Engagement (CE) activities and income — connects to trusted data sources to reduce redundant questions, and generates a standardized, audit-ready evidence package for the state.
 
 **Emmy API** — a backend data service that gives states automated, cost-effective access to the verification data needed to support eligibility determinations, without replacing existing systems. The Emmy API connects states to federal and commercial data sources, beginning with VA Lighthouse (veteran disability verification, available at no cost to states) and the National Student Clearinghouse (education enrollment verification).
 
@@ -35,6 +35,8 @@ A list of core team members responsible for the code and documentation in this r
 * [/load\_testing](/load_testing) load testing resources
 
 See [AGENTS.md](/app/AGENTS.md) for some more information on repo structure.
+
+Note that [Emmy API](https://github.com/CMSgov/emmy-api), an API-only implementation of Emmy’s features, is in a separate repository.
 
 ### Documentation
 

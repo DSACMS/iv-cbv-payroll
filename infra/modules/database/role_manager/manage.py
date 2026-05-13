@@ -105,6 +105,13 @@ def configure_database(conn: Connection, config: dict) -> None:
     )
 
     configure_roles(conn, [migrator_username, app_username], database_name)
+
+    print("---- Granting CREATE on database to migrator for PR environment schema creation")
+    db.execute(
+        conn,
+        f"GRANT CREATE ON DATABASE {identifier(database_name)} TO {identifier(migrator_username)}",
+    )
+
     configure_schema(conn, schema_name, migrator_username, app_username)
     configure_superuser_extensions(conn, config["superuser_extensions"])
 
