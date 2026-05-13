@@ -171,6 +171,7 @@
   }
   .launcher__month-pill:hover { background: color("blue-5"); }
   .launcher__month-pill--active { background: color("primary"); color: white; }
+  .launcher__month-pill--active:hover { background: color("primary-dark"); }
   .launcher__months-note {
     margin: units(1) 0 0 units(4);
     font-size: 13px;

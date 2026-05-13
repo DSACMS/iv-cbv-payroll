@@ -165,7 +165,7 @@
              [ "lynette",                             "Enrolled full time",           "Full-time enrollment verified automatically via the National Student Clearinghouse." ],
              [ "renewal_half_time_last_4_of_6_avery", "Enrolled half-time",           "Half-time enrollment covering 4 of 6 months (good for renewal required-month testing)." ],
              [ "partial_enrollment_maya",             "Enrolled less-than-half-time", "Less-than-half-time enrollment (sends user through partially self-attested flow)." ],
-             [ "linda",                               "No NSC enrollment found",      "Client walks through self-attesting their enrollment." ]
+             [ "linda",                               "No NSC enrollment found",      "Enrollment unable to be verified via NSC (sends user through self-attestation flow)." ]
            ].each do |value, title, desc| %>
           <div class="launcher__rcard <%= "launcher__rcard--selected" if value == "lynette" %>"
                role="radio"
