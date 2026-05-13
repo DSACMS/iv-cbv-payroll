@@ -55,6 +55,16 @@ class ActivityFlowProgressIndicatorPreview < ApplicationPreview
     )
   end
 
+  def education_sufficiently_enrolled
+    results = []
+    results << make_result(Date.new(2026, 1, 1), 80, sufficient_enrollment: true)
+    results << make_result(Date.new(2025, 12, 1), 32)
+
+    render ActivityFlowProgressIndicator.new(
+      monthly_calculation_results: results
+    )
+  end
+
   def many_months_mixed_units
     results = []
     results << make_result(Date.new(2026, 1, 1), 77, earnings_cents: 597_00) # dollars
@@ -145,7 +155,7 @@ class ActivityFlowProgressIndicatorPreview < ApplicationPreview
 
   private
 
-  def make_result(month, hours, earnings_cents: 0)
+  def make_result(month, hours, earnings_cents: 0, sufficient_enrollment: false)
     meets_threshold = hours.to_f >= ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD ||
       earnings_cents >= ActivityFlowProgressCalculator::PER_MONTH_EARNINGS_THRESHOLD
 
@@ -161,7 +171,8 @@ class ActivityFlowProgressIndicatorPreview < ApplicationPreview
       total_hours: hours.to_f,
       total_earnings_cents: earnings_cents,
       default_unit: default_unit,
-      meets_requirements: meets_threshold
+      meets_requirements: meets_threshold,
+      sufficient_enrollment: sufficient_enrollment
     )
   end
 end

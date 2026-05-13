@@ -201,7 +201,7 @@ module "service" {
       port        = data.aws_rds_cluster.db_cluster[0].port
       user        = local.database_config.app_username
       db_name     = data.aws_rds_cluster.db_cluster[0].database_name
-      schema_name = local.database_config.schema_name
+      schema_name = local.is_temporary ? replace(terraform.workspace, "-", "_") : local.database_config.schema_name
     }
   } : null
 

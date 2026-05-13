@@ -12,6 +12,9 @@ on:
       pr_number:
         required: true
         type: string
+      commit_hash:
+        required: true
+        type: string
 jobs:
   destroy:
     name: Destroy environment
@@ -27,6 +30,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.commit_hash }}
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform

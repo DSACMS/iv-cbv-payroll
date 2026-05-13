@@ -27,6 +27,25 @@ if ! terraform -chdir="infra/${app_name}/service" workspace select "${workspace}
   exit 0
 fi
 
+echo "::group::Drop PR database schema"
+terraform -chdir="infra/${app_name}/app-config" init > /dev/null
+terraform -chdir="infra/${app_name}/app-config" apply -auto-approve > /dev/null
+has_database=$(terraform -chdir="infra/${app_name}/app-config" output -raw has_database)
+
+if [ "${has_database}" = "true" ]; then
+  migrator_role_arn=$(terraform -chdir="infra/${app_name}/service" output -raw migrator_role_arn)
+  ./bin/run-command \
+    --workspace "${workspace}" \
+    --task-role-arn "${migrator_role_arn}" \
+    "${app_name}" "${environment}" '["db-drop-schema"]'
+else
+  echo "Application does not have a database, skipping schema cleanup"
+fi
+echo "::endgroup::"
+
+# Re-select workspace after run-command reinitializes terraform
+terraform -chdir="infra/${app_name}/service" workspace select "${workspace}"
+
 echo "::group::Destroy resources"
 terraform -chdir="infra/${app_name}/service" destroy -var="environment_name=${environment}" -input=false -auto-approve
 echo "::endgroup::"

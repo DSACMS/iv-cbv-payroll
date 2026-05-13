@@ -5,7 +5,15 @@ class ActivityFlowProgressCalculator
   PER_MONTH_EARNINGS_THRESHOLD = 580_00 # in cents
 
   OverallResult = Struct.new(:total_hours, :meets_requirements, :meets_routing_requirements, keyword_init: true)
-  MonthlyResult = Struct.new(:month, :total_hours, :total_earnings_cents, :default_unit, :meets_requirements, keyword_init: true)
+  MonthlyResult = Struct.new(
+    :month,
+    :total_hours,
+    :total_earnings_cents,
+    :default_unit,
+    :meets_requirements,
+    :sufficient_enrollment,
+    keyword_init: true
+  )
 
   def initialize(activity_flow)
     @activity_flow = activity_flow
@@ -34,7 +42,8 @@ class ActivityFlowProgressCalculator
         total_hours: hours,
         total_earnings_cents: earnings_cents,
         default_unit: default_unit_for_month(hours: hours, earnings_cents: earnings_cents),
-        meets_requirements: hours >= PER_MONTH_HOURS_THRESHOLD || earnings_cents >= PER_MONTH_EARNINGS_THRESHOLD
+        meets_requirements: hours >= PER_MONTH_HOURS_THRESHOLD || earnings_cents >= PER_MONTH_EARNINGS_THRESHOLD,
+        sufficient_enrollment: sufficient_enrollment_for_month?(month)
       )
     end
   end
@@ -214,5 +223,9 @@ class ActivityFlowProgressCalculator
 
   def education_hours_for_month(month_start)
     @education_activities.sum { |education| education.progress_hours_for_month(month_start) }
+  end
+
+  def sufficient_enrollment_for_month?(month_start)
+    @education_activities.any? { |education| education.sufficient_enrollment_for_month?(month_start) }
   end
 end

@@ -101,6 +101,18 @@ RSpec.describe ActivitiesHelper do
         expect(result.first[:months].first[:month]).to eq(first_month)
       end
 
+      it "filters out months with no hours" do
+        activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 0)
+        create(:volunteering_activity_month, volunteering_activity: activity, month: first_month + 1.month, hours: 5)
+
+        result = helper.community_service_cards(flow.volunteering_activities)
+
+        expect(result.first[:months]).to eq([
+          { month: first_month + 1.month, hours: 5 }
+        ])
+      end
+
       it "includes edit path to community service review with from_edit" do
         activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry")
         create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 5)
@@ -128,6 +140,26 @@ RSpec.describe ActivitiesHelper do
     end
   end
 
+  describe "#community_service_draft_cards" do
+    let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+    let(:first_month) { flow.reporting_window_range.begin.beginning_of_month }
+
+    it "filters out months with no hours" do
+      activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", draft: true, data_source: "validated")
+      create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 0)
+      create(:volunteering_activity_month, volunteering_activity: activity, month: first_month + 1.month, hours: 5)
+
+      result = helper.community_service_draft_cards([ activity ])
+
+      expect(result.first).to include(
+        name: "Food Pantry",
+        months: [ { month: first_month + 1.month, hours: 5 } ],
+        edit_path: helper.edit_activities_flow_community_service_path(id: activity.id),
+        pre_populated: true
+      )
+    end
+  end
+
   describe "#work_program_cards" do
     let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
     let(:first_month) { flow.reporting_months.first.beginning_of_month }
@@ -141,6 +173,18 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:name]).to eq("Career Prep")
       expect(result.first[:months].first[:hours]).to eq(5)
       expect(result.first[:months].first[:month]).to eq(first_month)
+    end
+
+    it "filters out months with no hours" do
+      activity = create(:job_training_activity, activity_flow: flow, program_name: "Career Prep", organization_address: "123 Main")
+      create(:job_training_activity_month, job_training_activity: activity, month: first_month, hours: 0)
+      create(:job_training_activity_month, job_training_activity: activity, month: first_month + 1.month, hours: 8)
+
+      result = helper.work_program_cards(flow.job_training_activities)
+
+      expect(result.first[:months]).to eq([
+        { month: first_month + 1.month, hours: 8 }
+      ])
     end
 
     it "returns one card per activity even with same program name" do
@@ -195,26 +239,30 @@ RSpec.describe ActivitiesHelper do
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
-      result.first[:months].each do |month_data|
-        expect(month_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.full_time"))
-        expect(month_data[:community_engagement_hours]).to eq(80)
-      end
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: first_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.full_time")
+        },
+        {
+          month: second_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.full_time")
+        }
+      )
     end
 
-    it "shows 'Not enrolled' for months without overlapping terms" do
+    it "does not include months without overlapping terms" do
       activity = create(:education_activity, activity_flow: flow)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", enrollment_status: "half_time", term_begin: first_month, term_end: first_month.end_of_month)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
-      # Months are in reverse order, so second_month is first
-      second_month_data = result.first[:months].find { |m| m[:month] == second_month }
-      first_month_data = result.first[:months].find { |m| m[:month] == first_month }
-
-      expect(first_month_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.half_time"))
-      expect(first_month_data[:community_engagement_hours]).to eq(80)
-      expect(second_month_data[:enrollment_status]).to eq(I18n.t("activities.hub.cards.not_enrolled"))
-      expect(second_month_data[:community_engagement_hours]).to eq(0)
+      expect(result.first[:months]).to eq([
+        {
+          month: first_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        }
+      ])
     end
 
     it "does not build a card for a term with no reporting-window overlap" do
@@ -294,22 +342,16 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:months]).to contain_exactly(
         {
           month: first_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
-          community_engagement_hours: 12,
-          credit_hours: 3,
-          show_credit_hours: true
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         },
         {
           month: second_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
-          community_engagement_hours: 20,
-          credit_hours: 5,
-          show_credit_hours: true
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         }
       )
     end
 
-    it "shows saved term credit hours for partially self-attested months" do
+    it "shows enrollment status only for partially self-attested months" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
       create(
         :nsc_enrollment_term,
@@ -323,11 +365,16 @@ RSpec.describe ActivitiesHelper do
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
-      result.first[:months].each do |month_data|
-        expect(month_data[:credit_hours]).to eq(6)
-        expect(month_data[:community_engagement_hours]).to eq(24)
-        expect(month_data[:show_credit_hours]).to be(true)
-      end
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: first_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        },
+        {
+          month: second_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        }
+      )
     end
 
     it "only includes overlapping months for partially self-attested terms" do
@@ -345,10 +392,46 @@ RSpec.describe ActivitiesHelper do
       result = helper.education_cards([ activity.reload ], reporting_months)
 
       expect(result.first[:months].map { |m| m[:month] }).to eq([ first_month ])
-      expect(result.first[:months].first[:credit_hours]).to eq(4)
+      expect(result.first[:months].first).to eq(
+        {
+          month: first_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        }
+      )
     end
 
-    it "shows saved term credit hours for enrolled partially self-attested months" do
+    it "filters out partially self-attested education months with no credit hours" do
+      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: "Test U",
+        term_begin: first_month,
+        term_end: first_month.end_of_month,
+        credit_hours: 0
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: "Test U",
+        term_begin: second_month,
+        term_end: second_month.end_of_month,
+        credit_hours: 5
+      )
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      expect(result.first[:months]).to eq([
+        {
+          month: second_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+        }
+      ])
+    end
+
+    it "shows enrollment status only for enrolled partially self-attested months" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
       create(
         :nsc_enrollment_term,
@@ -362,11 +445,16 @@ RSpec.describe ActivitiesHelper do
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
-      result.first[:months].each do |month_data|
-        expect(month_data[:credit_hours]).to eq(5)
-        expect(month_data[:community_engagement_hours]).to eq(20)
-        expect(month_data[:show_credit_hours]).to be(true)
-      end
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: first_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.enrolled")
+        },
+        {
+          month: second_month,
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.enrolled")
+        }
+      )
     end
 
     it "builds a fully self-attested card from activity months" do
@@ -393,6 +481,23 @@ RSpec.describe ActivitiesHelper do
       )
     end
 
+    it "filters out fully self-attested education months with no credit hours" do
+      activity = create(
+        :education_activity,
+        activity_flow: flow,
+        data_source: :fully_self_attested,
+        school_name: "Updated University of Illinois"
+      )
+      create(:education_activity_month, education_activity: activity, month: first_month.beginning_of_month, hours: 0)
+      create(:education_activity_month, education_activity: activity, month: second_month.beginning_of_month, hours: 6)
+
+      result = helper.education_cards([ activity.reload ], reporting_months)
+
+      expect(result.first[:months]).to eq([
+        { month: second_month, credit_hours: 6, community_engagement_hours: 24 }
+      ])
+    end
+
     it "shows the spring enrollment status on the summer card when carryover applies" do
       summer_flow = create(:activity_flow, reporting_window_months: 2, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
       summer_flow.shift_reporting_window_start!("2025-07-01")
@@ -415,10 +520,16 @@ RSpec.describe ActivitiesHelper do
       result = helper.education_cards([ activity.reload ], summer_months)
 
       expect(result.length).to eq(1)
-      expect(result.first[:months].map { |month| month[:enrollment_status] })
-        .to all(eq(I18n.t("components.enrollment_term_table_component.status.half_time")))
-      expect(result.first[:months].map { |month| month[:community_engagement_hours] })
-        .to all(eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: Date.new(2025, 7, 1),
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        },
+        {
+          month: Date.new(2025, 8, 1),
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        }
+      )
     end
 
     it "shows the spring enrollment status on the summer card when no summer term exists" do
@@ -437,10 +548,16 @@ RSpec.describe ActivitiesHelper do
       result = helper.education_cards([ activity.reload ], summer_months)
 
       expect(result.length).to eq(1)
-      expect(result.first[:months].map { |month| month[:enrollment_status] })
-        .to all(eq(I18n.t("components.enrollment_term_table_component.status.half_time")))
-      expect(result.first[:months].map { |month| month[:community_engagement_hours] })
-        .to all(eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
+      expect(result.first[:months]).to contain_exactly(
+        {
+          month: Date.new(2025, 7, 1),
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        },
+        {
+          month: Date.new(2025, 8, 1),
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.half_time")
+        }
+      )
     end
 
     it "builds one validated card when two terms overlap the same reporting month" do
@@ -469,9 +586,9 @@ RSpec.describe ActivitiesHelper do
       july_data = result.first[:months].find { |month| month[:month] == Date.new(2025, 7, 1) }
 
       expect(june_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.half_time"))
-      expect(june_data[:community_engagement_hours]).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
+      expect(june_data).not_to have_key(:community_engagement_hours)
       expect(july_data[:enrollment_status]).to eq(I18n.t("components.enrollment_term_table_component.status.half_time"))
-      expect(july_data[:community_engagement_hours]).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
+      expect(july_data).not_to have_key(:community_engagement_hours)
     end
   end
 
@@ -519,6 +636,25 @@ RSpec.describe ActivitiesHelper do
       expect(month_data[:hours]).to eq(85)
     end
 
+    it "filters inactive monthly data and preserves tenths of an hour" do
+      second_month = first_month + 1.month
+      third_month = first_month + 2.months
+      allow(mock_report).to receive(:summarize_by_month).and_return({
+        account_id => {
+          third_month.strftime("%Y-%m") => { accrued_gross_earnings: 0, total_w2_hours: 0.0, total_gig_hours: 0.0 },
+          second_month.strftime("%Y-%m") => { accrued_gross_earnings: 0, total_w2_hours: 80.0, total_gig_hours: 5.45 },
+          month_key => { accrued_gross_earnings: 2500_00, total_w2_hours: 42.24, total_gig_hours: 0.0 }
+        }
+      })
+
+      result = helper.employment_cards([ payroll_account ], mock_report, reporting_range)
+
+      expect(result.first[:months]).to eq([
+        { month: second_month, gross_earnings: 0, hours: 85.5 },
+        { month: first_month, gross_earnings: 2500_00, hours: 42.2 }
+      ])
+    end
+
     it "returns empty array when aggregator report is nil" do
       result = helper.employment_cards([ payroll_account ], nil, reporting_range)
 
@@ -564,6 +700,16 @@ RSpec.describe ActivitiesHelper do
         { month: first_month, gross_earnings: 50000, hours: 40 },
         { month: second_month, gross_earnings: 30000, hours: 20 }
       )
+    end
+
+    it "filters out months with no income or hours" do
+      activity.employment_activity_months.find_by(month: second_month).update!(gross_income: 0, hours: 0)
+
+      result = helper.employment_activity_cards([ activity ])
+
+      expect(result.first[:months]).to eq([
+        { month: first_month, gross_earnings: 50000, hours: 40 }
+      ])
     end
 
     it "returns empty months when no monthly entries exist" do

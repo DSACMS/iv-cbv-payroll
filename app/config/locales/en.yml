@@ -322,12 +322,13 @@ en:
     hub:
       add: Add
       cards:
+        complete_action: Complete
         credit_hours: 'Credit hours: %{amount}'
         enrollment_status: 'Enrollment: %{status}'
         gross_income: 'Gross income: %{amount}'
         hours: 'Community engagement hours: %{count}'
         no_employment_data: No payments found from this employer.
-        not_enrolled: Not enrolled
+        pre_populated_notice: Your agency provided this activity. Complete the missing information to add it to your report.
       completed_state_description: "%{agency_name} will determine your eligibility based on the activities you've added to your report."
       completed_state_title: You're ready to review and submit your report
       edit: Edit
@@ -337,6 +338,7 @@ en:
         employment: No employment added
         work_programs: No work programs added
       empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
+      empty_state_description_single_month: Add employment, education, community service, or work program activities you've done in %{reporting_window}.
       empty_state_months_required_all: all %{required_month_count} months in the reporting period
       empty_state_months_required_any: any %{required_month_count} months in the reporting period
       empty_state_months_required_label: 'Months required:'
@@ -356,9 +358,9 @@ en:
           no_results_body: You will need to enter information about your employment manually. You will also need to upload documents like pay stubs.
           no_results_title: We couldn't find your employer or business.
           results:
-            one: 1 result
-            other: "%{count} results"
-          search_subheader: Please select your employer or business from the list below.
+            one: We found 1 result
+            other: We found %{count} results
+          search_subheader: Select your employer from the list. Then, follow the screens to sign in. Use the login credentials you use to view your pay stubs online.
           select: Select
         show:
           add_employment_manually: Add employment manually
@@ -368,8 +370,10 @@ en:
           header: Search for your employer
           payroll_providers: Payroll providers
           popular_providers: Popular providers
+          query_label: Search for your employer
           search: Search
           search_label: Search for the employer or business you want to add. If you can't find it, you can add it manually.
+          search_results_header: Select your employer
       error_no_access: You don't have permission to access that information
       payment_details:
         show:
@@ -379,8 +383,9 @@ en:
           header: Review your information from %{employer_name}
           header_no_employer_name: Your information from your employer
           none_found: We didn't find any payments from this employer
-          none_found_description: This typically happens when you haven't received income from this job between %{start_date} and %{end_date}. If you believe this is an error, add a comment below.
-          subheader_html: "<p>We have gathered your records from %{start_date} to %{end_date}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
+          none_found_description: This typically happens when you haven't received income from this job between %{start_month} and %{end_month}. If you believe this is an error, add a comment below.
+          subheader_html: "<p>We have gathered your records from %{start_month} to %{end_month}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
+          subheader_single_month_html: "<p>We have gathered your records for %{month}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
           unknown: Unknown
       synchronization_failures:
         show:
@@ -547,6 +552,7 @@ en:
     renewal_subtitle_no_range: Complete any %{required} months to meet requirements.
     see_progress_in_dollars: See progress in $
     see_progress_in_hours: See progress in hours
+    sufficiently_enrolled: Sufficiently enrolled
     switch_to_dollars: Switch to $
     switch_to_hours: Switch to hours
     title: Your %{month} progress

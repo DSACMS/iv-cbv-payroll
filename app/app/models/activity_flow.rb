@@ -1,6 +1,9 @@
 class ActivityFlow < Flow
   include DemoLauncherOverrides
 
+  DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS = 6
+  DEFAULT_APPLICATION_REPORTING_WINDOW_MONTHS = 1
+
   belongs_to :cbv_applicant
   belongs_to :identity, optional: true
   belongs_to :activity_flow_invitation, optional: true
@@ -15,12 +18,42 @@ class ActivityFlow < Flow
   before_create :set_default_reporting_window, :set_default_renewal_required_months
 
   def self.create_from_invitation(invitation, device_id, params = {})
-    create(
+    flow = create(
       activity_flow_invitation: invitation,
       cbv_applicant: invitation.cbv_applicant || CbvApplicant.create(client_agency_id: invitation.client_agency_id),
       device_id: device_id,
       **flow_attributes_from_params(params)
     )
+
+    hydrate_pre_populated_activities!(flow, invitation) if flow.persisted?
+
+    flow
+  end
+
+  def self.hydrate_pre_populated_activities!(flow, invitation)
+    return unless invitation.respond_to?(:pre_populated_activities)
+    entries = invitation.pre_populated_activities
+    return unless entries.is_a?(Array)
+    return if entries.empty?
+    return if flow.volunteering_activities.exists?
+
+    entries.each do |entry|
+      attrs = entry.respond_to?(:stringify_keys) ? entry.stringify_keys : entry.to_h.stringify_keys
+      case attrs["type"].to_s
+      when "volunteering"
+        activity = flow.volunteering_activities.create(
+          attrs.slice(*VolunteeringActivity::FIELDS)
+            .merge("draft" => true, "data_source" => "validated")
+        )
+        next unless activity.persisted?
+
+        Array(attrs["months"]).each do |month_entry|
+          next unless month_entry.is_a?(Hash) || month_entry.respond_to?(:to_h)
+          month_attrs = month_entry.respond_to?(:stringify_keys) ? month_entry.stringify_keys : month_entry.to_h.stringify_keys
+          activity.volunteering_activity_months.create(month_attrs.slice(*VolunteeringActivityMonth::FIELDS))
+        end
+      end
+    end
   end
 
   def self.flow_attributes_from_params(params)
@@ -28,12 +61,30 @@ class ActivityFlow < Flow
     { reporting_window_type: reporting_window_type }
   end
 
-  def reporting_window_range
-    current_month_start = created_at.to_date.beginning_of_month
+  # Reporting window an ActivityFlow would have if created on `reference_date`
+  # for the given agency. Used by both the instance method and by
+  # ActivityFlowInvitation validation (which runs before the flow exists).
+  def self.expected_reporting_window_range(client_agency_id, reporting_window_type: "application", reference_date: Date.current, months_override: nil)
+    months = months_override || (
+      if reporting_window_type == "renewal"
+        DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS
+      else
+        Rails.application.config.client_agencies[client_agency_id]&.application_reporting_months || DEFAULT_APPLICATION_REPORTING_WINDOW_MONTHS
+      end
+    )
+    current_month_start = reference_date.to_date.beginning_of_month
     end_date = current_month_start - 1.day
-    start_date = current_month_start - reporting_window_months.months
-
+    start_date = current_month_start - months.months
     start_date..end_date
+  end
+
+  def reporting_window_range
+    self.class.expected_reporting_window_range(
+      cbv_applicant&.client_agency_id,
+      reporting_window_type: reporting_window_type,
+      reference_date: created_at,
+      months_override: reporting_window_months
+    )
   end
 
   def reporting_months
@@ -121,10 +172,10 @@ class ActivityFlow < Flow
   end
 
   def calculate_reporting_window_months
-    return 6 if renewal_reporting_window?
+    return DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS if renewal_reporting_window?
 
     client_agency = Rails.application.config.client_agencies[cbv_applicant&.client_agency_id]
-    client_agency&.application_reporting_months || 1
+    client_agency&.application_reporting_months || DEFAULT_APPLICATION_REPORTING_WINDOW_MONTHS
   end
 
   def set_default_renewal_required_months

@@ -5,9 +5,14 @@
 <% variant = @flow.renewal_reporting_window? ? :renewal : :application %>
 <% title_key = activity_hub_title_key(state) %>
 <% description_key = activity_hub_description_key(state) %>
+<% single_month_reporting_window = @flow.reporting_months.one? %>
+<% reporting_window_display = single_month_reporting_window ? l(@flow.reporting_window_range.begin, format: :month_year) : @flow.reporting_window_display %>
+<% empty_state_description_key = single_month_reporting_window ? "activities.hub.empty_state_description_single_month" : "activities.hub.empty_state_description" %>
 <%# i18n-tasks-use t("activities.hub.empty_state_title") %>
 <%# i18n-tasks-use t("activities.hub.completed_state_title") %>
 <%# i18n-tasks-use t("activities.hub.in_progress_state_title") %>
+<%# i18n-tasks-use t("activities.hub.empty_state_description") %>
+<%# i18n-tasks-use t("activities.hub.empty_state_description_single_month") %>
 <%# i18n-tasks-use t("activities.hub.completed_state_description", agency_name: "Test Agency") %>
 <%# i18n-tasks-use t("activities.hub.in_progress_state_description", agency_name: "Test Agency") %>
 <%# i18n-tasks-use t("activities.hub.empty_state_months_required_any", required_month_count: 3) %>
@@ -24,7 +29,7 @@
     <% if state == :empty %>
       <p class="activity-hub-subheading margin-top-2">
         <strong><%= t("activities.hub.empty_state_reporting_period_label") %></strong>
-        <%= @flow.reporting_window_display %>
+        <%= reporting_window_display %>
       </p>
 
       <% if variant == :renewal %>
@@ -36,7 +41,7 @@
       <% end %>
 
       <p class="activity-hub-subheading">
-        <%= t("activities.hub.empty_state_description", reporting_window: @flow.reporting_window_display) %>
+        <%= t(empty_state_description_key, reporting_window: reporting_window_display) %>
       </p>
     <% else %>
       <p class="activity-hub-subheading margin-top-2">
@@ -131,10 +136,6 @@
                   <div class="activity-month-details__data">
                     <% if month_data[:enrollment_status].present? %>
                       <p class="margin-y-0"><%= t("activities.hub.cards.enrollment_status", status: month_data[:enrollment_status]) %></p>
-                      <% if month_data[:show_credit_hours] %>
-                        <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
-                      <% end %>
-                      <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:community_engagement_hours]) %></p>
                     <% else %>
                       <p class="margin-y-0"><%= t("activities.hub.cards.credit_hours", amount: month_data[:credit_hours]) %></p>
                       <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:community_engagement_hours]) %></p>
@@ -149,7 +150,10 @@
     <% end %>
 
     <% if activity_type_enabled?(:community_service) %>
-      <% community_service_card_data = community_service_cards(@community_service_activities) %>
+      <%# i18n-tasks-use t("activities.hub.cards.pre_populated_notice") %>
+      <%# i18n-tasks-use t("activities.hub.cards.complete_action") %>
+      <% community_service_card_data = community_service_draft_cards(@community_service_draft_activities || []) +
+                                        community_service_cards(@community_service_activities) %>
       <%= render "activities/activities/activity_section",
             activity_type: "community_service",
             section_title: t("activities.community_service.title"),
@@ -159,9 +163,12 @@
         <% community_service_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
-              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+              <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
             <% end %>
             <% card.with_body do %>
+              <% if card_data[:pre_populated] %>
+                <p class="margin-y-0"><%= t("activities.hub.cards.pre_populated_notice") %></p>
+              <% end %>
               <% card_data[:months].each do |month_data| %>
                 <div class="activity-month-details">
                   <div class="activity-month-details__month">
