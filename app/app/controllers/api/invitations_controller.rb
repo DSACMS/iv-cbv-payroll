@@ -70,7 +70,7 @@ class Api::InvitationsController < ApplicationController
         :type,
         *VolunteeringActivity::FIELDS,
         *EmploymentActivity::FIELDS,
-        months: VolunteeringActivityMonth::FIELDS.map(&:to_sym)
+        months: (VolunteeringActivityMonth::FIELDS | EmploymentActivityMonth::FIELDS).map(&:to_sym)
       ).to_h
     end
   end

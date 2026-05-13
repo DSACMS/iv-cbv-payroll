@@ -56,10 +56,17 @@ class ActivityFlow < Flow
       when "employment"
         next if flow.employment_activities.exists?
 
-        flow.employment_activities.create(
+        activity = flow.employment_activities.create(
           attrs.slice(*EmploymentActivity::FIELDS)
             .merge("draft" => true, "data_source" => "validated")
         )
+        next unless activity.persisted?
+
+        Array(attrs["months"]).each do |month_entry|
+          next unless month_entry.is_a?(Hash) || month_entry.respond_to?(:to_h)
+          month_attrs = month_entry.respond_to?(:stringify_keys) ? month_entry.stringify_keys : month_entry.to_h.stringify_keys
+          activity.employment_activity_months.create(month_attrs.slice(*EmploymentActivityMonth::FIELDS))
+        end
       end
     end
   end
