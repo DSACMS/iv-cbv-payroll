@@ -107,6 +107,7 @@ RSpec.describe ActivityFlow, type: :model do
           {
             "type" => "employment",
             "employer_name" => "Acme Corp",
+            "is_self_employed" => false,
             "street_address" => "123 Main St",
             "city" => "Boston",
             "state" => "MA",
@@ -126,7 +127,14 @@ RSpec.describe ActivityFlow, type: :model do
         expect(activity).to be_draft
         expect(activity.data_source).to eq("validated")
         expect(activity.employer_name).to eq("Acme Corp")
+        expect(activity.is_self_employed).to be false
+        expect(activity.street_address).to eq("123 Main St")
+        expect(activity.city).to eq("Boston")
+        expect(activity.state).to eq("MA")
+        expect(activity.zip_code).to eq("02101")
+        expect(activity.contact_name).to eq("Jane Doe")
         expect(activity.contact_email).to eq("jane@acme.com")
+        expect(activity.contact_phone_number).to eq("555-0100")
       end
 
       it "is idempotent — does not double-hydrate if employment activities already exist" do
