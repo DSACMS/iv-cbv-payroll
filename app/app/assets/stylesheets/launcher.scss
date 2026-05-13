@@ -1,0 +1,321 @@
+@forward "uswds";
+@use "uswds" as *;
+
+// Basic Demo Launcher (/launcher) — page styles, scoped to .launcher-page.
+.launcher-page {
+  color: color("ink");
+  counter-reset: step;
+
+  // Main column
+  .launcher__main {
+    padding: units(5) units(6) units(8);
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+
+  // Title block
+  .launcher__title {
+    display: flex;
+    align-items: baseline;
+    gap: units(1.5);
+    margin: 0 0 units(1);
+    flex-wrap: wrap;
+  }
+  .launcher__title h1 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0;
+    color: color("ink");
+  }
+  .launcher__title-emoji {
+    font-size: 26px;
+    line-height: 1;
+  }
+  .launcher__subtitle {
+    margin: 0 0 units(2);
+    font-size: 16px;
+    color: color("base");
+    line-height: 1.5;
+  }
+
+  // Step block
+  .launcher__step { margin-bottom: units(4); }
+  .launcher__step-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: units(1.5);
+  }
+  // counter-increment is on ::before so display:none parent steps don't advance the count
+  .launcher__step-num {
+    font-size: 18px;
+    font-weight: 700;
+    color: color("ink");
+    &::before {
+      counter-increment: step;
+      content: counter(step) ".";
+    }
+  }
+  .launcher__step-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: color("ink");
+    margin: 0;
+  }
+  .launcher__step-help {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: color("primary");
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+  .launcher__step-help .usa-icon { width: 18px; height: 18px; }
+  .launcher__step-help:hover { color: color("primary-dark"); }
+  .launcher__step-hint { margin: 0 0 units(1.5); }
+  .launcher__step-hint[hidden] { display: none; }
+
+  // Radio cards
+  .launcher__radio-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: units(1.5);
+    @include at-media-max("mobile-lg") { grid-template-columns: 1fr; }
+  }
+  .launcher__radio-col {
+    display: flex;
+    flex-direction: column;
+    gap: units(1.5);
+  }
+  .launcher__rcard {
+    display: flex;
+    align-items: flex-start;
+    gap: units(1.5);
+    padding: 14px units(2);
+    background: white;
+    border: 2px solid color("gray-cool-20");
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.15s ease-in-out;
+    text-align: left;
+    width: 100%;
+    color: color("ink");
+  }
+  .launcher__rcard:hover {
+    border-color: color("primary");
+    background: color("blue-5");
+  }
+  .launcher__rcard--selected {
+    border-color: color("primary");
+    background: color("blue-5");
+    box-shadow: inset 0 0 0 2px color("primary");
+  }
+  .launcher__rcard-radio {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid color("gray-cool-40");
+    background: white;
+    margin-top: 2px;
+    position: relative;
+  }
+  .launcher__rcard--selected .launcher__rcard-radio { border-color: color("primary"); }
+  .launcher__rcard--selected .launcher__rcard-radio::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background: color("primary");
+    border-radius: 50%;
+  }
+  .launcher__rcard-body { flex: 1; min-width: 0; display: block; }
+  .launcher__rcard-title {
+    display: block;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0;
+    color: color("ink");
+    line-height: 1.3;
+  }
+  .launcher__rcard-desc {
+    display: block;
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: color("base");
+    line-height: 1.5;
+  }
+  .launcher__rcard-meta { font-weight: 400; font-size: 14px; color: color("base"); }
+  .launcher__rcard-extra { display: block; margin-top: units(1); }
+
+  // Month pills inside Application card
+  .launcher__months {
+    margin: 10px 0 0 units(4);
+    display: flex;
+    align-items: center;
+    gap: units(1);
+    flex-wrap: wrap;
+  }
+  .launcher__month-pill {
+    border: 2px solid color("primary");
+    background: white;
+    color: color("primary");
+    font-weight: 700;
+    font-size: 14px;
+    padding: units(1) 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.15s ease-in-out;
+  }
+  .launcher__month-pill:hover { background: color("blue-5"); }
+  .launcher__month-pill--active { background: color("primary"); color: white; }
+  .launcher__month-pill--active:hover { background: color("primary-dark"); }
+  .launcher__months-note {
+    margin: units(1) 0 0 units(4);
+    font-size: 13px;
+    color: color("base");
+  }
+
+  // Inline field for the optional renewal_required_months input
+  .launcher__inline-field {
+    margin: 10px 0 0 units(4);
+    display: flex;
+    align-items: center;
+    gap: units(1);
+    font-size: 14px;
+  }
+  .launcher__inline-input {
+    width: 72px;
+    padding: 6px 10px;
+    border: 2px solid color("ink");
+    background: white;
+    border-radius: 0;
+    font-size: 14px;
+    font-family: inherit;
+    color: color("ink");
+  }
+
+  // Agency select — constrains width; usa-select handles all other styling
+  .launcher__agency-select { max-width: 320px; }
+
+  // Launch row — buttons are usa-button / usa-button--outline
+  .launcher__launch {
+    display: flex;
+    align-items: center;
+    gap: units(1);
+    margin-top: units(5);
+    border-top: 1px solid color("base-lighter");
+    padding-top: units(3);
+  }
+  .launcher__launch-note {
+    margin-left: units(1);
+    font-size: 13px;
+    color: color("base");
+    line-height: 1.4;
+  }
+  .launcher__launch-note[hidden] { display: none; }
+
+  // Link card (shown after launch)
+  .launcher__linkcard {
+    margin-top: units(2.5);
+    padding: units(2);
+    border: 1px solid color("base-lighter");
+    background: color("gray-cool-2");
+    border-radius: 4px;
+  }
+  .launcher__linkcard[hidden] { display: none; }
+  .launcher__linkcard-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: color("base");
+    margin: 0 0 units(1);
+  }
+  .launcher__linkcard-row {
+    display: flex;
+    gap: units(1);
+    align-items: stretch;
+    flex-wrap: wrap;
+    @include at-media-max("mobile-lg") { flex-direction: column; }
+  }
+  .launcher__linkcard-input {
+    flex: 1;
+    padding: 10px units(1.5);
+    border: 1px solid color("gray-cool-20");
+    background: white;
+    font-family: family("mono");
+    font-size: 13px;
+    color: color("ink");
+    border-radius: 2px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .launcher__linkcard-btn {
+    padding: units(1) 14px;
+    font-size: 14px;
+    font-weight: 700;
+    border: 2px solid color("primary");
+    background: white;
+    color: color("primary");
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: 0.15s ease-in-out;
+    text-decoration: none;
+  }
+  .launcher__linkcard-btn:hover { background: color("blue-5"); }
+  .launcher__linkcard-btn--primary { background: color("primary"); color: white; }
+  .launcher__linkcard-btn--primary:hover { background: color("primary-dark"); color: white; }
+  .launcher__linkcard-btn .usa-icon { width: 14px; height: 14px; }
+  .launcher__linkcard-copied {
+    margin-top: 10px;
+    font-size: 13px;
+    color: color("success-darker");
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .launcher__linkcard-copied[hidden] { display: none; }
+  .launcher__linkcard-copied .usa-icon { width: 14px; height: 14px; }
+
+  // Help footer
+  .launcher__help-footer {
+    margin-top: units(6);
+    padding: units(2) units(2.5);
+    background: color("blue-5");
+    border-left: 4px solid color("primary");
+    font-size: 14px;
+    color: color("ink");
+    display: flex;
+    align-items: flex-start;
+    gap: units(1.5);
+    border-radius: 0 4px 4px 0;
+  }
+  .launcher__help-footer .usa-icon {
+    width: 20px;
+    height: 20px;
+    color: color("primary");
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .launcher__help-footer strong { display: block; margin-bottom: 2px; }
+  .launcher__help-footer a { color: color("primary"); font-weight: 700; }
+
+  // Visibility helpers driven by Stimulus data values on the .launcher-page root
+  [data-launcher-show-when="ce"],
+  [data-launcher-show-when="activity"],
+  [data-launcher-show-when="renewal"] {
+    display: none;
+  }
+  &[data-launcher-flow-value="activity"] [data-launcher-show-when="ce"] { display: revert; }
+  &[data-launcher-flow-value="activity"] [data-launcher-show-when="activity"] { display: revert; }
+  &[data-launcher-window-value="renewal"] [data-launcher-show-when="application"] { display: none; }
+  &[data-launcher-window-value="renewal"] [data-launcher-show-when="renewal"] { display: revert; }
+}
