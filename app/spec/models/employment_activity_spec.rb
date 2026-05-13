@@ -5,6 +5,7 @@ RSpec.describe EmploymentActivity, type: :model do
     it "defines the permitted pre-populated fields" do
       expect(EmploymentActivity::FIELDS).to match_array(%w[
         employer_name
+        is_self_employed
         street_address
         street_address_line_2
         city
