@@ -12,6 +12,7 @@ class Activities::ActivitiesController < Activities::BaseController
 
     @employment_payroll_accounts = @flow.payroll_accounts.published.order(created_at: :desc).select(&:sync_succeeded?)
     @employment_activities = @flow.employment_activities.published.includes(:employment_activity_months).order(created_at: :desc)
+    @employment_draft_activities = @flow.employment_activities.where(draft: true, data_source: "validated").includes(:employment_activity_months).order(created_at: :desc)
     @persisted_report = PersistedReportAdapter.new(@flow) if @employment_payroll_accounts.any?
   end
 end

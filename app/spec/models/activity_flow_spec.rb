@@ -101,6 +101,59 @@ RSpec.describe ActivityFlow, type: :model do
       end
     end
 
+    context "with a pre-populated employment activity" do
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          {
+            "type" => "employment",
+            "employer_name" => "Acme Corp",
+            "street_address" => "123 Main St",
+            "city" => "Boston",
+            "state" => "MA",
+            "zip_code" => "02101",
+            "contact_name" => "Jane Doe",
+            "contact_email" => "jane@acme.com",
+            "contact_phone_number" => "555-0100"
+          }
+        ])
+      end
+
+      it "hydrates a draft employment activity from the invitation payload" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        expect(flow.employment_activities.count).to eq(1)
+        activity = flow.employment_activities.first
+        expect(activity).to be_draft
+        expect(activity.data_source).to eq("validated")
+        expect(activity.employer_name).to eq("Acme Corp")
+        expect(activity.contact_email).to eq("jane@acme.com")
+      end
+
+      it "is idempotent — does not double-hydrate if employment activities already exist" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+        expect(flow.employment_activities.count).to eq(1)
+
+        described_class.hydrate_pre_populated_activities!(flow, invitation)
+        expect(flow.employment_activities.reload.count).to eq(1)
+      end
+    end
+
+    context "with a mixed volunteering and employment invitation" do
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          { "type" => "volunteering", "organization_name" => "Red Cross" },
+          { "type" => "employment", "employer_name" => "Acme Corp" }
+        ])
+      end
+
+      it "hydrates one activity of each type" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        expect(flow.volunteering_activities.count).to eq(1)
+        expect(flow.employment_activities.count).to eq(1)
+      end
+    end
+
     it "creates no activities when pre_populated_activities is empty" do
       invitation = create(:activity_flow_invitation, pre_populated_activities: [])
 

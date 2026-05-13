@@ -140,6 +140,30 @@ RSpec.describe ActivitiesHelper do
     end
   end
 
+  describe "#employment_activity_draft_cards" do
+    let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+
+    it "returns a card with pre_populated: true and edit path pointing to employment edit page" do
+      activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp", draft: true, data_source: "validated")
+
+      result = helper.employment_activity_draft_cards([ activity ])
+
+      expect(result.length).to eq(1)
+      expect(result.first).to include(
+        name: "Acme Corp",
+        months: [],
+        pre_populated: true
+      )
+      expect(result.first[:edit_path]).to eq(
+        helper.edit_activities_flow_income_employment_path(id: activity.id)
+      )
+    end
+
+    it "returns empty array for empty input" do
+      expect(helper.employment_activity_draft_cards([])).to eq([])
+    end
+  end
+
   describe "#community_service_draft_cards" do
     let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
     let(:first_month) { flow.reporting_window_range.begin.beginning_of_month }

@@ -69,6 +69,7 @@ class Api::InvitationsController < ApplicationController
       entry.permit(
         :type,
         *VolunteeringActivity::FIELDS,
+        *EmploymentActivity::FIELDS,
         months: VolunteeringActivityMonth::FIELDS.map(&:to_sym)
       ).to_h
     end

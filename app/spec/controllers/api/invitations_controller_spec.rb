@@ -256,5 +256,45 @@ RSpec.describe Api::InvitationsController do
         end
       end
     end
+
+    context "with a pre-populated employment activity" do
+      let(:employment_entry) do
+        {
+          type: "employment",
+          employer_name: "Acme Corp",
+          street_address: "123 Main St",
+          city: "Boston",
+          state: "MA",
+          zip_code: "02101",
+          contact_name: "Jane Doe",
+          contact_email: "jane@acme.com",
+          contact_phone_number: "555-0100"
+        }
+      end
+      let(:params_with_employment) { valid_params.merge(activities: [ employment_entry ]) }
+
+      it "mints both invitations and returns activity_tokenized_url" do
+        expect {
+          post :create, params: params_with_employment
+        }.to change(CbvFlowInvitation, :count).by(1)
+          .and change(ActivityFlowInvitation, :count).by(1)
+
+        expect(response).to have_http_status(:created)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response).to include("tokenized_url", "activity_tokenized_url")
+
+        activity_invitation = ActivityFlowInvitation.last
+        expect(activity_invitation.pre_populated_activities.first["employer_name"]).to eq("Acme Corp")
+      end
+
+      it "returns an error when employer_name is missing" do
+        post :create, params: valid_params.merge(activities: [ employment_entry.except(:employer_name) ])
+
+        expect(response).to have_http_status(:unprocessable_content)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response["errors"].map { |e| e["field"] })
+          .to include("activities[0].employer_name")
+      end
+    end
   end
 end
