@@ -1,4 +1,6 @@
 class EmploymentActivityMonth < ApplicationRecord
+  FIELDS = %w[month hours gross_income].freeze
+
   belongs_to :employment_activity
 
   validates :month, presence: true

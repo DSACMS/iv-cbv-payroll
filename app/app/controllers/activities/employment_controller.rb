@@ -94,10 +94,6 @@ class Activities::EmploymentController < Activities::BaseController
   end
 
   def employment_activity_params
-    params.require(:employment_activity).permit(
-      :employer_name, :street_address, :street_address_line_2,
-      :city, :state, :zip_code,
-      :is_self_employed, :contact_name, :contact_email, :contact_phone_number
-    )
+    params.require(:employment_activity).permit(*EmploymentActivity::FIELDS)
   end
 end

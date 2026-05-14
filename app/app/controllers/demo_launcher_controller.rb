@@ -128,6 +128,45 @@ class DemoLauncherController < ApplicationController
     end
   end
 
+  def build_pre_populated_activities
+    activities = []
+    month_strings = reporting_window_months_for_activities(launcher_params[:client_agency_id])
+
+    if launcher_params[:volunteering_enabled] == "1"
+      hours = launcher_params[:volunteering_hours_per_month].to_i
+      activities << {
+        "type" => "volunteering",
+        "organization_name" => launcher_params[:volunteering_organization_name].presence || "Red Cross",
+        "months" => month_strings.map { |m| { "month" => m, "hours" => hours } }
+      }
+    end
+
+    if launcher_params[:employment_enabled] == "1"
+      hours = launcher_params[:employment_hours_per_month].to_i
+      gross_income = launcher_params[:employment_gross_income_per_month].to_i
+      activities << {
+        "type" => "employment",
+        "employer_name" => launcher_params[:employment_employer_name].presence || "Acme Corp",
+        "months" => month_strings.map { |m| { "month" => m, "hours" => hours, "gross_income" => gross_income } }
+      }
+    end
+
+    activities
+  end
+
+  def reporting_window_months_for_activities(client_agency_id)
+    # Uses the agency's default application window regardless of the launcher's reporting_window
+    # setting, because ActivityFlowInvitation validates months against the same default range.
+    range = ActivityFlow.expected_reporting_window_range(client_agency_id)
+    months = []
+    current = range.begin.beginning_of_month
+    while current <= range.end
+      months << current.strftime("%Y-%m-%d")
+      current = current.next_month
+    end
+    months
+  end
+
   def launch_overrides(flow_type)
     overrides = if flow_type == "cbv"
                   launcher_params.slice(:demo_timeout).select { |_, v| v.present? }
@@ -154,7 +193,14 @@ class DemoLauncherController < ApplicationController
       :renewal_required_months,
       :reporting_window_start,
       :demo_timeout,
-      :launch_type
+      :launch_type,
+      :volunteering_enabled,
+      :volunteering_organization_name,
+      :volunteering_hours_per_month,
+      :employment_enabled,
+      :employment_employer_name,
+      :employment_hours_per_month,
+      :employment_gross_income_per_month
     )
   end
 
@@ -207,9 +253,11 @@ class DemoLauncherController < ApplicationController
   end
 
   def build_tokenized_url(client_agency_id, overrides)
+    pre_populated = build_pre_populated_activities
     invitation = ActivityFlowInvitation.create!(
       client_agency_id: client_agency_id,
-      reference_id: "demo-#{SecureRandom.hex(4)}"
+      reference_id: "demo-#{SecureRandom.hex(4)}",
+      pre_populated_activities: pre_populated
     )
     invitation.to_url(
       **launcher_url_options,

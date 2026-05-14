@@ -137,13 +137,22 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
     end
 
-    it "surfaces only validated drafts (API pre-populated) on the hub, not self-attested user drafts" do
-      api_draft = create(:volunteering_activity, activity_flow: current_flow, draft: true, data_source: "validated")
+    it "surfaces only state-provided community service drafts (pre-populated), not self-attested user drafts" do
+      api_draft = create(:volunteering_activity, activity_flow: current_flow, draft: true, data_source: "state_provided")
       _user_draft = create(:volunteering_activity, activity_flow: current_flow, draft: true, data_source: "self_attested")
 
       get :index
 
       expect(assigns(:community_service_draft_activities)).to contain_exactly(api_draft)
+    end
+
+    it "surfaces only state-provided employment drafts (pre-populated), not self-attested user drafts" do
+      api_draft = create(:employment_activity, activity_flow: current_flow, draft: true, data_source: "state_provided")
+      _user_draft = create(:employment_activity, activity_flow: current_flow, draft: true, data_source: "self_attested")
+
+      get :index
+
+      expect(assigns(:employment_draft_activities)).to contain_exactly(api_draft)
     end
   end
 
@@ -860,6 +869,32 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       expect(rendered).to have_css("[data-controller='progress-indicator-units']")
       expect(rendered).to have_css("[data-progress-indicator-units-target='toggle']")
+    end
+  end
+
+  context "when a pre-populated employment activity exists" do
+    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+
+    before do
+      create(:employment_activity, activity_flow: current_flow, employer_name: "Acme Corp", draft: true, data_source: "state_provided")
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "assigns the draft employment activity" do
+      expect(assigns(:employment_draft_activities)).not_to be_empty
+      expect(assigns(:employment_draft_activities).first.employer_name).to eq("Acme Corp")
+    end
+
+    it "renders the pre-populated notice on the hub" do
+      expect(response.body).to include(I18n.t("activities.hub.cards.pre_populated_notice"))
+    end
+
+    it "renders the Complete CTA instead of Edit for the draft card" do
+      employment_cards = Nokogiri::HTML.parse(response.body).css("[data-activity-type='employment'] .activity-hub-card")
+      expect(employment_cards.text).to include(I18n.t("activities.hub.cards.complete_action"))
+      expect(employment_cards.text).not_to include(I18n.t("activities.hub.edit"))
     end
   end
 end
