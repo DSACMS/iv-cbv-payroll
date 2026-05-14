@@ -1,16 +1,16 @@
-name: nightly accessibility scan
+name: e2e tests
 
 on:
-  schedule:
-    - cron: '0 10 * * *'
+  pull_request:
+    paths: ['app/**']
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  axe:
-    name: E2E Accessibility (full)
+  e2e:
+    name: E2E + Accessibility
     runs-on: ubuntu-22.04
     services:
       postgres:
