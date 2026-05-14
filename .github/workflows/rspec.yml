@@ -41,10 +41,10 @@ jobs:
           DB_USERNAME: cidbuser
           DB_PASSWORD: postgres
         run: |
-          bundle exec rake parallel:create[4]
-          bundle exec rake parallel:load_schema[4]
+          bundle exec rake parallel:create[2]
+          bundle exec rake parallel:load_schema[2]
 
-      - name: Run rspec (in-job parallel, 4 processes)
+      - name: Run rspec (in-job parallel, 2 processes)
         working-directory: app
         env:
           RAILS_ENV: test
@@ -55,5 +55,5 @@ jobs:
         run: |
           bundle exec parallel_test spec/ \
             --type rspec \
-            -n 4 \
+            -n 2 \
             --exclude-pattern '^spec/e2e/'
