@@ -1,5 +1,6 @@
 class EducationReportingMonthResolver
-  ResolvedMonth = Struct.new(:month, :terms, :effective_term, keyword_init: true) do
+  # Enrollment details for one reporting month after applying term dates and summer carryover
+  ReportingMonthEnrollment = Struct.new(:month, :terms, :effective_term, keyword_init: true) do
     def sufficient_enrollment?
       effective_term&.half_time_or_above? || false
     end
@@ -11,13 +12,13 @@ class EducationReportingMonthResolver
   end
 
   def result_for(month_start)
-    resolved_months_by_month.fetch(month_start.beginning_of_month) do
-      resolved_month_for(month_start.beginning_of_month)
+    reporting_month_enrollments_by_month.fetch(month_start.beginning_of_month) do
+      reporting_month_enrollment_for(month_start.beginning_of_month)
     end
   end
 
-  def resolved_months
-    @resolved_months ||= @reporting_months.map { |month_start| resolved_month_for(month_start) }
+  def reporting_month_enrollments
+    @reporting_month_enrollments ||= @reporting_months.map { |month_start| reporting_month_enrollment_for(month_start) }
   end
 
   def terms_for_reporting_months
@@ -26,12 +27,12 @@ class EducationReportingMonthResolver
 
   private
 
-  def resolved_months_by_month
-    @resolved_months_by_month ||= resolved_months.index_by(&:month)
+  def reporting_month_enrollments_by_month
+    @reporting_month_enrollments_by_month ||= reporting_month_enrollments.index_by(&:month)
   end
 
-  def resolved_month_for(month_start)
-    ResolvedMonth.new(
+  def reporting_month_enrollment_for(month_start)
+    ReportingMonthEnrollment.new(
       month: month_start,
       terms: terms_for_month(month_start),
       effective_term: EducationSummerCarryoverService.effective_term_for_month(@terms, month_start)

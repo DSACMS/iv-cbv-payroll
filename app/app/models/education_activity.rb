@@ -28,7 +28,7 @@ class EducationActivity < Activity
     return :partially_self_attested if enrollment_terms.blank?
 
     resolver = EducationReportingMonthResolver.new(terms: enrollment_terms, reporting_months: reporting_months)
-    all_months_have_sufficient_enrollment = resolver.resolved_months.all?(&:sufficient_enrollment?)
+    all_months_have_sufficient_enrollment = resolver.reporting_month_enrollments.all?(&:sufficient_enrollment?)
 
     all_months_have_sufficient_enrollment ? :validated : :partially_self_attested
   end

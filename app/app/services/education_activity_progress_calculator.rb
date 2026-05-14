@@ -30,8 +30,8 @@ class EducationActivityProgressCalculator
   end
 
   def monthly_hours_for_reporting_month(month_start)
-    resolved_month = reporting_month_resolver.result_for(month_start)
-    terms = resolved_month.terms
+    reporting_month_enrollment = reporting_month_resolver.result_for(month_start)
+    terms = reporting_month_enrollment.terms
 
     # Buckle up, here's the logic to determine how many hours to credit the
     # user for. The routing hours may be different so that we can force the
@@ -48,7 +48,7 @@ class EducationActivityProgressCalculator
       # For activities where NSC failed, we return empty so that they'll be
       # treated as partially self-attested.
       MonthHours.new(progress: 0, routing: 0)
-    elsif resolved_month.sufficient_enrollment?
+    elsif reporting_month_enrollment.sufficient_enrollment?
       # Half-time-or-greater NSC enrollment, including spring carryover for summer months, is complete.
       MonthHours.new(
         progress: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
