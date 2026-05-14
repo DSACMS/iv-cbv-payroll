@@ -63,7 +63,7 @@ echo "::endgroup::"
 pr_info=$(cat <<EOF
 <!-- begin PR environment info -->
 ## Preview environment
-- Link to demo: ${service_endpoint}/demo
+- Link to launcher: ${service_endpoint}/launcher/advanced
 - Deployed commit: ${image_tag}
 <!-- end PR environment info -->
 EOF
