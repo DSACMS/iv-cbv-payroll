@@ -63,7 +63,7 @@ RSpec.describe ActivityFlow, type: :model do
         expect(flow.volunteering_activities.count).to eq(1)
         activity = flow.volunteering_activities.first
         expect(activity).to be_draft
-        expect(activity.data_source).to eq("validated")
+        expect(activity.data_source).to eq("state_provided")
         expect(activity.organization_name).to eq("Red Cross")
         expect(activity.coordinator_email).to eq("pat@redcross.org")
       end
@@ -125,7 +125,7 @@ RSpec.describe ActivityFlow, type: :model do
         expect(flow.employment_activities.count).to eq(1)
         activity = flow.employment_activities.first
         expect(activity).to be_draft
-        expect(activity.data_source).to eq("validated")
+        expect(activity.data_source).to eq("state_provided")
         expect(activity.employer_name).to eq("Acme Corp")
         expect(activity.is_self_employed).to be false
         expect(activity.street_address).to eq("123 Main St")

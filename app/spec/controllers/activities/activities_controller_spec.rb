@@ -137,8 +137,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
     end
 
-    it "surfaces only validated community service drafts (API pre-populated), not self-attested user drafts" do
-      api_draft = create(:volunteering_activity, activity_flow: current_flow, draft: true, data_source: "validated")
+    it "surfaces only state-provided community service drafts (pre-populated), not self-attested user drafts" do
+      api_draft = create(:volunteering_activity, activity_flow: current_flow, draft: true, data_source: "state_provided")
       _user_draft = create(:volunteering_activity, activity_flow: current_flow, draft: true, data_source: "self_attested")
 
       get :index
@@ -146,8 +146,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(assigns(:community_service_draft_activities)).to contain_exactly(api_draft)
     end
 
-    it "surfaces only validated employment drafts (API pre-populated), not self-attested user drafts" do
-      api_draft = create(:employment_activity, activity_flow: current_flow, draft: true, data_source: "validated")
+    it "surfaces only state-provided employment drafts (pre-populated), not self-attested user drafts" do
+      api_draft = create(:employment_activity, activity_flow: current_flow, draft: true, data_source: "state_provided")
       _user_draft = create(:employment_activity, activity_flow: current_flow, draft: true, data_source: "self_attested")
 
       get :index
@@ -876,7 +876,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
 
     before do
-      create(:employment_activity, activity_flow: current_flow, employer_name: "Acme Corp", draft: true, data_source: "validated")
+      create(:employment_activity, activity_flow: current_flow, employer_name: "Acme Corp", draft: true, data_source: "state_provided")
       session[:flow_id] = current_flow.id
       session[:flow_type] = :activity
       get :index

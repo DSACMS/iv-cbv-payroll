@@ -144,7 +144,7 @@ RSpec.describe ActivitiesHelper do
     let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
 
     it "returns a card with pre_populated: true and edit path pointing to employment edit page" do
-      activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp", draft: true, data_source: "validated")
+      activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp", draft: true, data_source: "state_provided")
 
       result = helper.employment_activity_draft_cards([ activity ])
 
@@ -164,7 +164,7 @@ RSpec.describe ActivitiesHelper do
     end
 
     it "includes month data when employment_activity_months have hours or gross_income" do
-      activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp", draft: true, data_source: "validated")
+      activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp", draft: true, data_source: "state_provided")
       first_month = flow.reporting_months.first.beginning_of_month
       create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 20, gross_income: 500)
 
@@ -176,7 +176,7 @@ RSpec.describe ActivitiesHelper do
     end
 
     it "excludes months where both hours and gross_income are zero" do
-      activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp", draft: true, data_source: "validated")
+      activity = create(:employment_activity, activity_flow: flow, employer_name: "Acme Corp", draft: true, data_source: "state_provided")
       first_month = flow.reporting_months.first.beginning_of_month
       create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 0, gross_income: 0)
 
@@ -191,7 +191,7 @@ RSpec.describe ActivitiesHelper do
     let(:first_month) { flow.reporting_window_range.begin.beginning_of_month }
 
     it "filters out months with no hours" do
-      activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", draft: true, data_source: "validated")
+      activity = create(:volunteering_activity, activity_flow: flow, organization_name: "Food Pantry", draft: true, data_source: "state_provided")
       create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 0)
       create(:volunteering_activity_month, volunteering_activity: activity, month: first_month + 1.month, hours: 5)
 

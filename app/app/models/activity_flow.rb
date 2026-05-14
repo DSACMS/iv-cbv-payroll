@@ -44,7 +44,7 @@ class ActivityFlow < Flow
 
         activity = flow.volunteering_activities.create(
           attrs.slice(*VolunteeringActivity::FIELDS)
-            .merge("draft" => true, "data_source" => "validated")
+            .merge("draft" => true, "data_source" => "state_provided")
         )
         next unless activity.persisted?
 
@@ -58,7 +58,7 @@ class ActivityFlow < Flow
 
         activity = flow.employment_activities.create(
           attrs.slice(*EmploymentActivity::FIELDS)
-            .merge("draft" => true, "data_source" => "validated")
+            .merge("draft" => true, "data_source" => "state_provided")
         )
         next unless activity.persisted?
 
