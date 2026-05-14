@@ -173,7 +173,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    css_parser (1.17.1)
+    css_parser (1.22.0)
       addressable
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
@@ -635,7 +635,7 @@ DEPENDENCIES
   capybara
   cgi (>= 0.4.2)
   climate_control (~> 1.0)
-  css_parser (~> 1.17.0)
+  css_parser (~> 1.22.0)
   cssbundling-rails
   csv
   debase (~> 0.2.9)

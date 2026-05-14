@@ -35,7 +35,7 @@ gem "premailer-rails"
 # Pin css_parser to 1.17.x: 1.19.0 added a positional-arg deprecation warning
 # in RuleSet#initialize that premailer 1.23.0 still triggers. Drop when premailer
 # ships a fix.
-gem "css_parser", "~> 1.17.0"
+gem "css_parser", "~> 1.22.0"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
