@@ -3,7 +3,7 @@
 
 # **Introduction**
 
-This document describes the **Income Report Transmission API Specification**, a method by which income report data can be sent from the Income Verification as a Service (IVaaS) platform to an agency's systems.
+This document describes the **Income Report Transmission API Specification**, a method by which income report data can be sent from the Income Verification as a Service (Emmy) platform to an agency's systems.
 
 The agency must build an API endpoint that meets this specification and integrates with agency systems to process the income report into the case file for the correct client (those applying for or receiving benefits from an agency).
 
@@ -32,8 +32,8 @@ This API endpoint is built by the agency and receives an income report record. 
 
 The field structure for this object will differ for each agency based on the integration plan for the agency. The fields will include whichever fields are necessary by the agency for indexing the Income Report back into the proper case:
 
-* If agency is using the **Tokenized Link API:** This object will contain all fields initially sent to IVaaS when calling the Tokenized Link API.
-* If agency is sending users an IVaaS **Generic Link:** This object will contain the user-provided values to the agency's indexing data fields.
+* If agency is using the **Tokenized Link API:** This object will contain all fields initially sent to Emmy when calling the Tokenized Link API.
+* If agency is sending users an Emmy **Generic Link:** This object will contain the user-provided values to the agency's indexing data fields.
 
 Sample fields:
 
@@ -53,7 +53,7 @@ Representation of the user's income report. The subfields are listed below.
 
 | Field Name | Required? | Field Type | Field Name | Required? | Field Type |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| has_other_jobs | Yes | Boolean. Whether the user answered that they have additional jobs to report separately from the IVaaS product. |  |  |  |
+| has_other_jobs | Yes | Boolean. Whether the user answered that they have additional jobs to report separately from the Emmy product. |  |  |  |
 | employments[] | Yes | Array of Employment objects reflected in income report. (See Employment Object below.) |  |  |  |
 
 #### Employment Object
@@ -102,14 +102,14 @@ All fields below come from a payroll provider linked by the user. Most fields ar
 
 # **Environments**
 
-The agency must provide the IVaaS team two endpoints: one in a lower environment (for testing) as well as one in a production environment.
+The agency must provide the Emmy team two endpoints: one in a lower environment (for testing) as well as one in a production environment.
 
 | Environment Name | Sample Path | Environment Name | Sample Path |
 | :-- | :-- | :-- | :-- |
 | Lower | https://dev.your-agency.gov/api/v1/income-report |  |  |
 | UAT / Production | https://your-agency.gov/api/v1/income-report |  |  |
 
-The IVaaS team will connect our "demo" environment to the agency's lower environment, and the agency's production environment to your production environment.
+The Emmy team will connect our "demo" environment to the agency's lower environment, and the agency's production environment to your production environment.
 
 Each API Environment will have a different API Key for authentication.
 
@@ -117,11 +117,11 @@ Each API Environment will have a different API Key for authentication.
 
 As sensitive PII data will be included in the API request information, it's important to ensure that our systems are connected securely.
 
-Currently, IVaaS does not support private network connections (VPN, network peering, or similar). We will instead rely on encryption provided in-transit via Transport Layer Security (TLS). All API requests will be made via TLS 1.2+.
+Currently, Emmy does not support private network connections (VPN, network peering, or similar). We will instead rely on encryption provided in-transit via Transport Layer Security (TLS). All API requests will be made via TLS 1.2+.
 
 ## IP Block Allowlisting
 
-The IP addresses that IVaaS will use to communicate with your application are below. Agencies should ensure these IP addresses are allowlisted in firewalls to ensure greater security.
+The IP addresses that Emmy will use to communicate with your application are below. Agencies should ensure these IP addresses are allowlisted in firewalls to ensure greater security.
 
 Note: These differ from the IP addresses used for the Tokenized Link API.
 
@@ -132,37 +132,37 @@ Note: These differ from the IP addresses used for the Tokenized Link API.
 
 ## Signature Verification
 
-Since the API endpoint will be accessible via the internet, the agency system must implement validation to ensure the request originates from the official IVaaS system. We will use the agency's **API Key** (for the Tokenized Link API) as a secret key for API signature validation. If the agency does not have an API key, or does not use the Tokenized Link API, we will generate an API key specific for this purpose.
+Since the API endpoint will be accessible via the internet, the agency system must implement validation to ensure the request originates from the official Emmy system. We will use the agency's **API Key** (for the Tokenized Link API) as a secret key for API signature validation. If the agency does not have an API key, or does not use the Tokenized Link API, we will generate an API key specific for this purpose.
 
-Every API request from IVaaS will be verified with a pair of HTTP headers which comprise a signature:
+Every API request from Emmy will be verified with a pair of HTTP headers which comprise a signature:
 
 | HTTP Header Name | Description | HTTP Header Name | Description |
 | :-- | :-- | :-- | :-- |
-| X-IVAAS-Timestamp | Seconds since Unix Epoch |  |  |
-| X-IVAAS-Signature | Calculated signature based on the algorithm below. |  |  |
+| X-Emmy-Timestamp | Seconds since Unix Epoch |  |  |
+| X-Emmy-Signature | Calculated signature based on the algorithm below. |  |  |
 
  The signature for a request can be verified with the following Python pseudocode:
 
 ```
-Turn on wrapCopy as textdef compute_signature(api_key: str, timestamp: str, request_body: bytes) -> str: signature_payload = "v1:#{timestamp}:#{request_body}" return HMAC("SHA512", api_key, signature_payload) def verify_signature(request, api_key: str) -> bool: signature = request.headers.get("X-IVAAS-Signature", "") timestamp = request.headers.get("X-IVAAS-Timestamp", "") request_body = request.get_data() if abs(time.time() - int(timestamp)) > 300: print("System clocks out of sync, or possible replay attack.") return false return hmac.compare_digest(signature, compute_signature(request, timestamp))
+Turn on wrapCopy as textdef compute_signature(api_key: str, timestamp: str, request_body: bytes) -> str: signature_payload = "v1:#{timestamp}:#{request_body}" return HMAC("SHA512", api_key, signature_payload) def verify_signature(request, api_key: str) -> bool: signature = request.headers.get("X-Emmy-Signature", "") timestamp = request.headers.get("X-Emmy-Timestamp", "") request_body = request.get_data() if abs(time.time() - int(timestamp)) > 300: print("System clocks out of sync, or possible replay attack.") return false return hmac.compare_digest(signature, compute_signature(request, timestamp))
 ```
 
 # **Error Handling**
 
-It's imperative for IVaaS to know whether an income report was correctly received by the agency. To that end, the HTTP status code of the response will inform IVaaS whether the report was successful.
+It's imperative for Emmy to know whether an income report was correctly received by the agency. To that end, the HTTP status code of the response will inform Emmy whether the report was successful.
 
-Agencies must implement semantic HTTP statuses representing the success of the webservice receiving the request. The specific HTTP status codes used can be determined by the agency based on what is feasible to support. The only semantics IVaaS relies upon are that a "200 OK" status be returned when the request is successful, and a 400+ status code be used when there is an error.
+Agencies must implement semantic HTTP statuses representing the success of the webservice receiving the request. The specific HTTP status codes used can be determined by the agency based on what is feasible to support. The only semantics Emmy relies upon are that a "200 OK" status be returned when the request is successful, and a 400+ status code be used when there is an error.
 
 | HTTP Status Code | Definition | Action | HTTP Status Code | Definition | Action |
 | :-- | :-- | :-- | :-- | :-- | :-- |
 | 200 OK | The income report was successfully received by the agency's system. | Mark successful. |  |  |  |
-| 401 Unauthorized | The X-IVAAS-Signature header verification failed. | Attempt retry. |  |  |  |
+| 401 Unauthorized | The X-Emmy-Signature header verification failed. | Attempt retry. |  |  |  |
 | 500 Internal Server Error | There was a system error while processing the request. | Attempt retry. |  |  |  |
 
-In addition to these statuses, we encourage agency web servers to reply with semantic HTTP statuses such as 400 Bad Request, 404 Not Found, 408 Timeout, 413 Payload Too Large, 429 Too Many Requests, and 502 Gateway Timeout according to their built-in web server logic. This will greatly help triaging errors should they arise. Regardless of the error status code, IVaaS will retry according to the logic below.
+In addition to these statuses, we encourage agency web servers to reply with semantic HTTP statuses such as 400 Bad Request, 404 Not Found, 408 Timeout, 413 Payload Too Large, 429 Too Many Requests, and 502 Gateway Timeout according to their built-in web server logic. This will greatly help triaging errors should they arise. Regardless of the error status code, Emmy will retry according to the logic below.
 
 ## Retry Logic
 
-If IVaaS receives an error status response, IVaaS will automatically retry delivering the same income report two additional times over the next 30 seconds.
+If Emmy receives an error status response, Emmy will automatically retry delivering the same income report two additional times over the next 30 seconds.
 
-If the report is not successfully delivered on that third attempt, it will go to an error queue within IVaaS and we will triage the issue in partnership with the agency's technical team.
+If the report is not successfully delivered on that third attempt, it will go to an error queue within Emmy and we will triage the issue in partnership with the agency's technical team.
