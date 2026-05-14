@@ -27,16 +27,10 @@ class EducationActivity < Activity
   def self.data_source_from_nsc_results(enrollment_terms, reporting_months:)
     return :partially_self_attested if enrollment_terms.blank?
 
-    all_months_have_half_time_or_above = reporting_months.all? do |month_start|
-      terms_for_month = enrollment_terms.select { |term| term.overlaps_month?(month_start) }
+    resolver = EducationReportingMonthResolver.new(terms: enrollment_terms, reporting_months: reporting_months)
+    all_months_have_sufficient_enrollment = resolver.reporting_month_enrollments.all?(&:sufficient_enrollment?)
 
-      # Consider an activity "validated" if all months are enrolled at least
-      # half-time, after taking into account the summer carryover logic.
-      terms_for_month.any?(&:half_time_or_above?) ||
-        EducationSummerCarryoverService.applies?(enrollment_terms, month_start)
-    end
-
-    all_months_have_half_time_or_above ? :validated : :partially_self_attested
+    all_months_have_sufficient_enrollment ? :validated : :partially_self_attested
   end
 
   def formatted_address

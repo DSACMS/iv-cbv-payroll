@@ -11,7 +11,7 @@ class EducationActivityCardBuilder
 
     return partially_self_attested_build if @activity.partially_self_attested?
 
-    validated_terms = validated_terms_for_reporting_months
+    validated_terms = terms_for_reporting_months
     return [] if validated_terms.empty?
 
     [ validated_card(validated_terms) ]
@@ -36,8 +36,8 @@ class EducationActivityCardBuilder
     } ]
   end
 
-  def partially_self_attested_cards(overlapping_terms)
-    terms_grouped_by_school(overlapping_terms).map do |school_terms|
+  def partially_self_attested_cards(terms)
+    terms_grouped_by_school(terms).map do |school_terms|
       {
         name: school_terms.first.school_name.presence&.titlecase || I18n.t("activities.education.title"),
         months: partially_self_attested_months_for_school(school_terms),
@@ -46,10 +46,11 @@ class EducationActivityCardBuilder
     end
   end
 
-  def validated_card(overlapping_terms)
-    school_name = overlapping_terms.first.school_name&.titlecase || I18n.t("activities.education.title")
+  def validated_card(terms)
+    school_name = terms.first.school_name&.titlecase || I18n.t("activities.education.title")
+    resolver = reporting_month_resolver(terms)
     months = @reporting_months.reverse.filter_map do |month_start|
-      effective_term = EducationSummerCarryoverService.effective_term_for_month(overlapping_terms, month_start)
+      effective_term = resolver.result_for(month_start).effective_term
       next unless effective_term
 
       validated_month_data(month_start: month_start, effective_term: effective_term)
@@ -97,8 +98,9 @@ class EducationActivityCardBuilder
   end
 
   def partially_self_attested_months_for_school(school_terms)
+    resolver = reporting_month_resolver(school_terms)
     @reporting_months.reverse.filter_map do |month_start|
-      effective_term = effective_school_term_for_month(school_terms, month_start)
+      effective_term = resolver.result_for(month_start).effective_term
       next unless effective_term
       next if effective_term.less_than_half_time? && @activity.review_term_credit_hours(effective_term).zero?
 
@@ -110,30 +112,19 @@ class EducationActivityCardBuilder
     end
   end
 
-  def effective_school_term_for_month(school_terms, month_start)
-    school_terms
-      .select { |term| term.overlaps_month?(month_start) }
-      .max_by(&:enrollment_priority)
-  end
-
   def partially_self_attested_build
-    overlapping_terms = @activity.nsc_enrollment_terms
-      .select { |term| @reporting_months.any? { |month_start| term.overlaps_month?(month_start) } }
+    terms = terms_for_reporting_months
 
-    return [] if overlapping_terms.empty?
+    return [] if terms.empty?
 
-    partially_self_attested_cards(overlapping_terms)
+    partially_self_attested_cards(terms)
   end
 
-  def validated_terms_for_reporting_months
-    overlapping_terms = @activity.nsc_enrollment_terms
-      .select { |term| @reporting_months.any? { |month_start| term.overlaps_month?(month_start) } }
-    carryover_terms = @reporting_months.filter_map do |month_start|
-      next unless EducationSummerCarryoverService.applies?(@activity.nsc_enrollment_terms, month_start)
+  def terms_for_reporting_months
+    reporting_month_resolver(@activity.nsc_enrollment_terms).terms_for_reporting_months
+  end
 
-      EducationSummerCarryoverService.qualifying_spring_term_for_year(@activity.nsc_enrollment_terms, month_start.year)
-    end
-
-    (overlapping_terms + carryover_terms).uniq
+  def reporting_month_resolver(terms)
+    EducationReportingMonthResolver.new(terms: terms, reporting_months: @reporting_months)
   end
 end

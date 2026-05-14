@@ -560,6 +560,84 @@ RSpec.describe ActivitiesHelper do
       )
     end
 
+    it "shows spring carryover on partially self-attested cards in a long reporting window" do
+      long_flow = create(:activity_flow, reporting_window_months: 12, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      long_flow.shift_reporting_window_start!("2025-01-01")
+      long_reporting_months = long_flow.reporting_months
+      activity = create(
+        :education_activity,
+        activity_flow: long_flow,
+        data_source: :partially_self_attested,
+        status: "succeeded"
+      )
+
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Coastal State College",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15))
+      create(:nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: "Coastal State College",
+        term_begin: Date.new(2025, 7, 1),
+        term_end: Date.new(2025, 8, 15),
+        credit_hours: 0)
+
+      result = helper.education_cards([ activity.reload ], long_reporting_months)
+      half_time_status = I18n.t("components.enrollment_term_table_component.status.half_time")
+
+      expect(result.first[:months]).to include(
+        {
+          month: Date.new(2025, 7, 1),
+          enrollment_status: half_time_status
+        },
+        {
+          month: Date.new(2025, 8, 1),
+          enrollment_status: half_time_status
+        }
+      )
+    end
+
+    it "shows spring carryover months on partially self-attested cards when only spring and fall terms exist" do
+      spring_fall_flow = create(:activity_flow, reporting_window_months: 4, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      spring_fall_flow.shift_reporting_window_start!("2025-06-01")
+      spring_fall_reporting_months = spring_fall_flow.reporting_months
+      activity = create(
+        :education_activity,
+        activity_flow: spring_fall_flow,
+        data_source: :partially_self_attested,
+        status: "succeeded"
+      )
+
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Coastal State College",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 3, 1),
+        term_end: Date.new(2025, 6, 15))
+      create(:nsc_enrollment_term,
+        education_activity: activity,
+        school_name: "Coastal State College",
+        enrollment_status: "half_time",
+        term_begin: Date.new(2025, 9, 1),
+        term_end: Date.new(2025, 12, 15))
+
+      result = helper.education_cards([ activity.reload ], spring_fall_reporting_months)
+      half_time_status = I18n.t("components.enrollment_term_table_component.status.half_time")
+      expected_months = [
+        Date.new(2025, 6, 1),
+        Date.new(2025, 7, 1),
+        Date.new(2025, 8, 1),
+        Date.new(2025, 9, 1)
+      ]
+
+      expect(result.first[:months]).to match_array(
+        expected_months.map { |month| { month: month, enrollment_status: half_time_status } }
+      )
+    end
+
     it "builds one validated card when two terms overlap the same reporting month" do
       june_flow = create(:activity_flow, reporting_window_months: 2, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
       june_flow.shift_reporting_window_start!("2025-06-01")
