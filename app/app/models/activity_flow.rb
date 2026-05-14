@@ -49,9 +49,8 @@ class ActivityFlow < Flow
         next unless activity.persisted?
 
         Array(attrs["months"]).each do |month_entry|
-          next unless month_entry.is_a?(Hash) || month_entry.respond_to?(:to_h)
-          month_attrs = month_entry.respond_to?(:stringify_keys) ? month_entry.stringify_keys : month_entry.to_h.stringify_keys
-          activity.volunteering_activity_months.create(month_attrs.slice(*VolunteeringActivityMonth::FIELDS))
+          next unless month_entry.is_a?(Hash)
+          activity.volunteering_activity_months.create(month_entry.stringify_keys.slice(*VolunteeringActivityMonth::FIELDS))
         end
       when "employment"
         next if flow.employment_activities.exists?
@@ -63,9 +62,8 @@ class ActivityFlow < Flow
         next unless activity.persisted?
 
         Array(attrs["months"]).each do |month_entry|
-          next unless month_entry.is_a?(Hash) || month_entry.respond_to?(:to_h)
-          month_attrs = month_entry.respond_to?(:stringify_keys) ? month_entry.stringify_keys : month_entry.to_h.stringify_keys
-          activity.employment_activity_months.create(month_attrs.slice(*EmploymentActivityMonth::FIELDS))
+          next unless month_entry.is_a?(Hash)
+          activity.employment_activity_months.create(month_entry.stringify_keys.slice(*EmploymentActivityMonth::FIELDS))
         end
       end
     end
