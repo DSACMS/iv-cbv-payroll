@@ -267,6 +267,8 @@ RSpec.describe DataRetentionService do
       let(:now) { deletion_threshold + 1.minute }
 
       context "when the invitation is still valid" do
+        # The factory default expires_at is several days from now (creation time),
+        # so no setup is needed — the invitation is live by default.
         it "does not redact the associated applicant" do
           service.redact_complete_cbv_flows
           expect(cbv_flow.cbv_applicant.reload.redacted_at).to be_nil
