@@ -46,6 +46,8 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       liblcms2-2 \
       liblcms2-dev \
+      libnghttp2-14 \
+      libnghttp2-dev \
       linux-libc-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
