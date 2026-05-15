@@ -1,13 +1,16 @@
-class Report::EmploymentDetailsTableComponent< ViewComponent::Base
+class Report::EmploymentDetailsTableComponent < ViewComponent::Base
   include ReportViewHelper
   include Cbv::MonthlySummaryHelper
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, show_identity: false, show_income: false)
+  def initialize(report, payroll_account, show_identity: false, show_income: false, show_header: true, show_employer_name: false, container_class: "margin-top-5")
     @show_identity = show_identity
     @show_income = show_income
+    @show_header = show_header
+    @show_employer_name = show_employer_name
     @payroll_account = payroll_account
+    @container_class = container_class
 
     account_report = find_account_report(report)
     @employment = account_report&.employment

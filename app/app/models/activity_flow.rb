@@ -14,6 +14,7 @@ class ActivityFlow < Flow
   has_many :employment_activities, dependent: :destroy
   has_many :payroll_accounts, as: :flow, dependent: :destroy
   has_many :activity_flow_monthly_summaries, dependent: :destroy
+  has_many :activity_flow_employment_summaries, dependent: :destroy
 
   before_create :set_default_reporting_window, :set_default_renewal_required_months
 
@@ -127,12 +128,17 @@ class ActivityFlow < Flow
   end
 
   def after_payroll_sync_succeeded(payroll_account, report)
+    ActivityFlowEmploymentSummary.persist_from_report(activity_flow: self, payroll_account: payroll_account, report: report)
     ActivityFlowMonthlySummary.upsert_from_report(activity_flow: self, payroll_account: payroll_account, report: report)
     touch
   end
 
   def monthly_summaries_by_account_with_fallback
     ActivityFlowMonthlySummary.by_account_with_fallback(activity_flow: self)
+  end
+
+  def employment_summaries_by_account_with_fallback
+    ActivityFlowEmploymentSummary.by_account_with_fallback(activity_flow: self)
   end
 
   # Used by webhooks to check sync completion

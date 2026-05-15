@@ -8,7 +8,5 @@ FactoryBot.define do
     accrued_gross_earnings_cents { 0 }
     total_mileage { 0.0 }
     paychecks_count { 0 }
-    employer_name { "Test Employer" }
-    employment_type { "w2" }
   end
 end

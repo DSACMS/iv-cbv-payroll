@@ -9,16 +9,27 @@ RSpec.describe PersistedReportAdapter do
   let(:second_month) { flow.reporting_months.second }
 
   before do
+    create(
+      :activity_flow_employment_summary,
+      activity_flow: flow,
+      payroll_account: payroll_account,
+      employer_name: "Acme Corp",
+      employment_type: "w2",
+      employer_phone_number: "6045551234",
+      employer_address: "123 Main St",
+      employment_status: "employed",
+      employment_start_date: Date.new(2024, 1, 15),
+      employment_termination_date: nil
+    )
+
     create(:activity_flow_monthly_summary,
       activity_flow: flow, payroll_account: payroll_account,
       month: first_month.beginning_of_month,
-      employer_name: "Acme Corp", employment_type: "w2",
       total_w2_hours: 40.0, accrued_gross_earnings_cents: 200_00,
       paychecks_count: 2)
     create(:activity_flow_monthly_summary,
       activity_flow: flow, payroll_account: payroll_account,
       month: second_month.beginning_of_month,
-      employer_name: "Acme Corp", employment_type: "w2",
       total_w2_hours: 0.0, accrued_gross_earnings_cents: 0,
       paychecks_count: 0)
   end
@@ -37,6 +48,18 @@ RSpec.describe PersistedReportAdapter do
       expect(report.employment.employment_type).to eq(:w2)
     end
 
+    it "returns persisted employment detail fields for the review table" do
+      report = adapter.find_account_report("acct-1")
+
+      expect(report.employment).to have_attributes(
+        employer_phone_number: "6045551234",
+        employer_address: "123 Main St",
+        status: "employed",
+        start_date: Date.new(2024, 1, 15),
+        termination_date: nil
+      )
+    end
+
     it "supports dig for hash-style access" do
       report = adapter.find_account_report("acct-1")
 
@@ -46,10 +69,34 @@ RSpec.describe PersistedReportAdapter do
     it "returns nil for unknown accounts" do
       expect(adapter.find_account_report("unknown")).to be_nil
     end
+
+    context "when employment data exists without monthly data" do
+      before do
+        ActivityFlowMonthlySummary.where(activity_flow: flow, payroll_account: payroll_account).delete_all
+        allow(AggregatorReportFetcher).to receive(:new).with(flow).and_return(double(report: nil))
+      end
+
+      it "still returns the account report" do
+        report = adapter.find_account_report("acct-1")
+
+        expect(report.employment.employer_name).to eq("Acme Corp")
+      end
+    end
+
+    context "when monthly data exists without employment data" do
+      before do
+        ActivityFlowEmploymentSummary.where(activity_flow: flow, payroll_account: payroll_account).delete_all
+        allow(AggregatorReportFetcher).to receive(:new).with(flow).and_return(double(report: nil))
+      end
+
+      it "returns nil for the account report" do
+        expect(adapter.find_account_report("acct-1")).to be_nil
+      end
+    end
   end
 
   describe "#summarize_by_month" do
-    it "returns month data only for months with paychecks" do
+    it "returns month data for months with paychecks" do
       result = adapter.summarize_by_month
 
       account_data = result["acct-1"]
@@ -78,6 +125,17 @@ RSpec.describe PersistedReportAdapter do
       months = result["acct-1"].keys
 
       expect(months).to eq(months.sort.reverse)
+    end
+
+    context "when monthly data exists without employment data" do
+      before do
+        ActivityFlowEmploymentSummary.where(activity_flow: flow, payroll_account: payroll_account).delete_all
+        allow(AggregatorReportFetcher).to receive(:new).with(flow).and_return(double(report: nil))
+      end
+
+      it "still returns the monthly summaries" do
+        expect(adapter.summarize_by_month["acct-1"].keys).to eq([ first_month.strftime("%Y-%m") ])
+      end
     end
   end
 end

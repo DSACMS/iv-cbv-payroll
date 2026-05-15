@@ -447,7 +447,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(response.body).to include(employment_activity.contact_name)
         expect(response.body).to include(employment_activity.contact_email)
         expect(response.body).to include(employment_activity.contact_phone_number)
-        expect(response.body).to include(I18n.l(activity_month.month, format: :month))
+        expect(response.body).to include(I18n.l(activity_month.month, format: :month_year))
         expect(response.body).to include(ActionController::Base.helpers.number_to_currency(activity_month.gross_income))
         expect(response.body).to include(activity_month.hours.to_s)
       end
@@ -473,6 +473,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
     context "with payroll accounts" do
       it "includes synced payroll accounts in all_activities list" do
         payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow)
+        create(:activity_flow_employment_summary, activity_flow: activity_flow, payroll_account: payroll_account)
         activity_flow.reporting_months.each do |month|
           create(:activity_flow_monthly_summary, activity_flow: activity_flow, payroll_account: payroll_account, month: month.beginning_of_month)
         end
@@ -497,6 +498,17 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       it "renders persisted income summaries in the response" do
         payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "acct-123")
+        create(
+          :activity_flow_employment_summary,
+          activity_flow: activity_flow,
+          payroll_account: payroll_account,
+          employer_name: "Acme Employer",
+          employment_type: "w2",
+          employer_phone_number: "6045551234",
+          employer_address: "123 Main St",
+          employment_status: "employed",
+          employment_start_date: Date.new(2024, 1, 15)
+        )
         latest_month = activity_flow.reporting_months.max
         activity_flow.reporting_months.each do |month|
           create(
@@ -504,8 +516,6 @@ RSpec.describe Activities::SummaryController, type: :controller do
             activity_flow: activity_flow,
             payroll_account: payroll_account,
             month: month.beginning_of_month,
-            employer_name: "Acme Employer",
-            employment_type: "w2",
             total_w2_hours: (month == latest_month ? 40.0 : 0.0),
             accrued_gross_earnings_cents: (month == latest_month ? 123_45 : 0),
             paychecks_count: (month == latest_month ? 2 : 0)
@@ -514,12 +524,32 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
         get :show
 
-        expect(response.body).to include("Acme Employer")
-        expect(response.body).to include("$123.45")
+        page = Capybara.string(response.body)
+        expect(page).to have_text("Acme Employer")
+        expect(page).to have_text(I18n.t("activities.summary.employment.employer_name"))
+        expect(page).to have_text(I18n.t("shared.table_headers.employer_information"))
+        expect(page).to have_text(I18n.t("activities.summary.monthly_details"))
+        expect(page).to have_text(I18n.t("cbv.summaries.show.phone_number"))
+        expect(page).to have_text(I18n.t("cbv.submits.show.pdf.client.address"))
+        expect(page).to have_text("604-555-1234")
+        expect(page).to have_text("123 Main St")
+        expect(page).to have_text("Employed")
+        expect(page).to have_text("January 15, 2024")
+        expect(page).to have_text("$123.45")
       end
 
-      it "shows the unit toggle on the review page" do
-        payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "acct-123")
+      it "renders Argyle employer details in the response" do
+        payroll_account = create(:payroll_account, :argyle_fully_synced, flow: activity_flow, aggregator_account_id: "argyle-acct-123")
+        create(
+          :activity_flow_employment_summary,
+          activity_flow: activity_flow,
+          payroll_account: payroll_account,
+          employer_name: "Argyle Employer",
+          employment_type: "w2",
+          employer_address: "202 Westlake Ave N, Seattle, WA 98109",
+          employment_status: "employed",
+          employment_start_date: Date.new(2024, 2, 1)
+        )
         latest_month = activity_flow.reporting_months.max
         activity_flow.reporting_months.each do |month|
           create(
@@ -527,8 +557,32 @@ RSpec.describe Activities::SummaryController, type: :controller do
             activity_flow: activity_flow,
             payroll_account: payroll_account,
             month: month.beginning_of_month,
-            employer_name: "Acme Employer",
-            employment_type: "w2",
+            total_w2_hours: (month == latest_month ? 18.5 : 0.0),
+            accrued_gross_earnings_cents: (month == latest_month ? 400_00 : 0),
+            paychecks_count: (month == latest_month ? 1 : 0)
+          )
+        end
+
+        get :show
+
+        page = Capybara.string(response.body)
+        expect(page).to have_text("Argyle Employer")
+        expect(page).to have_text("202 Westlake Ave N, Seattle, WA 98109")
+        expect(page).to have_text("Employed")
+        expect(page).to have_text("February 1, 2024")
+        expect(page).to have_text("18.5")
+      end
+
+      it "shows the unit toggle on the review page" do
+        payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "acct-123")
+        create(:activity_flow_employment_summary, activity_flow: activity_flow, payroll_account: payroll_account, employer_name: "Acme Employer", employment_type: "w2")
+        latest_month = activity_flow.reporting_months.max
+        activity_flow.reporting_months.each do |month|
+          create(
+            :activity_flow_monthly_summary,
+            activity_flow: activity_flow,
+            payroll_account: payroll_account,
+            month: month.beginning_of_month,
             total_w2_hours: (month == latest_month ? 35.0 : 0.0),
             accrued_gross_earnings_cents: (month == latest_month ? 222_22 : 0),
             paychecks_count: (month == latest_month ? 2 : 0)
@@ -554,6 +608,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
     it "renders both self-attested and synced payroll employment when both are present" do
       payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "acct-123")
+      create(:activity_flow_employment_summary, activity_flow: activity_flow, payroll_account: payroll_account, employer_name: "Validated Employer", employment_type: "w2")
       latest_month = activity_flow.reporting_months.max
       activity_flow.reporting_months.each do |month|
         create(
@@ -561,8 +616,6 @@ RSpec.describe Activities::SummaryController, type: :controller do
           activity_flow: activity_flow,
           payroll_account: payroll_account,
           month: month.beginning_of_month,
-          employer_name: "Validated Employer",
-          employment_type: "w2",
           total_w2_hours: (month == latest_month ? 35.0 : 0.0),
           accrued_gross_earnings_cents: (month == latest_month ? 222_22 : 0),
           paychecks_count: (month == latest_month ? 2 : 0)

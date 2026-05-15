@@ -1,9 +1,15 @@
 <% account_report = persisted_report.find_account_report(payroll_account.aggregator_account_id) %>
 <% is_w2_worker = account_report&.employment&.employment_type == :w2 %>
-<p>
-  <strong><%= t("activities.summary.employment.employer") %>:</strong>
-  <%= account_report&.employment&.employer_name || t("shared.not_applicable") %>
-</p>
+<% if account_report.present? %>
+  <%= render(Report::EmploymentDetailsTableComponent.new(
+    persisted_report,
+    payroll_account,
+    show_header: false,
+    show_employer_name: true,
+    container_class: "margin-top-205"
+  )) %>
+<% end %>
+<h3><%= t("activities.summary.monthly_details") %></h3>
 <% if is_w2_worker %>
   <%= render(Report::W2MonthlySummaryTableComponent.new(persisted_report, payroll_account, show_footnote: false, show_header: false)) %>
 <% else %>

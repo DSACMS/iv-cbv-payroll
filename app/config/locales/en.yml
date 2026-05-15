@@ -498,6 +498,7 @@ en:
         contact_name: Contact name
         contact_phone: Contact phone
         employer: Employer
+        employer_name: Employer name
         gross_income: Gross income
         hours_worked: Hours worked
         month: Month
