@@ -57,6 +57,16 @@ export default class extends Controller {
     this.highlightButton(months)
   }
 
+  toggleActivity(event) {
+    const checkbox = event.currentTarget
+    const fields = checkbox
+      .closest(".demo-launcher__activity-row")
+      .querySelector(".demo-launcher__activity-fields")
+    if (fields) {
+      fields.classList.toggle("demo-launcher__activity-fields--hidden", !checkbox.checked)
+    }
+  }
+
   invalidateShareLink(event) {
     if (event.target === this.generatedUrlTarget) return
 

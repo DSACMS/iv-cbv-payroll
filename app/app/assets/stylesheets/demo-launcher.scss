@@ -225,4 +225,54 @@
       display: none;
     }
   }
+
+  // -- Pre-populated activities accordion --
+  .demo-launcher__activity-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid color("base-lighter");
+    border-radius: radius("md");
+    overflow: hidden;
+  }
+
+  .demo-launcher__activity-row {
+    & + & {
+      border-top: 1px solid color("base-lighter");
+    }
+  }
+
+  .demo-launcher__activity-header {
+    display: flex;
+    align-items: center;
+    padding: units(1) units(1.5);
+    background-color: color("base-lightest");
+
+    .usa-checkbox__input,
+    .usa-checkbox__label {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .usa-checkbox,
+    .usa-checkbox__label {
+      background: transparent;
+    }
+  }
+
+  .demo-launcher__activity-fields {
+    padding: units(1.5);
+    border-top: 1px solid color("base-lighter");
+
+    &.demo-launcher__activity-fields--hidden {
+      display: none;
+    }
+  }
+
+  .demo-launcher__activity-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: units(1);
+    align-items: end;
+  }
 }

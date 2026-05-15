@@ -3,7 +3,7 @@ class Activity < ApplicationRecord
 
   belongs_to :activity_flow
 
-  enum :data_source, { self_attested: "self_attested", validated: "validated" }, default: :self_attested
+  enum :data_source, { self_attested: "self_attested", validated: "validated", state_provided: "state_provided" }, default: :self_attested
 
   scope :published, -> { where(draft: false) }
 

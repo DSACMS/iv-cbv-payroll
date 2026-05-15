@@ -63,7 +63,7 @@ RSpec.describe ActivityFlow, type: :model do
         expect(flow.volunteering_activities.count).to eq(1)
         activity = flow.volunteering_activities.first
         expect(activity).to be_draft
-        expect(activity.data_source).to eq("validated")
+        expect(activity.data_source).to eq("state_provided")
         expect(activity.organization_name).to eq("Red Cross")
         expect(activity.coordinator_email).to eq("pat@redcross.org")
       end
@@ -98,6 +98,92 @@ RSpec.describe ActivityFlow, type: :model do
         months = activity.volunteering_activity_months.order(:month)
         expect(months.map(&:hours)).to eq([ 10 ])
         expect(months.map { |m| m.month.iso8601 }).to eq([ in_window_date ])
+      end
+    end
+
+    context "with a pre-populated employment activity" do
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          {
+            "type" => "employment",
+            "employer_name" => "Acme Corp",
+            "is_self_employed" => false,
+            "street_address" => "123 Main St",
+            "city" => "Boston",
+            "state" => "MA",
+            "zip_code" => "02101",
+            "contact_name" => "Jane Doe",
+            "contact_email" => "jane@acme.com",
+            "contact_phone_number" => "555-0100"
+          }
+        ])
+      end
+
+      it "hydrates a draft employment activity from the invitation payload" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        expect(flow.employment_activities.count).to eq(1)
+        activity = flow.employment_activities.first
+        expect(activity).to be_draft
+        expect(activity.data_source).to eq("state_provided")
+        expect(activity.employer_name).to eq("Acme Corp")
+        expect(activity.is_self_employed).to be false
+        expect(activity.street_address).to eq("123 Main St")
+        expect(activity.city).to eq("Boston")
+        expect(activity.state).to eq("MA")
+        expect(activity.zip_code).to eq("02101")
+        expect(activity.contact_name).to eq("Jane Doe")
+        expect(activity.contact_email).to eq("jane@acme.com")
+        expect(activity.contact_phone_number).to eq("555-0100")
+      end
+
+      it "is idempotent — does not double-hydrate if employment activities already exist" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+        expect(flow.employment_activities.count).to eq(1)
+
+        described_class.hydrate_pre_populated_activities!(flow, invitation)
+        expect(flow.employment_activities.reload.count).to eq(1)
+      end
+    end
+
+    context "with pre_populated_activities including employment monthly hours and income" do
+      let(:in_window_date) { described_class.expected_reporting_window_range("sandbox").end.beginning_of_month.iso8601 }
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          {
+            "type" => "employment",
+            "employer_name" => "Acme Corp",
+            "months" => [
+              { "month" => in_window_date, "hours" => 40, "gross_income" => 3000 }
+            ]
+          }
+        ])
+      end
+
+      it "hydrates EmploymentActivityMonth records from the months array" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        activity = flow.employment_activities.first
+        months = activity.employment_activity_months.order(:month)
+        expect(months.map(&:hours)).to eq([ 40 ])
+        expect(months.map(&:gross_income)).to eq([ 3000 ])
+        expect(months.map { |m| m.month.iso8601 }).to eq([ in_window_date ])
+      end
+    end
+
+    context "with a mixed volunteering and employment invitation" do
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          { "type" => "volunteering", "organization_name" => "Red Cross" },
+          { "type" => "employment", "employer_name" => "Acme Corp" }
+        ])
+      end
+
+      it "hydrates one activity of each type" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        expect(flow.volunteering_activities.count).to eq(1)
+        expect(flow.employment_activities.count).to eq(1)
       end
     end
 

@@ -36,22 +36,35 @@ class ActivityFlow < Flow
     entries = invitation.pre_populated_activities
     return unless entries.is_a?(Array)
     return if entries.empty?
-    return if flow.volunteering_activities.exists?
 
     entries.each do |entry|
       attrs = entry.respond_to?(:stringify_keys) ? entry.stringify_keys : entry.to_h.stringify_keys
       case attrs["type"].to_s
       when "volunteering"
+        next if flow.volunteering_activities.exists?
+
         activity = flow.volunteering_activities.create(
           attrs.slice(*VolunteeringActivity::FIELDS)
-            .merge("draft" => true, "data_source" => "validated")
+            .merge("draft" => true, "data_source" => "state_provided")
         )
         next unless activity.persisted?
 
         Array(attrs["months"]).each do |month_entry|
-          next unless month_entry.is_a?(Hash) || month_entry.respond_to?(:to_h)
-          month_attrs = month_entry.respond_to?(:stringify_keys) ? month_entry.stringify_keys : month_entry.to_h.stringify_keys
-          activity.volunteering_activity_months.create(month_attrs.slice(*VolunteeringActivityMonth::FIELDS))
+          next unless month_entry.is_a?(Hash)
+          activity.volunteering_activity_months.create(month_entry.stringify_keys.slice(*VolunteeringActivityMonth::FIELDS))
+        end
+      when "employment"
+        next if flow.employment_activities.exists?
+
+        activity = flow.employment_activities.create(
+          attrs.slice(*EmploymentActivity::FIELDS)
+            .merge("draft" => true, "data_source" => "state_provided")
+        )
+        next unless activity.persisted?
+
+        Array(attrs["months"]).each do |month_entry|
+          next unless month_entry.is_a?(Hash)
+          activity.employment_activity_months.create(month_entry.stringify_keys.slice(*EmploymentActivityMonth::FIELDS))
         end
       end
     end

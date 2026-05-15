@@ -203,7 +203,7 @@ class ActivityFlowProgressCalculator
   end
 
   def validated_volunteering_hours_for_month(month_start)
-    @volunteering_activities.select(&:validated?).sum do |a|
+    @volunteering_activities.select { |a| a.validated? || a.state_provided? }.sum do |a|
       a.volunteering_activity_months
         .where(month: month_start.beginning_of_month)
         .sum(:hours)
