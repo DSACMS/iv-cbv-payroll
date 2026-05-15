@@ -266,6 +266,13 @@ RSpec.describe DataRetentionService do
     context "after the deletion threshold" do
       let(:now) { deletion_threshold + 1.minute }
 
+      context "when the invitation is still valid" do
+        it "does not redact the associated applicant" do
+          service.redact_complete_cbv_flows
+          expect(cbv_flow.cbv_applicant.reload.redacted_at).to be_nil
+        end
+      end
+
       it "redacts the incomplete CbvFlow" do
         service.redact_complete_cbv_flows
         expect(cbv_flow.reload).to have_attributes(
@@ -278,11 +285,17 @@ RSpec.describe DataRetentionService do
         expect(cbv_flow_invitation.reload.redacted_at).to be_nil
       end
 
-      it "redacts the associated applicant" do
-        service.redact_complete_cbv_flows
-        expect(cbv_flow.cbv_applicant.reload).to have_attributes(
-          first_name: "REDACTED"
-        )
+      context "when the invitation has expired" do
+        before do
+          cbv_flow_invitation.update!(expires_at: cbv_flow.transmitted_at - 1.day)
+        end
+
+        it "redacts the associated applicant" do
+          service.redact_complete_cbv_flows
+          expect(cbv_flow.cbv_applicant.reload).to have_attributes(
+            first_name: "REDACTED"
+          )
+        end
       end
 
       it "redacts an associated PayrollAccount" do
