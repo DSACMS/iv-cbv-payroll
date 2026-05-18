@@ -47,7 +47,7 @@ module E2e
     #
     # AXE_MODE controls coverage:
     # - "sample" (default): one check per unique path across the whole run
-    # - "full": check every time verify_page is called (use in nightly job)
+    # - "full": check every time verify_page is called (used in CI)
     # - "off": skip entirely (use for fast local iteration)
     #
     # Axe's default ruleset covers WCAG 2.1 Level A & AA plus best practices:
