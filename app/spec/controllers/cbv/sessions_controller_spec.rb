@@ -105,6 +105,18 @@ RSpec.describe Cbv::SessionsController, type: :controller do
       end
     end
 
+    context 'when generic links are disabled for the agency' do
+      before do
+        stub_client_agency_config_value("sandbox", "generic_links_disabled", true)
+      end
+
+      it 'renders the timeout page without link to start over' do
+        get :timeout, params: { client_agency_id: 'sandbox' }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include('click here')
+      end
+    end
+
     context 'without a client_agency_id param or domain match' do
       it 'renders the timeout page without link to start over' do
         get :timeout
