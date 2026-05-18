@@ -108,12 +108,12 @@ jobs:
             echo "## Automated Dockerfile OS Vulnerability Fix"
             echo ""
             if [ "$EVENT_NAME" = "workflow_run" ]; then
-              echo "| | |"
-              echo "|---|---|"
-              echo "| **Failed scan** | [${TRIGGER_RUN_TITLE}](${TRIGGER_RUN_URL}) |"
+              echo "<table>"
+              echo "<tr><td><b>Failed scan</b></td><td><a href=\"${TRIGGER_RUN_URL}\">${TRIGGER_RUN_TITLE}</a></td></tr>"
               if [ -n "$TRIGGER_PR_NUMBER" ] && [ "$TRIGGER_PR_NUMBER" != "null" ]; then
-                echo "| **Source PR** | #${TRIGGER_PR_NUMBER} |"
+                echo "<tr><td><b>Source PR</b></td><td>#${TRIGGER_PR_NUMBER}</td></tr>"
               fi
+              echo "</table>"
             else
               echo "**Triggered by:** manual \`${EVENT_NAME}\`"
             fi
