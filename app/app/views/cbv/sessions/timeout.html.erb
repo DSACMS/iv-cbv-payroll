@@ -16,6 +16,6 @@
     </div>
   </div>
 </div>
-<% if @current_agency.present? %>
+<% if @current_agency.present? && !@current_agency.generic_links_disabled %>
   <p data-controller="session-timeout" data-sessions-target="source" class="margin-top-8"><%= t("session_timeout.page.start_over_html", link: cbv_flow_new_path(client_agency_id: @current_agency.id), action: "click->session-timeout#trackEvent") %></p>
 <% end %>
