@@ -5,7 +5,13 @@ on:
 
 jobs:
   reviewer-lottery:
-    if: github.actor != 'dependabot[bot]'
+    # Skip when the PR already has a requested reviewer — preserves any reviewer
+    # set at PR creation (e.g. by the auto-fix-vulnerabilities workflow) across
+    # the close/reopen dance that the autofix PR body instructs maintainers to
+    # perform to force CI.
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      toJSON(github.event.pull_request.requested_reviewers) == '[]'
     name: Add random reviewer via Reviewer Lottery
     runs-on: ubuntu-latest
     permissions:
