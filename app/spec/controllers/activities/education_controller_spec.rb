@@ -82,6 +82,17 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to have_http_status(:ok)
     end
 
+    it "does not render activity flow navigation" do
+      get :show, params: { id: education_activity.id }
+
+      rendered_page = Capybara.string(response.body)
+      expect(rendered_page).not_to have_css(".activity-flow-header")
+      expect(rendered_page).not_to have_css(
+        ".activity-header-title__text",
+        text: I18n.t("activities.education.title_singular")
+      )
+    end
+
     context "when the EducationActivity has no enrollments" do
       before do
         education_activity.update(status: :no_enrollments)
