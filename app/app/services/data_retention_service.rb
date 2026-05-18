@@ -66,10 +66,13 @@ class DataRetentionService
     CbvFlow
       .unredacted
       .where("transmitted_at < ?", REDACT_TRANSMITTED_CBV_FLOWS_AFTER.ago)
-      .includes(:cbv_flow_invitation, :payroll_accounts)
+      .includes(:payroll_accounts, cbv_applicant: :cbv_flow_invitations)
       .find_each do |cbv_flow|
         cbv_flow.redact!
-        cbv_flow.cbv_applicant&.redact!
+        applicant = cbv_flow.cbv_applicant
+        # `all?` returns true on an empty collection: applicants with no invitations
+        # can't receive new flows, so they're safe to redact.
+        applicant.redact! if applicant && applicant.cbv_flow_invitations.all?(&:expired?)
         cbv_flow.payroll_accounts.each(&:redact!)
       end
   end
