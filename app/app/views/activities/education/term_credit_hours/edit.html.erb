@@ -29,6 +29,12 @@
   <%= t("activities.education.term_credit_hours.body_conversion") %>
 </p>
 
+<% if @error %>
+  <%= render Uswds::Alert.new(type: :error, heading: t("activities.education.term_credit_hours.error_heading"), class: "margin-bottom-4") do %>
+    <%= t("activities.education.term_credit_hours.error_body_multi_month") %>
+  <% end %>
+<% end %>
+
 <%= uswds_form_with(model: @current_term,
       url: activities_flow_education_term_credit_hour_path(
         education_id: @education_activity,

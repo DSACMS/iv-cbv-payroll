@@ -238,6 +238,9 @@ en:
         body_conversion: We will convert these credit hours into your community engagement progress.
         body_html: Enter the number of credit hours you were taking in the term from %{term_begin} to %{term_end}.
         continue: Continue
+        error_body_multi_month: You need to add credit hours for at least one month to continue.
+        error_heading: No hours entered
+        field_error: Add hours for at least one month
         heading: Add your credit hours for %{school_name}
         hours_label: Term credit hours
         no_hours_checkbox: I didn't take any classes at %{school_name} this term
