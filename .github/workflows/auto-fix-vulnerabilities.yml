@@ -80,11 +80,21 @@ jobs:
           vuln-type: os
           scanners: vuln
 
+      - name: Run Grype scan (JSON output)
+        uses: anchore/scan-action@v7
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          output-format: json
+          output-file: grype-results.json
+          severity-cutoff: high
+          fail-build: false
+          only-fixed: true
+
       - name: Patch Dockerfile with fixable OS packages
         id: patch
         env:
           PATCH_SUMMARY_FILE: patch-summary.md
-        run: ruby .github/scripts/patch-dockerfile.rb trivy-results.json app/Dockerfile
+        run: ruby .github/scripts/patch-dockerfile.rb trivy-results.json grype-results.json app/Dockerfile
 
       - name: Generate PR body
         if: steps.patch.outputs.changes_made == 'true'
@@ -108,7 +118,7 @@ jobs:
               echo "**Triggered by:** manual \`${EVENT_NAME}\`"
             fi
             echo ""
-            echo "Trivy identified OS packages with available CVE fixes. The auto-managed"
+            echo "Trivy and Grype identified OS packages with available CVE fixes. The auto-managed"
             echo "\`RUN apt-get install\` block in the Dockerfile BASE stage has been updated:"
             echo ""
             cat patch-summary.md
@@ -124,10 +134,11 @@ jobs:
             echo "Once CI passes and confirms Trivy/Anchore are green, this PR is safe to merge."
             echo ""
             echo "_The auto-fix block in the Dockerfile is temporary and add-only. This workflow_"
-            echo "_will not auto-remove packages — Trivy with \`--ignore-unfixed\` cannot tell a_"
-            echo "_base-image fix apart from one already applied by this block, so removing_"
-            echo "_would risk reintroducing the CVE. Clear the block manually when the base_"
-            echo "_Ruby image is bumped (see upgrade instructions at the top of the Dockerfile)._"
+            echo "_will not auto-remove packages — Trivy (\`--ignore-unfixed\`) and Grype_"
+            echo "_(\`only-fixed\`) cannot tell a base-image fix apart from one already applied_"
+            echo "_by this block, so removing would risk reintroducing the CVE. Clear the block_"
+            echo "_manually when the base Ruby image is bumped (see upgrade instructions at the_"
+            echo "_top of the Dockerfile)._"
           } > pr-body.md
 
       - name: Check for existing open fix PR
