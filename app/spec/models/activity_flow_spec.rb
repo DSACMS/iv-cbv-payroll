@@ -331,14 +331,24 @@ RSpec.describe ActivityFlow, type: :model do
         summarize_by_month: { "acct-1" => {} }
       )
       allow(report).to receive(:find_account_report).with("acct-1").and_return(
-        double(employment: double(employer_name: "Test Employer", employment_type: :w2))
+        double(employment: instance_double(Aggregators::ResponseObjects::Employment,
+          employer_name: "Test Employer",
+          employment_type: :w2,
+          employer_phone_number: nil,
+          employer_address: nil,
+          status: nil,
+          start_date: nil,
+          termination_date: nil
+        ))
       )
     end
 
-    it "persists monthly summaries from the report" do
+    it "persists summaries from the report" do
       expect {
         flow.after_payroll_sync_succeeded(payroll_account, report)
-      }.to change { flow.activity_flow_monthly_summaries.count }.by(flow.reporting_months.size)
+      }
+        .to change { flow.activity_flow_monthly_summaries.count }.by(flow.reporting_months.size)
+        .and change { flow.activity_flow_employment_summaries.count }.by(1)
     end
   end
 

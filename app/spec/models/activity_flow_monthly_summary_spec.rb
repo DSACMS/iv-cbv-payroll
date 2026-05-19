@@ -2,10 +2,9 @@ require "rails_helper"
 
 RSpec.describe ActivityFlowMonthlySummary, type: :model do
   describe "#redact!" do
-    it "redacts employer and clears persisted income fields" do
+    it "clears persisted income fields" do
       summary = create(
         :activity_flow_monthly_summary,
-        employer_name: "Acme Employer",
         total_w2_hours: 12.5,
         total_gig_hours: 8.0,
         accrued_gross_earnings_cents: 123_45,
@@ -15,7 +14,6 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
       summary.redact!
 
       expect(summary.reload).to have_attributes(
-        employer_name: "REDACTED",
         total_w2_hours: 0.0,
         total_gig_hours: 0.0,
         accrued_gross_earnings_cents: 0,
@@ -33,12 +31,7 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
     let(:month_1_key) { range.begin.strftime("%Y-%m") }
     let(:month_2_key) { (range.begin + 1.month).strftime("%Y-%m") }
 
-    before do
-      allow(report).to receive(:has_fetched?).and_return(true)
-      allow(report).to receive(:find_account_report).with("acct-1").and_return(
-        double(employment: double(employer_name: "Acme Employer", employment_type: :w2))
-      )
-    end
+    before { allow(report).to receive(:has_fetched?).and_return(true) }
 
     it "persists one row per reporting month and fills missing months with zeros" do
       allow(report).to receive(:summarize_by_month).and_return(
@@ -63,7 +56,7 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
         total_gig_hours: 10.0,
         accrued_gross_earnings_cents: 250_00,
         total_mileage: 12.5,
-        employer_name: "Acme Employer"
+        paychecks_count: 0
       )
 
       expect(summaries.second).to have_attributes(
@@ -72,7 +65,7 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
         total_gig_hours: 0.0,
         accrued_gross_earnings_cents: 0,
         total_mileage: 0.0,
-        employer_name: "Acme Employer"
+        paychecks_count: 0
       )
     end
   end
@@ -88,7 +81,6 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
             activity_flow: flow,
             payroll_account: payroll_account,
             month: month.beginning_of_month,
-            employer_name: "Persisted Employer",
             total_w2_hours: 40.0,
             accrued_gross_earnings_cents: 100_00)
         end
@@ -102,7 +94,6 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
         expect(result.keys).to eq([ "acct-1" ])
         month_key = flow.reporting_months.first.strftime("%Y-%m")
         expect(result["acct-1"][month_key]).to include(
-          employer_name: "Persisted Employer",
           total_w2_hours: 40.0,
           accrued_gross_earnings: 100_00
         )
@@ -128,7 +119,15 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
           }
         )
         allow(mock_report).to receive(:find_account_report).with("acct-1").and_return(
-          double(employment: double(employer_name: "Fetched Employer", employment_type: :w2))
+          double(employment: instance_double(Aggregators::ResponseObjects::Employment,
+            employer_name: "Fetched Employer",
+            employment_type: :w2,
+            employer_phone_number: nil,
+            employer_address: nil,
+            status: nil,
+            start_date: nil,
+            termination_date: nil
+          ))
         )
         allow(AggregatorReportFetcher).to receive(:new).with(flow).and_return(double(report: mock_report))
       end
@@ -137,7 +136,6 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
         result = described_class.by_account_with_fallback(activity_flow: flow)
 
         expect(result["acct-1"][month_key]).to include(
-          employer_name: "Fetched Employer",
           accrued_gross_earnings: 50_00
         )
       end
@@ -164,7 +162,15 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
           summarize_by_month: { "acct-1" => month_data, "acct-2" => month_data }
         )
         allow(mock_report).to receive(:find_account_report) do
-          double(employment: double(employer_name: "Employer", employment_type: :w2))
+          double(employment: instance_double(Aggregators::ResponseObjects::Employment,
+            employer_name: "Employer",
+            employment_type: :w2,
+            employer_phone_number: nil,
+            employer_address: nil,
+            status: nil,
+            start_date: nil,
+            termination_date: nil
+          ))
         end
         allow(AggregatorReportFetcher).to receive(:new).with(flow).and_return(double(report: mock_report))
       end
@@ -192,7 +198,6 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
             activity_flow: flow,
             payroll_account: payroll_account,
             month: month.beginning_of_month,
-            employer_name: "Published Employer",
             total_w2_hours: 40.0,
             accrued_gross_earnings_cents: 100_00)
 
@@ -200,7 +205,6 @@ RSpec.describe ActivityFlowMonthlySummary, type: :model do
             activity_flow: flow,
             payroll_account: draft_account,
             month: month.beginning_of_month,
-            employer_name: "Draft Employer",
             total_w2_hours: 50.0,
             accrued_gross_earnings_cents: 200_00)
         end

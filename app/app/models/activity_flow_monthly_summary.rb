@@ -33,8 +33,6 @@ class ActivityFlowMonthlySummary < ApplicationRecord
       .transform_values do |account_rows|
         account_rows.index_by { |row| row.month.strftime("%Y-%m") }.transform_values do |row|
           {
-            employer_name: row.employer_name,
-            employment_type: row.employment_type,
             total_w2_hours: row.total_w2_hours.to_f,
             total_gig_hours: row.total_gig_hours.to_f,
             accrued_gross_earnings: row.accrued_gross_earnings_cents.to_i,
@@ -52,8 +50,9 @@ class ActivityFlowMonthlySummary < ApplicationRecord
     report = AggregatorReportFetcher.new(activity_flow).report
     return {} unless report&.has_fetched?
 
-    activity_flow.payroll_accounts.select(&:sync_succeeded?).each do |payroll_account|
+    activity_flow.payroll_accounts.published.select(&:sync_succeeded?).each do |payroll_account|
       upsert_from_report(activity_flow: activity_flow, payroll_account: payroll_account, report: report)
+      ActivityFlowEmploymentSummary.persist_from_report(activity_flow: activity_flow, payroll_account: payroll_account, report: report)
     end
 
     load_complete_summary_data(activity_flow: activity_flow) || {}
@@ -65,9 +64,6 @@ class ActivityFlowMonthlySummary < ApplicationRecord
     range = activity_flow.reporting_window_range
     account_id = payroll_account.aggregator_account_id
     months_data = report.summarize_by_month(from_date: range.begin, to_date: range.end)[account_id] || {}
-    account_report = report.find_account_report(account_id) if report.respond_to?(:find_account_report)
-    employer_name = account_report&.employment&.employer_name
-    employment_type = account_report&.employment&.employment_type&.to_s
     reporting_months = activity_flow.reporting_months
 
     reporting_months.each do |month_date|
@@ -83,14 +79,12 @@ class ActivityFlowMonthlySummary < ApplicationRecord
           total_gig_hours: data[:total_gig_hours].to_f,
           accrued_gross_earnings_cents: (data[:accrued_gross_earnings] || 0).to_i,
           total_mileage: (data[:total_mileage] || 0).to_f,
-          paychecks_count: (data[:paystubs]&.size || 0).to_i,
-          employer_name: employer_name,
-          employment_type: employment_type
+          paychecks_count: (data[:paystubs]&.size || 0).to_i
         },
         unique_by: %i[activity_flow_id payroll_account_id month],
         update_only: %i[
           total_w2_hours total_gig_hours accrued_gross_earnings_cents
-          total_mileage paychecks_count employer_name employment_type
+          total_mileage paychecks_count
         ]
       )
     end
@@ -99,7 +93,6 @@ class ActivityFlowMonthlySummary < ApplicationRecord
   # Redact all persisted income details for this monthly summary row.
   def redact!
     assign_attributes(
-      employer_name: Redactable::REDACTION_REPLACEMENTS[:string],
       total_w2_hours: 0,
       total_gig_hours: 0,
       accrued_gross_earnings_cents: 0,

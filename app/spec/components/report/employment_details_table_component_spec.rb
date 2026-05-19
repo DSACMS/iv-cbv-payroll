@@ -2,6 +2,31 @@ require "rails_helper"
 
 
 RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
+  context "with display options" do
+    let(:employment) do
+      Struct
+        .new(:employer_name, :employer_phone_number, :employer_address, :status, :start_date, :termination_date)
+        .new("Acme Employer", "555-1234", "123 Main St", "Employed", Date.new(2024, 1, 15), nil)
+    end
+    let(:account_report) { Struct.new(:employment, :income, :identity).new(employment, nil, nil) }
+    let(:report) { instance_double(PersistedReportAdapter, find_account_report: account_report) }
+    let(:payroll_account) { instance_double(PayrollAccount, aggregator_account_id: "account-1") }
+
+    it "renders the table without the section header when requested" do
+      result = render_inline(described_class.new(report, payroll_account, show_header: false))
+
+      expect(result.css("h2").count).to eq(0)
+      expect(result.css("thead tr th:nth-child(1)").text).to include("Employer information")
+    end
+
+    it "renders the employer name row when requested" do
+      result = render_inline(described_class.new(report, payroll_account, show_employer_name: true))
+
+      expect(result.css("tbody tr:nth-child(1) th:nth-child(1)").text).to include("Employer name")
+      expect(result.css("tbody tr:nth-child(1) td:nth-child(2)").text).to include("Acme Employer")
+    end
+  end
+
   context "with pinwheel stubs" do
     include PinwheelApiHelper
 

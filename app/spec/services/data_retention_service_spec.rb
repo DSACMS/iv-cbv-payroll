@@ -326,9 +326,14 @@ RSpec.describe DataRetentionService do
       create(:activity_flow_monthly_summary,
         activity_flow: activity_flow,
         payroll_account: payroll_account,
-        employer_name: "Acme Corp",
         total_w2_hours: 40.0,
         accrued_gross_earnings_cents: 500_00)
+    end
+    let!(:employment_summary) do
+      create(:activity_flow_employment_summary,
+        activity_flow: activity_flow,
+        payroll_account: payroll_account,
+        employer_name: "Acme Corp")
     end
 
     around do |ex|
@@ -351,9 +356,17 @@ RSpec.describe DataRetentionService do
         service.redact_activity_flow_summaries
 
         expect(summary.reload).to have_attributes(
-          employer_name: "REDACTED",
           total_w2_hours: 0.0,
           accrued_gross_earnings_cents: 0,
+          redacted_at: be_present
+        )
+      end
+
+      it "redacts employment summaries" do
+        service.redact_activity_flow_summaries
+
+        expect(employment_summary.reload).to have_attributes(
+          employer_name: "REDACTED",
           redacted_at: be_present
         )
       end
@@ -372,11 +385,29 @@ RSpec.describe DataRetentionService do
 
       before do
         summary.redact!
+        employment_summary.redact!
       end
 
       it "does not re-process the activity flow" do
         expect { service.redact_activity_flow_summaries }
           .not_to change { summary.reload.attributes }
+      end
+    end
+
+    context "when monthly summaries are already redacted" do
+      let(:now) { activity_flow.updated_at + 8.days }
+
+      before do
+        summary.redact!
+      end
+
+      it "redacts remaining unredacted employment summaries" do
+        service.redact_activity_flow_summaries
+
+        expect(employment_summary.reload).to have_attributes(
+          employer_name: "REDACTED",
+          redacted_at: be_present
+        )
       end
     end
   end
@@ -408,7 +439,7 @@ RSpec.describe DataRetentionService do
       )
     end
 
-    context "with activity flow monthly summaries" do
+    context "with activity flow summaries" do
       let(:applicant) { cbv_flow_invitation.cbv_applicant }
       let!(:activity_flow) { create(:activity_flow, cbv_applicant: applicant) }
       let!(:activity_payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow) }
@@ -416,16 +447,24 @@ RSpec.describe DataRetentionService do
         create(:activity_flow_monthly_summary,
           activity_flow: activity_flow,
           payroll_account: activity_payroll_account,
-          employer_name: "Acme Corp",
           total_w2_hours: 40.0)
       end
+      let!(:employment_summary) do
+        create(:activity_flow_employment_summary,
+          activity_flow: activity_flow,
+          payroll_account: activity_payroll_account,
+          employer_name: "Acme Corp")
+      end
 
-      it "redacts activity flow monthly summaries and payroll accounts" do
+      it "redacts activity flow summaries and payroll accounts" do
         described_class.manually_redact_by_case_number!("DELETEME001")
 
         expect(summary.reload).to have_attributes(
-          employer_name: "REDACTED",
           total_w2_hours: 0.0,
+          redacted_at: be_present
+        )
+        expect(employment_summary.reload).to have_attributes(
+          employer_name: "REDACTED",
           redacted_at: be_present
         )
         expect(activity_payroll_account.reload).to have_attributes(
