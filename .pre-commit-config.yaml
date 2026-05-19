@@ -66,6 +66,13 @@ repos:
     language: system
     files: '.*/Dockerfile'
 
+  - id: patch-dockerfile-test
+    name: patch-dockerfile.rb test
+    entry: ruby .github/scripts/patch-dockerfile_test.rb
+    language: system
+    files: '^(\.github/scripts/patch-dockerfile.*\.rb|app/Dockerfile)$'
+    pass_filenames: false
+
   - id: actionlint
     name: ActionLint
     entry: actionlint
