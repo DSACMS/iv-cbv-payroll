@@ -1,6 +1,6 @@
 module E2e
   module TestHelpers
-    # Tracks paths already axe-checked in this process, for AXE_MODE=sample.
+    # Tracks paths already axe-checked in this process, for E2E_AXE_MODE=sample.
     AXED_PATHS = Set.new
 
     # Verify that the page is correct: having the expected title, no missing
@@ -45,7 +45,7 @@ module E2e
 
     # Check accessibility with Axe matchers.
     #
-    # AXE_MODE controls coverage:
+    # E2E_AXE_MODE controls coverage:
     # - "sample" (default): one check per unique path across the whole run
     # - "full": check every time verify_page is called (used in CI)
     # - "off": skip entirely (use for fast local iteration)
@@ -53,7 +53,7 @@ module E2e
     # Axe's default ruleset covers WCAG 2.1 Level A & AA plus best practices:
     # https://github.com/dequelabs/axe-core/blob/master/doc/rule-descriptions.md
     def run_axe_check(page, current_path, skip_axe_rules)
-      case ENV.fetch("AXE_MODE", "sample")
+      case ENV.fetch("E2E_AXE_MODE", "sample")
       when "off"
         nil
       when "full"
