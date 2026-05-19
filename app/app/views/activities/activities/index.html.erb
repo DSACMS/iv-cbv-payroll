@@ -5,14 +5,10 @@
 <% variant = @flow.renewal_reporting_window? ? :renewal : :application %>
 <% title_key = activity_hub_title_key(state) %>
 <% description_key = activity_hub_description_key(state) %>
-<% single_month_reporting_window = @flow.reporting_months.one? %>
-<% reporting_window_display = single_month_reporting_window ? l(@flow.reporting_window_range.begin, format: :month_year) : @flow.reporting_window_display %>
-<% empty_state_description_key = single_month_reporting_window ? "activities.hub.empty_state_description_single_month" : "activities.hub.empty_state_description" %>
+<% reporting_window_display = @flow.reporting_window_display %>
 <%# i18n-tasks-use t("activities.hub.empty_state_title") %>
 <%# i18n-tasks-use t("activities.hub.completed_state_title") %>
 <%# i18n-tasks-use t("activities.hub.in_progress_state_title") %>
-<%# i18n-tasks-use t("activities.hub.empty_state_description") %>
-<%# i18n-tasks-use t("activities.hub.empty_state_description_single_month") %>
 <%# i18n-tasks-use t("activities.hub.completed_state_description", agency_name: "Test Agency") %>
 <%# i18n-tasks-use t("activities.hub.in_progress_state_description", agency_name: "Test Agency") %>
 <%# i18n-tasks-use t("activities.hub.empty_state_months_required_any", required_month_count: 3) %>
@@ -41,7 +37,11 @@
       <% end %>
 
       <p class="activity-hub-subheading">
-        <%= t(empty_state_description_key, reporting_window: reporting_window_display) %>
+        <% if @flow.reporting_window_months == 1 %>
+          <%= t("activities.hub.empty_state_description_single_month", reporting_window: reporting_window_display) %>
+        <% else %>
+          <%= t("activities.hub.empty_state_description", reporting_window: reporting_window_display) %>
+        <% end %>
       </p>
     <% else %>
       <p class="activity-hub-subheading margin-top-2">
