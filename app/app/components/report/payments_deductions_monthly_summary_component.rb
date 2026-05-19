@@ -6,7 +6,13 @@ class Report::PaymentsDeductionsMonthlySummaryComponent < ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, is_w2_worker:, pay_frequency_text:)
+  def initialize(
+    report,
+    payroll_account,
+    is_w2_worker:,
+    pay_frequency_text:,
+    activity_flow_labels: false
+  )
     @report = report
 
     # Note: payroll_account may either be the ID or the payroll_account object
@@ -15,6 +21,7 @@ class Report::PaymentsDeductionsMonthlySummaryComponent < ViewComponent::Base
     @monthly_summary_data = ordered_monthly_summary_data(@report.summarize_by_month[@account_id], @report.flow)
     @is_w2_worker = is_w2_worker
     @pay_frequency_text = pay_frequency_text
+    @activity_flow_labels = activity_flow_labels
   end
 
   def before_render

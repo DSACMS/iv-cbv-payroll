@@ -201,6 +201,8 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     it "displays employment activity months" do
       get :review, params: { id: employment_activity.id }
 
+      expect(response.body).to include(I18n.t("activities.summary.monthly_details"))
+      expect(response.body).to include(I18n.t("activities.employment.review.community_engagement_hours"))
       expect(response.body).to include("25")
       expect(response.body).to include("500")
     end

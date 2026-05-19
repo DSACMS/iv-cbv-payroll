@@ -54,7 +54,7 @@ RSpec.describe "e2e Education mixed enrollment review flow", :js, type: :feature
     expect(page).to have_content(
       I18n.t("activities.education.review.enrollment_information_numbered", number: 2)
     )
-    expect(page).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
+    expect(page).to have_selector("h3", text: I18n.t("activities.summary.education.term_details"), count: 1)
     expect(page).to have_content(I18n.t("activities.education.review.community_engagement_hours"))
     expect(page).to have_content(I18n.t("activities.education.review.ce_explainer_title"))
     expect(page).to have_content(

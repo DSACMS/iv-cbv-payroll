@@ -15,7 +15,7 @@
 
   <% next unless enrollment_term.less_than_half_time? %>
 
-  <h3><%= t("activities.education.review.credit_hours_section") %></h3>
+  <h3><%= t("activities.summary.education.term_details") %></h3>
   <%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
     <%= table.with_header_cell(is_header: true, class_names: "text-nowrap")
              .with_content(t("activities.education.review.term")) %>
@@ -26,7 +26,7 @@
     <%= table.with_header_cell(is_header: true, class_names: "text-nowrap")
            .with_content(t("activities.education.review.community_engagement_hours")) %>
     <%= table.with_header_cell(is_header: true, class_names: "text-nowrap")
-           .with_content(t("activities.education.review.edit")) %>
+           .with_content(tag.span(t("activities.education.review.edit"), class: "usa-sr-only")) %>
 
     <% term_index = less_than_half_time_terms.index { |term| term.id == enrollment_term.id } || 0 %>
     <% edit_path = edit_activities_flow_education_term_credit_hour_path(

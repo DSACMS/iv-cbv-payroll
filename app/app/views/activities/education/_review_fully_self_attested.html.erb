@@ -12,7 +12,7 @@
   { label: t("activities.education.review.contact_phone"), value: @education_activity.contact_phone_number }
 ])) %>
 
-<h2><%= t("activities.education.review.credit_hours_section") %></h2>
+<h2><%= t("activities.summary.education.term_details") %></h2>
 <%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
   <%= table.with_header_cell(class_names: "text-nowrap")
            .with_content(t("activities.summary.education.month")) %>
@@ -21,13 +21,13 @@
   <%= table.with_header_cell(class_names: "text-nowrap")
          .with_content(t("activities.education.review.community_engagement_hours")) %>
   <%= table.with_header_cell(class_names: "text-nowrap")
-         .with_content(t("activities.education.review.edit")) %>
+         .with_content(tag.span(t("activities.education.review.edit"), class: "usa-sr-only")) %>
 
   <% @education_activity.education_activity_months.order(:month).each_with_index do |activity_month, index| %>
     <% edit_path = edit_activities_flow_education_month_path(education_id: @education_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>
       <%= row.with_data_cell(data_label: t("activities.summary.education.month"), is_header: true) do %>
-        <%= I18n.l(activity_month.month, format: :month) %>
+        <%= I18n.l(activity_month.month, format: :month_year) %>
         <%= link_to t("activities.education.review.edit"), edit_path, class: "usa-link mobile-edit-link" %>
       <% end %>
       <%= row.with_data_cell(data_label: t("activities.education.review.credit_hours"))

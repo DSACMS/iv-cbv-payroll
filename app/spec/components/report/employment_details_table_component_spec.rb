@@ -87,6 +87,14 @@ RSpec.describe Report::EmploymentDetailsTableComponent, type: :component do
           expect(subject.css("thead tr th").length).to eq(2)
         end
 
+        it "renders activity flow labels when requested" do
+          rendered = render_inline(described_class.new(pinwheel_report, payroll_account, activity_flow_labels: true))
+
+          expect(rendered).to have_selector("h2", text: "Employer information")
+          expect(rendered).to have_selector("thead th", text: "Employer information")
+          expect(rendered).to have_selector("thead th", text: "Your details")
+        end
+
         it "renders the correct column headers" do
           expect(subject.css("thead tr th:nth-child(1)").to_html).to include "Employer information"
           expect(subject.css("thead tr th:nth-child(2)").to_html).to include "Your details"

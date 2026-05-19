@@ -84,6 +84,19 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
         expect(subject.css("thead tr th:nth-child(4)").to_html).to include "Total hours worked"
         expect(subject.css("tbody tr:nth-child(1) td:nth-child(4)").to_html).to include "80.0"
       end
+
+      it "renders activity flow labels when requested" do
+        rendered = render_inline(described_class.new(pinwheel_report, payroll_account, activity_flow_labels: true))
+
+        expect(rendered).to have_selector("thead th", text: "Month")
+        expect(rendered).to have_selector("thead th", text: "Gross income")
+        expect(rendered).to have_selector("thead th", text: "Number of paychecks")
+        expect(rendered).to have_selector("thead th", text: "Community engagement hours")
+        expect(rendered).to have_selector("tbody tr", text: "December 2020")
+        expect(rendered).to have_selector("tbody tr", text: "$4,807.20")
+        expect(rendered).to have_selector("tbody tr", text: "80")
+        expect(rendered).to have_no_text("What does this information mean?")
+      end
     end
   end
 

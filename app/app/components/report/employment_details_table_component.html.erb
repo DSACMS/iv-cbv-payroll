@@ -1,7 +1,11 @@
 <div class="<%= @container_class %>">
   <% if @show_header %>
     <h2 class="margin-0">
-      <%= I18n.t("cbv.payment_details.show.employment_information_table_header") %>
+      <% if @activity_flow_labels %>
+        <%= I18n.t("shared.table_headers.employer_information") %>
+      <% else %>
+        <%= I18n.t("cbv.payment_details.show.employment_information_table_header") %>
+      <% end %>
     </h2>
   <% end %>
   <%= render(TableComponent.new) do |table| %>
