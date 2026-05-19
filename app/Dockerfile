@@ -44,16 +44,45 @@ RUN apt-get update -qq && \
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
+      curl \
+      gir1.2-glib-2.0 \
+      gir1.2-glib-2.0-dev \
+      gir1.2-harfbuzz-0.0 \
+      girepository-tools \
+      libc-bin \
+      libc-dev-bin \
+      libc6 \
+      libc6-dev \
       libcap2 \
+      libcurl3t64-gnutls \
+      libcurl4-openssl-dev \
+      libcurl4t64 \
       libexif-dev \
       libexif12 \
+      libgio-2.0-dev \
+      libgio-2.0-dev-bin \
+      libgirepository-2.0-0 \
+      libglib2.0-0t64 \
+      libglib2.0-bin \
+      libglib2.0-data \
+      libglib2.0-dev \
+      libglib2.0-dev-bin \
+      libharfbuzz-cairo0 \
+      libharfbuzz-dev \
+      libharfbuzz-gobject0 \
+      libharfbuzz-icu0 \
+      libharfbuzz-subset0 \
+      libharfbuzz0b \
       liblcms2-2 \
       liblcms2-dev \
       libnghttp2-14 \
       libnghttp2-dev \
+      libopenjp2-7 \
+      libopenjp2-7-dev \
       libsystemd0 \
       libudev1 \
       linux-libc-dev \
+      sed \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
