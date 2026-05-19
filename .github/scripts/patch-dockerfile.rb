@@ -9,6 +9,9 @@
 # as fixable to the auto-managed RUN block in the Dockerfile's BASE stage. The
 # union is taken because Trivy and Grype use different vulnerability databases
 # and routinely disagree on which CVEs apply to a given package version.
+# Both parsers restrict results to OS packages — Trivy via Class == "os-pkgs",
+# Grype via artifact.type in {deb, apk, rpm} — so only apt-installable names
+# reach the RUN block.
 # Removal is intentionally manual — scanners run with --ignore-unfixed / only-fixed
 # cannot distinguish "fix shipped in the new base image" from "fix already
 # applied by this auto-fix block", so auto-removing risks reintroducing the CVE
@@ -22,6 +25,7 @@ require "set"
 
 AUTOFIX_MARKER    = "# Auto-fix: OS package vulnerabilities detected by Trivy and Grype"
 INSERTION_ANCHOR  = "# Rails app lives here"
+OS_PACKAGE_TYPES  = Set["deb", "apk", "rpm"].freeze
 
 def parse_trivy(trivy_path)
   data = JSON.parse(File.read(trivy_path))
@@ -45,6 +49,8 @@ def parse_grype(grype_path)
   needed = Set.new
 
   (data["matches"] || []).each do |match|
+    next unless OS_PACKAGE_TYPES.include?(match.dig("artifact", "type"))
+
     fix = match.dig("vulnerability", "fix") || {}
     next unless fix["state"] == "fixed"
     next if (fix["versions"] || []).empty?
