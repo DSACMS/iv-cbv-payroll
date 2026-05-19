@@ -19,6 +19,7 @@ RSpec.describe ActivityFlowEmploymentSummary, type: :model do
       summary = create(
         :activity_flow_employment_summary,
         employer_name: "Acme Employer",
+        employment_type: "w2",
         employer_phone_number: "6045551234",
         employer_address: "123 Main St",
         employment_status: "employed",
@@ -30,6 +31,7 @@ RSpec.describe ActivityFlowEmploymentSummary, type: :model do
 
       expect(summary.reload).to have_attributes(
         employer_name: "REDACTED",
+        employment_type: "REDACTED",
         employer_phone_number: "REDACTED",
         employer_address: "REDACTED",
         employment_status: "REDACTED",

@@ -8,6 +8,7 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
 
   has_redactable_fields(
     employer_name: :string,
+    employment_type: :string,
     employer_phone_number: :string,
     employer_address: :string,
     employment_status: :string,
@@ -56,7 +57,7 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
   def self.persist_from_report(activity_flow:, payroll_account:, report:)
     return unless report.has_fetched?
 
-    account_report = report.find_account_report(payroll_account.aggregator_account_id) if report.respond_to?(:find_account_report)
+    account_report = report.find_account_report(payroll_account.aggregator_account_id)
     employment = account_report&.employment
 
     upsert(
