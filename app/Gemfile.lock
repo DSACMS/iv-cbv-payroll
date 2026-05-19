@@ -347,6 +347,8 @@ GEM
     orm_adapter (0.5.0)
     ostruct (0.6.3)
     parallel (2.0.1)
+    parallel_tests (5.7.0)
+      parallel
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
@@ -560,6 +562,7 @@ GEM
     stringio (3.2.0)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
+    test-prof (1.6.1)
     thor (1.5.0)
     thread_safe (0.3.6)
     tilt (2.6.1)
@@ -661,6 +664,7 @@ DEPENDENCIES
   net-sftp
   net-ssh
   newrelic_rpm
+  parallel_tests (~> 5.5)
   pdf-reader (~> 2.15.1)
   pg (~> 1.6)
   pg-aws_rds_iam (~> 0.8.0)
@@ -685,6 +689,7 @@ DEPENDENCIES
   sprockets-rails
   stackprof
   stimulus-rails
+  test-prof (~> 1.4)
   thor (>= 1.4.0)
   timecop
   turbo-rails
