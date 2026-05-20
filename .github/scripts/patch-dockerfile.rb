@@ -23,6 +23,7 @@
 
 
 require 'json'
+require 'set'
 
 AUTOFIX_MARKER    = '# Auto-fix: OS package vulnerabilities detected by Trivy and Grype'
 INSERTION_ANCHOR  = '# Rails app lives here'

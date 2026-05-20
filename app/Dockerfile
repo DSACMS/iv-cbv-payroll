@@ -37,6 +37,8 @@ RUN apt-get update -qq && \
       libssl-dev \
       # CVE-2026-3497 \
       openssh-client \
+      # CVE-2026-4437 \
+      libc-bin libc-dev-bin libc6 libc6-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -76,13 +78,14 @@ EXPOSE 3000
 FROM base AS build
 
 # Install packages needed to build gems
+# hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
-      build-essential=12.12 \
-      git=1:2.47.3-0+deb13u1 \
-      libpq-dev=17.9-0+deb13u1 \
-      npm=9.2.0~ds1-3 \
-      pkg-config=1.8.1-4 \
+      build-essential \
+      git \
+      libpq-dev \
+      npm \
+      pkg-config \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
