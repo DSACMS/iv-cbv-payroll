@@ -37,6 +37,8 @@ RUN apt-get update -qq && \
       libssl-dev \
       # CVE-2026-3497 \
       openssh-client \
+      # CVE-2026-4437 \
+      libc-bin libc-dev-bin libc6 libc6-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
