@@ -29,23 +29,23 @@
   { label: t("activities.community_service.review.coordinator_phone"), value: @volunteering_activity.coordinator_phone_number }
 ])) %>
 
-<h2><%= t("activities.community_service.review.hours_section") %></h2>
+<h2><%= t("activities.summary.monthly_details") %></h2>
 <%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
   <%= table.with_header_cell(class_names: "text-nowrap")
            .with_content(t("activities.summary.community_service.month")) %>
   <%= table.with_header_cell(class_names: "text-nowrap")
-           .with_content(t("activities.community_service.review.community_service_hours")) %>
+           .with_content(t("activities.community_service.review.community_engagement_hours")) %>
   <%= table.with_header_cell(class_names: "text-nowrap")
-           .with_content(t("activities.community_service.review.edit")) %>
+           .with_content(tag.span(t("activities.community_service.review.edit"), class: "usa-sr-only")) %>
 
   <% @volunteering_activity.volunteering_activity_months.order(:month).each_with_index do |activity_month, index| %>
     <% edit_path = edit_activities_flow_community_service_month_path(community_service_id: @volunteering_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>
       <%= row.with_data_cell(data_label: t("activities.summary.community_service.month"), is_header: true) do %>
-        <%= I18n.l(activity_month.month, format: :month) %>
+        <%= I18n.l(activity_month.month, format: :month_year) %>
         <%= link_to t("activities.community_service.review.edit"), edit_path, class: "usa-link mobile-edit-link" %>
       <% end %>
-      <%= row.with_data_cell(data_label: t("activities.community_service.review.community_service_hours"))
+      <%= row.with_data_cell(data_label: t("activities.community_service.review.community_engagement_hours"))
              .with_content(activity_month.hours) %>
       <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
         <%= link_to t("activities.community_service.review.edit"), edit_path, class: "usa-link" %>

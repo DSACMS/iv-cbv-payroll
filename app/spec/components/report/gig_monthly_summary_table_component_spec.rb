@@ -174,6 +174,20 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
         expect(subject.css("tbody tr:nth-child(3) td:nth-child(4)").to_html).to include "4.7"
       end
 
+      it "renders activity flow labels when requested" do
+        rendered = render_inline(described_class.new(argyle_report, payroll_account, activity_flow_labels: true))
+
+        expect(rendered).to have_selector("thead th", text: "Month")
+        expect(rendered).to have_selector("thead th", text: "Gross income")
+        expect(rendered).to have_selector("thead th", text: "Mileage expenses")
+        expect(rendered).to have_selector("thead th", text: "Community engagement hours")
+        expect(rendered).to have_selector("tbody tr", text: "March 2025")
+        expect(rendered).to have_selector("tbody tr", text: "$34.56")
+        expect(rendered).to have_selector("tbody tr", text: "$58.10")
+        expect(rendered).to have_selector("tbody tr", text: "3.6")
+        expect(rendered).to have_no_text("What does this information mean?")
+      end
+
       it "renders table caption" do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
         expect(subject.to_html).to include('"Accrued gross earnings" sums the payments')

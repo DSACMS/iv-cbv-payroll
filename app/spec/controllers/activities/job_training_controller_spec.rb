@@ -150,6 +150,8 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
     it "includes an edit link for each month" do
       get :review, params: { id: job_training_activity.id }
 
+      expect(response.body).to include(I18n.t("activities.summary.monthly_details"))
+      expect(response.body).to include(I18n.t("activities.work_programs.review.community_engagement_hours"))
       expect(response.body).to include(
         edit_activities_flow_job_training_month_path(job_training_id: job_training_activity, id: 0, from_review: 1)
       )

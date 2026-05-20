@@ -173,8 +173,9 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(activity.coordinator_name)
       expect(response.body).to include(activity.coordinator_email)
       expect(response.body).to include(I18n.t("shared.not_applicable"))
-      expect(response.body).to include(I18n.l(first_month.month, format: :month))
-      expect(response.body).to include(I18n.l(second_month.month, format: :month))
+      expect(response.body).to include(I18n.t("activities.summary.community_service.community_engagement_hours"))
+      expect(response.body).to include(I18n.l(first_month.month, format: :month_year))
+      expect(response.body).to include(I18n.l(second_month.month, format: :month_year))
       expect(response.body).to include(first_month.hours.to_s)
       expect(response.body).to include(second_month.hours.to_s)
     end
@@ -206,13 +207,21 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(activity.contact_name)
       expect(response.body).to include(activity.contact_email)
       expect(response.body).to include(activity.contact_phone_number)
-      expect(response.body).to include(I18n.l(first_month.month, format: :month))
-      expect(response.body).to include(I18n.l(second_month.month, format: :month))
+      expect(response.body).to include(I18n.t("activities.summary.job_training.community_engagement_hours"))
+
+      doc = Capybara.string(response.body)
+      expect(doc).to have_css(
+        "td[data-label='#{I18n.t("activities.summary.job_training.contact_phone")}']",
+        text: activity.contact_phone_number
+      )
+
+      expect(response.body).to include(I18n.l(first_month.month, format: :month_year))
+      expect(response.body).to include(I18n.l(second_month.month, format: :month_year))
       expect(response.body).to include(first_month.hours.to_s)
       expect(response.body).to include(second_month.hours.to_s)
     end
 
-    it "renders fully self-attested education details and monthly credit hours in the summary table" do
+    it "renders fully self-attested education details and monthly details in the summary table" do
       activity_flow.update!(reporting_window_months: 2)
 
       activity = create(
@@ -237,13 +246,19 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(activity.contact_name)
       expect(response.body).to include(activity.contact_email)
       expect(response.body).to include(activity.contact_phone_number)
-      expect(response.body).to include(I18n.l(first_month.month, format: :month))
-      expect(response.body).to include(I18n.l(second_month.month, format: :month))
+      expect(response.body).to include(I18n.l(first_month.month, format: :month_year))
+      expect(response.body).to include(I18n.l(second_month.month, format: :month_year))
       expect(response.body).to include(first_month.hours.to_s)
       expect(response.body).to include(second_month.hours.to_s)
+
+      doc = Capybara.string(response.body)
+      monthly_details_headers = doc.all("table").last.all("thead th").map { |cell| cell.text.strip }
+      expect(monthly_details_headers).to include(I18n.t("activities.summary.education.community_engagement_hours"))
+      monthly_detail_rows = doc.all("table").last.all("tbody tr")
+      expect(monthly_detail_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[16 24])
     end
 
-    it "renders partially self-attested education in one table with saved term credit hours" do
+    it "renders partially self-attested education in one table with saved term credit hours and community engagement hours" do
       activity = create(
         :education_activity,
         activity_flow: activity_flow,
@@ -269,9 +284,11 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include("River College")
       expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.less_than_half_time"))
 
-      term_credit_rows = doc.all("table").last.all("tbody tr")
-      expect(term_credit_rows.size).to eq(1)
-      expect(term_credit_rows.first.all("th, td").last.text.strip).to eq("9")
+      monthly_detail_rows = doc.all("table").last.all("tbody tr")
+      expect(monthly_detail_rows.size).to eq(1)
+      monthly_detail_cells = monthly_detail_rows.first.all("th, td").map { |cell| cell.text.strip }
+      expect(monthly_detail_cells).to include("9")
+      expect(monthly_detail_cells.last).to eq("36")
     end
 
     it "renders multiple less-than-half-time enrollments from the same school in one collapsed table" do
@@ -320,9 +337,11 @@ RSpec.describe Activities::SummaryController, type: :controller do
       monthly_details_headers = doc.all("table").last.all("thead th").map { |cell| cell.text.strip }
       expect(monthly_details_headers).to include(I18n.t("components.enrollment_term_table_component.enrollment_status"))
       expect(monthly_details_headers).to include(I18n.t("activities.summary.education.term_credit_hours"))
+      expect(monthly_details_headers).to include(I18n.t("activities.summary.education.community_engagement_hours"))
 
-      term_credit_rows = doc.all("table").last.all("tbody tr")
-      expect(term_credit_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[3 6])
+      monthly_detail_rows = doc.all("table").last.all("tbody tr")
+      expect(monthly_detail_rows.map { |row| row.all("th, td")[-2].text.strip }).to eq(%w[3 6])
+      expect(monthly_detail_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[12 24])
     end
 
     it "renders multiple less-than-half-time enrollments from different schools in one table" do
@@ -358,8 +377,9 @@ RSpec.describe Activities::SummaryController, type: :controller do
         row if row.first("th")&.text&.strip == I18n.t("components.enrollment_term_table_component.school_or_program")
       }.size).to eq(2)
 
-      term_credit_rows = doc.all("table").last.all("tbody tr")
-      expect(term_credit_rows.map { |row| row.all("th, td").last.text.strip }).to contain_exactly("3", "6")
+      monthly_detail_rows = doc.all("table").last.all("tbody tr")
+      expect(monthly_detail_rows.map { |row| row.all("th, td")[-2].text.strip }).to contain_exactly("3", "6")
+      expect(monthly_detail_rows.map { |row| row.all("th, td").last.text.strip }).to contain_exactly("12", "24")
     end
 
     it "renders mixed overlapping statuses and includes all enrollments in the summary" do
@@ -447,6 +467,8 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(response.body).to include(employment_activity.contact_name)
         expect(response.body).to include(employment_activity.contact_email)
         expect(response.body).to include(employment_activity.contact_phone_number)
+        expect(response.body).to include(I18n.t("activities.summary.employment.contact_phone"))
+        expect(response.body).to include(I18n.t("activities.summary.employment.community_engagement_hours"))
         expect(response.body).to include(I18n.l(activity_month.month, format: :month_year))
         expect(response.body).to include(ActionController::Base.helpers.number_to_currency(activity_month.gross_income))
         expect(response.body).to include(activity_month.hours.to_s)
@@ -536,6 +558,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(page).to have_text("Employed")
         expect(page).to have_text("January 15, 2024")
         expect(page).to have_text("$123.45")
+        expect(page).to have_text(I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours"))
       end
 
       it "renders Argyle employer details in the response" do

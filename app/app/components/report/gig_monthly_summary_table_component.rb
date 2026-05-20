@@ -4,12 +4,22 @@ class Report::GigMonthlySummaryTableComponent < ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, is_caseworker: false, show_payments: true, show_footnote: true, show_header: true, is_pdf: false)
+  def initialize(
+    report,
+    payroll_account,
+    is_caseworker: false,
+    show_payments: true,
+    show_footnote: true,
+    show_header: true,
+    is_pdf: false,
+    activity_flow_labels: false
+  )
     @report = report
     @show_payments = show_payments
     @show_footnote = show_footnote
     @show_header = show_header
     @is_pdf = is_pdf
+    @activity_flow_labels = activity_flow_labels
 
     # Note: payroll_account may either be the ID or the payroll_account object
     @account_id = payroll_account.class == String ? payroll_account : payroll_account.aggregator_account_id
@@ -41,7 +51,7 @@ class Report::GigMonthlySummaryTableComponent < ViewComponent::Base
   end
 
   def show_footnote?
-    @show_footnote
+    @show_footnote && !@activity_flow_labels
   end
 
   def payments_from_text
@@ -57,6 +67,30 @@ class Report::GigMonthlySummaryTableComponent < ViewComponent::Base
       4
     else
       3
+    end
+  end
+
+  def gross_income_header
+    if @activity_flow_labels
+      I18n.t("components.report.monthly_summary_table.activity.gross_income")
+    else
+      I18n.t("components.report.monthly_summary_table.accrued_gross_earnings")
+    end
+  end
+
+  def mileage_expenses_header
+    if @activity_flow_labels
+      I18n.t("components.report.monthly_summary_table.activity.mileage_expenses")
+    else
+      I18n.t("components.report.monthly_summary_table.verified_mileage_expenses")
+    end
+  end
+
+  def hours_header
+    if @activity_flow_labels
+      I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours")
+    else
+      I18n.t("components.report.monthly_summary_table.total_gig_hours")
     end
   end
 
@@ -83,10 +117,16 @@ class Report::GigMonthlySummaryTableComponent < ViewComponent::Base
 
   def format_total_gig_hours(month_summary)
     return I18n.t("shared.not_applicable") if month_summary[:gigs].empty?
-    format_hours(month_summary[:total_gig_hours])
+    format_activity_hours(format_hours(month_summary[:total_gig_hours]))
   end
 
   def format_no_payments_found
     I18n.t("cbv.payment_details.show.none_found", report_data_range: @report_data_range)
+  end
+
+  def format_activity_hours(hours)
+    return hours unless @activity_flow_labels
+
+    hours.to_f == hours.to_i ? hours.to_i : hours
   end
 end

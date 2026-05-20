@@ -76,6 +76,22 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
             expect(subject.css("thead tr th:nth-child(1)").text).to include("Pay information")
             expect(subject.css("thead tr th:nth-child(2)").text).to include("Your details")
           end
+
+          it "renders activity flow labels when requested" do
+            rendered = render_inline(
+              described_class.new(
+                pinwheel_report,
+                payroll_account,
+                is_w2_worker: true,
+                pay_frequency_text: "monthly",
+                activity_flow_labels: true
+              )
+            )
+
+            expect(rendered).to have_selector("thead th", text: "Payment information")
+            expect(rendered).to have_selector("thead th", text: "Your details")
+            expect(rendered).to have_selector("thead th", count: 2)
+          end
         end
       end
 

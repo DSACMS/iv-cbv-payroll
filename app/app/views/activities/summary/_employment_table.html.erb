@@ -11,7 +11,20 @@
 <% end %>
 <h3><%= t("activities.summary.monthly_details") %></h3>
 <% if is_w2_worker %>
-  <%= render(Report::W2MonthlySummaryTableComponent.new(persisted_report, payroll_account, show_footnote: false, show_header: false)) %>
+  <%= render(Report::W2MonthlySummaryTableComponent.new(
+    persisted_report,
+    payroll_account,
+    show_footnote: false,
+    show_header: false,
+    activity_flow_labels: true
+  )) %>
 <% else %>
-  <%= render(Report::GigMonthlySummaryTableComponent.new(persisted_report, payroll_account, show_footnote: false, show_header: false, show_payments: false)) %>
+  <%= render(Report::GigMonthlySummaryTableComponent.new(
+    persisted_report,
+    payroll_account,
+    show_footnote: false,
+    show_header: false,
+    show_payments: false,
+    activity_flow_labels: true
+  )) %>
 <% end %>

@@ -79,23 +79,23 @@
   <% end %>
 <% end %>
 
-<h2><%= t("activities.work_programs.review.hours_section") %></h2>
+<h2><%= t("activities.summary.monthly_details") %></h2>
 <%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
   <%= table.with_header_cell(class_names: "text-nowrap")
            .with_content(t("activities.summary.job_training.month")) %>
   <%= table.with_header_cell(class_names: "text-nowrap")
-           .with_content(t("activities.work_programs.review.work_program_hours")) %>
+           .with_content(t("activities.work_programs.review.community_engagement_hours")) %>
   <%= table.with_header_cell(class_names: "text-nowrap")
-           .with_content(t("activities.work_programs.review.edit")) %>
+           .with_content(tag.span(t("activities.work_programs.review.edit"), class: "usa-sr-only")) %>
 
   <% @job_training_activity.job_training_activity_months.order(:month).each_with_index do |activity_month, index| %>
     <% edit_path = edit_activities_flow_job_training_month_path(job_training_id: @job_training_activity, id: index, from_review: 1, from_edit: params[:from_edit].presence) %>
     <%= table.with_row do |row| %>
       <%= row.with_data_cell(data_label: t("activities.summary.job_training.month"), is_header: true) do %>
-        <%= I18n.l(activity_month.month, format: :month) %>
+        <%= I18n.l(activity_month.month, format: :month_year) %>
         <%= link_to t("activities.work_programs.review.edit"), edit_path, class: "usa-link mobile-edit-link" %>
       <% end %>
-      <%= row.with_data_cell(data_label: t("activities.work_programs.review.work_program_hours"))
+      <%= row.with_data_cell(data_label: t("activities.work_programs.review.community_engagement_hours"))
              .with_content(activity_month.hours) %>
       <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
         <%= link_to t("activities.work_programs.review.edit"), edit_path, class: "usa-link" %>

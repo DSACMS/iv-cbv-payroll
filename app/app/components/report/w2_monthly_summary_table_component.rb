@@ -4,11 +4,20 @@ class Report::W2MonthlySummaryTableComponent < ViewComponent::Base
 
   attr_reader :employer_name
 
-  def initialize(report, payroll_account, is_caseworker: false, show_footnote: true, show_header: true, is_pdf: false)
+  def initialize(
+    report,
+    payroll_account,
+    is_caseworker: false,
+    show_footnote: true,
+    show_header: true,
+    is_pdf: false,
+    activity_flow_labels: false
+  )
     @report = report
     @show_footnote = show_footnote
     @show_header = show_header
     @is_pdf = is_pdf
+    @activity_flow_labels = activity_flow_labels
 
     # Note: payroll_account may either be the ID or the payroll_account object
     @account_id = payroll_account.class == String ? payroll_account : payroll_account.aggregator_account_id
@@ -43,8 +52,16 @@ class Report::W2MonthlySummaryTableComponent < ViewComponent::Base
     4
   end
 
+  def hours_header
+    if @activity_flow_labels
+      I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours")
+    else
+      I18n.t("components.report.monthly_summary_table.w2.title_total_hours_worked")
+    end
+  end
+
   def show_footnote?
-    @show_footnote
+    @show_footnote && !@activity_flow_labels
   end
 
   def format_accrued_gross_earnings(month_summary)
@@ -58,10 +75,16 @@ class Report::W2MonthlySummaryTableComponent < ViewComponent::Base
 
   def format_hours_worked(month_summary)
     return I18n.t("shared.not_applicable") if month_summary[:paystubs].empty?
-    format_hours(month_summary[:total_w2_hours])
+    format_activity_hours(format_hours(month_summary[:total_w2_hours]))
   end
 
   def format_no_payments_found
     I18n.t("cbv.payment_details.show.none_found", report_data_range: @report_data_range)
+  end
+
+  def format_activity_hours(hours)
+    return hours unless @activity_flow_labels
+
+    hours.to_f == hours.to_i ? hours.to_i : hours
   end
 end
