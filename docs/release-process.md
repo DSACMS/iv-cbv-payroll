@@ -36,7 +36,7 @@ The script will:
 > viewing.** The will-deploy output is built directly from commit subjects
 > (which include the merged PR titles), and the GitHub release page is public.
 > Look for internal-only jargon, customer or partner names that shouldn't be
-> disclosed, profanity, joke titles, or anything that reveals non-public
+> disclosed, joke titles, or anything that reveals non-public
 > security details. Edit the text before pasting it into the release body.
 
 ## 3. Create the GitHub release
