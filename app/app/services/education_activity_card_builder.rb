@@ -88,9 +88,9 @@ class EducationActivityCardBuilder
 
   def education_credit_hours(activity_month)
     return 0 unless activity_month
-    return activity_month.credit_hours.to_i if activity_month.has_attribute?(:credit_hours)
+    return activity_month.credit_hours || 0 if activity_month.has_attribute?(:credit_hours)
 
-    activity_month.hours.to_i
+    activity_month.hours || 0
   end
 
   def terms_grouped_by_school(terms)

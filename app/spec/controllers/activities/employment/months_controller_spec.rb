@@ -131,5 +131,17 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         expect(response).to have_http_status(:unprocessable_content)
       end
     end
+
+    it "persists decimal hours and gross_income" do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 0,
+        employment_activity_month: { gross_income: "1234.56", hours: "2.5" }
+      }
+
+      month = employment_activity.activity_months.last
+      expect(month.gross_income).to eq(BigDecimal("1234.56"))
+      expect(month.hours).to eq(BigDecimal("2.5"))
+    end
   end
 end

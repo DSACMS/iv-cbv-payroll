@@ -44,17 +44,17 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
     if params[:no_hours] == "1"
       @current_term.credit_hours = 0
     else
-      @current_term.credit_hours = term_credit_hours_params[:credit_hours].to_i
+      @current_term.credit_hours = term_credit_hours_params[:credit_hours].presence || 0
     end
   end
 
   def valid_term_credit_hours_submission?
-    hours = @current_term.credit_hours.to_i
+    hours = @current_term.credit_hours || 0
 
     if @terms.length == 1
       hours > 0
     elsif params[:from_review].present? || @term_index == @terms.length - 1
-      @terms.sum { |term| term.id == @current_term.id ? hours : term.credit_hours.to_i } > 0
+      @terms.sum { |term| term.id == @current_term.id ? hours : (term.credit_hours || 0) } > 0
     else
       true
     end

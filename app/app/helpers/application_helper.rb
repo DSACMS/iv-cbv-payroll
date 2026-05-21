@@ -116,6 +116,22 @@ module ApplicationHelper
     end
   end
 
+  # Formats a decimal value for display in tables/summaries: 2 decimal places,
+  # trailing zeros stripped (e.g. 2.5 not 2.50, 3 not 3.00).
+  def format_decimal_amount(value)
+    return "0" if value.blank?
+
+    ActiveSupport::NumberHelper.number_to_rounded(value, precision: 2, strip_insignificant_zeros: true)
+  end
+
+  # BigDecimal renders as scientific notation by default, which breaks display
+  # in number inputs. Convert to a clean string (integer when whole, decimal otherwise).
+  def decimal_input_value(value)
+    return value unless value.is_a?(BigDecimal)
+
+    value == value.truncate ? value.to_i : value.to_s("F")
+  end
+
   def date_string_to_date(date_string)
     date_string.is_a?(Date) ? date_string : Date.strptime(date_string, "%Y-%m-%d")
   rescue

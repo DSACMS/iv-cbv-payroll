@@ -25,7 +25,7 @@ class JobTrainingActivity < Activity
     month_record = job_training_activity_months
       .find { |activity_month| activity_month.month == month }
 
-    I18n.t("shared.hours", count: month_record.hours) if month_record
+    I18n.t("shared.hours", count: ActivitiesHelper.normalize_hours_count(month_record.hours)) if month_record
   end
 
   def document_upload_suggestion_text

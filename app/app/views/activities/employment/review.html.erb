@@ -46,7 +46,7 @@
       <%= row.with_data_cell(data_label: t("activities.employment.review.gross_income"))
              .with_content(number_to_currency(activity_month.gross_income)) %>
       <%= row.with_data_cell(data_label: t("activities.employment.review.community_engagement_hours"))
-             .with_content(activity_month.hours) %>
+             .with_content(format_decimal_amount(activity_month.hours)) %>
       <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
         <%= link_to t("activities.hub.edit"), edit_path, class: "usa-link" %>
       <% end %>

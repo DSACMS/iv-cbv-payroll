@@ -1,4 +1,17 @@
 module ActivitiesHelper
+  # Returns an Integer for whole-number values and a Float for fractional values,
+  # so it interpolates cleanly into pluralized strings (e.g. "1 hour", "2.5 hours")
+  # without exposing BigDecimal scientific notation or Float-summation noise.
+  # Rounds to 2 decimal places to match the DB scale used by hours/gross_income
+  # columns and to stabilize display for Float sums (e.g. 2.5 + 0.1 = 2.6, not
+  # 2.6000000000000005).
+  def self.normalize_hours_count(value)
+    return 0 if value.blank?
+
+    bd = value.to_d.round(2)
+    bd == bd.truncate ? bd.to_i : bd.to_f
+  end
+
   def activity_hub_state(any_activities_added:, monthly_results:, required_month_count: monthly_results.length)
     return :empty unless any_activities_added
 
@@ -43,15 +56,15 @@ module ActivitiesHelper
         .sort_by { |month_key, _| month_key }
         .reverse
         .filter_map do |month_key, month_data|
-          next unless active_employment_month?(month_data)
+        next unless active_employment_month?(month_data)
 
-          month_date = Date.parse("#{month_key}-01")
-          {
-            month: month_date,
-            gross_earnings: month_data[:accrued_gross_earnings].to_i,
-            hours: activity_card_hours(total_employment_hours(month_data))
-          }
-        end
+        month_date = Date.parse("#{month_key}-01")
+        {
+          month: month_date,
+          gross_earnings: month_data[:accrued_gross_earnings].to_i,
+          hours: ActivitiesHelper.normalize_hours_count(total_employment_hours(month_data))
+        }
+      end
 
       {
         name: employer_name,
@@ -69,7 +82,7 @@ module ActivitiesHelper
         {
           month: month.month,
           gross_earnings: month.gross_income * 100,
-          hours: activity_card_hours(month.hours)
+          hours: ActivitiesHelper.normalize_hours_count(month.hours)
         }
       end
       {
@@ -99,7 +112,7 @@ module ActivitiesHelper
       months = activity.volunteering_activity_months.sort_by(&:month).filter_map do |activity_month|
         next unless activity_month.hours.positive?
 
-        { month: activity_month.month, hours: activity_card_hours(activity_month.hours) }
+        { month: activity_month.month, hours: ActivitiesHelper.normalize_hours_count(activity_month.hours) }
       end
       {
         name: activity.organization_name,
@@ -117,7 +130,7 @@ module ActivitiesHelper
         {
           month: month.month,
           gross_earnings: month.gross_income * 100,
-          hours: activity_card_hours(month.hours)
+          hours: ActivitiesHelper.normalize_hours_count(month.hours)
         }
       end
       {
@@ -134,7 +147,7 @@ module ActivitiesHelper
       months = activity.volunteering_activity_months.sort_by(&:month).filter_map do |activity_month|
         next unless activity_month.hours.positive?
 
-        { month: activity_month.month, hours: activity_card_hours(activity_month.hours) }
+        { month: activity_month.month, hours: ActivitiesHelper.normalize_hours_count(activity_month.hours) }
       end
       {
         name: activity.organization_name,
@@ -150,7 +163,7 @@ module ActivitiesHelper
       months = activity.job_training_activity_months.sort_by(&:month).filter_map do |activity_month|
         next unless activity_month.hours.positive?
 
-        { month: activity_month.month, hours: activity_card_hours(activity_month.hours) }
+        { month: activity_month.month, hours: ActivitiesHelper.normalize_hours_count(activity_month.hours) }
       end
       {
         name: activity.program_name,
@@ -161,13 +174,6 @@ module ActivitiesHelper
   end
 
   private
-
-  def activity_card_hours(hours)
-    rounded_hours = hours.to_f.round(1)
-    return rounded_hours.to_i if rounded_hours == rounded_hours.to_i
-
-    rounded_hours
-  end
 
   def active_employment_month?(month_data)
     month_data[:accrued_gross_earnings].to_i.positive? || total_employment_hours(month_data).positive?

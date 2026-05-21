@@ -22,8 +22,8 @@ class Activities::Employment::MonthsController < Activities::BaseController
       @activity_month.gross_income = 0
     else
       month_params = hours_submission_params
-      @activity_month.hours = month_params[:hours].to_i
-      @activity_month.gross_income = month_params[:gross_income].to_i
+      @activity_month.hours = month_params[:hours].presence || 0
+      @activity_month.gross_income = month_params[:gross_income].presence || 0
     end
   end
 
@@ -86,8 +86,8 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def valid_hours_submission?
-    income = @activity_month.gross_income.to_i
-    hours = @activity_month.hours.to_i
+    income = @activity_month.gross_income || 0
+    hours = @activity_month.hours || 0
 
     if @months.length == 1
       income > 0 && hours > 0

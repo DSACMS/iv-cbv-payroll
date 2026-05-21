@@ -38,7 +38,7 @@ class EducationActivity < Activity
   end
 
   def community_engagement_hours(credit_hours)
-    credit_hours.to_i * CREDIT_HOUR_CE_MULTIPLIER
+    (credit_hours || 0) * CREDIT_HOUR_CE_MULTIPLIER
   end
 
   def less_than_half_time_terms_in_reporting_window
@@ -87,7 +87,7 @@ class EducationActivity < Activity
     activity_month = education_activity_months
       .find { |activity_month| activity_month.month == month }
 
-    I18n.t("shared.credit_hours", count: activity_month.hours) if activity_month
+    I18n.t("shared.credit_hours", count: ActivitiesHelper.normalize_hours_count(activity_month.hours)) if activity_month
   end
 
   def document_upload_suggestion_text
