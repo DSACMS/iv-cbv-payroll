@@ -60,7 +60,7 @@
       <%= row.with_data_cell(data_label: t("activities.summary.education.credit_hours"))
              .with_content(format_decimal_amount(activity_month.hours)) %>
       <%= row.with_data_cell(data_label: t("activities.summary.education.community_engagement_hours"))
-             .with_content(activity.community_engagement_hours(activity_month.hours)) %>
+             .with_content(format_decimal_amount(activity.community_engagement_hours(activity_month.hours))) %>
     <% end %>
   <% end %>
 <% end %>
