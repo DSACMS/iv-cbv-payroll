@@ -104,20 +104,22 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
     context "when the applicant has been redacted" do
       let(:transmission_method) { "shared_email" }
+      let(:transmission_method_configuration) { { "email" => "caseworker@example.com" } }
 
       before do
         cbv_flow.cbv_applicant.redact!
+        allow(NewRelic::Agent).to receive(:notice_error)
       end
 
-      it "raises RedactedApplicantError" do
-        expect { described_class.new.perform(cbv_flow.id) }
-          .to raise_error(CaseWorkerTransmitterJob::RedactedApplicantError)
+      it "reports a RedactedApplicantError to New Relic" do
+        described_class.new.perform(cbv_flow.id)
+        expect(NewRelic::Agent).to have_received(:notice_error)
+          .with(instance_of(CaseWorkerTransmitterJob::RedactedApplicantError))
       end
 
-      it "does not update transmitted_at" do
+      it "still transmits the report" do
         expect { described_class.new.perform(cbv_flow.id) }
-          .to raise_error(CaseWorkerTransmitterJob::RedactedApplicantError)
-        expect(cbv_flow.reload.transmitted_at).to be_nil
+          .to change { cbv_flow.reload.transmitted_at }.from(nil)
       end
     end
 

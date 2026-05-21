@@ -30,8 +30,9 @@ class CaseWorkerTransmitterJob < ApplicationJob
 
     with_flow_tags(@cbv_flow) do
       if @cbv_flow.cbv_applicant&.redacted_at.present?
-        raise RedactedApplicantError,
-          "Refusing to transmit cbv_flow #{cbv_flow_id}: applicant #{@cbv_flow.cbv_applicant_id} has been redacted"
+        NewRelic::Agent.notice_error(
+          RedactedApplicantError.new("Transmitting cbv_flow #{cbv_flow_id} with redacted applicant #{@cbv_flow.cbv_applicant_id}")
+        )
       end
 
       aggregator_report = AggregatorReportFetcher.new(@cbv_flow).report
