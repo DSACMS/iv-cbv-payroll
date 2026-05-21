@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_29_110000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_14_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -43,6 +43,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_110000) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "activity_flow_employment_summaries", force: :cascade do |t|
+    t.bigint "activity_flow_id", null: false
+    t.datetime "created_at", null: false
+    t.string "employer_address"
+    t.string "employer_name"
+    t.string "employer_phone_number"
+    t.date "employment_start_date"
+    t.string "employment_status"
+    t.date "employment_termination_date"
+    t.string "employment_type"
+    t.bigint "payroll_account_id", null: false
+    t.datetime "redacted_at"
+    t.datetime "updated_at", null: false
+    t.index ["activity_flow_id", "payroll_account_id"], name: "index_activity_flow_employment_summaries_on_flow_account", unique: true
+    t.index ["activity_flow_id"], name: "index_activity_flow_employment_summaries_on_activity_flow_id"
+    t.index ["payroll_account_id"], name: "index_activity_flow_employment_summaries_on_payroll_account_id"
+  end
+
   create_table "activity_flow_invitations", force: :cascade do |t|
     t.string "auth_token"
     t.bigint "cbv_applicant_id"
@@ -59,8 +77,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_110000) do
     t.integer "accrued_gross_earnings_cents", default: 0
     t.bigint "activity_flow_id", null: false
     t.datetime "created_at", null: false
-    t.string "employer_name"
-    t.string "employment_type"
     t.date "month", null: false
     t.integer "paychecks_count", default: 0
     t.bigint "payroll_account_id", null: false
@@ -472,6 +488,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_110000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "activity_flow_employment_summaries", "activity_flows"
+  add_foreign_key "activity_flow_employment_summaries", "payroll_accounts"
   add_foreign_key "activity_flow_invitations", "cbv_applicants"
   add_foreign_key "activity_flow_monthly_summaries", "activity_flows"
   add_foreign_key "activity_flow_monthly_summaries", "payroll_accounts"

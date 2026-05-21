@@ -120,6 +120,8 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
       get :review, params: { id: volunteering_activity.id }
 
+      expect(response.body).to include(I18n.t("activities.summary.monthly_details"))
+      expect(response.body).to include(I18n.t("activities.community_service.review.community_engagement_hours"))
       expect(response.body).to include("25")
     end
 

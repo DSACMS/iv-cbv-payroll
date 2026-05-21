@@ -26,6 +26,13 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
         expect(response.body).to include("case_number")
       end
 
+      it "renders the page title" do
+        get :show
+
+        expect(response).to be_successful
+        expect(response.body).to include(I18n.t("cbv.applicant_informations.show.your_information"))
+      end
+
       it "stays on the same page and shows the right errors when required fields are missing" do
         post :update, params: {
           cbv_applicant_sandbox: {

@@ -4,6 +4,9 @@ on:
   pull_request:
     paths: ['app/**']
 
+permissions:
+  contents: read
+
 jobs:
   e2e:
     name: E2E Rspec
@@ -43,6 +46,7 @@ jobs:
           DATABASE_URL: ${{ steps.setup.outputs.database_url }}
           RAILS_MASTER_KEY: 0f5db7adba61669d4cc45dfa6b2464d7
           E2E_RUN_TESTS: 1
+          E2E_AXE_MODE: full
         run: bin/rspec ./spec/e2e
 
       - id: e2e_tests_retry
@@ -55,6 +59,7 @@ jobs:
           DATABASE_URL: ${{ steps.setup.outputs.database_url }}
           RAILS_MASTER_KEY: 0f5db7adba61669d4cc45dfa6b2464d7
           E2E_RUN_TESTS: 1
+          E2E_AXE_MODE: full
         run: bin/rspec ./spec/e2e --only-failures
 
       - name: Add failure info to GH Actions step summary

@@ -10,6 +10,13 @@ RSpec.describe Cbv::SynchronizationFailuresController do
       session[:flow_id] = cbv_flow.id
     end
 
+    it "renders the page title" do
+      get :show
+
+      expect(response).to be_successful
+      expect(response.body).to include(CGI.escapeHTML(I18n.t("cbv.synchronization_failures.show.title")))
+    end
+
     context "when the user has already linked a pinwheel account" do
       let!(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: cbv_flow) }
 

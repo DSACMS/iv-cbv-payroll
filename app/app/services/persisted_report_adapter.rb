@@ -6,26 +6,32 @@ class PersistedReportAdapter
 
   def initialize(flow)
     @flow = flow
-    @data = flow.monthly_summaries_by_account_with_fallback
+    @monthly_data = flow.monthly_summaries_by_account_with_fallback
+    @employment_data = flow.employment_summaries_by_account_with_fallback
   end
 
   def find_account_report(account_id)
-    account_data = @data[account_id]
-    return nil unless account_data
-
-    source = account_data.values.find { |summary| summary[:employer_name].present? } || account_data.values.first || {}
+    source = @employment_data[account_id]
+    return nil unless source
 
     AccountReport.new(
       paystubs: [],
+      income: nil,
+      identity: nil,
       employment: Employment.new(
         employer_name: source[:employer_name],
-        employment_type: (source[:employment_type] || "w2").to_sym
+        employment_type: (source[:employment_type] || "w2").to_sym,
+        employer_phone_number: source[:employer_phone_number],
+        employer_address: source[:employer_address],
+        status: source[:employment_status],
+        start_date: source[:employment_start_date],
+        termination_date: source[:employment_termination_date]
       )
     )
   end
 
   def summarize_by_month(from_date: nil, to_date: nil)
-    @data.transform_values do |months|
+    @monthly_data.transform_values do |months|
       months
         .select { |_month, summary| summary[:paychecks_count].to_i > 0 }
         .sort_by { |month, _summary| month }.reverse.to_h
@@ -48,6 +54,15 @@ class PersistedReportAdapter
     }
   end
 
-  Employment = Struct.new(:employer_name, :employment_type, keyword_init: true)
-  AccountReport = Struct.new(:paystubs, :employment, keyword_init: true)
+  Employment = Struct.new(
+    :employer_name,
+    :employment_type,
+    :employer_phone_number,
+    :employer_address,
+    :status,
+    :start_date,
+    :termination_date,
+    keyword_init: true
+  )
+  AccountReport = Struct.new(:paystubs, :income, :identity, :employment, keyword_init: true)
 end

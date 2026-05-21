@@ -11,13 +11,13 @@
       <%= table.with_header_cell
                .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
       <%= table.with_header_cell
-               .with_content(I18n.t("components.report.monthly_summary_table.accrued_gross_earnings")) %>
+               .with_content(gross_income_header) %>
       <% if has_mileage_data? %>
         <%= table.with_header_cell
-                 .with_content(I18n.t("components.report.monthly_summary_table.verified_mileage_expenses")) %>
+                 .with_content(mileage_expenses_header) %>
       <% end %>
       <%= table.with_header_cell
-               .with_content(I18n.t("components.report.monthly_summary_table.total_gig_hours")) %>
+               .with_content(hours_header) %>
 
       <% if has_monthly_summary_results? %>
         <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
@@ -28,15 +28,15 @@
                 <br ><span class="text-gray-70 partial-month-description"><%= summary[:partial_month_range][:description] %></span>
               <% end %>
             <% end %>
-            <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.accrued_gross_earnings"))
+            <%= row.with_data_cell(data_label: gross_income_header)
                    .with_content(format_accrued_gross_earnings(summary)) %>
             <% if has_mileage_data? %>
-              <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.verified_mileage_expenses")) do |cell| %>
+              <%= row.with_data_cell(data_label: mileage_expenses_header) do |cell| %>
                 <%= format_verified_mileage_expenses(summary, month_string) %> <br >
                 <%= format_verified_mileage_expense_rate(summary, month_string) %>
               <% end %>
             <% end %>
-            <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.total_gig_hours"))
+            <%= row.with_data_cell(data_label: hours_header)
                    .with_content(format_total_gig_hours(summary)) %>
           <% end %>
         <% end %>

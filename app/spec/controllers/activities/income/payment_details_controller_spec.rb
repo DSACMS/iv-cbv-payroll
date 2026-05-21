@@ -41,6 +41,10 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         get :show, params: { user: { account_id: account_id } }
 
         expect(response).to be_successful
+        page = Capybara.string(response.body)
+        expect(page).to have_css("h2", text: I18n.t("shared.table_headers.employer_information"))
+        expect(response.body).to include(I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours"))
+        expect(response.body).to include(I18n.t("components.report.monthly_summary_table.activity.payment_information"))
       end
 
       it "renders the activity flow header with exit button and back link" do
@@ -105,6 +109,9 @@ RSpec.describe Activities::Income::PaymentDetailsController do
 
       it "renders successfully" do
         expect(response).to be_successful
+        expect(response.body).to include(I18n.t("components.report.monthly_summary_table.activity.gross_income"))
+        expect(response.body).to include(I18n.t("components.report.monthly_summary_table.activity.mileage_expenses"))
+        expect(response.body).to include(I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours"))
       end
     end
 

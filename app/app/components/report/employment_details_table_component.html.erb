@@ -1,13 +1,22 @@
-<div class="margin-top-5">
-  <h2 class="margin-0">
-    <%= I18n.t("cbv.payment_details.show.employment_information_table_header") %>
-  </h2>
+<div class="<%= @container_class %>">
+  <% if @show_header %>
+    <h2 class="margin-0">
+      <% if @activity_flow_labels %>
+        <%= I18n.t("shared.table_headers.employer_information") %>
+      <% else %>
+        <%= I18n.t("cbv.payment_details.show.employment_information_table_header") %>
+      <% end %>
+    </h2>
+  <% end %>
   <%= render(TableComponent.new) do |table| %>
     <%= table.with_header_cell(scope: "col") { I18n.t("shared.table_headers.employer_information") } %>
     <%= table.with_header_cell(scope: "col") { I18n.t("shared.table_headers.your_details") } %>
     <% if @show_identity %>
       <%= table.with_data_point(:client_full_name, @identity.full_name) %>
       <%= table.with_data_point(:ssn, @identity.ssn) %>
+    <% end %>
+    <% if @show_employer_name %>
+      <%= table.with_data_point(:employer_name, @employment.employer_name) %>
     <% end %>
       <%= table.with_data_point(:employer_phone, @employment.employer_phone_number) %>
       <%= table.with_data_point(:employer_address, @employment.employer_address) %>

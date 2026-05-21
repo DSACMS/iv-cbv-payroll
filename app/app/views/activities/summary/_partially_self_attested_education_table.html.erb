@@ -50,7 +50,7 @@
   <% end %>
 <% end %>
 
-<h3><%= t("activities.summary.monthly_details") %></h3>
+<h3><%= t("activities.summary.education.term_details") %></h3>
 <%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
   <%= table.with_header_cell(class_names: "text-nowrap")
          .with_content(t("activities.education.review.term")) %>
@@ -58,6 +58,8 @@
          .with_content(t("components.enrollment_term_table_component.enrollment_status")) %>
   <%= table.with_header_cell(class_names: "text-nowrap")
          .with_content(t("activities.summary.education.term_credit_hours")) %>
+  <%= table.with_header_cell(class_names: "text-nowrap")
+         .with_content(t("activities.summary.education.community_engagement_hours")) %>
 
   <% enrollment_terms.each do |enrollment_term| %>
     <%= table.with_row do |row| %>
@@ -72,6 +74,8 @@
       <% end %>
       <%= row.with_data_cell(data_label: t("activities.summary.education.term_credit_hours"))
              .with_content(activity.review_term_credit_hours(enrollment_term)) %>
+      <%= row.with_data_cell(data_label: t("activities.summary.education.community_engagement_hours"))
+             .with_content(activity.community_engagement_hours(activity.review_term_credit_hours(enrollment_term))) %>
     <% end %>
   <% end %>
 <% end %>

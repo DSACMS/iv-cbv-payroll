@@ -66,23 +66,35 @@ class DataRetentionService
     CbvFlow
       .unredacted
       .where("transmitted_at < ?", REDACT_TRANSMITTED_CBV_FLOWS_AFTER.ago)
-      .includes(:cbv_flow_invitation, :payroll_accounts)
+      .includes(:payroll_accounts, cbv_applicant: :cbv_flow_invitations)
       .find_each do |cbv_flow|
         cbv_flow.redact!
-        cbv_flow.cbv_applicant&.redact!
+        applicant = cbv_flow.cbv_applicant
+        # `all?` returns true on an empty collection: applicants with no invitations
+        # can't receive new flows, so they're safe to redact.
+        applicant.redact! if applicant && applicant.cbv_flow_invitations.all?(&:expired?)
         cbv_flow.payroll_accounts.each(&:redact!)
       end
   end
 
   def redact_activity_flow_summaries
+    redaction_threshold = REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER.ago
+    monthly_summary_flow_ids = ActivityFlowMonthlySummary.unredacted.select(:activity_flow_id)
+    employment_summary_flow_ids = ActivityFlowEmploymentSummary.unredacted.select(:activity_flow_id)
+
     ActivityFlow
-      .where("activity_flows.updated_at < ?", REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER.ago)
-      .joins(:activity_flow_monthly_summaries)
-      .merge(ActivityFlowMonthlySummary.unredacted)
+      .where("activity_flows.updated_at < ?", redaction_threshold)
+      .where(id: monthly_summary_flow_ids)
+      .or(
+        ActivityFlow
+          .where("activity_flows.updated_at < ?", redaction_threshold)
+          .where(id: employment_summary_flow_ids)
+      )
       .distinct
-      .includes(:payroll_accounts, :activity_flow_monthly_summaries)
+      .includes(:payroll_accounts, :activity_flow_monthly_summaries, :activity_flow_employment_summaries)
       .find_each do |activity_flow|
         activity_flow.activity_flow_monthly_summaries.each(&:redact!)
+        activity_flow.activity_flow_employment_summaries.each(&:redact!)
         activity_flow.payroll_accounts.each(&:redact!)
       end
   end
@@ -97,6 +109,7 @@ class DataRetentionService
     applicant.cbv_flows.each { |cbv_flow| cbv_flow.payroll_accounts.each(&:redact!) }
     applicant.activity_flows.each do |flow|
       flow.activity_flow_monthly_summaries.each(&:redact!)
+      flow.activity_flow_employment_summaries.each(&:redact!)
       flow.payroll_accounts.each(&:redact!)
     end
   end

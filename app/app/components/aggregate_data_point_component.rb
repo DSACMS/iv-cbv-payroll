@@ -122,6 +122,13 @@ class AggregateDataPointComponent < ViewComponent::Base
     }
   end
 
+  def employer_name(name)
+    {
+      label: I18n.t("activities.summary.employment.employer_name"),
+      value: format_string(name)
+    }
+  end
+
   def employer_address(address)
     {
       label: I18n.t("cbv.submits.show.pdf.client.address"),

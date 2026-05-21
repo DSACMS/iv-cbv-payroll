@@ -127,13 +127,12 @@ en:
         additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
         additional_comments_title: Additional comments (optional)
         address: Address
-        community_service_hours: Community service hours
+        community_engagement_hours: Community engagement hours
         coordinator_email: Coordinator's email
         coordinator_name: Coordinator's name
         coordinator_phone: Coordinator's phone number
         description: Review all the information you've added for %{organization_name} before adding it to your community engagement report.
         edit: Edit
-        hours_section: Community service hours
         name: Name
         organization_info: Organization information
         save: Save and add to my report
@@ -217,7 +216,6 @@ en:
         contact_name: School contact name
         contact_phone: School contact phone number
         credit_hours: Credit hours
-        credit_hours_section: Credit hours
         description: Review all the information you've added for %{school_name} before adding it to your community engagement report.
         edit: Edit
         enrollment_information: Enrollment information
@@ -276,14 +274,13 @@ en:
         additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
         additional_comments_title: Additional comments (optional)
         address: Address
+        community_engagement_hours: Community engagement hours
         contact_email: Employer contact email
         contact_name: Employer contact name
         contact_phone: Employer contact phone number
         description: Review all the information you've added for %{employer_name} before adding it to your Community Engagement Report.
         employer_info: Employer information
         gross_income: Gross income
-        hours_and_income: Hours and income
-        hours_worked: Hours worked
         name: Name
         save: Save and add to my report
         title: Review your employment information for %{employer_name}
@@ -477,10 +474,10 @@ en:
       additional_comments: Additional comments
       community_service:
         address: Address
+        community_engagement_hours: Community engagement hours
         coordinator_email: Coordinator's email
         coordinator_name: Coordinator's name
         coordinator_phone: Coordinator's phone
-        hours_served: Community service hours
         month: Month
         organization: Organization name
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
@@ -488,31 +485,34 @@ en:
       description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
       education:
         address: School address
+        community_engagement_hours: Community engagement hours
         contact_email: School contact email
         contact_name: School contact name
         contact_phone: School contact phone number
         credit_hours: Credit hours
         month: Month
         school_name: School or program
-        term_credit_hours: Term credit hours
+        term_credit_hours: Credit hours
+        term_details: Term details
       employment:
         address: Address
-        contact_email: Contact email
-        contact_name: Contact name
-        contact_phone: Contact phone
+        community_engagement_hours: Community engagement hours
+        contact_email: Employer contact email
+        contact_name: Employer contact name
+        contact_phone: Employer contact phone number
         employer: Employer
+        employer_name: Employer name
         gross_income: Gross income
-        hours_worked: Hours worked
         month: Month
       job_training:
         address: Address
+        community_engagement_hours: Community engagement hours
         contact_email: Contact email
         contact_name: Contact name
         contact_phone: Contact phone
         month: Month
         organization_provider_name: Organization/Provider name
         program_name: Program name
-        work_program_hours: Work program hours
       legal_agreement: Legal agreement
       monthly_details: Monthly details
       submit: Submit to %{agency_name}
@@ -533,18 +533,17 @@ en:
         additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
         additional_comments_title: Additional comments (optional)
         address: Address
+        community_engagement_hours: Community engagement hours
         contact_email: Contact email
         contact_name: Contact name
         contact_phone: Contact phone number
         description: Review all the information you've added for %{program_name} before adding it to your Community Engagement Report.
         edit: Edit
-        hours_section: Work program hours
         organization_info: Work program information
         organization_name: Organization or provider name
         program_name: Program name
         save: Save and add to my report
         title: Review your work program information for %{program_name}
-        work_program_hours: Work program hours
       title: Work programs
       title_singular: Work Program
   activity_flow_progress_indicator:
@@ -990,6 +989,11 @@ en:
     report:
       monthly_summary_table:
         accrued_gross_earnings: Accrued gross earnings
+        activity:
+          community_engagement_hours: Community engagement hours
+          gross_income: Gross income
+          mileage_expenses: Mileage expenses
+          payment_information: Payment information
         compact:
           footnote:
             definition_accrued_gross_earnings: '"Accrued gross earnings" sums the payments made in that month.'

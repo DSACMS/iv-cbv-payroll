@@ -95,7 +95,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: iv_cbv_payroll_test
+  database: iv_cbv_payroll_test<%= ENV["TEST_ENV_NUMBER"] %>
   host: <%= ENV.fetch("DB_HOST") { nil } %>
   username: <%= ENV.fetch("DB_USERNAME") { nil } %>
   # The password associated with the postgres role (username).

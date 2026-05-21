@@ -37,17 +37,24 @@ RUN apt-get update -qq && \
       libssl-dev \
       # CVE-2026-3497 \
       openssh-client \
+      # CVE-2026-4437 \
+      libc-bin libc-dev-bin libc6 libc6-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Auto-fix: OS package vulnerabilities detected by Trivy (managed automatically)
+# Auto-fix: OS package vulnerabilities detected by Trivy and Grype (managed automatically)
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
+      libcap2 \
+      libexif-dev \
+      libexif12 \
       liblcms2-2 \
       liblcms2-dev \
       libnghttp2-14 \
       libnghttp2-dev \
+      libsystemd0 \
+      libudev1 \
       linux-libc-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
@@ -71,13 +78,14 @@ EXPOSE 3000
 FROM base AS build
 
 # Install packages needed to build gems
+# hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
-      build-essential=12.12 \
-      git=1:2.47.3-0+deb13u1 \
-      libpq-dev=17.9-0+deb13u1 \
-      npm=9.2.0~ds1-3 \
-      pkg-config=1.8.1-4 \
+      build-essential \
+      git \
+      libpq-dev \
+      npm \
+      pkg-config \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -172,7 +180,7 @@ ENV PIDFILE="/rails/tmp/pids/server.pid"
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
         libgpgme11t64=1.24.2-3 \
-        libvips42t64=8.16.1-1+b1 \
+        libvips42t64=8.16.1-1+deb13u1 \
         postgresql-client-17 \
         python-is-python3=3.13.3-1 \
         python3-venv=3.13.5-1 \

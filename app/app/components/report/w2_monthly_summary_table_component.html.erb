@@ -12,7 +12,7 @@
     <%= table.with_header_cell
            .with_content(I18n.t("components.report.monthly_summary_table.w2.title_number_of_paychecks")) %>
     <%= table.with_header_cell
-           .with_content(I18n.t("components.report.monthly_summary_table.w2.title_total_hours_worked")) %>
+           .with_content(hours_header) %>
 
     <% if has_monthly_summary_results? %>
       <% @monthly_summary_data.each_with_index do |(month_string, summary), index| %>
@@ -23,11 +23,11 @@
               <br ><span class="text-gray-70 partial-month-description"><%= summary[:partial_month_range][:description] %></span>
             <% end %>
           <% end %>
-          <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.w2.title_gross_income"))
+          <%= row.with_data_cell(data_label: I18n.t("components.report.monthly_summary_table.w2.title_gross_income"))
                  .with_content(format_accrued_gross_earnings(summary)) %>
-          <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.w2.title_number_of_paychecks"))
+          <%= row.with_data_cell(data_label: I18n.t("components.report.monthly_summary_table.w2.title_number_of_paychecks"))
                  .with_content(format_paychecks_count(summary)) %>
-          <%= row.with_data_cell(data_label: t("components.report.monthly_summary_table.w2.title_total_hours_worked"))
+          <%= row.with_data_cell(data_label: hours_header)
                  .with_content(format_hours_worked(summary)) %>
         <% end %>
       <% end %>

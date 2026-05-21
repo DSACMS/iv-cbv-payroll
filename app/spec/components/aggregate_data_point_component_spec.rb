@@ -151,6 +151,21 @@ RSpec.describe AggregateDataPointComponent, type: :component do
     end
   end
 
+  describe "#employer_name" do
+    it "renders with valid employer name" do
+      expect(
+        render_inline(described_class.new(:employer_name, "Acme Employer"))
+      ).to have_text("Employer name")
+        .and have_text("Acme Employer")
+    end
+
+    it "renders N/A for nil employer name" do
+      expect(
+        render_inline(described_class.new(:employer_name, nil))
+      ).to have_text("N/A")
+    end
+  end
+
   describe "#employer_address" do
     it "renders with valid address" do
       expect(

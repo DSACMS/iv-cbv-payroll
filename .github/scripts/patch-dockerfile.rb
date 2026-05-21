@@ -3,36 +3,62 @@
 
 # Add-only Dockerfile OS package patcher.
 #
-# Usage: ruby patch-dockerfile.rb <trivy-results.json> <Dockerfile>
+# Usage: ruby patch-dockerfile.rb <trivy-results.json> <grype-results.json> <Dockerfile>
 #
-# Reads Trivy JSON output and adds any packages Trivy flags as fixable to the
-# auto-managed RUN block in the Dockerfile's BASE stage. Removal is intentionally
-# manual — Trivy with --ignore-unfixed cannot distinguish "fix shipped in the
-# new base image" from "fix already applied by this auto-fix block", so
-# auto-removing risks reintroducing the CVE on the next build. Clear the block
-# manually when bumping the base Ruby image.
+# Reads Trivy and Grype JSON output and adds any packages either scanner flags
+# as fixable to the auto-managed RUN block in the Dockerfile's BASE stage. The
+# union is taken because Trivy and Grype use different vulnerability databases
+# and routinely disagree on which CVEs apply to a given package version.
+# Both parsers restrict results to OS packages — Trivy via Class == "os-pkgs",
+# Grype via artifact.type in {deb, apk, rpm} — so only apt-installable names
+# reach the RUN block.
+# Removal is intentionally manual — scanners run with --ignore-unfixed / only-fixed
+# cannot distinguish "fix shipped in the new base image" from "fix already
+# applied by this auto-fix block", so auto-removing risks reintroducing the CVE
+# on the next build. Clear the block manually when bumping the base Ruby image.
 #
 # Only manages blocks marked with the AUTOFIX_MARKER comment.
 # Never touches the manually-maintained "Upgrade packages in base image" block.
 
-require "json"
-require "set"
 
-AUTOFIX_MARKER    = "# Auto-fix: OS package vulnerabilities detected by Trivy"
-INSERTION_ANCHOR  = "# Rails app lives here"
 
-def parse_trivy_results(trivy_path)
+require 'json'
+require 'set'
+
+AUTOFIX_MARKER    = '# Auto-fix: OS package vulnerabilities detected by Trivy and Grype'
+INSERTION_ANCHOR  = '# Rails app lives here'
+OS_PACKAGE_TYPES  = Set['deb', 'apk', 'rpm'].freeze
+
+def parse_trivy(trivy_path)
   data = JSON.parse(File.read(trivy_path))
   needed = Set.new
 
-  (data["Results"] || []).each do |result|
-    next unless result["Class"] == "os-pkgs"
+  (data['Results'] || []).each do |result|
+    next unless result['Class'] == 'os-pkgs'
 
-    (result["Vulnerabilities"] || []).each do |vuln|
-      next if vuln["FixedVersion"].to_s.empty?
+    (result['Vulnerabilities'] || []).each do |vuln|
+      next if vuln['FixedVersion'].to_s.empty?
 
-      needed.add(vuln["PkgName"])
+      needed.add(vuln['PkgName'])
     end
+  end
+
+  needed
+end
+
+def parse_grype(grype_path)
+  data = JSON.parse(File.read(grype_path))
+  needed = Set.new
+
+  (data['matches'] || []).each do |match|
+    next unless OS_PACKAGE_TYPES.include?(match.dig('artifact', 'type'))
+
+    fix = match.dig('vulnerability', 'fix') || {}
+    next unless fix['state'] == 'fixed'
+    next if (fix['versions'] || []).empty?
+
+    name = match.dig('artifact', 'name')
+    needed.add(name) if name
   end
 
   needed
@@ -46,17 +72,17 @@ def parse_autofix_block(lines)
   lines.each_with_index do |line, i|
     start_idx = i if line.include?(AUTOFIX_MARKER)
 
-    if start_idx != -1 && end_idx == -1
-      # Package lines look like: '      pkgname \' or '      pkgname=version \'
-      if (m = line.match(/^\s{6}([a-z0-9][a-z0-9.+\-]*)(?:=[^\s\\]+)?\s*\\?\s*$/))
-        packages.add(m[1])
-      end
+    next unless start_idx != -1 && end_idx == -1
 
-      # The block ends at the apt cleanup line
-      if line.include?("rm -rf /var/lib/apt/lists")
-        end_idx = i
-        break
-      end
+    # Package lines look like: '      pkgname \' or '      pkgname=version \'
+    if (m = line.match(/^\s{6}([a-z0-9][a-z0-9.+-]*)(?:=[^\s\\]+)?\s*\\?\s*$/))
+      packages.add(m[1])
+    end
+
+    # The block ends at the apt cleanup line
+    if line.include?('rm -rf /var/lib/apt/lists')
+      end_idx = i
+      break
     end
   end
 
@@ -83,14 +109,14 @@ def find_insertion_index(lines)
 end
 
 def set_github_output(key, value)
-  output_file = ENV["GITHUB_OUTPUT"]
+  output_file = ENV['GITHUB_OUTPUT']
   return unless output_file
 
-  File.open(output_file, "a") { |f| f.puts("#{key}=#{value}") }
+  File.open(output_file, 'a') { |f| f.puts("#{key}=#{value}") }
 end
 
 def write_summary(added)
-  summary_file = ENV["PATCH_SUMMARY_FILE"]
+  summary_file = ENV['PATCH_SUMMARY_FILE']
   return unless summary_file
 
   out = +"### Packages added\n\n"
@@ -100,9 +126,14 @@ def write_summary(added)
   File.write(summary_file, out)
 end
 
-def main(trivy_path, dockerfile_path)
-  needed = parse_trivy_results(trivy_path)
-  puts "Trivy flagged #{needed.size} package(s) with fixes available: #{needed.sort}"
+def main(trivy_path, grype_path, dockerfile_path)
+  from_trivy = parse_trivy(trivy_path)
+  from_grype = parse_grype(grype_path)
+  needed = from_trivy | from_grype
+
+  puts "Trivy flagged: #{from_trivy.sort}"
+  puts "Grype flagged: #{from_grype.sort}"
+  puts "Union (#{needed.size} package(s) with fixes available): #{needed.sort}"
 
   lines = File.readlines(dockerfile_path)
 
@@ -111,11 +142,13 @@ def main(trivy_path, dockerfile_path)
 
   to_add = needed - currently_patched
   stale  = currently_patched - needed
-  puts "Already-patched packages no longer flagged by Trivy (kept; manual cleanup at base image bump): #{stale.sort}" if stale.any?
+  if stale.any?
+    puts "Already-patched packages no longer flagged (kept; manual cleanup at base image bump): #{stale.sort}"
+  end
 
   if to_add.empty?
-    puts "No new packages to add."
-    set_github_output("changes_made", "false")
+    puts 'No new packages to add.'
+    set_github_output('changes_made', 'false')
     return
   end
 
@@ -139,12 +172,14 @@ def main(trivy_path, dockerfile_path)
   puts "Dockerfile updated: #{dockerfile_path}"
 
   write_summary(to_add)
-  set_github_output("changes_made", "true")
+  set_github_output('changes_made', 'true')
 end
 
-if ARGV.size != 2
-  warn "Usage: #{$PROGRAM_NAME} <trivy-results.json> <Dockerfile>"
-  exit 1
-end
+if $PROGRAM_NAME == __FILE__
+  if ARGV.size != 3
+    warn "Usage: #{$PROGRAM_NAME} <trivy-results.json> <grype-results.json> <Dockerfile>"
+    exit 1
+  end
 
-main(ARGV[0], ARGV[1])
+  main(ARGV[0], ARGV[1], ARGV[2])
+end

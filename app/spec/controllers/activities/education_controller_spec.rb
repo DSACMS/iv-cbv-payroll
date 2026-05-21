@@ -416,7 +416,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(I18n.t("activities.education.review.enrollment_information"))
         expect(response.body).to include(I18n.t("components.enrollment_term_table_component.school_or_program"))
-        expect(response.body).to include(I18n.t("activities.education.review.credit_hours_section"))
+        expect(response.body).to include(I18n.t("activities.summary.education.term_details"))
         expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
         expect(response.body).to include(I18n.t("activities.education.review.ce_explainer_title"))
         expect(doc).to have_text(
@@ -444,7 +444,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         get :review, params: { id: education_activity.id }
 
         doc = Capybara.string(response.body)
-        expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
+        expect(doc).to have_selector("h3", text: I18n.t("activities.summary.education.term_details"), count: 1)
         expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
       end
 
@@ -498,7 +498,7 @@ RSpec.describe Activities::EducationController, type: :controller do
             school_name: "Half Time School and Less Than Half School"
           )
         )
-        expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 1)
+        expect(doc).to have_selector("h3", text: I18n.t("activities.summary.education.term_details"), count: 1)
         expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
         expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(2)
       end
@@ -535,7 +535,7 @@ RSpec.describe Activities::EducationController, type: :controller do
             school_name: "School One and School Two"
           )
         )
-        expect(doc).to have_selector("h3", text: I18n.t("activities.education.review.credit_hours_section"), count: 2)
+        expect(doc).to have_selector("h3", text: I18n.t("activities.summary.education.term_details"), count: 2)
         expect(response.body.scan(I18n.t("activities.education.review.community_engagement_hours")).count).to eq(4)
         expect(response.body.scan(I18n.t("activities.education.review.ce_explainer_title")).count).to eq(1)
       end
