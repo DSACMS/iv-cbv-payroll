@@ -1,4 +1,5 @@
 require "rails_helper"
+require "percy/capybara" if ENV["PERCY_VISUAL_RUN"] == "1"
 
 RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
   include E2e::TestHelpers
@@ -21,6 +22,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     click_link I18n.t("activities.entries.show.continue")
 
     verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
+    page.percy_snapshot("E2E Activity Hub empty state") if ENV["PERCY_VISUAL_RUN"] == "1"
     flow = ActivityFlow.last
 
     # Add a Community Service activity

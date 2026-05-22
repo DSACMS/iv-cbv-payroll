@@ -1,0 +1,11 @@
+base-url: http://localhost:3000
+snapshots:
+  - name: Lookbook / Table / Multi-column
+    url: /lookbook/preview/table/multi_column
+    waitForSelector: table.usa-table
+  - name: Lookbook / Activity card / Employment
+    url: /lookbook/preview/uswds/card/employment
+    waitForSelector: .usa-card
+  - name: Lookbook / Activity flow progress / Review completed
+    url: /lookbook/preview/activity_flow_progress_indicator/review_completed
+    waitForSelector: .activity-flow-progress-indicator

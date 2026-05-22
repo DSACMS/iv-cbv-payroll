@@ -358,6 +358,8 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
+    percy-capybara (5.0.0)
+      capybara (>= 3)
     pg (1.6.3-aarch64-linux)
     pg (1.6.3-arm64-darwin)
     pg (1.6.3-x86_64-darwin)
@@ -666,6 +668,7 @@ DEPENDENCIES
   newrelic_rpm
   parallel_tests (~> 5.5)
   pdf-reader (~> 2.15.1)
+  percy-capybara (~> 5.0)
   pg (~> 1.6)
   pg-aws_rds_iam (~> 0.8.0)
   premailer-rails
