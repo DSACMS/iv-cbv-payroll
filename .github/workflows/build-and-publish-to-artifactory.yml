@@ -55,6 +55,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       ARTIFACTORY_SECRET_ARN: ${{ vars.ARTIFACTORY_SECRET_ARN }}
       EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
+      AWS_REGION: us-east-1
 
     steps:
       - uses: actions/checkout@v6
