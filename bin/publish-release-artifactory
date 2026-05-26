@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -euo pipefail
+
+app_name="$1"
+image_name="$2"
+image_tag="$3"
+image_repo="$4"
+
+echo "---------------"
+echo "Publish release to Artifactory"
+echo "---------------"
+echo "Input parameters:"
+echo "  app_name=${app_name}"
+echo "  image_name=${image_name}"
+echo "  image_tag=${image_tag}"
+echo "  image_repo=${image_repo}"
+
+if [[ -z "${image_repo}" ]]; then
+  echo "Error: image_repo is required for Artifactory publish"
+  exit 1
+fi
+
+artifactory_image="${image_repo}/${image_name}:${image_tag}"
+
+echo "Tagging image: ${image_name}:${image_tag} -> ${artifactory_image}"
+docker tag "${image_name}:${image_tag}" "${artifactory_image}"
+
+echo "Pushing image to Artifactory: ${artifactory_image}"
+docker push "${artifactory_image}"
+
+echo "Successfully published to Artifactory"
