@@ -31,6 +31,14 @@ When developing on the Rails app, ensure you are always in the `app` subdirector
 ## Testing Guidelines
 - Add coverage for new endpoints, logic, and service objects; exercise eligibility and payroll edge cases.
 - Prefer writing controller tests over request specs.
+- For Rails view and ViewComponent specs, prefer Capybara matchers against
+  user-visible output (`have_text`, `have_selector`, `have_no_text`). In
+  ViewComponent specs, prefer `rendered = render_inline(...)` and assert against
+  that node. Use `rendered.css(...)` or Nokogiri only when the assertion is
+  about DOM structure or attributes, such as `data-label` or specific table cell
+  positions, rather than visible text.
+- Avoid brittle structural selectors, such as deep `nth-child` chains or
+  `:last-child`, when a user-visible assertion can verify the same behavior.
 - Make sure to update our Capybara/Selenium end-to-end tests. They are in `spec/e2e`. When running these tests, you have to prefix the command with `E2E_RUN_TESTS=1`.
 - In end-to-end specs, use `verify_page` after each navigation to assert page headers/titles as you move through flows.
 - For faster local iteration, create an `.rspec-local` (gitignored) with `--fail-fast=3` or similar overrides.
