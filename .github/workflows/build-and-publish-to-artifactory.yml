@@ -68,7 +68,6 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Artifactory
-        if: env.ARTIFACTORY_SECRET_ARN != '' && env.EMMY_IMAGE_REPO != ''
         shell: bash
         run: |
           secret=$(aws secretsmanager get-secret-value --secret-id "${{ env.ARTIFACTORY_SECRET_ARN }}" --query SecretString --output text)
@@ -76,13 +75,7 @@ jobs:
           password=$(echo "$secret" | jq -r .password)
           echo "$password" | docker login "${{ env.EMMY_IMAGE_REPO }}" --username "$username" --password-stdin
 
-      - name: Login to ECR
-        shell: bash
-        run: |
-          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.get-ecr-repo.outputs.repository_url }}
-
       - name: Build and push release
-        if: steps.check-image-published.outputs.is_image_published == 'false'
         shell: bash
         run: |
           IMAGE_NAME=$(make APP_NAME=${{ inputs.app_name }} release-image-name)
