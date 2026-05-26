@@ -27,6 +27,8 @@ jobs:
   get-commit-hash:
     name: Get commit hash
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       commit_hash: ${{ steps.get-commit-hash.outputs.commit_hash }}
     steps:
