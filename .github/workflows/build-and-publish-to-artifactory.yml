@@ -67,21 +67,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Configure AWS credentials
-        uses: ./.github/actions/configure-aws-credentials
-        with:
-          app_name: ${{ inputs.app_name }}
-          environment: shared
-
-      - name: Get ECR repository URL
-        id: get-ecr-repo
-        shell: bash
-        run: |
-          terraform -chdir="infra/${{ inputs.app_name }}/app-config" init > /dev/null
-          terraform -chdir="infra/${{ inputs.app_name }}/app-config" apply -auto-approve > /dev/null
-          repository_url=$(terraform -chdir="infra/${{ inputs.app_name }}/app-config" output -json build_repository_config | jq -r ".repository_url")
-          echo "repository_url=$repository_url" >> "$GITHUB_OUTPUT"
-
       - name: Login to Artifactory
         if: env.ARTIFACTORY_SECRET_ARN != '' && env.EMMY_IMAGE_REPO != ''
         shell: bash
@@ -95,22 +80,6 @@ jobs:
         shell: bash
         run: |
           aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.get-ecr-repo.outputs.repository_url }}
-
-      - name: Check if image is already published
-        id: check-image-published
-        shell: bash
-        run: |
-          # For Artifactory, we might need a different way to check if image is published.
-          # For now, we'll default to false if not ECR, or use a custom check.
-          # Assuming we want to use the same logic if possible, but bin/is-image-published is ECR specific.
-          if [[ "${{ env.EMMY_IMAGE_REPO }}" == *".dkr.ecr."* ]] || [[ -z "${{ env.EMMY_IMAGE_REPO }}" ]]; then
-            is_image_published=$(./bin/is-image-published "${{ inputs.app_name }}" "${{ inputs.ref }}")
-          else
-            # TODO: Implement Artifactory image check if needed. For now, assume false to force build/publish.
-            is_image_published="false"
-          fi
-          echo "Is image published: $is_image_published"
-          echo "is_image_published=$is_image_published" >> "$GITHUB_OUTPUT"
 
       - name: Build and push release
         if: steps.check-image-published.outputs.is_image_published == 'false'
