@@ -43,7 +43,7 @@ jobs:
           echo "commit_hash=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
   build-and-publish:
     name: Build and publish
-    runs-on: ubuntu-latest
+    runs-on: "codebuild-emmy-github-runner-emmy-api-${{ github.run_id }}-${{ github.run_attempt }}"
     needs: get-commit-hash
     concurrency: ${{ github.workflow }}-${{ needs.get-commit-hash.outputs.commit_hash }}
 
