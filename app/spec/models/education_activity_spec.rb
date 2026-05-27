@@ -134,19 +134,33 @@ RSpec.describe EducationActivity do
   end
 
   describe "#formatted_address" do
-    it "returns a formatted street, city, and state string when present" do
+    it "joins street, city, state, and zip into a single line" do
       activity = build(
         :education_activity,
         street_address: "601 E John St",
         city: "Champaign",
-        state: "IL"
+        state: "IL",
+        zip_code: "61820"
       )
 
-      expect(activity.formatted_address).to eq("601 E John St, Champaign, IL")
+      expect(activity.formatted_address).to eq("601 E John St, Champaign, IL 61820")
+    end
+
+    it "includes street_address_line_2 when present" do
+      activity = build(
+        :education_activity,
+        street_address: "601 E John St",
+        street_address_line_2: "Suite 200",
+        city: "Champaign",
+        state: "IL",
+        zip_code: "61820"
+      )
+
+      expect(activity.formatted_address).to eq("601 E John St, Suite 200, Champaign, IL 61820")
     end
 
     it "returns nil when no address fields are present" do
-      activity = build(:education_activity, street_address: nil, city: nil, state: nil)
+      activity = build(:education_activity, street_address: nil, street_address_line_2: nil, city: nil, state: nil, zip_code: nil)
 
       expect(activity.formatted_address).to be_nil
     end
