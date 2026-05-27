@@ -16,6 +16,8 @@ class AggregateDataPointComponent < ViewComponent::Base
     "other" => "Other"
   }.freeze
 
+  GROSS_PAY_LINE_ITEM_LABEL_CLASS = "cbv-gross-pay-line-item-label"
+
   def initialize(field, *values, highlight: false)
     @field = send(field, *values)
     @highlight = highlight
@@ -53,6 +55,7 @@ class AggregateDataPointComponent < ViewComponent::Base
   def gross_pay_line_item(type, amount)
     {
       label: GROSS_PAY_LINE_ITEM_LABELS.fetch(type.to_s) { type.to_s.titleize },
+      label_class_names: GROSS_PAY_LINE_ITEM_LABEL_CLASS,
       value: format_money(amount)
     }
   end
