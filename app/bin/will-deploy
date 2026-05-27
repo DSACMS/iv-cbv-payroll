@@ -150,7 +150,7 @@ tags = tags_for_changes(both_changes, income_changes, ce_changes)
 
 output = +""
 output << "🚀 Will deploy `#{current_sha[0, 7]}` to production: 🚀 (cc #{tags})\n"
-output << "🧪 *[Launch the demo →](https://la-verify-demo.navapbc.cloud/demo)*\n\n"
+output << "🧪 *[Open the launcher →](https://verify-demo.navapbc.cloud/launcher)*\n\n"
 append_changes(output, "👥 *User facing changes to Emmy Income + Emmy CE*", both_changes)
 append_changes(
   output,
