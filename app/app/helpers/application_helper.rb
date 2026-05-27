@@ -116,6 +116,32 @@ module ApplicationHelper
     end
   end
 
+  # Returns an Integer for whole-number values and a Float for fractional values,
+  # so it renders cleanly in views (e.g. "3" not "3.0", "2.5" not "2.50") and
+  # interpolates correctly into pluralized I18n strings (e.g. "1 hour", "2.5 hours")
+  # via Rails' default pluralizer (`n == 1 ? :one : :other`).
+  # Rounds to 2 decimal places to match the DB scale used by hours/gross_income
+  # columns and to stabilize Float-summation noise (e.g. 2.5 + 0.1 = 2.6, not
+  # 2.6000000000000005).
+  def self.format_decimal_amount(value)
+    return 0 if value.blank?
+
+    bd = value.to_d.round(2)
+    bd == bd.truncate ? bd.to_i : bd.to_f
+  end
+
+  def format_decimal_amount(value)
+    ApplicationHelper.format_decimal_amount(value)
+  end
+
+  # BigDecimal renders as scientific notation by default, which breaks display
+  # in number inputs. Convert to a clean string (integer when whole, decimal otherwise).
+  def decimal_input_value(value)
+    return value unless value.is_a?(BigDecimal)
+
+    value == value.truncate ? value.to_i : value.to_s("F")
+  end
+
   def date_string_to_date(date_string)
     date_string.is_a?(Date) ? date_string : Date.strptime(date_string, "%Y-%m-%d")
   rescue

@@ -20,10 +20,9 @@ RSpec.describe EmploymentActivityMonth, type: :model do
       expect(month_record.errors[:gross_income]).to be_present
     end
 
-    it "is invalid with non-integer gross income" do
-      month_record = build(:employment_activity_month, employment_activity: activity, gross_income: 2.5)
-      expect(month_record).not_to be_valid
-      expect(month_record.errors[:gross_income]).to be_present
+    it "is valid with decimal gross income" do
+      month_record = build(:employment_activity_month, employment_activity: activity, gross_income: 1234.56)
+      expect(month_record).to be_valid
     end
   end
 end

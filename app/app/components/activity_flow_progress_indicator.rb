@@ -41,18 +41,11 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
   def hours_completion_threshold = ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
   def earnings_completion_threshold = ActivityFlowProgressCalculator::PER_MONTH_EARNINGS_THRESHOLD
 
-  def format_hours(hours)
-    rounded_hours = hours.to_f.round(1)
-    return rounded_hours.to_i if rounded_hours == rounded_hours.to_i
-
-    rounded_hours
-  end
-
   def display_progress_amount(monthly_result, unit:)
     if unit == :dollars
       format_dollar_amount(monthly_result.total_earnings_cents)
     else
-      format_hours(monthly_result.total_hours)
+      ApplicationHelper.format_decimal_amount(monthly_result.total_hours)
     end
   end
 

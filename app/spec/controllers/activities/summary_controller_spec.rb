@@ -176,8 +176,8 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(I18n.t("activities.summary.community_service.community_engagement_hours"))
       expect(response.body).to include(I18n.l(first_month.month, format: :month_year))
       expect(response.body).to include(I18n.l(second_month.month, format: :month_year))
-      expect(response.body).to include(first_month.hours.to_s)
-      expect(response.body).to include(second_month.hours.to_s)
+      expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(first_month.hours, precision: 2, strip_insignificant_zeros: true))
+      expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(second_month.hours, precision: 2, strip_insignificant_zeros: true))
     end
 
     it "renders work program details and monthly hours in the summary table" do
@@ -217,8 +217,8 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       expect(response.body).to include(I18n.l(first_month.month, format: :month_year))
       expect(response.body).to include(I18n.l(second_month.month, format: :month_year))
-      expect(response.body).to include(first_month.hours.to_s)
-      expect(response.body).to include(second_month.hours.to_s)
+      expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(first_month.hours, precision: 2, strip_insignificant_zeros: true))
+      expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(second_month.hours, precision: 2, strip_insignificant_zeros: true))
     end
 
     it "renders fully self-attested education details and monthly details in the summary table" do
@@ -248,8 +248,8 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(activity.contact_phone_number)
       expect(response.body).to include(I18n.l(first_month.month, format: :month_year))
       expect(response.body).to include(I18n.l(second_month.month, format: :month_year))
-      expect(response.body).to include(first_month.hours.to_s)
-      expect(response.body).to include(second_month.hours.to_s)
+      expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(first_month.hours, precision: 2, strip_insignificant_zeros: true))
+      expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(second_month.hours, precision: 2, strip_insignificant_zeros: true))
 
       doc = Capybara.string(response.body)
       monthly_details_headers = doc.all("table").last.all("thead th").map { |cell| cell.text.strip }
@@ -471,7 +471,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(response.body).to include(I18n.t("activities.summary.employment.community_engagement_hours"))
         expect(response.body).to include(I18n.l(activity_month.month, format: :month_year))
         expect(response.body).to include(ActionController::Base.helpers.number_to_currency(activity_month.gross_income))
-        expect(response.body).to include(activity_month.hours.to_s)
+        expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(activity_month.hours, precision: 2, strip_insignificant_zeros: true))
       end
 
       it "shows the unit toggle on the review page" do

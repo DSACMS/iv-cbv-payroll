@@ -218,6 +218,16 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       expect(less_than_half_time_term.reload.credit_hours).to eq(4)
     end
 
+    it "persists decimal credit_hours" do
+      patch :update, params: {
+        education_id: education_activity.id,
+        id: 0,
+        nsc_enrollment_term: { credit_hours: "2.5" }
+      }
+
+      expect(less_than_half_time_term.reload.credit_hours).to eq(BigDecimal("2.5"))
+    end
+
     it "renders an error when no credit hours are entered for a single term" do
       patch :update, params: {
         education_id: education_activity.id,

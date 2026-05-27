@@ -31,10 +31,9 @@ RSpec.shared_examples "an activity month model" do |parent_factory:, month_facto
       expect(month_record.errors[:hours]).to be_present
     end
 
-    it "is invalid with non-integer hours" do
+    it "is valid with decimal hours" do
       month_record = build(month_factory, parent_association => parent_activity, hours: 2.5)
-      expect(month_record).not_to be_valid
-      expect(month_record.errors[:hours]).to be_present
+      expect(month_record).to be_valid
     end
   end
 
