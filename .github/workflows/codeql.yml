@@ -1,0 +1,42 @@
+# CodeQL analysis workflow for Ruby
+# This custom workflow replaces the GitHub CodeQL Default Setup to prevent
+# authentication failures when analyzing PRs created by GITHUB_TOKEN.
+
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "app/**" ]
+  pull_request:
+    branches: [ "main" ]
+    paths: [ "app/**" ]
+  schedule:
+    # cron format: 'minute hour dayofmonth month dayofweek'
+    # this will run at noon UTC each Monday (7am EST / 8am EDT)
+    - cron: '0 12 * * 1'
+
+jobs:
+  analyze:
+    name: Analyze (ruby)
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ruby
+          build-mode: none
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:ruby"
