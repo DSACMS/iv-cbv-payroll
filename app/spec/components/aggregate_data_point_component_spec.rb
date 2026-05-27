@@ -33,7 +33,7 @@ RSpec.describe AggregateDataPointComponent, type: :component do
     it "renders the label with line item styling" do
       expect(
         render_inline(described_class.new(:gross_pay_line_item, "commission", 33749))
-      ).to have_css("th.cbv-gross-pay-line-item-label", text: "Commission")
+      ).to have_css("th.cbv-gross-pay-line-item-label .cbv-gross-pay-line-item-label-text", text: "Commission")
     end
 
     it "renders pto as an acronym" do

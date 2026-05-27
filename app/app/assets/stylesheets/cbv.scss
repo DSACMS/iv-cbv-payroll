@@ -189,7 +189,11 @@ html {
 
 .cbv-gross-pay-line-item-label {
   font-weight: normal;
-  padding-left: 1rem;
+}
+
+.cbv-gross-pay-line-item-label-text {
+  display: inline-block;
+  margin-left: 1em;
 }
 
 .rotate {
