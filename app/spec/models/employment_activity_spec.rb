@@ -83,7 +83,7 @@ RSpec.describe EmploymentActivity, type: :model do
       month = activity_flow.reporting_months.first.beginning_of_month
       month_record = create(:employment_activity_month, employment_activity: activity, month: month, hours: 12)
 
-      expect(ActivitiesHelper).to receive(:normalize_hours_count).with(month_record.hours).and_call_original
+      expect(ApplicationHelper).to receive(:format_decimal_amount).with(month_record.hours).and_call_original
 
       activity.document_upload_details_for_month(month)
     end

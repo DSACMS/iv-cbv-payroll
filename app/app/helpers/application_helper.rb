@@ -116,12 +116,22 @@ module ApplicationHelper
     end
   end
 
-  # Formats a decimal value for display in tables/summaries: 2 decimal places,
-  # trailing zeros stripped (e.g. 2.5 not 2.50, 3 not 3.00).
-  def format_decimal_amount(value)
-    return "0" if value.blank?
+  # Returns an Integer for whole-number values and a Float for fractional values,
+  # so it renders cleanly in views (e.g. "3" not "3.0", "2.5" not "2.50") and
+  # interpolates correctly into pluralized I18n strings (e.g. "1 hour", "2.5 hours")
+  # via Rails' default pluralizer (`n == 1 ? :one : :other`).
+  # Rounds to 2 decimal places to match the DB scale used by hours/gross_income
+  # columns and to stabilize Float-summation noise (e.g. 2.5 + 0.1 = 2.6, not
+  # 2.6000000000000005).
+  def self.format_decimal_amount(value)
+    return 0 if value.blank?
 
-    ActiveSupport::NumberHelper.number_to_rounded(value, precision: 2, strip_insignificant_zeros: true)
+    bd = value.to_d.round(2)
+    bd == bd.truncate ? bd.to_i : bd.to_f
+  end
+
+  def format_decimal_amount(value)
+    ApplicationHelper.format_decimal_amount(value)
   end
 
   # BigDecimal renders as scientific notation by default, which breaks display

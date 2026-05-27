@@ -45,7 +45,7 @@ class ActivityFlowProgressIndicator < ViewComponent::Base
     if unit == :dollars
       format_dollar_amount(monthly_result.total_earnings_cents)
     else
-      ActivitiesHelper.normalize_hours_count(monthly_result.total_hours)
+      ApplicationHelper.format_decimal_amount(monthly_result.total_hours)
     end
   end
 

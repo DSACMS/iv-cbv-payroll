@@ -1,36 +1,6 @@
 require "rails_helper"
 
 RSpec.describe ActivitiesHelper do
-  describe ".normalize_hours_count" do
-    it "returns 0 for nil" do
-      expect(described_class.normalize_hours_count(nil)).to eq(0)
-    end
-
-    it "returns 0 for blank string" do
-      expect(described_class.normalize_hours_count("")).to eq(0)
-    end
-
-    it "returns an Integer for whole-number values" do
-      result = described_class.normalize_hours_count(BigDecimal("10.00"))
-      expect(result).to eq(10)
-      expect(result).to be_a(Integer)
-    end
-
-    it "returns a Float for fractional BigDecimal values" do
-      result = described_class.normalize_hours_count(BigDecimal("2.5"))
-      expect(result).to eq(2.5)
-      expect(result).to be_a(Float)
-    end
-
-    it "returns an Integer for plain Integer input" do
-      expect(described_class.normalize_hours_count(7)).to eq(7)
-    end
-
-    it "returns a Float for fractional Float input" do
-      expect(described_class.normalize_hours_count(3.25)).to eq(3.25)
-    end
-  end
-
   describe "activity hub display helpers" do
     describe "#activity_hub_state" do
       let(:meeting_result) { instance_double(ActivityFlowProgressCalculator::MonthlyResult, meets_requirements: true) }

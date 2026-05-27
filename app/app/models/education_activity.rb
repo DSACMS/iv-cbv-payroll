@@ -87,7 +87,7 @@ class EducationActivity < Activity
     activity_month = education_activity_months
       .find { |activity_month| activity_month.month == month }
 
-    I18n.t("shared.credit_hours", count: ActivitiesHelper.normalize_hours_count(activity_month.hours)) if activity_month
+    I18n.t("shared.credit_hours", count: ApplicationHelper.format_decimal_amount(activity_month.hours)) if activity_month
   end
 
   def document_upload_suggestion_text
