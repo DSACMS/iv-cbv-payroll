@@ -23,6 +23,32 @@ RSpec.describe AggregateDataPointComponent, type: :component do
     end
   end
 
+  describe "#gross_pay_line_item" do
+    it "renders a known type in title case with formatted amount" do
+      expect(
+        render_inline(described_class.new(:gross_pay_line_item, "commission", 33749))
+      ).to have_text(/Commission\s+\$337\.49/)
+    end
+
+    it "renders the label with line item styling" do
+      expect(
+        render_inline(described_class.new(:gross_pay_line_item, "commission", 33749))
+      ).to have_css("th.cbv-gross-pay-line-item-label .cbv-gross-pay-line-item-label-text", text: "Commission")
+    end
+
+    it "renders pto as an acronym" do
+      expect(
+        render_inline(described_class.new(:gross_pay_line_item, "pto", 1000))
+      ).to have_text(/PTO\s+\$10\.00/)
+    end
+
+    it "titleizes an unknown type" do
+      expect(
+        render_inline(described_class.new(:gross_pay_line_item, "retro_pay", 1000))
+      ).to have_text(/Retro Pay\s+\$10\.00/)
+    end
+  end
+
   describe "#net_pay_amount" do
     it "renders with valid amount" do
       expect(

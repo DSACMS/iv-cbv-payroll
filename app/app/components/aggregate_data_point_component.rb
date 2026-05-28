@@ -3,6 +3,22 @@
 class AggregateDataPointComponent < ViewComponent::Base
   include ReportViewHelper
 
+  GROSS_PAY_LINE_ITEM_LABELS = {
+    "base" => "Base",
+    "pto" => "PTO",
+    "overtime" => "Overtime",
+    "commission" => "Commission",
+    "bonus" => "Bonus",
+    "disability" => "Disability",
+    "benefits" => "Benefits",
+    "tips" => "Tips",
+    "stock" => "Stock",
+    "other" => "Other"
+  }.freeze
+
+  GROSS_PAY_LINE_ITEM_LABEL_CLASS = "cbv-gross-pay-line-item-label"
+  GROSS_PAY_LINE_ITEM_LABEL_TEXT_CLASS = "cbv-gross-pay-line-item-label-text"
+
   def initialize(field, *values, highlight: false)
     @field = send(field, *values)
     @highlight = highlight
@@ -34,6 +50,15 @@ class AggregateDataPointComponent < ViewComponent::Base
     {
       label: I18n.t("cbv.payment_details.show.pay_gross"),
       value: format_money(gross_pay_amount)
+    }
+  end
+
+  def gross_pay_line_item(type, amount)
+    {
+      label: GROSS_PAY_LINE_ITEM_LABELS.fetch(type.to_s) { type.to_s.titleize },
+      label_class_names: GROSS_PAY_LINE_ITEM_LABEL_CLASS,
+      label_text_class_names: GROSS_PAY_LINE_ITEM_LABEL_TEXT_CLASS,
+      value: format_money(amount)
     }
   end
 

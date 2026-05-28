@@ -380,6 +380,12 @@ RSpec.describe Cbv::SubmitsController do
           expect(pdf_text).to include("Payment after taxes and deductions (net)")
           expect(pdf_text).to include("Deduction")
           expect(pdf_text).to include("Base Pay")
+          expect(pdf_text).to include("Base $1,518.97")
+          expect(pdf_text).to include("Base $1,358.08")
+          expect(pdf_text).to include("Commission $272.93")
+          expect(pdf_text).not_to include("Commission N/A")
+          expect(pdf_text).not_to include("Gross pay line item:")
+          expect(pdf_text).to match(/Payment before taxes \(gross\)\s+\$1,631\.01\s+Base\s+\$1,358\.08\s+Commission\s+\$272\.93\s+Number of hours worked/)
 
           expect(pdf_text).to include("$23.16 Hourly")
           expect(pdf_text).not_to include("Nil")
