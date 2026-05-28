@@ -42,6 +42,7 @@ class ClientAgencyConfig
       agency_missing_employers_website
       agency_domain
       authorized_emails
+      caseworker_fallback_email
       caseworker_feedback_form
       default_origin
       invitation_valid_days
@@ -94,6 +95,7 @@ class ClientAgencyConfig
       @generic_links_disabled = yaml["generic_links_disabled"]
       @activity_types = yaml["activity_types"]&.symbolize_keys || {}
       @prefilled_activities_enabled = yaml["prefilled_activities_enabled"] || false
+      @caseworker_fallback_email = yaml["caseworker_fallback_email"]
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?
