@@ -13,5 +13,10 @@ FactoryBot.define do
     contact_name { "Donny Spears" }
     contact_email { "donny@gainesvillewrecking.com" }
     contact_phone_number { "(415) 344-8009" }
+
+    trait :pre_populated_draft do
+      draft { true }
+      pre_populated { true }
+    end
   end
 end

@@ -66,6 +66,8 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(rendered).to include('name="employment_enabled"')
       expect(rendered).to include('name="employment_employer_name"')
       expect(rendered).to include('name="employment_gross_income_per_month"')
+      expect(rendered).to include('name="education_enabled"')
+      expect(rendered).to include('name="education_school_name"')
     end
   end
 
@@ -625,7 +627,26 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(activities[0]["months"]).to all(include("hours" => 20, "gross_income" => 800))
       end
 
-      it "creates an invitation with both activity types when both are enabled" do
+      it "creates an invitation with an education activity when education is enabled" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            launch_type: "tokenized",
+            education_enabled: "1",
+            education_school_name: "Springfield Community College",
+            education_hours_per_month: "6"
+          }
+        }.to change(ActivityFlowInvitation, :count).by(1)
+
+        invitation = ActivityFlowInvitation.last
+        activities = invitation.pre_populated_activities
+        expect(activities.length).to eq(1)
+        expect(activities[0]["type"]).to eq("education")
+        expect(activities[0]["school_name"]).to eq("Springfield Community College")
+        expect(activities[0]["months"]).to all(include("hours" => 6))
+      end
+
+      it "creates an invitation with all activity types when all are enabled" do
         post :create, params: {
           client_agency_id: "sandbox",
           launch_type: "tokenized",
@@ -635,11 +656,14 @@ RSpec.describe DemoLauncherController, type: :controller do
           employment_enabled: "1",
           employment_employer_name: "Acme Corp",
           employment_hours_per_month: "40",
-          employment_gross_income_per_month: "1200"
+          employment_gross_income_per_month: "1200",
+          education_enabled: "1",
+          education_school_name: "Springfield Community College",
+          education_hours_per_month: "6"
         }
 
         activities = ActivityFlowInvitation.last.pre_populated_activities
-        expect(activities.map { |a| a["type"] }).to contain_exactly("volunteering", "employment")
+        expect(activities.map { |a| a["type"] }).to contain_exactly("volunteering", "employment", "education")
       end
 
       it "creates an invitation with empty pre_populated_activities when neither is enabled" do

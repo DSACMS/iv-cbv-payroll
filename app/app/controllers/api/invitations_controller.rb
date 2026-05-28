@@ -61,16 +61,13 @@ class Api::InvitationsController < ApplicationController
   end
 
   def pre_populated_activities_param
-    return [] unless params[:activities].is_a?(Array)
-
-    params[:activities].map do |entry|
-      next {} unless entry.respond_to?(:permit)
-
+    params.fetch(:activities, []).map do |entry|
       entry.permit(
         :type,
         *VolunteeringActivity::FIELDS,
         *EmploymentActivity::FIELDS,
-        months: (VolunteeringActivityMonth::FIELDS | EmploymentActivityMonth::FIELDS).map(&:to_sym)
+        *EducationActivity::FIELDS,
+        months: (VolunteeringActivityMonth::FIELDS | EmploymentActivityMonth::FIELDS | EducationActivityMonth::FIELDS).map(&:to_sym)
       ).to_h
     end
   end

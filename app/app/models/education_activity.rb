@@ -3,6 +3,17 @@ class EducationActivity < Activity
   include DocumentUploadable
 
   CREDIT_HOUR_CE_MULTIPLIER = 4
+  FIELDS = %w[
+    school_name
+    street_address
+    street_address_line_2
+    city
+    state
+    zip_code
+    contact_name
+    contact_email
+    contact_phone_number
+  ].freeze
 
   has_many :nsc_enrollment_terms, dependent: :destroy
   has_many :education_activity_months, dependent: :destroy
@@ -23,6 +34,12 @@ class EducationActivity < Activity
     succeeded: "succeeded",
     failed: "failed"
   }, default: :unknown, prefix: :sync
+
+  scope :pre_populated_drafts, -> { where(draft: true, pre_populated: true) }
+
+  def pre_populated_draft?
+    draft? && pre_populated?
+  end
 
   def self.data_source_from_nsc_results(enrollment_terms, reporting_months:)
     return :partially_self_attested if enrollment_terms.blank?

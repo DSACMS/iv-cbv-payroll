@@ -32,25 +32,22 @@ class ActivityFlow < Flow
   end
 
   def self.hydrate_pre_populated_activities!(flow, invitation)
-    return unless invitation.respond_to?(:pre_populated_activities)
     entries = invitation.pre_populated_activities
-    return unless entries.is_a?(Array)
     return if entries.empty?
 
     entries.each do |entry|
-      attrs = entry.respond_to?(:stringify_keys) ? entry.stringify_keys : entry.to_h.stringify_keys
+      attrs = entry.stringify_keys
       case attrs["type"].to_s
       when "volunteering"
         next if flow.volunteering_activities.exists?
 
         activity = flow.volunteering_activities.create(
           attrs.slice(*VolunteeringActivity::FIELDS)
-            .merge("draft" => true, "data_source" => "state_provided")
+            .merge("draft" => true, "pre_populated" => true)
         )
         next unless activity.persisted?
 
         Array(attrs["months"]).each do |month_entry|
-          next unless month_entry.is_a?(Hash)
           activity.volunteering_activity_months.create(month_entry.stringify_keys.slice(*VolunteeringActivityMonth::FIELDS))
         end
       when "employment"
@@ -58,13 +55,24 @@ class ActivityFlow < Flow
 
         activity = flow.employment_activities.create(
           attrs.slice(*EmploymentActivity::FIELDS)
-            .merge("draft" => true, "data_source" => "state_provided")
+            .merge("draft" => true, "pre_populated" => true)
         )
         next unless activity.persisted?
 
         Array(attrs["months"]).each do |month_entry|
-          next unless month_entry.is_a?(Hash)
           activity.employment_activity_months.create(month_entry.stringify_keys.slice(*EmploymentActivityMonth::FIELDS))
+        end
+      when "education"
+        next if flow.education_activities.exists?
+
+        activity = flow.education_activities.create(
+          attrs.slice(*EducationActivity::FIELDS)
+            .merge("draft" => true, "data_source" => "fully_self_attested", "pre_populated" => true)
+        )
+        next unless activity.persisted?
+
+        Array(attrs["months"]).each do |month_entry|
+          activity.education_activity_months.create(month_entry.stringify_keys.slice(*EducationActivityMonth::FIELDS))
         end
       end
     end

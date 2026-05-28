@@ -17,6 +17,8 @@ class VolunteeringActivity < Activity
   has_many :volunteering_activity_months, dependent: :destroy
   has_activity_months :volunteering_activity_months
 
+  scope :pre_populated_drafts, -> { where(draft: true, pre_populated: true) }
+
   def formatted_address
     locality = [ city, state ].compact_blank.join(", ")
     locality_zip = [ locality, zip_code ].compact_blank.join(" ")

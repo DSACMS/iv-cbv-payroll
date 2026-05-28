@@ -121,7 +121,10 @@
     <% end %>
 
     <% if activity_type_enabled?(:education) %>
-      <% education_card_data = education_cards(@education_activities || [], progress_calculator.reporting_months) %>
+      <%# i18n-tasks-use t("activities.hub.cards.pre_populated_notice") %>
+      <%# i18n-tasks-use t("activities.hub.cards.complete_action") %>
+      <% education_draft_card_data = education_activity_draft_cards(@education_draft_activities || []) %>
+      <% education_card_data = education_draft_card_data + education_cards(@education_activities || [], progress_calculator.reporting_months) %>
       <%= render "activities/activities/activity_section",
             activity_type: "education",
             section_title: t("activities.education.title"),
@@ -131,9 +134,12 @@
         <% education_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
-              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+              <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
             <% end %>
             <% card.with_body do %>
+              <% if card_data[:pre_populated] %>
+                <p class="margin-y-0"><%= t("activities.hub.cards.pre_populated_notice") %></p>
+              <% end %>
               <% card_data[:months].each do |month_data| %>
                 <div class="activity-month-details">
                   <div class="activity-month-details__month">

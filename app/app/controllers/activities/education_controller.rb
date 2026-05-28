@@ -28,6 +28,8 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def show
+    return redirect_to edit_activities_flow_education_path(id: @education_activity.id) if @education_activity.pre_populated_draft?
+
     @polling_url = activities_flow_education_sync_path(education_id: @education_activity.id)
 
     set_completed_indicators

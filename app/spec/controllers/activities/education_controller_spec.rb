@@ -82,6 +82,25 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to have_http_status(:ok)
     end
 
+    context "when the EducationActivity is a pre-populated draft" do
+      let(:education_activity) do
+        create(
+          :education_activity,
+          :pre_populated_draft,
+          activity_flow: activity_flow,
+          school_name: "Springfield Community College"
+        )
+      end
+
+      it "redirects to education edit instead of treating it as an NSC sync result" do
+        get :show, params: { id: education_activity.id }
+
+        expect(response).to redirect_to(
+          edit_activities_flow_education_path(id: education_activity.id)
+        )
+      end
+    end
+
     context "when the EducationActivity has no enrollments" do
       before do
         education_activity.update(status: :no_enrollments)
