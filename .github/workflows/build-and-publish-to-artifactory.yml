@@ -1,5 +1,5 @@
 name: Build and publish
-run-name: Build and publish to CMS ${{ inputs.app_name }}:${{ inputs.ref }}
+run-name: Build and publish to ECR ${{ inputs.app_name }}:${{ inputs.ref }}
 
 on:
   workflow_call:
@@ -53,7 +53,6 @@ jobs:
 
     env:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      ARTIFACTORY_SECRET_ARN: ${{ vars.ARTIFACTORY_SECRET_ARN }}
       EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
       AWS_REGION: us-east-1
 
@@ -74,72 +73,12 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
 
-      - name: Fetch Artifactory credentials
-        id: artifactory-credentials
-        env:
-          ARTIFACTORY_SECRET_ARN: ${{ vars.ARTIFACTORY_SECRET_ARN }}
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          if [[ -z "${ARTIFACTORY_SECRET_ARN:-}" ]]; then
-            echo "error: required Actions variable ARTIFACTORY_SECRET_ARN is not set" >&2
-            exit 1
-          fi
-
-          secret_string="$(aws secretsmanager get-secret-value --secret-id "$ARTIFACTORY_SECRET_ARN" --query 'SecretString' --output text)"
-
-          if [[ -z "${secret_string:-}" || "$secret_string" == "None" ]]; then
-            echo "error: secret $ARTIFACTORY_SECRET_ARN does not contain a SecretString payload" >&2
-            exit 1
-          fi
-
-          if ! jq -e . >/dev/null 2>&1 <<<"$secret_string"; then
-            echo "error: secret $ARTIFACTORY_SECRET_ARN payload is not valid JSON" >&2
-            exit 1
-          fi
-
-          get_secret_field() {
-            local key="$1"
-            local value
-
-            if ! value="$(jq -er --arg key "$key" '.[$key] | select(type == "string" and length > 0)' <<<"$secret_string" 2>/dev/null)"; then
-              echo "error: secret $ARTIFACTORY_SECRET_ARN payload must include a non-empty '$key' field" >&2
-              exit 1
-            fi
-
-            printf '%s\n' "$value"
-          }
-
-          username="$(get_secret_field username)"
-          password="$(get_secret_field password)"
-
-          printf '::add-mask::%s\n' "$username"
-          printf '::add-mask::%s\n' "$password"
-
-          {
-            printf 'username<<EOF\n%s\nEOF\n' "$username"
-            printf 'password<<EOF\n%s\nEOF\n' "$password"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Log in to Artifactory
-        uses: docker/login-action@v4
-        with:
-          registry: artifactory.cloud.cms.gov
-          username: ${{ steps.artifactory-credentials.outputs.username }}
-          password: ${{ steps.artifactory-credentials.outputs.password }}
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push release
         shell: bash
         run: |
-          IMAGE_NAME=$(make APP_NAME=${{ inputs.app_name }} release-image-name)
-          IMAGE_TAG=$(make APP_NAME=${{ inputs.app_name }} release-image-tag)
-          
-          TAGS="--tag ${{ steps.get-ecr-repo.outputs.repository_url }}:${IMAGE_TAG} --tag ${{ steps.get-ecr-repo.outputs.repository_url }}:latest"
-          
-          if [[ -n "${{ env.EMMY_IMAGE_REPO }}" ]]; then
-            ARTIFACTORY_IMAGE="${{ env.EMMY_IMAGE_REPO }}/${IMAGE_NAME}:${IMAGE_TAG}"
-            TAGS="${TAGS} --tag ${ARTIFACTORY_IMAGE}"
-          fi
-          
-          make APP_NAME=${{ inputs.app_name }} release-build OPTS="--push ${TAGS}"
+          make APP_NAME=${{ inputs.app_name }} release-build
+          make APP_NAME=${{ inputs.app_name }} EMMY_IMAGE_REPO=${{ env.EMMY_IMAGE_REPO }} release-publish-ecr
