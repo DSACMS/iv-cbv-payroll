@@ -113,13 +113,13 @@ class ActivityFlow < Flow
     range = reporting_window_range
     end_display = I18n.l(range.end, format: :month_year)
 
+    return end_display if reporting_window_months == 1
+
     if range.begin.year == range.end.year
       start_display = I18n.l(range.begin, format: :month)
     else
       start_display = I18n.l(range.begin, format: :month_year)
     end
-
-    return end_display if start_display == end_display
 
     "#{start_display} - #{end_display}"
   end

@@ -215,6 +215,12 @@ RSpec.describe ActivityFlow, type: :model do
       expect(flow.reporting_window_display).to eq("January - February 2025")
     end
 
+    it "returns a single month for a one-month reporting window" do
+      flow = create(:activity_flow, reporting_window_months: 1)
+
+      expect(flow.reporting_window_display).to eq("February 2025")
+    end
+
     describe "#within_reporting_window?" do
       it "returns true when date range overlaps with reporting window" do
         expect(flow.within_reporting_window?(Date.new(2024, 12, 1), Date.new(2025, 1, 15))).to be true
