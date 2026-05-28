@@ -183,7 +183,11 @@ RSpec.describe Report::W2MonthlySummaryTableComponent, type: :component do
 
       it "renders table caption" do
         subject = render_inline(described_class.new(argyle_report, payroll_account))
-        expect(subject.to_html).to include('"Gross income" is the pay')
+        expect(subject.to_html).to include(
+          '"Gross income" is the pay from your job before taxes, benefits, and deductions are taken out of your paychecks. ' \
+            "In the table above, your total gross income is summed for the month within the 90-day window. " \
+            "In the table below, your gross income is itemized, showing a breakdown of the types of income you received, when relevant."
+        )
         expect(subject.to_html).to include('"Number of paychecks" is how many times')
         expect(subject.to_html).to include('"Total hours worked" are the total number')
       end

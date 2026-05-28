@@ -17,8 +17,8 @@
     "postcss-minify": "^1.2.0",
     "postcss-nesting": "^14.0.0",
     "postcss-scss": "^4.0.9",
-    "sass": "^1.99.0",
-    "webpack": "^5.106.2",
+    "sass": "^1.100.0",
+    "webpack": "^5.107.2",
     "webpack-cli": "^7.0.2"
   },
   "scripts": {
@@ -32,8 +32,8 @@
     "happy-dom": ">=20.9.0",
     "jsdom": "^29.1.1",
     "prettier": "^3.8.3",
-    "vite": "^8.0.13",
-    "vitest": "^4.1.6"
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7"
   },
   "resolutions": {
     "@csstools/postcss-sass/@csstools/sass-import-resolve": "https://github.com/rahearn/sass-import-resolve",

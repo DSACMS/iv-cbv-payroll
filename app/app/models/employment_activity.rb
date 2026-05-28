@@ -58,7 +58,7 @@ class EmploymentActivity < Activity
     I18n.t(
       "activities.employment.document_upload_month_detail",
       gross_income: ActiveSupport::NumberHelper.number_to_currency(activity_month.gross_income),
-      hours: I18n.t("shared.hours", count: activity_month.hours)
+      hours: I18n.t("shared.hours", count: ApplicationHelper.format_decimal_amount(activity_month.hours))
     )
   end
 

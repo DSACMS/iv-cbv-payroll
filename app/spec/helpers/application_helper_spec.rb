@@ -146,6 +146,36 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe ".format_decimal_amount" do
+    it "returns 0 for nil" do
+      expect(described_class.format_decimal_amount(nil)).to eq(0)
+    end
+
+    it "returns 0 for blank string" do
+      expect(described_class.format_decimal_amount("")).to eq(0)
+    end
+
+    it "returns an Integer for whole-number values" do
+      result = described_class.format_decimal_amount(BigDecimal("10.00"))
+      expect(result).to eq(10)
+      expect(result).to be_a(Integer)
+    end
+
+    it "returns a Float for fractional BigDecimal values" do
+      result = described_class.format_decimal_amount(BigDecimal("2.5"))
+      expect(result).to eq(2.5)
+      expect(result).to be_a(Float)
+    end
+
+    it "returns an Integer for plain Integer input" do
+      expect(described_class.format_decimal_amount(7)).to eq(7)
+    end
+
+    it "returns a Float for fractional Float input" do
+      expect(described_class.format_decimal_amount(3.25)).to eq(3.25)
+    end
+  end
+
   describe "#coalesce_to_completed" do
     it "returns succeeded when the status is failed" do
       expect(helper.coalesce_to_completed(:failed)).to eq(:completed)

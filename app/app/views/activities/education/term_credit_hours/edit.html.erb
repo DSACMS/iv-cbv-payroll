@@ -57,7 +57,8 @@
       </div>
     <% end %>
 
-    <%= f.text_field :credit_hours, type: :number,
+    <%= f.text_field :credit_hours, type: :number, step: "any",
+          value: decimal_input_value(@current_term.credit_hours),
           label: t("activities.education.term_credit_hours.hours_label"),
           label_class: "text-bold",
           data: { hours_input_target: "hoursField", action: "input->hours-input#input" } %>

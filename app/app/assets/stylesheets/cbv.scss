@@ -187,6 +187,15 @@ html {
   @include u-bg("yellow-5v");
 }
 
+.cbv-gross-pay-line-item-label {
+  font-weight: normal;
+}
+
+.cbv-gross-pay-line-item-label-text {
+  display: inline-block;
+  margin-left: 1em;
+}
+
 .rotate {
   animation: 1s linear infinite rotate-con;
 }
