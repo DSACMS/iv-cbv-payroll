@@ -66,6 +66,7 @@ RUN apt-get update -qq && \
       libnghttp2-dev \
       libsystemd0 \
       libudev1 \
+      libunbound8 \
       linux-libc-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
