@@ -86,7 +86,8 @@
             data: { hours_input_target: "grossIncomeField", action: "input->hours-input#input" } %>
     <% end %>
 
-    <%= f.text_field :hours, type: :number,
+    <%= f.text_field :hours, type: :number, step: "any",
+          value: decimal_input_value(activity_month.hours),
           label: t("#{t_scope}.hours_label", month: l(current_month, format: :month_year)),
           label_class: "text-bold",
           data: { hours_input_target: "hoursField", action: "input->hours-input#input" } %>

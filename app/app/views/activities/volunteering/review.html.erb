@@ -46,7 +46,7 @@
         <%= link_to t("activities.community_service.review.edit"), edit_path, class: "usa-link mobile-edit-link" %>
       <% end %>
       <%= row.with_data_cell(data_label: t("activities.community_service.review.community_engagement_hours"))
-             .with_content(activity_month.hours) %>
+             .with_content(format_decimal_amount(activity_month.hours)) %>
       <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
         <%= link_to t("activities.community_service.review.edit"), edit_path, class: "usa-link" %>
       <% end %>

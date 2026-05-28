@@ -67,7 +67,7 @@
       <%= row.with_data_cell(data_label: t("activities.summary.job_training.month"), is_header: true)
              .with_content(I18n.l(month_hours.month, format: :month_year)) %>
       <%= row.with_data_cell(data_label: t("activities.summary.job_training.community_engagement_hours"))
-             .with_content(month_hours.hours) %>
+             .with_content(format_decimal_amount(month_hours.hours)) %>
     <% end %>
   <% end %>
 <% end %>

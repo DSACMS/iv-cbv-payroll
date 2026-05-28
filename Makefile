@@ -205,6 +205,11 @@ release-publish: ## Publish release to $APP_NAME's build repository
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	./bin/publish-release $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
+release-publish-artifactory: ## Publish release to Artifactory
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, EMMY_IMAGE_REPO, the Artifactory image repository URL)
+	./bin/publish-release-artifactory $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG) $(EMMY_IMAGE_REPO)
+
 release-run-database-migrations: ## Run $APP_NAME's database migrations in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")

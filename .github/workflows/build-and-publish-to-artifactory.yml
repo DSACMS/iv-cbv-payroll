@@ -1,0 +1,88 @@
+name: Build and publish
+run-name: Build and publish to CMS ${{ inputs.app_name }}:${{ inputs.ref }}
+
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        description: "name of application folder under infra directory"
+        required: true
+        type: string
+      ref:
+        description: The branch, tag or SHA to checkout. When checking out the repository that triggered a workflow, this defaults to the reference or SHA for that event. Otherwise, use branch or tag that triggered the workflow run.
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: "name of application folder under infra directory"
+        required: true
+        type: string
+      ref:
+        description: The branch, tag or SHA to checkout. When checking out the repository that triggered a workflow, this defaults to the reference or SHA for that event. Otherwise, use branch or tag that triggered the workflow run.
+        required: true
+        type: string
+
+jobs:
+  get-commit-hash:
+    name: Get commit hash
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      commit_hash: ${{ steps.get-commit-hash.outputs.commit_hash }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
+      - name: Get commit hash
+        id: get-commit-hash
+        run: |
+          COMMIT_HASH=$(git rev-parse ${{ inputs.ref }})
+          echo "Commit hash: $COMMIT_HASH"
+          echo "commit_hash=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
+  build-and-publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    needs: get-commit-hash
+    concurrency: ${{ github.workflow }}-${{ needs.get-commit-hash.outputs.commit_hash }}
+
+    permissions:
+      contents: read
+      id-token: write
+
+    env:
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      ARTIFACTORY_SECRET_ARN: ${{ vars.ARTIFACTORY_SECRET_ARN }}
+      EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Set up Terraform
+        uses: ./.github/actions/setup-terraform
+
+      - name: Configure AWS credentials
+        uses: ./.github/actions/configure-aws-credentials
+        with:
+          app_name: ${{ inputs.app_name }}
+          environment: shared
+
+      - name: Login to Artifactory
+        shell: bash
+        run: |
+          secret=$(aws secretsmanager get-secret-value --secret-id "${{ env.ARTIFACTORY_SECRET_ARN }}" --query SecretString --output text)
+          username=$(echo "$secret" | jq -r .username)
+          password=$(echo "$secret" | jq -r .password)
+          echo "$password" | docker login "${{ env.EMMY_IMAGE_REPO }}" --username "$username" --password-stdin
+
+
+      #TODO: add check if image is already published
+      - name: Build release
+        run: make APP_NAME=${{ inputs.app_name }} release-build
+
+      - name: Publish release
+        run: |
+          make APP_NAME=${{ inputs.app_name }} EMMY_IMAGE_REPO=${{ env.EMMY_IMAGE_REPO }} release-publish-artifactory

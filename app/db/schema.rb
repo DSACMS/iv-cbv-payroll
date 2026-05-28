@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_14_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_20_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -198,7 +198,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_120000) do
   create_table "education_activity_months", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "education_activity_id", null: false
-    t.integer "hours", default: 0, null: false
+    t.decimal "hours", precision: 10, scale: 2, default: "0.0", null: false
     t.date "month", null: false
     t.datetime "updated_at", null: false
     t.index ["education_activity_id"], name: "index_education_activity_months_on_education_activity_id"
@@ -227,8 +227,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_120000) do
   create_table "employment_activity_months", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "employment_activity_id", null: false
-    t.integer "gross_income", default: 0, null: false
-    t.integer "hours", default: 0, null: false
+    t.decimal "gross_income", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "hours", precision: 10, scale: 2, default: "0.0", null: false
     t.date "month", null: false
     t.datetime "updated_at", null: false
     t.index ["employment_activity_id"], name: "index_employment_activity_months_on_employment_activity_id"
@@ -266,7 +266,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_120000) do
 
   create_table "job_training_activity_months", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "hours", default: 0, null: false
+    t.decimal "hours", precision: 10, scale: 2, default: "0.0", null: false
     t.bigint "job_training_activity_id", null: false
     t.date "month", null: false
     t.datetime "updated_at", null: false
@@ -275,7 +275,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_120000) do
 
   create_table "nsc_enrollment_terms", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "credit_hours"
+    t.decimal "credit_hours", precision: 10, scale: 2
     t.bigint "education_activity_id"
     t.string "enrollment_status", null: false
     t.string "first_name"
@@ -470,7 +470,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_120000) do
 
   create_table "volunteering_activity_months", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "hours", default: 0, null: false
+    t.decimal "hours", precision: 10, scale: 2, default: "0.0", null: false
     t.date "month", null: false
     t.datetime "updated_at", null: false
     t.bigint "volunteering_activity_id", null: false

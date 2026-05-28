@@ -760,7 +760,7 @@ RSpec.describe ActivitiesHelper do
       expect(month_data[:hours]).to eq(85)
     end
 
-    it "filters inactive monthly data and preserves tenths of an hour" do
+    it "filters inactive monthly data and preserves hundredths of an hour" do
       second_month = first_month + 1.month
       third_month = first_month + 2.months
       allow(mock_report).to receive(:summarize_by_month).and_return({
@@ -774,8 +774,8 @@ RSpec.describe ActivitiesHelper do
       result = helper.employment_cards([ payroll_account ], mock_report, reporting_range)
 
       expect(result.first[:months]).to eq([
-        { month: second_month, gross_earnings: 0, hours: 85.5 },
-        { month: first_month, gross_earnings: 2500_00, hours: 42.2 }
+        { month: second_month, gross_earnings: 0, hours: 85.45 },
+        { month: first_month, gross_earnings: 2500_00, hours: 42.24 }
       ])
     end
 

@@ -78,7 +78,6 @@ en:
           attributes:
             hours:
               greater_than_or_equal_to: Hours must be 0 or more
-              not_an_integer: Hours must be a whole number
         volunteering_activity:
           attributes:
             date:
@@ -87,7 +86,6 @@ en:
           attributes:
             hours:
               greater_than_or_equal_to: Hours must be 0 or more
-              not_an_integer: Hours must be a whole number
   activities:
     activity_header_component:
       back: Back

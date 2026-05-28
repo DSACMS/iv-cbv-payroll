@@ -38,7 +38,7 @@ module MonthlyHoursInput
     if params[:no_hours] == "1"
       @activity_month.hours = 0
     else
-      @activity_month.hours = hours_submission_params[:hours].to_i
+      @activity_month.hours = hours_submission_params[:hours].presence || 0
     end
   end
 
@@ -66,7 +66,7 @@ module MonthlyHoursInput
   end
 
   def valid_hours_submission?
-    hours = @activity_month.hours.to_i
+    hours = @activity_month.hours || 0
 
     if @months.length == 1
       hours > 0
