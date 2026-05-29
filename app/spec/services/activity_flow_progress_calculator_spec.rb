@@ -132,16 +132,16 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
 
       it "applies the required-month threshold to routing requirements" do
-        validated_activity = create(:volunteering_activity, activity_flow: flow, data_source: "state_provided")
-        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
-        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.second.beginning_of_month, hours: 80)
+        pre_populated_activity = create(:volunteering_activity, activity_flow: flow, pre_populated: true)
+        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
+        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.second.beginning_of_month, hours: 80)
 
         expect(result.meets_routing_requirements).to be(true)
       end
 
       it "does not meet routing requirements when validated months are below the required count" do
-        validated_activity = create(:volunteering_activity, activity_flow: flow, data_source: "state_provided")
-        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
+        pre_populated_activity = create(:volunteering_activity, activity_flow: flow, pre_populated: true)
+        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
 
         expect(result.meets_routing_requirements).to be(false)
       end

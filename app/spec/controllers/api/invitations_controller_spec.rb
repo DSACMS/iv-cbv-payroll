@@ -308,5 +308,73 @@ RSpec.describe Api::InvitationsController do
           .to include("activities[0].months[0].month")
       end
     end
+
+    context "with a pre-populated education activity" do
+      let(:education_entry) do
+        {
+          type: "education",
+          school_name: "Springfield Community College",
+          street_address: "123 Main St",
+          city: "Boston",
+          state: "MA",
+          zip_code: "02101",
+          contact_name: "Sam Registrar",
+          contact_email: "registrar@example.edu",
+          contact_phone_number: "555-0100"
+        }
+      end
+      let(:params_with_education) { valid_params.merge(activities: [ education_entry ]) }
+
+      it "mints both invitations and returns activity_tokenized_url" do
+        expect {
+          post :create, params: params_with_education
+        }.to change(CbvFlowInvitation, :count).by(1)
+          .and change(ActivityFlowInvitation, :count).by(1)
+
+        expect(response).to have_http_status(:created)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response).to include("tokenized_url", "activity_tokenized_url")
+
+        activity_invitation = ActivityFlowInvitation.last
+        expect(activity_invitation.pre_populated_activities.first["school_name"]).to eq("Springfield Community College")
+        expect(activity_invitation.pre_populated_activities.first["contact_email"]).to eq("registrar@example.edu")
+      end
+
+      it "returns an error when school_name is missing" do
+        post :create, params: valid_params.merge(activities: [ education_entry.except(:school_name) ])
+
+        expect(response).to have_http_status(:unprocessable_content)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response["errors"].map { |e| e["field"] })
+          .to include("activities[0].school_name")
+      end
+
+      it "returns an error when an education month falls outside the reporting window" do
+        out_of_window_date = (Date.current + 60.days).iso8601
+        entry_with_bad_month = education_entry.merge(months: [ { month: out_of_window_date, hours: 6 } ])
+
+        post :create, params: valid_params.merge(activities: [ entry_with_bad_month ])
+
+        expect(response).to have_http_status(:unprocessable_content)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response["errors"].map { |e| e["field"] })
+          .to include("activities[0].months[0].month")
+      end
+
+      it "persists pre-populated monthly hours on the activity invitation" do
+        in_window = ActivityFlow.expected_reporting_window_range("sandbox").end.beginning_of_month.iso8601
+        entry_with_months = education_entry.merge(
+          months: [ { month: in_window, hours: 6 } ]
+        )
+
+        post :create, params: valid_params.merge(activities: [ entry_with_months ])
+
+        expect(response).to have_http_status(:created)
+        invitation = ActivityFlowInvitation.last
+        persisted_months = invitation.pre_populated_activities.first["months"]
+        expect(persisted_months.length).to eq(1)
+        expect(persisted_months.map { |m| m["hours"].to_i }).to eq([ 6 ])
+      end
+    end
   end
 end

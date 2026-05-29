@@ -77,6 +77,24 @@ RSpec.describe ActivityFlowInvitation, type: :model do
       expect(invitation.errors.attribute_names.map(&:to_s))
         .to include("pre_populated_activities[0].employer_name")
     end
+
+    it "is valid with a well-formed education entry" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "education", "school_name" => "Springfield Community College" }
+      ])
+
+      expect(invitation).to be_valid
+    end
+
+    it "is invalid when an education entry is missing school_name" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "education" }
+      ])
+
+      expect(invitation).not_to be_valid
+      expect(invitation.errors.attribute_names.map(&:to_s))
+        .to include("pre_populated_activities[0].school_name")
+    end
   end
 
   describe "month-in-window validation" do
@@ -141,6 +159,32 @@ RSpec.describe ActivityFlowInvitation, type: :model do
           "type" => "employment",
           "employer_name" => "Acme Corp",
           "months" => [ { "month" => out_of_window_date, "hours" => 40, "gross_income" => 3000 } ]
+        }
+      ])
+
+      expect(invitation).not_to be_valid
+      expect(invitation.errors.attribute_names.map(&:to_s))
+        .to include("pre_populated_activities[0].months[0].month")
+    end
+
+    it "is valid when an education entry's months fall within the expected reporting window" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        {
+          "type" => "education",
+          "school_name" => "Springfield Community College",
+          "months" => [ { "month" => in_window_date, "hours" => 6 } ]
+        }
+      ])
+
+      expect(invitation).to be_valid
+    end
+
+    it "is invalid when an education entry's month falls outside the expected reporting window" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        {
+          "type" => "education",
+          "school_name" => "Springfield Community College",
+          "months" => [ { "month" => out_of_window_date, "hours" => 6 } ]
         }
       ])
 
