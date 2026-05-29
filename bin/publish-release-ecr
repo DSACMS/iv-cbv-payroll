@@ -30,6 +30,9 @@ fi
 
 ecr_image="${image_repo}:${image_tag}"
 
+echo 'checking what images are available'
+docker images
+
 echo "Tagging image: ${image_name}:${image_tag} -> ${ecr_image}"
 docker tag "${image_name}:${image_tag}" "${ecr_image}"
 

@@ -77,8 +77,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push release
+      - name: Build and publish release
         shell: bash
         run: |
-          make APP_NAME=${{ inputs.app_name }} release-build
-          make APP_NAME=${{ inputs.app_name }} EMMY_IMAGE_REPO=${{ env.EMMY_IMAGE_REPO }} release-publish-ecr
+          make APP_NAME=${{ inputs.app_name }} \
+            EMMY_IMAGE_REPO=${{ env.EMMY_IMAGE_REPO }} \
+            release-build-push
