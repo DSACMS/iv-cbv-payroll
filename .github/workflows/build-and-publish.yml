@@ -91,6 +91,7 @@ jobs:
   build-and-publish-to-artifactory:
     name: Build and publish to Artifactory
     uses: ./.github/workflows/build-and-publish-to-artifactory.yml
+    permissions: {}
     with:
       app_name: ${{ inputs.app_name }}
       ref: ${{ inputs.ref }}
