@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ActivitiesHelper do
+  include ActiveSupport::Testing::TimeHelpers
+
   describe "activity hub display helpers" do
     describe "#activity_hub_state" do
       let(:meeting_result) { instance_double(ActivityFlowProgressCalculator::MonthlyResult, meets_requirements: true) }
@@ -298,6 +300,8 @@ RSpec.describe ActivitiesHelper do
   end
 
   describe "#education_cards" do
+    around { |example| travel_to(Date.new(2025, 11, 15)) { example.run } }
+
     let(:flow) { create(:activity_flow, reporting_window_months: 2, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
     let(:first_month) { flow.reporting_window_range.begin }
     let(:second_month) { first_month + 1.month }
