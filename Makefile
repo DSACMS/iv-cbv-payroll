@@ -60,7 +60,6 @@ __check_defined = \
 	release-image-tag \
 	release-publish \
 	release-publish-artifactory \
-	release-publish-ecr \
 	release-run-database-migrations \
 	e2e-setup \
 	e2e-test
@@ -212,11 +211,6 @@ release-build: ## Build release for $APP_NAME and tag it with current git hash
 release-publish: ## Publish release to $APP_NAME's build repository
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	./bin/publish-release $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
-
-release-publish-ecr: ## Publish release to ECR with injected EMMY_IMAGE_REPO
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, EMMY_IMAGE_REPO, the ECR image repository URL)
-	./bin/publish-release-ecr $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG) $(EMMY_IMAGE_REPO)
 
 release-run-database-migrations: ## Run $APP_NAME's database migrations in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
