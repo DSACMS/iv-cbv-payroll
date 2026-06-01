@@ -1,0 +1,64 @@
+name: Deploy to ECS
+run-name: Deploy ${{ inputs.image_tag }} to ${{ inputs.app_name }} (${{ inputs.environment }})
+
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        description: "name of application folder under infra directory"
+        required: true
+        type: string
+      environment:
+        description: "the name of the application environment (e.g. dev, staging, prod)"
+        required: true
+        type: string
+      image_tag:
+        description: "the tag of the image to deploy"
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: "name of application folder under infra directory"
+        required: true
+        type: string
+      environment:
+        description: "the name of the application environment (e.g. dev, staging, prod)"
+        required: true
+        type: string
+      image_tag:
+        description: "the tag of the image to deploy"
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
+      AWS_REGION: us-east-1
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Terraform
+        uses: ./.github/actions/setup-terraform
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
+
+      - name: Deploy release
+        shell: bash
+        run: |
+          make APP_NAME=${{ inputs.app_name }} \
+            ENVIRONMENT=${{ inputs.environment }} \
+            EMMY_IMAGE_REPO=${{ env.EMMY_IMAGE_REPO }} \
+            EMMY_IMAGE_TAG=${{ inputs.image_tag }} \
+            release-update-ecs

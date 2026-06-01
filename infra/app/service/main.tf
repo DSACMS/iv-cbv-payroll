@@ -169,8 +169,7 @@ module "service" {
 
   image_repository_arn = local.build_repository_config.repository_arn
   image_repository_url = local.build_repository_config.repository_url
-
-  image_tag = local.image_tag
+  image_tag            = local.image_tag
 
   vpc_id             = data.aws_vpc.network.id
   public_subnet_ids  = data.aws_subnets.public.ids

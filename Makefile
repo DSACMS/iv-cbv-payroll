@@ -50,6 +50,7 @@ __check_defined = \
 	infra-update-app-database-roles \
 	infra-update-app-database \
 	infra-update-app-service \
+	release-update-ecs \
 	infra-update-current-account \
 	infra-update-network \
 	infra-validate-modules \
@@ -219,6 +220,13 @@ release-deploy: ## Deploy release to $APP_NAME's web service in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
 	./bin/deploy-release $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
+
+release-update-ecs: ## Update ECS task definition with $EMMY_IMAGE_REPO and $EMMY_IMAGE_TAG for $APP_NAME in $ENVIRONMENT
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
+	@:$(call check_defined, EMMY_IMAGE_REPO, the container image repository URI)
+	@:$(call check_defined, EMMY_IMAGE_TAG, the tag of the image to deploy)
+	./bin/deploy-ecs-manual $(APP_NAME) $(ENVIRONMENT) $(EMMY_IMAGE_REPO) $(EMMY_IMAGE_TAG)
 
 release-image-name: ## Prints the image name of the release image
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
