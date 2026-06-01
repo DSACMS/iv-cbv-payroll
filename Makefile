@@ -202,7 +202,7 @@ release-build-push: ## Build release for $APP_NAME and push to ECR
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, EMMY_IMAGE_REPO, the ECR repository URI)
 	cd $(APP_NAME) && $(MAKE) release-build \
-		OPTS="--tag $(EMMY_IMAGE_REPO)/$(IMAGE_NAME):latest --tag $(EMMY_IMAGE_REPO)/$(IMAGE_NAME):$(IMAGE_TAG) --push"
+		OPTS="--tag $(EMMY_IMAGE_REPO):latest --push"
 
 release-build: ## Build release for $APP_NAME and tag it with current git hash
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
