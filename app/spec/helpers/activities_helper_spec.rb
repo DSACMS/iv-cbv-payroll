@@ -376,14 +376,14 @@ RSpec.describe ActivitiesHelper do
       expect(result.map { |card| card[:name] }).to eq([ "Summer U" ])
     end
 
-    it "returns months in reverse chronological order" do
+    it "returns months in chronological order" do
       activity = create(:education_activity, activity_flow: flow)
       create(:nsc_enrollment_term, education_activity: activity, school_name: "Test U", term_begin: first_month, term_end: second_month.end_of_month)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
       months = result.first[:months].map { |m| m[:month] }
-      expect(months).to eq(months.sort.reverse)
+      expect(months).to eq(months.sort)
     end
 
     it "includes edit path to education review with from_edit for validated education" do
@@ -564,8 +564,8 @@ RSpec.describe ActivitiesHelper do
         {
           name: "Updated University of Illinois",
           months: [
-            { month: second_month, credit_hours: 6, community_engagement_hours: 24 },
-            { month: first_month, credit_hours: 4, community_engagement_hours: 16 }
+            { month: first_month, credit_hours: 4, community_engagement_hours: 16 },
+            { month: second_month, credit_hours: 6, community_engagement_hours: 24 }
           ],
           edit_path: helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
         }
