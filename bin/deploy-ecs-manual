@@ -5,6 +5,9 @@ set -euo pipefail
 # without relying on Terraform to manage the task definition resource.
 #
 # Usage: bin/deploy-ecs-manual <app_name> <environment> <image_repo> <image_tag>
+#
+# cluster_name is presumed as emmy-{environment}
+# service_name is presumed as emmy-{environment}-app
 
 app_name="$1"
 environment="$2"
@@ -21,19 +24,14 @@ echo "  image_repo=${image_repo}"
 echo "  image_tag=${image_tag}"
 echo
 
-# 1. Get Cluster and Service names from Terraform outputs
-# While we don't have direct access to the TF that *created* the task definition (as per instructions),
-# we might still need to know which cluster and service to update.
-# The previous solution used TF outputs to find cluster_name and service_name.
-# If we truly "don't have direct access to the terraform", we might need these as inputs,
-# but let's assume for now we can at least query the current state to find them,
-# OR that we should use naming conventions.
-#
-# Looking at infra/app/service/main.tf, service_name is local.service_config.service_name.
+# 1. Determine Cluster and Service names
+# We use naming conventions based on the environment:
+# Cluster: emmy-{env}
+# Service: emmy-{env}-app
 
-# Let's try to get them from TF if available, but allow overrides via ENV vars
-cluster_name=${ECS_CLUSTER_NAME:-$(terraform -chdir="infra/${app_name}/service" output -raw service_cluster_name)}
-service_name=${ECS_SERVICE_NAME:-$(terraform -chdir="infra/${app_name}/service" output -raw service_name)}
+# Let's try to get them from naming conventions, but allow overrides via ENV vars
+cluster_name=${ECS_CLUSTER_NAME:-emmy-${environment}}
+service_name=${ECS_SERVICE_NAME:-emmy-${environment}-app}
 
 echo "Targeting Cluster: ${cluster_name}"
 echo "Targeting Service: ${service_name}"
@@ -59,7 +57,7 @@ new_task_def=$(echo "${current_task_def}" | jq --arg IMAGE "${image_repo}:${imag
   del(.compatibilities) |
   del(.registeredAt) |
   del(.registeredBy) |
-  (.containerDefinitions[] | select(.name == "'"${service_name}"'")) .image = $IMAGE
+  (.containerDefinitions[] | select(.name == "'"emmy-app"'")) .image = $IMAGE
 ')
 
 # 5. Register the new task definition
