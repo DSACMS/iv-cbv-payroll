@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe EducationActivity do
+  include ActiveSupport::Testing::TimeHelpers
+
   describe "validations" do
     let(:activity_flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
 
@@ -356,6 +358,8 @@ RSpec.describe EducationActivity do
   end
 
   describe "#progress_hours_for_month" do
+    around { |example| travel_to(Date.new(2025, 11, 15)) { example.run } }
+
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
     let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }
     let(:month_start) { flow.reporting_window_range.begin }
