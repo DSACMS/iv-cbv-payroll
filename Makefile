@@ -19,7 +19,7 @@ MODULES := $(notdir $(wildcard infra/modules/*))
 # Based off of https://stackoverflow.com/questions/10858261/how-to-abort-makefile-if-variable-not-set
 check_defined = \
 	$(strip $(foreach 1,$1, \
-        $(call __check_defined,$1,$(strip $(value 2)))))
+		$(call __check_defined,$1,$(strip $(value 2)))))
 __check_defined = \
 	$(if $(value $1),, \
 		$(error Undefined $1$(if $2, ($2))$(if $(value @), \
@@ -60,6 +60,7 @@ __check_defined = \
 	release-image-name \
 	release-image-tag \
 	release-publish \
+	release-publish-artifactory \
 	release-run-database-migrations \
 	e2e-setup \
 	e2e-test
@@ -197,6 +198,12 @@ endif
 DATE := $(shell date -u '+%Y%m%d.%H%M%S')
 INFO_TAG := $(DATE).$(USER)
 
+release-build-push: ## Build release for $APP_NAME and push to ECR
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, EMMY_IMAGE_REPO, the ECR repository URI)
+	cd $(APP_NAME) && $(MAKE) release-build \
+		OPTS="--tag $(EMMY_IMAGE_REPO):latest --push"
+
 release-build: ## Build release for $APP_NAME and tag it with current git hash
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	cd $(APP_NAME) && $(MAKE) release-build \
@@ -205,11 +212,6 @@ release-build: ## Build release for $APP_NAME and tag it with current git hash
 release-publish: ## Publish release to $APP_NAME's build repository
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	./bin/publish-release $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
-
-release-publish-artifactory: ## Publish release to Artifactory
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, EMMY_IMAGE_REPO, the Artifactory image repository URL)
-	./bin/publish-release-artifactory $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG) $(EMMY_IMAGE_REPO)
 
 release-run-database-migrations: ## Run $APP_NAME's database migrations in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
