@@ -245,12 +245,79 @@ RSpec.describe ActivityFlow, type: :model do
       end
     end
 
-    context "with a mixed volunteering, employment, and education invitation" do
+    context "with a pre-populated job training activity" do
+      let(:job_training_activity_attrs) do
+        {
+          "program_name" => "Career Prep",
+          "organization_name" => "Goodwill",
+          "street_address" => "123 Main St",
+          "street_address_line_2" => "Suite 4",
+          "city" => "Boston",
+          "state" => "MA",
+          "zip_code" => "02101",
+          "contact_name" => "Sam Coordinator",
+          "contact_email" => "sam@example.org",
+          "contact_phone_number" => "555-0100"
+        }
+      end
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          job_training_activity_attrs.merge("type" => "job_training")
+        ])
+      end
+
+      it "hydrates a draft job training activity from the invitation payload" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        expect(flow.job_training_activities.count).to eq(1)
+        activity = flow.job_training_activities.first
+        expect(activity).to be_draft
+        expect(activity).to be_pre_populated
+        expect(activity.data_source).to eq("self_attested")
+        expect(activity.attributes.slice(*JobTrainingActivity::FIELDS)).to include(job_training_activity_attrs)
+      end
+
+      it "is idempotent — does not double-hydrate if job training activities already exist" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+        expect(flow.job_training_activities.count).to eq(1)
+
+        described_class.hydrate_pre_populated_activities!(flow, invitation)
+        expect(flow.job_training_activities.reload.count).to eq(1)
+      end
+    end
+
+    context "with pre_populated_activities including job training monthly hours" do
+      let(:in_window_date) { described_class.expected_reporting_window_range("sandbox").end.beginning_of_month.iso8601 }
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          {
+            "type" => "job_training",
+            "program_name" => "Career Prep",
+            "organization_name" => "Goodwill",
+            "months" => [
+              { "month" => in_window_date, "hours" => 10 }
+            ]
+          }
+        ])
+      end
+
+      it "hydrates JobTrainingActivityMonth records from the months array" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        activity = flow.job_training_activities.first
+        months = activity.job_training_activity_months.order(:month)
+        expect(months.map(&:hours)).to eq([ 10 ])
+        expect(months.map { |m| m.month.iso8601 }).to eq([ in_window_date ])
+      end
+    end
+
+    context "with a mixed volunteering, employment, education, and job training invitation" do
       let(:invitation) do
         create(:activity_flow_invitation, pre_populated_activities: [
           { "type" => "volunteering", "organization_name" => "Red Cross" },
           { "type" => "employment", "employer_name" => "Acme Corp" },
-          { "type" => "education", "school_name" => "Springfield Community College" }
+          { "type" => "education", "school_name" => "Springfield Community College" },
+          { "type" => "job_training", "program_name" => "Career Prep", "organization_name" => "Goodwill" }
         ])
       end
 
@@ -260,9 +327,11 @@ RSpec.describe ActivityFlow, type: :model do
         expect(flow.volunteering_activities.count).to eq(1)
         expect(flow.employment_activities.count).to eq(1)
         expect(flow.education_activities.count).to eq(1)
+        expect(flow.job_training_activities.count).to eq(1)
         expect(flow.volunteering_activities.first).to be_pre_populated
         expect(flow.employment_activities.first).to be_pre_populated
         expect(flow.education_activities.first).to be_pre_populated
+        expect(flow.job_training_activities.first).to be_pre_populated
       end
     end
 

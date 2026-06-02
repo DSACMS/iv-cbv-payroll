@@ -376,5 +376,84 @@ RSpec.describe Api::InvitationsController do
         expect(persisted_months.map { |m| m["hours"].to_i }).to eq([ 6 ])
       end
     end
+
+    context "with a pre-populated job training activity" do
+      let(:job_training_entry) do
+        {
+          type: "job_training",
+          program_name: "Career Prep",
+          organization_name: "Goodwill",
+          street_address: "123 Main St",
+          city: "Boston",
+          state: "MA",
+          zip_code: "02101",
+          contact_name: "Sam Coordinator",
+          contact_email: "sam@example.org",
+          contact_phone_number: "555-0100"
+        }
+      end
+      let(:params_with_job_training) { valid_params.merge(activities: [ job_training_entry ]) }
+
+      it "mints both invitations and returns activity_tokenized_url" do
+        expect {
+          post :create, params: params_with_job_training
+        }.to change(CbvFlowInvitation, :count).by(1)
+          .and change(ActivityFlowInvitation, :count).by(1)
+
+        expect(response).to have_http_status(:created)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response).to include("tokenized_url", "activity_tokenized_url")
+
+        activity_invitation = ActivityFlowInvitation.last
+        expect(activity_invitation.pre_populated_activities.first["program_name"]).to eq("Career Prep")
+        expect(activity_invitation.pre_populated_activities.first["organization_name"]).to eq("Goodwill")
+        expect(activity_invitation.pre_populated_activities.first["contact_email"]).to eq("sam@example.org")
+      end
+
+      it "returns an error when program_name is missing" do
+        post :create, params: valid_params.merge(activities: [ job_training_entry.except(:program_name) ])
+
+        expect(response).to have_http_status(:unprocessable_content)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response["errors"].map { |e| e["field"] })
+          .to include("activities[0].program_name")
+      end
+
+      it "returns an error when organization_name is missing" do
+        post :create, params: valid_params.merge(activities: [ job_training_entry.except(:organization_name) ])
+
+        expect(response).to have_http_status(:unprocessable_content)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response["errors"].map { |e| e["field"] })
+          .to include("activities[0].organization_name")
+      end
+
+      it "returns an error when a job training month falls outside the reporting window" do
+        out_of_window_date = (Date.current + 60.days).iso8601
+        entry_with_bad_month = job_training_entry.merge(months: [ { month: out_of_window_date, hours: 10 } ])
+
+        post :create, params: valid_params.merge(activities: [ entry_with_bad_month ])
+
+        expect(response).to have_http_status(:unprocessable_content)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response["errors"].map { |e| e["field"] })
+          .to include("activities[0].months[0].month")
+      end
+
+      it "persists pre-populated monthly hours on the activity invitation" do
+        in_window = ActivityFlow.expected_reporting_window_range("sandbox").end.beginning_of_month.iso8601
+        entry_with_months = job_training_entry.merge(
+          months: [ { month: in_window, hours: 10 } ]
+        )
+
+        post :create, params: valid_params.merge(activities: [ entry_with_months ])
+
+        expect(response).to have_http_status(:created)
+        invitation = ActivityFlowInvitation.last
+        persisted_months = invitation.pre_populated_activities.first["months"]
+        expect(persisted_months.length).to eq(1)
+        expect(persisted_months.map { |m| m["hours"].to_i }).to eq([ 10 ])
+      end
+    end
   end
 end

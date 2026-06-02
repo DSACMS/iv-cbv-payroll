@@ -18,8 +18,6 @@ class EmploymentActivity < Activity
   has_many :employment_activity_months, dependent: :destroy
   has_activity_months :employment_activity_months
 
-  scope :pre_populated_drafts, -> { where(draft: true, pre_populated: true) }
-
   validates :employer_name, presence: { message: I18n.t("activities.employment_info.employer_name_error") }
 
   before_save :clear_contact_fields_if_self_employed

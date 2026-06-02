@@ -309,6 +309,31 @@
                   </div>
                 </div>
               </div>
+              <div class="demo-launcher__activity-row">
+                <div class="demo-launcher__activity-header">
+                  <div class="usa-checkbox">
+                    <input class="usa-checkbox__input" type="checkbox" id="job_training_enabled" name="job_training_enabled" value="1"
+                           data-action="change->demo-launcher#toggleActivity">
+                    <label class="usa-checkbox__label" for="job_training_enabled">Work program</label>
+                  </div>
+                </div>
+                <div class="demo-launcher__activity-fields demo-launcher__activity-fields--hidden">
+                  <div class="demo-launcher__activity-fields-grid">
+                    <div>
+                      <label class="usa-label" for="job_training_program_name">Program name</label>
+                      <input class="usa-input" type="text" id="job_training_program_name" name="job_training_program_name" value="Career Prep" autocomplete="off">
+                    </div>
+                    <div>
+                      <label class="usa-label" for="job_training_organization_name">Organization name</label>
+                      <input class="usa-input" type="text" id="job_training_organization_name" name="job_training_organization_name" value="Goodwill" autocomplete="off">
+                    </div>
+                    <div>
+                      <label class="usa-label" for="job_training_hours_per_month">Hours / month</label>
+                      <input class="usa-input usa-input--sm" type="number" id="job_training_hours_per_month" name="job_training_hours_per_month" value="10" min="1" autocomplete="off">
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           <% end %>
         </div>
