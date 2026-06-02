@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ActivityFlowProgressCalculator do
+  include ActiveSupport::Testing::TimeHelpers
+
   describe "#overall_result" do
     subject(:result) { described_class.new(flow).overall_result }
 
@@ -807,6 +809,8 @@ RSpec.describe ActivityFlowProgressCalculator do
 
   describe "education progress" do
     subject(:progress) { described_class.new(flow).overall_result }
+
+    around { |example| travel_to(Date.new(2025, 11, 15)) { example.run } }
 
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
     let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }

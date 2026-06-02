@@ -117,6 +117,17 @@ release-build:
 		--platform=linux/amd64 \
 		--build-arg RUN_USER=$(RUN_USER) \
 		--build-arg RUN_UID=$(RUN_UID) \
+		--load \
+		$(OPTS) \
+		.
+
+release-build-push:
+	docker buildx build \
+		--platform=linux/amd64 \
+		--build-arg RUN_USER=$(RUN_USER) \
+		--build-arg RUN_UID=$(RUN_UID) \
+		-t $(EMMY_IMAGE_REPO):$(IMAGE_TAG) \
+		--push \
 		$(OPTS) \
 		.
 
