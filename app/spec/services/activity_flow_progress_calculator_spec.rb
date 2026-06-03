@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ActivityFlowProgressCalculator do
+  include ActiveSupport::Testing::TimeHelpers
+
   describe "#overall_result" do
     subject(:result) { described_class.new(flow).overall_result }
 
@@ -132,16 +134,16 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
 
       it "applies the required-month threshold to routing requirements" do
-        validated_activity = create(:volunteering_activity, activity_flow: flow, data_source: "state_provided")
-        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
-        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.second.beginning_of_month, hours: 80)
+        pre_populated_activity = create(:volunteering_activity, activity_flow: flow, pre_populated: true)
+        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
+        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.second.beginning_of_month, hours: 80)
 
         expect(result.meets_routing_requirements).to be(true)
       end
 
       it "does not meet routing requirements when validated months are below the required count" do
-        validated_activity = create(:volunteering_activity, activity_flow: flow, data_source: "state_provided")
-        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
+        pre_populated_activity = create(:volunteering_activity, activity_flow: flow, pre_populated: true)
+        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
 
         expect(result.meets_routing_requirements).to be(false)
       end
@@ -795,6 +797,8 @@ RSpec.describe ActivityFlowProgressCalculator do
 
   describe "education progress" do
     subject(:progress) { described_class.new(flow).overall_result }
+
+    around { |example| travel_to(Date.new(2025, 11, 15)) { example.run } }
 
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
     let(:education_activity) { create(:education_activity, activity_flow: flow, status: "succeeded") }

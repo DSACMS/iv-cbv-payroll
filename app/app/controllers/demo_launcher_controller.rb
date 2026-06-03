@@ -151,6 +151,15 @@ class DemoLauncherController < ApplicationController
       }
     end
 
+    if launcher_params[:education_enabled] == "1"
+      hours = launcher_params[:education_hours_per_month].to_i
+      activities << {
+        "type" => "education",
+        "school_name" => launcher_params[:education_school_name].presence || "Springfield Community College",
+        "months" => month_strings.map { |m| { "month" => m, "hours" => hours } }
+      }
+    end
+
     activities
   end
 
@@ -200,7 +209,10 @@ class DemoLauncherController < ApplicationController
       :employment_enabled,
       :employment_employer_name,
       :employment_hours_per_month,
-      :employment_gross_income_per_month
+      :employment_gross_income_per_month,
+      :education_enabled,
+      :education_school_name,
+      :education_hours_per_month
     )
   end
 

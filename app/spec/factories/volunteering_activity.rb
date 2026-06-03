@@ -15,5 +15,10 @@ FactoryBot.define do
     after(:build) do |activity|
       activity.date ||= activity.activity_flow.reporting_window_range.end
     end
+
+    trait :pre_populated_draft do
+      draft { true }
+      pre_populated { true }
+    end
   end
 end

@@ -288,6 +288,27 @@
                   </div>
                 </div>
               </div>
+              <div class="demo-launcher__activity-row">
+                <div class="demo-launcher__activity-header">
+                  <div class="usa-checkbox">
+                    <input class="usa-checkbox__input" type="checkbox" id="education_enabled" name="education_enabled" value="1"
+                           data-action="change->demo-launcher#toggleActivity">
+                    <label class="usa-checkbox__label" for="education_enabled">Education</label>
+                  </div>
+                </div>
+                <div class="demo-launcher__activity-fields demo-launcher__activity-fields--hidden">
+                  <div class="demo-launcher__activity-fields-grid">
+                    <div>
+                      <label class="usa-label" for="education_school_name">School name</label>
+                      <input class="usa-input" type="text" id="education_school_name" name="education_school_name" value="Springfield Community College" autocomplete="off">
+                    </div>
+                    <div>
+                      <label class="usa-label" for="education_hours_per_month">Credit hours / month</label>
+                      <input class="usa-input usa-input--sm" type="number" id="education_hours_per_month" name="education_hours_per_month" value="6" min="1" autocomplete="off">
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           <% end %>
         </div>

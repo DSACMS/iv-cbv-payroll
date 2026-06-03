@@ -3,6 +3,17 @@ class EducationActivity < Activity
   include DocumentUploadable
 
   CREDIT_HOUR_CE_MULTIPLIER = 4
+  FIELDS = %w[
+    school_name
+    street_address
+    street_address_line_2
+    city
+    state
+    zip_code
+    contact_name
+    contact_email
+    contact_phone_number
+  ].freeze
 
   has_many :nsc_enrollment_terms, dependent: :destroy
   has_many :education_activity_months, dependent: :destroy
@@ -24,6 +35,12 @@ class EducationActivity < Activity
     failed: "failed"
   }, default: :unknown, prefix: :sync
 
+  scope :pre_populated_drafts, -> { where(draft: true, pre_populated: true) }
+
+  def pre_populated_draft?
+    draft? && pre_populated?
+  end
+
   def self.data_source_from_nsc_results(enrollment_terms, reporting_months:)
     return :partially_self_attested if enrollment_terms.blank?
 
@@ -34,7 +51,9 @@ class EducationActivity < Activity
   end
 
   def formatted_address
-    [ street_address, city, state ].compact_blank.join(", ").presence
+    locality = [ city, state ].compact_blank.join(", ")
+    locality_zip = [ locality, zip_code ].compact_blank.join(" ")
+    [ street_address, street_address_line_2, locality_zip ].compact_blank.join(", ").presence
   end
 
   def community_engagement_hours(credit_hours)

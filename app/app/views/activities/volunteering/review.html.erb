@@ -23,7 +23,7 @@
 </div>
 <%= render(ContactInfoReviewTableComponent.new(field_header: t("shared.table_headers.community_service_information"), value_header: t("shared.table_headers.your_details"), rows: [
   { label: t("activities.community_service.review.name"), value: @volunteering_activity.organization_name },
-  { label: t("activities.community_service.review.address"), value: ContactInfoReviewTableComponent.formatted_address(@volunteering_activity) },
+  { label: t("activities.community_service.review.address"), value: @volunteering_activity.formatted_address },
   { label: t("activities.community_service.review.coordinator_name"), value: @volunteering_activity.coordinator_name },
   { label: t("activities.community_service.review.coordinator_email"), value: @volunteering_activity.coordinator_email },
   { label: t("activities.community_service.review.coordinator_phone"), value: @volunteering_activity.coordinator_phone_number }

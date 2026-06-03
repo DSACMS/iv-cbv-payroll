@@ -1,0 +1,77 @@
+#!/bin/bash
+set -euo pipefail
+
+# This script updates an ECS service's task definition with a new image
+# without relying on Terraform to manage the task definition resource.
+#
+# Usage: bin/deploy-ecs-manual <app_name> <environment> <image_repo> <image_tag>
+#
+# cluster_name is presumed as emmy-{environment}
+# service_name is presumed as emmy-{environment}-app
+
+app_name="$1"
+environment="$2"
+image_repo="$3"
+image_tag="$4"
+
+echo "-------------------"
+echo "Manual ECS Deployment"
+echo "-------------------"
+echo "Input parameters:"
+echo "  app_name=${app_name}"
+echo "  environment=${environment}"
+echo "  image_repo=${image_repo}"
+echo "  image_tag=${image_tag}"
+echo
+
+# 1. Determine Cluster and Service names
+# We use naming conventions based on the environment:
+# Cluster: emmy-{env}
+# Service: emmy-{env}-app
+
+# Let's try to get them from naming conventions, but allow overrides via ENV vars
+cluster_name=${ECS_CLUSTER_NAME:-emmy-${environment}}
+service_name=${ECS_SERVICE_NAME:-emmy-${environment}-app}
+
+echo "Targeting Cluster: ${cluster_name}"
+echo "Targeting Service: ${service_name}"
+
+# 2. Describe the current service to find the current task definition
+current_task_def_arn=$(aws ecs describe-services --cluster "${cluster_name}" --services "${service_name}" --query 'services[0].taskDefinition' --output text)
+
+echo "Current Task Definition: ${current_task_def_arn}"
+
+# 3. Download the current task definition JSON
+# We strip out metadata fields that aren't allowed in register-task-definition
+current_task_def=$(aws ecs describe-task-definition --task-definition "${current_task_def_arn}" --query 'taskDefinition' --output json)
+
+# 4. Create a new task definition JSON with the updated image
+# We use jq to update the image of the first container (assuming it's the main one)
+# or all containers if they should use the same image (less likely).
+# Typically there's one main container with the same name as the service.
+new_task_def=$(echo "${current_task_def}" | jq --arg IMAGE "${image_repo}:${image_tag}" '
+  del(.taskDefinitionArn) |
+  del(.revision) |
+  del(.status) |
+  del(.requiresAttributes) |
+  del(.compatibilities) |
+  del(.registeredAt) |
+  del(.registeredBy) |
+  (.containerDefinitions[] | select(.name == "'"emmy-app"'")) .image = $IMAGE
+')
+
+# 5. Register the new task definition
+echo "Registering new task definition revision..."
+new_task_def_arn=$(aws ecs register-task-definition --cli-input-json "${new_task_def}" --query 'taskDefinition.taskDefinitionArn' --output text)
+
+echo "New Task Definition ARN: ${new_task_def_arn}"
+
+# 6. Update the service to use the new task definition
+echo "Updating service ${service_name} to use new task definition..."
+aws ecs update-service --cluster "${cluster_name}" --service "${service_name}" --task-definition "${new_task_def_arn}" > /dev/null
+
+# 7. Wait for the service to become stable
+echo "Waiting for service ${service_name} to become stable..."
+aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
+
+echo "Deployment completed successfully!"

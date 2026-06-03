@@ -1,6 +1,10 @@
 class ActivityFlowInvitation < ApplicationRecord
-  SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES = %w[volunteering employment].freeze
-  PRE_POPULATED_NAME_FIELDS = { "volunteering" => "organization_name", "employment" => "employer_name" }.freeze
+  SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES = %w[volunteering employment education].freeze
+  PRE_POPULATED_NAME_FIELDS = {
+    "volunteering" => "organization_name",
+    "employment" => "employer_name",
+    "education" => "school_name"
+  }.freeze
 
   belongs_to :cbv_applicant, optional: true
   has_many :activity_flows
@@ -23,17 +27,7 @@ class ActivityFlowInvitation < ApplicationRecord
   def pre_populated_activities_shape
     return if pre_populated_activities.blank?
 
-    unless pre_populated_activities.is_a?(Array)
-      errors.add(:pre_populated_activities, "must be an array")
-      return
-    end
-
     pre_populated_activities.each_with_index do |entry, idx|
-      unless entry.is_a?(Hash)
-        errors.add("pre_populated_activities[#{idx}]", "must be an object")
-        next
-      end
-
       type = entry["type"] || entry[:type]
       unless SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES.include?(type.to_s)
         errors.add("pre_populated_activities[#{idx}].type", "must be one of #{SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES.join(', ')}")
@@ -50,7 +44,6 @@ class ActivityFlowInvitation < ApplicationRecord
 
   def pre_populated_activity_months_in_window
     return if pre_populated_activities.blank?
-    return unless pre_populated_activities.is_a?(Array)
     return if client_agency_id.blank?
 
     range = ActivityFlow.expected_reporting_window_range(
@@ -59,12 +52,10 @@ class ActivityFlowInvitation < ApplicationRecord
     )
 
     pre_populated_activities.each_with_index do |entry, idx|
-      next unless entry.is_a?(Hash)
       months = entry["months"] || entry[:months]
-      next unless months.is_a?(Array)
+      next if months.blank?
 
       months.each_with_index do |month_entry, m_idx|
-        next unless month_entry.is_a?(Hash)
         raw = month_entry["month"] || month_entry[:month]
         parsed = parse_month_date(raw)
 
@@ -82,7 +73,7 @@ class ActivityFlowInvitation < ApplicationRecord
 
   def parse_month_date(value)
     return nil if value.blank?
-    return value if value.is_a?(Date)
+
     Date.parse(value.to_s)
   rescue ArgumentError, TypeError
     nil
