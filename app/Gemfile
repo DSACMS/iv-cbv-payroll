@@ -32,7 +32,7 @@ gem "stimulus-rails"
 # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
 gem "cssbundling-rails"
 gem "premailer-rails"
-gem "css_parser", "~> 2.2.0"
+gem "css_parser", "~> 3.0.0"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
