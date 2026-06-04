@@ -21,7 +21,7 @@ class EducationActivityCardBuilder
 
   def fully_self_attested_cards
     months_by_date = @activity.education_activity_months.index_by(&:month)
-    months = @reporting_months.reverse.filter_map do |month_start|
+    months = @reporting_months.filter_map do |month_start|
       activity_month = months_by_date[month_start.beginning_of_month]
       next unless activity_month
       next unless education_credit_hours(activity_month).positive?
@@ -49,7 +49,7 @@ class EducationActivityCardBuilder
   def validated_card(terms)
     school_name = terms.first.school_name&.titlecase || I18n.t("activities.education.title")
     resolver = reporting_month_resolver(terms)
-    months = @reporting_months.reverse.filter_map do |month_start|
+    months = @reporting_months.filter_map do |month_start|
       effective_term = resolver.result_for(month_start).effective_term
       next unless effective_term
 
@@ -99,7 +99,7 @@ class EducationActivityCardBuilder
 
   def partially_self_attested_months_for_school(school_terms)
     resolver = reporting_month_resolver(school_terms)
-    @reporting_months.reverse.filter_map do |month_start|
+    @reporting_months.filter_map do |month_start|
       effective_term = resolver.result_for(month_start).effective_term
       next unless effective_term
       next if effective_term.less_than_half_time? && @activity.review_term_credit_hours(effective_term).zero?

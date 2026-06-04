@@ -41,7 +41,6 @@ module ActivitiesHelper
       account_months = monthly_summaries[account.aggregator_account_id] || {}
       months = account_months
         .sort_by { |month_key, _| month_key }
-        .reverse
         .filter_map do |month_key, month_data|
         next unless active_employment_month?(month_data)
 
