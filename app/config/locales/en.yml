@@ -1154,7 +1154,9 @@ en:
       heading: Do you need more time?
     page:
       description: Sessions end after 30 minutes of being away from the page. This helps keep your information safe.
-      info_box: To report your income, start again. Use the link %{agency_full_name} sent you in a text message.
+      info_box:
+        default: To report your income, start again. Use the link %{agency_full_name} sent you in a text message.
+        nh_dhhs: You were sent a unique link or QR code to use this income verification tool. Use the link or QR code originally sent to you to start over.
       start_over_html: If you can't find your link, <a href='%{link}' data-action='%{action}'>click here</a> to start over.
       title: Your session has timed out
   shared:
