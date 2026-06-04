@@ -22,7 +22,7 @@
       X-Gateway-APIKey: <%= ENV["LA_LDH_INCOME_REPORT_APIKEY"] %>
       AccountCode: <%= ENV["LA_LDH_INCOME_REPORT_ACCOUNTCODE"] %>
     include_report_pdf: <%= ENV["LA_LDH_INCLUDE_REPORT_PDF"] %>
-  caseworker_fallback_email: MyMedicaid@la.gov
+  caseworker_fallback_email: <%= ENV["LA_LDH_CASEWORKER_FALLBACK_EMAIL"] %>
   staff_portal_enabled: false
   pilot_ended: <%= ENV["LA_LDH_PILOT_ENABLED"] != "true" %>
   # sso:
