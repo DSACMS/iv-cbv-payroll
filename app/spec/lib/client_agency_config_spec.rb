@@ -2,9 +2,10 @@ require "rails_helper"
 
 RSpec.describe ClientAgencyConfig do
   let(:sample_config_path) { "/fake/path.yml" }
-  let(:sample_config) { raise "define in spec" }
+  let(:sample_config) { nil }
 
   before do
+    allow(File).to receive(:read).and_call_original
     allow(File).to receive(:read)
       .with(sample_config_path)
       .and_return(sample_config)
@@ -54,6 +55,22 @@ RSpec.describe ClientAgencyConfig do
         config = described_class.new(sample_config_path)
         expect(config["foo"].renewal_required_months).to eq(2)
       end
+    end
+  end
+
+  context "real client agency config" do
+    around do |example|
+      original_value = ENV["LA_LDH_CASEWORKER_FALLBACK_EMAIL"]
+      ENV["LA_LDH_CASEWORKER_FALLBACK_EMAIL"] = "fallback@example.gov"
+      example.run
+    ensure
+      ENV["LA_LDH_CASEWORKER_FALLBACK_EMAIL"] = original_value
+    end
+
+    it "loads the LA LDH caseworker fallback email from the environment" do
+      config = described_class.new(Rails.root.join("config/client-agency-config.yml"))
+
+      expect(config["la_ldh"].caseworker_fallback_email).to eq("fallback@example.gov")
     end
   end
 

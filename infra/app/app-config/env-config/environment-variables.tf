@@ -227,6 +227,10 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-weekly-report-recipients"
     },
+    LA_LDH_CASEWORKER_FALLBACK_EMAIL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-caseworker-fallback-email"
+    },
     LA_LDH_DOMAIN_NAME = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-domain-name"
