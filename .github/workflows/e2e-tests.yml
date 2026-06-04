@@ -34,7 +34,7 @@ jobs:
           rails_env: test
 
       - name: Install chromedriver
-        uses: nanasess/setup-chromedriver@v2
+        uses: nanasess/setup-chromedriver@v3
 
       - id: e2e_tests
         name: Run e2e tests via rspec
