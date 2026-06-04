@@ -95,6 +95,34 @@ RSpec.describe ActivityFlowInvitation, type: :model do
       expect(invitation.errors.attribute_names.map(&:to_s))
         .to include("pre_populated_activities[0].school_name")
     end
+
+    it "is valid with a well-formed job training entry" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "job_training", "program_name" => "Career Prep", "organization_name" => "Goodwill" }
+      ])
+
+      expect(invitation).to be_valid
+    end
+
+    it "is invalid when a job training entry is missing program_name" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "job_training", "organization_name" => "Goodwill" }
+      ])
+
+      expect(invitation).not_to be_valid
+      expect(invitation.errors.attribute_names.map(&:to_s))
+        .to include("pre_populated_activities[0].program_name")
+    end
+
+    it "is invalid when a job training entry is missing organization_name" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "job_training", "program_name" => "Career Prep" }
+      ])
+
+      expect(invitation).not_to be_valid
+      expect(invitation.errors.attribute_names.map(&:to_s))
+        .to include("pre_populated_activities[0].organization_name")
+    end
   end
 
   describe "month-in-window validation" do
@@ -185,6 +213,34 @@ RSpec.describe ActivityFlowInvitation, type: :model do
           "type" => "education",
           "school_name" => "Springfield Community College",
           "months" => [ { "month" => out_of_window_date, "hours" => 6 } ]
+        }
+      ])
+
+      expect(invitation).not_to be_valid
+      expect(invitation.errors.attribute_names.map(&:to_s))
+        .to include("pre_populated_activities[0].months[0].month")
+    end
+
+    it "is valid when a job training entry's months fall within the expected reporting window" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        {
+          "type" => "job_training",
+          "program_name" => "Career Prep",
+          "organization_name" => "Goodwill",
+          "months" => [ { "month" => in_window_date, "hours" => 10 } ]
+        }
+      ])
+
+      expect(invitation).to be_valid
+    end
+
+    it "is invalid when a job training entry's month falls outside the expected reporting window" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        {
+          "type" => "job_training",
+          "program_name" => "Career Prep",
+          "organization_name" => "Goodwill",
+          "months" => [ { "month" => out_of_window_date, "hours" => 10 } ]
         }
       ])
 

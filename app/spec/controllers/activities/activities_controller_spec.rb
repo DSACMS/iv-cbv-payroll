@@ -175,6 +175,15 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       expect(assigns(:education_draft_activities)).to contain_exactly(api_draft)
     end
+
+    it "surfaces only pre-populated work program drafts, not self-attested user drafts" do
+      api_draft = create(:job_training_activity, :pre_populated_draft, activity_flow: current_flow)
+      _user_draft = create(:job_training_activity, activity_flow: current_flow, draft: true, pre_populated: false)
+
+      get :index
+
+      expect(assigns(:work_programs_draft_activities)).to contain_exactly(api_draft)
+    end
   end
 
   context "when no activities are added" do
@@ -954,6 +963,43 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(education_cards).to have_text("Springfield Community College")
       expect(education_cards).to have_text(I18n.t("activities.hub.cards.credit_hours", amount: 6))
       expect(education_cards).to have_text(I18n.t("activities.hub.cards.hours", count: 24))
+    end
+  end
+
+  context "when a pre-populated work program activity exists" do
+    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+
+    before do
+      activity = create(:job_training_activity, :pre_populated_draft, activity_flow: current_flow, program_name: "Career Prep")
+      create(:job_training_activity_month, job_training_activity: activity, month: current_flow.reporting_months.first.beginning_of_month, hours: 10)
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "assigns the draft work program activity" do
+      expect(assigns(:work_programs_draft_activities)).not_to be_empty
+      expect(assigns(:work_programs_draft_activities).first.program_name).to eq("Career Prep")
+    end
+
+    it "renders the pre-populated notice on the hub" do
+      expect(response.body).to include(I18n.t("activities.hub.cards.pre_populated_notice"))
+    end
+
+    it "renders the Complete CTA instead of Edit for the draft card" do
+      rendered = Capybara.string(response.body)
+      work_program_cards = rendered.find("[data-activity-type='work_programs']")
+
+      expect(work_program_cards).to have_text(I18n.t("activities.hub.cards.complete_action"))
+      expect(work_program_cards).to have_no_text(I18n.t("activities.hub.edit"))
+    end
+
+    it "renders work program month data" do
+      rendered = Capybara.string(response.body)
+      work_program_cards = rendered.find("[data-activity-type='work_programs']")
+
+      expect(work_program_cards).to have_text("Career Prep")
+      expect(work_program_cards).to have_text(I18n.t("activities.hub.cards.hours", count: 10))
     end
   end
 end

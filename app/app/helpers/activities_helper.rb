@@ -180,6 +180,22 @@ module ActivitiesHelper
     end
   end
 
+  def work_program_draft_cards(activities)
+    activities.map do |activity|
+      months = activity.job_training_activity_months.sort_by(&:month).filter_map do |activity_month|
+        next unless activity_month.hours.positive?
+
+        { month: activity_month.month, hours: format_decimal_amount(activity_month.hours) }
+      end
+      {
+        name: activity.program_name,
+        months: months,
+        edit_path: edit_activities_flow_job_training_path(id: activity.id),
+        pre_populated: true
+      }
+    end
+  end
+
   private
 
   def active_employment_month?(month_data)

@@ -198,7 +198,7 @@ class ActivityFlowProgressCalculator
     month = month_start.beginning_of_month
 
     @job_training_activities
-      .select(&:validated?)
+      .select { |activity| activity.validated? || activity.pre_populated? }
       .sum { |activity| activity.job_training_activity_months.where(month: month).sum(:hours) }
   end
 

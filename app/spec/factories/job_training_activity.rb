@@ -13,6 +13,11 @@ FactoryBot.define do
     contact_name { "Casey Doe" }
     contact_email { "casey@example.com" }
 
+    trait :pre_populated_draft do
+      draft { true }
+      pre_populated { true }
+    end
+
     transient do
       date { activity_flow.reporting_window_range.end }
       hours { nil }

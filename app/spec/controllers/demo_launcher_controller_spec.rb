@@ -19,6 +19,16 @@ RSpec.describe DemoLauncherController, type: :controller do
       expect(response.body).to include("Open in new tab")
     end
 
+    it "renders work program pre-population controls" do
+      get :advanced
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_selector("input[name='job_training_enabled']")
+      expect(rendered).to have_selector("input[name='job_training_program_name']")
+      expect(rendered).to have_selector("input[name='job_training_organization_name']")
+      expect(rendered).to have_selector("input[name='job_training_hours_per_month']")
+    end
+
     it "sets the session to the activity flow so the header renders Emmy branding" do
       get :advanced
       expect(session[:flow_type]).to eq(:activity)
@@ -646,6 +656,27 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(activities[0]["months"]).to all(include("hours" => 6))
       end
 
+      it "creates an invitation with a work program activity when work program is enabled" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            launch_type: "tokenized",
+            job_training_enabled: "1",
+            job_training_program_name: "Career Prep",
+            job_training_organization_name: "Goodwill",
+            job_training_hours_per_month: "10"
+          }
+        }.to change(ActivityFlowInvitation, :count).by(1)
+
+        invitation = ActivityFlowInvitation.last
+        activities = invitation.pre_populated_activities
+        expect(activities.length).to eq(1)
+        expect(activities[0]["type"]).to eq("job_training")
+        expect(activities[0]["program_name"]).to eq("Career Prep")
+        expect(activities[0]["organization_name"]).to eq("Goodwill")
+        expect(activities[0]["months"]).to all(include("hours" => 10))
+      end
+
       it "creates an invitation with all activity types when all are enabled" do
         post :create, params: {
           client_agency_id: "sandbox",
@@ -659,11 +690,15 @@ RSpec.describe DemoLauncherController, type: :controller do
           employment_gross_income_per_month: "1200",
           education_enabled: "1",
           education_school_name: "Springfield Community College",
-          education_hours_per_month: "6"
+          education_hours_per_month: "6",
+          job_training_enabled: "1",
+          job_training_program_name: "Career Prep",
+          job_training_organization_name: "Goodwill",
+          job_training_hours_per_month: "10"
         }
 
         activities = ActivityFlowInvitation.last.pre_populated_activities
-        expect(activities.map { |a| a["type"] }).to contain_exactly("volunteering", "employment", "education")
+        expect(activities.map { |a| a["type"] }).to contain_exactly("volunteering", "employment", "education", "job_training")
       end
 
       it "creates an invitation with empty pre_populated_activities when neither is enabled" do

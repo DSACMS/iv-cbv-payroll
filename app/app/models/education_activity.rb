@@ -35,12 +35,6 @@ class EducationActivity < Activity
     failed: "failed"
   }, default: :unknown, prefix: :sync
 
-  scope :pre_populated_drafts, -> { where(draft: true, pre_populated: true) }
-
-  def pre_populated_draft?
-    draft? && pre_populated?
-  end
-
   def self.data_source_from_nsc_results(enrollment_terms, reporting_months:)
     return :partially_self_attested if enrollment_terms.blank?
 

@@ -1,4 +1,6 @@
 class JobTrainingActivityMonth < ApplicationRecord
+  FIELDS = %w[month hours].freeze
+
   belongs_to :job_training_activity
 
   validates :month, presence: true

@@ -160,6 +160,16 @@ class DemoLauncherController < ApplicationController
       }
     end
 
+    if launcher_params[:job_training_enabled] == "1"
+      hours = launcher_params[:job_training_hours_per_month].to_i
+      activities << {
+        "type" => "job_training",
+        "program_name" => launcher_params[:job_training_program_name].presence || "Career Prep",
+        "organization_name" => launcher_params[:job_training_organization_name].presence || "Goodwill",
+        "months" => month_strings.map { |m| { "month" => m, "hours" => hours } }
+      }
+    end
+
     activities
   end
 
@@ -212,7 +222,11 @@ class DemoLauncherController < ApplicationController
       :employment_gross_income_per_month,
       :education_enabled,
       :education_school_name,
-      :education_hours_per_month
+      :education_hours_per_month,
+      :job_training_enabled,
+      :job_training_program_name,
+      :job_training_organization_name,
+      :job_training_hours_per_month
     )
   end
 

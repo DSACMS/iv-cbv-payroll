@@ -74,6 +74,18 @@ class ActivityFlow < Flow
         Array(attrs["months"]).each do |month_entry|
           activity.education_activity_months.create(month_entry.stringify_keys.slice(*EducationActivityMonth::FIELDS))
         end
+      when "job_training"
+        next if flow.job_training_activities.exists?
+
+        activity = flow.job_training_activities.create(
+          attrs.slice(*JobTrainingActivity::FIELDS)
+            .merge("draft" => true, "pre_populated" => true)
+        )
+        next unless activity.persisted?
+
+        Array(attrs["months"]).each do |month_entry|
+          activity.job_training_activity_months.create(month_entry.stringify_keys.slice(*JobTrainingActivityMonth::FIELDS))
+        end
       end
     end
   end

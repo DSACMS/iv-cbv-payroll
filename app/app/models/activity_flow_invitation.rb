@@ -1,9 +1,10 @@
 class ActivityFlowInvitation < ApplicationRecord
-  SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES = %w[volunteering employment education].freeze
-  PRE_POPULATED_NAME_FIELDS = {
-    "volunteering" => "organization_name",
-    "employment" => "employer_name",
-    "education" => "school_name"
+  SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES = %w[volunteering employment education job_training].freeze
+  PRE_POPULATED_REQUIRED_FIELDS = {
+    "volunteering" => %w[organization_name],
+    "employment" => %w[employer_name],
+    "education" => %w[school_name],
+    "job_training" => %w[program_name organization_name]
   }.freeze
 
   belongs_to :cbv_applicant, optional: true
@@ -34,10 +35,11 @@ class ActivityFlowInvitation < ApplicationRecord
         next
       end
 
-      name_field = PRE_POPULATED_NAME_FIELDS[type.to_s]
-      name = entry[name_field] || entry[name_field.to_sym]
-      if name.blank?
-        errors.add("pre_populated_activities[#{idx}].#{name_field}", "can't be blank")
+      PRE_POPULATED_REQUIRED_FIELDS[type.to_s].each do |field|
+        value = entry[field] || entry[field.to_sym]
+        if value.blank?
+          errors.add("pre_populated_activities[#{idx}].#{field}", "can't be blank")
+        end
       end
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_27_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_29_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -257,6 +257,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_27_120000) do
     t.boolean "draft", default: false, null: false
     t.string "organization_address"
     t.string "organization_name"
+    t.boolean "pre_populated", default: false, null: false
     t.string "program_name"
     t.string "state"
     t.string "street_address"

@@ -299,6 +299,47 @@ RSpec.describe ActivitiesHelper do
     end
   end
 
+  describe "#work_program_draft_cards" do
+    let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
+    let(:first_month) { flow.reporting_months.first.beginning_of_month }
+
+    it "returns a card with pre_populated: true and edit path pointing to job training edit page" do
+      activity = create(:job_training_activity, :pre_populated_draft, activity_flow: flow, program_name: "Career Prep")
+
+      result = helper.work_program_draft_cards([ activity ])
+
+      expect(result.length).to eq(1)
+      expect(result.first).to include(
+        name: "Career Prep",
+        months: [],
+        pre_populated: true
+      )
+      expect(result.first[:edit_path]).to eq(
+        helper.edit_activities_flow_job_training_path(id: activity.id)
+      )
+    end
+
+    it "includes month data when job_training_activity_months have hours" do
+      activity = create(:job_training_activity, :pre_populated_draft, activity_flow: flow, program_name: "Career Prep")
+      create(:job_training_activity_month, job_training_activity: activity, month: first_month, hours: 10)
+
+      result = helper.work_program_draft_cards([ activity ])
+
+      expect(result.first[:months]).to eq([
+        { month: first_month, hours: 10 }
+      ])
+    end
+
+    it "excludes months where hours are zero" do
+      activity = create(:job_training_activity, :pre_populated_draft, activity_flow: flow, program_name: "Career Prep")
+      create(:job_training_activity_month, job_training_activity: activity, month: first_month, hours: 0)
+
+      result = helper.work_program_draft_cards([ activity ])
+
+      expect(result.first[:months]).to be_empty
+    end
+  end
+
   describe "#education_cards" do
     around { |example| travel_to(Date.new(2025, 11, 15)) { example.run } }
 
