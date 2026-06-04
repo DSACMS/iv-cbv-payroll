@@ -144,7 +144,7 @@ GEM
       smart_properties
     bigdecimal (3.3.1)
     bindex (0.8.1)
-    bootsnap (1.24.5)
+    bootsnap (1.24.6)
       msgpack (~> 1.2)
     brakeman (8.0.4)
       racc
@@ -315,7 +315,7 @@ GEM
       base64
       json-logic-rb (~> 0.1.5)
       mutex_m
-    msgpack (1.8.0)
+    msgpack (1.8.1)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     mutex_m (0.3.0)
