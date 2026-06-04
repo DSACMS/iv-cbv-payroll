@@ -19,7 +19,7 @@
     "postcss-scss": "^4.0.9",
     "sass": "^1.100.0",
     "webpack": "^5.107.2",
-    "webpack-cli": "^7.0.2"
+    "webpack-cli": "^7.0.3"
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets",
