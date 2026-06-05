@@ -64,6 +64,7 @@ class ClientAgencyConfig
       generic_links_disabled
       activity_types
       prefilled_activities_enabled
+      allowed_iframe_ancestors
     ])
 
     def initialize(yaml)
@@ -96,8 +97,10 @@ class ClientAgencyConfig
       @activity_types = yaml["activity_types"]&.symbolize_keys || {}
       @prefilled_activities_enabled = yaml["prefilled_activities_enabled"] || false
       @caseworker_fallback_email = yaml["caseworker_fallback_email"]
+      @allowed_iframe_ancestors = yaml["allowed_iframe_ancestors"] || []
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
+      raise ArgumentError.new("Client Agency #{@id} `allowed_iframe_ancestors` must be a list") unless @allowed_iframe_ancestors.is_a?(Array)
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.w2") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:w2])
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.gig") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:gig])

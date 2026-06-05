@@ -2,7 +2,12 @@ class ApplicationController < ActionController::Base
   helper :view
   helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
   around_action :switch_locale
-  before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :set_device_id_cookie
+  before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :configure_iframe_embedding, :set_device_id_cookie
+
+  content_security_policy do |policy|
+    ancestors = current_agency&.allowed_iframe_ancestors
+    policy.frame_ancestors(:self, *ancestors) if ancestors.present?
+  end
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
@@ -27,8 +32,31 @@ class ApplicationController < ActionController::Base
   def set_device_id_cookie
     cookies.permanent.signed[:device_id] ||= {
       value: SecureRandom.uuid,
-      httponly: true
+      httponly: true,
+      **iframe_cookie_options
     }
+  end
+
+  # True when the current agency is configured to permit iframe embedding.
+  def iframe_embedding_allowed?
+    current_agency&.allowed_iframe_ancestors.present?
+  end
+
+  # Cross-origin iframes only send cookies marked `SameSite=None; Secure`.
+  # Scope this relaxation to agencies that opt in to embedding so other
+  # agencies keep the stricter `SameSite=Lax` default.
+  def iframe_cookie_options
+    return {} unless iframe_embedding_allowed?
+
+    { same_site: :none, secure: true }
+  end
+
+  # Relax the session cookie's SameSite attribute for embedding agencies so the
+  # session persists when the app is loaded inside a cross-origin iframe.
+  def configure_iframe_embedding
+    return unless iframe_embedding_allowed?
+
+    iframe_cookie_options.each { |key, value| request.session_options[key] = value }
   end
 
   def show_menu?

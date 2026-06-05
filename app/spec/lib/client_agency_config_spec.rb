@@ -55,6 +55,72 @@ RSpec.describe ClientAgencyConfig do
         config = described_class.new(sample_config_path)
         expect(config["foo"].renewal_required_months).to eq(2)
       end
+
+      it "defaults allowed_iframe_ancestors to an empty array" do
+        config = described_class.new(sample_config_path)
+        expect(config["foo"].allowed_iframe_ancestors).to eq([])
+      end
+    end
+  end
+
+  context "allowed_iframe_ancestors configuration" do
+    describe "#allowed_iframe_ancestors" do
+      context "when given a YAML list" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: Foo Agency Name
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            transmission_method: foo
+            allowed_iframe_ancestors:
+              - https://example-portal.com
+              - https://partner.gov
+        YAML
+
+        it "returns the list of origins" do
+          config = described_class.new(sample_config_path)
+          expect(config["foo"].allowed_iframe_ancestors)
+            .to eq([ "https://example-portal.com", "https://partner.gov" ])
+        end
+      end
+
+      context "when not a list (e.g. a string)" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: Foo Agency Name
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            transmission_method: foo
+            allowed_iframe_ancestors: "https://example-portal.com"
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo `allowed_iframe_ancestors` must be a list")
+        end
+      end
+
+      context "when omitted" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: Foo Agency Name
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            transmission_method: foo
+        YAML
+
+        it "returns an empty array" do
+          config = described_class.new(sample_config_path)
+          expect(config["foo"].allowed_iframe_ancestors).to eq([])
+        end
+      end
     end
   end
 
