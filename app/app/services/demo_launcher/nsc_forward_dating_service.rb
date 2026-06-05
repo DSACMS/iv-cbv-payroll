@@ -1,7 +1,18 @@
 class DemoLauncher::NscForwardDatingService
+  DEMO_SCENARIO_KEYS = %w[lynette rick dominique linda].freeze
+  # These dates match each persona's latest term end so NSC reports them as currently enrolled before forward-dating.
+  DEMO_AS_OF_DATES = {
+    "lynette" => Date.new(2024, 11, 19),
+    "rick" => Date.new(2024, 11, 29)
+  }.freeze
+
   def self.applicable?(education_activity)
-    scenario_key = education_activity.activity_flow.activity_flow_invitation&.reference_id&.delete_prefix("demo-")
-    scenario_key.present? && DemoLauncherController::TEST_SCENARIOS.key?(scenario_key)
+    scenario_key = scenario_key_for(education_activity)
+    scenario_key.present? && DEMO_SCENARIO_KEYS.include?(scenario_key)
+  end
+
+  def self.scenario_key_for(education_activity)
+    education_activity.activity_flow.activity_flow_invitation&.reference_id&.delete_prefix("demo-")
   end
 
   def initialize(education_activity:, logger: Rails.logger, environment: ENV.fetch("NSC_ENVIRONMENT", "sandbox"))
@@ -10,7 +21,8 @@ class DemoLauncher::NscForwardDatingService
       education_activity: education_activity,
       logger: logger,
       environment: environment,
-      response_transformer: method(:forward_dated_response)
+      response_transformer: method(:forward_dated_response),
+      as_of_date: demo_as_of_date
     )
   end
 
@@ -19,6 +31,10 @@ class DemoLauncher::NscForwardDatingService
   end
 
   private
+
+  def demo_as_of_date
+    DEMO_AS_OF_DATES[self.class.scenario_key_for(@education_activity)]
+  end
 
   def forward_dated_response(response)
     latest_term_end = Array(response["enrollmentDetails"])

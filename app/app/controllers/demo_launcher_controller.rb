@@ -174,9 +174,10 @@ class DemoLauncherController < ApplicationController
   end
 
   def reporting_window_months_for_activities(client_agency_id)
-    # Uses the agency's default application window regardless of the launcher's reporting_window
-    # setting, because ActivityFlowInvitation validates months against the same default range.
-    range = ActivityFlow.expected_reporting_window_range(client_agency_id)
+    range = ActivityFlow.expected_reporting_window_range(
+      client_agency_id,
+      **pre_populated_reporting_window_options(client_agency_id)
+    )
     months = []
     current = range.begin.beginning_of_month
     while current <= range.end
@@ -184,6 +185,38 @@ class DemoLauncherController < ApplicationController
       current = current.next_month
     end
     months
+  end
+
+  def pre_populated_reporting_window_options(client_agency_id)
+    reporting_window_type = launcher_params[:reporting_window] == "renewal" ? "renewal" : "application"
+    month_count = pre_populated_reporting_window_month_count(client_agency_id)
+    reference_date = Date.current
+
+    if launcher_params[:reporting_window_start].present?
+      start_date = Date.parse(normalize_date_param(launcher_params[:reporting_window_start])).beginning_of_month
+      reference_date = start_date + month_count.months
+    end
+
+    {
+      reporting_window_type: reporting_window_type,
+      reference_date: reference_date,
+      months_override: month_count
+    }
+  end
+
+  def pre_populated_reporting_window_month_count(client_agency_id)
+    return launcher_params[:reporting_window_months].to_i if launcher_params[:reporting_window_months].present?
+    return ActivityFlow::DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS if launcher_params[:reporting_window] == "renewal"
+
+    Rails.application.config.client_agencies[client_agency_id]&.application_reporting_months ||
+      ActivityFlow::DEFAULT_APPLICATION_REPORTING_WINDOW_MONTHS
+  end
+
+  def create_launcher_activity_flow_invitation!(attributes)
+    invitation = ActivityFlowInvitation.create!(attributes)
+    pre_populated = build_pre_populated_activities
+    invitation.update_columns(pre_populated_activities: pre_populated) if pre_populated.present?
+    invitation
   end
 
   def launch_overrides(flow_type)
@@ -279,11 +312,9 @@ class DemoLauncherController < ApplicationController
   end
 
   def build_tokenized_url(client_agency_id, overrides)
-    pre_populated = build_pre_populated_activities
-    invitation = ActivityFlowInvitation.create!(
+    invitation = create_launcher_activity_flow_invitation!(
       client_agency_id: client_agency_id,
-      reference_id: "demo-#{SecureRandom.hex(4)}",
-      pre_populated_activities: pre_populated
+      reference_id: "demo-#{SecureRandom.hex(4)}"
     )
     invitation.to_url(
       **launcher_url_options,
@@ -311,7 +342,7 @@ class DemoLauncherController < ApplicationController
       client_agency_id: client_agency_id
     )
 
-    invitation = ActivityFlowInvitation.create!(
+    invitation = create_launcher_activity_flow_invitation!(
       cbv_applicant: cbv_applicant,
       client_agency_id: client_agency_id,
       reference_id: "demo-#{scenario_key}"
@@ -334,7 +365,7 @@ class DemoLauncherController < ApplicationController
       client_agency_id: client_agency_id
     )
 
-    invitation = ActivityFlowInvitation.create!(
+    invitation = create_launcher_activity_flow_invitation!(
       cbv_applicant: cbv_applicant,
       client_agency_id: client_agency_id,
       reference_id: "demo-#{scenario_key}"

@@ -15,12 +15,14 @@ class NscDataFetcherService
     education_activity:,
     logger: Rails.logger,
     environment: ENV.fetch("NSC_ENVIRONMENT", "sandbox"),
-    response_transformer: nil
+    response_transformer: nil,
+    as_of_date: nil
   )
     @education_activity = education_activity
     @logger = logger
     @service = Aggregators::Sdk::NscService.new(environment: environment, logger: logger)
     @response_transformer = response_transformer
+    @as_of_date = as_of_date
   end
 
   # Main entry pont to submit an enrollment request to NSC
@@ -30,7 +32,7 @@ class NscDataFetcherService
       first_name: identity.first_name,
       last_name: identity.last_name,
       date_of_birth: identity.date_of_birth,
-      as_of_date: @education_activity.activity_flow.reporting_window_range.max
+      as_of_date: @as_of_date || @education_activity.activity_flow.reporting_window_range.max
     )
     response = transform_response(response)
     update_education_activity(@education_activity, response)
