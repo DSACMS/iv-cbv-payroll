@@ -17,6 +17,12 @@ RSpec.describe "Iframe embedding", type: :request do
         expect(response.headers["Content-Security-Policy"])
           .to include("frame-ancestors 'self' https://portal.example.com")
       end
+
+      it "removes the X-Frame-Options header that would otherwise block framing" do
+        get path
+
+        expect(response.headers).not_to include("X-Frame-Options")
+      end
     end
 
     context "when the agency does not permit iframe embedding" do
@@ -30,6 +36,39 @@ RSpec.describe "Iframe embedding", type: :request do
         csp = response.headers["Content-Security-Policy"]
         expect(csp).to include("frame-ancestors 'self'")
         expect(csp).not_to include("portal.example.com")
+      end
+
+      it "keeps the X-Frame-Options header" do
+        get path
+
+        expect(response.headers["X-Frame-Options"]).to eq("SAMEORIGIN")
+      end
+    end
+  end
+
+  describe "session cookie SameSite" do
+    context "when the agency permits iframe embedding" do
+      before do
+        stub_client_agency_config_value("sandbox", "allowed_iframe_ancestors", [ "https://portal.example.com" ])
+      end
+
+      it "issues the session cookie as SameSite=None; Secure so it survives a cross-site iframe" do
+        get path
+
+        expect(request.session_options[:same_site]).to eq(:none)
+        expect(request.session_options[:secure]).to be(true)
+      end
+    end
+
+    context "when the agency does not permit iframe embedding" do
+      before do
+        stub_client_agency_config_value("sandbox", "allowed_iframe_ancestors", [])
+      end
+
+      it "does not relax the session cookie SameSite" do
+        get path
+
+        expect(request.session_options[:same_site]).not_to eq(:none)
       end
     end
   end

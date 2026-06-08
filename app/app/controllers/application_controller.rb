@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
   around_action :switch_locale
   before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :configure_iframe_embedding, :set_device_id_cookie
+  after_action :relax_frame_options_for_iframe
 
   content_security_policy do |policy|
     ancestors = current_agency&.allowed_iframe_ancestors
@@ -57,6 +58,12 @@ class ApplicationController < ActionController::Base
     return unless iframe_embedding_allowed?
 
     iframe_cookie_options.each { |key, value| request.session_options[key] = value }
+  end
+
+  def relax_frame_options_for_iframe
+    return unless iframe_embedding_allowed?
+
+    response.headers.delete("X-Frame-Options")
   end
 
   def show_menu?
