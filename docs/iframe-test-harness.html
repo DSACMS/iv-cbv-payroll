@@ -1,55 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Emmy iframe embedding test harness</title>
   <style>
-    body { font-family: system-ui, sans-serif; margin: 0; color: #1b1b1b; }
-    header { padding: 1rem; border-bottom: 1px solid #d6d7d9; background: #f0f0f0; }
-    h1 { font-size: 1.1rem; margin: 0 0 .5rem; }
-    form { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
-    input[type="url"] { flex: 1 1 30rem; padding: .4rem; font-size: 1rem; }
-    button { padding: .4rem .9rem; font-size: 1rem; cursor: pointer; }
-    p.note { margin: .5rem 0 0; font-size: .85rem; color: #565c65; }
-    #origin { font-family: monospace; }
-    iframe { width: 100%; height: calc(100vh - 9rem); border: 0; display: block; }
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      color: #1b1b1b;
+    }
+
+    header {
+      padding: 1rem;
+      border-bottom: 1px solid #d6d7d9;
+      background: #f0f0f0;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      margin: 0 0 .5rem;
+    }
+
+    form {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    input[type="url"] {
+      flex: 1 1 30rem;
+      padding: .4rem;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: .4rem .9rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    p.note {
+      margin: .5rem 0 0;
+      font-size: .85rem;
+      color: #565c65;
+    }
+
+    #origin {
+      font-family: monospace;
+    }
+
+    iframe {
+      width: 100%;
+      height: calc(100vh - 9rem);
+      border: 0;
+      display: block;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Emmy iframe embedding test harness</h1>
-    <form id="frame-form">
-      <input
-        type="url"
-        id="target-url"
-        placeholder="https://sandbox.example.org/help?client_agency_id=sandbox"
-        required
-      />
-      <button type="submit">Load in iframe</button>
-    </form>
-    <p class="note">
-      This page's origin (must be in the agency's
-      <code>allowed_iframe_ancestors</code>): <span id="origin"></span>
-    </p>
-    <p class="note">
-      If the agency does not allow this origin, the browser blocks the frame and
-      logs a <code>frame-ancestors</code> CSP violation in the dev console.
-    </p>
-  </header>
-  <iframe id="target-frame" title="Embedded Emmy app"></iframe>
+<header>
+  <h1>Emmy iframe embedding test harness</h1>
+  <form id="frame-form">
+    <input
+      type="url"
+      id="target-url"
+      placeholder="https://sandbox.example.org/help?client_agency_id=sandbox"
+      required
+    />
+    <button type="submit">Load in iframe</button>
+  </form>
+  <p class="note">
+    🖥️ Host and open the harness by running this from the project root: <code style="background-color: black; color: white">cd docs && python3 -m http.server 8000 &&
+    open http://localhost:8000/iframe-test-harness.html</code>
+  </p>
+  <p class="note">
+    ⚠️ This page's origin (must be in the agency's
+    <code>allowed_iframe_ancestors</code>): <span id="origin"></span>
+  </p>
+  <p class="note">
+    🚫 If the agency does not allow this origin, the browser blocks the frame and
+    logs a <code>frame-ancestors</code> CSP violation in the dev console.
+  </p>
+</header>
+<iframe id="target-frame" title="Embedded Emmy app"></iframe>
 
-  <script>
-    document.getElementById("origin").textContent =
-      window.location.origin === "null"
-        ? "null (file://) — CSP cannot allowlist this; serve from a real origin"
-        : window.location.origin;
+<script>
+  document.getElementById("origin").textContent =
+    window.location.origin === "null"
+      ? "null (file://) — 🚨🚨🚨 CSP cannot allowlist this; serve from a real origin"
+      : window.location.origin;
 
-    document.getElementById("frame-form").addEventListener("submit", function (event) {
-      event.preventDefault();
-      document.getElementById("target-frame").src =
-        document.getElementById("target-url").value;
-    });
-  </script>
+  document.getElementById("frame-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    document.getElementById("target-frame").src =
+      document.getElementById("target-url").value;
+  });
+</script>
 </body>
 </html>

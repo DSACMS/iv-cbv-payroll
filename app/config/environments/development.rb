@@ -77,6 +77,11 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
 
-  # Uncomment if you wish to allow Action Cable access from any origin.
-  # config.action_cable.disable_request_forgery_protection = true
+  # Allow Action Cable from any origin only when iframe embedding is enabled for
+  # some agency. Embedded/ngrok pages connect from a non-localhost origin, which
+  # the default dev allowed_request_origins (localhost only) would reject.
+  iframe_embedding_enabled = config.client_agencies.client_agency_ids.any? do |agency_id|
+    config.client_agencies[agency_id].allowed_iframe_ancestors.present?
+  end
+  config.action_cable.disable_request_forgery_protection = true if iframe_embedding_enabled
 end
