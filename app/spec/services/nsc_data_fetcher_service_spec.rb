@@ -96,6 +96,14 @@ RSpec.describe NscDataFetcherService do
 
         expect(education_activity.reload.data_source).to eq("partially_self_attested")
       end
+
+      it "queries NSC with the reporting window end date" do
+        service.fetch
+
+        expect(WebMock)
+          .to have_requested(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
+          .with(body: hash_including("asOfDate" => activity_flow.reporting_window_range.max.strftime("%Y-%m-%d")))
+      end
     end
 
     context "when there are multiple enrollments (Rick)" do

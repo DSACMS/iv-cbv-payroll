@@ -6,14 +6,6 @@ RSpec.describe DemoLauncher::NscForwardDatingService do
   subject(:service) { described_class.new(education_activity: education_activity, environment: :test, logger: logger) }
 
   let(:logger) { Logger.new(StringIO.new) }
-  let(:identity) do
-    create(
-      :identity,
-      first_name: first_name,
-      last_name: last_name,
-      date_of_birth: date_of_birth
-    )
-  end
   let(:invitation) { create(:activity_flow_invitation, reference_id: "demo-#{scenario_key}") }
   let(:activity_flow) do
     create(
@@ -42,9 +34,7 @@ RSpec.describe DemoLauncher::NscForwardDatingService do
   describe "#fetch" do
     context "for Lynette" do
       let(:scenario_key) { "lynette" }
-      let(:first_name) { "Lynette" }
-      let(:last_name) { "Oyola" }
-      let(:date_of_birth) { Date.parse("1988-10-24") }
+      let(:identity) { create(:identity, :nsc_lynette) }
 
       before do
         nsc_stub_request_education_search_response("lynette")
@@ -59,13 +49,19 @@ RSpec.describe DemoLauncher::NscForwardDatingService do
         expect(term.term_end).to eq(activity_flow.reporting_window_range.max)
         expect(activity_flow.within_reporting_window?(term.term_begin, term.term_end)).to be(true)
       end
+
+      it "queries NSC with Lynette's stable demo as-of date" do
+        service.fetch
+
+        expect(WebMock)
+          .to have_requested(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
+          .with(body: hash_including("asOfDate" => "2024-11-19"))
+      end
     end
 
     context "for Rick" do
       let(:scenario_key) { "rick" }
-      let(:first_name) { "Rick" }
-      let(:last_name) { "Banas" }
-      let(:date_of_birth) { Date.parse("1979-08-18") }
+      let(:identity) { create(:identity, :nsc_rick) }
 
       before do
         nsc_stub_request_education_search_response("rick_banas")
@@ -83,19 +79,42 @@ RSpec.describe DemoLauncher::NscForwardDatingService do
         expect((terms.last.term_begin - terms.first.term_begin).to_i).to eq(19)
         expect(terms).to all(satisfy { |term| activity_flow.within_reporting_window?(term.term_begin, term.term_end) })
       end
+
+      it "queries NSC with Rick's stable demo as-of date" do
+        service.fetch
+
+        expect(WebMock)
+          .to have_requested(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
+          .with(body: hash_including("asOfDate" => "2024-11-29"))
+      end
     end
 
     context "for a demo user with no current enrollments" do
       let(:scenario_key) { "linda" }
-      let(:first_name) { "Linda" }
-      let(:last_name) { "Cooper" }
-      let(:date_of_birth) { Date.parse("1999-01-01") }
+      let(:identity) { create(:identity, :nsc_linda) }
 
       before do
         nsc_stub_request_education_search_response("linda")
       end
 
       it "preserves the no-enrollments result" do
+        expect { service.fetch }
+          .to change { education_activity.reload.status }
+          .from("unknown").to("no_enrollments")
+
+        expect(education_activity.nsc_enrollment_terms).to be_empty
+      end
+    end
+
+    context "for Dominique" do
+      let(:scenario_key) { "dominique" }
+      let(:identity) { create(:identity, :nsc_dominique) }
+
+      before do
+        nsc_stub_request_education_search_response("dominique_ricardo")
+      end
+
+      it "preserves the no-enrollments result for CN enrollments" do
         expect { service.fetch }
           .to change { education_activity.reload.status }
           .from("unknown").to("no_enrollments")

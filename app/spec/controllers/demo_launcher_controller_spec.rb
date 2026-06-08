@@ -436,6 +436,27 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(location).to include("demo_timeout=20")
       end
 
+      it "preserves pre-populated activities for Rick" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          test_scenario: "rick",
+          reporting_window: "application",
+          education_enabled: "1",
+          education_school_name: "Springfield Community College",
+          education_hours_per_month: "6"
+        }
+
+        invitation = ActivityFlowInvitation.last
+        activity = invitation.pre_populated_activities.first
+
+        expect(invitation.reference_id).to eq("demo-rick")
+        expect(activity).to include(
+          "type" => "education",
+          "school_name" => "Springfield Community College"
+        )
+        expect(activity["months"]).to all(include("hours" => 6))
+      end
+
       it "raises an error for an unknown test scenario" do
         expect {
           post :create, params: {
@@ -592,6 +613,26 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
         expect(response.location).to include("reporting_window_start=2025-06-01")
       end
+
+      it "preserves pre-populated activities for a fake test user" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          test_scenario: "partial_enrollment_sam",
+          volunteering_enabled: "1",
+          volunteering_organization_name: "Food Bank",
+          volunteering_hours_per_month: "8"
+        }
+
+        invitation = ActivityFlowInvitation.last
+        activity = invitation.pre_populated_activities.first
+
+        expect(invitation.reference_id).to eq("demo-partial_enrollment_sam")
+        expect(activity).to include(
+          "type" => "volunteering",
+          "organization_name" => "Food Bank"
+        )
+        expect(activity["months"]).to all(include("hours" => 8))
+      end
     end
 
     context "with pre-populated activities" do
@@ -675,6 +716,43 @@ RSpec.describe DemoLauncherController, type: :controller do
         expect(activities[0]["program_name"]).to eq("Career Prep")
         expect(activities[0]["organization_name"]).to eq("Goodwill")
         expect(activities[0]["months"]).to all(include("hours" => 10))
+      end
+
+      it "uses the selected reporting window for pre-populated work program months" do
+        Timecop.freeze(Date.new(2026, 6, 13)) do
+          post :create, params: {
+            client_agency_id: "sandbox",
+            launch_type: "tokenized",
+            reporting_window: "application",
+            reporting_window_months: "6",
+            job_training_enabled: "1",
+            job_training_program_name: "Career Prep",
+            job_training_organization_name: "Goodwill",
+            job_training_hours_per_month: "10"
+          }
+
+          activities = ActivityFlowInvitation.last.pre_populated_activities
+          months = activities.first["months"].map { |month| month["month"] }
+          expect(months).to eq(%w[2025-12-01 2026-01-01 2026-02-01 2026-03-01 2026-04-01 2026-05-01])
+        end
+      end
+
+      it "uses the selected reporting window start for pre-populated work program months" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          reporting_window: "application",
+          reporting_window_months: "3",
+          reporting_window_start: "07/01/2025",
+          job_training_enabled: "1",
+          job_training_program_name: "Career Prep",
+          job_training_organization_name: "Goodwill",
+          job_training_hours_per_month: "10"
+        }
+
+        activities = ActivityFlowInvitation.last.pre_populated_activities
+        months = activities.first["months"].map { |month| month["month"] }
+        expect(months).to eq(%w[2025-07-01 2025-08-01 2025-09-01])
       end
 
       it "creates an invitation with all activity types when all are enabled" do
