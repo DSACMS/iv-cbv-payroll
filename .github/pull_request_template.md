@@ -1,4 +1,4 @@
-## [FFS-XXXX](https://jiraent.cms.gov/browse/FFS-XXXX)
+jiraent.cms.gov/browse/FFS-XXXX)
 
 ## Changes
 <!-- What was added, updated, or removed in this PR. -->
