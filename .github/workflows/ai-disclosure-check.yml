@@ -1,0 +1,39 @@
+name: AI Disclosure Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  ai-disclosure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify AI disclosure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || "";
+            const lines = body.split(/\r?\n/);
+
+            const isChecked = (label) => {
+              const line = lines.find(l => l.includes(label + ":"));
+              return !!line && /^\s*-\s*\[x\]/i.test(line);
+            };
+
+            const usedAI = isChecked("USED_AI");
+            const noAI   = isChecked("NO_AI");
+
+            if (!usedAI && !noAI) {
+              core.setFailed(
+                "AI disclosure required: check either USED_AI or NO_AI in the " +
+                "AI Usage section of the PR description."
+              );
+              return;
+            }
+
+            if (usedAI && noAI) {
+              core.setFailed(
+                "Both USED_AI and NO_AI are checked — please check only one."
+              );
+              return;
+            }
