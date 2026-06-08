@@ -3,8 +3,9 @@
 ## Overview
 
 This repository contains the Eligibility Made Easy (Emmy) web application and
-supporting project infrastructure. Emmy is a CMS-maintained tool that helps
-states meet Medicaid eligibility requirements and helps beneficiaries complete
+supporting project infrastructure. Emmy is a tool maintained by the Centers for 
+Medicare & Medicaid Services (CMS). It helps states gather information related 
+to Medicaid eligibility requirements and helps beneficiaries complete 
 eligibility-related tasks more easily.
 
 This is a monorepo: each top-level directory owns a different part of the
@@ -64,7 +65,7 @@ infrastructure changes, environment variables, or deployment risk.
 
 ## Security And Privacy
 
-Emmy touches eligibility, income, agency, and beneficiary workflows, so handle
-data carefully. Keep real data out of code, tests, fixtures, logs, screenshots,
-and documentation, use clearly synthetic data for examples, and follow
+Handle data carefully. Emmy touches eligibility, income, agency, and beneficiary workflows.  
+Keep real data out of code, tests, fixtures, logs, screenshots,
+and documentation; use clearly synthetic data for examples, and follow
 [`SECURITY.md`](./SECURITY.md) for vulnerability disclosure.
