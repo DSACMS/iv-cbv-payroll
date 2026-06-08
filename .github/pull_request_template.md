@@ -21,7 +21,7 @@ Tag product and design in Slack for acceptance: @emmy-acceptance-testers
   * Make sure to notify the team once this PR is merged so we don't inadvertently deploy the unaccepted change to production. (e.g. `:alert: Deploy block! @ffs-eng I just merged PR [#123] and will be doing acceptance testing in demo - please don't deploy until I'm finished!`)
 
 ## AI Usage
-- [X] USED_AI: I attest that I have read, understood, and take ownership of all AI-generated code in this PR.
+- [ ] USED_AI: I attest that I have read, understood, and take ownership of all AI-generated code in this PR.
 - [ ] NO_AI: I did not use AI.
 
 Optional — for learning, not audited:
