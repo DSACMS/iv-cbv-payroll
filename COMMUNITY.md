@@ -1,6 +1,7 @@
 # COMMUNITY.md
 
 IV CBV Payroll is supported by a dedicated team of individuals fulfilling various roles to ensure its success, security, and alignment with government standards and agency goals.
+fake edit, do not merge
 
 ## Project Members
 
@@ -51,8 +52,8 @@ See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on 
 
 <!-- TODO: A list of CONTRIBUTORS is generated below using contributors.yml located in the workflows directory. In order to automatically update the COMMUNITY.md, you must enter a secret into your Secrets and Variables under Actions within your repository settings. The name of the secret must be PUSH_TO_PROTECTED_BRANCH and the value must be a Personal Access Token with specific permissions. Please follow [this link](https://github.com/CasperWA/push-protected?tab=readme-ov-file#notes-on-token-and-user-permissions) for more information. -->
 
-<!--Total number of contributors: [TO DO]--> 
-<!--CONTRIBUTOR COUNT START--> 
+<!--Total number of contributors: [TO DO]-->
+<!--CONTRIBUTOR COUNT START-->
 <!--CONTRIBUTOR COUNT END-->
 
 <!-- readme: contributors -start -->
@@ -97,11 +98,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for more details on the release process.
 
 **Description:** A Contributor contributes directly to the project and adds value to it. Contributions need not be code. People at the Contributor level may be new contributors, or they may only contribute occasionally.
 
-#### Responsibilities include: 
+#### Responsibilities include:
 - Following the project CoC.
 - Following the project contributing guidelines in CONTRIBUTING.md.
 
-#### Requirements (one or several of the below): 
+#### Requirements (one or several of the below):
 - Report and resolve issues.
 - Submit and review PRs.
 - Contribute to the documentation.
@@ -112,7 +113,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for more details on the release process.
 - Promote the project in public in line with the COMMUNICATIONS.md policy.
 - Help maintain the project and community infrastructure.
 
-#### Privileges: 
+#### Privileges:
 - Invitations to contributor events.
 - Access to community spaces and infrastructure.
 - Eligible to advance along the project's CONTRIBUTOR_LADDER.md.
@@ -120,11 +121,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for more details on the release process.
 
 ## Maintainers
 
-**Description:** Maintainers are established contributors who are responsible for entire areas of the project. As such, they have the ability to approve PRs against specific areas of the project, and are expected to participate in reviewing and approving contributions to the project. 
+**Description:** Maintainers are established contributors who are responsible for entire areas of the project. As such, they have the ability to approve PRs against specific areas of the project, and are expected to participate in reviewing and approving contributions to the project.
 
 A Maintainer must meet the responsibilities and requirements of a contributor, plus:
 
-#### Responsibilities include: 
+#### Responsibilities include:
 - Reviewing at least 2 PRs per 3 months, especially PRs that involve specific parts of the project.
 - Mentoring new contributors.
 - Writing and refactoring submitted PRs.
@@ -193,14 +194,14 @@ When participating in Emmy open source community conversations and spaces, we as
 
 ### Inactivity
 It is important for contributors to be and stay active to set an example and show commitment to the project. Inactivity may lead to unexpected delays, contributor attrition, and a lost of trust in the project.
-- Inactivity is measured by: 
+- Inactivity is measured by:
   - Periods of no contributions for longer than 6 months.
   - Periods of no communication for longer than 6 months.
-- Consequences of being inactive include: 
+- Consequences of being inactive include:
   - Transfer to Alumni status
 
 ### Involuntary Removal or Demotion
-Involuntary removal/demotion of a contributor happens when responsibilities and requirements aren't being met. This may include repeated patterns of inactivity, extended periods of inactivity, a period of failing to meet the requirements of your role, and/or a violation of the Code of Conduct. This process is important because it protects the community and its deliverables while also opening up opportunities for new contributors to step in. 
+Involuntary removal/demotion of a contributor happens when responsibilities and requirements aren't being met. This may include repeated patterns of inactivity, extended periods of inactivity, a period of failing to meet the requirements of your role, and/or a violation of the Code of Conduct. This process is important because it protects the community and its deliverables while also opening up opportunities for new contributors to step in.
 
 Involuntary removal or demotion is handled through maintainers filing an issue using the contributor_ladder.md template, and sending a PR to the COMMUNITY.md file.
 
