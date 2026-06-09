@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe AccordionComponent, type: :component do
+RaSpec.describe AccordionComponent, type: :component do
   it "renders content as expected" do
     render_inline(described_class.new(id: "accordion1", expanded: true)) do |component|
       component.with_title { "Accordion Title" }
