@@ -5,7 +5,6 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  id-token: write
 jobs:
   classify:
     uses: navapbc/ai-transformation-delivery-systems/.github/workflows/test-classifier.yml@pilot
@@ -16,5 +15,5 @@ jobs:
     secrets:
       # Needed when tool: claude
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      # Needed when tool: codex
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+# Needed when tool: codex (uncomment if switching tools)
+# OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
