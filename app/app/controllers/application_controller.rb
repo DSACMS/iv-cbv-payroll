@@ -3,12 +3,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
   around_action :switch_locale
   before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :configure_iframe_embedding, :set_device_id_cookie
-  after_action :relax_frame_options_for_iframe
-
-  content_security_policy do |policy|
-    ancestors = current_agency&.allowed_iframe_ancestors
-    policy.frame_ancestors(:self, *ancestors) if ancestors.present?
-  end
+  after_action :apply_iframe_embedding_headers
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
@@ -62,9 +57,18 @@ class ApplicationController < ActionController::Base
     iframe_cookie_options.each { |key, value| request.session_options[key] = value }
   end
 
-  def relax_frame_options_for_iframe
-    return unless iframe_embedding_allowed?
+  # Widen CSP `frame-ancestors` and drop the default `X-Frame-Options:
+  # SAMEORIGIN` for embedding agencies so the configured parents can frame us.
+  # Done in an after_action because the agency may only be resolvable once the controller
+  # has loaded the flow
+  def apply_iframe_embedding_headers
+    return if current_agency&.allowed_iframe_ancestors.blank?
 
+    if (policy = request.content_security_policy)
+      request.content_security_policy = policy.clone.tap do |cloned|
+        cloned.frame_ancestors(:self, *current_agency&.allowed_iframe_ancestors)
+      end
+    end
     response.headers.delete("X-Frame-Options")
   end
 

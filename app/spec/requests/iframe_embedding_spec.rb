@@ -4,23 +4,21 @@ RSpec.describe "Iframe embedding", type: :request do
   # Use a lightweight, agency-scoped page that resolves `current_agency` from
   # the `client_agency_id` query param and renders without creating a flow.
   let(:path) { "/help?client_agency_id=sandbox" }
+  let(:allowed_iframe_ancestor) { "https://portal.example.com" }
 
-  describe "Content-Security-Policy frame-ancestors" do
+  describe "entering via the tokenized link" do
+    let(:invitation) { create(:cbv_flow_invitation, :sandbox) }
+
     context "when the agency permits iframe embedding" do
       before do
-        stub_client_agency_config_value("sandbox", "allowed_iframe_ancestors", [ "https://portal.example.com" ])
+        stub_client_agency_config_value("sandbox", "allowed_iframe_ancestors", [ allowed_iframe_ancestor ])
       end
 
-      it "allows the configured parent origins" do
-        get path
+      it "applies the embedding headers on the token-resolved page" do
+        get "/start/#{invitation.auth_token}"
 
         expect(response.headers["Content-Security-Policy"])
-          .to include("frame-ancestors 'self' https://portal.example.com")
-      end
-
-      it "removes the X-Frame-Options header that would otherwise block framing" do
-        get path
-
+          .to include("frame-ancestors 'self' #{allowed_iframe_ancestor}")
         expect(response.headers).not_to include("X-Frame-Options")
       end
     end
@@ -30,17 +28,10 @@ RSpec.describe "Iframe embedding", type: :request do
         stub_client_agency_config_value("sandbox", "allowed_iframe_ancestors", [])
       end
 
-      it "restricts framing to the same origin" do
-        get path
+      it "keeps framing locked down" do
+        get "/start/#{invitation.auth_token}"
 
-        csp = response.headers["Content-Security-Policy"]
-        expect(csp).to include("frame-ancestors 'self'")
-        expect(csp).not_to include("portal.example.com")
-      end
-
-      it "keeps the X-Frame-Options header" do
-        get path
-
+        expect(response.headers["Content-Security-Policy"]).to include("frame-ancestors 'self'")
         expect(response.headers["X-Frame-Options"]).to eq("SAMEORIGIN")
       end
     end
@@ -49,7 +40,7 @@ RSpec.describe "Iframe embedding", type: :request do
   describe "session cookie SameSite" do
     context "when the agency permits iframe embedding" do
       before do
-        stub_client_agency_config_value("sandbox", "allowed_iframe_ancestors", [ "https://portal.example.com" ])
+        stub_client_agency_config_value("sandbox", "allowed_iframe_ancestors", [ allowed_iframe_ancestor ])
       end
 
       it "issues the session cookie as SameSite=None; Secure so it survives a cross-site iframe" do
