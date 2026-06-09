@@ -2,6 +2,10 @@ name: AI test classifier
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
 jobs:
   classify:
     uses: navapbc/ai-transformation-delivery-systems/.github/workflows/test-classifier.yml@pilot
