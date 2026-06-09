@@ -1,0 +1,16 @@
+name: AI test classifier
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  classify:
+    uses: navapbc/ai-transformation-delivery-systems/.github/workflows/test-classifier.yml@pilot
+    with:
+      # Which AI CLI runs the classifier: claude | codex.
+      # Set the matching API-key secret below for whichever you pick.
+      tool: claude
+    secrets:
+      # Needed when tool: claude
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      # Needed when tool: codex
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
