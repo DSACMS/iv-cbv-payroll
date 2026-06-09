@@ -94,8 +94,19 @@
 
   document.getElementById("frame-form").addEventListener("submit", function(event) {
     event.preventDefault();
-    document.getElementById("target-frame").src =
-      document.getElementById("target-url").value;
+    var rawUrl = document.getElementById("target-url").value;
+
+    try {
+      var parsedUrl = new URL(rawUrl, window.location.href);
+      if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+        alert("Please enter a valid http(s) URL.");
+        return;
+      }
+
+      document.getElementById("target-frame").src = parsedUrl.href;
+    } catch (e) {
+      alert("Please enter a valid URL.");
+    }
   });
 </script>
 </body>
