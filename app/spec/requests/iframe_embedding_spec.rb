@@ -53,10 +53,16 @@ RSpec.describe "Iframe embedding", type: :request do
       end
 
       it "issues the session cookie as SameSite=None; Secure so it survives a cross-site iframe" do
-        get path
+        get path, env: { "HTTPS" => "on" }
 
         expect(request.session_options[:same_site]).to eq(:none)
         expect(request.session_options[:secure]).to be(true)
+      end
+
+      it "does not set Secure cookies over plain HTTP, which the browser would drop" do
+        get path
+
+        expect(request.session_options[:same_site]).not_to eq(:none)
       end
     end
 
@@ -66,7 +72,7 @@ RSpec.describe "Iframe embedding", type: :request do
       end
 
       it "does not relax the session cookie SameSite" do
-        get path
+        get path, env: { "HTTPS" => "on" }
 
         expect(request.session_options[:same_site]).not_to eq(:none)
       end

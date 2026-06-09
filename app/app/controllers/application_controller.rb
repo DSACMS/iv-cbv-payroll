@@ -45,9 +45,11 @@ class ApplicationController < ActionController::Base
 
   # Cross-origin iframes only send cookies marked `SameSite=None; Secure`.
   # Scope this relaxation to agencies that opt in to embedding so other
-  # agencies keep the stricter `SameSite=Lax` default.
+  # agencies keep the stricter `SameSite=Lax` default. `Secure` requires HTTPS,
+  # so only relax over SSL; otherwise the browser drops the cookie and the
+  # session is lost (e.g. E2E/dev served over plain HTTP).
   def iframe_cookie_options
-    return {} unless iframe_embedding_allowed?
+    return {} unless iframe_embedding_allowed? && request.ssl?
 
     { same_site: :none, secure: true }
   end
@@ -90,11 +92,15 @@ class ApplicationController < ActionController::Base
       return @current_agency
     end
 
+    # Don't memoize the domain fallback: it may be resolved during an early
+    # before_action (e.g. iframe/device-id setup) before @cbv_flow is set, and
+    # memoizing here would prevent current_agency from later resolving to the
+    # flow's agency.
     if client_agency_from_domain.present?
-      @current_agency = agency_config[client_agency_from_domain]
+      return agency_config[client_agency_from_domain]
     end
 
-    @current_agency
+    nil
   end
 
   def session_timeout_enabled?
