@@ -9,13 +9,13 @@ class FlowController < ApplicationController
       return
     end
 
-    @flow, is_new_session = find_or_create_flow
+    @flow = create_flow_with_new_applicant
     @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
 
     set_flow_session(@flow.id, flow_param)
     apply_demo_overrides
 
-    track_generic_link_clicked_event(@flow, is_new_session)
+    track_generic_link_clicked_event(@flow)
   end
 
   def next_path
@@ -42,33 +42,13 @@ class FlowController < ApplicationController
 
   private
 
-  def find_or_create_flow
-    existing_applicant = find_existing_applicant_from_cookie
-    if existing_applicant && existing_applicant.client_agency_id == current_agency&.id
-      create_flow_with_existing_applicant(existing_applicant)
-    else
-      create_flow_with_new_applicant
-    end
-  end
-
-  def create_flow_with_existing_applicant(applicant)
-    applicant.reset_applicant_attributes
-    flow = flow_class(flow_param).create(
-      cbv_applicant: applicant,
-      device_id: cookies.permanent.signed[:device_id],
-      **flow_attributes_from_params
-    )
-    [ flow, false ]
-  end
-
   def create_flow_with_new_applicant
     applicant = CbvApplicant.create!(client_agency_id: current_agency.id)
-    flow = flow_class(flow_param).create(
+    flow_class(flow_param).create(
       cbv_applicant: applicant,
       device_id: cookies.permanent.signed[:device_id],
       **flow_attributes_from_params
     )
-    [ flow, true ]
   end
 
   def set_flow
@@ -108,15 +88,7 @@ class FlowController < ApplicationController
     end
   end
 
-  def find_existing_applicant_from_cookie
-    device_id = cookies.permanent.signed[:device_id]
-    return nil unless device_id.present?
-
-    recent_flow = flow_class(flow_param).where(device_id: device_id).order(created_at: :desc).first
-    recent_flow&.cbv_applicant
-  end
-
-  def track_generic_link_clicked_event(flow, is_new_session)
+  def track_generic_link_clicked_event(flow)
     # Skip tracking this event for a specific user agent, since we tend
     # to get a ton of traffic from it during LA SMS sends
     return if request.user_agent&.match?(/go-http-client/i)
@@ -126,8 +98,7 @@ class FlowController < ApplicationController
       cbv_applicant_id: flow.cbv_applicant_id,
       cbv_flow_id: flow.id, # TODO: Genericize/migrate key, it could be activity or cbv
       client_agency_id: flow.cbv_applicant.client_agency_id,
-      origin: params[:origin],
-      is_new_session: is_new_session
+      origin: params[:origin]
     })
   end
 
