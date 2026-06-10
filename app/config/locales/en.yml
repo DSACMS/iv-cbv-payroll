@@ -647,6 +647,12 @@ en:
         radio_no: No, I don’t have another job to add with this tool
         radio_yes: Yes, I want to add another job with this tool
     applicant_informations:
+      accenture:
+        fields:
+          case_number:
+            blank: Enter your case number.
+            prompt: Case number
+            super_one_html: Case number<sup>1</sup>
       la_ldh:
         fields:
           case_number:
