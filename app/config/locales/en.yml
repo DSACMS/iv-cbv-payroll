@@ -157,7 +157,7 @@ en:
     education:
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
-        additional_information_header: Additional comments (Optional)
+        additional_information_header: Additional comments (optional)
         additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         continue: Save and continue
         description: We have gathered your student enrollment details from %{reporting_window}.
@@ -375,7 +375,7 @@ en:
       error_no_access: You don't have permission to access that information
       payment_details:
         show:
-          additional_information_header: Additional information
+          additional_information_header: Additional comments (optional)
           additional_information_label: Share any comments or additional information about the details above that you'd like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
           continue: Continue
           header: Review your information from %{employer_name}
