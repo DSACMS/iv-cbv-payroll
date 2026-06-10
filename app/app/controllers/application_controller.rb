@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
   around_action :switch_locale
   before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :set_device_id_cookie
+  after_action :apply_iframe_embedding
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
@@ -27,8 +28,52 @@ class ApplicationController < ActionController::Base
   def set_device_id_cookie
     cookies.permanent.signed[:device_id] ||= {
       value: SecureRandom.uuid,
-      httponly: true
+      httponly: true,
+      **iframe_cookie_options
     }
+  end
+
+  # True when the current agency is configured to permit iframe embedding.
+  def iframe_embedding_allowed?
+    current_agency&.allowed_iframe_ancestors.present?
+  end
+
+  # Cross-origin iframes only send cookies marked `SameSite=None; Secure`.
+  # Scope this relaxation to agencies that opt in to embedding so other
+  # agencies keep the stricter `SameSite=Lax` default. `Secure` requires HTTPS,
+  # so only relax over SSL; otherwise the browser drops the cookie and the
+  # session is lost (e.g. E2E/dev served over plain HTTP).
+  def iframe_cookie_options
+    return {} unless iframe_embedding_allowed? && request.ssl?
+
+    { same_site: :none, secure: true }
+  end
+
+  # Relax framing policy and cookies for embedding agencies. Done in an
+  # after_action because the agency may only be resolvable once the controller
+  # has loaded the flow (e.g. the tokenized `/start/:token` entry, where
+  # `current_agency` is still nil during the before_actions). The session and
+  # device-id cookies are committed by middleware *after* this runs, so setting
+  # `session_options` and re-issuing the device-id cookie here still takes
+  # effect on the emitted `Set-Cookie` headers.
+  def apply_iframe_embedding
+    return if current_agency&.allowed_iframe_ancestors.blank?
+
+    # Reissue the session and device-id cookies as `SameSite=None; Secure` so
+    # they survive inside a cross-origin iframe (no-op off SSL).
+    if (cookie_options = iframe_cookie_options).present?
+      cookie_options.each { |key, value| request.session_options[key] = value }
+      if (device_id = cookies.permanent.signed[:device_id]).present?
+        cookies.permanent.signed[:device_id] = { value: device_id, httponly: true, **cookie_options }
+      end
+    end
+
+    if (policy = request.content_security_policy)
+      request.content_security_policy = policy.clone.tap do |cloned|
+        cloned.frame_ancestors(:self, *current_agency.allowed_iframe_ancestors)
+      end
+    end
+    response.headers.delete("X-Frame-Options")
   end
 
   def show_menu?
@@ -55,11 +100,15 @@ class ApplicationController < ActionController::Base
       return @current_agency
     end
 
+    # Don't memoize the domain fallback: it may be resolved during an early
+    # before_action (e.g. iframe/device-id setup) before @cbv_flow is set, and
+    # memoizing here would prevent current_agency from later resolving to the
+    # flow's agency.
     if client_agency_from_domain.present?
-      @current_agency = agency_config[client_agency_from_domain]
+      return agency_config[client_agency_from_domain]
     end
 
-    @current_agency
+    nil
   end
 
   def session_timeout_enabled?
@@ -81,12 +130,14 @@ class ApplicationController < ActionController::Base
   end
 
   def client_agency_from_domain
-    return nil unless request.host.present?
+    return @client_agency_from_domain if defined?(@client_agency_from_domain)
 
-    agency_config.client_agency_ids.find do |agency_id|
-      agency = agency_config[agency_id]
-      agency.agency_domain == request.host
-    end
+    @client_agency_from_domain =
+      if request.host.present?
+        agency_config.client_agency_ids.find do |agency_id|
+          agency_config[agency_id].agency_domain == request.host
+        end
+      end
   end
 
   def pilot_ended?

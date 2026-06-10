@@ -9,6 +9,14 @@ Rails.application.config.to_prepare do
       tunnel_url = tunnels.first["public_url"]
       Rails.logger.info "Found ngrok tunnel at #{tunnel_url}!"
 
+      # Point the sandbox agency at this machine's current ngrok host so it
+      # resolves the agency by domain when accessed or embedded over ngrok
+      sandbox_agency = Rails.application.config.client_agencies["sandbox"]
+      if sandbox_agency
+        sandbox_agency.instance_variable_set(:@agency_domain, URI(tunnel_url).host)
+        Rails.logger.info "Set sandbox agency_domain to #{sandbox_agency.agency_domain} for ngrok"
+      end
+
       subscription_name = ENV["USER"]
       raise "USER environment variable not specified" unless subscription_name.present?
 

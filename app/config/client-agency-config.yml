@@ -140,6 +140,11 @@
     work_programs: true
     employment: true
   prefilled_activities_enabled: true
+  allowed_iframe_ancestors:
+    - https://dsacms.github.io
+# Uncomment for local testing:
+#    - http://localhost:8000
+#    - https://*.ngrok-free.app
 
 - id: research
   agency_name: Example State Department of Health
