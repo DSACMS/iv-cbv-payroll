@@ -1,11 +1,3 @@
-<!-- ---------------------------------------------------------------------------
-Some examples of good, understandable PR titles:
-
-FFS-1111: Fix missing translation on /entry page
-FFS-2222: Implement invitation reminder emails
-
-(The title of the pull request will be used in the eventual deploy log - so it's helpful to format the title to be understandable by other disciplines if possible.)
---------------------------------------------------------------------------- -->
 ## [FFS-XXXX](https://jiraent.cms.gov/browse/FFS-XXXX)
 
 ## Changes
@@ -28,6 +20,14 @@ Tag product and design in Slack for acceptance: @emmy-acceptance-testers
   * This change is hard to test locally, so we'll test it in the demo environment (deployed automatically after merge.)
   * Make sure to notify the team once this PR is merged so we don't inadvertently deploy the unaccepted change to production. (e.g. `:alert: Deploy block! @ffs-eng I just merged PR [#123] and will be doing acceptance testing in demo - please don't deploy until I'm finished!`)
 
+## AI Usage
+- [ ] USED_AI: I attest that I have read, understood, and take ownership of all AI-generated code in this PR.
+- [ ] NO_AI: I did not use AI.
+
+Optional — for learning, not audited:
+- AI tools used: <e.g. GitHub Copilot, Claude Code — shows what's in use>
+- Prompt artifacts: <link a prompt/chat if worth keeping; otherwise skip>
+
 ## Infrastructure Changes
 <!-- If this PR includes Terraform changes, please provide relevant info. -->
   - [ ] Plan reviewed
@@ -35,5 +35,5 @@ Tag product and design in Slack for acceptance: @emmy-acceptance-testers
   - [ ] Applied in demo after merge
   - [ ] Applied in prod after merge (note any exceptions or special coordination below)
 
-**Risk / Downtime:**
+## **Risk / Downtime:**
 <!-- Note exceptions, potential downtime, or required coordination -->
