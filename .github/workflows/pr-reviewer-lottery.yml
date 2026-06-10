@@ -1,23 +1,19 @@
 name: "Add random reviewer via Reviewer Lottery"
 on:
   pull_request_target:
-    types: [opened, ready_for_review, reopened]
+    types: [ opened, ready_for_review, reopened ]
 
 jobs:
   reviewer-lottery:
-    # Skip when the PR already has a requested reviewer — preserves any reviewer
-    # set at PR creation (e.g. by the auto-fix-vulnerabilities workflow) across
-    # the close/reopen dance that the autofix PR body instructs maintainers to
-    # perform to force CI.
     if: |
       github.actor != 'dependabot[bot]' &&
-      toJSON(github.event.pull_request.requested_reviewers) == '[]'
+      !contains(github.event.pull_request.requested_reviewers.*.type, 'User')
     name: Add random reviewer via Reviewer Lottery
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
-    - uses: actions/checkout@v6
-    - uses: uesteibar/reviewer-lottery@v4
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v6
+      - uses: uesteibar/reviewer-lottery@v4
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
