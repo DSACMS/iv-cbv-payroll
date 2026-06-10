@@ -126,12 +126,14 @@ class ApplicationController < ActionController::Base
   end
 
   def client_agency_from_domain
-    return nil unless request.host.present?
+    return @client_agency_from_domain if defined?(@client_agency_from_domain)
 
-    agency_config.client_agency_ids.find do |agency_id|
-      agency = agency_config[agency_id]
-      agency.agency_domain == request.host
-    end
+    @client_agency_from_domain =
+      if request.host.present?
+        agency_config.client_agency_ids.find do |agency_id|
+          agency_config[agency_id].agency_domain == request.host
+        end
+      end
   end
 
   def pilot_ended?

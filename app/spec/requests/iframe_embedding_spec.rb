@@ -38,6 +38,12 @@ RSpec.describe "Iframe embedding", type: :request do
   end
 
   describe "session cookie SameSite" do
+    # Assert on the emitted Set-Cookie header (what the browser actually
+    # enforces), not just request.session_options.
+    def session_cookie
+      Array(response.headers["Set-Cookie"]).find { |c| c.start_with?("_iv_cbv_payroll_session") }.to_s
+    end
+
     context "when the agency permits iframe embedding" do
       before do
         stub_client_agency_config_value("sandbox", "allowed_iframe_ancestors", [ allowed_iframe_ancestor ])
@@ -46,14 +52,14 @@ RSpec.describe "Iframe embedding", type: :request do
       it "issues the session cookie as SameSite=None; Secure so it survives a cross-site iframe" do
         get path, env: { "HTTPS" => "on" }
 
-        expect(request.session_options[:same_site]).to eq(:none)
-        expect(request.session_options[:secure]).to be(true)
+        expect(session_cookie).to match(/samesite=none/i)
+        expect(session_cookie).to match(/;\s*secure/i)
       end
 
       it "does not set Secure cookies over plain HTTP, which the browser would drop" do
         get path
 
-        expect(request.session_options[:same_site]).not_to eq(:none)
+        expect(session_cookie).not_to match(/samesite=none/i)
       end
     end
 
@@ -65,7 +71,7 @@ RSpec.describe "Iframe embedding", type: :request do
       it "does not relax the session cookie SameSite" do
         get path, env: { "HTTPS" => "on" }
 
-        expect(request.session_options[:same_site]).not_to eq(:none)
+        expect(session_cookie).not_to match(/samesite=none/i)
       end
     end
   end
