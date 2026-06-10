@@ -2,8 +2,8 @@ class ApplicationController < ActionController::Base
   helper :view
   helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
   around_action :switch_locale
-  before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :configure_iframe_embedding, :set_device_id_cookie
-  after_action :apply_iframe_embedding_headers
+  before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :set_device_id_cookie
+  after_action :apply_iframe_embedding
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
@@ -49,24 +49,28 @@ class ApplicationController < ActionController::Base
     { same_site: :none, secure: true }
   end
 
-  # Relax the session cookie's SameSite attribute for embedding agencies so the
-  # session persists when the app is loaded inside a cross-origin iframe.
-  def configure_iframe_embedding
-    return unless iframe_embedding_allowed?
-
-    iframe_cookie_options.each { |key, value| request.session_options[key] = value }
-  end
-
-  # Widen CSP `frame-ancestors` and drop the default `X-Frame-Options:
-  # SAMEORIGIN` for embedding agencies so the configured parents can frame us.
-  # Done in an after_action because the agency may only be resolvable once the controller
-  # has loaded the flow
-  def apply_iframe_embedding_headers
+  # Relax framing policy and cookies for embedding agencies. Done in an
+  # after_action because the agency may only be resolvable once the controller
+  # has loaded the flow (e.g. the tokenized `/start/:token` entry, where
+  # `current_agency` is still nil during the before_actions). The session and
+  # device-id cookies are committed by middleware *after* this runs, so setting
+  # `session_options` and re-issuing the device-id cookie here still takes
+  # effect on the emitted `Set-Cookie` headers.
+  def apply_iframe_embedding
     return if current_agency&.allowed_iframe_ancestors.blank?
+
+    # Reissue the session and device-id cookies as `SameSite=None; Secure` so
+    # they survive inside a cross-origin iframe (no-op off SSL).
+    if (cookie_options = iframe_cookie_options).present?
+      cookie_options.each { |key, value| request.session_options[key] = value }
+      if (device_id = cookies.permanent.signed[:device_id]).present?
+        cookies.permanent.signed[:device_id] = { value: device_id, httponly: true, **cookie_options }
+      end
+    end
 
     if (policy = request.content_security_policy)
       request.content_security_policy = policy.clone.tap do |cloned|
-        cloned.frame_ancestors(:self, *current_agency&.allowed_iframe_ancestors)
+        cloned.frame_ancestors(:self, *current_agency.allowed_iframe_ancestors)
       end
     end
     response.headers.delete("X-Frame-Options")
