@@ -38,10 +38,10 @@ RSpec.describe "Iframe embedding", type: :request do
   end
 
   describe "session cookie SameSite" do
-    # Assert on the emitted Set-Cookie header (what the browser actually
-    # enforces), not just request.session_options.
     def session_cookie
-      Array(response.headers["Set-Cookie"]).find { |c| c.start_with?("_iv_cbv_payroll_session") }.to_s
+      set_cookie = response.headers["Set-Cookie"]
+      cookies = set_cookie.is_a?(Array) ? set_cookie : set_cookie.to_s.split("\n")
+      cookies.find { |c| c.start_with?("_iv_cbv_payroll_session") }.to_s
     end
 
     context "when the agency permits iframe embedding" do
