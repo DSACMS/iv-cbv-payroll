@@ -140,7 +140,7 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
           expect { subject.deliver }
             .to raise_error(
               ApplicationJob::SilencedError,
-              /code=502 message=Bad Gateway body=Bad Gateway/
+              /code=502 message=Bad Gateway/
             )
 
           expect(json_request).to have_been_made.once

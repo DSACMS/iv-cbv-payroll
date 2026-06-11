@@ -114,7 +114,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
         expect { subject.deliver }
           .to raise_error(
             ApplicationJob::SilencedError,
-            /code=403 message=Forbidden body=Forbidden/
+            /code=403 message=Forbidden/
           )
       end
     end
@@ -133,7 +133,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
         expect { subject.deliver }
           .to raise_error(
             Transmitters::HttpPdfTransmitter::HttpPdfTransmitterError,
-            /code=500 message=Internal Server Error body=Internal Server Error/
+            /code=500 message=Internal Server Error/
           )
       end
     end
