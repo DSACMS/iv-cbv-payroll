@@ -343,6 +343,18 @@ post_review_to_github() {
     --jq '.[] | {path: .path, line: .line, body: .body}' 2>/dev/null || true)"
   export AI_REVIEW_EXISTING_COMMENTS="${existing_comments}"
 
+  # Diff positions: fetch the PR's per-file patches so the payload builder can
+  # drop any finding whose line is not part of the diff. GitHub rejects the
+  # ENTIRE review (HTTP 422) if a single inline comment lands on a line outside
+  # the diff, so we filter to commentable positions before posting. NDJSON, one
+  # object per file. A fetch failure degrades to no filtering — the body-only
+  # POST fallback below still protects the run.
+  local pr_files
+  pr_files="$(gh api --paginate \
+    "repos/${repo_slug}/pulls/${pr_number}/files" \
+    --jq '.[] | {filename: .filename, patch: .patch}' 2>/dev/null || true)"
+  export AI_REVIEW_PR_FILES="${pr_files}"
+
   local api_payload
   api_payload="$(echo "${review_json}" | python3 -c '
 import json, sys, html, os, re
@@ -421,8 +433,63 @@ def render_body(c):
         f"_Reviewed by AI, was this helpful? Please react with \U0001F44D or \U0001F44E._\n"
     )
 
+# ── Diff positions: which (path, line, side) are commentable ─────────────────
+# GitHub rejects the ENTIRE review (HTTP 422) if any inline comment lands on a
+# line that is not part of the diff. Parse each file patch into the set of
+# new-file lines (RIGHT: added + context) and old-file lines (LEFT: removed +
+# context); findings outside those sets get moved into the review body instead.
+# If the files fetch returned nothing, have_diff stays False and filtering is
+# skipped (the body-only POST fallback still protects the run).
+right_lines = {}
+left_lines = {}
+have_diff = False
+
+def parse_patch(patch):
+    right, left = set(), set()
+    new_ln = old_ln = None
+    for pl in patch.split("\n"):
+        if pl.startswith("@@"):
+            m = re.match(r"@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@", pl)
+            if m:
+                old_ln = int(m.group(1)); new_ln = int(m.group(2))
+            continue
+        if new_ln is None:
+            continue
+        if pl.startswith("+"):
+            right.add(new_ln); new_ln += 1
+        elif pl.startswith("-"):
+            left.add(old_ln); old_ln += 1
+        elif pl.startswith(" "):
+            right.add(new_ln); left.add(old_ln); new_ln += 1; old_ln += 1
+    return right, left
+
+for raw in os.environ.get("AI_REVIEW_PR_FILES", "").splitlines():
+    raw = raw.strip()
+    if not raw:
+        continue
+    try:
+        pf = json.loads(raw)
+    except Exception:
+        continue
+    fn = pf.get("filename")
+    patch = pf.get("patch")
+    if not fn or not patch:
+        continue
+    have_diff = True
+    r, l = parse_patch(patch)
+    right_lines.setdefault(fn, set()).update(r)
+    left_lines.setdefault(fn, set()).update(l)
+
+def in_diff(path, line, side):
+    if not have_diff:
+        return True   # no diff info available → do not filter
+    if side == "LEFT":
+        return line in left_lines.get(path, set())
+    return line in right_lines.get(path, set())
+
 comments_out = []
 suppressed = 0
+out_of_diff = []
 for c in comments_in:
     if not all(k in c for k in ("path", "line", "perspective", "severity", "title", "description")):
         print(f"WARN: skipping malformed comment: {c}", file=sys.stderr)
@@ -431,10 +498,14 @@ for c in comments_in:
     if key in anchored:
         suppressed += 1
         continue
+    side = c.get("side", "RIGHT")
+    if not in_diff(c["path"], c["line"], side):
+        out_of_diff.append(c)
+        continue
     comments_out.append({
         "path": c["path"],
         "line": c["line"],
-        "side": c.get("side", "RIGHT"),
+        "side": side,
         "body": render_body(c),
     })
 
@@ -442,11 +513,28 @@ if suppressed:
     print(f"[pr-review] Suppressed {suppressed} finding(s) already posted on "
           f"unchanged lines.", file=sys.stderr)
 
-# If every finding was already commented on an unchanged line, posting a fresh
-# COMMENT review (even an empty one) is itself redundant noise — skip it. The
-# bash caller treats this sentinel as a clean no-op. APPROVE is left alone: it
-# carries no inline comments and re-approving is harmless.
-if action == "COMMENT" and not comments_out:
+# Findings whose line is not in the diff cannot be inline-anchored (GitHub would
+# 422 the whole review). Surface them in the review body so they are not lost.
+if out_of_diff:
+    print(f"[pr-review] {len(out_of_diff)} finding(s) reference lines outside the "
+          f"PR diff; moving them into the review body.", file=sys.stderr)
+    md = []
+    for c in out_of_diff:
+        persp = (c.get("perspective") or "security").lower()
+        sev = str(c.get("severity", "LOW")).lower()
+        cpath = c.get("path")
+        cline = c.get("line")
+        ctitle = c.get("title", "Finding")
+        md.append(f"- **{persp}({sev})** `{cpath}:{cline}` - {ctitle}")
+    summary = (summary.rstrip()
+               + "\n\n---\n\n#### Findings outside the diff (not inline-anchored)\n\n"
+               + "\n".join(md))
+
+# If there is genuinely nothing new to post — everything already commented on
+# unchanged lines, and nothing was moved to the body — skip the redundant empty
+# COMMENT review. The bash caller treats this sentinel as a clean no-op. APPROVE
+# is left alone: it carries no inline comments and re-approving is harmless.
+if action == "COMMENT" and not comments_out and not out_of_diff:
     print("__AI_REVIEW_SKIP_POST__")
     print("[pr-review] All findings already posted on unchanged lines; "
           "nothing new to comment.", file=sys.stderr)
@@ -471,15 +559,44 @@ print(json.dumps(payload))
   fi
 
   echo "[pr-review] Posting review to ${repo_slug} PR #${pr_number} via gh api..."
-  if ! echo "${api_payload}" | gh api \
+  local resp rc=0
+  resp="$(echo "${api_payload}" | gh api \
         "repos/${repo_slug}/pulls/${pr_number}/reviews" \
-        --method POST \
-        --input - >/dev/null; then
-    echo "ERROR: 'gh api' call failed." >&2
-    echo "       Check your gh auth status and that your token has 'pull-requests: write'." >&2
-    exit 1
+        --method POST --input - 2>&1)" || rc=$?
+  if (( rc == 0 )); then
+    echo "[pr-review] Review posted."
+    return 0
   fi
-  echo "[pr-review] Review posted."
+
+  # Non-zero: GitHub rejected the request. Surface its actual message — a 422
+  # here is almost always an invalid review PAYLOAD (most often an inline comment
+  # on a line not in the diff), NOT an auth problem (that would be 401 / 403).
+  echo "[pr-review] GitHub rejected the review:" >&2
+  printf '%s\n' "${resp}" | sed "s/^/    /" >&2
+
+  # Fallback: if the payload carried inline comments, retry body-only so the
+  # summary review still lands instead of failing the build outright.
+  if ! printf '%s' "${api_payload}" | grep -q '"comments": \[\]'; then
+    echo "[pr-review] Retrying as a summary-only review (dropping inline comments)..." >&2
+    local body_only rc2=0 resp2
+    body_only="$(printf '%s' "${api_payload}" | python3 -c 'import json,sys; d=json.load(sys.stdin); d["comments"]=[]; print(json.dumps(d))')" || body_only=""
+    if [[ -n "${body_only}" ]]; then
+      resp2="$(echo "${body_only}" | gh api \
+            "repos/${repo_slug}/pulls/${pr_number}/reviews" \
+            --method POST --input - 2>&1)" || rc2=$?
+      if (( rc2 == 0 )); then
+        echo "[pr-review] Posted a summary-only review (inline comments dropped; findings are in the body)."
+        return 0
+      fi
+      echo "[pr-review] Summary-only retry also failed:" >&2
+      printf '%s\n' "${resp2}" | sed "s/^/    /" >&2
+    fi
+  fi
+
+  echo "ERROR: could not post the review via 'gh api' (see GitHub's message above)." >&2
+  echo "       HTTP 422 = invalid review payload (commonly a comment line not in the diff)." >&2
+  echo "       HTTP 401 / 403 = auth / permissions (token needs 'pull-requests: write')." >&2
+  exit 1
 }
 
 # ── Custom run loop ────────────────────────────────────────────────────────
