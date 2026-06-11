@@ -34,6 +34,7 @@ namespace :caseworker_mailer_fallback do
       else
         puts "  cbv_flow_id=#{entry[:cbv_flow_id]}  agency=#{entry[:agency_id]}  to=#{entry[:fallback_email]}  case=#{entry[:case_number]}  transmitted=#{entry[:transmitted]}"
         puts "  status: #{entry[:reason]}" if entry[:status] == :skipped
+        puts "  warning: #{entry[:warning]}" if entry[:warning].present?
         puts "  error: #{entry[:error].to_s.truncate(300)}"
       end
       puts
@@ -47,7 +48,8 @@ namespace :caseworker_mailer_fallback do
 
     result = CaseworkerMailerFallbackService.new.deliver_all(filter_name: mode)
 
+    result[:warnings].each { |warning| puts "  Warning: #{warning}" }
     result[:skipped].each { |reason| puts "  Skipped: #{reason}" }
-    puts "\nSummary: #{result[:sent]} sent, #{result[:skipped].count} skipped"
+    puts "\nSummary: #{result[:sent]} sent, #{result[:skipped].count} skipped, #{result[:warnings].count} warning(s)"
   end
 end

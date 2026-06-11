@@ -26,7 +26,7 @@ RSpec.describe CaseworkerMailerFallbackService do
     context "when there are no failed CaseWorkerTransmitterJob executions" do
       it "returns sent: 0 and empty skipped list" do
         result = service.deliver_all
-        expect(result).to eq({ sent: 0, skipped: [] })
+        expect(result).to eq({ sent: 0, skipped: [], warnings: [] })
       end
     end
 
@@ -66,10 +66,12 @@ RSpec.describe CaseworkerMailerFallbackService do
         create_failed_execution(cbv_flow)
       end
 
-      it "skips and reports the applicant as redacted" do
+      it "sends the email and returns a warning" do
         result = service.deliver_all
-        expect(result[:sent]).to eq(0)
-        expect(result[:skipped].first).to include("applicant is redacted")
+        expect(result[:sent]).to eq(1)
+        expect(result[:skipped]).to eq([])
+        expect(result[:warnings].first).to include("applicant is redacted")
+        expect(mock_mail).to have_received(:deliver_now)
       end
     end
 
@@ -110,7 +112,7 @@ RSpec.describe CaseworkerMailerFallbackService do
 
       it "returns sent: 1, skipped: []" do
         result = service.deliver_all
-        expect(result).to eq({ sent: 1, skipped: [] })
+        expect(result).to eq({ sent: 1, skipped: [], warnings: [] })
       end
     end
 
@@ -158,6 +160,23 @@ RSpec.describe CaseworkerMailerFallbackService do
           case_number: cbv_flow.cbv_applicant.case_number,
           transmitted: "not yet sent",
           error: error
+        )
+      end
+    end
+
+    context "when a failed execution references a redacted applicant" do
+      before do
+        cbv_flow.cbv_applicant.redact!
+        create_failed_execution(cbv_flow)
+      end
+
+      it "returns a sendable entry with a warning" do
+        result = service.preview
+
+        expect(result[:entries].first).to include(
+          cbv_flow_id: cbv_flow.id,
+          status: :sendable,
+          warning: "applicant is redacted"
         )
       end
     end

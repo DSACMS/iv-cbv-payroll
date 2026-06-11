@@ -33,10 +33,40 @@ RSpec.describe Rake::Task, "#execute" do
 
       expect(service).to have_received(:preview).with(filter_name: "la_ldh_schema_error")
     end
+
+    context "when the preview result includes a warning" do
+      let(:service) do
+        instance_double(
+          CaseworkerMailerFallbackService,
+          preview: {
+            count: 1,
+            entries: [
+              {
+                status: :sendable,
+                cbv_flow: instance_double(CbvFlow),
+                cbv_flow_id: 123,
+                agency_id: "la_ldh",
+                fallback_email: "fallback@example.gov",
+                case_number: "ABC123",
+                transmitted: "not yet sent",
+                warning: "applicant is redacted",
+                error: "Some error"
+              }
+            ]
+          }
+        )
+      end
+
+      it "prints the warning" do
+        described_class["caseworker_mailer_fallback:preview"].execute
+
+        expect($stdout).to have_received(:puts).with("  warning: applicant is redacted")
+      end
+    end
   end
 
   describe "caseworker_mailer_fallback:deliver_all" do
-    let(:service) { instance_double(CaseworkerMailerFallbackService, deliver_all: { sent: 0, skipped: [] }) }
+    let(:service) { instance_double(CaseworkerMailerFallbackService, deliver_all: { sent: 0, skipped: [], warnings: [] }) }
 
     before do
       allow(CaseworkerMailerFallbackService).to receive(:new).and_return(service)
@@ -53,6 +83,27 @@ RSpec.describe Rake::Task, "#execute" do
       described_class["caseworker_mailer_fallback:deliver_all"].execute(mode: "la_ldh_schema_error")
 
       expect(service).to have_received(:deliver_all).with(filter_name: "la_ldh_schema_error")
+    end
+
+    context "when the deliver result includes a warning" do
+      let(:service) do
+        instance_double(
+          CaseworkerMailerFallbackService,
+          deliver_all: { sent: 1, skipped: [], warnings: [ "cbv_flow_id=123: applicant is redacted" ] }
+        )
+      end
+
+      it "prints the warning" do
+        described_class["caseworker_mailer_fallback:deliver_all"].execute
+
+        expect($stdout).to have_received(:puts).with("  Warning: cbv_flow_id=123: applicant is redacted")
+      end
+
+      it "includes the warning count in the summary" do
+        described_class["caseworker_mailer_fallback:deliver_all"].execute
+
+        expect($stdout).to have_received(:puts).with("\nSummary: 1 sent, 0 skipped, 1 warning(s)")
+      end
     end
   end
 end

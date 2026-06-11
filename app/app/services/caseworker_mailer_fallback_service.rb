@@ -13,6 +13,7 @@ class CaseworkerMailerFallbackService
   def deliver_all(filter_name: nil)
     sent = 0
     skipped = []
+    warnings = []
 
     failed_caseworker_executions(filter_name: filter_name).each do |failed_execution|
       entry = entry_for(failed_execution)
@@ -21,6 +22,7 @@ class CaseworkerMailerFallbackService
         next
       end
 
+      warnings << warning_message(entry) if entry[:warning].present?
       deliver(entry)
       entry[:cbv_flow].touch(:transmitted_at)
       failed_execution.destroy
@@ -28,7 +30,7 @@ class CaseworkerMailerFallbackService
       sent += 1
     end
 
-    { sent: sent, skipped: skipped }
+    { sent: sent, skipped: skipped, warnings: warnings }
   end
 
   private
@@ -66,13 +68,12 @@ class CaseworkerMailerFallbackService
       fallback_email: agency&.caseworker_fallback_email || FALLBACK_EMAIL_MISSING,
       case_number: cbv_flow.cbv_applicant.case_number,
       transmitted: transmitted_status(cbv_flow),
+      warning: warning_for(cbv_flow),
       error: failed_execution.error
     }
 
     if cbv_flow.transmitted_at?
       base_entry.merge(status: :skipped, reason: "already transmitted at #{cbv_flow.transmitted_at}")
-    elsif cbv_flow.cbv_applicant.redacted_at?
-      base_entry.merge(status: :skipped, reason: "applicant is redacted")
     elsif agency&.caseworker_fallback_email.blank?
       base_entry.merge(status: :skipped, reason: "no caseworker_fallback_email configured for agency #{agency&.id || 'unknown'}")
     else
@@ -116,6 +117,14 @@ class CaseworkerMailerFallbackService
     else
       "solid_queue_job_id=#{entry[:solid_queue_job_id]}: #{entry[:reason]}"
     end
+  end
+
+  def warning_for(cbv_flow)
+    "applicant is redacted" if cbv_flow.cbv_applicant.redacted_at?
+  end
+
+  def warning_message(entry)
+    "cbv_flow_id=#{entry[:cbv_flow_id]}: #{entry[:warning]}"
   end
 
   def deliver(entry)
