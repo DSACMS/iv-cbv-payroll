@@ -22,7 +22,7 @@
 # │ fine-grained PAT is only needed for local use (`gh auth login`).        │
 # └─────────────────────────────────────────────────────────────────────────┘
 
-name: AI-assisted PR review
+name: AI-assisted security & compliance review
 
 on:
   workflow_dispatch:
