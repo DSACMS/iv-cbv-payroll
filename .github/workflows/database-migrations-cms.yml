@@ -1,0 +1,55 @@
+name: Database migrations
+
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        description: "name of application folder under infra directory"
+        required: true
+        type: string
+      environment:
+        description: "the name of the application environment (e.g. dev, staging, prod)"
+        required: true
+        type: string
+      image_tag:
+        description: "the tag of the image to deploy"
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: "name of application folder under infra directory"
+        required: true
+        type: string
+      environment:
+        description: "the name of the application environment (e.g. dev, staging, prod)"
+        required: true
+        type: string
+      image_tag:
+        description: "the tag of the image to deploy"
+        required: true
+        type: string
+
+concurrency: database-migrations-${{ inputs.app_name }}-${{ inputs.environment }}
+
+jobs:
+  run-migrations:
+    name: Run migrations
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
+
+      - name: Run migrations
+        run: |
+          make release-run-database-migrations-cms ENVIRONMENT=${{ inputs.environment }} EMMY_IMAGE_TAG=${{ inputs.image_tag }}
