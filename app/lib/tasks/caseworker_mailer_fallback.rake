@@ -50,6 +50,6 @@ namespace :caseworker_mailer_fallback do
 
     result[:warnings].each { |warning| puts "  Warning: #{warning}" }
     result[:skipped].each { |reason| puts "  Skipped: #{reason}" }
-    puts "\nSummary: #{result[:sent]} sent, #{result[:skipped].count} skipped"
+    puts "\nSummary: #{result[:sent]} sent, #{result[:skipped].count} skipped, #{result[:warnings].count} warning(s)"
   end
 end

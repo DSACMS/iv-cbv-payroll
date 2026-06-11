@@ -98,6 +98,12 @@ RSpec.describe Rake::Task, "#execute" do
 
         expect($stdout).to have_received(:puts).with("  Warning: cbv_flow_id=123: applicant is redacted")
       end
+
+      it "includes the warning count in the summary" do
+        described_class["caseworker_mailer_fallback:deliver_all"].execute
+
+        expect($stdout).to have_received(:puts).with("\nSummary: 1 sent, 0 skipped, 1 warning(s)")
+      end
     end
   end
 end
