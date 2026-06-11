@@ -21,10 +21,10 @@ RSpec.describe Activities::EntriesController do
           create(:activity_flow, cbv_applicant: flow.cbv_applicant, device_id: "test-device-id")
         end
 
-        it "reuses the existing applicant" do
+        it "creates a new applicant" do
           expect {
             get :show, params: { client_agency_id: 'sandbox' }
-          }.not_to change(CbvApplicant, :count)
+          }.to change(CbvApplicant, :count).by(1)
 
           expect(session[:flow_type]).to eq(:activity)
           expect(session[:flow_id]).to be_truthy
