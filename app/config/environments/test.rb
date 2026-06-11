@@ -62,6 +62,8 @@ Rails.application.configure do
   # Use TestAdapter in test suite
   config.active_job.queue_adapter = :test
 
+  config.cbv_session_expires_after = 100.years
+
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
 
