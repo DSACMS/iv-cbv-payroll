@@ -32,9 +32,10 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   # ── Creation flow ──
 
   describe "creation flow" do
-    it "employer info has no back button" do
+    it "employer info back goes to employer search" do
       get :new
-      expect(Capybara.string(response.body)).not_to have_link("Back")
+      expected = activities_flow_income_employer_search_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
     end
 
     it "review back goes to document uploads" do
