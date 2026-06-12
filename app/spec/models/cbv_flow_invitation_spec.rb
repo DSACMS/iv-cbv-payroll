@@ -76,6 +76,37 @@ RSpec.describe CbvFlowInvitation, type: :model do
     end
   end
 
+  describe "#applicant_information" do
+    let(:invitation) do
+      build(:cbv_flow_invitation, :sandbox, cbv_applicant: build(:cbv_applicant, :sandbox, first_name: nil, last_name: nil))
+    end
+
+    let(:first_name_error) { I18n.t("activerecord.errors.models.cbv_applicant.attributes.first_name.blank") }
+    let(:last_name_error) { I18n.t("activerecord.errors.models.cbv_applicant.attributes.last_name.blank") }
+
+    context "when the agency's applicant requires first and last name (sandbox)" do
+      it "adds errors when they are blank" do
+        invitation.valid?
+
+        expect(invitation.errors[:'cbv_applicant.first_name']).to include(first_name_error)
+        expect(invitation.errors[:'cbv_applicant.last_name']).to include(last_name_error)
+      end
+    end
+
+    context "when the required attributes are stubbed" do
+      it "only enforces a field when the applicant's STI lists it as required" do
+        allow(invitation.cbv_applicant)
+          .to receive(:required_applicant_attributes)
+          .and_return(%i[first_name])
+
+        invitation.valid?
+
+        expect(invitation.errors[:'cbv_applicant.first_name']).to include(first_name_error)
+        expect(invitation.errors[:'cbv_applicant.last_name']).to be_empty
+      end
+    end
+  end
+
   describe "#expired?" do
     subject { invitation.expired? }
 
