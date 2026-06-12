@@ -91,6 +91,10 @@ locals {
 
 
     # Transmission Configuration:
+    ACCENTURE_INCOME_REPORT_URL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/accenture-income-report-url"
+    },
     LA_LDH_INCOME_REPORT_URL = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-income-report-url"
@@ -230,6 +234,10 @@ locals {
     LA_LDH_CASEWORKER_FALLBACK_EMAIL = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-caseworker-fallback-email"
+    },
+    ACCENTURE_DOMAIN_NAME = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/accenture-domain-name"
     },
     LA_LDH_DOMAIN_NAME = {
       manage_method     = "manual"

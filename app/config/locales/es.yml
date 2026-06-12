@@ -92,6 +92,12 @@ es:
         radio_no: 'No'
         radio_yes: Sí
     applicant_informations:
+      accenture:
+        fields:
+          case_number:
+            blank: Escriba su número de caso.
+            prompt: Número de caso
+            super_one_html: Número de caso<sup>1</sup>
       la_ldh:
         fields:
           case_number:

@@ -72,10 +72,10 @@ class CbvFlowInvitation < ApplicationRecord
   end
 
   def applicant_information
-    return if client_agency_id == "la_ldh"
+    required = cbv_applicant&.required_applicant_attributes || []
 
-    errors.add(:'cbv_applicant.first_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.first_name.blank")) if cbv_applicant.first_name.blank?
-    errors.add(:'cbv_applicant.last_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.last_name.blank")) if cbv_applicant.last_name.blank?
+    errors.add(:'cbv_applicant.first_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.first_name.blank")) if required.include?(:first_name) && cbv_applicant.first_name.blank?
+    errors.add(:'cbv_applicant.last_name', I18n.t("activerecord.errors.models.cbv_applicant.attributes.last_name.blank")) if required.include?(:last_name) && cbv_applicant.last_name.blank?
     errors.add(:'cbv_applicant.snap_application_date', I18n.t("activerecord.errors.models.cbv_applicant.attributes.snap_application_date.invalid_date")) if cbv_applicant.snap_application_date.blank?
   end
 
