@@ -1,0 +1,130 @@
+# .github/workflows/ai-pr-review.yml
+#
+# AI-assisted PR review workflow. Runs the pr-review skill on every pull
+# request and posts the result as inline comments.
+#
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │ 🛑 DISABLED BY DEFAULT                                                  │
+# │                                                                         │
+# │ To enable, change the trigger below from `on: workflow_dispatch:` to    │
+# │ include `pull_request:` events, AND complete the setup steps in         │
+# │ docs/PR_REVIEW_SETUP.md:                                                │
+# │                                                                         │
+# │   1. Add a repository variable:  AI_REVIEW_TOOL = claude|codex|copilot  │
+# │   2. Add the matching API-key secret (see docs/PR_REVIEW_SETUP.md       │
+# │      "GitHub Actions setup" section).                                   │
+# │   3. Confirm the workflow has `pull-requests: write` permission         │
+# │      (set below). On private repos with restrictive default-token       │
+# │      permissions, you may need to relax them in Settings → Actions.     │
+# │                                                                         │
+# │ The dispatcher uses GITHUB_TOKEN (with the permissions set below) to    │
+# │ post inline review comments. No PAT is required for the CI path; a      │
+# │ fine-grained PAT is only needed for local use (`gh auth login`).        │
+# └─────────────────────────────────────────────────────────────────────────┘
+
+name: AI-assisted security & compliance review
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, reopened]
+
+# Least-privilege permissions for the default GITHUB_TOKEN.
+# `contents: read` is needed to check out the repo and run `git diff`.
+# `pull-requests: write` is needed to post the inline review comments.
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pr-review:
+    runs-on: ubuntu-latest
+    # Skip on draft PRs by default — review only when the PR is ready.
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false
+
+    steps:
+      - name: Validate workflow configuration
+        run: |
+          if [[ -z "${{ vars.AI_REVIEW_TOOL }}" ]]; then
+            echo "::error::Repository variable AI_REVIEW_TOOL is not set."
+            echo "::error::Set it under Settings → Secrets and variables → Actions → Variables"
+            echo "::error::to one of: claude | codex | copilot"
+            exit 1
+          fi
+          case "${{ vars.AI_REVIEW_TOOL }}" in
+            claude|codex|copilot) ;;
+            *)
+              echo "::error::AI_REVIEW_TOOL='${{ vars.AI_REVIEW_TOOL }}' is invalid."
+              echo "::error::Must be one of: claude | codex | copilot"
+              exit 1
+              ;;
+          esac
+
+      - name: Check out PR head (full history for diff)
+        uses: actions/checkout@v4
+        with:
+          # We need the full history so `git diff $BASE HEAD` works.
+          fetch-depth: 0
+          # Check out the PR's merge commit (the workflow default), so
+          # context is the same as what would be merged.
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Make scripts executable
+        run: |
+          chmod +x .skills/_lib/ai-review-dispatch.sh
+          chmod +x .skills/pr-review/scripts/pr-review-dispatcher.sh
+          chmod +x scripts/sync-skills.sh
+
+      - name: Sync canonical SKILL.md into the chosen tool's directory
+        env:
+          AI_REVIEW_TOOL: ${{ vars.AI_REVIEW_TOOL }}
+        run: scripts/sync-skills.sh
+
+      - name: Install AI CLI — Claude Code
+        if: vars.AI_REVIEW_TOOL == 'claude'
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Install AI CLI — Codex
+        if: vars.AI_REVIEW_TOOL == 'codex'
+        run: npm install -g @openai/codex
+
+      - name: Install AI CLI — Copilot
+        if: vars.AI_REVIEW_TOOL == 'copilot'
+        run: npm install -g @github/copilot
+
+      - name: Run AI PR review
+        env:
+          AI_REVIEW_TOOL: ${{ vars.AI_REVIEW_TOOL }}
+          CI: 'true'
+          # Pass through whichever API key matches the chosen tool. Each
+          # secret is set only if the team uses that tool — unused ones can
+          # remain blank.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY:    ${{ secrets.OPENAI_API_KEY }}
+          # gh CLI picks up GITHUB_TOKEN automatically.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # The PR number and base ref come from the workflow context. On
+          # workflow_dispatch this won't be set; in that case the user can
+          # provide them via inputs (not wired here — keep simple).
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_REF:  ${{ github.event.pull_request.base.ref }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${PR_NUMBER:-}" ]]; then
+            echo "::warning::No PR context (likely a manual workflow_dispatch). Skipping."
+            exit 0
+          fi
+
+          # Make sure origin/<base-ref> resolves locally — actions/checkout
+          # fetches the merge commit but may not set up a refs/remotes entry.
+          git fetch --no-tags --depth=200 origin "${BASE_REF}:refs/remotes/origin/${BASE_REF}" || true
+
+          # Run the dispatcher. --post-comments enables gh-api inline review
+          # comment posting. --gate is left OFF here so that findings appear
+          # as advisory comments rather than failing the build. Uncomment
+          # --gate to convert any non-APPROVE result into a workflow failure.
+          .skills/pr-review/scripts/pr-review-dispatcher.sh \
+            --pr "${PR_NUMBER}" \
+            --post-comments
+            # --gate
