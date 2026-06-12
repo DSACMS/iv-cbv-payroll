@@ -25,7 +25,7 @@ class DataRetentionService
         next unless Time.current.after?(cbv_flow_invitation.expires_at + REDACT_UNUSED_INVITATIONS_AFTER)
 
         cbv_flow_invitation.redact!
-        cbv_flow_invitation.cbv_applicant&.redact! if cbv_flow_invitation.cbv_flows.none?
+        redact_applicant_if_no_active_invitations_or_cbv_flows(cbv_flow_invitation.cbv_applicant) if cbv_flow_invitation.cbv_flows.none?
       end
   end
 
@@ -33,7 +33,7 @@ class DataRetentionService
     CbvFlow
       .incomplete
       .unredacted
-      .includes(:cbv_flow_invitation, :payroll_accounts)
+      .includes(:cbv_applicant, :cbv_flow_invitation, :payroll_accounts)
       .find_each do |cbv_flow|
         if cbv_flow.cbv_flow_invitation.present?
           # Redact CbvFlow records (together with their invitations) some period
@@ -43,7 +43,7 @@ class DataRetentionService
 
           cbv_flow.redact!
           cbv_flow.cbv_flow_invitation.redact!
-          cbv_flow.cbv_applicant&.redact!
+          redact_applicant_if_no_active_invitations_or_cbv_flows(cbv_flow.cbv_applicant)
           cbv_flow.payroll_accounts.each(&:redact!)
         else
           # Redact standalone CbvFlow records some period after their last
@@ -56,7 +56,7 @@ class DataRetentionService
           next unless Time.now.after?(flow_redact_at)
 
           cbv_flow.redact!
-          cbv_flow.cbv_applicant&.redact!
+          redact_applicant_if_no_active_invitations_or_cbv_flows(cbv_flow.cbv_applicant)
           cbv_flow.payroll_accounts.each(&:redact!)
         end
       end
@@ -66,13 +66,10 @@ class DataRetentionService
     CbvFlow
       .unredacted
       .where("transmitted_at < ?", REDACT_TRANSMITTED_CBV_FLOWS_AFTER.ago)
-      .includes(:payroll_accounts, cbv_applicant: :cbv_flow_invitations)
+      .includes(:cbv_applicant, :payroll_accounts)
       .find_each do |cbv_flow|
         cbv_flow.redact!
-        applicant = cbv_flow.cbv_applicant
-        # `all?` returns true on an empty collection: applicants with no invitations
-        # can't receive new flows, so they're safe to redact.
-        applicant.redact! if applicant && applicant.cbv_flow_invitations.all?(&:expired?)
+        redact_applicant_if_no_active_invitations_or_cbv_flows(cbv_flow.cbv_applicant)
         cbv_flow.payroll_accounts.each(&:redact!)
       end
   end
@@ -120,5 +117,16 @@ class DataRetentionService
       applicant.redact!({ case_number: :string })
     end
     Rails.logger.info "Redacted #{applicants.length} applicants"
+  end
+
+  private
+
+  def redact_applicant_if_no_active_invitations_or_cbv_flows(applicant)
+    return unless applicant
+
+    return if applicant.cbv_flow_invitations.where(redacted_at: nil).where("expires_at >= ?", Time.current).exists?
+    return if applicant.cbv_flows.unredacted.exists?
+
+    applicant.redact!
   end
 end

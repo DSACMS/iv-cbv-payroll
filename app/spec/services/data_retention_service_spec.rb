@@ -42,6 +42,53 @@ RSpec.describe DataRetentionService do
           )
         end
 
+        context "when the applicant has another active invitation" do
+          before do
+            create(
+              :cbv_flow_invitation,
+              cbv_applicant: cbv_flow_invitation.cbv_applicant,
+              expires_at: now + 1.day
+            )
+          end
+
+          it "keeps the applicant information available" do
+            service.redact_invitations
+
+            expect(cbv_flow_invitation.reload).to have_attributes(
+              email_address: "REDACTED@example.com",
+              redacted_at: within(1.second).of(now)
+            )
+            expect(cbv_flow_invitation.cbv_applicant.reload).to have_attributes(
+              first_name: "Jane",
+              redacted_at: nil
+            )
+          end
+        end
+
+        context "when the applicant has an active standalone flow" do
+          let!(:active_flow) do
+            create(
+              :cbv_flow,
+              cbv_applicant: cbv_flow_invitation.cbv_applicant,
+              cbv_flow_invitation: nil
+            )
+          end
+
+          it "keeps the applicant information available" do
+            service.redact_invitations
+
+            expect(cbv_flow_invitation.reload).to have_attributes(
+              email_address: "REDACTED@example.com",
+              redacted_at: within(1.second).of(now)
+            )
+            expect(active_flow.reload.redacted_at).to be_nil
+            expect(cbv_flow_invitation.cbv_applicant.reload).to have_attributes(
+              first_name: "Jane",
+              redacted_at: nil
+            )
+          end
+        end
+
         it "skips the invitation if it has already been redacted" do
           cbv_flow_invitation.redact!
 
@@ -143,6 +190,32 @@ RSpec.describe DataRetentionService do
         )
       end
 
+      context "when the applicant has another active invitation" do
+        before do
+          create(
+            :cbv_flow_invitation,
+            cbv_applicant: cbv_flow.cbv_applicant,
+            expires_at: now + 1.day
+          )
+        end
+
+        it "keeps the applicant information available" do
+          service.redact_incomplete_cbv_flows
+
+          expect(cbv_flow.reload).to have_attributes(
+            end_user_id: "00000000-0000-0000-0000-000000000000",
+            redacted_at: within(1.second).of(now)
+          )
+          expect(cbv_flow_invitation.reload).to have_attributes(
+            redacted_at: within(1.second).of(now)
+          )
+          expect(cbv_flow.cbv_applicant.reload).to have_attributes(
+            first_name: "Jane",
+            redacted_at: nil
+          )
+        end
+      end
+
       it "redacts an associated PayrollAccount" do
         payroll_account = create(:payroll_account, flow: cbv_flow)
         service.redact_incomplete_cbv_flows
@@ -203,12 +276,42 @@ RSpec.describe DataRetentionService do
           )
         end
 
+        it "redacts the associated CbvApplicant" do
+          service.redact_incomplete_cbv_flows
+          expect(cbv_flow.cbv_applicant.reload).to have_attributes(
+            first_name: "REDACTED"
+          )
+        end
+
         it "redacts an associated PayrollAccount" do
           payroll_account = create(:payroll_account, flow: cbv_flow)
           service.redact_incomplete_cbv_flows
           expect(payroll_account.reload).to have_attributes(
             redacted_at: within(1.second).of(now)
           )
+        end
+
+        context "when the applicant has an active invitation" do
+          before do
+            create(
+              :cbv_flow_invitation,
+              cbv_applicant: cbv_flow.cbv_applicant,
+              expires_at: now + 1.day
+            )
+          end
+
+          it "keeps the applicant information available" do
+            service.redact_incomplete_cbv_flows
+
+            expect(cbv_flow.reload).to have_attributes(
+              end_user_id: "00000000-0000-0000-0000-000000000000",
+              redacted_at: within(1.second).of(now)
+            )
+            expect(cbv_flow.cbv_applicant.reload).to have_attributes(
+              first_name: "Jane",
+              redacted_at: nil
+            )
+          end
         end
       end
     end
