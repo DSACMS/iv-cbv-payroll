@@ -124,7 +124,7 @@ class DataRetentionService
   def redact_applicant_if_no_active_invitations_or_cbv_flows(applicant)
     return unless applicant
 
-    return if applicant.cbv_flow_invitations.where(redacted_at: nil).where("expires_at >= ?", Time.current).exists?
+    return if applicant.cbv_flow_invitations.unredacted.where("expires_at >= ?", Time.current).exists?
     return if applicant.cbv_flows.unredacted.exists?
 
     applicant.redact!
