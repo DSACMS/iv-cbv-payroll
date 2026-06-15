@@ -71,3 +71,9 @@ translation_update.csv
 /app/analytics/.ipynb_checkpoints
 /app/analytics/__pycache__/
 /app/analytics/*.json
+
+# AI-assisted review hooks — derived skill directories (see .skills/ for canonical)
+.claude/skills/
+.codex/skills/
+.github/copilot/skills/
+audit-reports/
