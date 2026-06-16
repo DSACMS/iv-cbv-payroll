@@ -38,6 +38,13 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(Capybara.string(response.body)).to have_link("Back", href: expected)
     end
 
+    it "employer info back still shows when create fails validation" do
+      post :create, params: { employment_activity: { employer_name: "" } }
+      expect(response).to have_http_status(:unprocessable_content)
+      expected = activities_flow_income_employer_search_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
+    end
+
     it "review back goes to document uploads" do
       get :review, params: { id: employment_activity.id }
       expected = new_activities_flow_income_employment_document_upload_path(

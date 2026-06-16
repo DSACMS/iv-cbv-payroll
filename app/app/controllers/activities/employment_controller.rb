@@ -10,7 +10,7 @@
 class Activities::EmploymentController < Activities::BaseController
   before_action :set_employment_activity, only: %i[edit update review save_review]
   before_action :ensure_review_ready, only: %i[review save_review]
-  before_action :set_back_url, only: %i[new edit review]
+  before_action :set_back_url, only: %i[new create edit review]
 
   def new
     @employment_activity = @flow.employment_activities.new
@@ -77,7 +77,7 @@ class Activities::EmploymentController < Activities::BaseController
   end
 
   def set_back_url
-    if action_name == "new"
+    if action_name.in?(%w[new create])
       @back_url = activities_flow_income_employer_search_path
     elsif action_name == "edit" && params[:from_review].present?
       @back_url = review_activities_flow_income_employment_path(
