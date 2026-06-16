@@ -40,7 +40,7 @@ jobs:
   pr-review:
     runs-on: ubuntu-latest
     # Skip on draft PRs by default — review only when the PR is ready.
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.draft == false && github.event.pull_request.user.login != 'dependabot[bot]')
 
     steps:
       - name: Validate workflow configuration
