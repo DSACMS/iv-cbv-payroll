@@ -116,6 +116,61 @@ RSpec.describe Cbv::SubmitsController do
         end
 
         context "with sandbox client agency" do
+          context "when a household member reuses an active invitation after retention runs" do
+            let(:cbv_applicant) do
+              create(
+                :cbv_applicant,
+                created_at: current_time,
+                first_name: "Taylor",
+                last_name: "Household",
+                case_number: "ABC1234"
+              )
+            end
+            let(:cbv_flow_invitation) do
+              create(
+                :cbv_flow_invitation,
+                cbv_applicant: cbv_applicant,
+                expires_at: 1.day.from_now
+              )
+            end
+            let!(:previous_family_member_flow) do
+              CbvFlow.create_from_invitation(cbv_flow_invitation, "previous_family_member_device")
+            end
+            let(:cbv_flow) do
+              create(:cbv_flow,
+                     :with_pinwheel_account,
+                     :completed,
+                     with_errored_jobs: errored_jobs,
+                     created_at: current_time,
+                     supported_jobs: supported_jobs,
+                     cbv_applicant: cbv_applicant,
+                     cbv_flow_invitation: cbv_flow_invitation
+              )
+            end
+
+            before do
+              stale_flow = create(:cbv_flow, cbv_applicant: cbv_applicant, cbv_flow_invitation: nil)
+              stale_flow.update_columns(created_at: 8.days.ago, updated_at: 8.days.ago)
+
+              DataRetentionService.new.redact_incomplete_cbv_flows
+            end
+
+            it "includes non-redacted applicant information in the submitted report" do
+              expect(previous_family_member_flow.cbv_flow_invitation).to eq(cbv_flow_invitation)
+
+              get :show, format: :pdf, params: {
+                is_caseworker: "true"
+              }
+
+              expect(response).to be_successful
+
+              pdf_text = extract_pdf_text(response)
+
+              expect(pdf_text).to include("Taylor")
+              expect(pdf_text).to include("Household")
+            end
+          end
+
           context "when rendering for a caseworker" do
             it "shows the right client information fields" do
               get :show, format: :pdf, params: {
