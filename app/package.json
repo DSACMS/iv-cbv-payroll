@@ -40,7 +40,6 @@
     "nanoid": "^5.0.9"
   },
   "overrides": {
-    "esbuild": "^0.28.0",
     "serialize-javascript": "^7.0.3"
   }
 }
