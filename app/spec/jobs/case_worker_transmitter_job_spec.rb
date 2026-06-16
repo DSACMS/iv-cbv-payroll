@@ -56,11 +56,14 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
   shared_examples "tracks an ApplicantSharedIncomeSummary event" do
     it "tracks an ApplicantSharedIncomeSummary event" do
+      cbv_flow.update!(confirmation_code: "SANDBOX123")
+
       described_class.new.perform(cbv_flow.id)
 
       expect(fake_event_logger).to have_received(:track)
         .with("ApplicantSharedIncomeSummary", anything, include(
           cbv_flow_id: cbv_flow.id,
+          confirmation_code: cbv_flow.confirmation_code,
           flow_started_seconds_ago: 10.minutes.to_i,
           account_count: cbv_flow.fully_synced_payroll_accounts.count
         ))
