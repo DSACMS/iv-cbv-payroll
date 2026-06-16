@@ -1,4 +1,4 @@
-name: Build and publish
+name: Build and publish to CMS
 run-name: Build and publish to ECR ${{ inputs.app_name }}:${{ inputs.ref }}
 
 on:
@@ -82,4 +82,4 @@ jobs:
         run: |
           make APP_NAME=${{ inputs.app_name }} \
             EMMY_IMAGE_REPO=${{ env.EMMY_IMAGE_REPO }} \
-            release-build-push
+            release-build
