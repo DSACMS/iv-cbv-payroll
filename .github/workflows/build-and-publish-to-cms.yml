@@ -82,4 +82,4 @@ jobs:
         run: |
           make APP_NAME=${{ inputs.app_name }} \
             EMMY_IMAGE_REPO=${{ env.EMMY_IMAGE_REPO }} \
-            release-build
+            release-build-push-tag
