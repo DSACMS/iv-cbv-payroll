@@ -1,6 +1,5 @@
 # Income Report Transmission API Specification [General]
 
-
 # **Introduction**
 
 This document describes the **Income Report Transmission API Specification**, a method by which income report data can be sent from the Eligibility made easy (Emmy) platform to an agency's systems.

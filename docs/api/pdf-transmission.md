@@ -1,8 +1,5 @@
 # PDF Document Transmission API Specification [General]
 
-| Date | Version Notes | Date | Version Notes |
-| :-- | :-- | :-- | :-- |
-| 2025-12-05 | Initial Version |  |  |
 
 # **Introduction**
 
