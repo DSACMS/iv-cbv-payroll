@@ -1,4 +1,4 @@
-name: Database migrations
+name: Database migrations to CMS Infrastructure
 
 on:
   workflow_call:
@@ -40,6 +40,9 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
+      AWS_REGION: us-east-1
 
     steps:
       - uses: actions/checkout@v6

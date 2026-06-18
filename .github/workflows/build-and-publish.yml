@@ -98,10 +98,10 @@ jobs:
         if: steps.check-image-published.outputs.is_image_published == 'false'
         run: make APP_NAME=${{ inputs.app_name }} release-publish
 
-  build-and-publish-to-artifactory:
-    name: Build and publish to Artifactory
-    if: ${{ inputs.publish_to_artifactory }}
-    uses: ./.github/workflows/build-and-publish-to-artifactory.yml
+  build-and-publish-to-cms:
+    name: Build and publish to CMS
+    if: ${{ inputs.publish_to_cms }}
+    uses: ./.github/workflows/build-and-publish-to-cms.yml
     permissions:
       contents: read
       id-token: write
