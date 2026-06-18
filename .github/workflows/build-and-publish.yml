@@ -12,6 +12,11 @@ on:
         description: The branch, tag or SHA to checkout. When checking out the repository that triggered a workflow, this defaults to the reference or SHA for that event. Otherwise, use branch or tag that triggered the workflow run.
         required: true
         type: string
+      publish_to_cms:
+        description: Whether to also publish the image to the CMS Artifactory/ECR registry. Disable for PR environments, which don't deploy from it.
+        required: false
+        type: boolean
+        default: true
   workflow_dispatch:
     inputs:
       app_name:
@@ -22,6 +27,11 @@ on:
         description: The branch, tag or SHA to checkout. When checking out the repository that triggered a workflow, this defaults to the reference or SHA for that event. Otherwise, use branch or tag that triggered the workflow run.
         required: true
         type: string
+      publish_to_cms:
+        description: Whether to also publish the image to the CMS Artifactory/ECR registry. Disable for PR environments, which don't deploy from it.
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   get-commit-hash:
@@ -89,7 +99,8 @@ jobs:
         run: make APP_NAME=${{ inputs.app_name }} release-publish
 
   build-and-publish-to-cms:
-    name: Build and publish to Artifactory
+    name: Build and publish to CMS
+    if: ${{ inputs.publish_to_cms }}
     uses: ./.github/workflows/build-and-publish-to-cms.yml
     permissions:
       contents: read
