@@ -2,7 +2,7 @@ class Activities::SuccessController < Activities::BaseController
   before_action :ensure_completed
 
   def show
-  end
+  
 
   private
 
