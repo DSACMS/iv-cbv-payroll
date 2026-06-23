@@ -14,6 +14,7 @@ require "action_view/railtie"
 require "action_cable/engine"
 # require "rails/test_unit/railtie"
 require_relative "../lib/client_agency_config.rb"
+require_relative "../lib/internal_environment.rb"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -54,18 +55,7 @@ module IvCbvPayroll
     config.hosts << ENV["DOMAIN_NAME"] if ENV["DOMAIN_NAME"]
 
     # Enable various functionality when running in internal (non-production) environments
-    config.is_internal_environment = (
-      Rails.env.development? ||
-      Rails.env.test? ||
-      ENV["DOMAIN_NAME"].present? && (
-        # "Dev" deployed environment
-        ENV["DOMAIN_NAME"] == "verify-demo.navapbc.cloud" ||
-        # "Demo" deployed environment
-        ENV["DOMAIN_NAME"] == "demo.reportmyincome.org" ||
-        # PR review apps (e.g. p-1709.navapbc.cloud)
-        ENV["DOMAIN_NAME"].match?(/\Ap-\d+\.navapbc\.cloud\z/)
-      )
-    )
+    config.is_internal_environment = InternalEnvironment.internal?(domain_name: ENV["DOMAIN_NAME"], rails_env: Rails.env)
 
     # Configure allowed hosts inferred from the client-agency-config.yml file
     config.client_agencies.client_agency_ids.each do |agency_id|
