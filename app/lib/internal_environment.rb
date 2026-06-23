@@ -4,8 +4,11 @@ module InternalEnvironment
     "verify-demo.navapbc.cloud",
     # "Demo" deployed environment
     "demo.reportmyincome.org",
-    # "UAT" deployed environment
-    "uat.emmy.cms.gov"
+    # CMS-hosted environments
+    "uat.emmy.cms.gov",
+    "dev.emmy.cms.gov",
+    "demo.emmy.cms.gov",
+    "sandbox.emmy.cms.gov"
   ].freeze
 
   PR_REVIEW_APP_DOMAIN_PATTERN = /\Ap-\d+\.navapbc\.cloud\z/

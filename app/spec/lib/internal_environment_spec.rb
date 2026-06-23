@@ -39,6 +39,24 @@ RSpec.describe InternalEnvironment do
       it { is_expected.to be true }
     end
 
+    context "when the domain is CMS dev" do
+      let(:domain_name) { "dev.emmy.cms.gov" }
+
+      it { is_expected.to be true }
+    end
+
+    context "when the domain is CMS demo" do
+      let(:domain_name) { "demo.emmy.cms.gov" }
+
+      it { is_expected.to be true }
+    end
+
+    context "when the domain is CMS sandbox" do
+      let(:domain_name) { "sandbox.emmy.cms.gov" }
+
+      it { is_expected.to be true }
+    end
+
     context "when the domain is a PR review app" do
       let(:domain_name) { "p-123.navapbc.cloud" }
 
