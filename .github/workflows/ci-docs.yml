@@ -11,6 +11,9 @@ on:
       - '**/*.md'
       - 'docs/api/schemas/*.json'
 
+permissions:
+  contents: read
+
 jobs:
   lint-markdown:
     name: Lint markdown
