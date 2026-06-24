@@ -190,14 +190,14 @@ RSpec.describe ReportViewHelper, type: :helper do
         date = Date.new(2023, 8, 7) # A Tuesday
         format = "%b"
 
-        expect(helper.format_date(date, format: format)).to match(/Aug/)
+        expect(helper.format_date(date, format: format)).to include('Aug')
       end
 
       it 'formats a date with "%A" format as Wednesday correctly' do
         date = Date.new(2023, 11, 8) # A Wednesday
         format = "%A"
 
-        expect(helper.format_date(date, format: format)).to match(/Wednesday/)
+        expect(helper.format_date(date, format: format)).to include('Wednesday')
       end
     end
 
@@ -232,14 +232,14 @@ RSpec.describe ReportViewHelper, type: :helper do
         date = Date.new(2023, 8, 7) # A Tuesday
         format = "%b"
 
-        expect(helper.format_date(date, format: format)).to match(/ago/)
+        expect(helper.format_date(date, format: format)).to include('ago')
       end
 
       it 'formats a date with "%A" format as Wednesday correctly' do
         date = Date.new(2023, 11, 8) # A Wednesday
         format = { format: "%A" }
 
-        expect(helper.format_date(date, format: format)).to match(/miércoles/)
+        expect(helper.format_date(date, format: format)).to include('miércoles')
       end
     end
   end

@@ -65,7 +65,7 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
 
 
       it 'has an employment account_source' do
-        expect(argyle_report.employments.first.account_source).to match(/argyle_sandbox/)
+        expect(argyle_report.employments.first.account_source).to include('argyle_sandbox')
       end
 
       context "when in an agency configured to grab 182 days of gig data" do

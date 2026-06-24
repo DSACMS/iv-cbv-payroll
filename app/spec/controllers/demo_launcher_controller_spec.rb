@@ -38,33 +38,33 @@ RSpec.describe DemoLauncherController, type: :controller do
       get :advanced
       rendered = response.body
       expect(rendered).to match(/Test Scenarios/i)
-      expect(rendered).to match(/Lynette Oyola/)
+      expect(rendered).to include('Lynette Oyola')
       expect(rendered).to match(/Currently enrolled.*1 school/)
-      expect(rendered).to match(/Rick Banas/)
+      expect(rendered).to include('Rick Banas')
       expect(rendered).to match(/Enrolled half-time.*2 schools/)
-      expect(rendered).to match(/Dominique Ricardo/)
-      expect(rendered).to match(/Not currently enrolled/)
-      expect(rendered).to match(/Linda Cooper/)
-      expect(rendered).to match(/No NSC record found/)
-      expect(rendered).to match(/Sam Testuser/)
-      expect(rendered).to match(/Ziggy Testuser/)
+      expect(rendered).to include('Dominique Ricardo')
+      expect(rendered).to include('Not currently enrolled')
+      expect(rendered).to include('Linda Cooper')
+      expect(rendered).to include('No NSC record found')
+      expect(rendered).to include('Sam Testuser')
+      expect(rendered).to include('Ziggy Testuser')
     end
 
     it "displays fake test scenario options with single and multi-term" do
       get :advanced
       rendered = response.body
-      expect(rendered).to match(/Fake Test Scenarios/)
+      expect(rendered).to include('Fake Test Scenarios')
       expect(rendered).to include('id="test_scenario_partial_enrollment_multi_term"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_taylor"')
       expect(rendered).to include('id="test_scenario_renewal_half_time_last_4_of_6_avery"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_maya"')
       expect(rendered).to include('id="test_scenario_summer_term_carryover_sage"')
       expect(rendered).to include('id="test_scenario_spring_fall_no_summer_morgan"')
-      expect(rendered).to match(/Avery Testuser/)
-      expect(rendered).to match(/Sage Testuser/)
-      expect(rendered).to match(/Morgan Testuser/)
-      expect(rendered).to match(/Spring carryover for summer months/)
-      expect(rendered).to match(/Spring and fall enrollment with no summer term/)
+      expect(rendered).to include('Avery Testuser')
+      expect(rendered).to include('Sage Testuser')
+      expect(rendered).to include('Morgan Testuser')
+      expect(rendered).to include('Spring carryover for summer months')
+      expect(rendered).to include('Spring and fall enrollment with no summer term')
     end
 
     it "displays the pre-populated activities section for CE flow" do

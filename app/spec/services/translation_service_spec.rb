@@ -42,17 +42,17 @@ RSpec.describe TranslationService do
 
         # Verify logging
         log = log_output.string
-        expect(log).to match(/Attempting to read CSV file:/)
-        expect(log).to match(/Processing: Key:/)
-        expect(log).to match(/Total rows processed:/)
-        expect(log).to match(/Successfully Imported:/)
-        expect(log).to match(/Empty rows skipped:/)
-        expect(log).to match(/Rows skipped by conditions:/)
-        expect(log).to match(/Failed imports:/)
-        expect(log).to match(/Collisions detected:/)
-        expect(log).to match(/Collisions Details:/)
+        expect(log).to include('Attempting to read CSV file:')
+        expect(log).to include('Processing: Key:')
+        expect(log).to include('Total rows processed:')
+        expect(log).to include('Successfully Imported:')
+        expect(log).to include('Empty rows skipped:')
+        expect(log).to include('Rows skipped by conditions:')
+        expect(log).to include('Failed imports:')
+        expect(log).to include('Collisions detected:')
+        expect(log).to include('Collisions Details:')
         expect(log).to match(/Key: .*?, Old Value: .*?, New Value: .*?/)
-        expect(log).to match(/es translations have been generated and saved to/)
+        expect(log).to include('es translations have been generated and saved to')
       end
     end
 
@@ -66,8 +66,8 @@ RSpec.describe TranslationService do
         expect(yaml_content['es']['test']['key2']).to eq('Mundo') # Overwritten
 
         log = log_output.string
-        expect(log).to match(/Overwriting existing translation for key/)
-        expect(log).not_to match(/Collision detected for key/)
+        expect(log).to include('Overwriting existing translation for key')
+        expect(log).not_to include('Collision detected for key')
       end
     end
   end
