@@ -8,7 +8,7 @@ async-lru==2.0.5
 attrs==25.3.0
 babel==2.17.0
 beautifulsoup4==4.13.4
-bleach==6.2.0
+bleach==6.4.0
 certifi==2025.8.3
 cffi==1.17.1
 charset-normalizer==3.4.3
@@ -40,7 +40,7 @@ jupyter-events==0.12.0
 jupyter-lsp==2.2.6
 jupyter_client==8.6.3
 jupyter_core==5.8.1
-jupyter_server==2.18.0
+jupyter_server==2.20.0
 jupyter_server_terminals==0.5.3
 jupyterlab==4.5.7
 jupyterlab_pygments==0.3.0
