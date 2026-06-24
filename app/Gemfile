@@ -69,7 +69,7 @@ gem "solid_queue", ">= 0.3.0"
 gem "mission_control-jobs"
 
 
-gem "faraday", "~> 2.14.2"
+gem "faraday", "~> 2.14.3"
 
 gem "wicked_pdf"
 gem "actioncable-enhanced-postgresql-adapter"
