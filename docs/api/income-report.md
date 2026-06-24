@@ -1,13 +1,12 @@
 # Income Report Transmission API Specification [General]
 
-
 # **Introduction**
 
 This document describes the **Income Report Transmission API Specification**, a method by which income report data can be sent from the Eligibility made easy (Emmy) platform to an agency's systems.
 
 The agency must build an API endpoint that meets this specification and integrates with agency systems to process the income report into the case file for the correct client (those applying for or receiving benefits from an agency).
 
-![api flow diagram](/api-flow.png)
+![api flow diagram](api-flow.png)
 
 # **API Specification**
 
