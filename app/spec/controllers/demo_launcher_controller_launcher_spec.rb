@@ -43,8 +43,8 @@ RSpec.describe DemoLauncherController, type: :controller do
     it "renders the reporting-window radio cards and the months pills" do
       get :launcher
       body = response.body
-      expect(body).to match(/Application/)
-      expect(body).to match(/Renewal/)
+      expect(body).to include('Application')
+      expect(body).to include('Renewal')
       expect(body).to include("1 month")
       expect(body).to include("2 months")
       expect(body).to include("3 months")
