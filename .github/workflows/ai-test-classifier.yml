@@ -8,6 +8,7 @@ permissions:
   id-token: write
 jobs:
   classify:
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
     uses: navapbc/ai-transformation-delivery-systems/.github/workflows/test-classifier.yml@pilot
     with:
       # Which AI CLI runs the classifier: claude | codex.
