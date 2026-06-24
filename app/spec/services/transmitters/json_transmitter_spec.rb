@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'json_schemer'
 
 RSpec.describe Transmitters::JsonTransmitter do
   completed_at = Time.find_zone("UTC").local(2025, 5, 1, 1)
@@ -31,6 +32,27 @@ RSpec.describe Transmitters::JsonTransmitter do
     allow(mock_client_agency).to receive_messages(transmission_method_configuration: transmission_method_configuration, id: "sandbox")
     allow(CbvApplicant).to receive(:valid_attributes_for_agency).with("sandbox").and_return([ "case_number" ])
     allow(Rails.logger).to receive(:error)
+  end
+
+  describe "#payload" do
+    let(:schema_path) { Rails.root.parent.join("docs/api/schemas/income-report-2026-06-18.json") }
+    let(:schema) { JSON.parse(schema_path.read) }
+    let(:schema_report) { build(:pinwheel_report, :hydrated, :with_pinwheel_account) }
+
+    before do
+      cbv_flow.update!(has_other_jobs: false)
+      schema_report.payroll_accounts.first.flow = cbv_flow
+      schema_report.incomes.first.compensation_unit = "hourly"
+    end
+
+    it "matches the published income report JSON Schema" do
+      payload = JSON.parse(described_class.new(cbv_flow, mock_client_agency, schema_report).payload)
+      errors = JSONSchemer.schema(schema).validate(payload).map do |error|
+        error.slice("data_pointer", "type", "error")
+      end
+
+      expect(errors).to eq([])
+    end
   end
 
   context 'agency responds with 200' do

@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "json"
+require "json_schemer"
+
+paths = ARGV.empty? ? Dir[File.expand_path("../../docs/api/schemas/*.json", __dir__)] : ARGV
+
+if paths.empty?
+  warn "No JSON Schema files found"
+  exit 1
+end
+
+failed = false
+
+paths.each do |path|
+  schema = JSON.parse(File.read(path))
+  errors = JSONSchemer.validate_schema(schema).map do |error|
+    {
+      "data_pointer" => error["data_pointer"],
+      "type" => error["type"],
+      "error" => error["error"]
+    }.compact
+  end
+
+  if errors.empty?
+    puts "#{path}: valid"
+  else
+    failed = true
+    warn "#{path}: invalid"
+    errors.each { |error| warn "  #{error}" }
+  end
+rescue JSON::ParserError => e
+  failed = true
+  warn "#{path}: invalid JSON: #{e.message}"
+rescue Errno::ENOENT => e
+  failed = true
+  warn "#{path}: #{e.message}"
+end
+
+exit 1 if failed

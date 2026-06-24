@@ -16,14 +16,16 @@ The agency-built API should contain one endpoint.
 
 This API endpoint is built by the agency and receives an income report record. The endpoint URL can be whatever the agency desires, however, it must include a version number to allow for easy upgrades in the future.
 
+The machine-readable JSON Schema for the request body is available at [schemas/income-report-2026-06-18.json](schemas/income-report-2026-06-18.json).
+
 ### Request Body – API Fields
 
-| Field Name | Required? | Description | Field Name | Required? | Description |
-| :-- | :-- | :-- | :-- | :-- | :-- |
-| confirmation_code | Yes | String. Unique code assigned when the report was completed. This is shared with the user and used to debug any errors while processing the report. |  |  |  |
-| completed_at | Yes | Date Time (ISO8601). The UTC time when the user completed the report. |  |  |  |
-| agency_partner_metadata | Yes | JSON object (See Agency Partner Metadata Object below). |  |  |  |
-| income_report | Yes | JSON object (See Income Report Object below). |  |  |  |
+| Field Name | Required? | Description |
+| :-- | :-- | :-- |
+| confirmation_code | Yes | String. Unique code assigned when the report was completed. This is shared with the user and used to debug any errors while processing the report. |
+| completed_at | Yes | Date Time (ISO8601). The UTC time when the user completed the report. |
+| agency_partner_metadata | Yes | JSON object (See Agency Partner Metadata Object below). |
+| income_report | Yes | JSON object (See Income Report Object below). |
 
 ### Request Object Type Definitions
 
@@ -36,11 +38,11 @@ The field structure for this object will differ for each agency based on the int
 
 Sample fields:
 
-| Field Name | Required? | Field Type | Field Name | Required? | Field Type |
-| :-- | :-- | :-- | :-- | :-- | :-- |
-| case_number | No | String |  |  |  |
-| date_of_birth | No | Date String |  |  |  |
-| doc_id | Yes | String |  |  |  |
+| Field Name | Required? | Field Type |
+| :-- | :-- | :-- |
+| case_number | Agency-specific | String |
+| date_of_birth | Agency-specific | Date String |
+| doc_id | Agency-specific | String |
 
 Note
 
@@ -50,54 +52,62 @@ An updated version of this section will be sent separately to the agency during 
 
 Representation of the user's income report. The subfields are listed below.
 
-| Field Name | Required? | Field Type | Field Name | Required? | Field Type |
-| :-- | :-- | :-- | :-- | :-- | :-- |
-| has_other_jobs | Yes | Boolean. Whether the user answered that they have additional jobs to report separately from the Emmy product. |  |  |  |
-| employments[] | Yes | Array of Employment objects reflected in income report. (See Employment Object below.) |  |  |  |
+| Field Name | Required? | Field Type |
+| :-- | :-- | :-- |
+| has_other_jobs | Yes | Boolean. Whether the user answered that they have additional jobs to report separately from the Emmy product. |
+| employments[] | Yes | Array of Employment objects reflected in income report. (See Employment Object below.) |
 
 #### Employment Object
 
 All fields below come from a payroll provider linked by the user. Most fields are optional, and may be set to `null` if unavailable by the payroll provider.
 
-| Field Name | Required? | Field Type | Field Name | Required? | Field Type |
-| :-- | :-- | :-- | :-- | :-- | :-- |
-| applicant_full_name | Yes | String. Name of user from payroll provider. |  |  |  |
-| applicant_ssn | No | String. Client SSN (last 4 digits, if available) rendered as "XXX-XX-1234". |  |  |  |
-| applicant_extra_comments | No | String. Applicant-provided comments about the accuracy of the payroll data. |  |  |  |
-| employer_name | Yes | String. |  |  |  |
-| employer_phone | No | String. |  |  |  |
-| employer_address | No | String. |  |  |  |
-| employment_status | No | String. One of "employed", "inactive", or "terminated". |  |  |  |
-| employment_type | No | String. One of "w2" or "gig". |  |  |  |
-| employment_start_date | No | Date (ISO8601) of start of employment, if available. |  |  |  |
-| employment_end_date | No | Date (ISO8601) of end of employment, if available. |  |  |  |
-| pay_frequency | No | String. Interval of how often the user is paid.The valid values are: daily, weekly, biweekly, semimonthly, monthly, quarterly, variable. |  |  |  |
-| compensation_amount | No | Integer. Compensation amount as configured in the payroll provider, in cents. |  |  |  |
-| compensation_unit | No | String. Compensation interval. For example, someone earning $13/hour would havecompensation_amount = 1300compensation_unit = "hour"The valid values are: hourly, daily, weekly, biweekly, semimonthly, monthly, annual, salary, per_mile, semiweekly, variable. |  |  |  |
-| paystubs[] | Yes | Array of paystub objects representing payments the applicant received. (See Paystub object, below.) |  |  |  |
+| Field Name | Required? | Field Type |
+| :-- | :-- | :-- |
+| applicant_full_name | Yes | String. Name of user from payroll provider. |
+| applicant_ssn | No | String. Client SSN, if available, rendered as "XXX-XX-1234". |
+| applicant_extra_comments | No | String. Applicant-provided comments about the accuracy of the payroll data. |
+| employer_name | Yes | String. |
+| employer_phone | No | String. |
+| employer_address | No | String. |
+| employment_status | No | String. One of "employed", "inactive", or "terminated". |
+| employment_type | No | String. One of "w2" or "gig". |
+| employment_start_date | No | Date (ISO8601). Start of employment, if available. |
+| employment_end_date | No | Date (ISO8601). End of employment, if available. |
+| pay_frequency | No | String. Valid values are: daily, weekly, biweekly, semimonthly, monthly, quarterly, variable. |
+| compensation_amount | No | Integer. Compensation amount as configured in the payroll provider, in cents. |
+| compensation_unit | No | String. Valid values are: hourly, daily, weekly, biweekly, semimonthly, monthly, annual, salary, per_mile, semiweekly, variable. |
+| paystubs[] | Yes | Array of paystub objects representing payments the applicant received. (See Paystub object, below.) |
 
 #### Paystub Object
 
-| Field Name | Required? | Field Type | Field Name | Required? | Field Type |
-| :-- | :-- | :-- | :-- | :-- | :-- |
-| pay_date | Yes | Date (ISO8601) of paystub. |  |  |  |
-| pay_period_start | No | Date (ISO8601) representing the first day of work this paystub includes. |  |  |  |
-| pay_period_end | No | Date (ISO8601) representing the last day of work this paystub includes. |  |  |  |
-| pay_gross | Yes | Integer representing this paycheck's gross pay, in cents. For example, a paycheck with gross earnings of $123.45 would be represented as 12345. |  |  |  |
-| pay_gross_ytd | No | Integer representing the gross pay YTD from the paystub, in cents. |  |  |  |
-| pay_net | No | Integer representing this paycheck's net pay after deductions, in cents. |  |  |  |
-| hours_paid | No | Float representing a calculation of hours the user was paid for working on this paystub. This includes base hours and overtime. |  |  |  |
-| deductions[] | No | Array of deduction objects representing the deductions listed on the paystub. (See Deduction object, below.) |  |  |  |
+| Field Name | Required? | Field Type |
+| :-- | :-- | :-- |
+| pay_date | Yes | Date (ISO8601) of paystub. |
+| pay_period_start | No | Date (ISO8601) representing the first day of work this paystub includes. |
+| pay_period_end | No | Date (ISO8601) representing the last day of work this paystub includes. |
+| pay_gross | Yes | Integer representing this paycheck's gross pay, in cents. For example, a paycheck with gross earnings of $123.45 would be represented as 12345. |
+| pay_gross_ytd | No | Integer representing the gross pay YTD from the paystub, in cents. |
+| pay_net | No | Integer representing this paycheck's net pay after deductions, in cents. |
+| hours_paid | No | Number representing a calculation of hours the user was paid for working on this paystub. This includes base hours and overtime. |
+| deductions[] | No | Array of deduction objects representing the deductions listed on the paystub. (See Deduction Object below.) |
+| gross_pay_list[] | No | Array of gross pay component objects representing itemized gross pay components for this paystub. (See Gross Pay Component Object below.) |
 
-  
+
 
 **Deduction Object**
 
-| Field Name | Required? | Field Type | Field Name | Required? | Field Type |
-| :-- | :-- | :-- | :-- | :-- | :-- |
-| category | Yes | String representing the name of the deduction. |  |  |  |
-| tax | Yes | String representing the tax status: "pre_tax", "post_tax", or "unknown" |  |  |  |
-| amount | Yes | Integer representing the amount of the deduction in cents (1234 for $12.34) |  |  |  |
+| Field Name | Required? | Field Type |
+| :-- | :-- | :-- |
+| category | Yes | String or null representing the name of the deduction. |
+| tax | Yes | String representing the tax status: "pre_tax", "post_tax", or "unknown". |
+| amount | Yes | Integer or null representing the amount of the deduction in cents (1234 for $12.34). |
+
+**Gross Pay Component Object**
+
+| Field Name | Required? | Field Type |
+| :-- | :-- | :-- |
+| type | Yes | String representing the kind of compensation. Valid values are: base, benefits, bereavement, bonus, commission, disability, double_overtime, employer_contribution, fare, holiday, hourly, life_insurance, meal_comp, medical, other, overtime, parental, premium, pto, retirement, retro_pay, salary, shift_differential, sick, stock, tips, unpaid, vacation. |
+| amount | Yes | Integer representing the amount of this gross pay component in cents. |
 
 # **Environments**
 
@@ -105,8 +115,8 @@ The agency must provide the Emmy team two endpoints: one in a lower environment 
 
 | Environment Name | Sample Path | Environment Name | Sample Path |
 | :-- | :-- | :-- | :-- |
-| Lower | https://dev.your-agency.gov/api/v1/income-report |  |  |
-| UAT / Production | https://your-agency.gov/api/v1/income-report |  |  |
+| Lower | `https://dev.your-agency.gov/api/v1/income-report` |  |  |
+| UAT / Production | `https://your-agency.gov/api/v1/income-report` |  |  |
 
 The Emmy team will connect our "demo" environment to the agency's lower environment, and the agency's production environment to your production environment.
 

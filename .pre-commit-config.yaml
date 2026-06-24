@@ -10,6 +10,13 @@ repos:
 
 - repo: local
   hooks:
+  - id: json-schema
+    name: JSON Schema
+    entry: bin/run-linter --cd app -- ruby bin/validate-json-schemas
+    language: system
+    files: '^docs/api/schemas/.*\.json$'
+    pass_filenames: false
+
   - id: rubocop
     name: rubocop
     entry: bin/run-linter --cd app -- bundle exec rubocop --autocorrect --force-exclusion

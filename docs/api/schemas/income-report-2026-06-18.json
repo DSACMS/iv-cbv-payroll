@@ -1,0 +1,372 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://reportmyincome.org/schema/income-report",
+  "title": "EMMY Income Report API (2026-06-18)",
+  "type": "object",
+  "required": [
+    "confirmation_code",
+    "completed_at",
+    "agency_partner_metadata",
+    "income_report"
+  ],
+  "properties": {
+    "confirmation_code": {
+      "type": "string",
+      "description": "Unique code assigned when the report was completed."
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when user completed the report (ISO8601)."
+    },
+    "agency_partner_metadata": {
+      "type": "object",
+      "description": "Key/value metadata established per-integration (e.g., case_number date_of_birth, doc_id)."
+    },
+    "income_report": {
+      "type": "object",
+      "required": [
+        "has_other_jobs",
+        "employments"
+      ],
+      "properties": {
+        "has_other_jobs": {
+          "type": "boolean"
+        },
+        "employments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "applicant_full_name",
+              "employer_name",
+              "paystubs"
+            ],
+            "properties": {
+              "applicant_full_name": {
+                "type": "string"
+              },
+              "applicant_ssn": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^XXX-XX-\\d{4}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Masked SSN if available"
+              },
+              "applicant_extra_comments": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "employer_name": {
+                "type": "string"
+              },
+              "employer_phone": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "employer_address": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "employment_status": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "employed",
+                      "inactive",
+                      "terminated"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "employment_type": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "w2",
+                      "gig"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Differentiates traditional W-2 vs gig work."
+              },
+              "employment_start_date": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "employment_end_date": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pay_frequency": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "daily",
+                      "weekly",
+                      "biweekly",
+                      "semimonthly",
+                      "monthly",
+                      "quarterly",
+                      "variable"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "compensation_amount": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Configured compensation in cents."
+              },
+              "compensation_unit": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "hourly",
+                      "daily",
+                      "weekly",
+                      "biweekly",
+                      "semimonthly",
+                      "monthly",
+                      "annual",
+                      "salary",
+                      "per_mile",
+                      "semiweekly",
+                      "variable"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "paystubs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "pay_date",
+                    "pay_gross"
+                  ],
+                  "properties": {
+                    "pay_date": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "pay_period_start": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "pay_period_end": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "pay_gross": {
+                      "type": "integer",
+                      "description": "Gross pay for this paycheck in cents."
+                    },
+                    "pay_gross_ytd": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "pay_net": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "Net pay in cents."
+                    },
+                    "hours_paid": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "Hours paid, including overtime."
+                    },
+                    "deductions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "category",
+                          "tax",
+                          "amount"
+                        ],
+                        "properties": {
+                          "category": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "tax": {
+                            "type": "string",
+                            "enum": [
+                              "pre_tax",
+                              "post_tax",
+                              "unknown"
+                            ]
+                          },
+                          "amount": {
+                            "anyOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ],
+                            "description": "Deduction amount in cents."
+                          }
+                        }
+                      }
+                    },
+                    "gross_pay_list": {
+                      "type": "array",
+                      "description": "Itemized breakdown of gross pay components for this paystub. Amounts are in cents.",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "required": [
+                          "type",
+                          "amount"
+                        ],
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "base",
+                              "benefits",
+                              "bereavement",
+                              "bonus",
+                              "commission",
+                              "disability",
+                              "double_overtime",
+                              "employer_contribution",
+                              "fare",
+                              "holiday",
+                              "hourly",
+                              "life_insurance",
+                              "meal_comp",
+                              "medical",
+                              "other",
+                              "overtime",
+                              "parental",
+                              "premium",
+                              "pto",
+                              "retirement",
+                              "retro_pay",
+                              "salary",
+                              "shift_differential",
+                              "sick",
+                              "stock",
+                              "tips",
+                              "unpaid",
+                              "vacation"
+                            ],
+                            "description": "Kind of compensation."
+                          },
+                          "amount": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
