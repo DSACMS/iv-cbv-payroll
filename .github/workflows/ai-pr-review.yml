@@ -61,7 +61,7 @@ jobs:
           esac
 
       - name: Check out PR head (full history for diff)
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # We need the full history so `git diff $BASE HEAD` works.
           fetch-depth: 0

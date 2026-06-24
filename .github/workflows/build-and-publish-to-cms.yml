@@ -32,7 +32,7 @@ jobs:
     outputs:
       commit_hash: ${{ steps.get-commit-hash.outputs.commit_hash }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref }}
       - name: Get commit hash
@@ -57,7 +57,7 @@ jobs:
       AWS_REGION: us-east-1
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref }}
 
