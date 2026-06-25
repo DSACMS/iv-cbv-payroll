@@ -1,13 +1,9 @@
 name: Deploy to CMS
-run-name: Deploy ${{ inputs.ref }} to CMS ${{ inputs.app_name }} (${{ inputs.environment }})
+run-name: Deploy ${{ inputs.ref }} to CMS app (${{ inputs.environment }})
 
 on:
   workflow_call:
     inputs:
-      app_name:
-        description: "name of application folder under infra directory"
-        required: true
-        type: string
       environment:
         description: "the name of the application environment (e.g. uat)"
         required: true
@@ -18,11 +14,6 @@ on:
         type: string
   workflow_dispatch:
     inputs:
-      app_name:
-        description: "name of application folder under infra directory"
-        required: true
-        default: "app"
-        type: string
       environment:
         description: "the name of the application environment (e.g. uat)"
         required: true
@@ -33,7 +24,7 @@ on:
         required: true
         type: string
 
-concurrency: deploy-cms-${{ inputs.app_name }}-${{ inputs.environment }}
+concurrency: deploy-cms-app-${{ inputs.environment }}
 
 jobs:
   get-commit-hash:
@@ -63,7 +54,7 @@ jobs:
       contents: read
       id-token: write
     with:
-      app_name: ${{ inputs.app_name }}
+      app_name: app
       ref: ${{ needs.get-commit-hash.outputs.commit_hash }}
     secrets: inherit
 
@@ -75,7 +66,7 @@ jobs:
       contents: read
       id-token: write
     with:
-      app_name: ${{ inputs.app_name }}
+      app_name: app
       environment: ${{ inputs.environment }}
       image_tag: ${{ needs.get-commit-hash.outputs.commit_hash }}
     secrets: inherit
