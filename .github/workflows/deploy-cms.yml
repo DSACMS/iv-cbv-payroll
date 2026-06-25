@@ -1,0 +1,72 @@
+name: Deploy to CMS
+run-name: Deploy ${{ inputs.ref }} to CMS app (${{ inputs.environment }})
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "the name of the application environment (e.g. uat)"
+        required: true
+        type: string
+      ref:
+        description: "the branch, tag, or SHA to deploy"
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "the name of the application environment (e.g. uat)"
+        required: true
+        default: "uat"
+        type: string
+      ref:
+        description: "the branch, tag, or SHA to deploy"
+        required: true
+        type: string
+
+concurrency: deploy-cms-app-${{ inputs.environment }}
+
+jobs:
+  get-commit-hash:
+    name: Get commit hash
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      commit_hash: ${{ steps.get-commit-hash.outputs.commit_hash }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Get commit hash
+        id: get-commit-hash
+        run: |
+          COMMIT_HASH=$(git rev-parse HEAD)
+          echo "Commit hash: $COMMIT_HASH"
+          echo "commit_hash=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
+
+  build-and-publish:
+    name: Build and publish to CMS
+    needs: get-commit-hash
+    uses: ./.github/workflows/build-and-publish-to-cms.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      app_name: app
+      ref: ${{ needs.get-commit-hash.outputs.commit_hash }}
+    secrets: inherit
+
+  deploy:
+    name: Deploy to ECS
+    needs: [get-commit-hash, build-and-publish]
+    uses: ./.github/workflows/deploy-ecs.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      app_name: app
+      environment: ${{ inputs.environment }}
+      image_tag: ${{ needs.get-commit-hash.outputs.commit_hash }}
+    secrets: inherit

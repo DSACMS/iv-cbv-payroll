@@ -64,20 +64,30 @@ jobs:
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
 
+      - name: Check if image is already published
+        id: check-image-published
+        run: |
+          is_image_published=$(./bin/is-ecr-image-published "${{ env.EMMY_IMAGE_REPO }}" "${{ needs.get-commit-hash.outputs.commit_hash }}")
+          echo "Is image published: $is_image_published"
+          echo "is_image_published=$is_image_published" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        if: steps.check-image-published.outputs.is_image_published == 'false'
+        uses: docker/setup-buildx-action@v4
+
       - name: Log in to Amazon ECR
+        if: steps.check-image-published.outputs.is_image_published == 'false'
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and publish release
+        if: steps.check-image-published.outputs.is_image_published == 'false'
         shell: bash
         run: |
           make APP_NAME=${{ inputs.app_name }} \

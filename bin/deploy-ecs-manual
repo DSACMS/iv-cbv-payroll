@@ -36,16 +36,27 @@ service_name=${ECS_SERVICE_NAME:-emmy-${environment}-app}
 echo "Targeting Cluster: ${cluster_name}"
 echo "Targeting Service: ${service_name}"
 
-# 2. Describe the current service to find the current task definition
+# 2. Confirm the requested image tag exists before updating ECS
+echo "Checking for image ${image_repo}:${image_tag}..."
+is_image_published=$(./bin/is-ecr-image-published "${image_repo}" "${image_tag}")
+if [ "${is_image_published}" != "true" ]; then
+  echo "Error: Image tag not found in ECR: ${image_repo}:${image_tag}" >&2
+  echo "Run Deploy to CMS, or build-and-publish with publish_to_cms=true, before deploying." >&2
+  exit 1
+fi
+
+echo "Image exists in ECR."
+
+# 3. Describe the current service to find the current task definition
 current_task_def_arn=$(aws ecs describe-services --cluster "${cluster_name}" --services "${service_name}" --query 'services[0].taskDefinition' --output text)
 
 echo "Current Task Definition: ${current_task_def_arn}"
 
-# 3. Download the current task definition JSON
+# 4. Download the current task definition JSON
 # We strip out metadata fields that aren't allowed in register-task-definition
 current_task_def=$(aws ecs describe-task-definition --task-definition "${current_task_def_arn}" --query 'taskDefinition' --output json)
 
-# 4. Create a new task definition JSON with the updated image
+# 5. Create a new task definition JSON with the updated image
 # We use jq to update the image of the first container (assuming it's the main one)
 # or all containers if they should use the same image (less likely).
 # Typically there's one main container with the same name as the service.
@@ -60,17 +71,17 @@ new_task_def=$(echo "${current_task_def}" | jq --arg IMAGE "${image_repo}:${imag
   (.containerDefinitions[] | select(.name == "'"emmy-app"'")) .image = $IMAGE
 ')
 
-# 5. Register the new task definition
+# 6. Register the new task definition
 echo "Registering new task definition revision..."
 new_task_def_arn=$(aws ecs register-task-definition --cli-input-json "${new_task_def}" --query 'taskDefinition.taskDefinitionArn' --output text)
 
 echo "New Task Definition ARN: ${new_task_def_arn}"
 
-# 6. Update the service to use the new task definition
+# 7. Update the service to use the new task definition
 echo "Updating service ${service_name} to use new task definition..."
 aws ecs update-service --cluster "${cluster_name}" --service "${service_name}" --task-definition "${new_task_def_arn}" > /dev/null
 
-# 7. Wait for the service to become stable
+# 8. Wait for the service to become stable
 echo "Waiting for service ${service_name} to become stable..."
 aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
 
