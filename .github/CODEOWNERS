@@ -3,10 +3,10 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Default owners for everything not matched by a more specific rule below.
-* @tdooner @daphnegold @millerti @bencalegari @j-shilling @imhben @dx-gov @serverless-mom
+* @DSACMS/income-verification-cbv-payroll-committers
 
 # Rails application
-/app/ @tdooner @daphnegold @millerti @bencalegari @j-shilling @imhben @dx-gov @serverless-mom
+/app/ @DSACMS/income-verification-cbv-payroll-committers
 
 # Infrastructure
-/infra/ @tdooner @daphnegold @millerti @bencalegari @j-shilling @imhben @dx-gov @serverless-mom
+/infra/ @DSACMS/income-verification-cbv-payroll-committers
