@@ -59,7 +59,7 @@ This issue is used to request role changes within the iv-cbv-payroll repository 
 - [ ] Reviewing a minimum of 4 PRs per 3 month cycle
 - [ ] Contributing at least 2 PRs per 3 month cycle
 - [ ] Exercising judgment for the good of the project, independent of their employer, friends, or team, in line with project GOVERNANCE.
-- [ ] Taking responsibility for a key project management area as indicated in CODEOWNERS.md
+- [ ] Taking responsibility for a key project management area as indicated in [CODEOWNERS](../CODEOWNERS)
 - [ ] Writing and refactoring submitted PRs
 - [ ] Participating in Emmy maintainer activities
 - [ ] Proposing contributions to strategy and policy of the project
