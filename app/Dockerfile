@@ -64,6 +64,8 @@ RUN apt-get update -qq && \
       liblcms2-dev \
       libnghttp2-14 \
       libnghttp2-dev \
+      libssh2-1-dev \
+      libssh2-1t64 \
       libsystemd0 \
       libudev1 \
       libunbound8 \
