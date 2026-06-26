@@ -1,0 +1,12 @@
+# Code owners are automatically requested for review when someone opens a
+# pull request that modifies code they own.
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything not matched by a more specific rule below.
+* @DSACMS/income-verification-cbv-payroll-committers
+
+# Rails application
+/app/ @DSACMS/income-verification-cbv-payroll-committers
+
+# Infrastructure
+/infra/ @DSACMS/income-verification-cbv-payroll-committers

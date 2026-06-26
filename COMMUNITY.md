@@ -22,7 +22,7 @@ IV CBV Payroll is supported by a dedicated team of individuals fulfilling variou
 | Software Engineer | Ben Calegari | Nava |
 | Open Source Lead/Community Manager | Nočnica Mellifera | Nava |
 
-See [CODEOWNERS.md](.github/CODEOWNERS.md) for a list of those responsible for the code and documentation in this repository.
+See [CODEOWNERS](.github/CODEOWNERS) for a list of those responsible for the code and documentation in this repository.
 
 See [Community Guidelines](#iv-cbv-payroll-open-source-community-guidelines) on principles and guidelines for participating in this open source project.
 
@@ -133,7 +133,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 - Participating in, and leading, community discussions.
 - Mentoring other Maintainers.
 - Exercising judgment for the good of the project, independent of their employer, friends, or team, in line with project GOVERNANCE.
-- Become responsible for a key project management area as indicated in CODEOWNERS.md.
+- Become responsible for a key project management area as indicated in [CODEOWNERS](.github/CODEOWNERS).
 
 #### Requirements:
 - Must be actively contributing for at least 3 months to at least one project area:
@@ -150,7 +150,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 - Other privileges defined by the community in the future.
 
 #### Process of becoming a Maintainer
-1. Any current contributor may become a new Maintainer, by meeting the requirements, and opening a PR against the root of the iv-cbv-payroll adding the themselves as a maintainer in the COMMUNITY.md file and corresponding team in the CODEOWNERS.md file.
+1. Any current contributor may become a new Maintainer, by meeting the requirements, and opening a PR against the root of the iv-cbv-payroll adding the themselves as a maintainer in the COMMUNITY.md file and corresponding team in the [CODEOWNERS](.github/CODEOWNERS) file.
 2. At least 2 current Maintainers from the Core Team must then approve the PR.
 
 ## Core Team
