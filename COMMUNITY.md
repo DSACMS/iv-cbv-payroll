@@ -150,7 +150,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 - Other privileges defined by the community in the future.
 
 #### Process of becoming a Maintainer
-1. Any current contributor may become a new Maintainer, by meeting the requirements, and opening a PR against the root of the iv-cbv-payroll adding the themselves as a maintainer in the COMMUNITY.md file and corresponding team in the[CODEOWNERS](.github/CODEOWNERS) file.
+1. Any current contributor may become a new Maintainer, by meeting the requirements, and opening a PR against the root of the iv-cbv-payroll adding the themselves as a maintainer in the COMMUNITY.md file and corresponding team in the [CODEOWNERS](.github/CODEOWNERS) file.
 2. At least 2 current Maintainers from the Core Team must then approve the PR.
 
 ## Core Team
