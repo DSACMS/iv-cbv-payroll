@@ -3,10 +3,10 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Default owners for everything not matched by a more specific rule below.
-* @DSACMS/income-verification-cbv-payroll-committers
+* @DSACMS/emmy-app-committers
 
 # Rails application
-/app/ @DSACMS/income-verification-cbv-payroll-committers
+/app/ @DSACMS/emmy-app-committers
 
 # Infrastructure
-/infra/ @DSACMS/income-verification-cbv-payroll-committers
+/infra/ @DSACMS/emmy-app-committers
