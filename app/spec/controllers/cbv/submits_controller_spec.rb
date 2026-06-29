@@ -184,7 +184,6 @@ RSpec.describe Cbv::SubmitsController do
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.last_name.prompt"))
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.case_number.prompt"))
               expect(pdf_text).to include(I18n.t("cbv.submits.show.pdf.caseworker.ssn"))
-              expect(pdf_text).to include(I18n.t("cbv.submits.show.application_or_recertification_date"))
             end
           end
 
@@ -199,6 +198,50 @@ RSpec.describe Cbv::SubmitsController do
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.last_name.prompt"))
               expect(pdf_text).to include(I18n.t("cbv.applicant_informations.sandbox.fields.case_number.prompt"))
               expect(pdf_text).not_to include(I18n.t("cbv.submits.show.pdf.caseworker.ssn"))
+            end
+          end
+
+          context "when rendering report details" do
+            before do
+              cbv_flow.update!(
+                confirmation_code: "SANDBOX123",
+                consented_to_authorized_use_at: Time.zone.parse("2024-06-18 15:37:38 UTC")
+              )
+            end
+
+            it "shows the expected caseworker report details rows" do
+              get :show, format: :pdf, params: {
+                is_caseworker: "true"
+              }
+
+              expect(response).to be_successful
+
+              pdf_text = extract_pdf_text(response)
+
+              expect(pdf_text).to include([
+                I18n.t("cbv.submits.show.pdf.shared.report_details"),
+                "#{I18n.t("cbv.submits.show.pdf.shared.confirmation_code")} #{cbv_flow.confirmation_code}",
+                "#{I18n.t("cbv.submits.show.pdf.client.date_created")} #{I18n.l(cbv_flow.consented_to_authorized_use_at.to_date, format: :long)}",
+                "#{I18n.t("cbv.submits.show.pdf.client.date_range")} #{I18n.l(pinwheel_report.from_date.to_date, format: :long)} to #{I18n.l(pinwheel_report.to_date.to_date, format: :long)}",
+                "#{I18n.t("cbv.submits.show.pdf.caseworker.agreement_consent_timestamp")} #{cbv_flow.consented_to_authorized_use_at}",
+                I18n.t("cbv.submits.show.pdf.client.employment_payment_details")
+              ].join(" "))
+            end
+
+            it "shows the expected client report details rows" do
+              get :show, format: :pdf
+
+              expect(response).to be_successful
+
+              pdf_text = extract_pdf_text(response)
+
+              expect(pdf_text).to include([
+                I18n.t("cbv.submits.show.pdf.shared.report_details"),
+                "#{I18n.t("cbv.submits.show.pdf.shared.confirmation_code")} #{cbv_flow.confirmation_code}",
+                "#{I18n.t("cbv.submits.show.pdf.client.date_created")} #{I18n.l(cbv_flow.consented_to_authorized_use_at.to_date, format: :long)}",
+                "#{I18n.t("cbv.submits.show.pdf.client.date_range")} #{I18n.l(pinwheel_report.from_date.to_date, format: :long)} to #{I18n.l(pinwheel_report.to_date.to_date, format: :long)}",
+                I18n.t("cbv.submits.show.pdf.client.employment_payment_details")
+              ].join(" "))
             end
           end
         end
@@ -220,7 +263,6 @@ RSpec.describe Cbv::SubmitsController do
               expect(pdf_text).to include("Medicaid case number")
               expect(pdf_text).to include("Date of birth")
               expect(pdf_text).to include("SSN")
-              expect(pdf_text).not_to include(I18n.t("cbv.submits.show.application_or_recertification_date"))
             end
           end
 

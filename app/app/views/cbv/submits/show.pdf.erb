@@ -85,12 +85,6 @@
       <% row.with_data_cell.with_content(@cbv_flow.confirmation_code) %>
     <% end %>
   <% end %>
-  <% unless current_agency?(:la_ldh) %>
-    <%= table.with_row do |row| %>
-      <% row.with_data_cell.with_content(t(".application_or_recertification_date")) %>
-      <% row.with_data_cell.with_content(format_parsed_date(@cbv_flow.cbv_applicant.snap_application_date)) %>
-    <% end %>
-  <% end %>
   <%= table.with_row do |row| %>
     <% row.with_data_cell.with_content(t(".pdf.client.date_created")) %>
     <% row.with_data_cell.with_content(format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
