@@ -239,6 +239,10 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/accenture-domain-name"
     },
+    HAWAII_DOMAIN_NAME = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/hawaii-domain-name"
+    },
     LA_LDH_DOMAIN_NAME = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-domain-name"
