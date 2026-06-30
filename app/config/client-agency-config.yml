@@ -142,6 +142,8 @@
   prefilled_activities_enabled: true
   allowed_iframe_ancestors:
     - https://dsacms.github.io
+    - https://statehub.hawaii.gov
+    - https://*.statehub.hawaii.gov
 # Uncomment for local testing:
 #    - http://localhost:8000
 #    - https://*.ngrok-free.app
