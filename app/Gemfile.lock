@@ -172,7 +172,7 @@ GEM
     crack (1.0.1)
       bigdecimal
       rexml
-    crass (1.0.6)
+    crass (1.0.7)
     css_parser (3.0.0)
       addressable
       ssrf_filter (~> 1.5)
@@ -322,7 +322,7 @@ GEM
       base64
       json-logic-rb (~> 0.1.5)
       mutex_m
-    msgpack (1.8.1)
+    msgpack (1.8.3)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     mutex_m (0.3.0)
@@ -619,7 +619,7 @@ GEM
     wkhtmltopdf-binary (0.12.6.10)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.42)
+    yard (0.9.44)
     zeitwerk (2.7.5)
 
 PLATFORMS
