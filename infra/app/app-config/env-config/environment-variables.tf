@@ -95,9 +95,9 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/accenture-income-report-url"
     },
-    HAWAII_INCOME_REPORT_URL= {
-                                  manage_method     = "manual"
-                                  secret_store_name = "/service/${var.app_name}-${var.environment}/hawaii-income-report-url"
+    HAWAII_INCOME_REPORT_URL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/hawaii-income-report-url"
     },
     LA_LDH_INCOME_REPORT_URL = {
       manage_method     = "manual"
