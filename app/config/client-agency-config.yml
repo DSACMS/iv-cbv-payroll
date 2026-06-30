@@ -219,7 +219,7 @@
   agency_name: Hawaii
   agency_contact_website: https://medquest.hawaii.gov/en/contact-us.html
   agency_missing_employers_website: https://medquest.hawaii.gov/en/contact-us.html
-  agency_domain: statehub.hawaii.gov
+  agency_domain: <%= ENV["HAWAII_DOMAIN_NAME"] %>
   logo_path: hawaii_logo.webp
   pinwheel:
     environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
