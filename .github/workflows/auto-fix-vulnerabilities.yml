@@ -139,6 +139,11 @@ jobs:
             echo "_by this block, so removing would risk reintroducing the CVE. Clear the block_"
             echo "_manually when the base Ruby image is bumped (see upgrade instructions at the_"
             echo "_top of the Dockerfile)._"
+            echo ""
+            echo "## AI Usage"
+            echo "- [ ] USED_AI: I attest that I have read, understood, and take ownership of all AI-generated code in this PR."
+            echo "- [x] NO_AI: I did not use AI."
+            echo ""
           } > pr-body.md
 
       - name: Check for existing open fix PR
