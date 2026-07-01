@@ -52,23 +52,19 @@ class DemoLauncher::HouseholdScenario
   end
 
   def find_or_create_invitation(member_data)
-    applicant = find_or_create_applicant(member_data)
     ActivityFlowInvitation.find_or_create_by!(reference_id: "#{household_reference_id}-#{member_data.fetch(:reference_id)}") do |invitation|
       invitation.client_agency_id = client_agency_id
-      invitation.cbv_applicant = applicant
-    end.tap do |invitation|
-      invitation.update!(client_agency_id: client_agency_id, cbv_applicant: applicant)
+      invitation.cbv_applicant = create_applicant(member_data)
     end
   end
 
-  def find_or_create_applicant(member_data)
-    CbvApplicant.find_or_create_by!(
+  def create_applicant(member_data)
+    CbvApplicant.create!(
       client_agency_id: client_agency_id,
       first_name: member_data.fetch(:display_name).split.first,
       last_name: member_data.fetch(:display_name).split.last,
-      date_of_birth: member_data.fetch(:date_of_birth)
-    ) do |applicant|
-      applicant.snap_application_date = Date.current
-    end
+      date_of_birth: member_data.fetch(:date_of_birth),
+      snap_application_date: Date.current
+    )
   end
 end
