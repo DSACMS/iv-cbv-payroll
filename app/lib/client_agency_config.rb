@@ -13,6 +13,7 @@ class ClientAgencyConfig
   VALID_PAY_INCOME_DAYS = [ 90, 182 ]
   VALID_APPLICATION_REPORTING_MONTHS = [ 1, 2, 3 ]
   VALID_RENEWAL_REQUIRED_MONTHS = 1..6
+  VALID_APPLICANT_ATTRIBUTE_TYPES = %w[string date]
 
   def initialize(config_path)
     template = ERB.new File.read(config_path)
@@ -107,6 +108,24 @@ class ClientAgencyConfig
       raise ArgumentError.new("Client Agency #{@id} invalid value for application_reporting_months") unless VALID_APPLICATION_REPORTING_MONTHS.include?(@application_reporting_months)
       raise ArgumentError.new("Client Agency #{@id} invalid value for renewal_required_months") unless @renewal_required_months.blank? || VALID_RENEWAL_REQUIRED_MONTHS.include?(@renewal_required_months)
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `transmission_method`") if @transmission_method.blank?
+
+      @applicant_attributes.each do |name, options|
+        type = options.is_a?(Hash) ? options["type"] : nil
+        unless VALID_APPLICANT_ATTRIBUTE_TYPES.include?(type)
+          raise ArgumentError.new("Client Agency #{@id} applicant attribute `#{name}` has an invalid `type`: "\
+            "#{type.inspect}. Valid types: #{VALID_APPLICANT_ATTRIBUTE_TYPES}")
+        end
+      end
+    end
+
+    def applicant_attribute_names
+      @applicant_attributes.compact.keys.map(&:to_sym)
+    end
+
+    def redactable_applicant_fields
+      @applicant_attributes.each_with_object({}) do |(name, options), fields|
+        fields[name.to_sym] = options["type"].to_sym if options["redact"]
+      end
     end
   end
 end

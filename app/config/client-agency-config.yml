@@ -40,9 +40,13 @@
     report_variant: flows
   applicant_attributes:
     case_number:
-      required: false
+      type: string
     date_of_birth:
       required: true
+      type: date
+      redact: true
+    doc_id:
+      type: string
 
 - id: nh_dhhs
   agency_name: Department of Health and Human Services
@@ -81,14 +85,22 @@
   applicant_attributes:
     first_name:
       required: true
+      type: string
+      redact: true
     middle_name:
-      required: false
+      type: string
+      redact: true
     last_name:
       required: true
+      type: string
+      redact: true
     case_number:
       required: true
+      type: string
     date_of_birth:
       required: true
+      type: date
+      redact: true
   activity_types:
     education: true
     community_service: true
@@ -126,14 +138,22 @@
   applicant_attributes:
     first_name:
       required: true
+      type: string
+      redact: true
     middle_name:
-      required: false
+      type: string
+      redact: true
     last_name:
       required: true
+      type: string
+      redact: true
     case_number:
       required: true
+      type: string
     date_of_birth:
       required: true
+      type: date
+      redact: true
   activity_types:
     education: true
     community_service: true
@@ -179,8 +199,11 @@
   applicant_attributes:
     case_number:
       required: true
+      type: string
     date_of_birth:
       required: true
+      type: date
+      redact: true
   activity_types:
     education: true
     community_service: true
@@ -204,6 +227,8 @@
   applicant_attributes:
     case_number:
       required: true
+      type: string
+      redact: true
   activity_types:
     education: true
     community_service: true
