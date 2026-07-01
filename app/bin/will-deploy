@@ -64,11 +64,11 @@ def tags_for_changes(both_changes, income_changes, ce_changes)
   has_ce = both_changes.length + ce_changes.length
 
   if has_income.positive? && has_ce.zero?
-    "#{tags} @Ming"
+    "#{tags} @Jake"
   elsif has_ce.positive? && has_income.zero?
     "#{tags} @Jacob"
   else
-    "#{tags} @Ming @Jacob"
+    "#{tags} @Jake @Jacob"
   end
 end
 
@@ -107,6 +107,7 @@ both_changes = []
 income_changes = []
 ce_changes = []
 other_changes = []
+dependabot_bumps = []
 
 warn "Categorizing changes for deployment..."
 warn "======================================"
@@ -124,8 +125,13 @@ commit_lines(prod, current_sha).each do |commit_line|
   end
 
   if commit.end_with?("[bot]")
-    warn "Auto-categorizing bot-authored change as Other/Maintenance..."
-    other_changes << commit
+    if (bump = commit.match(/^Bump (\S+) from /))
+      warn "Collapsing dependabot bump into summary line..."
+      dependabot_bumps << bump[1]
+    else
+      warn "Auto-categorizing bot-authored change as Other/Maintenance..."
+      other_changes << commit
+    end
     warn ""
     next
   end
@@ -145,6 +151,8 @@ commit_lines(prod, current_sha).each do |commit_line|
 
   warn ""
 end
+
+other_changes.unshift("Bump #{dependabot_bumps.join(', ')}") unless dependabot_bumps.empty?
 
 tags = tags_for_changes(both_changes, income_changes, ce_changes)
 
