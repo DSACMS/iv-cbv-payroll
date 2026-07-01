@@ -26,7 +26,7 @@ class CbvApplicant < ApplicationRecord
   end
 
   def self.valid_attributes_for_agency(client_agency_id)
-    sti_class_for(client_agency_id).const_get(:VALID_ATTRIBUTES)
+    Rails.application.config.client_agencies[client_agency_id].applicant_attribute_names
   end
 
   def self.build_agency_partner_metadata(client_agency_id, &value_provider)
@@ -89,12 +89,16 @@ class CbvApplicant < ApplicationRecord
     missing_attrs
   end
 
+  def redact!(fields = nil)
+    super(fields || agency_config&.redactable_applicant_fields)
+  end
+
   def set_snap_application_date
     self.snap_application_date ||= Date.current
   end
 
   def set_applicant_attributes
-    @applicant_attributes = agency_config&.applicant_attributes&.compact&.keys&.map(&:to_sym) || []
+    @applicant_attributes = agency_config&.applicant_attribute_names || []
 
     @required_applicant_attributes = get_required_applicant_attributes
   end

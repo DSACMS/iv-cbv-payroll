@@ -1,11 +1,53 @@
 require 'rails_helper'
 
 RSpec.describe CbvApplicant, type: :model do
-  describe "all valid types of agencies" do
+  describe ".valid_attributes_for_agency" do
     ClientAgencyConfig.client_agencies.client_agency_ids.each do |client_agency_id|
-      it "has a list of VALID_ATTRIBUTES for #{client_agency_id}" do
+      it "derives a list from config for #{client_agency_id}" do
         expect(described_class.valid_attributes_for_agency(client_agency_id)).to be_present
       end
+
+      it "matches the config applicant_attributes keys for #{client_agency_id}" do
+        expected = ClientAgencyConfig.client_agencies[client_agency_id]
+          .applicant_attributes.keys.map(&:to_sym)
+        expect(described_class.valid_attributes_for_agency(client_agency_id)).to eq(expected)
+      end
+    end
+  end
+
+  describe "#redact!" do
+    let(:applicant) do
+      create(:cbv_applicant, :sandbox,
+        first_name: "Jane", last_name: "Doe", case_number: "123456", date_of_birth: Date.new(1980, 1, 1))
+    end
+
+    it "redacts the config-flagged fields using each field's type" do
+      allow_any_instance_of(ClientAgencyConfig::ClientAgency)
+        .to receive(:redactable_applicant_fields)
+        .and_return({ first_name: :string, date_of_birth: :date })
+
+      applicant.redact!
+
+      expect(applicant.first_name).to eq("REDACTED")
+      expect(applicant.date_of_birth).to eq(Date.new(1990, 1, 1))
+      expect(applicant.case_number).to eq("123456")
+      expect(applicant.redacted_at).to be_present
+    end
+
+    it "honors explicitly-passed fields over the config" do
+      applicant.redact!({ case_number: :string })
+
+      expect(applicant.case_number).to eq("REDACTED")
+      expect(applicant.first_name).to eq("Jane")
+    end
+
+    it "raises when the agency config flags no fields for redaction" do
+      allow_any_instance_of(ClientAgencyConfig::ClientAgency)
+        .to receive(:redactable_applicant_fields)
+        .and_return({})
+
+      expect { applicant.redact! }
+        .to raise_error("No fields to redact in #{applicant.class} (or its superclass)")
     end
   end
 

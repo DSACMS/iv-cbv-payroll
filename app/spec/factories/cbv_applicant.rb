@@ -19,12 +19,16 @@ FactoryBot.define do
       client_agency_id { "la_ldh" }
 
       case_number do
-        # TODO: Determine actual LA LDH case number format.
         8.times.map { rand(10) }.join
       end
 
       date_of_birth { Date.new(2000, 1, 1) }
       doc_id { "%08d" % rand(100_000_000) }
+    end
+
+    trait :accenture do
+      client_agency_id { "accenture" }
+      case_number { "ABC1234" }
     end
   end
 end
