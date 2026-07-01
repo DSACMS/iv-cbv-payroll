@@ -213,3 +213,45 @@
     - https://ac1752691868225.my.salesforce-sites.com
     - https://ac1752691868225.my.salesforce.com
     - https://ac1752691868225.my.site.com
+
+
+- id: hawaii
+  agency_name: Hawaii
+  agency_contact_website: https://medquest.hawaii.gov/en/contact-us.html
+  agency_missing_employers_website: https://medquest.hawaii.gov/en/contact-us.html
+  agency_domain: <%= ENV["HAWAII_DOMAIN_NAME"] %>
+  logo_path: hawaii_logo.webp
+  pinwheel:
+    environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
+  argyle:
+    environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
+  transmission_method: json
+  transmission_method_configuration:
+    json_api_url: <%= ENV["HAWAII_INCOME_REPORT_URL"] %>
+  staff_portal_enabled: false
+  pilot_ended: false
+  pay_income_days:
+    w2: 90
+    gig: 90
+  application_reporting_months: 2
+  invitation_valid_days: 14
+  applicant_attributes:
+    first_name:
+      required: true
+    middle_name:
+      required: false
+    last_name:
+      required: true
+    case_number:
+      required: true
+    date_of_birth:
+      required: true
+  activity_types:
+    education: false
+    community_service: false
+    work_programs: true
+    employment: true
+  prefilled_activities_enabled: true
+  allowed_iframe_ancestors:
+    - https://statehub.hawaii.gov
+    - https://*.statehub.hawaii.gov
