@@ -58,7 +58,7 @@ deploy_service() {
   # Strip out metadata fields that aren't allowed in register-task-definition.
   current_task_def=$(aws ecs describe-task-definition --task-definition "${current_task_def_arn}" --query 'taskDefinition' --output json)
 
-  new_task_def=$(echo "${current_task_def}" | jq --arg IMAGE "${image_repo}:${image_tag}" --arg CONTAINER_NAME "${container_name}" '
+  new_task_def=$(echo "${current_task_def}" | jq --arg IMAGE "${image_repo}:${image_tag}" --arg IMAGE_TAG "${image_tag}" --arg CONTAINER_NAME "${container_name}" '
     del(.taskDefinitionArn) |
     del(.revision) |
     del(.status) |
@@ -66,7 +66,10 @@ deploy_service() {
     del(.compatibilities) |
     del(.registeredAt) |
     del(.registeredBy) |
-    (.containerDefinitions[] | select(.name == $CONTAINER_NAME)) .image = $IMAGE
+    (.containerDefinitions[] | select(.name == $CONTAINER_NAME)) |= (
+      .image = $IMAGE |
+      .environment = ((.environment // []) | map(if .name == "IMAGE_TAG" then .value = $IMAGE_TAG else . end))
+    )
   ')
 
   echo "Registering new task definition revision..."
