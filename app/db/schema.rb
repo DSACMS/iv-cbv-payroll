@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_29_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_29_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -234,6 +234,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_120000) do
     t.date "month", null: false
     t.datetime "updated_at", null: false
     t.index ["employment_activity_id"], name: "index_employment_activity_months_on_employment_activity_id"
+  end
+
+  create_table "household_members", force: :cascade do |t|
+    t.bigint "activity_flow_invitation_id", null: false
+    t.datetime "created_at", null: false
+    t.string "display_name", null: false
+    t.bigint "household_id", null: false
+    t.string "reference_id", null: false
+    t.string "role_label", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_flow_invitation_id"], name: "index_household_members_on_activity_flow_invitation_id", unique: true
+    t.index ["household_id", "reference_id"], name: "index_household_members_on_household_id_and_reference_id", unique: true
+    t.index ["household_id"], name: "index_household_members_on_household_id"
+  end
+
+  create_table "households", force: :cascade do |t|
+    t.string "auth_token", null: false
+    t.string "client_agency_id", null: false
+    t.datetime "created_at", null: false
+    t.string "reference_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["auth_token"], name: "index_households_on_auth_token", unique: true
+    t.index ["reference_id"], name: "index_households_on_reference_id", unique: true
   end
 
   create_table "identities", force: :cascade do |t|
@@ -506,6 +529,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_120000) do
   add_foreign_key "education_activity_months", "education_activities"
   add_foreign_key "employment_activities", "activity_flows"
   add_foreign_key "employment_activity_months", "employment_activities"
+  add_foreign_key "household_members", "activity_flow_invitations"
+  add_foreign_key "household_members", "households"
   add_foreign_key "job_training_activities", "activity_flows"
   add_foreign_key "job_training_activity_months", "job_training_activities"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

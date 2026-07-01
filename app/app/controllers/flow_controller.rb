@@ -1,6 +1,4 @@
 class FlowController < ApplicationController
-  ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
-
   helper_method :next_path
 
   def set_generic_flow
@@ -111,11 +109,6 @@ class FlowController < ApplicationController
 
   def flow_attributes_from_params
     flow_class(flow_param).flow_attributes_from_params(params)
-  end
-
-  def normalize_token(token)
-    matches = ALPHANUMERIC_PREFIX_REGEXP.match(token)
-    matches[1] if matches
   end
 
   def apply_demo_overrides

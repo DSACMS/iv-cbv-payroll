@@ -18,6 +18,8 @@ class ActivityFlow < Flow
 
   before_create :set_default_reporting_window, :set_default_renewal_required_months
 
+  scope :incomplete, -> { where(completed_at: nil) }
+
   def self.create_from_invitation(invitation, device_id, params = {})
     flow = create(
       activity_flow_invitation: invitation,
@@ -29,6 +31,11 @@ class ActivityFlow < Flow
     hydrate_pre_populated_activities!(flow, invitation) if flow.persisted?
 
     flow
+  end
+
+  def self.resume_or_create_from_invitation(invitation, device_id, params = {})
+    invitation.activity_flows.incomplete.order(created_at: :desc).first ||
+      create_from_invitation(invitation, device_id, params)
   end
 
   def self.hydrate_pre_populated_activities!(flow, invitation)
