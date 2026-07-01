@@ -1,5 +1,5 @@
 class DemoLauncher::HouseholdScenario
-  REFERENCE_ID = "demo-household-v1"
+  REFERENCE_ID = "household-scenario"
   MEMBERS = [
     {
       reference_id: "avery",
