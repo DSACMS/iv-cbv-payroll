@@ -89,11 +89,11 @@ module IvCbvPayroll
         amzn_trace_id: ->(request) { request.headers["X-Amzn-Trace-ID"] }
       }
 
-      # Forward logs to NewRelic
-      SemanticLogger.add_appender(appender: :new_relic_logs)
-      config.semantic_logger.add_appender(io: $stdout, formatter: :logfmt)
+      config.rails_semantic_logger.appenders do |appenders|
+        appenders.add(io: $stdout, formatter: :logfmt)
+        appenders.add(appender: :new_relic_logs) # Forward logs to NewRelic
+      end
 
-      config.rails_semantic_logger.add_file_appender = false
       config.rails_semantic_logger.action_message_format = ->(message, payload) do
         # "Completed Cbv::EntriesController#show"
         "#{message} #{payload[:controller]}##{payload[:action]}"
