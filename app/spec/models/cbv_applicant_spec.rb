@@ -47,7 +47,7 @@ RSpec.describe CbvApplicant, type: :model do
         .and_return({})
 
       expect { applicant.redact! }
-        .to raise_error("No fields to redact in #{applicant.class} (or its superclass)")
+        .to raise_error("No fields to redact in #{applicant.class}")
     end
   end
 

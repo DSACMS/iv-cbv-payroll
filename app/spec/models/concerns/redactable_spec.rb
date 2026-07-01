@@ -8,14 +8,14 @@ RSpec.describe Redactable, type: :model do
       allow(invitation.class).to receive(:fields_to_redact).and_return(nil)
 
       expect { invitation.redact! }
-        .to raise_error("No fields to redact in #{invitation.class} (or its superclass)")
+        .to raise_error("No fields to redact in #{invitation.class}")
     end
 
     it "raises when the resolved field set is empty" do
       allow(invitation.class).to receive(:fields_to_redact).and_return({})
 
       expect { invitation.redact! }
-        .to raise_error("No fields to redact in #{invitation.class} (or its superclass)")
+        .to raise_error("No fields to redact in #{invitation.class}")
     end
   end
 end
