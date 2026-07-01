@@ -206,6 +206,47 @@ RSpec.describe DemoLauncherController, type: :controller do
       end
     end
 
+    context "with a household launch" do
+      it "creates the test household and redirects to its URL" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            launch_type: "household"
+          }
+        }.to change(Household, :count).by(1)
+          .and change(HouseholdMember, :count).by(2)
+
+        expect(response).to redirect_to(Household.last.to_url(host: "test.host"))
+      end
+
+      it "returns the household URL as JSON" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "household"
+        }, format: :json
+
+        parsed_response = JSON.parse(response.body)
+
+        expect(response).to have_http_status(:success)
+        expect(parsed_response.fetch("url")).to include("/households/start/#{Household.last.auth_token}")
+      end
+
+      it "does not apply pre-populated activity controls to the test household invitations" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "household",
+          volunteering_enabled: "1",
+          volunteering_organization_name: "Red Cross",
+          volunteering_hours_per_month: "12"
+        }
+
+        pre_populated_activities = Household.last.household_members.map do |member|
+          member.activity_flow_invitation.pre_populated_activities
+        end
+        expect(pre_populated_activities).to all(eq([]))
+      end
+    end
+
     context "with CBV flow type" do
       context "with a generic launch" do
         it "redirects to the CBV generic link" do

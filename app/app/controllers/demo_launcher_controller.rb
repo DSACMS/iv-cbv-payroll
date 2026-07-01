@@ -13,7 +13,9 @@ class DemoLauncherController < ApplicationController
     test_scenario = launcher_params[:test_scenario]
     overrides = launch_overrides(flow_type)
 
-    url = if flow_type == "cbv"
+    url = if launch_type == "household"
+            build_household_url(client_agency_id)
+          elsif flow_type == "cbv"
             if launch_type == "generic"
               build_cbv_generic_url(client_agency_id, overrides)
             else
@@ -320,6 +322,11 @@ class DemoLauncherController < ApplicationController
       **launcher_url_options,
       **overrides
     )
+  end
+
+  def build_household_url(client_agency_id)
+    household = DemoLauncher::HouseholdScenario.find_or_create!(client_agency_id: client_agency_id)
+    household.to_url(**launcher_url_options)
   end
 
   TEST_SCENARIOS = {
