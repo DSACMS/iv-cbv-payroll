@@ -1,0 +1,12 @@
+# Code owners are automatically requested for review when someone opens a
+# pull request that modifies code they own.
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything not matched by a more specific rule below.
+* @DSACMS/emmy-app-committers
+
+# Rails application
+/app/ @DSACMS/emmy-app-committers
+
+# Infrastructure
+/infra/ @DSACMS/emmy-app-committers

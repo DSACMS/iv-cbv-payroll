@@ -146,7 +146,7 @@ We follow the [GitHub Flow Workflow](https://guides.github.com/introduction/flow
 3.  Create a feature branch
 4.  Write code and tests for your change
 5.  From your branch, make a pull request against main
-6.  Work with [repo maintainers](.github/CODEOWNERS.md) to get your change reviewed
+6.  Work with [repo maintainers](.github/CODEOWNERS) to get your change reviewed
 7.  Wait for your change to be pulled into main
 8.  Delete your feature branch
 
