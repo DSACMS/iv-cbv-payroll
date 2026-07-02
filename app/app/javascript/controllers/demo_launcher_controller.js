@@ -184,7 +184,14 @@ export default class extends Controller {
   }
 
   humanizeLaunchType(launchType) {
-    return launchType === "generic" ? "Generic" : "Tokenized"
+    switch (launchType) {
+      case "generic":
+        return "Generic"
+      case "household":
+        return "Household"
+      default:
+        return "Tokenized"
+    }
   }
 
   resetCopyButton() {

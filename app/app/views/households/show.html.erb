@@ -1,0 +1,28 @@
+<% content_for :title, t(".title") %>
+
+<h1>
+  <%= t(".title") %>
+</h1>
+
+<p>
+  <%= t(".description") %>
+</p>
+
+<div class="margin-top-4">
+  <% @household.household_members.order(:id).each do |member| %>
+    <div class="border border-base-lighter radius-md padding-3 margin-bottom-2">
+      <h2 class="font-heading-md margin-y-0">
+        <%= member.display_name %>
+      </h2>
+      <p class="margin-top-1 margin-bottom-2">
+        <%= member.role_label %>
+      </p>
+      <%= button_to(
+            t(".launch"),
+            household_member_launch_path(token: @household.auth_token, member_id: member.id),
+            method: :post,
+            class: "usa-button"
+          ) %>
+    </div>
+  <% end %>
+</div>
