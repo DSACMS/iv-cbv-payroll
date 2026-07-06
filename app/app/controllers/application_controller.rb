@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
+
   helper :view
   helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
   around_action :switch_locale
@@ -121,6 +123,20 @@ class ApplicationController < ActionController::Base
 
   def internal_environment?
     Rails.application.config.is_internal_environment
+  end
+
+  def activity_hub_enabled?
+    Rails.env.development? || ENV["ACTIVITY_HUB_ENABLED"] == "true"
+  end
+
+  def redirect_unless_activity_hub_enabled
+    return if activity_hub_enabled?
+
+    redirect_to root_url
+  end
+
+  def normalize_token(token)
+    ALPHANUMERIC_PREFIX_REGEXP.match(token.to_s)&.[](1)
   end
 
   def enable_mini_profiler_in_demo

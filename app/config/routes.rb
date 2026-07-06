@@ -111,6 +111,9 @@ Rails.application.routes.draw do
         root to: "entries#show", as: :new
       end
     end
+
+    get "/households/start/:token", to: "households#show", as: :household_start, token: /[^\/]+/
+    post "/households/start/:token/members/:member_id", to: "household_members#create", as: :household_member_launch, token: /[^\/]+/
   end
 
   namespace :webhooks do

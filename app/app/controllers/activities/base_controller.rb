@@ -1,5 +1,5 @@
 class Activities::BaseController < FlowController
-  before_action :redirect_on_prod, :set_flow
+  before_action :redirect_unless_activity_hub_enabled, :set_flow
 
   helper_method :current_identity, :progress_calculator
 
@@ -24,12 +24,6 @@ class Activities::BaseController < FlowController
   end
 
   private
-
-  def redirect_on_prod
-    return if Rails.env.development? || ENV["ACTIVITY_HUB_ENABLED"] == "true"
-
-    redirect_to root_url
-  end
 
   def after_activity_path
     progress_result = progress_calculator.overall_result

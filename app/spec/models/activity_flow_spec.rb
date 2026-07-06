@@ -344,6 +344,42 @@ RSpec.describe ActivityFlow, type: :model do
     end
   end
 
+  describe ".resume_or_create_from_invitation" do
+    let(:device_id) { "device123" }
+    let(:invitation) { create(:activity_flow_invitation) }
+
+    it "creates a flow when the invitation has no incomplete flows" do
+      flow = described_class.resume_or_create_from_invitation(invitation, device_id)
+
+      expect(flow).to be_persisted
+      expect(flow.activity_flow_invitation).to eq(invitation)
+      expect(flow.device_id).to eq(device_id)
+    end
+
+    it "resumes an incomplete flow for the invitation" do
+      existing_flow = create(:activity_flow, activity_flow_invitation: invitation, completed_at: nil)
+
+      expect {
+        expect(described_class.resume_or_create_from_invitation(invitation, device_id)).to eq(existing_flow)
+      }.not_to change(described_class, :count)
+    end
+
+    it "resumes an incomplete flow for the invitation across devices" do
+      existing_flow = create(:activity_flow, activity_flow_invitation: invitation, device_id: "other-device", completed_at: nil)
+
+      expect(described_class.resume_or_create_from_invitation(invitation, "new-device")).to eq(existing_flow)
+    end
+
+    it "creates a new flow when the invitation only has completed flows" do
+      create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current)
+
+      expect {
+        flow = described_class.resume_or_create_from_invitation(invitation, device_id)
+        expect(flow).not_to be_complete
+      }.to change(described_class, :count).by(1)
+    end
+  end
+
   describe "reporting_window" do
     let(:flow) { create(:activity_flow, reporting_window_months: 2) }
 
