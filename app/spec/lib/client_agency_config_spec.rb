@@ -273,7 +273,7 @@ RSpec.describe ClientAgencyConfig do
         end
       end
 
-      context "applicant attribute with an invalid type" do
+      context "applicant attribute with an invalid redaction_type" do
         let(:sample_config) { <<~YAML }
           - id: foo
             agency_name: foo
@@ -284,17 +284,17 @@ RSpec.describe ClientAgencyConfig do
             transmission_method: shared_email
             applicant_attributes:
               case_number:
-                type: bogus
+                redaction_type: bogus
         YAML
 
         it "raises an error" do
           expect do
             described_class.new(sample_config_path)
-          end.to raise_error(ArgumentError, /applicant attribute `case_number` has an invalid `type`: "bogus"/)
+          end.to raise_error(ArgumentError, /applicant attribute `case_number` has an invalid `redaction_type`: "bogus"/)
         end
       end
 
-      context "applicant attribute with no type" do
+      context "applicant attribute with no redaction_type" do
         let(:sample_config) { <<~YAML }
           - id: foo
             agency_name: foo
@@ -308,19 +308,19 @@ RSpec.describe ClientAgencyConfig do
                 required: true
         YAML
 
-        it "raises an error" do
+        it "does not raise an error" do
           expect do
             described_class.new(sample_config_path)
-          end.to raise_error(ArgumentError, /applicant attribute `case_number` has an invalid `type`: nil/)
+          end.not_to raise_error
         end
       end
     end
   end
 
-  describe "VALID_APPLICANT_ATTRIBUTE_TYPES" do
+  describe "VALID_REDACTION_TYPES" do
     it "only contains types Redactable can actually replace" do
       expect(Redactable::REDACTION_REPLACEMENTS.keys)
-        .to include(*described_class::VALID_APPLICANT_ATTRIBUTE_TYPES.map(&:to_sym))
+        .to include(*described_class::VALID_REDACTION_TYPES.map(&:to_sym))
     end
   end
 
@@ -336,18 +336,15 @@ RSpec.describe ClientAgencyConfig do
         applicant_attributes:
           first_name:
             required: true
-            type: string
-            redact: true
+            redaction_type: string
           case_number:
             required: true
-            type: string
           date_of_birth:
             required: true
-            type: date
-            redact: true
+            redaction_type: date
     YAML
 
-    it "maps only redact-flagged attributes to their type symbol" do
+    it "maps only attributes with a redaction_type to their type symbol" do
       config = described_class.new(sample_config_path)
       expect(config["foo"].redactable_applicant_fields)
         .to eq({ first_name: :string, date_of_birth: :date })

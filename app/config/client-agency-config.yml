@@ -40,13 +40,12 @@
     report_variant: flows
   applicant_attributes:
     case_number:
-      type: string
+      required: false
     date_of_birth:
       required: true
-      type: date
-      redact: true
+      redaction_type: date
     doc_id:
-      type: string
+      required: false
 
 - id: nh_dhhs
   agency_name: Department of Health and Human Services
@@ -85,22 +84,17 @@
   applicant_attributes:
     first_name:
       required: true
-      type: string
-      redact: true
+      redaction_type: string
     middle_name:
-      type: string
-      redact: true
+      redaction_type: string
     last_name:
       required: true
-      type: string
-      redact: true
+      redaction_type: string
     case_number:
       required: true
-      type: string
     date_of_birth:
       required: true
-      type: date
-      redact: true
+      redaction_type: date
   activity_types:
     education: true
     community_service: true
@@ -138,22 +132,17 @@
   applicant_attributes:
     first_name:
       required: true
-      type: string
-      redact: true
+      redaction_type: string
     middle_name:
-      type: string
-      redact: true
+      redaction_type: string
     last_name:
       required: true
-      type: string
-      redact: true
+      redaction_type: string
     case_number:
       required: true
-      type: string
     date_of_birth:
       required: true
-      type: date
-      redact: true
+      redaction_type: date
   activity_types:
     education: true
     community_service: true
@@ -199,11 +188,9 @@
   applicant_attributes:
     case_number:
       required: true
-      type: string
     date_of_birth:
       required: true
-      type: date
-      redact: true
+      redaction_type: date
   activity_types:
     education: true
     community_service: true
@@ -227,8 +214,7 @@
   applicant_attributes:
     case_number:
       required: true
-      type: string
-      redact: true
+      redaction_type: string
   activity_types:
     education: true
     community_service: true

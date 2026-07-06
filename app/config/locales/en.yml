@@ -626,6 +626,7 @@ en:
       footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
       greeting: Hello,
       header:
+        accenture: Test Agency has sent you an invitation to verify your income
         sandbox: Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
@@ -875,6 +876,7 @@ en:
         page_header: Submit your income report
         pdf:
           agency_header_name:
+            accenture: Test Agency
             la_ldh: Department of Health
             nh_dhhs: NH DHHS Bureau of Family Assistance
             research: Example Department of Health
@@ -1166,11 +1168,13 @@ en:
       title: Your session has timed out
   shared:
     agency_acronym:
+      accenture: TA
       la_ldh: LDH
       nh_dhhs: NH DHHS
       research: EDOH
       sandbox: TA
     agency_full_name:
+      accenture: Test Agency
       la_ldh: Louisiana Department of Health
       nh_dhhs: NH DHHS Bureau of Family Assistance
       research: Example Department of Health
@@ -1181,6 +1185,7 @@ en:
       lock: Lock
       locked_padlock: A locked padlock
     benefit:
+      accenture: Medicaid
       la_ldh: Medicaid
       nh_dhhs: Medicaid
       research: Medicaid
@@ -1193,6 +1198,7 @@ en:
     header:
       aria_label: Main navigation
       cbv_flow_title:
+        accenture: Test Agency
         la_ldh: Department of Health
         nh_dhhs: NH DHHS Bureau of Family Assistance
         research: Example Department of Health
@@ -1226,6 +1232,7 @@ en:
       ninety_days: 90 days
       six_months: 6 months
     reporting_purpose:
+      accenture: benefits
       la_ldh: benefits
       nh_dhhs: benefits
       research: benefits

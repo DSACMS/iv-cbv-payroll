@@ -77,6 +77,7 @@ es:
       footer: Este es un mensaje generado automáticamente desde su agencia de SNAP. Por favor no conteste a este correo electrónico.
       greeting: "¡Hola!"
       header:
+        accenture: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
         sandbox: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
       subject:
         default: Verifique sus ingresos para su solicitud o renovación de SNAP
@@ -320,6 +321,7 @@ es:
         page_header: Envíe su reporte de ingresos
         pdf:
           agency_header_name:
+            accenture: Test Agency
             la_ldh: Department of Health
             nh_dhhs: NH DHHS Bureau of Family Assistance
             research: Example Department of Health
@@ -627,11 +629,13 @@ es:
       title: Su sesión ha terminado.
   shared:
     agency_acronym:
+      accenture: TA
       la_ldh: LDH
       nh_dhhs: NH DHHS
       research: EDOH
       sandbox: TA
     agency_full_name:
+      accenture: Agencia de pruebas
       la_ldh: Departamento de Salud de Luisiana
       nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
       research: Departamento de Salud de Ejemplo
@@ -642,6 +646,7 @@ es:
       lock: Candado
       locked_padlock: Un candado cerrado
     benefit:
+      accenture: Medicaid
       la_ldh: Medicaid
       nh_dhhs: Medicaid
       research: Medicaid
@@ -651,6 +656,7 @@ es:
     header:
       aria_label: Menú principal
       cbv_flow_title:
+        accenture: Agencia de pruebas
         la_ldh: Departamento de Salud
         nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
         research: Departamento de Salud de Ejemplo
@@ -682,6 +688,7 @@ es:
       ninety_days: 90 días
       six_months: 6 meses
     reporting_purpose:
+      accenture: beneficios
       la_ldh: beneficios
       nh_dhhs: beneficios
       research: beneficios
