@@ -41,12 +41,10 @@ jobs:
     env:
       EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
       AWS_REGION: us-east-1
+      CLUSTER_NAME: emmy-${{ inputs.environment }}
 
     steps:
       - uses: actions/checkout@v7
-
-      - name: Set up Terraform
-        uses: ./.github/actions/setup-terraform
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -54,11 +52,70 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
 
-      - name: Deploy release
-        shell: bash
+      - name: Verify image is published to ECR
         run: |
-          make APP_NAME=${{ inputs.app_name }} \
-            ENVIRONMENT=${{ inputs.environment }} \
-            EMMY_IMAGE_REPO=${{ env.EMMY_IMAGE_REPO }} \
-            EMMY_IMAGE_TAG=${{ inputs.image_tag }} \
-            release-update-ecs
+          is_image_published=$(./bin/is-ecr-image-published "${EMMY_IMAGE_REPO}" "${{ inputs.image_tag }}")
+          echo "Is image published: ${is_image_published}"
+          if [ "${is_image_published}" != "true" ]; then
+            echo "Error: image tag not found in ECR: ${EMMY_IMAGE_REPO}:${{ inputs.image_tag }}" >&2
+            echo "Run Deploy to CMS, or build-and-publish with publish_to_cms=true, before deploying." >&2
+            exit 1
+          fi
+
+      - name: Download app task definition
+        run: |
+          task_def_arn=$(aws ecs describe-services \
+            --cluster "${CLUSTER_NAME}" \
+            --services "emmy-${{ inputs.environment }}-app" \
+            --query 'services[0].taskDefinition' --output text)
+          echo "Current app task definition: ${task_def_arn}"
+          aws ecs describe-task-definition \
+            --task-definition "${task_def_arn}" \
+            --query taskDefinition --output json > app-task-definition.json
+
+      - name: Render app task definition
+        id: render-app
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: app-task-definition.json
+          container-name: emmy-app
+          image: ${{ env.EMMY_IMAGE_REPO }}:${{ inputs.image_tag }}
+          environment-variables: |
+            IMAGE_TAG=${{ inputs.image_tag }}
+
+      - name: Deploy app service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-app.outputs.task-definition }}
+          service: emmy-${{ inputs.environment }}-app
+          cluster: ${{ env.CLUSTER_NAME }}
+          wait-for-service-stability: true
+
+      - name: Download solid-queue task definition
+        run: |
+          task_def_arn=$(aws ecs describe-services \
+            --cluster "${CLUSTER_NAME}" \
+            --services "emmy-${{ inputs.environment }}-solid-queue" \
+            --query 'services[0].taskDefinition' --output text)
+          echo "Current solid-queue task definition: ${task_def_arn}"
+          aws ecs describe-task-definition \
+            --task-definition "${task_def_arn}" \
+            --query taskDefinition --output json > solid-queue-task-definition.json
+
+      - name: Render solid-queue task definition
+        id: render-solid-queue
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: solid-queue-task-definition.json
+          container-name: emmy-app-solid-queue
+          image: ${{ env.EMMY_IMAGE_REPO }}:${{ inputs.image_tag }}
+          environment-variables: |
+            IMAGE_TAG=${{ inputs.image_tag }}
+
+      - name: Deploy solid-queue service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-solid-queue.outputs.task-definition }}
+          service: emmy-${{ inputs.environment }}-solid-queue
+          cluster: ${{ env.CLUSTER_NAME }}
+          wait-for-service-stability: true

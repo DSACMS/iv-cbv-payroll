@@ -1,7 +1,14 @@
 name: Deploy to CMS
-run-name: Deploy ${{ inputs.ref }} to CMS app (${{ inputs.environment }})
+run-name: Deploy ${{ inputs.ref || github.sha }} to CMS app (${{ inputs.environment }})
 
 on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "app/**"
+      - "bin/**"
+      - "infra/**"
   workflow_call:
     inputs:
       environment:
