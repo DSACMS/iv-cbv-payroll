@@ -272,6 +272,82 @@ RSpec.describe ClientAgencyConfig do
           end.to raise_error(ArgumentError, "Client Agency foo invalid value for renewal_required_months")
         end
       end
+
+      context "applicant attribute with an invalid redaction_type" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            transmission_method: shared_email
+            applicant_attributes:
+              case_number:
+                redaction_type: bogus
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, /applicant attribute `case_number` has an invalid `redaction_type`: "bogus"/)
+        end
+      end
+
+      context "applicant attribute with no redaction_type" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            transmission_method: shared_email
+            applicant_attributes:
+              case_number:
+                required: true
+        YAML
+
+        it "does not raise an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.not_to raise_error
+        end
+      end
+    end
+  end
+
+  describe "VALID_REDACTION_TYPES" do
+    it "only contains types Redactable can actually replace" do
+      expect(Redactable::REDACTION_REPLACEMENTS.keys)
+        .to include(*described_class::VALID_REDACTION_TYPES.map(&:to_sym))
+    end
+  end
+
+  describe "#redactable_applicant_fields" do
+    let(:sample_config) { <<~YAML }
+      - id: foo
+        agency_name: foo
+        pinwheel:
+          environment: foo
+        argyle:
+          environment: foo
+        transmission_method: shared_email
+        applicant_attributes:
+          first_name:
+            required: true
+            redaction_type: string
+          case_number:
+            required: true
+          date_of_birth:
+            required: true
+            redaction_type: date
+    YAML
+
+    it "maps only attributes with a redaction_type to their type symbol" do
+      config = described_class.new(sample_config_path)
+      expect(config["foo"].redactable_applicant_fields)
+        .to eq({ first_name: :string, date_of_birth: :date })
     end
   end
 end

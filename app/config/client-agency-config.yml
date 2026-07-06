@@ -43,6 +43,9 @@
       required: false
     date_of_birth:
       required: true
+      redaction_type: date
+    doc_id:
+      required: false
 
 - id: nh_dhhs
   agency_name: Department of Health and Human Services
@@ -81,14 +84,17 @@
   applicant_attributes:
     first_name:
       required: true
+      redaction_type: string
     middle_name:
-      required: false
+      redaction_type: string
     last_name:
       required: true
+      redaction_type: string
     case_number:
       required: true
     date_of_birth:
       required: true
+      redaction_type: date
   activity_types:
     education: true
     community_service: true
@@ -126,14 +132,17 @@
   applicant_attributes:
     first_name:
       required: true
+      redaction_type: string
     middle_name:
-      required: false
+      redaction_type: string
     last_name:
       required: true
+      redaction_type: string
     case_number:
       required: true
     date_of_birth:
       required: true
+      redaction_type: date
   activity_types:
     education: true
     community_service: true
@@ -181,6 +190,7 @@
       required: true
     date_of_birth:
       required: true
+      redaction_type: date
   activity_types:
     education: true
     community_service: true
@@ -204,6 +214,7 @@
   applicant_attributes:
     case_number:
       required: true
+      redaction_type: string
   activity_types:
     education: true
     community_service: true

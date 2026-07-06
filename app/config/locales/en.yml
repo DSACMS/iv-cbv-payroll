@@ -626,6 +626,7 @@ en:
       footer: This is an automatically generated message from your SNAP agency. Please don’t reply to this email.
       greeting: Hello,
       header:
+        accenture: Test Agency has sent you an invitation to verify your income
         sandbox: Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
