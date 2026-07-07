@@ -45,4 +45,35 @@ RSpec.describe Activity do
       expect(build(:volunteering_activity, activity_flow: flow, draft: true, pre_populated: false)).not_to be_pre_populated_draft
     end
   end
+
+  describe ".display_name" do
+    it "raises NotImplementedError on the abstract base" do
+      expect { described_class.display_name }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe "activity type subclass contract" do
+    ActivityFlowInvitation::ACTIVITY_TYPES.each do |type, klass|
+      context "#{klass}" do
+        it "defines FIELDS and PRE_POPULATED_REQUIRED_FIELDS (a subset of FIELDS)" do
+          expect(klass::FIELDS).to be_an(Array)
+          expect(klass::PRE_POPULATED_REQUIRED_FIELDS).to be_an(Array)
+          expect(klass::FIELDS).to include(*klass::PRE_POPULATED_REQUIRED_FIELDS)
+        end
+
+        it "defines a Symbol .display_name" do
+          expect(klass.display_name).to be_a(Symbol)
+        end
+
+        it "exposes .activity_months_class via HasActivityMonths" do
+          expect(klass.activity_months_class).to be_a(Class)
+        end
+
+        it "resolves .flow_association to an ActivityFlow association matching its registered type" do
+          expect(ActivityFlow.reflect_on_association(klass.flow_association)).to be_present
+          expect(klass.flow_association).to eq(:"#{type}_activities")
+        end
+      end
+    end
+  end
 end

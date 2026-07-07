@@ -1,15 +1,9 @@
 class ActivityFlowInvitation < ApplicationRecord
-  ACTIVITY_TYPE_TO_HUB_TYPE = {
-    "volunteering" => :community_service,
-    "employment" => :employment,
-    "education" => :education,
-    "job_training" => :work_programs
-  }.freeze
-  PRE_POPULATED_REQUIRED_FIELDS = {
-    "volunteering" => %w[organization_name],
-    "employment" => %w[employer_name],
-    "education" => %w[school_name],
-    "job_training" => %w[program_name organization_name]
+  ACTIVITY_TYPES = {
+    "volunteering" => VolunteeringActivity,
+    "employment" => EmploymentActivity,
+    "education" => EducationActivity,
+    "job_training" => JobTrainingActivity
   }.freeze
 
   belongs_to :cbv_applicant, optional: true
@@ -31,12 +25,12 @@ class ActivityFlowInvitation < ApplicationRecord
 
   def supported_pre_populated_types
     agency = Rails.application.config.client_agencies[client_agency_id]
-    ACTIVITY_TYPE_TO_HUB_TYPE.select { |_model_type, hub_type| agency&.activity_types&.[](hub_type) }.keys
+    ACTIVITY_TYPES.select { |_type, klass| agency&.activity_types&.[](klass.display_name) }.keys
   end
 
   def pre_populated_hub_activity_types
     pre_populated_activities
-      .filter_map { |e| ACTIVITY_TYPE_TO_HUB_TYPE[(e["type"] || e[:type]).to_s] }
+      .filter_map { |e| ACTIVITY_TYPES[(e["type"] || e[:type]).to_s]&.display_name }
       .uniq
   end
 
@@ -52,7 +46,7 @@ class ActivityFlowInvitation < ApplicationRecord
         next
       end
 
-      PRE_POPULATED_REQUIRED_FIELDS[type.to_s].each do |field|
+      ACTIVITY_TYPES[type.to_s]::PRE_POPULATED_REQUIRED_FIELDS.each do |field|
         value = entry[field] || entry[field.to_sym]
         if value.blank?
           errors.add("pre_populated_activities[#{idx}].#{field}", "can't be blank")

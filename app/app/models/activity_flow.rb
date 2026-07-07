@@ -45,55 +45,23 @@ class ActivityFlow < Flow
 
     entries.each do |entry|
       attrs = entry.stringify_keys
-      case attrs["type"].to_s
-      when "volunteering"
-        next if flow.volunteering_activities.exists?
+      activity_class = ActivityFlowInvitation::ACTIVITY_TYPES[attrs["type"].to_s]
+      next unless activity_class
 
-        activity = flow.volunteering_activities.create(
-          attrs.slice(*VolunteeringActivity::FIELDS)
-            .merge("draft" => true, "pre_populated" => true)
+      association = flow.public_send(activity_class.flow_association)
+      next if association.exists?
+
+      activity = association.create(
+        attrs.slice(*activity_class::FIELDS)
+             .merge("draft" => true, "pre_populated" => true)
+             .merge(activity_class.pre_populated_defaults)
+      )
+      next unless activity.persisted?
+
+      Array(attrs["months"]).each do |month_entry|
+        activity.activity_months.create(
+          month_entry.stringify_keys.slice(*activity_class.activity_months_class::FIELDS)
         )
-        next unless activity.persisted?
-
-        Array(attrs["months"]).each do |month_entry|
-          activity.volunteering_activity_months.create(month_entry.stringify_keys.slice(*VolunteeringActivityMonth::FIELDS))
-        end
-      when "employment"
-        next if flow.employment_activities.exists?
-
-        activity = flow.employment_activities.create(
-          attrs.slice(*EmploymentActivity::FIELDS)
-            .merge("draft" => true, "pre_populated" => true)
-        )
-        next unless activity.persisted?
-
-        Array(attrs["months"]).each do |month_entry|
-          activity.employment_activity_months.create(month_entry.stringify_keys.slice(*EmploymentActivityMonth::FIELDS))
-        end
-      when "education"
-        next if flow.education_activities.exists?
-
-        activity = flow.education_activities.create(
-          attrs.slice(*EducationActivity::FIELDS)
-            .merge("draft" => true, "data_source" => "fully_self_attested", "pre_populated" => true)
-        )
-        next unless activity.persisted?
-
-        Array(attrs["months"]).each do |month_entry|
-          activity.education_activity_months.create(month_entry.stringify_keys.slice(*EducationActivityMonth::FIELDS))
-        end
-      when "job_training"
-        next if flow.job_training_activities.exists?
-
-        activity = flow.job_training_activities.create(
-          attrs.slice(*JobTrainingActivity::FIELDS)
-            .merge("draft" => true, "pre_populated" => true)
-        )
-        next unless activity.persisted?
-
-        Array(attrs["months"]).each do |month_entry|
-          activity.job_training_activity_months.create(month_entry.stringify_keys.slice(*JobTrainingActivityMonth::FIELDS))
-        end
       end
     end
   end

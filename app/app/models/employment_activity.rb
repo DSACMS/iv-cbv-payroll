@@ -14,9 +14,14 @@ class EmploymentActivity < Activity
     contact_email
     contact_phone_number
   ].freeze
+  PRE_POPULATED_REQUIRED_FIELDS = %w[employer_name].freeze
 
   has_many :employment_activity_months, dependent: :destroy
   has_activity_months :employment_activity_months
+
+  def self.display_name
+    :employment
+  end
 
   validates :employer_name, presence: { message: I18n.t("activities.employment_info.employer_name_error") }
 
