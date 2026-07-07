@@ -48,12 +48,6 @@ graph TD
   cd-app-->|calls|deploy-->|calls|database-migrations-->|calls|build-and-publish
 ```
 
-`deploy-cms` builds and deploys a CMS image in one run: it resolves the
-requested ref to a commit SHA, publishes that SHA-tagged image if needed, and
-then deploys the same SHA tag. It runs automatically on every push to `main`
-(deploying to `uat`) and can also be triggered via `workflow_dispatch` to pick a
-different environment or ref.
-
 ## ⛑️ Helper workflows
 
 - [`check-ci-cd-auth`](./check-ci-cd-auth.yml): verifes that the project's Github repo is able to connect to AWS
