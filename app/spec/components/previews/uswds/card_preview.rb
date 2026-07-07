@@ -11,7 +11,7 @@ module Uswds
     end
 
     def community_service
-      render(Uswds::Card.new(heading_text: "Community Service", class: "activity-hub-card card-flush")) do |card|
+      render(Uswds::Card.new(heading_text: "Community Service", class: "activity-hub-card")) do |card|
         card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
         card.with_body do
           safe_join([
@@ -24,7 +24,7 @@ module Uswds
     end
 
     def work_program
-      render(Uswds::Card.new(heading_text: "Work Program", class: "activity-hub-card card-flush")) do |card|
+      render(Uswds::Card.new(heading_text: "Work Program", class: "activity-hub-card")) do |card|
         card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
         card.with_body do
           safe_join([
@@ -37,7 +37,7 @@ module Uswds
     end
 
     def employment
-      render(Uswds::Card.new(heading_text: "Employment", class: "activity-hub-card card-flush")) do |card|
+      render(Uswds::Card.new(heading_text: "Employment", class: "activity-hub-card")) do |card|
         card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
         card.with_body do
           safe_join([
@@ -51,7 +51,7 @@ module Uswds
 
     # @label Validated education
     def education
-      render(Uswds::Card.new(heading_text: "Education", class: "activity-hub-card card-flush")) do |card|
+      render(Uswds::Card.new(heading_text: "Education", class: "activity-hub-card")) do |card|
         card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
         card.with_body do
           safe_join([
@@ -64,7 +64,7 @@ module Uswds
 
     # @label Self-attested education
     def self_attested_education
-      render(Uswds::Card.new(heading_text: "Education", class: "activity-hub-card card-flush")) do |card|
+      render(Uswds::Card.new(heading_text: "Education", class: "activity-hub-card")) do |card|
         card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
         card.with_body do
           safe_join([

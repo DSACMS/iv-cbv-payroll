@@ -9,7 +9,7 @@ RSpec.describe Uswds::Card, type: :component do
     end
 
     expect(result).to have_element(:div, class: "usa-card")
-    expect(result).to have_element(:div, class: "usa-card__container")
+    expect(result).to have_element(:div, class: "usa-card__container margin-x-0")
     expect(result).to have_element(:div, class: "usa-card__body")
     expect(result).to have_text("Card body content")
   end

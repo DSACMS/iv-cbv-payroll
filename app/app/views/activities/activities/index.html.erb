@@ -97,7 +97,7 @@
             empty_message: t("activities.hub.empty.employment"),
             cards: employment_card_data do %>
         <% employment_card_data.each do |card_data| %>
-          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card card-flush")) do |card| %>
+          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
               <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
             <% end %>
@@ -139,7 +139,7 @@
             empty_message: t("activities.hub.empty.education"),
             cards: education_card_data do %>
         <% education_card_data.each do |card_data| %>
-          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card card-flush")) do |card| %>
+          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
               <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
             <% end %>
@@ -180,7 +180,7 @@
             empty_message: t("activities.hub.empty.community_service"),
             cards: community_service_card_data do %>
         <% community_service_card_data.each do |card_data| %>
-          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card card-flush")) do |card| %>
+          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
               <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
             <% end %>
@@ -216,7 +216,7 @@
             empty_message: t("activities.hub.empty.work_programs"),
             cards: work_programs_card_data do %>
         <% work_programs_card_data.each do |card_data| %>
-          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card card-flush")) do |card| %>
+          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
               <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
             <% end %>
