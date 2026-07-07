@@ -325,7 +325,7 @@ GEM
       net-ssh (>= 5.0.0, < 8.0.0)
     net-smtp (0.5.1)
       net-protocol
-    net-ssh (7.3.2)
+    net-ssh (7.3.3)
     newrelic_rpm (10.6.0)
       logger
     nio4r (2.7.5)
