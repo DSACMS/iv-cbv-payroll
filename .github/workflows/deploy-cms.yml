@@ -1,5 +1,5 @@
 name: Deploy to CMS
-run-name: Deploy ${{ inputs.ref || github.sha }} to CMS app (${{ inputs.environment || 'uat' }})
+run-name: Deploy ${{ inputs.ref || github.sha }} to CMS app (${{ inputs.environment }})
 
 on:
   push:
@@ -31,7 +31,7 @@ on:
         required: true
         type: string
 
-concurrency: deploy-cms-app-${{ inputs.environment || 'uat' }}
+concurrency: deploy-cms-app-${{ inputs.environment }}
 
 jobs:
   get-commit-hash:
@@ -74,6 +74,6 @@ jobs:
       id-token: write
     with:
       app_name: app
-      environment: ${{ inputs.environment || 'uat' }}
+      environment: ${{ inputs.environment }}
       image_tag: ${{ needs.get-commit-hash.outputs.commit_hash }}
     secrets: inherit
