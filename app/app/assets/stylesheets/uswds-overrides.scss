@@ -138,6 +138,13 @@ tr td:first-child {
 /* *****************************************************************************
  * Helper classes
  **************************************************************************** */
+.card-flush {
+  .usa-card__container {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 .maxw-table {
   // USWDS-style helper for making other things the same size as a standard <table>
   max-width: $table-width;

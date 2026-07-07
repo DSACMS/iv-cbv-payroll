@@ -76,6 +76,51 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
   end
 
+  describe "household reporting context" do
+    before do
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    context "with a household member flow" do
+      let(:household_member) { create(:household_member, display_name: "Avery Johnson") }
+      let(:current_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: household_member.activity_flow_invitation,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0
+        )
+      end
+
+      it "shows which household member is reporting" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_text("Reporting for Avery Johnson")
+      end
+    end
+
+    context "with an invitation that has no household member" do
+      let(:current_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0
+        )
+      end
+
+      it "does not show household reporting context" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_no_text("Reporting for")
+      end
+    end
+  end
+
   describe "hiding draft activities on the hub" do
     let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
 

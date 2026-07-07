@@ -8,21 +8,29 @@
   <%= t(".description") %>
 </p>
 
-<div class="margin-top-4">
+<div class="margin-top-4 measure-6">
   <% @household.household_members.order(:id).each do |member| %>
-    <div class="border border-base-lighter radius-md padding-3 margin-bottom-2">
-      <h2 class="font-heading-md margin-y-0">
-        <%= member.display_name %>
-      </h2>
-      <p class="margin-top-1 margin-bottom-2">
-        <%= member.role_label %>
-      </p>
-      <%= button_to(
-            t(".launch"),
-            household_member_launch_path(token: @household.auth_token, member_id: member.id),
-            method: :post,
-            class: "usa-button"
-          ) %>
-    </div>
+    <%= render(Uswds::Card.new(class: "household-member-card card-flush margin-bottom-2")) do |card| %>
+      <% card.with_header do %>
+        <h2 class="usa-card__heading">
+          <%= member.display_name %>
+        </h2>
+      <% end %>
+
+      <% card.with_body do %>
+        <p class="margin-y-0">
+          <%= member.role_label %>
+        </p>
+      <% end %>
+
+      <% card.with_footer do %>
+        <%= button_to(
+              t(".launch"),
+              household_member_launch_path(token: @household.auth_token, member_id: member.id),
+              method: :post,
+              class: "usa-button"
+            ) %>
+      <% end %>
+    <% end %>
   <% end %>
 </div>

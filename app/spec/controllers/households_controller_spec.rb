@@ -21,6 +21,7 @@ RSpec.describe HouseholdsController, type: :controller do
       expect(rendered).to have_text("Parent")
       expect(rendered).to have_text("Riley Johnson")
       expect(rendered).to have_text("Child")
+      expect(rendered).to have_selector(".usa-card", count: 2)
     end
 
     it "renders launch controls for each member" do
