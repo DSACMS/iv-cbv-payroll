@@ -16,11 +16,11 @@ NO_CHANGES_PLACEHOLDER = "  • No changes, nothing to review!"
 
 def linkify_jira(text)
   linked_text = text.gsub(/\(#(\d+)\)/) do
-    "([##{$1}](https://github.com/DSACMS/iv-cbv-payroll/pull/#{$1}))"
+    "[(##{$1})](https://github.com/DSACMS/iv-cbv-payroll/pull/#{$1})"
   end
 
-  linked_text.gsub(/^(?:FFS-)?(\d{3,4})(-[0-9]+)?:?\s+(.*)$/) do
-    "#{Regexp.last_match(3)} [[FFS-#{Regexp.last_match(1)}](https://jiraent.cms.gov/browse/FFS-#{Regexp.last_match(1)})]"
+  linked_text.gsub(/^\[?(?:FFS-)?(\d{3,4})(-[0-9]+)?\]?:?\s+(.*)$/) do
+    "#{Regexp.last_match(3)} [[FFS-#{Regexp.last_match(1)}]](https://jiraent.cms.gov/browse/FFS-#{Regexp.last_match(1)})"
   end
 end
 
@@ -84,7 +84,7 @@ def append_changes(output, heading, changes, empty_message: nil)
     output << "#{empty_message}\n"
   else
     changes.each do |change|
-      output << "#{linkify_jira("  • #{change}")}\n"
+      output << "  • #{linkify_jira(change)}\n"
     end
   end
   output
@@ -96,6 +96,9 @@ if ARGV.first == "--test"
   puts linkify_jira("FFS-1234 Foo bar baz")
   puts linkify_jira("FFS-1234-3: Foo bar baz")
   puts linkify_jira("FFS-1234-3: Foo bar baz (#123)")
+  puts linkify_jira("FFS-4498: Enable the launcher in UAT (#1833) - Daphne Gold")
+  puts linkify_jira("Add AI disclosure to autofix PRs (#1866) - Ben Calegari")
+  puts linkify_jira("[FFS-4505] add hawaii to sandbox access (#1834) - iannorriswork")
   exit
 end
 
@@ -128,6 +131,9 @@ commit_lines(prod, current_sha).each do |commit_line|
     if (bump = commit.match(/^Bump (\S+) from /))
       warn "Collapsing dependabot bump into summary line..."
       dependabot_bumps << bump[1]
+    elsif (group = commit.match(/^Bump the (\S+) group /))
+      warn "Collapsing dependabot group bump into summary line..."
+      dependabot_bumps << group[1]
     else
       warn "Auto-categorizing bot-authored change as Other/Maintenance..."
       other_changes << commit
@@ -158,7 +164,7 @@ tags = tags_for_changes(both_changes, income_changes, ce_changes)
 
 output = +""
 output << "🚀 Will deploy `#{current_sha[0, 7]}` to production: 🚀 (cc #{tags})\n"
-output << "🧪 *[Open the launcher →](https://verify-demo.navapbc.cloud/launcher)*\n\n"
+output << "🧪 *Open the launcher →* https://verify-demo.navapbc.cloud/launcher\n\n"
 append_changes(output, "👥 *User facing changes to Emmy Income + Emmy CE*", both_changes)
 append_changes(
   output,
