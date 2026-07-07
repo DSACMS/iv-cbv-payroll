@@ -1,5 +1,10 @@
 class ActivityFlowInvitation < ApplicationRecord
-  SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES = %w[volunteering employment education job_training].freeze
+  ACTIVITY_TYPE_TO_HUB_TYPE = {
+    "volunteering" => :community_service,
+    "employment" => :employment,
+    "education" => :education,
+    "job_training" => :work_programs
+  }.freeze
   PRE_POPULATED_REQUIRED_FIELDS = {
     "volunteering" => %w[organization_name],
     "employment" => %w[employer_name],
@@ -24,6 +29,17 @@ class ActivityFlowInvitation < ApplicationRecord
     false
   end
 
+  def supported_pre_populated_types
+    agency = Rails.application.config.client_agencies[client_agency_id]
+    ACTIVITY_TYPE_TO_HUB_TYPE.select { |_model_type, hub_type| agency&.activity_types&.[](hub_type) }.keys
+  end
+
+  def pre_populated_hub_activity_types
+    pre_populated_activities
+      .filter_map { |e| ACTIVITY_TYPE_TO_HUB_TYPE[(e["type"] || e[:type]).to_s] }
+      .uniq
+  end
+
   private
 
   def pre_populated_activities_shape
@@ -31,8 +47,8 @@ class ActivityFlowInvitation < ApplicationRecord
 
     pre_populated_activities.each_with_index do |entry, idx|
       type = entry["type"] || entry[:type]
-      unless SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES.include?(type.to_s)
-        errors.add("pre_populated_activities[#{idx}].type", "must be one of #{SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES.join(', ')}")
+      unless supported_pre_populated_types.include?(type.to_s)
+        errors.add("pre_populated_activities[#{idx}].type", "must be one of #{supported_pre_populated_types.join(', ')}")
         next
       end
 

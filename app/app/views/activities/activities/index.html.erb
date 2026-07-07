@@ -79,7 +79,7 @@
 
   </div>
   <div class="activity-hub-columns__activities">
-    <% if activity_type_enabled?(:employment) %>
+    <% if show_activity?(:employment) %>
       <%# i18n-tasks-use t("activities.hub.cards.pre_populated_notice") %>
       <%# i18n-tasks-use t("activities.hub.cards.complete_action") %>
       <% employment_draft_card_data = employment_activity_draft_cards(@employment_draft_activities || []) %>
@@ -127,7 +127,7 @@
       <% end %>
     <% end %>
 
-    <% if activity_type_enabled?(:education) %>
+    <% if show_activity?(:education) %>
       <%# i18n-tasks-use t("activities.hub.cards.pre_populated_notice") %>
       <%# i18n-tasks-use t("activities.hub.cards.complete_action") %>
       <% education_draft_card_data = education_activity_draft_cards(@education_draft_activities || []) %>
@@ -168,7 +168,7 @@
       <% end %>
     <% end %>
 
-    <% if activity_type_enabled?(:community_service) %>
+    <% if show_activity?(:community_service) %>
       <%# i18n-tasks-use t("activities.hub.cards.pre_populated_notice") %>
       <%# i18n-tasks-use t("activities.hub.cards.complete_action") %>
       <% community_service_card_data = community_service_draft_cards(@community_service_draft_activities || []) +
@@ -204,7 +204,7 @@
       <% end %>
     <% end %>
 
-    <% if activity_type_enabled?(:work_programs) %>
+    <% if show_activity?(:work_programs) %>
       <%# i18n-tasks-use t("activities.hub.cards.pre_populated_notice") %>
       <%# i18n-tasks-use t("activities.hub.cards.complete_action") %>
       <% work_programs_card_data = work_program_draft_cards(@work_programs_draft_activities) +

@@ -168,6 +168,14 @@ class ActivityFlow < Flow
     activity_flow_invitation_id
   end
 
+  def pre_populated_session?
+    activity_flow_invitation&.pre_populated_activities.present?
+  end
+
+  def pre_populated_activity_types
+    activity_flow_invitation&.pre_populated_hub_activity_types || []
+  end
+
   def after_payroll_sync_succeeded(payroll_account, report)
     ActivityFlowEmploymentSummary.persist_from_report(activity_flow: self, payroll_account: payroll_account, report: report)
     ActivityFlowMonthlySummary.upsert_from_report(activity_flow: self, payroll_account: payroll_account, report: report)

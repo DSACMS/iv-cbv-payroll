@@ -3,6 +3,39 @@ require "rails_helper"
 RSpec.describe ActivitiesHelper do
   include ActiveSupport::Testing::TimeHelpers
 
+  describe "#show_activity_type?" do
+    context "in a pre-populated session" do
+      before do
+        flow = instance_double(ActivityFlow, pre_populated_session?: true, pre_populated_activity_types: [ :community_service, :education ])
+        assign(:flow, flow)
+      end
+
+      it "shows only the pre-filled activity types" do
+        expect(helper.show_activity?(:community_service)).to be true
+        expect(helper.show_activity?(:education)).to be true
+      end
+
+      it "hides activity types that were not pre-filled" do
+        expect(helper.show_activity?(:employment)).to be false
+        expect(helper.show_activity?(:work_programs)).to be false
+      end
+    end
+
+    context "in a non-pre-populated session" do
+      before do
+        assign(:flow, instance_double(ActivityFlow, pre_populated_session?: false))
+      end
+
+      it "falls back to activity_type_enabled?" do
+        allow(helper).to receive(:activity_type_enabled?).with(:employment).and_return(true)
+        allow(helper).to receive(:activity_type_enabled?).with(:education).and_return(false)
+
+        expect(helper.show_activity?(:employment)).to be true
+        expect(helper.show_activity?(:education)).to be false
+      end
+    end
+  end
+
   describe "activity hub display helpers" do
     describe "#activity_hub_state" do
       let(:meeting_result) { instance_double(ActivityFlowProgressCalculator::MonthlyResult, meets_requirements: true) }

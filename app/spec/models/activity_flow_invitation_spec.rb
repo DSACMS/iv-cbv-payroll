@@ -60,6 +60,17 @@ RSpec.describe ActivityFlowInvitation, type: :model do
       expect(invitation).to be_valid
     end
 
+    it "is invalid when an entry's type is not enabled for the agency" do
+      stub_client_agency_config_value("sandbox", :activity_types, { community_service: false, employment: true, education: true, work_programs: true })
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "volunteering", "organization_name" => "Red Cross" }
+      ])
+
+      expect(invitation).not_to be_valid
+      expect(invitation.errors.attribute_names.map(&:to_s))
+        .to include("pre_populated_activities[0].type")
+    end
+
     it "is valid with a well-formed employment entry" do
       invitation = build(:activity_flow_invitation, pre_populated_activities: [
         { "type" => "employment", "employer_name" => "Acme Corp" }

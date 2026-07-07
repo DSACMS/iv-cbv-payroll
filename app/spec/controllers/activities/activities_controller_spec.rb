@@ -1048,4 +1048,89 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(work_program_cards).to have_text(I18n.t("activities.hub.cards.hours", count: 10))
     end
   end
+
+  context "when the session is pre-populated with a subset of activity types" do
+    let(:invitation) do
+      create(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "volunteering", "organization_name" => "Red Cross" },
+        { "type" => "education", "school_name" => "Springfield Community College" }
+      ])
+    end
+    let(:current_flow) do
+      create(
+        :activity_flow,
+        activity_flow_invitation: invitation,
+        volunteering_activities_count: 0,
+        job_training_activities_count: 0,
+        education_activities_count: 0
+      )
+    end
+
+    before do
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "renders only the pre-filled activity type sections" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_css("[data-activity-type='community_service']")
+      expect(rendered).to have_css("[data-activity-type='education']")
+      expect(rendered).to have_no_css("[data-activity-type='employment']")
+      expect(rendered).to have_no_css("[data-activity-type='work_programs']")
+    end
+  end
+
+  context "when a pre-filled activity has already been published" do
+    let(:invitation) do
+      create(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "volunteering", "organization_name" => "Red Cross" }
+      ])
+    end
+    let(:current_flow) { ActivityFlow.create_from_invitation(invitation, "device123") }
+
+    before do
+      current_flow.volunteering_activities.each(&:publish!)
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "still shows the section for the pre-filled type once its draft is published" do
+      rendered = Capybara.string(response.body)
+
+      expect(current_flow.volunteering_activities.pre_populated_drafts).to be_empty
+      expect(rendered).to have_css("[data-activity-type='community_service']")
+      expect(rendered).to have_no_css("[data-activity-type='employment']")
+      expect(rendered).to have_no_css("[data-activity-type='education']")
+      expect(rendered).to have_no_css("[data-activity-type='work_programs']")
+    end
+  end
+
+  context "when the session is not pre-populated" do
+    let(:current_flow) do
+      create(
+        :activity_flow,
+        volunteering_activities_count: 0,
+        job_training_activities_count: 0,
+        education_activities_count: 0
+      )
+    end
+
+    before do
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "renders all agency-enabled activity type sections" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_css("[data-activity-type='employment']")
+      expect(rendered).to have_css("[data-activity-type='education']")
+      expect(rendered).to have_css("[data-activity-type='community_service']")
+      expect(rendered).to have_css("[data-activity-type='work_programs']")
+    end
+  end
 end
