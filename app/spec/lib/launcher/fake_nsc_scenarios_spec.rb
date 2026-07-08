@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DemoLauncher::FakeNscScenarios do
+RSpec.describe Launcher::FakeNscScenarios do
   describe ".nsc_response_for" do
     it "limits Nina's terms to the last 2 months of the reporting window" do
       identity = build(

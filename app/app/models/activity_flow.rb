@@ -1,5 +1,5 @@
 class ActivityFlow < Flow
-  include DemoLauncherOverrides
+  include LauncherOverrides
 
   DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS = 6
   DEFAULT_APPLICATION_REPORTING_WINDOW_MONTHS = 1

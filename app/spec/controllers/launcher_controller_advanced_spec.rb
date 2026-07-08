@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec::Matchers.define_negated_matcher :not_change, :change
 
-RSpec.describe DemoLauncherController, type: :controller do
+RSpec.describe LauncherController, type: :controller do
   render_views
 
   describe "GET #advanced" do
@@ -99,13 +99,13 @@ RSpec.describe DemoLauncherController, type: :controller do
           reporting_window: "renewal",
           reporting_window_months: "6",
           renewal_required_months: "2",
-          demo_timeout: "10"
+          launcher_timeout: "10"
         }
         location = response.location
         expect(location).to include("reporting_window=renewal")
         expect(location).to include("reporting_window_months=6")
         expect(location).to include("renewal_required_months=2")
-        expect(location).to include("demo_timeout=10")
+        expect(location).to include("launcher_timeout=10")
       end
 
       it "includes reporting_window_start param in the URL" do
@@ -125,12 +125,12 @@ RSpec.describe DemoLauncherController, type: :controller do
           reporting_window: "application",
           reporting_window_months: "",
           renewal_required_months: "",
-          demo_timeout: ""
+          launcher_timeout: ""
         }
         location = response.location
         expect(location).not_to include("reporting_window_months")
         expect(location).not_to include("renewal_required_months")
-        expect(location).not_to include("demo_timeout")
+        expect(location).not_to include("launcher_timeout")
       end
 
       it "does not include renewal_required_months for non-renewal reporting windows" do
@@ -180,12 +180,12 @@ RSpec.describe DemoLauncherController, type: :controller do
           launch_type: "tokenized",
           reporting_window: "renewal",
           renewal_required_months: "3",
-          demo_timeout: "15"
+          launcher_timeout: "15"
         }
         location = response.location
         expect(location).to include("reporting_window=renewal")
         expect(location).to include("renewal_required_months=3")
-        expect(location).to include("demo_timeout=15")
+        expect(location).to include("launcher_timeout=15")
       end
 
       it "returns the generated URL as JSON" do
@@ -263,10 +263,10 @@ RSpec.describe DemoLauncherController, type: :controller do
             flow_type: "cbv",
             client_agency_id: "sandbox",
             launch_type: "generic",
-            demo_timeout: "10"
+            launcher_timeout: "10"
           }
           location = response.location
-          expect(location).to include("demo_timeout=10")
+          expect(location).to include("launcher_timeout=10")
         end
 
         it "filters out reporting_window params" do
@@ -278,14 +278,14 @@ RSpec.describe DemoLauncherController, type: :controller do
             reporting_window_months: "6",
             renewal_required_months: "3",
             reporting_window_start: "2024-10-01",
-            demo_timeout: "10"
+            launcher_timeout: "10"
           }
           location = response.location
           expect(location).not_to include("reporting_window")
           expect(location).not_to include("reporting_window_months")
           expect(location).not_to include("renewal_required_months")
           expect(location).not_to include("reporting_window_start")
-          expect(location).to include("demo_timeout=10")
+          expect(location).to include("launcher_timeout=10")
         end
 
         it "returns the generated CBV generic URL as JSON" do
@@ -293,14 +293,14 @@ RSpec.describe DemoLauncherController, type: :controller do
             flow_type: "cbv",
             client_agency_id: "sandbox",
             launch_type: "generic",
-            demo_timeout: "10"
+            launcher_timeout: "10"
           }, format: :json
 
           parsed_response = JSON.parse(response.body)
 
           expect(response).to have_http_status(:success)
           expect(parsed_response.fetch("url")).to include("/cbv/links/sandbox")
-          expect(parsed_response.fetch("url")).to include("demo_timeout=10")
+          expect(parsed_response.fetch("url")).to include("launcher_timeout=10")
         end
       end
 
@@ -344,10 +344,10 @@ RSpec.describe DemoLauncherController, type: :controller do
             flow_type: "cbv",
             client_agency_id: "sandbox",
             launch_type: "tokenized",
-            demo_timeout: "15"
+            launcher_timeout: "15"
           }
           location = response.location
-          expect(location).to include("demo_timeout=15")
+          expect(location).to include("launcher_timeout=15")
         end
 
         it "filters out reporting_window params" do
@@ -359,14 +359,14 @@ RSpec.describe DemoLauncherController, type: :controller do
             reporting_window_months: "3",
             renewal_required_months: "2",
             reporting_window_start: "2024-10-01",
-            demo_timeout: "15"
+            launcher_timeout: "15"
           }
           location = response.location
           expect(location).not_to include("reporting_window")
           expect(location).not_to include("reporting_window_months")
           expect(location).not_to include("renewal_required_months")
           expect(location).not_to include("reporting_window_start")
-          expect(location).to include("demo_timeout=15")
+          expect(location).to include("launcher_timeout=15")
         end
 
         it "creates a User and CbvApplicant" do
@@ -380,11 +380,11 @@ RSpec.describe DemoLauncherController, type: :controller do
             .and change(CbvApplicant, :count).by(1)
 
           user = User.last
-          expect(user.email).to eq("demolauncher+sandbox@navapbc.com")
+          expect(user.email).to eq("launcher+sandbox@navapbc.com")
           expect(user.is_service_account).to be true
 
           applicant = CbvApplicant.last
-          expect(applicant.first_name).to eq("Demo")
+          expect(applicant.first_name).to eq("Sample")
           expect(applicant.last_name).to eq("User")
         end
 
@@ -394,7 +394,7 @@ RSpec.describe DemoLauncherController, type: :controller do
               flow_type: "cbv",
               client_agency_id: "sandbox",
               launch_type: "tokenized",
-              demo_timeout: "15"
+              launcher_timeout: "15"
             }, format: :json
           }.to change(CbvFlowInvitation, :count).by(1)
 
@@ -403,7 +403,7 @@ RSpec.describe DemoLauncherController, type: :controller do
 
           expect(response).to have_http_status(:success)
           expect(parsed_response.fetch("url")).to include("/start/#{invitation.auth_token}")
-          expect(parsed_response.fetch("url")).to include("demo_timeout=15")
+          expect(parsed_response.fetch("url")).to include("launcher_timeout=15")
         end
       end
     end
@@ -468,13 +468,13 @@ RSpec.describe DemoLauncherController, type: :controller do
           reporting_window: "renewal",
           renewal_required_months: "2",
           reporting_window_start: "10/01/2024",
-          demo_timeout: "20"
+          launcher_timeout: "20"
         }
         location = response.location
         expect(location).to include("reporting_window=renewal")
         expect(location).to include("renewal_required_months=2")
         expect(location).to include("reporting_window_start=2024-10-01")
-        expect(location).to include("demo_timeout=20")
+        expect(location).to include("launcher_timeout=20")
       end
 
       it "preserves pre-populated activities for Rick" do

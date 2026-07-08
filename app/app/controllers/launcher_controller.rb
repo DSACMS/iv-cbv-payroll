@@ -1,6 +1,6 @@
-class DemoLauncherController < ApplicationController
+class LauncherController < ApplicationController
   helper_method :session_timeout_enabled?
-  before_action :set_demo_flow, only: [ :advanced, :launcher ]
+  before_action :set_launcher_flow, only: [ :advanced, :launcher ]
 
   def advanced; end
 
@@ -39,8 +39,8 @@ class DemoLauncherController < ApplicationController
   end
 
   def simple_create
-    raw = params.fetch(:demo_launcher, params)
-    if raw.key?(:reporting_window_start) || raw.key?(:demo_timeout)
+    raw = params.fetch(:launcher, params)
+    if raw.key?(:reporting_window_start) || raw.key?(:launcher_timeout)
       return render json: { error: "Parameter not allowed" }, status: :unprocessable_entity
     end
 
@@ -107,7 +107,7 @@ class DemoLauncherController < ApplicationController
 
   private
 
-  def set_demo_flow
+  def set_launcher_flow
     set_flow_session(nil, :activity)
   end
 
@@ -223,9 +223,9 @@ class DemoLauncherController < ApplicationController
 
   def launch_overrides(flow_type)
     overrides = if flow_type == "cbv"
-                  launcher_params.slice(:demo_timeout).select { |_, v| v.present? }
+                  launcher_params.slice(:launcher_timeout).select { |_, v| v.present? }
                 else
-                  allowed_overrides = [ :reporting_window, :reporting_window_months, :reporting_window_start, :demo_timeout ]
+                  allowed_overrides = [ :reporting_window, :reporting_window_months, :reporting_window_start, :launcher_timeout ]
                   allowed_overrides << :renewal_required_months if launcher_params[:reporting_window] == "renewal"
                   launcher_params.slice(*allowed_overrides).select { |_, v| v.present? }
                 end
@@ -238,7 +238,7 @@ class DemoLauncherController < ApplicationController
   end
 
   def launcher_params
-    params.fetch(:demo_launcher, params).permit(
+    params.fetch(:launcher, params).permit(
       :test_scenario,
       :flow_type,
       :client_agency_id,
@@ -246,7 +246,7 @@ class DemoLauncherController < ApplicationController
       :reporting_window_months,
       :renewal_required_months,
       :reporting_window_start,
-      :demo_timeout,
+      :launcher_timeout,
       :launch_type,
       :volunteering_enabled,
       :volunteering_organization_name,
@@ -275,7 +275,7 @@ class DemoLauncherController < ApplicationController
 
   def build_cbv_tokenized_url(client_agency_id, overrides)
     user = User.find_or_create_by(
-      email: "demolauncher+#{client_agency_id}@navapbc.com",
+      email: "launcher+#{client_agency_id}@navapbc.com",
       client_agency_id: client_agency_id
     )
     user.update(is_service_account: true)
@@ -286,7 +286,7 @@ class DemoLauncherController < ApplicationController
       language: "en",
       email_address: user.email,
       cbv_applicant_attributes: {
-        first_name: "Demo",
+        first_name: "Sample",
         last_name: "User",
         client_agency_id: client_agency_id,
         case_number: "demo-#{SecureRandom.hex(4)}",
@@ -325,7 +325,7 @@ class DemoLauncherController < ApplicationController
   end
 
   def build_household_url(client_agency_id)
-    household = DemoLauncher::HouseholdScenario.find_or_create!(client_agency_id: client_agency_id)
+    household = Launcher::HouseholdScenario.find_or_create!(client_agency_id: client_agency_id)
     household.to_url(**launcher_url_options)
   end
 
@@ -336,7 +336,7 @@ class DemoLauncherController < ApplicationController
     "linda" => { first_name: "Linda", last_name: "Cooper", date_of_birth: "1999-01-01" }
   }.freeze
 
-  FAKE_SCENARIO_KEYS = DemoLauncher::FakeNscScenarios.scenario_keys.freeze
+  FAKE_SCENARIO_KEYS = Launcher::FakeNscScenarios.scenario_keys.freeze
 
   def build_test_scenario_url(scenario_key, client_agency_id, overrides)
     user_data = TEST_SCENARIOS[scenario_key]
@@ -362,7 +362,7 @@ class DemoLauncherController < ApplicationController
   end
 
   def build_fake_test_scenario_url(scenario_key, client_agency_id, overrides)
-    user_data = DemoLauncher::FakeNscScenarios.by_key(scenario_key)
+    user_data = Launcher::FakeNscScenarios.by_key(scenario_key)
     raise ArgumentError, "Unknown test scenario: #{scenario_key}" unless user_data
 
     cbv_applicant = CbvApplicant.create!(
@@ -386,7 +386,7 @@ class DemoLauncherController < ApplicationController
   end
 
   def simple_launcher_params
-    params.fetch(:demo_launcher, params).permit(
+    params.fetch(:launcher, params).permit(
       :flow_type,
       :client_agency_id,
       :reporting_window,

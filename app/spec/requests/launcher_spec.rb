@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Demo launcher routes", type: :request do
+RSpec.describe "Launcher routes", type: :request do
   describe "GET /launcher" do
     it "loads the launcher" do
       get "/launcher"

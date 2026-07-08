@@ -1,0 +1,16 @@
+<div class="advanced-launcher__setting">
+  <h3 class="advanced-launcher__setting-title">
+    <%= @title %>
+    <% if @hint %>
+      <span class="advanced-launcher__hint-toggle" data-action="click->advanced-launcher#toggleHint"><svg class="usa-icon" aria-hidden="true" focusable="false" role="img"><use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#info") %>"></use></svg></span>
+    <% end %>
+  </h3>
+  <% if @hint %>
+    <div class="usa-hint advanced-launcher__setting-hint" hidden>
+      <%= @hint %>
+    </div>
+  <% end %>
+  <div class="usa-form-group advanced-launcher__setting-body">
+    <%= content %>
+  </div>
+</div>

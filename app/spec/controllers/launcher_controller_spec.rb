@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DemoLauncherController, type: :controller do
+RSpec.describe LauncherController, type: :controller do
   render_views
 
   describe "GET #launcher" do
@@ -160,13 +160,13 @@ RSpec.describe DemoLauncherController, type: :controller do
       end
     end
 
-    context "when demo_timeout is present" do
+    context "when launcher_timeout is present" do
       it "returns 422 with an error" do
         post :simple_create, params: {
           flow_type: "activity",
           client_agency_id: "sandbox",
           launch_type: "tokenized",
-          demo_timeout: "5"
+          launcher_timeout: "5"
         }, format: :json
 
         expect(response).to have_http_status(:unprocessable_content)

@@ -30,23 +30,23 @@ RSpec.describe NscSynchronizationJob do
       let(:last_name) { "Testuser" }
       let(:date_of_birth) { Date.parse("1991-04-22") }
 
-      it "uses the demo fake data fetcher service" do
+      it "uses the launcher fake data fetcher service" do
         allow(Rails.application.config).to receive(:is_internal_environment).and_return(true)
-        fake_service = instance_double(DemoLauncher::FakeNscDataFetcherService, fetch: true)
+        fake_service = instance_double(Launcher::FakeNscDataFetcherService, fetch: true)
 
-        expect(DemoLauncher::FakeNscDataFetcherService)
+        expect(Launcher::FakeNscDataFetcherService)
           .to receive(:new)
           .with(education_activity: education_activity)
           .and_return(fake_service)
-        expect(DemoLauncher::NscForwardDatingService).not_to receive(:applicable?)
-        expect(DemoLauncher::NscForwardDatingService).not_to receive(:new)
+        expect(Launcher::NscForwardDatingService).not_to receive(:applicable?)
+        expect(Launcher::NscForwardDatingService).not_to receive(:new)
         expect(NscDataFetcherService).not_to receive(:new)
 
         described_class.perform_now(education_activity.id)
       end
     end
 
-    context "when internal env and invitation matches an NSC demo test user" do
+    context "when internal env and invitation matches an NSC launcher test user" do
       let(:first_name) { "Lynette" }
       let(:last_name) { "Oyola" }
       let(:date_of_birth) { Date.parse("1988-10-24") }
@@ -60,19 +60,19 @@ RSpec.describe NscSynchronizationJob do
         )
       end
 
-      it "uses the demo NSC forward-dating service" do
+      it "uses the launcher NSC forward-dating service" do
         allow(Rails.application.config).to receive(:is_internal_environment).and_return(true)
-        forward_dating_service = instance_double(DemoLauncher::NscForwardDatingService, fetch: true)
+        forward_dating_service = instance_double(Launcher::NscForwardDatingService, fetch: true)
 
-        expect(DemoLauncher::NscForwardDatingService)
+        expect(Launcher::NscForwardDatingService)
           .to receive(:applicable?)
           .with(education_activity)
           .and_return(true)
-        expect(DemoLauncher::NscForwardDatingService)
+        expect(Launcher::NscForwardDatingService)
           .to receive(:new)
           .with(education_activity: education_activity)
           .and_return(forward_dating_service)
-        expect(DemoLauncher::FakeNscDataFetcherService).not_to receive(:new)
+        expect(Launcher::FakeNscDataFetcherService).not_to receive(:new)
         expect(NscDataFetcherService).not_to receive(:new)
 
         described_class.perform_now(education_activity.id)
@@ -88,13 +88,13 @@ RSpec.describe NscSynchronizationJob do
         allow(Rails.application.config).to receive(:is_internal_environment).and_return(false)
         nsc_service = instance_double(NscDataFetcherService, fetch: true)
 
-        expect(DemoLauncher::NscForwardDatingService).not_to receive(:applicable?)
+        expect(Launcher::NscForwardDatingService).not_to receive(:applicable?)
         expect(NscDataFetcherService)
           .to receive(:new)
           .with(education_activity: education_activity)
           .and_return(nsc_service)
-        expect(DemoLauncher::FakeNscDataFetcherService).not_to receive(:new)
-        expect(DemoLauncher::NscForwardDatingService).not_to receive(:new)
+        expect(Launcher::FakeNscDataFetcherService).not_to receive(:new)
+        expect(Launcher::NscForwardDatingService).not_to receive(:new)
 
         described_class.perform_now(education_activity.id)
       end

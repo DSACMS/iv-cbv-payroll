@@ -1,4 +1,4 @@
-module DemoLauncherOverrides
+module LauncherOverrides
   extend ActiveSupport::Concern
 
   def shift_reporting_window_start!(date_str)
