@@ -98,7 +98,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       it "shows which household member is reporting" do
         rendered = Capybara.string(response.body)
 
-        expect(rendered).to have_text(I18n.t("activities.hub.reporting_for", name: "Avery Johnson"))
+        expect(rendered).to have_text("Reporting for Avery Johnson")
+        expect(rendered).to have_css("strong", text: "Avery Johnson")
       end
     end
 

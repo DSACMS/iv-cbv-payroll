@@ -344,7 +344,7 @@ en:
       empty_state_title: Build your community engagement report
       in_progress_state_description: "%{agency_name} will determine your eligibility based on the activities you add to your report."
       in_progress_state_title: Add more activities or continue to review and submit your report
-      reporting_for: Reporting for %{name}
+      reporting_for_html: Reporting for %{name}
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit
       save: Save changes

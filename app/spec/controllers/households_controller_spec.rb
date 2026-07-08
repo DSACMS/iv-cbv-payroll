@@ -9,8 +9,8 @@ RSpec.describe HouseholdsController, type: :controller do
     let(:household) { create(:household) }
 
     it "shows household members for a household token" do
-      create(:household_member, household: household, display_name: "Avery Johnson", role_label: "Parent")
-      create(:household_member, household: household, display_name: "Riley Johnson", role_label: "Child")
+      create(:household_member, household: household, display_name: "Avery Johnson", role_label: "Primary applicant")
+      create(:household_member, household: household, display_name: "Riley Johnson", role_label: "Household member")
 
       get :show, params: { token: household.auth_token }
 
@@ -18,9 +18,9 @@ RSpec.describe HouseholdsController, type: :controller do
       expect(response).to have_http_status(:success)
       expect(rendered).to have_text("Who are you reporting for?")
       expect(rendered).to have_text("Avery Johnson")
-      expect(rendered).to have_text("Parent")
+      expect(rendered).to have_text("Primary applicant")
       expect(rendered).to have_text("Riley Johnson")
-      expect(rendered).to have_text("Child")
+      expect(rendered).to have_text("Household member")
       expect(rendered).to have_selector(".household-member-card", count: 2)
     end
 

@@ -19,7 +19,7 @@
 <% household_member = @flow.household_member %>
 <% if household_member %>
   <div class="bg-base-lightest padding-1 font-heading-2xs">
-    <%= t("activities.hub.reporting_for", name: household_member.display_name) %>
+    <%= t("activities.hub.reporting_for_html", name: tag.strong(household_member.display_name)) %>
   </div>
 <% end %>
 

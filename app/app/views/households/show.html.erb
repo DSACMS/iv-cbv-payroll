@@ -8,7 +8,7 @@
   <%= t(".description") %>
 </p>
 
-<div class="margin-top-4 measure-6">
+<div class="margin-top-4 maxw-mobile-lg">
   <% @household.household_members.order(:id).each do |member| %>
     <%= render(Uswds::Card.new(class: "household-member-card margin-bottom-2")) do |card| %>
       <% card.with_header do %>
