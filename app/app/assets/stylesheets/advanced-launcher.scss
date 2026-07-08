@@ -1,33 +1,33 @@
 @forward "uswds";
 @use "uswds" as *;
 
-// Demo launcher page
-.demo-launcher {
+// Advanced launcher page
+.advanced-launcher {
   // -- Form override --
   .usa-form {
     max-width: none;
   }
 
-  .demo-launcher__usa-hint {
+  .advanced-launcher__usa-hint {
     margin-top: units(0.5);
   }
 
   // -- Layout: mobile (default) --
-  .demo-launcher__two-col {
+  .advanced-launcher__two-col {
     display: flex;
     flex-direction: column;
     margin-top: units(3);
   }
 
-  .demo-launcher__left-col {
+  .advanced-launcher__left-col {
     display: contents;
   }
 
-  .demo-launcher__launch         { order: 1; }
-  .demo-launcher__settings       { order: 2; }
-  .demo-launcher__test-scenarios { order: 3; }
+  .advanced-launcher__launch         { order: 1; }
+  .advanced-launcher__settings       { order: 2; }
+  .advanced-launcher__test-scenarios { order: 3; }
 
-  .demo-launcher__mobile-divider {
+  .advanced-launcher__mobile-divider {
     order: 2;
     border: none;
     border-top: 1px solid color("base-lighter");
@@ -36,18 +36,18 @@
 
   // -- Layout: desktop --
   @include at-media("tablet") {
-    .demo-launcher__two-col {
+    .advanced-launcher__two-col {
       display: grid;
       grid-template-columns: 300px 1fr;
       gap: units(5);
       align-items: start;
     }
 
-    .demo-launcher__left-col {
+    .advanced-launcher__left-col {
       display: block;
     }
 
-    .demo-launcher__settings {
+    .advanced-launcher__settings {
       position: relative;
       padding-left: units(5);
 
@@ -62,13 +62,13 @@
       }
     }
 
-    .demo-launcher__mobile-divider {
+    .advanced-launcher__mobile-divider {
       display: none;
     }
   }
 
   // -- Flow type radios --
-  .demo-launcher__flow-type-radios {
+  .advanced-launcher__flow-type-radios {
     display: flex;
     gap: units(1);
 
@@ -78,7 +78,7 @@
   }
 
   // -- Left column: shared section label --
-  .demo-launcher__section-label {
+  .advanced-launcher__section-label {
     font-size: size("body", "2xs");
     font-weight: 700;
     text-transform: uppercase;
@@ -93,25 +93,25 @@
   }
 
   // -- Left column: launch --
-  .demo-launcher__launch-buttons {
+  .advanced-launcher__launch-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: units(1);
     margin-top: units(1);
   }
 
-  .demo-launcher__launch-button {
+  .advanced-launcher__launch-button {
     display: block;
     width: 100%;
     margin: 0;
   }
 
-  .demo-launcher__launch-section {
+  .advanced-launcher__launch-section {
     padding-top: units(2);
     border-top: 1px solid color("base-lighter");
   }
 
-  .demo-launcher__share-widget {
+  .advanced-launcher__share-widget {
     margin-top: units(2);
     padding: units(2);
     border: 1px solid color("base-lighter");
@@ -119,7 +119,7 @@
     background-color: color("base-lightest");
   }
 
-  .demo-launcher__share-row {
+  .advanced-launcher__share-row {
     display: grid;
     gap: units(1);
     align-items: end;
@@ -134,22 +134,22 @@
     }
   }
 
-  .demo-launcher__share-status {
+  .advanced-launcher__share-status {
     margin-top: units(1);
     margin-bottom: 0;
   }
 
   // -- Left column: test scenarios --
-  .demo-launcher__test-scenarios {
+  .advanced-launcher__test-scenarios {
     margin-top: 0;
   }
 
-  .demo-launcher__scenario-radios {
+  .advanced-launcher__scenario-radios {
     margin-top: units(1);
     margin-bottom: units(2);
   }
 
-  .demo-launcher__scenario-desc {
+  .advanced-launcher__scenario-desc {
     display: block;
     font-size: size("body", "2xs");
     font-weight: normal;
@@ -157,40 +157,40 @@
   }
 
   // -- Settings --
-  .demo-launcher__setting {
+  .advanced-launcher__setting {
     margin-bottom: units(5);
   }
 
-  .demo-launcher__setting-title {
+  .advanced-launcher__setting-title {
     margin-bottom: 0;
   }
 
-  .demo-launcher__setting-body {
+  .advanced-launcher__setting-body {
     margin-top: units(0.5);
   }
 
-  .demo-launcher__hint-toggle {
+  .advanced-launcher__hint-toggle {
     cursor: pointer;
     vertical-align: middle;
     margin-left: units(0.5);
     color: color("primary");
   }
 
-  .demo-launcher__setting-hint {
+  .advanced-launcher__setting-hint {
     margin-top: units(0.5);
   }
 
-  .demo-launcher__separator {
+  .advanced-launcher__separator {
     margin-top: units(3);
     margin-bottom: units(2);
   }
 
-  .demo-launcher__month-buttons {
+  .advanced-launcher__month-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: units(0.5);
 
-    &.demo-launcher__month-buttons--hidden {
+    &.advanced-launcher__month-buttons--hidden {
       display: none;
     }
 
@@ -200,14 +200,14 @@
       margin-bottom: 0;
     }
 
-    .demo-launcher__month-buttons-hint {
+    .advanced-launcher__month-buttons-hint {
       flex-basis: 100%;
       margin-top: 0;
       margin-bottom: units(1);
     }
   }
 
-  .demo-launcher__inline-field {
+  .advanced-launcher__inline-field {
     display: flex;
     align-items: baseline;
     gap: units(1);
@@ -220,14 +220,14 @@
     }
   }
 
-  .demo-launcher__renewal-required {
-    &.demo-launcher__renewal-required--hidden {
+  .advanced-launcher__renewal-required {
+    &.advanced-launcher__renewal-required--hidden {
       display: none;
     }
   }
 
   // -- Pre-populated activities accordion --
-  .demo-launcher__activity-rows {
+  .advanced-launcher__activity-rows {
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -236,13 +236,13 @@
     overflow: hidden;
   }
 
-  .demo-launcher__activity-row {
+  .advanced-launcher__activity-row {
     & + & {
       border-top: 1px solid color("base-lighter");
     }
   }
 
-  .demo-launcher__activity-header {
+  .advanced-launcher__activity-header {
     display: flex;
     align-items: center;
     padding: units(1) units(1.5);
@@ -260,16 +260,16 @@
     }
   }
 
-  .demo-launcher__activity-fields {
+  .advanced-launcher__activity-fields {
     padding: units(1.5);
     border-top: 1px solid color("base-lighter");
 
-    &.demo-launcher__activity-fields--hidden {
+    &.advanced-launcher__activity-fields--hidden {
       display: none;
     }
   }
 
-  .demo-launcher__activity-fields-grid {
+  .advanced-launcher__activity-fields-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: units(1);

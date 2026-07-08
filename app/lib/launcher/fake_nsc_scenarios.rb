@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DemoLauncher
+module Launcher
   module FakeNscScenarios
     UserProfile = Struct.new(
       :scenario_key,

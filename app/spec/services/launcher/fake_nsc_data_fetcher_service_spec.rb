@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DemoLauncher::FakeNscDataFetcherService do
+RSpec.describe Launcher::FakeNscDataFetcherService do
   subject(:service) { described_class.new(education_activity: education_activity, logger: logger) }
 
   let(:logger) { Logger.new(StringIO.new) }

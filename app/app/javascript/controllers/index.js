@@ -9,7 +9,7 @@ import LanguageController from "./language_controller.js"
 import CopyLinkController from "./copy_link_controller.js"
 import CommonQuestionsController from "./common_questions_controller.js"
 import CbvEntryPageController from "./cbv/entry_page_controller.js"
-import DemoLauncherController from "./demo_launcher_controller.js"
+import AdvancedLauncherController from "./advanced_launcher_controller.js"
 import LauncherController from "./launcher_controller.js"
 import HoursInputController from "./hours_input_controller.js"
 import SelfEmployedController from "./self_employed_controller.js"
@@ -25,7 +25,7 @@ application.register("copy-link", CopyLinkController)
 application.register("cbv-entry-page", CbvEntryPageController)
 application.register("common-questions", CommonQuestionsController)
 application.register("session-timeout", SessionTimeoutPageController)
-application.register("demo-launcher", DemoLauncherController)
+application.register("advanced-launcher", AdvancedLauncherController)
 application.register("launcher", LauncherController)
 application.register("hours-input", HoursInputController)
 application.register("self-employed", SelfEmployedController)

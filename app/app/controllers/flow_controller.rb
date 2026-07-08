@@ -11,7 +11,7 @@ class FlowController < ApplicationController
     @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
 
     set_flow_session(@flow.id, flow_param)
-    apply_demo_overrides
+    apply_launcher_overrides
 
     track_generic_link_clicked_event(@flow)
   end
@@ -70,7 +70,7 @@ class FlowController < ApplicationController
       )
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       set_flow_session(@flow.id, flow_param)
-      apply_demo_overrides
+      apply_launcher_overrides
       track_invitation_clicked_event(invitation, @flow)
     elsif session[:flow_id]
       begin
@@ -111,7 +111,7 @@ class FlowController < ApplicationController
     flow_class(flow_param).flow_attributes_from_params(params)
   end
 
-  def apply_demo_overrides
+  def apply_launcher_overrides
     return unless internal_environment?
 
     if params[:reporting_window_months].present?
@@ -126,8 +126,8 @@ class FlowController < ApplicationController
       @flow.shift_reporting_window_start!(params[:reporting_window_start])
     end
 
-    if params[:demo_timeout].present?
-      session[:demo_timeout] = params[:demo_timeout].to_i.minutes.to_i
+    if params[:launcher_timeout].present?
+      session[:launcher_timeout] = params[:launcher_timeout].to_i.minutes.to_i
     end
   end
 end

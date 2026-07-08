@@ -1,4 +1,4 @@
-class DemoLauncher::HouseholdScenario
+class Launcher::HouseholdScenario
   REFERENCE_ID = "household-scenario"
   MEMBERS = [
     {

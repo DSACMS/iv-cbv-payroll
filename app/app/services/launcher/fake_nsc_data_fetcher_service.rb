@@ -1,4 +1,4 @@
-class DemoLauncher::FakeNscDataFetcherService < NscDataFetcherService
+class Launcher::FakeNscDataFetcherService < NscDataFetcherService
   def initialize(education_activity:, logger: Rails.logger)
     @education_activity = education_activity
     @logger = logger
@@ -23,7 +23,7 @@ class DemoLauncher::FakeNscDataFetcherService < NscDataFetcherService
   private
 
   def fake_nsc_response_for
-    DemoLauncher::FakeNscScenarios.nsc_response_for(
+    Launcher::FakeNscScenarios.nsc_response_for(
       identity: @education_activity.activity_flow.identity,
       reporting_window: @education_activity.activity_flow.reporting_window_range
     ) || { "enrollmentDetails" => [] }

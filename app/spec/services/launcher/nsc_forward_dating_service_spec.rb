@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DemoLauncher::NscForwardDatingService do
+RSpec.describe Launcher::NscForwardDatingService do
   include NscApiHelper
 
   subject(:service) { described_class.new(education_activity: education_activity, environment: :test, logger: logger) }
@@ -50,7 +50,7 @@ RSpec.describe DemoLauncher::NscForwardDatingService do
         expect(activity_flow.within_reporting_window?(term.term_begin, term.term_end)).to be(true)
       end
 
-      it "queries NSC with Lynette's stable demo as-of date" do
+      it "queries NSC with Lynette's stable launcher as-of date" do
         service.fetch
 
         expect(WebMock)
@@ -80,7 +80,7 @@ RSpec.describe DemoLauncher::NscForwardDatingService do
         expect(terms).to all(satisfy { |term| activity_flow.within_reporting_window?(term.term_begin, term.term_end) })
       end
 
-      it "queries NSC with Rick's stable demo as-of date" do
+      it "queries NSC with Rick's stable launcher as-of date" do
         service.fetch
 
         expect(WebMock)
@@ -89,7 +89,7 @@ RSpec.describe DemoLauncher::NscForwardDatingService do
       end
     end
 
-    context "for a demo user with no current enrollments" do
+    context "for a test user with no current enrollments" do
       let(:scenario_key) { "linda" }
       let(:identity) { create(:identity, :nsc_linda) }
 

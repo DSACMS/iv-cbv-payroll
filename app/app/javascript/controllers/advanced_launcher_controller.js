@@ -41,8 +41,8 @@ export default class extends Controller {
   }
 
   toggleHint(event) {
-    const setting = event.currentTarget.closest(".demo-launcher__setting")
-    const hint = setting.querySelector(".demo-launcher__setting-hint")
+    const setting = event.currentTarget.closest(".advanced-launcher__setting")
+    const hint = setting.querySelector(".advanced-launcher__setting-hint")
     if (hint) hint.hidden = !hint.hidden
   }
 
@@ -60,10 +60,10 @@ export default class extends Controller {
   toggleActivity(event) {
     const checkbox = event.currentTarget
     const fields = checkbox
-      .closest(".demo-launcher__activity-row")
-      .querySelector(".demo-launcher__activity-fields")
+      .closest(".advanced-launcher__activity-row")
+      .querySelector(".advanced-launcher__activity-fields")
     if (fields) {
-      fields.classList.toggle("demo-launcher__activity-fields--hidden", !checkbox.checked)
+      fields.classList.toggle("advanced-launcher__activity-fields--hidden", !checkbox.checked)
     }
   }
 
@@ -213,15 +213,17 @@ export default class extends Controller {
   applyWindow(value) {
     if (value === "renewal") {
       if (this.hasRenewalRequiredFieldTarget) {
-        this.renewalRequiredFieldTarget.classList.remove("demo-launcher__renewal-required--hidden")
+        this.renewalRequiredFieldTarget.classList.remove(
+          "advanced-launcher__renewal-required--hidden"
+        )
       }
-      this.monthButtonsTarget.classList.add("demo-launcher__month-buttons--hidden")
+      this.monthButtonsTarget.classList.add("advanced-launcher__month-buttons--hidden")
       this.monthsInputTarget.value = "6"
     } else {
       if (this.hasRenewalRequiredFieldTarget) {
-        this.renewalRequiredFieldTarget.classList.add("demo-launcher__renewal-required--hidden")
+        this.renewalRequiredFieldTarget.classList.add("advanced-launcher__renewal-required--hidden")
       }
-      this.monthButtonsTarget.classList.remove("demo-launcher__month-buttons--hidden")
+      this.monthButtonsTarget.classList.remove("advanced-launcher__month-buttons--hidden")
       this.monthsInputTarget.value = "2"
       this.highlightButton("2")
     }

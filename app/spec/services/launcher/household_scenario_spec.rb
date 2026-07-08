@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DemoLauncher::HouseholdScenario do
+RSpec.describe Launcher::HouseholdScenario do
   describe ".find_or_create!" do
     it "creates a test household with two members and member invitations" do
       household = described_class.find_or_create!(client_agency_id: "sandbox")

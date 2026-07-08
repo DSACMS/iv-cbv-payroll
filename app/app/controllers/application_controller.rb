@@ -118,7 +118,7 @@ class ApplicationController < ActionController::Base
   end
 
   def session_timeout_duration
-    (session[:demo_timeout] if internal_environment?) || Rails.application.config.cbv_session_expires_after
+    (session[:launcher_timeout] if internal_environment?) || Rails.application.config.cbv_session_expires_after
   end
 
   def internal_environment?
