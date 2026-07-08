@@ -7,7 +7,7 @@ RSpec.describe DemoLauncher::HouseholdScenario do
 
       expect(household.client_agency_id).to eq("sandbox")
       expect(household.household_members.map(&:display_name)).to contain_exactly("Avery Johnson", "Riley Johnson")
-      expect(household.household_members.map(&:role_label)).to contain_exactly("Parent", "Child")
+      expect(household.household_members.map(&:role_label)).to contain_exactly("Primary applicant", "Household member")
       invitations = household.household_members.map(&:activity_flow_invitation)
       expect(invitations).to all(be_present)
       expect(invitations.uniq.size).to eq(invitations.size)

@@ -1,0 +1,11 @@
+@use "uswds" as *;
+
+.household-member-card {
+  .usa-card__header {
+    padding-bottom: 0;
+  }
+
+  .usa-card__footer {
+    padding-top: units(2);
+  }
+}
