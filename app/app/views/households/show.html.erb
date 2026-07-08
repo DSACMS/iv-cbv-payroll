@@ -10,13 +10,7 @@
 
 <div class="margin-top-4 maxw-mobile-lg">
   <% @household.household_members.order(:id).each do |member| %>
-    <%= render(Uswds::Card.new(class: "household-member-card margin-bottom-2")) do |card| %>
-      <% card.with_header do %>
-        <h2 class="usa-card__heading">
-          <%= member.display_name %>
-        </h2>
-      <% end %>
-
+    <%= render(Uswds::Card.new(heading_text: member.display_name, class: "household-member-card margin-bottom-2")) do |card| %>
       <% card.with_body do %>
         <p class="margin-y-0">
           <%= member.role_label %>
