@@ -7,6 +7,7 @@ class ActivityFlow < Flow
   belongs_to :cbv_applicant
   belongs_to :identity, optional: true
   belongs_to :activity_flow_invitation, optional: true
+  has_one :household_member, through: :activity_flow_invitation
 
   has_many :volunteering_activities, dependent: :destroy
   has_many :job_training_activities, dependent: :destroy

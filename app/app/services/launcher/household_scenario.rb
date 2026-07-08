@@ -4,13 +4,13 @@ class Launcher::HouseholdScenario
     {
       reference_id: "avery",
       display_name: "Avery Johnson",
-      role_label: "Parent",
+      role_label: "Primary applicant",
       date_of_birth: Date.new(1985, 4, 12)
     },
     {
       reference_id: "riley",
       display_name: "Riley Johnson",
-      role_label: "Child",
+      role_label: "Household member",
       date_of_birth: Date.new(2004, 9, 3)
     }
   ].freeze
