@@ -35,7 +35,7 @@ The CD workflow uses these reusable workflows:
 - [`database-migrations`](./database-migrations.yml): runs database migrations for an application
 - [`build-and-publish`](./build-and-publish.yml): builds a container image for an application and publishes it to an image repository
 - [`deploy-cms`](./deploy-cms.yml): builds and publishes a SHA-tagged CMS image, then deploys that same image tag to CMS
-- [`deploy-ecs`](./deploy-ecs.yml): updates a CMS ECS service to use an existing image tag
+- [`deploy-ecs`](./deploy-ecs.yml): updates the CMS ECS `app` and `solid-queue` services to an existing image tag, using `aws-actions/amazon-ecs-render-task-definition` and `aws-actions/amazon-ecs-deploy-task-definition`
 - [`build-and-publish-to-cms`](./build-and-publish-to-cms.yml): builds and publishes a SHA-tagged image to the CMS image repository
 
 ```mermaid
@@ -47,10 +47,6 @@ graph TD
 
   cd-app-->|calls|deploy-->|calls|database-migrations-->|calls|build-and-publish
 ```
-
-CMS deploys use `deploy-cms` when the image should be built and deployed from
-one workflow dispatch. It resolves the requested ref to a commit SHA, publishes
-that SHA-tagged image if needed, and then deploys the same SHA tag.
 
 ## ⛑️ Helper workflows
 

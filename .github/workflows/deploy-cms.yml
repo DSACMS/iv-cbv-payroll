@@ -1,7 +1,15 @@
 name: Deploy to CMS
-run-name: Deploy ${{ inputs.ref }} to CMS app (${{ inputs.environment }})
+run-name: Deploy ${{ inputs.ref || github.sha }} to CMS app (${{ inputs.environment }})
 
 on:
+# TODO: Uncomment when were ready to push to environments automatically
+# push:
+#    branches:
+#      - "main"
+#    paths:
+#      - "app/**"
+#      - "bin/**"
+#      - "infra/**"
   workflow_call:
     inputs:
       environment:
@@ -17,7 +25,6 @@ on:
       environment:
         description: "the name of the application environment (e.g. uat)"
         required: true
-        default: "uat"
         type: string
       ref:
         description: "the branch, tag, or SHA to deploy"
