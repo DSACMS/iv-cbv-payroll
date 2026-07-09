@@ -738,6 +738,37 @@ RSpec.describe LauncherController, type: :controller do
         expect(activities[0]["months"]).to all(include("hours" => 6))
       end
 
+      it "rejects activity types that are not enabled for the agency" do
+        stub_client_agency_config_value("sandbox", :activity_types, { community_service: false, employment: true, education: true, work_programs: true })
+
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            launch_type: "tokenized",
+            volunteering_enabled: "1",
+            volunteering_organization_name: "Red Cross",
+            volunteering_hours_per_month: "4"
+          }
+        }.to raise_error(ActiveRecord::RecordInvalid).and not_change(ActivityFlowInvitation, :count)
+      end
+
+      it "allows pre-populated months outside the invitation's default reporting window" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          reporting_window: "application",
+          reporting_window_months: "3",
+          reporting_window_start: "07/01/2025",
+          job_training_enabled: "1",
+          job_training_program_name: "Career Prep",
+          job_training_organization_name: "Goodwill",
+          job_training_hours_per_month: "10"
+        }
+
+        months = ActivityFlowInvitation.last.pre_populated_activities.first["months"].map { |m| m["month"] }
+        expect(months).to eq(%w[2025-07-01 2025-08-01 2025-09-01])
+      end
+
       it "creates an invitation with a work program activity when work program is enabled" do
         expect {
           post :create, params: {

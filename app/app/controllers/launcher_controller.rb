@@ -1,5 +1,5 @@
 class LauncherController < ApplicationController
-  helper_method :session_timeout_enabled?
+  helper_method :session_timeout_enabled?, :agency_activity_types
   before_action :set_launcher_flow, only: [ :advanced, :launcher ]
 
   def advanced; end
@@ -115,6 +115,12 @@ class LauncherController < ApplicationController
     false
   end
 
+  def agency_activity_types
+    Rails.application.config.client_agencies.client_agency_ids.index_with do |agency_id|
+      Rails.application.config.client_agencies[agency_id].activity_types.select { |_type, enabled| enabled }.keys
+    end
+  end
+
   def launcher_url_options
     opts = { host: request.host_with_port, protocol: request.protocol }
     # When behind a reverse proxy (e.g., ngrok), explicitly set port to nil so the scheme's default port is used.
@@ -215,10 +221,12 @@ class LauncherController < ApplicationController
   end
 
   def create_launcher_activity_flow_invitation!(attributes)
-    invitation = ActivityFlowInvitation.create!(attributes)
-    pre_populated = build_pre_populated_activities
-    invitation.update_columns(pre_populated_activities: pre_populated) if pre_populated.present?
-    invitation
+    ActivityFlowInvitation.create!(
+      attributes.merge(
+        pre_populated_activities: build_pre_populated_activities,
+        skip_month_window_validation: true
+      )
+    )
   end
 
   def launch_overrides(flow_type)

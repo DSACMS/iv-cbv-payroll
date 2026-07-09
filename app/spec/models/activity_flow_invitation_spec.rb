@@ -136,6 +136,17 @@ RSpec.describe ActivityFlowInvitation, type: :model do
     end
   end
 
+  describe "#pre_populated_hub_activity_types" do
+    it "maps stored entries to their activity_type" do
+      invitation = build(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "volunteering", "organization_name" => "Red Cross" },
+        { "type" => "education", "school_name" => "Springfield Community College" }
+      ])
+
+      expect(invitation.pre_populated_hub_activity_types).to contain_exactly(:community_service, :education)
+    end
+  end
+
   describe "month-in-window validation" do
     let(:in_window_date) { ActivityFlow.expected_reporting_window_range("sandbox").end.iso8601 }
     let(:out_of_window_date) { (Date.current + 60.days).iso8601 }
@@ -258,6 +269,30 @@ RSpec.describe ActivityFlowInvitation, type: :model do
       expect(invitation).not_to be_valid
       expect(invitation.errors.attribute_names.map(&:to_s))
         .to include("pre_populated_activities[0].months[0].month")
+    end
+
+    context "when skip_month_window_validation is set" do
+      it "allows months outside the expected reporting window" do
+        invitation = build(:activity_flow_invitation, skip_month_window_validation: true, pre_populated_activities: [
+          {
+            "type" => "volunteering",
+            "organization_name" => "Red Cross",
+            "months" => [ { "month" => out_of_window_date, "hours" => 4 } ]
+          }
+        ])
+
+        expect(invitation).to be_valid
+      end
+
+      it "still enforces the type gating" do
+        invitation = build(:activity_flow_invitation, skip_month_window_validation: true, pre_populated_activities: [
+          { "type" => "knitting", "organization_name" => "Yarn Co" }
+        ])
+
+        expect(invitation).not_to be_valid
+        expect(invitation.errors.attribute_names.map(&:to_s))
+          .to include("pre_populated_activities[0].type")
+      end
     end
   end
 end

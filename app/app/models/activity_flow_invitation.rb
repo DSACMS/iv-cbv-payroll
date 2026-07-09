@@ -12,8 +12,10 @@ class ActivityFlowInvitation < ApplicationRecord
 
   has_secure_token :auth_token, length: 10
 
+  attr_accessor :skip_month_window_validation
+
   validate :pre_populated_activities_shape
-  validate :pre_populated_activity_months_in_window
+  validate :pre_populated_activity_months_in_window, unless: :skip_month_window_validation
 
   def to_url(host: ENV.fetch("DOMAIN_NAME", "localhost"), **url_params)
     Rails.application.routes.url_helpers.activities_flow_start_url(token: auth_token, host: host, **url_params)
@@ -25,12 +27,12 @@ class ActivityFlowInvitation < ApplicationRecord
 
   def supported_pre_populated_types
     agency = Rails.application.config.client_agencies[client_agency_id]
-    ACTIVITY_TYPES.select { |_type, klass| agency&.activity_types&.[](klass.display_name) }.keys
+    ACTIVITY_TYPES.select { |_type, klass| agency&.activity_types&.[](klass.activity_type) }.keys
   end
 
   def pre_populated_hub_activity_types
     pre_populated_activities
-      .filter_map { |e| ACTIVITY_TYPES[(e["type"] || e[:type]).to_s]&.display_name }
+      .filter_map { |e| ACTIVITY_TYPES[(e["type"] || e[:type]).to_s]&.activity_type }
       .uniq
   end
 

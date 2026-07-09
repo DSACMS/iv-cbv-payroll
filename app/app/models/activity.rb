@@ -8,7 +8,7 @@ class Activity < ApplicationRecord
   scope :published, -> { where(draft: false) }
   scope :pre_populated_drafts, -> { where(draft: true, pre_populated: true) }
 
-  def self.display_name
+  def self.activity_type
     raise NotImplementedError, "#{name} must define .#{__method__}"
   end
 

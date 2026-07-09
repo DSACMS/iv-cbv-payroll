@@ -19,7 +19,7 @@ class EmploymentActivity < Activity
   has_many :employment_activity_months, dependent: :destroy
   has_activity_months :employment_activity_months
 
-  def self.display_name
+  def self.activity_type
     :employment
   end
 

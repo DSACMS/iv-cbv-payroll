@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe ActivitiesHelper do
   include ActiveSupport::Testing::TimeHelpers
 
-  describe "#show_activity_type?" do
+  describe "#show_activity?" do
     context "in a pre-populated session" do
       before do
         flow = instance_double(ActivityFlow, pre_populated_session?: true, pre_populated_activity_types: [ :community_service, :education ])

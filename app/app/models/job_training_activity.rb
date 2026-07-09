@@ -22,7 +22,7 @@ class JobTrainingActivity < Activity
   has_many :job_training_activity_months, dependent: :destroy
   has_activity_months :job_training_activity_months
 
-  def self.display_name
+  def self.activity_type
     :work_programs
   end
 

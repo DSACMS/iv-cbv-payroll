@@ -6,6 +6,7 @@ export default class extends Controller {
     "monthButtons",
     "monthsInput",
     "ceOnly",
+    "activityRow",
     "datePickerWrapper",
     "genericButton",
     "renewalRequiredField",
@@ -17,6 +18,8 @@ export default class extends Controller {
     "openGeneratedLink",
   ]
 
+  static values = { agencyActivityTypes: Object }
+
   connect() {
     const selectedFlow = this.element.querySelector("input[name=flow_type]:checked")
     if (selectedFlow) this.applyFlowType(selectedFlow.value)
@@ -26,10 +29,16 @@ export default class extends Controller {
 
     const selectedScenario = this.element.querySelector("input[name=test_scenario]:checked")
     if (selectedScenario) this.applyScenario(selectedScenario)
+
+    this.applyAgency()
   }
 
   selectFlowType(event) {
     this.applyFlowType(event.currentTarget.value)
+  }
+
+  selectAgency() {
+    this.applyAgency()
   }
 
   selectWindow(event) {
@@ -138,6 +147,28 @@ export default class extends Controller {
       const selectedScenario = this.element.querySelector("input[name=test_scenario]:checked")
       if (selectedScenario) this.applyScenario(selectedScenario)
     }
+  }
+
+  applyAgency() {
+    if (!this.hasActivityRowTarget) return
+
+    const select = this.element.querySelector("#client_agency_id")
+    const enabled = (select && this.agencyActivityTypesValue[select.value]) || []
+
+    this.activityRowTargets.forEach((row) => {
+      const allowed = enabled.includes(row.dataset.activityType)
+      const checkbox = row.querySelector("input[type=checkbox]")
+
+      row.classList.toggle("demo-launcher__activity-row--disabled", !allowed)
+      if (checkbox) checkbox.disabled = !allowed
+      if (allowed) return
+
+      if (checkbox && checkbox.checked) {
+        checkbox.checked = false
+        const fields = row.querySelector(".demo-launcher__activity-fields")
+        if (fields) fields.classList.add("demo-launcher__activity-fields--hidden")
+      }
+    })
   }
 
   applyScenario(radio) {

@@ -2,7 +2,7 @@
 <div class="grid-col-12 advanced-launcher">
   <h1>Emmy Launcher 🏆🚀</h1>
   <div class="usa-hint advanced-launcher__usa-hint">Configure settings and launch Emmy in a new tab.</div>
-  <%= form_with(url: "/launcher/advanced", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "advanced-launcher", action: "input->advanced-launcher#invalidateShareLink change->advanced-launcher#invalidateShareLink" }) do |f| %>
+  <%= form_with(url: "/launcher/advanced", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "advanced-launcher", "demo-launcher-agency-activity-types-value": agency_activity_types.to_json, action: "input->advanced-launcher#invalidateShareLink change->advanced-launcher#invalidateShareLink" }) do |f| %>
     <div class="advanced-launcher__two-col">
       <div class="advanced-launcher__left-col">
         <div class="advanced-launcher__test-scenarios" data-advanced-launcher-target="ceOnly">
@@ -161,7 +161,7 @@
           </div>
         <% end %>
         <%= render AdvancedLauncher::SettingComponent.new(title: "Agency", hint: "Select the agency the flow will use.") do %>
-          <select class="usa-select" name="client_agency_id" id="client_agency_id">
+          <select class="usa-select" name="client_agency_id" id="client_agency_id" data-action="change->demo-launcher#selectAgency">
             <% Rails.application.config.client_agencies.client_agency_ids.each do |agency_id| %>
               <option value="<%= agency_id %>" <%= "selected" if agency_id == "sandbox" %>><%= agency_id %></option>
             <% end %>
@@ -237,9 +237,9 @@
           </div>
         <% end %>
         <div data-advanced-launcher-target="ceOnly">
-          <%= render AdvancedLauncher::SettingComponent.new(title: "Pre-populated activities", hint: "Specify what data should appear automatically when visiting the hub for the first time. This is used to simulate the state sending us the data they have for this applicant. Note that this only works with tokenized links.") do %>
+          <%= render AdvancedLauncher::SettingComponent.new(title: "Pre-populated activities", hint: "Specify what data should appear automatically when visiting the hub for the first time. This is used to simulate the state sending us the data they have for this applicant. Note that this only works with tokenized links. Activities that aren't enabled for the selected agency are greyed out and can't be selected.") do %>
             <div class="advanced-launcher__activity-rows">
-              <div class="advanced-launcher__activity-row">
+              <div class="advanced-launcher__activity-row" data-demo-launcher-target="activityRow" data-activity-type="community_service">
                 <div class="advanced-launcher__activity-header">
                   <div class="usa-checkbox">
                     <input class="usa-checkbox__input" type="checkbox" id="volunteering_enabled" name="volunteering_enabled" value="1"
@@ -260,7 +260,7 @@
                   </div>
                 </div>
               </div>
-              <div class="advanced-launcher__activity-row">
+              <div class="advanced-launcher__activity-row" data-demo-launcher-target="activityRow" data-activity-type="employment">
                 <div class="advanced-launcher__activity-header">
                   <div class="usa-checkbox">
                     <input class="usa-checkbox__input" type="checkbox" id="employment_enabled" name="employment_enabled" value="1"
@@ -288,7 +288,7 @@
                   </div>
                 </div>
               </div>
-              <div class="advanced-launcher__activity-row">
+              <div class="advanced-launcher__activity-row" data-demo-launcher-target="activityRow" data-activity-type="education">
                 <div class="advanced-launcher__activity-header">
                   <div class="usa-checkbox">
                     <input class="usa-checkbox__input" type="checkbox" id="education_enabled" name="education_enabled" value="1"
@@ -309,7 +309,7 @@
                   </div>
                 </div>
               </div>
-              <div class="advanced-launcher__activity-row">
+              <div class="advanced-launcher__activity-row" data-demo-launcher-target="activityRow" data-activity-type="work_programs">
                 <div class="advanced-launcher__activity-header">
                   <div class="usa-checkbox">
                     <input class="usa-checkbox__input" type="checkbox" id="job_training_enabled" name="job_training_enabled" value="1"

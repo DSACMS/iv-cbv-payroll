@@ -46,9 +46,9 @@ RSpec.describe Activity do
     end
   end
 
-  describe ".display_name" do
+  describe ".activity_type" do
     it "raises NotImplementedError on the abstract base" do
-      expect { described_class.display_name }.to raise_error(NotImplementedError)
+      expect { described_class.activity_type }.to raise_error(NotImplementedError)
     end
   end
 
@@ -61,8 +61,8 @@ RSpec.describe Activity do
           expect(klass::FIELDS).to include(*klass::PRE_POPULATED_REQUIRED_FIELDS)
         end
 
-        it "defines a Symbol .display_name" do
-          expect(klass.display_name).to be_a(Symbol)
+        it "defines a Symbol .activity_type" do
+          expect(klass.activity_type).to be_a(Symbol)
         end
 
         it "exposes .activity_months_class via HasActivityMonths" do

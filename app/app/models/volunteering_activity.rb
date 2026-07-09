@@ -18,7 +18,7 @@ class VolunteeringActivity < Activity
   has_many :volunteering_activity_months, dependent: :destroy
   has_activity_months :volunteering_activity_months
 
-  def self.display_name
+  def self.activity_type
     :community_service
   end
 

@@ -20,7 +20,7 @@ class EducationActivity < Activity
   has_many :education_activity_months, dependent: :destroy
   has_activity_months :education_activity_months
 
-  def self.display_name
+  def self.activity_type
     :education
   end
 
