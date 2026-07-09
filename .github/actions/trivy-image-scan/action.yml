@@ -1,0 +1,43 @@
+name: Trivy image vulnerability scan
+description: >
+  Run Trivy against a built image using the project's canonical vulnerability
+  criteria (severity, vuln-type, ignore-unfixed). Callers vary only the output
+  format / exit behaviour, so the gating scan and the auto-fixer always detect
+  the same set of vulnerabilities. Edit the criteria here, once.
+
+inputs:
+  image:
+    description: Image ref to scan
+    required: true
+  format:
+    description: "Trivy output format (e.g. table, json)"
+    required: false
+    default: table
+  output:
+    description: File to write results to; empty writes to stdout
+    required: false
+    default: ""
+  exit-code:
+    description: Exit code when vulnerabilities are found (1 to fail, 0 to report)
+    required: false
+    default: "1"
+  scanners:
+    description: Comma-separated Trivy scanners to run
+    required: false
+    default: vuln
+
+runs:
+  using: composite
+  steps:
+    - name: Run Trivy vulnerability scan
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: image
+        image-ref: ${{ inputs.image }}
+        format: ${{ inputs.format }}
+        output: ${{ inputs.output }}
+        exit-code: ${{ inputs.exit-code }}
+        severity: "HIGH,CRITICAL"
+        ignore-unfixed: true
+        vuln-type: os
+        scanners: ${{ inputs.scanners }}

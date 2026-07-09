@@ -29,9 +29,8 @@ jobs:
 
       - uses: ./.github/actions/setup-languages
 
-      - name: Update advisory database and run checks
-        run: bundle exec rake bundler:audit
-        working-directory: app
+      - name: Audit Ruby dependencies
+        uses: ./.github/actions/ruby-dependency-audit
 
   npm-audit:
     name: npm audit
@@ -42,9 +41,8 @@ jobs:
 
       - uses: ./.github/actions/setup-languages
 
-      - name: Run npm audit
-        working-directory: app
-        run: bundle exec rake npm:audit
+      - name: Audit Javascript dependencies
+        uses: ./.github/actions/js-dependency-audit
 
   ruby-bom:
     name: Ruby SBOM Generation

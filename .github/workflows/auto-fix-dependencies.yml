@@ -54,32 +54,17 @@ jobs:
 
       - uses: ./.github/actions/setup-languages
 
-      # Runs bundler-audit and applies `bundle update --conservative` per flagged gem.
       - name: Fix Ruby dependency vulnerabilities
         id: fix-ruby
-        working-directory: app
-        run: bundle exec ruby "${GITHUB_WORKSPACE}/.github/scripts/fix-ruby-dependencies.rb"
+        uses: ./.github/actions/ruby-dependency-audit
+        with:
+          fix: true
 
-      # `npm audit fix` applies non-breaking updates only (no --force). Fixes that
-      # require a major bump are surfaced by the scan but left for manual review.
       - name: Fix Javascript dependency vulnerabilities
         id: fix-js
-        working-directory: app
-        run: |
-          npm audit fix || true
-          if git diff --quiet -- package-lock.json package.json; then
-            echo "changes_made=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "changes_made=true" >> "$GITHUB_OUTPUT"
-            {
-              echo "### npm packages updated"
-              echo ""
-              echo '```'
-              git diff --stat -- package-lock.json package.json
-              echo '```'
-              echo ""
-            } >> "${PATCH_SUMMARY_FILE}"
-          fi
+        uses: ./.github/actions/js-dependency-audit
+        with:
+          fix: true
 
       - name: Determine whether any fixes were applied
         id: patch
