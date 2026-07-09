@@ -33,8 +33,8 @@ runs:
       uses: anchore/scan-action@v7
       with:
         image: ${{ inputs.image }}
-        output-format: ${{ inputs.output-format }}
-        output-file: ${{ inputs.output-file }}
+        output-format: ${{ inputs['output-format'] }}
+        output-file: ${{ inputs['output-file'] }}
         severity-cutoff: high
-        fail-build: ${{ inputs.fail-build }}
-        only-fixed: ${{ inputs.only-fixed }}
+        fail-build: ${{ inputs['fail-build'] }}
+        only-fixed: ${{ inputs['only-fixed'] }}
