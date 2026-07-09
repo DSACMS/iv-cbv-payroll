@@ -14,10 +14,19 @@ class EducationActivity < Activity
     contact_email
     contact_phone_number
   ].freeze
+  PRE_POPULATED_REQUIRED_FIELDS = %w[school_name].freeze
 
   has_many :nsc_enrollment_terms, dependent: :destroy
   has_many :education_activity_months, dependent: :destroy
   has_activity_months :education_activity_months
+
+  def self.activity_type
+    :education
+  end
+
+  def self.pre_populated_defaults
+    { "data_source" => "fully_self_attested" }
+  end
 
   validates :school_name, presence: true, if: :fully_self_attested?
 

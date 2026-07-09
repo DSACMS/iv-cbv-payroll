@@ -1,10 +1,9 @@
 class ActivityFlowInvitation < ApplicationRecord
-  SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES = %w[volunteering employment education job_training].freeze
-  PRE_POPULATED_REQUIRED_FIELDS = {
-    "volunteering" => %w[organization_name],
-    "employment" => %w[employer_name],
-    "education" => %w[school_name],
-    "job_training" => %w[program_name organization_name]
+  ACTIVITY_TYPES = {
+    "volunteering" => VolunteeringActivity,
+    "employment" => EmploymentActivity,
+    "education" => EducationActivity,
+    "job_training" => JobTrainingActivity
   }.freeze
 
   belongs_to :cbv_applicant, optional: true
@@ -13,8 +12,10 @@ class ActivityFlowInvitation < ApplicationRecord
 
   has_secure_token :auth_token, length: 10
 
+  attr_accessor :skip_month_window_validation
+
   validate :pre_populated_activities_shape
-  validate :pre_populated_activity_months_in_window
+  validate :pre_populated_activity_months_in_window, unless: :skip_month_window_validation
 
   def to_url(host: ENV.fetch("DOMAIN_NAME", "localhost"), **url_params)
     Rails.application.routes.url_helpers.activities_flow_start_url(token: auth_token, host: host, **url_params)
@@ -24,6 +25,17 @@ class ActivityFlowInvitation < ApplicationRecord
     false
   end
 
+  def supported_pre_populated_types
+    agency = Rails.application.config.client_agencies[client_agency_id]
+    ACTIVITY_TYPES.select { |_type, klass| agency&.activity_types&.[](klass.activity_type) }.keys
+  end
+
+  def pre_populated_hub_activity_types
+    pre_populated_activities
+      .filter_map { |e| ACTIVITY_TYPES[(e["type"] || e[:type]).to_s]&.activity_type }
+      .uniq
+  end
+
   private
 
   def pre_populated_activities_shape
@@ -31,12 +43,12 @@ class ActivityFlowInvitation < ApplicationRecord
 
     pre_populated_activities.each_with_index do |entry, idx|
       type = entry["type"] || entry[:type]
-      unless SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES.include?(type.to_s)
-        errors.add("pre_populated_activities[#{idx}].type", "must be one of #{SUPPORTED_PRE_POPULATED_ACTIVITY_TYPES.join(', ')}")
+      unless supported_pre_populated_types.include?(type.to_s)
+        errors.add("pre_populated_activities[#{idx}].type", "must be one of #{supported_pre_populated_types.join(', ')}")
         next
       end
 
-      PRE_POPULATED_REQUIRED_FIELDS[type.to_s].each do |field|
+      ACTIVITY_TYPES[type.to_s]::PRE_POPULATED_REQUIRED_FIELDS.each do |field|
         value = entry[field] || entry[field.to_sym]
         if value.blank?
           errors.add("pre_populated_activities[#{idx}].#{field}", "can't be blank")

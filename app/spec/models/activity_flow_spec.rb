@@ -17,6 +17,49 @@ RSpec.describe ActivityFlow, type: :model do
     expect(activity_flow.cbv_applicant).to eq(cbv_applicant)
   end
 
+  describe "#pre_populated_session?" do
+    it "is true when the invitation has pre_populated_activities" do
+      invitation = create(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "volunteering", "organization_name" => "Red Cross" }
+      ])
+      flow = create(:activity_flow, activity_flow_invitation: invitation)
+
+      expect(flow.pre_populated_session?).to be true
+    end
+
+    it "is false when the invitation has no pre_populated_activities" do
+      invitation = create(:activity_flow_invitation, pre_populated_activities: [])
+      flow = create(:activity_flow, activity_flow_invitation: invitation)
+
+      expect(flow.pre_populated_session?).to be false
+    end
+
+    it "is false when there is no invitation" do
+      flow = create(:activity_flow, activity_flow_invitation: nil)
+
+      expect(flow.pre_populated_session?).to be false
+    end
+  end
+
+  describe "#pre_populated_activity_types" do
+    it "maps pre-populated model types to hub types, deduped" do
+      invitation = create(:activity_flow_invitation, pre_populated_activities: [
+        { "type" => "volunteering", "organization_name" => "Red Cross" },
+        { "type" => "job_training", "program_name" => "Career Prep", "organization_name" => "Goodwill" },
+        { "type" => "volunteering", "organization_name" => "Habitat" }
+      ])
+      flow = create(:activity_flow, activity_flow_invitation: invitation)
+
+      expect(flow.pre_populated_activity_types).to contain_exactly(:community_service, :work_programs)
+    end
+
+    it "returns an empty array when there is no invitation" do
+      flow = create(:activity_flow, activity_flow_invitation: nil)
+
+      expect(flow.pre_populated_activity_types).to eq([])
+    end
+  end
+
   describe ".create_from_invitation" do
     let(:device_id) { "device123" }
 

@@ -240,6 +240,14 @@
     & + & {
       border-top: 1px solid color("base-lighter");
     }
+
+    &--disabled {
+      opacity: 0.5;
+
+      .usa-checkbox__label {
+        cursor: not-allowed;
+      }
+    }
   }
 
   .advanced-launcher__activity-header {

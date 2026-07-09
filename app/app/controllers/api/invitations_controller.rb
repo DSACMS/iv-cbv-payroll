@@ -61,15 +61,12 @@ class Api::InvitationsController < ApplicationController
   end
 
   def pre_populated_activities_param
+    activity_classes = ActivityFlowInvitation::ACTIVITY_TYPES.values
+    activity_fields = activity_classes.flat_map { |k| k::FIELDS }.uniq
+    month_fields = activity_classes.flat_map { |k| k.activity_months_class::FIELDS }.uniq.map(&:to_sym)
+
     params.fetch(:activities, []).map do |entry|
-      entry.permit(
-        :type,
-        *VolunteeringActivity::FIELDS,
-        *EmploymentActivity::FIELDS,
-        *EducationActivity::FIELDS,
-        *JobTrainingActivity::FIELDS,
-        months: (VolunteeringActivityMonth::FIELDS | EmploymentActivityMonth::FIELDS | EducationActivityMonth::FIELDS | JobTrainingActivityMonth::FIELDS).map(&:to_sym)
-      ).to_h
+      entry.permit(:type, *activity_fields, months: month_fields).to_h
     end
   end
 

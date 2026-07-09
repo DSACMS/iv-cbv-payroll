@@ -8,6 +8,18 @@ class Activity < ApplicationRecord
   scope :published, -> { where(draft: false) }
   scope :pre_populated_drafts, -> { where(draft: true, pre_populated: true) }
 
+  def self.activity_type
+    raise NotImplementedError, "#{name} must define .#{__method__}"
+  end
+
+  def self.flow_association
+    model_name.plural.to_sym
+  end
+
+  def self.pre_populated_defaults
+    {}
+  end
+
   def publish!
     update!(draft: false)
   end

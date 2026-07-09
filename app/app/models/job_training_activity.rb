@@ -15,11 +15,16 @@ class JobTrainingActivity < Activity
     contact_email
     contact_phone_number
   ].freeze
+  PRE_POPULATED_REQUIRED_FIELDS = %w[program_name organization_name].freeze
 
   validates :organization_name, :program_name, presence: true
 
   has_many :job_training_activity_months, dependent: :destroy
   has_activity_months :job_training_activity_months
+
+  def self.activity_type
+    :work_programs
+  end
 
   def formatted_address
     locality = [ city, state ].compact_blank.join(", ")

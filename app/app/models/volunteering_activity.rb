@@ -13,9 +13,14 @@ class VolunteeringActivity < Activity
     coordinator_email
     coordinator_phone_number
   ].freeze
+  PRE_POPULATED_REQUIRED_FIELDS = %w[organization_name].freeze
 
   has_many :volunteering_activity_months, dependent: :destroy
   has_activity_months :volunteering_activity_months
+
+  def self.activity_type
+    :community_service
+  end
 
   def formatted_address
     locality = [ city, state ].compact_blank.join(", ")
