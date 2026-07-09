@@ -15,24 +15,26 @@ class Launcher::HouseholdScenario
     }
   ].freeze
 
-  def self.find_or_create!(client_agency_id: "sandbox")
-    new(client_agency_id).find_or_create!
+  def self.create_demo_household!(client_agency_id: "sandbox")
+    new(client_agency_id).create_demo_household!
   end
 
   def initialize(client_agency_id)
     @client_agency_id = client_agency_id
+    @household_reference_id = "#{REFERENCE_ID}-#{client_agency_id}-#{SecureRandom.hex(4)}"
   end
 
-  def find_or_create!
+  def create_demo_household!
     Household.transaction do
-      household = Household.find_or_create_by!(reference_id: household_reference_id) do |record|
-        record.client_agency_id = client_agency_id
-      end
+      household = Household.create!(
+        reference_id: household_reference_id,
+        client_agency_id: client_agency_id
+      )
 
       MEMBERS.each do |member_data|
-        invitation = find_or_create_invitation(member_data)
-        member = household.household_members.find_or_initialize_by(reference_id: member_data.fetch(:reference_id))
-        member.update!(
+        invitation = create_invitation(member_data)
+        household.household_members.create!(
+          reference_id: member_data.fetch(:reference_id),
           activity_flow_invitation: invitation,
           display_name: member_data.fetch(:display_name),
           role_label: member_data.fetch(:role_label)
@@ -45,17 +47,14 @@ class Launcher::HouseholdScenario
 
   private
 
-  attr_reader :client_agency_id
+  attr_reader :client_agency_id, :household_reference_id
 
-  def household_reference_id
-    "#{REFERENCE_ID}-#{client_agency_id}"
-  end
-
-  def find_or_create_invitation(member_data)
-    ActivityFlowInvitation.find_or_create_by!(reference_id: "#{household_reference_id}-#{member_data.fetch(:reference_id)}") do |invitation|
-      invitation.client_agency_id = client_agency_id
-      invitation.cbv_applicant = create_applicant(member_data)
-    end
+  def create_invitation(member_data)
+    ActivityFlowInvitation.create!(
+      reference_id: "#{household_reference_id}-#{member_data.fetch(:reference_id)}",
+      client_agency_id: client_agency_id,
+      cbv_applicant: create_applicant(member_data)
+    )
   end
 
   def create_applicant(member_data)

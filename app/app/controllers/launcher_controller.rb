@@ -325,7 +325,7 @@ class LauncherController < ApplicationController
   end
 
   def build_household_url(client_agency_id)
-    household = Launcher::HouseholdScenario.find_or_create!(client_agency_id: client_agency_id)
+    household = Launcher::HouseholdScenario.create_demo_household!(client_agency_id: client_agency_id)
     household.to_url(**launcher_url_options)
   end
 

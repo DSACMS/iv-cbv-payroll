@@ -45,6 +45,20 @@ RSpec.describe HouseholdMembersController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
+    it "does not create another activity flow for a completed member" do
+      completed_flow = create(:activity_flow, activity_flow_invitation: member.activity_flow_invitation, completed_at: Time.zone.now)
+      session[:flow_id] = completed_flow.id
+      session[:flow_type] = :activity
+
+      expect {
+        post :create, params: { token: household.auth_token, member_id: member.id }
+      }.not_to change(ActivityFlow, :count)
+
+      expect(session[:flow_id]).to be_nil
+      expect(session[:flow_type]).to eq(:activity)
+      expect(response).to redirect_to(household_start_path(token: household.auth_token))
+    end
+
     it "does not use another member's incomplete activity flow" do
       member_a = create(:household_member, household: household)
       member_b = create(:household_member, household: household)

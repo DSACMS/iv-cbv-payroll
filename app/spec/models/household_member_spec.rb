@@ -45,4 +45,20 @@ RSpec.describe HouseholdMember, type: :model do
 
     expect(member).to be_valid
   end
+
+  describe "#completed_activity_flow?" do
+    it "returns true when the member has a completed activity flow" do
+      member = create(:household_member, household: household)
+      create(:activity_flow, activity_flow_invitation: member.activity_flow_invitation, completed_at: Time.zone.now)
+
+      expect(member.completed_activity_flow?).to be true
+    end
+
+    it "returns false when the member only has incomplete activity flows" do
+      member = create(:household_member, household: household)
+      create(:activity_flow, activity_flow_invitation: member.activity_flow_invitation, completed_at: nil)
+
+      expect(member.completed_activity_flow?).to be false
+    end
+  end
 end

@@ -7,20 +7,34 @@ RSpec.describe HouseholdsController, type: :controller do
 
   describe "GET #show" do
     let(:household) { create(:household) }
+    let(:title) { I18n.t("households.show.title") }
+    let(:launch_label) { I18n.t("households.show.launch") }
+    let(:completed_label) { I18n.t("households.show.completed") }
+    let(:invalid_token_message) { I18n.t("households.errors.invalid_token") }
 
     it "shows household members for a household token" do
-      create(:household_member, household: household, display_name: "Avery Johnson", role_label: "Primary applicant")
-      create(:household_member, household: household, display_name: "Riley Johnson", role_label: "Household member")
+      primary_member = create(
+        :household_member,
+        household: household,
+        display_name: "Avery Johnson",
+        role_label: "Primary applicant"
+      )
+      household_member = create(
+        :household_member,
+        household: household,
+        display_name: "Riley Johnson",
+        role_label: "Household member"
+      )
 
       get :show, params: { token: household.auth_token }
 
       rendered = Capybara.string(response.body)
       expect(response).to have_http_status(:success)
-      expect(rendered).to have_text("Who are you reporting for?")
-      expect(rendered).to have_text("Avery Johnson")
-      expect(rendered).to have_text("Primary applicant")
-      expect(rendered).to have_text("Riley Johnson")
-      expect(rendered).to have_text("Household member")
+      expect(rendered).to have_text(title)
+      expect(rendered).to have_text(primary_member.display_name)
+      expect(rendered).to have_text(primary_member.role_label)
+      expect(rendered).to have_text(household_member.display_name)
+      expect(rendered).to have_text(household_member.role_label)
       expect(rendered).to have_selector(".household-member-card", count: 2)
     end
 
@@ -33,8 +47,22 @@ RSpec.describe HouseholdsController, type: :controller do
       rendered = Capybara.string(response.body)
       expect(rendered).to have_selector(
         "form[action='#{member_launch_path}'][method='post']",
-        text: "Get started"
+        text: launch_label
       )
+      expect(rendered).to have_button(launch_label)
+      expect(rendered).to have_no_button(completed_label)
+    end
+
+    it "renders a disabled Complete button for completed members" do
+      member = create(:household_member, household: household)
+      create(:activity_flow, activity_flow_invitation: member.activity_flow_invitation, completed_at: Time.zone.now)
+
+      get :show, params: { token: household.auth_token }
+
+      rendered = Capybara.string(response.body)
+      member_card = rendered.find(".household-member-card", text: member.display_name)
+      expect(member_card).to have_button(completed_label, disabled: true)
+      expect(member_card).to have_no_button(launch_label)
     end
 
     it "keeps the same household available when the link is reopened" do
@@ -58,7 +86,7 @@ RSpec.describe HouseholdsController, type: :controller do
       get :show, params: { token: "notatoken" }
 
       expect(response).to redirect_to(root_url)
-      expect(flash[:alert]).to eq("The link you used is invalid.")
+      expect(flash[:alert]).to eq(invalid_token_message)
     end
 
     it "accepts a household token with trailing URL-safe punctuation" do

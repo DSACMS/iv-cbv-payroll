@@ -1131,6 +1131,7 @@ en:
       invalid_member: The household member you selected is invalid.
       invalid_token: The link you used is invalid.
     show:
+      completed: Complete
       description: Select the person whose community engagement report you want to work on.
       launch: Get started
       title: Who are you reporting for?
