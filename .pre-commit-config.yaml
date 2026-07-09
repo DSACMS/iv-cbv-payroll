@@ -80,6 +80,13 @@ repos:
     files: '^(\.github/scripts/patch-dockerfile.*\.rb|app/Dockerfile)$'
     pass_filenames: false
 
+  - id: fix-ruby-dependencies-test
+    name: fix-ruby-dependencies.rb test
+    entry: ruby .github/scripts/fix-ruby-dependencies_test.rb
+    language: system
+    files: '^\.github/scripts/fix-ruby-dependencies.*\.rb$'
+    pass_filenames: false
+
   - id: actionlint
     name: ActionLint
     entry: actionlint
