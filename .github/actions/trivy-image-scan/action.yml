@@ -36,7 +36,7 @@ runs:
         image-ref: ${{ inputs.image }}
         format: ${{ inputs.format }}
         output: ${{ inputs.output }}
-        exit-code: ${{ inputs.exit-code }}
+        exit-code: ${{ inputs['exit-code'] }}
         severity: "HIGH,CRITICAL"
         ignore-unfixed: true
         vuln-type: os
