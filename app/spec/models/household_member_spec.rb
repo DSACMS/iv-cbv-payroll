@@ -54,6 +54,15 @@ RSpec.describe HouseholdMember, type: :model do
       expect(member.completed_activity_flow?).to be true
     end
 
+    it "uses preloaded activity flows when they are available" do
+      member = create(:household_member, household: household)
+      create(:activity_flow, activity_flow_invitation: member.activity_flow_invitation, completed_at: Time.zone.now)
+      preloaded_member = described_class.includes(:completed_activity_flows).find(member.id)
+
+      expect(preloaded_member.completed_activity_flows).to be_loaded
+      expect(preloaded_member.completed_activity_flow?).to be true
+    end
+
     it "returns false when the member only has incomplete activity flows" do
       member = create(:household_member, household: household)
       create(:activity_flow, activity_flow_invitation: member.activity_flow_invitation, completed_at: nil)

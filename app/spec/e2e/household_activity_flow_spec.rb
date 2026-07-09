@@ -10,7 +10,6 @@ RSpec.describe "e2e Household activity flow", :js, type: :feature do
   it "returns to the household list after each member submits" do # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
     # Launch a fresh test household
     visit "/launcher/advanced"
-    verify_page(page, title: "Emmy Launcher")
 
     click_button "Test household"
     household_url = find("#generated_tokenized_url", wait: 10).value

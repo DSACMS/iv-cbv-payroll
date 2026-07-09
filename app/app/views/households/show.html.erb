@@ -9,7 +9,7 @@
 </p>
 
 <div class="margin-top-4 maxw-mobile-lg">
-  <% @household.household_members.order(:id).each do |member| %>
+  <% @household_members.each do |member| %>
     <% completed = member.completed_activity_flow? %>
     <%= render(Uswds::Card.new(heading_text: member.display_name, class: "household-member-card margin-bottom-2")) do |card| %>
       <% card.with_body do %>
@@ -20,7 +20,7 @@
 
       <% card.with_footer do %>
         <% if completed %>
-          <%= button_tag(t(".completed"), class: "usa-button usa-button--success household-member-card__action", disabled: true) %>
+          <%= button_tag(t(".completed"), type: "button", class: "usa-button usa-button--success household-member-card__action", disabled: true) %>
         <% else %>
           <%= button_to(
                 t(".launch"),
