@@ -2,6 +2,7 @@ class HouseholdMembersController < ApplicationController
   before_action :redirect_unless_activity_hub_enabled, :set_household, :set_household_member
 
   def create
+    # Completed household members should not re-enter an activity flow
     if @household_member.completed_activity_flow?
       set_flow_session(nil, :activity)
       return redirect_to household_start_path(token: @household.auth_token)
