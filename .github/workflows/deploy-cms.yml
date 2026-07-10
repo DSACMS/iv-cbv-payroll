@@ -65,9 +65,22 @@ jobs:
       ref: ${{ needs.get-commit-hash.outputs.commit_hash }}
     secrets: inherit
 
+  migrate:
+    name: Run database migrations
+    needs: [get-commit-hash, build-and-publish]
+    uses: ./.github/workflows/database-migrations-cms.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      app_name: app
+      environment: ${{ inputs.environment }}
+      image_tag: ${{ needs.get-commit-hash.outputs.commit_hash }}
+    secrets: inherit
+
   deploy:
     name: Deploy to ECS
-    needs: [get-commit-hash, build-and-publish]
+    needs: [get-commit-hash, build-and-publish, migrate]
     uses: ./.github/workflows/deploy-ecs.yml
     permissions:
       contents: read

@@ -43,6 +43,7 @@ jobs:
     env:
       EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
       AWS_REGION: us-east-1
+      CLUSTER_NAME: emmy-${{ inputs.environment }}
 
     steps:
       - uses: actions/checkout@v7
@@ -53,6 +54,51 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
 
-      - name: Run migrations
+      - name: Verify image is published to ECR
         run: |
-          make release-run-database-migrations-cms ENVIRONMENT=${{ inputs.environment }} EMMY_IMAGE_TAG=${{ inputs.image_tag }}
+          is_image_published=$(./bin/is-ecr-image-published "${EMMY_IMAGE_REPO}" "${{ inputs.image_tag }}")
+          echo "Is image published: ${is_image_published}"
+          if [ "${is_image_published}" != "true" ]; then
+            echo "Error: image tag not found in ECR: ${EMMY_IMAGE_REPO}:${{ inputs.image_tag }}" >&2
+            echo "Run Deploy to CMS, or build-and-publish with publish_to_cms=true, before migrating." >&2
+            exit 1
+          fi
+
+      - name: Download migrate task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition "emmy-${{ inputs.environment }}-migrate" \
+            --query taskDefinition --output json > migrate-task-definition.json
+
+      - name: Get network configuration
+        id: network
+        run: |
+          network_config=$(aws ecs describe-services \
+            --cluster "${CLUSTER_NAME}" \
+            --services "emmy-${{ inputs.environment }}-app" \
+            --query 'services[0].networkConfiguration.awsvpcConfiguration' --output json)
+          subnets=$(echo "${network_config}" | jq -r '.subnets | join(",")')
+          security_groups=$(echo "${network_config}" | jq -r '.securityGroups | join(",")')
+          echo "subnets=${subnets}" >> "$GITHUB_OUTPUT"
+          echo "security_groups=${security_groups}" >> "$GITHUB_OUTPUT"
+
+      - name: Render migrate task definition
+        id: render
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: migrate-task-definition.json
+          container-name: emmy-app-migrate
+          image: ${{ env.EMMY_IMAGE_REPO }}:${{ inputs.image_tag }}
+          environment-variables: |
+            IMAGE_TAG=${{ inputs.image_tag }}
+
+      - name: Run migration task
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }}
+          cluster: ${{ env.CLUSTER_NAME }}
+          run-task: true
+          run-task-launch-type: FARGATE
+          run-task-subnets: ${{ steps.network.outputs.subnets }}
+          run-task-security-groups: ${{ steps.network.outputs.security_groups }}
+          wait-for-task-stopped: true
