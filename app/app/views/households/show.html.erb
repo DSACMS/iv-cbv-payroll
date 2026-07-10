@@ -9,7 +9,8 @@
 </p>
 
 <div class="margin-top-4 maxw-mobile-lg">
-  <% @household.household_members.order(:id).each do |member| %>
+  <% @household_members.each do |member| %>
+    <% completed = member.completed_activity_flow? %>
     <%= render(Uswds::Card.new(heading_text: member.display_name, class: "household-member-card margin-bottom-2")) do |card| %>
       <% card.with_body do %>
         <p class="margin-y-0">
@@ -18,12 +19,16 @@
       <% end %>
 
       <% card.with_footer do %>
-        <%= button_to(
-              t(".launch"),
-              household_member_launch_path(token: @household.auth_token, member_id: member.id),
-              method: :post,
-              class: "usa-button"
-            ) %>
+        <% if completed %>
+          <%= button_tag(t(".completed"), type: "button", class: "usa-button usa-button--success household-member-card__action", disabled: true) %>
+        <% else %>
+          <%= button_to(
+                t(".launch"),
+                household_member_launch_path(token: @household.auth_token, member_id: member.id),
+                method: :post,
+                class: "usa-button household-member-card__action"
+              ) %>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>

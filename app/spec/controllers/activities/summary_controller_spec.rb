@@ -758,6 +758,17 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response).to redirect_to(activities_flow_success_path)
     end
 
+    it "returns household member flows to the household member list" do
+      member = create(:household_member)
+      activity_flow.update!(activity_flow_invitation: member.activity_flow_invitation)
+
+      expect {
+        patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+      }.to change { activity_flow.reload.completed_at }.from(nil)
+
+      expect(response).to redirect_to(household_start_path(token: member.household.auth_token))
+    end
+
     it "re-renders summary with alert when consent is missing and keeps activity table content" do
       create(
         :volunteering_activity,

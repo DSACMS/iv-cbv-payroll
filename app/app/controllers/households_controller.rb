@@ -2,6 +2,7 @@ class HouseholdsController < ApplicationController
   before_action :redirect_unless_activity_hub_enabled, :set_household
 
   def show
+    @household_members = @household.household_members.includes(:completed_activity_flows).order(:id)
     set_flow_session(nil, :activity)
   end
 

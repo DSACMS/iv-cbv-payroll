@@ -9,3 +9,11 @@
     padding-top: units(2);
   }
 }
+
+.household-member-card__action {
+  width: 100%;
+
+  @include at-media("tablet") {
+    width: 8rem;
+  }
+}

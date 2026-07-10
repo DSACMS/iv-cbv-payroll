@@ -245,6 +245,32 @@ RSpec.describe LauncherController, type: :controller do
         end
         expect(pre_populated_activities).to all(eq([]))
       end
+
+      it "returns a new household URL for each household launch" do
+        first_url = nil
+        first_household = nil
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            launch_type: "household"
+          }, format: :json
+          first_household = Household.last
+          first_url = JSON.parse(response.body).fetch("url")
+        }.to change(Household, :count).by(1)
+        expect(first_url).to include("/households/start/#{first_household.auth_token}")
+
+        second_url = nil
+        second_household = nil
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            launch_type: "household"
+          }, format: :json
+          second_household = Household.last
+          second_url = JSON.parse(response.body).fetch("url")
+        }.to change(Household, :count).by(1)
+        expect(second_url).to include("/households/start/#{second_household.auth_token}")
+      end
     end
 
     context "with CBV flow type" do

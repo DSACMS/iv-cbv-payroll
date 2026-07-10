@@ -19,6 +19,7 @@ class ActivityFlow < Flow
 
   before_create :set_default_reporting_window, :set_default_renewal_required_months
 
+  scope :completed, -> { where.not(completed_at: nil) }
   scope :incomplete, -> { where(completed_at: nil) }
 
   def self.create_from_invitation(invitation, device_id, params = {})

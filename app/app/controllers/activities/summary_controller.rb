@@ -15,10 +15,17 @@ class Activities::SummaryController < Activities::BaseController
     ensure_confirmation_code
     mark_as_completed
 
-    redirect_to activities_flow_success_path
+    redirect_to after_submit_path
   end
 
   private
+
+  def after_submit_path
+    household = @flow.household_member&.household
+    return household_start_path(token: household.auth_token) if household
+
+    activities_flow_success_path
+  end
 
   def ensure_confirmation_code
     return if @flow.complete? || @flow.confirmation_code.present?
