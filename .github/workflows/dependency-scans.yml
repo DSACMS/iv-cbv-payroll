@@ -14,6 +14,8 @@ on:
       - 'app/package.json'
       - 'app/package-lock.json'
       - '.github/workflows/dependency-scans.yml'
+      - '.github/actions/ruby-dependency-audit/**'
+      - '.github/actions/js-dependency-audit/**'
   schedule:
     # cron format: 'minute hour dayofmonth month dayofweek'
     # this will run at noon UTC every day (7am EST / 8am EDT)
