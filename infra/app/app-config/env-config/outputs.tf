@@ -62,6 +62,7 @@ output "notifications_config" {
 
 output "storage_config" {
   value = {
-    bucket_name = local.bucket_name
+    bucket_name                   = local.bucket_name
+    unscanned_uploads_bucket_name = "${local.bucket_name}-unscanned-uploads"
   }
 }

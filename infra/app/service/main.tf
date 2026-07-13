@@ -211,7 +211,8 @@ module "service" {
 
   extra_environment_variables = merge(
     {
-      BUCKET_NAME = local.storage_config.bucket_name
+      BUCKET_NAME           = local.storage_config.bucket_name
+      UNSCANNED_BUCKET_NAME = local.storage_config.unscanned_uploads_bucket_name
     },
     local.ssm_env_vars,
     local.identity_provider_environment_variables,
@@ -231,8 +232,9 @@ module "service" {
 
   extra_policies = merge(
     {
-      storage_access = module.storage.access_policy_arn,
-      email_access   = aws_iam_policy.email_access_policy.arn,
+      storage_access           = module.storage.access_policy_arn,
+      unscanned_uploads_access = module.unscanned_uploads_storage.access_policy_arn,
+      email_access             = aws_iam_policy.email_access_policy.arn,
     },
     module.app_config.enable_identity_provider ? {
       identity_provider_access = module.identity_provider_client[0].access_policy_arn,
@@ -257,6 +259,13 @@ module "storage" {
   source       = "../../modules/storage"
   name         = local.storage_config.bucket_name
   is_temporary = local.is_temporary
+}
+
+module "unscanned_uploads_storage" {
+  source          = "../../modules/storage"
+  name            = local.storage_config.unscanned_uploads_bucket_name
+  is_temporary    = local.is_temporary
+  expiration_days = 7
 }
 
 module "email" {
