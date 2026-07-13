@@ -81,7 +81,8 @@ RSpec.describe Transmitters::JsonTransmitter do
           .to raise_error(Transmitters::JsonTransmitter::JsonTransmitterError, /Unexpected response from agency/)
       end
 
-      expect(Rails.logger).to have_received(:error).with(/Unexpected response from agency: code=500 message=Internal Server Error body=Internal Server Error/)
+      expect(Rails.logger).to have_received(:error).with(/Unexpected response from agency: code=500 message=Internal Server Error/)
+      expect(Rails.logger).to have_received(:error).with("Error response body: Internal Server Error")
     end
 
     it 'does not set json_transmitted_at on the cbv_flow when transmission fails' do
@@ -103,7 +104,8 @@ RSpec.describe Transmitters::JsonTransmitter do
           .to raise_error(Transmitters::JsonTransmitter::JsonTransmitterError, /Unexpected response from agency/)
       end
 
-      expect(Rails.logger).to have_received(:error).with(/Unexpected response from agency: code=418 message=I'm a teapot body=Here is my handle, here is my spout./)
+      expect(Rails.logger).to have_received(:error).with(/Unexpected response from agency: code=418 message=I'm a teapot/)
+      expect(Rails.logger).to have_received(:error).with("Error response body: Here is my handle, here is my spout.")
     end
   end
 
@@ -119,7 +121,7 @@ RSpec.describe Transmitters::JsonTransmitter do
       expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }
         .to raise_error(
           ApplicationJob::SilencedError,
-          /code=408 message=Request Timeout body=Request Timeout/
+          /code=408 message=Request Timeout/
         )
     end
   end

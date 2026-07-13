@@ -44,8 +44,9 @@ class Transmitters::JsonTransmitter
   private
 
   def raise_response_error!(response, default_error_class)
-    message = "Unexpected response from agency: code=#{response.code} message=#{response.message} body=#{response.body}"
+    message = "Unexpected response from agency: code=#{response.code} message=#{response.message}"
     Rails.logger.error message
+    Rails.logger.error "Error response body: #{response.body}"
 
     error_class = silence_errors_from_response_codes.include?(response.code.to_s) ?
       ApplicationJob::SilencedError :
