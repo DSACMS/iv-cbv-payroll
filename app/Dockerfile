@@ -46,11 +46,17 @@ RUN apt-get update -qq && \
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
+      curl \
       krb5-multidev \
       libcap2 \
+      libcurl3t64-gnutls \
+      libcurl4-openssl-dev \
+      libcurl4t64 \
       libexif-dev \
       libexif12 \
       libgcrypt20 \
+      libgraphite2-3 \
+      libgraphite2-dev \
       libgssapi-krb5-2 \
       libgssrpc4t64 \
       libk5crypto3 \
@@ -62,14 +68,21 @@ RUN apt-get update -qq && \
       libkrb5support0 \
       liblcms2-2 \
       liblcms2-dev \
+      liblzma-dev \
+      liblzma5 \
       libnghttp2-14 \
       libnghttp2-dev \
       libssh2-1-dev \
       libssh2-1t64 \
       libsystemd0 \
+      libtasn1-6 \
+      libtasn1-6-dev \
       libudev1 \
       libunbound8 \
+      libxml2 \
+      libxml2-dev \
       linux-libc-dev \
+      xz-utils \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
