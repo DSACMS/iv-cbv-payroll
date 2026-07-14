@@ -60,7 +60,6 @@ __check_defined = \
 	release-image-name \
 	release-image-tag \
 	release-publish \
-	release-publish-artifactory \
 	release-run-database-migrations \
 	e2e-setup \
 	e2e-test

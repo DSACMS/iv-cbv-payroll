@@ -13,7 +13,7 @@ on:
         required: true
         type: string
       publish_to_cms:
-        description: Whether to also publish the image to the CMS Artifactory/ECR registry. Disable for PR environments, which don't deploy from it.
+        description: Whether to also publish the image to the CMS ECR registry. Disable for PR environments, which don't deploy from it.
         required: false
         type: boolean
         default: true
@@ -28,7 +28,7 @@ on:
         required: true
         type: string
       publish_to_cms:
-        description: Whether to also publish the image to the CMS Artifactory/ECR registry. Disable for PR environments, which don't deploy from it.
+        description: Whether to also publish the image to the CMS ECR registry. Disable for PR environments, which don't deploy from it.
         required: false
         type: boolean
         default: true
