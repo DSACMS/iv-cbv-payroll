@@ -1,16 +1,16 @@
-name: Auto-fix Dockerfile OS Vulnerabilities
+name: Auto-fix Ruby and Javascript Dependency Vulnerabilities
 
 on:
   workflow_run:
-    workflows: [ "CI Vulnerability Scans" ]
+    workflows: [ "Ruby and Javascript dependency scans" ]
     types: [ completed ]
   workflow_dispatch:
   schedule:
-    - cron: '0 9 * * *' # Daily 9am UTC
+    - cron: '0 12 * * *' # Daily noon UTC, matches the dependency scan schedule
 
-# Prevent parallel runs from creating conflicting Dockerfile edits or duplicate PRs.
+# Prevent parallel runs from creating conflicting lockfile edits or duplicate PRs.
 concurrency:
-  group: auto-fix-vulnerabilities
+  group: auto-fix-dependencies
   cancel-in-progress: false
 
 permissions:
@@ -18,10 +18,10 @@ permissions:
   pull-requests: write
 
 jobs:
-  patch-dockerfile:
-    name: Patch Dockerfile OS vulnerabilities
+  patch-dependencies:
+    name: Patch Ruby/JS dependency vulnerabilities
     runs-on: ubuntu-latest
-    # For workflow_run: only run when the triggering workflow failed.
+    # For workflow_run: only run when the triggering scan failed.
     # For workflow_dispatch and schedule: always run.
     if: |
       github.event_name == 'workflow_dispatch' ||
@@ -29,7 +29,7 @@ jobs:
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure')
 
     env:
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      PATCH_SUMMARY_FILE: ${{ github.workspace }}/patch-summary.md
 
     steps:
       - name: Generate branch timestamp
@@ -40,7 +40,7 @@ jobs:
         id: reviewer
         run: |
           if [ "${{ github.event_name }}" = "workflow_run" ]; then
-            # Tag the person whose push/PR triggered the failing CI run
+            # Tag the person whose push/PR triggered the failing scan
             echo "login=${{ github.event.workflow_run.actor.login }}" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             # Tag whoever manually triggered this workflow
@@ -52,36 +52,29 @@ jobs:
 
       - uses: actions/checkout@v7
 
-      - name: Build image for scanning
-        id: build-image
-        uses: ./.github/actions/build-release-image
-        with:
-          app_name: app
-          dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
-          dockerhub-token: ${{ env.DOCKERHUB_TOKEN }}
+      - uses: ./.github/actions/setup-languages
 
-      - name: Run Trivy scan (JSON output)
-        uses: ./.github/actions/trivy-image-scan
+      - name: Fix Ruby dependency vulnerabilities
+        id: fix-ruby
+        uses: ./.github/actions/ruby-dependency-audit
         with:
-          image: ${{ steps.build-image.outputs.image }}
-          format: json
-          output: trivy-results.json
-          exit-code: "0" # Don't fail here — we process results below
+          fix: true
 
-      - name: Run Grype scan (JSON output)
-        uses: ./.github/actions/grype-image-scan
+      - name: Fix Javascript dependency vulnerabilities
+        id: fix-js
+        uses: ./.github/actions/js-dependency-audit
         with:
-          image: ${{ steps.build-image.outputs.image }}
-          output-format: json
-          output-file: grype-results.json
-          fail-build: false
-          only-fixed: true
+          fix: true
 
-      - name: Patch Dockerfile with fixable OS packages
+      - name: Determine whether any fixes were applied
         id: patch
-        env:
-          PATCH_SUMMARY_FILE: patch-summary.md
-        run: ruby .github/scripts/patch-dockerfile.rb trivy-results.json grype-results.json app/Dockerfile
+        run: |
+          if [ "${{ steps.fix-ruby.outputs.changes_made }}" = "true" ] || \
+             [ "${{ steps.fix-js.outputs.changes_made }}" = "true" ]; then
+            echo "changes_made=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changes_made=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Generate PR body
         if: steps.patch.outputs.changes_made == 'true'
@@ -92,7 +85,7 @@ jobs:
           TRIGGER_PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
         run: |
           {
-            echo "## Automated Dockerfile OS Vulnerability Fix"
+            echo "## Automated Ruby/JS Dependency Vulnerability Fix"
             echo ""
             if [ "$EVENT_NAME" = "workflow_run" ]; then
               echo "<table>"
@@ -105,27 +98,22 @@ jobs:
               echo "**Triggered by:** manual \`${EVENT_NAME}\`"
             fi
             echo ""
-            echo "Trivy and Grype identified OS packages with available CVE fixes. The auto-managed"
-            echo "\`RUN apt-get install\` block in the Dockerfile BASE stage has been updated:"
+            echo "bundler-audit and/or npm audit flagged vulnerable dependencies. The lockfiles"
+            echo "have been updated with the smallest release that clears each advisory while"
+            echo "respecting the existing Gemfile/package.json constraints:"
             echo ""
-            cat patch-summary.md
+            cat "${PATCH_SUMMARY_FILE}"
             echo "---"
             echo ""
             echo "> [!IMPORTANT]"
             echo "> **Trigger CI before merging.** This PR was opened by an automated workflow."
             echo "> GitHub does not run CI on \`GITHUB_TOKEN\`-created PRs automatically."
-            echo "> To run \`CI Vulnerability Scans\`:"
+            echo "> To run the dependency scans:"
             echo "> 1. Click **Close pull request** at the bottom of this page"
             echo "> 2. Click **Reopen pull request**"
             echo ""
-            echo "Once CI passes and confirms Trivy/Anchore are green, this PR is safe to merge."
-            echo ""
-            echo "_The auto-fix block in the Dockerfile is temporary and add-only. This workflow_"
-            echo "_will not auto-remove packages — Trivy (\`--ignore-unfixed\`) and Grype_"
-            echo "_(\`only-fixed\`) cannot tell a base-image fix apart from one already applied_"
-            echo "_by this block, so removing would risk reintroducing the CVE. Clear the block_"
-            echo "_manually when the base Ruby image is bumped (see upgrade instructions at the_"
-            echo "_top of the Dockerfile)._"
+            echo "Fixes needing a major-version bump are not applied automatically — bump the"
+            echo "Gemfile/package.json constraint by hand if the scan still fails after this PR."
             echo ""
             echo "## AI Usage"
             echo "- [ ] USED_AI: I attest that I have read, understood, and take ownership of all AI-generated code in this PR."
@@ -144,7 +132,7 @@ jobs:
             --label security \
             --state open \
             --json number,headRefName \
-            --jq '[.[] | select(.headRefName | startswith("auto-fix/dockerfile-os-vulnerabilities"))] | first | .number')
+            --jq '[.[] | select(.headRefName | startswith("auto-fix/dependencies"))] | first | .number')
           if [ -n "$EXISTING" ] && [ "$EXISTING" != "null" ]; then
             echo "Open fix PR #$EXISTING already exists — skipping creation."
             echo "skip=true" >> "$GITHUB_OUTPUT"
@@ -157,12 +145,15 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          add-paths: app/Dockerfile
-          branch: auto-fix/dockerfile-os-vulnerabilities-${{ steps.timestamp.outputs.value }}
+          add-paths: |
+            app/Gemfile.lock
+            app/package-lock.json
+            app/package.json
+          branch: auto-fix/dependencies-${{ steps.timestamp.outputs.value }}
           base: main
           delete-branch: false
-          title: 'fix: patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore'
+          title: 'fix: patch Ruby/JS dependencies for CVEs flagged by bundler-audit/npm audit'
           labels: security
           body-path: pr-body.md
           reviewers: ${{ steps.reviewer.outputs.login }}
-          commit-message: 'fix: patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore'
+          commit-message: 'fix: patch Ruby/JS dependencies for CVEs flagged by bundler-audit/npm audit'

@@ -1,0 +1,34 @@
+name: Ruby dependency audit
+description: >
+  Audit Ruby dependencies with bundler-audit. With fix disabled it runs the
+  project's `bundler:audit` rake task and fails on any advisory (the gating
+  scan). With fix enabled it conservatively updates each flagged gem (the
+  auto-fixer). Both paths live here so the gate and the fixer stay in sync.
+  Requires ./.github/actions/setup-languages to have run first.
+
+inputs:
+  fix:
+    description: When 'true', apply `bundle update --conservative` for flagged gems instead of just failing.
+    required: false
+    default: false
+
+outputs:
+  changes_made:
+    description: "'true' when the fix run modified Gemfile.lock"
+    value: ${{ steps.fix.outputs.changes_made }}
+
+runs:
+  using: composite
+  steps:
+    - name: Update advisory database and run checks
+      if: inputs.fix != 'true'
+      shell: bash
+      working-directory: app
+      run: bundle exec rake bundler:audit
+
+    - name: Conservatively update flagged gems
+      id: fix
+      if: inputs.fix == 'true'
+      shell: bash
+      working-directory: app
+      run: bundle exec ruby "${GITHUB_WORKSPACE}/.github/scripts/fix-ruby-dependencies.rb"

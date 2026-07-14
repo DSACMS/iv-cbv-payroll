@@ -1,0 +1,43 @@
+name: Build release image for scanning
+description: >
+  Log in to Docker Hub (when credentials are available) and build/tag the
+  release image, returning the image ref. Shared by every vulnerability scan
+  so image builds stay identical across the gating scans and the auto-fixer.
+
+inputs:
+  app_name:
+    description: Name of the application folder under the infra directory
+    required: false
+    default: app
+  dockerhub-username:
+    description: Docker Hub username
+    required: false
+    default: ""
+  dockerhub-token:
+    description: Docker Hub token; login is skipped when empty
+    required: false
+    default: ""
+
+outputs:
+  image:
+    description: Full image ref (name:tag) that was built
+    value: ${{ steps.build-image.outputs.image }}
+
+runs:
+  using: composite
+  steps:
+    - name: Login to Docker Hub
+      if: inputs['dockerhub-token'] != '' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+      uses: docker/login-action@v4
+      with:
+        username: ${{ inputs['dockerhub-username'] }}
+        password: ${{ inputs['dockerhub-token'] }}
+
+    - name: Build and tag Docker image for scanning
+      id: build-image
+      shell: bash
+      run: |
+        make APP_NAME=${{ inputs.app_name }} release-build
+        IMAGE_NAME=$(make APP_NAME=${{ inputs.app_name }} release-image-name)
+        IMAGE_TAG=$(make release-image-tag)
+        echo "image=$IMAGE_NAME:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
