@@ -4,16 +4,85 @@ RSpec.describe "e2e Household activity flow", :js, type: :feature do
   include E2e::TestHelpers
   include_context "activity_hub"
 
-  let(:primary_member_name) { "Avery Johnson" }
-  let(:secondary_member_name) { "Riley Johnson" }
+  let(:primary_member_name) { "Dominic Santos" }
+  let(:secondary_member_name) { "Lamine Santos" }
+
+  it "switches between mutually exclusive individual and household setup modes" do # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+    visit "/launcher/advanced"
+
+    click_button "3 months"
+    expect(page).to have_field("reporting_window_months", with: "3", visible: :all)
+
+    find("#nsc-test-scenarios-button").click
+    find("label[for='test_scenario_lynette']").click
+    expect(page).to have_checked_field("test_scenario_lynette", visible: :all)
+    fill_in "reporting_window_start", with: "06/01/2025"
+
+    find("label[for='launch_mode_household']").click
+
+    expect(page).to have_no_selector("input[name='test_scenario']:checked", visible: :all)
+    expect(page).to have_checked_field("household_archetype_needs_documentation_one_activity", visible: :all)
+    expect(page).to have_checked_field("household_archetype_needs_documentation_multiple_activities", visible: :all)
+    expect(page).to have_selector("label[for='flow_type_activity']", visible: :visible)
+    expect(page).to have_field("flow_type_cbv", disabled: true, visible: :all)
+    expect(page).to have_text("Reporting window start")
+    expect(page).to have_field("reporting_window_start", with: "06/01/2025", visible: :all)
+    expect(page).to have_field("launcher_timeout", visible: :all)
+    expect(page).to have_checked_field("launch_type_tokenized", visible: :all)
+    expect(page).to have_field("launch_type_generic", disabled: true, visible: :all)
+    expect(page).to have_button("Copy link", disabled: false)
+    expect(page).to have_button("Open in new tab", disabled: false)
+
+    find("label[for='household_archetype_needs_documentation_one_activity']").click
+    find("label[for='household_archetype_needs_documentation_multiple_activities']").click
+    expect(page).to have_no_selector("input[name='household_archetypes[]']:checked", visible: :all)
+    expect(page).to have_button("Copy link", disabled: true)
+    expect(page).to have_button("Open in new tab", disabled: true)
+    expect(page).to have_text(I18n.t("launcher.advanced.household.selection_hint"))
+
+    find("label[for='household_archetype_needs_documentation_one_activity']").click
+    expect(page).to have_button("Copy link", disabled: false)
+
+    find("label[for='launch_mode_individual']").click
+
+    expect(page).to have_no_selector("input[name='household_archetypes[]']:checked", visible: :all)
+    expect(page).to have_selector("label[for='flow_type_activity']", visible: :visible)
+    expect(page).to have_field("flow_type_cbv", disabled: false, visible: :all)
+    expect(page).to have_checked_field("launch_type_tokenized", visible: :all)
+    expect(page).to have_field("launch_type_generic", disabled: false, visible: :all)
+    expect(page).to have_button("Copy link")
+    expect(page).to have_button("Open in new tab")
+
+    expect(page).to have_field("volunteering_enabled", disabled: false, visible: :all)
+
+    select "la_ldh", from: "client_agency_id"
+    expect(page).to have_field("volunteering_enabled", disabled: true, visible: :all)
+    expect(page).to have_field("launch_mode_household", disabled: true, visible: :all)
+    expect(page).to have_text(I18n.t("launcher.advanced.household.unavailable"))
+  end
+
+  it "forces individual mode when switching to an agency without CE activities" do
+    visit "/launcher/advanced"
+
+    find("label[for='launch_mode_household']").click
+    expect(page).to have_button("Copy link")
+
+    select "la_ldh", from: "client_agency_id"
+
+    expect(page).to have_checked_field("launch_mode_individual", visible: :all)
+    expect(page).to have_field("launch_mode_household", disabled: true, visible: :all)
+    expect(page).to have_no_selector("input[name='household_archetypes[]']:checked", visible: :all)
+    expect(page).to have_checked_field("launch_type_tokenized", visible: :all)
+  end
 
   it "returns to the household list after each member submits" do # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
     # Launch a fresh test household
     visit "/launcher/advanced"
 
-    click_button "Test household"
-    household_url = find("#generated_tokenized_url", wait: 10).value
-    household_path = URI.parse(household_url).request_uri
+    find("label[for='launch_mode_household']").click
+    click_button "Copy link"
+    expect(page).to have_button("Link copied", wait: 10)
+    household_path = household_start_path(token: Household.order(:created_at).last.auth_token)
 
     visit household_path
     verify_page(page, title: I18n.t("households.show.title"))

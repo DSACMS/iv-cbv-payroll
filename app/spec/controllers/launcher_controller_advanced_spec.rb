@@ -11,12 +11,14 @@ RSpec.describe LauncherController, type: :controller do
       expect(response).to have_http_status(:success)
     end
 
-    it "renders the tokenized link share widget" do
+    it "renders link type and sharing controls" do
       get :advanced
+      rendered = Capybara.string(response.body)
 
-      expect(response.body).to include("Shareable link")
-      expect(response.body).to include("Copy link")
-      expect(response.body).to include("Open in new tab")
+      expect(rendered).to have_field("launch_type_tokenized", checked: true, visible: :all)
+      expect(rendered).to have_field("launch_type_generic", visible: :all)
+      expect(rendered).to have_button("Copy link")
+      expect(rendered).to have_button("Open in new tab")
     end
 
     it "renders work program pre-population controls" do
@@ -67,10 +69,10 @@ RSpec.describe LauncherController, type: :controller do
       expect(rendered).to include('Spring and fall enrollment with no summer term')
     end
 
-    it "displays the pre-populated activities section for CE flow" do
+    it "displays build-your-own pre-populated activities for CE flow" do
       get :advanced
       rendered = response.body
-      expect(rendered).to include("Pre-populated activities")
+      expect(rendered).to include(I18n.t("launcher.advanced.individual.pre_populated_activities"))
       expect(rendered).to include('name="volunteering_enabled"')
       expect(rendered).to include('name="volunteering_organization_name"')
       expect(rendered).to include('name="employment_enabled"')
@@ -78,6 +80,51 @@ RSpec.describe LauncherController, type: :controller do
       expect(rendered).to include('name="employment_gross_income_per_month"')
       expect(rendered).to include('name="education_enabled"')
       expect(rendered).to include('name="education_school_name"')
+    end
+
+    it "exposes agency activity types to the advanced-launcher Stimulus controller" do
+      get :advanced
+      form = Capybara.string(response.body).find("form.usa-form", visible: :all)
+
+      raw = form["data-advanced-launcher-agency-activity-types-value"]
+      expect(raw).to be_present
+
+      activity_types = JSON.parse(raw)
+      expect(activity_types.fetch("sandbox")).to include("community_service", "employment", "education", "work_programs")
+      expect(activity_types.fetch("la_ldh")).to eq([])
+    end
+
+    it "renders mutually exclusive launch modes and composable household archetypes" do
+      get :advanced
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_checked_field("launch_mode_individual")
+      expect(rendered).to have_selector("input[name='launch_mode']", count: 2)
+      expect(rendered).to have_selector("[data-advanced-launcher-target='householdConfiguration'][hidden]", visible: :all)
+      expect(rendered).to have_selector("input[name='household_archetypes[]']", count: 4, visible: :all)
+      expect(rendered).to have_checked_field("household_archetype_needs_documentation_one_activity", visible: :all)
+      expect(rendered).to have_checked_field("household_archetype_needs_documentation_multiple_activities", visible: :all)
+      expect(rendered).to have_selector("#nsc-test-scenarios-button[aria-expanded='false']")
+      expect(rendered).to have_selector("#fake-test-scenarios-button[aria-expanded='false']")
+      expect(rendered).to have_selector("#pre-populated-activities-button[aria-expanded='true']")
+      expect(rendered).to have_selector("label", text: "Needs documentation (1 activity)", visible: :all)
+      expect(rendered).to have_selector("label", text: "Needs documentation (2+ activities)", visible: :all)
+      expect(rendered).to have_selector("label", text: "Short of meeting CE", visible: :all)
+      expect(rendered).to have_selector("label", text: "Clean slate", visible: :all)
+    end
+
+    it "renders shared CE settings that household members can use" do
+      get :advanced
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_field("flow_type_activity", checked: true, visible: :all)
+      expect(rendered).to have_field("flow_type_cbv", visible: :all)
+      expect(rendered).to have_field("reporting_window_application", checked: true, visible: :all)
+      expect(rendered).to have_button("1 month")
+      expect(rendered).to have_button("2 months")
+      expect(rendered).to have_button("3 months")
+      expect(rendered).to have_field("reporting_window_start", visible: :all)
+      expect(rendered).to have_field("launcher_timeout", with: "30", visible: :all)
     end
   end
 
@@ -207,11 +254,12 @@ RSpec.describe LauncherController, type: :controller do
     end
 
     context "with a household launch" do
-      it "creates the test household and redirects to its URL" do
+      it "creates the selected household and redirects to its URL" do
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
-            launch_type: "household"
+            launch_type: "household",
+            household_archetypes: [ "needs_documentation_one_activity", "short_of_meeting_ce" ]
           }
         }.to change(Household, :count).by(1)
           .and change(HouseholdMember, :count).by(2)
@@ -219,10 +267,33 @@ RSpec.describe LauncherController, type: :controller do
         expect(response).to redirect_to(Household.last.to_url(host: "test.host"))
       end
 
+      it "persists CE launcher settings on the household" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          flow_type: "activity",
+          launch_type: "household",
+          household_archetypes: [ "needs_documentation_one_activity" ],
+          reporting_window: "renewal",
+          reporting_window_months: "3",
+          renewal_required_months: "2",
+          reporting_window_start: "06/01/2025",
+          launcher_timeout: "20"
+        }
+
+        expect(Household.last.launcher_overrides).to eq({
+          "reporting_window" => "renewal",
+          "reporting_window_months" => "3",
+          "renewal_required_months" => "2",
+          "reporting_window_start" => "2025-06-01",
+          "launcher_timeout" => "20"
+        })
+      end
+
       it "returns the household URL as JSON" do
         post :create, params: {
           client_agency_id: "sandbox",
-          launch_type: "household"
+          launch_type: "household",
+          household_archetypes: [ "needs_documentation_one_activity", "short_of_meeting_ce" ]
         }, format: :json
 
         parsed_response = JSON.parse(response.body)
@@ -231,10 +302,11 @@ RSpec.describe LauncherController, type: :controller do
         expect(parsed_response.fetch("url")).to include("/households/start/#{Household.last.auth_token}")
       end
 
-      it "does not apply pre-populated activity controls to the test household invitations" do
+      it "uses the selected household archetypes instead of activity controls" do
         post :create, params: {
           client_agency_id: "sandbox",
           launch_type: "household",
+          household_archetypes: [ "clean_slate" ],
           volunteering_enabled: "1",
           volunteering_organization_name: "Red Cross",
           volunteering_hours_per_month: "12"
@@ -246,13 +318,120 @@ RSpec.describe LauncherController, type: :controller do
         expect(pre_populated_activities).to all(eq([]))
       end
 
+      it "creates one member for each selected household archetype" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "household",
+          household_archetypes: [ "needs_documentation_multiple_activities", "short_of_meeting_ce" ]
+        }
+
+        members = Household.last.household_members.order(:id)
+        activity_types = members.map do |member|
+          member.activity_flow_invitation.pre_populated_activities.map { |activity| activity.fetch("type") }
+        end
+
+        expect(members.map(&:display_name)).to eq([ "Lamine Santos", "Andy Santos" ])
+        expect(activity_types).to eq([ [ "job_training", "volunteering" ], [ "employment" ] ])
+      end
+
+      it "requires an explicit selection and does not default when archetypes are omitted" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            launch_type: "household"
+          }, format: :json
+        }.not_to change(Household, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(JSON.parse(response.body)).to include("error")
+      end
+
+      it "does not silently create a default household when every archetype is cleared" do
+        # Match the launcher request: JSON preserves an explicitly cleared
+        # checkbox array instead of converting it to nil during parameter parsing.
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            launch_type: "household",
+            household_archetypes: []
+          }, as: :json
+        }.not_to change(Household, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(JSON.parse(response.body)).to include("error")
+      end
+
+      it "ignores unknown archetype keys and errors when none remain" do
+        expect {
+          post :create, params: {
+            client_agency_id: "sandbox",
+            launch_type: "household",
+            household_archetypes: [ "not_a_real_archetype" ]
+          }, as: :json
+        }.not_to change(Household, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "redirects back with an alert when a non-JSON household launch has no archetypes" do
+        post :create, params: {
+          client_agency_id: "sandbox",
+          launch_type: "household",
+          household_archetypes: []
+        }
+
+        expect(response).to redirect_to("/launcher/advanced")
+        expect(flash[:alert]).to be_present
+      end
+
+      context "for an agency without CE activity types" do
+        it "does not create a household and returns an error as JSON" do
+          expect {
+            post :create, params: {
+              client_agency_id: "la_ldh",
+              launch_type: "household",
+              household_archetypes: [ "needs_documentation_one_activity", "short_of_meeting_ce" ]
+            }, format: :json
+          }.to not_change(Household, :count)
+            .and not_change(HouseholdMember, :count)
+            .and not_change(ActivityFlowInvitation, :count)
+
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(JSON.parse(response.body)).to include("error")
+        end
+
+        it "does not create a household even for an activity-free archetype" do
+          expect {
+            post :create, params: {
+              client_agency_id: "la_ldh",
+              launch_type: "household",
+              household_archetypes: [ "clean_slate" ]
+            }, format: :json
+          }.not_to change(Household, :count)
+
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it "redirects back with an alert for non-JSON requests" do
+          post :create, params: {
+            client_agency_id: "la_ldh",
+            launch_type: "household",
+            household_archetypes: [ "needs_documentation_one_activity" ]
+          }
+
+          expect(response).to redirect_to("/launcher/advanced")
+          expect(flash[:alert]).to be_present
+        end
+      end
+
       it "returns a new household URL for each household launch" do
         first_url = nil
         first_household = nil
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
-            launch_type: "household"
+            launch_type: "household",
+            household_archetypes: [ "needs_documentation_one_activity", "short_of_meeting_ce" ]
           }, format: :json
           first_household = Household.last
           first_url = JSON.parse(response.body).fetch("url")
@@ -264,7 +443,8 @@ RSpec.describe LauncherController, type: :controller do
         expect {
           post :create, params: {
             client_agency_id: "sandbox",
-            launch_type: "household"
+            launch_type: "household",
+            household_archetypes: [ "needs_documentation_one_activity", "short_of_meeting_ce" ]
           }, format: :json
           second_household = Household.last
           second_url = JSON.parse(response.body).fetch("url")
