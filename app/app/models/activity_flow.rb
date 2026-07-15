@@ -52,11 +52,13 @@ class ActivityFlow < Flow
       association = flow.public_send(activity_class.flow_association)
       next if association.exists?
 
-      activity = association.create(
-        attrs.slice(*activity_class::FIELDS)
-             .merge("draft" => true, "pre_populated" => true)
-             .merge(activity_class.pre_populated_defaults)
-      )
+      activity_attributes = attrs.slice(*activity_class::FIELDS)
+        .merge("draft" => true, "pre_populated" => true)
+        .merge(activity_class.pre_populated_defaults)
+      # State-verified activities start published and use validated data.
+      activity_attributes.merge!("draft" => false, "data_source" => "validated") if attrs["state_verified"]
+
+      activity = association.create(activity_attributes)
       next unless activity.persisted?
 
       Array(attrs["months"]).each do |month_entry|

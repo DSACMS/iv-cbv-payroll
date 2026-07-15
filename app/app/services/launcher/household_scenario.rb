@@ -6,7 +6,7 @@ class Launcher::HouseholdScenario
       display_name: "Dominic Santos",
       date_of_birth: Date.new(1985, 4, 12),
       activities: [
-        { type: "employment", employer_name: "Acme Corp", hours: 70, gross_income: 1_680 },
+        { type: "employment", employer_name: "Acme Corp", hours: 70, gross_income: 560, state_verified: true },
         { type: "volunteering", organization_name: "Community Food Bank", hours: 15 }
       ]
     },
@@ -24,7 +24,7 @@ class Launcher::HouseholdScenario
       display_name: "Andy Santos",
       date_of_birth: Date.new(1995, 1, 18),
       activities: [
-        { type: "employment", employer_name: "Acme Corp", hours: 31.5, gross_income: 756 }
+        { type: "employment", employer_name: "Acme Corp", hours: 31.5, gross_income: 252, state_verified: true }
       ]
     },
     "clean_slate" => {
@@ -99,7 +99,7 @@ class Launcher::HouseholdScenario
 
   def pre_populated_activities(member_data)
     member_data.fetch(:activities).map do |activity|
-      activity.slice(:type, :employer_name, :organization_name, :school_name, :program_name)
+      activity.slice(:type, :employer_name, :organization_name, :school_name, :program_name, :state_verified)
         .compact
         .stringify_keys
         .merge("months" => reporting_months.map { |month| activity_month(activity, month) })

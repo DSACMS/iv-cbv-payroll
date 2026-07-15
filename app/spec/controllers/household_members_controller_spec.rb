@@ -44,8 +44,12 @@ RSpec.describe HouseholdMembersController, type: :controller do
       post :create, params: { token: household.auth_token, member_id: member.id }
 
       flow = ActivityFlow.last
-      expect(flow.employment_activities).to contain_exactly(have_attributes(pre_populated: true, employer_name: "Acme Corp"))
-      expect(flow.volunteering_activities).to contain_exactly(have_attributes(pre_populated: true, organization_name: "Community Food Bank"))
+      expect(flow.employment_activities).to contain_exactly(
+        have_attributes(pre_populated: true, draft: false, data_source: "validated", employer_name: "Acme Corp")
+      )
+      expect(flow.volunteering_activities).to contain_exactly(
+        have_attributes(pre_populated: true, draft: true, organization_name: "Community Food Bank")
+      )
     end
 
     context "with household launcher settings" do

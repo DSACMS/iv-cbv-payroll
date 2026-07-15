@@ -85,6 +85,16 @@ RSpec.describe Launcher::HouseholdScenario do
       ])
     end
 
+    it "marks state-verified scenario activities" do
+      household = described_class.create!(archetype_keys:, client_agency_id: "sandbox")
+
+      employment_activities = household.household_members.order(:id).filter_map do |member|
+        member.activity_flow_invitation.pre_populated_activities.find { |activity| activity.fetch("type") == "employment" }
+      end
+
+      expect(employment_activities.map { |activity| activity.fetch("state_verified") }).to eq([ true, true ])
+    end
+
     it "uses the configured reporting window for archetype activities" do
       household = described_class.create!(
         archetype_keys: [ "needs_documentation_one_activity" ],

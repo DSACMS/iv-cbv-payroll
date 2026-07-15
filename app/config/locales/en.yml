@@ -1141,16 +1141,16 @@ en:
         archetypes:
           clean_slate:
             description: Carlos Santos did not attest to any activities so they need to add activities to meet CE.
-            title: Clean slate
+            title: "%{member_name}: Clean slate"
           needs_documentation_multiple_activities:
             description: Lamine Santos was in a work program and has volunteered. Together these activities would meet CE.
-            title: Needs documentation (2+ activities)
+            title: "%{member_name}: Needs documentation (2+ activities)"
           needs_documentation_one_activity:
             description: Dominic Santos has 70 hours of employment that was verified via state data, they also volunteered for 15 hrs but need documentation to prove it. Together these activities would meet CE.
-            title: Needs documentation (1 activity)
+            title: "%{member_name}: Needs documentation (1 activity)"
           short_of_meeting_ce:
             description: Andy Santos has 31.5 hours of employment that was verified by state data. They need to add more activities to meet CE.
-            title: Short of meeting CE
+            title: "%{member_name}: Short of meeting CE"
         description: Select an archetype for each member you want to include, then generate one link for their member list.
         errors:
           no_archetypes_selected: Select at least one household member before generating a household link.

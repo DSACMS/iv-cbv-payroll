@@ -216,6 +216,35 @@ RSpec.describe ActivityFlow, type: :model do
       end
     end
 
+    context "with a state-verified pre-populated employment activity" do
+      let(:in_window_date) { described_class.expected_reporting_window_range("sandbox").end.beginning_of_month.iso8601 }
+      let(:invitation) do
+        create(:activity_flow_invitation, pre_populated_activities: [
+          {
+            "type" => "employment",
+            "employer_name" => "Acme Corp",
+            "state_verified" => true,
+            "months" => [
+              { "month" => in_window_date, "hours" => 70, "gross_income" => 1_680 }
+            ]
+          }
+        ])
+      end
+
+      it "hydrates a published validated activity that contributes to progress" do
+        flow = described_class.create_from_invitation(invitation, device_id)
+
+        expect(flow.employment_activities.first).to have_attributes(
+          draft: false,
+          pre_populated: true,
+          data_source: "validated"
+        )
+        monthly_results = ActivityFlowProgressCalculator.new(flow).monthly_results
+        result = monthly_results.find { |monthly_result| monthly_result.month.iso8601 == in_window_date }
+        expect(result.total_hours).to eq(70)
+      end
+    end
+
     context "with a pre-populated education activity" do
       let(:education_activity_attrs) do
         {

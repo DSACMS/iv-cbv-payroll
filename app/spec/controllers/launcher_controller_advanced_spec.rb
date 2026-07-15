@@ -107,10 +107,10 @@ RSpec.describe LauncherController, type: :controller do
       expect(rendered).to have_selector("#nsc-test-scenarios-button[aria-expanded='false']")
       expect(rendered).to have_selector("#fake-test-scenarios-button[aria-expanded='false']")
       expect(rendered).to have_selector("#pre-populated-activities-button[aria-expanded='true']")
-      expect(rendered).to have_selector("label", text: "Needs documentation (1 activity)", visible: :all)
-      expect(rendered).to have_selector("label", text: "Needs documentation (2+ activities)", visible: :all)
-      expect(rendered).to have_selector("label", text: "Short of meeting CE", visible: :all)
-      expect(rendered).to have_selector("label", text: "Clean slate", visible: :all)
+      expect(rendered).to have_selector("label", text: "Dominic: Needs documentation (1 activity)", visible: :all)
+      expect(rendered).to have_selector("label", text: "Lamine: Needs documentation (2+ activities)", visible: :all)
+      expect(rendered).to have_selector("label", text: "Andy: Short of meeting CE", visible: :all)
+      expect(rendered).to have_selector("label", text: "Carlos: Clean slate", visible: :all)
     end
 
     it "renders shared CE settings that household members can use" do

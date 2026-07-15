@@ -47,7 +47,7 @@
             <p class="usa-hint"><%= t(".household.description") %></p>
             <p class="usa-hint" hidden data-advanced-launcher-target="householdSelectionHint"><%= t(".household.selection_hint") %></p>
             <div class="advanced-launcher__archetypes">
-            <% Launcher::HouseholdScenario.archetypes.each_key do |archetype_key| %>
+            <% Launcher::HouseholdScenario.archetypes.each do |archetype_key, archetype| %>
               <div class="usa-checkbox">
                 <input
                   class="usa-checkbox__input usa-checkbox__input--tile"
@@ -58,7 +58,7 @@
                   <%= "checked" if Launcher::HouseholdScenario.default_archetype_keys.include?(archetype_key) %>
                   data-action="advanced-launcher#selectHouseholdArchetype">
                 <label class="usa-checkbox__label" for="household_archetype_<%= archetype_key %>">
-                  <strong><%= t(".household.archetypes.#{archetype_key}.title") %></strong>
+                  <strong><%= t(".household.archetypes.#{archetype_key}.title", member_name: archetype.fetch(:display_name).split.first) %></strong>
                   <span class="advanced-launcher__scenario-desc"><%= t(".household.archetypes.#{archetype_key}.description") %></span>
                 </label>
               </div>
