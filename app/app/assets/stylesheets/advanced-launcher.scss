@@ -23,19 +23,14 @@
     display: contents;
   }
 
-  .advanced-launcher__launch         { order: 1; }
-  .advanced-launcher__settings       { order: 2; }
-  .advanced-launcher__test-scenarios { order: 3; }
-
   .advanced-launcher__mobile-divider {
-    order: 2;
     border: none;
     border-top: 1px solid color("base-lighter");
     margin: units(3) 0;
   }
 
   // -- Layout: desktop --
-  @include at-media("tablet") {
+  @include at-media("desktop") {
     .advanced-launcher__two-col {
       display: grid;
       grid-template-columns: 300px 1fr;
@@ -44,10 +39,10 @@
     }
 
     .advanced-launcher__left-col {
+      align-self: stretch;
       display: block;
-    }
-
-    .advanced-launcher__settings {
+      grid-column: 2;
+      grid-row: 1;
       position: relative;
       padding-left: units(5);
 
@@ -62,6 +57,12 @@
       }
     }
 
+    .advanced-launcher__settings {
+      grid-column: 1;
+      grid-row: 1;
+      padding-left: 0;
+    }
+
     .advanced-launcher__mobile-divider {
       display: none;
     }
@@ -69,74 +70,62 @@
 
   // -- Flow type radios --
   .advanced-launcher__flow-type-radios {
+    .usa-radio + .usa-radio {
+      margin-top: units(1);
+    }
+  }
+
+  .advanced-launcher__launch-mode-radios {
     display: flex;
     gap: units(1);
+    margin-bottom: units(2);
 
     .usa-radio {
       flex: 1;
     }
   }
 
-  // -- Left column: shared section label --
-  .advanced-launcher__section-label {
-    font-size: size("body", "2xs");
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: color("base");
-    margin-bottom: units(1);
-    margin-top: units(3);
-
-    &:first-child {
-      margin-top: 0;
-    }
-  }
-
   // -- Left column: launch --
   .advanced-launcher__launch-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: units(1);
     margin-top: units(1);
   }
 
-  .advanced-launcher__launch-button {
-    display: block;
-    width: 100%;
+  .advanced-launcher__link-type-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: units(1);
+    align-items: flex-start;
+  }
+
+  .advanced-launcher__link-type-radios {
+    display: flex;
+    flex: 1 1 24rem;
+    gap: units(1);
+
+    .usa-radio {
+      flex: 1;
+      margin: 0;
+    }
+  }
+
+  .advanced-launcher__link-type-row .advanced-launcher__launch-button {
+    width: auto;
     margin: 0;
+    align-self: center;
+    transform: translateY(units(0.5));
+  }
+
+  @include at-media-max("desktop") {
+    .advanced-launcher__link-type-row .advanced-launcher__launch-button {
+      width: 100%;
+      align-self: stretch;
+      transform: none;
+    }
   }
 
   .advanced-launcher__launch-section {
     padding-top: units(2);
     border-top: 1px solid color("base-lighter");
-  }
-
-  .advanced-launcher__share-widget {
-    margin-top: units(2);
-    padding: units(2);
-    border: 1px solid color("base-lighter");
-    border-radius: radius("md");
-    background-color: color("base-lightest");
-  }
-
-  .advanced-launcher__share-row {
-    display: grid;
-    gap: units(1);
-    align-items: end;
-
-    @include at-media("tablet") {
-      grid-template-columns: minmax(0, 1fr) auto auto;
-    }
-
-    .usa-input,
-    .usa-button {
-      margin: 0;
-    }
-  }
-
-  .advanced-launcher__share-status {
-    margin-top: units(1);
-    margin-bottom: 0;
   }
 
   // -- Left column: test scenarios --
@@ -154,6 +143,12 @@
     font-size: size("body", "2xs");
     font-weight: normal;
     color: color("base");
+  }
+
+  .advanced-launcher__archetypes {
+    .usa-checkbox + .usa-checkbox {
+      margin-top: units(1);
+    }
   }
 
   // -- Settings --
@@ -227,6 +222,10 @@
   }
 
   // -- Pre-populated activities accordion --
+  .advanced-launcher__pre-populated-activities {
+    margin-bottom: units(1);
+  }
+
   .advanced-launcher__activity-rows {
     display: flex;
     flex-direction: column;

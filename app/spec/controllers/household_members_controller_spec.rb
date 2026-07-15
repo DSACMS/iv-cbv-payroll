@@ -34,6 +34,71 @@ RSpec.describe HouseholdMembersController, type: :controller do
       expect(ActivityFlow.find(member_b_flow_id).activity_flow_invitation).to eq(member_b.activity_flow_invitation)
     end
 
+    it "hydrates the selected member's pre-populated activities" do
+      household = Launcher::HouseholdScenario.create!(
+        archetype_keys: [ "needs_documentation_one_activity", "short_of_meeting_ce" ],
+        client_agency_id: "sandbox"
+      )
+      member = household.household_members.find_by!(reference_id: "dominic")
+
+      post :create, params: { token: household.auth_token, member_id: member.id }
+
+      flow = ActivityFlow.last
+      expect(flow.employment_activities).to contain_exactly(
+        have_attributes(pre_populated: true, draft: false, data_source: "validated", employer_name: "Acme Corp")
+      )
+      expect(flow.volunteering_activities).to contain_exactly(
+        have_attributes(pre_populated: true, draft: true, organization_name: "Community Food Bank")
+      )
+    end
+
+    context "with household launcher settings" do
+      let(:household_launcher_overrides) do
+        {
+          reporting_window: "renewal",
+          reporting_window_months: "3",
+          renewal_required_months: "2",
+          reporting_window_start: "2025-06-01",
+          launcher_timeout: "20"
+        }
+      end
+      let(:household) do
+        Launcher::HouseholdScenario.create!(
+          archetype_keys: [ "needs_documentation_one_activity" ],
+          client_agency_id: "sandbox",
+          launcher_overrides: household_launcher_overrides
+        )
+      end
+      let(:member) { household.household_members.first }
+
+      it "applies the household's launcher settings to each member flow" do
+        post :create, params: { token: household.auth_token, member_id: member.id }
+
+        flow = ActivityFlow.last
+        expect(flow).to have_attributes(
+          reporting_window_type: "renewal",
+          reporting_window_months: 3,
+          renewal_required_months: 2
+        )
+        expect(flow.reporting_window_range).to eq(Date.new(2025, 6, 1)..Date.new(2025, 8, 31))
+        expect(session[:launcher_timeout]).to eq(20.minutes.to_i)
+      end
+
+      it "does not apply launcher settings outside the internal environment" do
+        allow(controller).to receive(:internal_environment?).and_return(false)
+
+        post :create, params: { token: household.auth_token, member_id: member.id }
+
+        flow = ActivityFlow.last
+        expect(flow).to have_attributes(
+          reporting_window_type: "renewal",
+          reporting_window_months: ActivityFlow::DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS,
+          renewal_required_months: ActivityFlow::DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS
+        )
+        expect(session[:launcher_timeout]).to be_nil
+      end
+    end
+
     it "resumes an incomplete member activity flow" do
       existing_flow = create(:activity_flow, activity_flow_invitation: member.activity_flow_invitation, completed_at: nil)
 

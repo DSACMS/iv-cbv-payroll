@@ -2,20 +2,82 @@
 <div class="grid-col-12 advanced-launcher">
   <h1>Emmy Launcher 🏆🚀</h1>
   <div class="usa-hint advanced-launcher__usa-hint">Configure settings and launch Emmy in a new tab.</div>
-  <%= form_with(url: "/launcher/advanced", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "advanced-launcher", "demo-launcher-agency-activity-types-value": agency_activity_types.to_json, action: "input->advanced-launcher#invalidateShareLink change->advanced-launcher#invalidateShareLink" }) do |f| %>
+  <%= form_with(url: "/launcher/advanced", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "advanced-launcher", "advanced-launcher-agency-activity-types-value": agency_activity_types.to_json, action: "input->advanced-launcher#invalidateShareLink change->advanced-launcher#invalidateShareLink" }) do |f| %>
     <div class="advanced-launcher__two-col">
       <div class="advanced-launcher__left-col">
-        <div class="advanced-launcher__test-scenarios" data-advanced-launcher-target="ceOnly">
-          <h3 class="advanced-launcher__section-label">Test Scenarios</h3>
-          <div class="advanced-launcher__scenario-radios">
+        <section class="advanced-launcher__test-scenarios">
+          <h2><%= t(".launch_configuration.title") %></h2>
+          <div class="advanced-launcher__launch-mode-radios">
             <div class="usa-radio">
               <input class="usa-radio__input usa-radio__input--tile" type="radio"
-                     name="test_scenario" id="test_scenario_none" value="" checked
-                     data-action="advanced-launcher#selectScenario">
-              <label class="usa-radio__label" for="test_scenario_none">None</label>
+                     name="launch_mode" id="launch_mode_individual" value="individual" checked
+                     data-action="advanced-launcher#selectLaunchMode">
+              <label class="usa-radio__label" for="launch_mode_individual"><%= t(".launch_mode.individual") %></label>
             </div>
+            <div class="usa-radio">
+              <input class="usa-radio__input usa-radio__input--tile" type="radio"
+                     name="launch_mode" id="launch_mode_household" value="household"
+                     data-advanced-launcher-target="householdModeRadio"
+                     data-action="advanced-launcher#selectLaunchMode">
+              <label class="usa-radio__label" for="launch_mode_household"><%= t(".launch_mode.household") %></label>
+            </div>
+          </div>
+          <p class="usa-hint" hidden data-advanced-launcher-target="householdUnavailableHint"><%= t(".household.unavailable") %></p>
 
-            <h4 class="advanced-launcher__section-label">NSC Test Scenarios</h4>
+          <div data-advanced-launcher-target="individualConfiguration">
+            <div data-advanced-launcher-target="ceOnly">
+              <div class="usa-accordion usa-accordion--bordered advanced-launcher__pre-populated-activities">
+                <h3 class="usa-accordion__heading">
+                  <button type="button" class="usa-accordion__button"
+                          id="pre-populated-activities-button"
+                          aria-expanded="true"
+                          aria-controls="pre-populated-activities-content">
+                    <%= t(".individual.pre_populated_activities") %>
+                  </button>
+                </h3>
+                <div id="pre-populated-activities-content" class="usa-accordion__content" aria-labelledby="pre-populated-activities-button">
+                  <%= render "pre_populated_activities" %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div hidden data-advanced-launcher-target="householdConfiguration">
+            <h3><%= t(".household.title") %></h3>
+            <p class="usa-hint"><%= t(".household.description") %></p>
+            <p class="usa-hint" hidden data-advanced-launcher-target="householdSelectionHint"><%= t(".household.selection_hint") %></p>
+            <div class="advanced-launcher__archetypes">
+            <% Launcher::HouseholdScenario.archetypes.each do |archetype_key, archetype| %>
+              <div class="usa-checkbox">
+                <input
+                  class="usa-checkbox__input usa-checkbox__input--tile"
+                  type="checkbox"
+                  name="household_archetypes[]"
+                  id="household_archetype_<%= archetype_key %>"
+                  value="<%= archetype_key %>"
+                  <%= "checked" if Launcher::HouseholdScenario.default_archetype_keys.include?(archetype_key) %>
+                  data-action="advanced-launcher#selectHouseholdArchetype">
+                <label class="usa-checkbox__label" for="household_archetype_<%= archetype_key %>">
+                  <strong><%= t(".household.archetypes.#{archetype_key}.title", member_name: archetype.fetch(:display_name).split.first) %></strong>
+                  <span class="advanced-launcher__scenario-desc"><%= t(".household.archetypes.#{archetype_key}.description") %></span>
+                </label>
+              </div>
+            <% end %>
+            </div>
+          </div>
+
+          <div data-advanced-launcher-target="individualConfiguration">
+            <div class="usa-accordion usa-accordion--bordered usa-accordion--multiselectable" data-allow-multiple>
+              <h4 class="usa-accordion__heading">
+                <button type="button" class="usa-accordion__button"
+                        id="nsc-test-scenarios-button"
+                        aria-expanded="false"
+                        aria-controls="nsc-test-scenarios-content">
+                  NSC Test Scenarios
+                </button>
+              </h4>
+              <div id="nsc-test-scenarios-content" class="usa-accordion__content" aria-labelledby="nsc-test-scenarios-button">
+                <div class="advanced-launcher__scenario-radios">
             <div class="usa-radio">
               <input class="usa-radio__input usa-radio__input--tile" type="radio"
                      name="test_scenario" id="test_scenario_lynette" value="lynette"
@@ -56,7 +118,19 @@
               </label>
             </div>
 
-            <h4 class="advanced-launcher__section-label">Fake Test Scenarios</h4>
+                </div>
+              </div>
+
+              <h4 class="usa-accordion__heading">
+                <button type="button" class="usa-accordion__button"
+                        id="fake-test-scenarios-button"
+                        aria-expanded="false"
+                        aria-controls="fake-test-scenarios-content">
+                  Fake Test Scenarios
+                </button>
+              </h4>
+              <div id="fake-test-scenarios-content" class="usa-accordion__content" aria-labelledby="fake-test-scenarios-button">
+                <div class="advanced-launcher__scenario-radios">
             <div class="usa-radio">
               <input class="usa-radio__input usa-radio__input--tile" type="radio"
                      name="test_scenario" id="test_scenario_partial_enrollment_sam" value="partial_enrollment_sam"
@@ -142,12 +216,15 @@
                 <span class="advanced-launcher__scenario-desc">Spring and fall enrollment with no summer term</span>
               </label>
             </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
       <hr class="advanced-launcher__mobile-divider">
       <div class="advanced-launcher__settings">
-        <h2>Settings</h2>
+        <h2><%= t(".settings.title") %></h2>
         <%= render AdvancedLauncher::SettingComponent.new(title: "Flow type", hint: "Select which Emmy flow to launch.") do %>
           <div class="advanced-launcher__flow-type-radios">
             <div class="usa-radio">
@@ -155,13 +232,13 @@
               <label class="usa-radio__label" for="flow_type_activity">CE</label>
             </div>
             <div class="usa-radio">
-              <input class="usa-radio__input usa-radio__input--tile" type="radio" name="flow_type" id="flow_type_cbv" value="cbv" data-action="advanced-launcher#selectFlowType">
+              <input class="usa-radio__input usa-radio__input--tile" type="radio" name="flow_type" id="flow_type_cbv" value="cbv" data-advanced-launcher-target="incomeFlowRadio" data-action="advanced-launcher#selectFlowType">
               <label class="usa-radio__label" for="flow_type_cbv">Income</label>
             </div>
           </div>
         <% end %>
         <%= render AdvancedLauncher::SettingComponent.new(title: "Agency", hint: "Select the agency the flow will use.") do %>
-          <select class="usa-select" name="client_agency_id" id="client_agency_id" data-action="change->demo-launcher#selectAgency">
+          <select class="usa-select" name="client_agency_id" id="client_agency_id" data-action="change->advanced-launcher#selectAgency">
             <% Rails.application.config.client_agencies.client_agency_ids.each do |agency_id| %>
               <option value="<%= agency_id %>" <%= "selected" if agency_id == "sandbox" %>><%= agency_id %></option>
             <% end %>
@@ -174,15 +251,10 @@
               <label class="usa-radio__label" for="reporting_window_application">Application</label>
             </div>
             <div data-advanced-launcher-target="monthButtons" class="advanced-launcher__month-buttons margin-top-1">
-              <button type="button" class="usa-button" data-months="1" data-action="advanced-launcher#selectMonths">1 month
-              </button>
-              <button type="button" class="usa-button" data-months="2" data-action="advanced-launcher#selectMonths">2 months
-              </button>
-              <button type="button" class="usa-button" data-months="3" data-action="advanced-launcher#selectMonths">3 months
-              </button>
-              <div class="usa-hint advanced-launcher__month-buttons-hint">The application reporting window is configurable by the
-                state.
-              </div>
+              <button type="button" class="usa-button" data-months="1" data-action="advanced-launcher#selectMonths">1 month</button>
+              <button type="button" class="usa-button" data-months="2" data-action="advanced-launcher#selectMonths">2 months</button>
+              <button type="button" class="usa-button" data-months="3" data-action="advanced-launcher#selectMonths">3 months</button>
+              <div class="usa-hint advanced-launcher__month-buttons-hint">The application reporting window is configurable by the state.</div>
             </div>
             <div class="usa-radio">
               <input class="usa-radio__input usa-radio__input--tile" type="radio" name="reporting_window" id="reporting_window_renewal" value="renewal" <%= "checked" if params[:reporting_window] == "renewal" %> data-action="advanced-launcher#selectWindow">
@@ -236,107 +308,6 @@
             <span>minutes</span>
           </div>
         <% end %>
-        <div data-advanced-launcher-target="ceOnly">
-          <%= render AdvancedLauncher::SettingComponent.new(title: "Pre-populated activities", hint: "Specify what data should appear automatically when visiting the hub for the first time. This is used to simulate the state sending us the data they have for this applicant. Note that this only works with tokenized links. Activities that aren't enabled for the selected agency are greyed out and can't be selected.") do %>
-            <div class="advanced-launcher__activity-rows">
-              <div class="advanced-launcher__activity-row" data-demo-launcher-target="activityRow" data-activity-type="community_service">
-                <div class="advanced-launcher__activity-header">
-                  <div class="usa-checkbox">
-                    <input class="usa-checkbox__input" type="checkbox" id="volunteering_enabled" name="volunteering_enabled" value="1"
-                           data-action="change->advanced-launcher#toggleActivity">
-                    <label class="usa-checkbox__label" for="volunteering_enabled">Volunteering</label>
-                  </div>
-                </div>
-                <div class="advanced-launcher__activity-fields advanced-launcher__activity-fields--hidden">
-                  <div class="advanced-launcher__activity-fields-grid">
-                    <div>
-                      <label class="usa-label" for="volunteering_organization_name">Org name</label>
-                      <input class="usa-input" type="text" id="volunteering_organization_name" name="volunteering_organization_name" value="Red Cross" autocomplete="off">
-                    </div>
-                    <div>
-                      <label class="usa-label" for="volunteering_hours_per_month">Hours / month</label>
-                      <input class="usa-input usa-input--sm" type="number" id="volunteering_hours_per_month" name="volunteering_hours_per_month" value="12" min="1" autocomplete="off">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="advanced-launcher__activity-row" data-demo-launcher-target="activityRow" data-activity-type="employment">
-                <div class="advanced-launcher__activity-header">
-                  <div class="usa-checkbox">
-                    <input class="usa-checkbox__input" type="checkbox" id="employment_enabled" name="employment_enabled" value="1"
-                           data-action="change->advanced-launcher#toggleActivity">
-                    <label class="usa-checkbox__label" for="employment_enabled">Employment</label>
-                  </div>
-                </div>
-                <div class="advanced-launcher__activity-fields advanced-launcher__activity-fields--hidden">
-                  <div class="advanced-launcher__activity-fields-grid">
-                    <div>
-                      <label class="usa-label" for="employment_employer_name">Employer name</label>
-                      <input class="usa-input" type="text" id="employment_employer_name" name="employment_employer_name" value="Acme Corp" autocomplete="off">
-                    </div>
-                    <div>
-                      <label class="usa-label" for="employment_hours_per_month">Hours / month</label>
-                      <input class="usa-input usa-input--sm" type="number" id="employment_hours_per_month" name="employment_hours_per_month" value="40" min="1" autocomplete="off">
-                    </div>
-                    <div>
-                      <label class="usa-label" for="employment_gross_income_per_month">Gross income / month</label>
-                      <div class="advanced-launcher__inline-field">
-                        <span>$</span>
-                        <input class="usa-input usa-input--sm" type="number" id="employment_gross_income_per_month" name="employment_gross_income_per_month" value="1200" min="0" autocomplete="off">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="advanced-launcher__activity-row" data-demo-launcher-target="activityRow" data-activity-type="education">
-                <div class="advanced-launcher__activity-header">
-                  <div class="usa-checkbox">
-                    <input class="usa-checkbox__input" type="checkbox" id="education_enabled" name="education_enabled" value="1"
-                           data-action="change->advanced-launcher#toggleActivity">
-                    <label class="usa-checkbox__label" for="education_enabled">Education</label>
-                  </div>
-                </div>
-                <div class="advanced-launcher__activity-fields advanced-launcher__activity-fields--hidden">
-                  <div class="advanced-launcher__activity-fields-grid">
-                    <div>
-                      <label class="usa-label" for="education_school_name">School name</label>
-                      <input class="usa-input" type="text" id="education_school_name" name="education_school_name" value="Springfield Community College" autocomplete="off">
-                    </div>
-                    <div>
-                      <label class="usa-label" for="education_hours_per_month">Credit hours / month</label>
-                      <input class="usa-input usa-input--sm" type="number" id="education_hours_per_month" name="education_hours_per_month" value="6" min="1" autocomplete="off">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="advanced-launcher__activity-row" data-demo-launcher-target="activityRow" data-activity-type="work_programs">
-                <div class="advanced-launcher__activity-header">
-                  <div class="usa-checkbox">
-                    <input class="usa-checkbox__input" type="checkbox" id="job_training_enabled" name="job_training_enabled" value="1"
-                           data-action="change->advanced-launcher#toggleActivity">
-                    <label class="usa-checkbox__label" for="job_training_enabled">Work program</label>
-                  </div>
-                </div>
-                <div class="advanced-launcher__activity-fields advanced-launcher__activity-fields--hidden">
-                  <div class="advanced-launcher__activity-fields-grid">
-                    <div>
-                      <label class="usa-label" for="job_training_program_name">Program name</label>
-                      <input class="usa-input" type="text" id="job_training_program_name" name="job_training_program_name" value="Career Prep" autocomplete="off">
-                    </div>
-                    <div>
-                      <label class="usa-label" for="job_training_organization_name">Organization name</label>
-                      <input class="usa-input" type="text" id="job_training_organization_name" name="job_training_organization_name" value="Goodwill" autocomplete="off">
-                    </div>
-                    <div>
-                      <label class="usa-label" for="job_training_hours_per_month">Hours / month</label>
-                      <input class="usa-input usa-input--sm" type="number" id="job_training_hours_per_month" name="job_training_hours_per_month" value="10" min="1" autocomplete="off">
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          <% end %>
-        </div>
       </div>
     </div>
 
@@ -344,60 +315,38 @@
       <h2>Launch</h2>
       <p class="usa-hint">Generate a tokenized or generic link, then copy it or open it in a new tab.</p>
       <div class="advanced-launcher__launch-buttons">
-        <button
-          type="submit"
-          name="launch_type"
-          value="tokenized"
-          class="usa-button advanced-launcher__launch-button"
-          data-action="advanced-launcher#generateShareLink"
-          data-advanced-launcher-target="tokenizedButton">
-          Tokenized
-        </button>
-        <button
-          type="submit"
-          name="launch_type"
-          value="generic"
-          class="usa-button advanced-launcher__launch-button"
-          data-action="advanced-launcher#generateShareLink"
-          data-advanced-launcher-target="genericButton">
-          Generic
-        </button>
-        <button
-          type="submit"
-          name="launch_type"
-          value="household"
-          class="usa-button advanced-launcher__launch-button"
-          data-action="advanced-launcher#generateShareLink">
-          Test household
-        </button>
-      </div>
-
-      <div class="advanced-launcher__share-widget" hidden data-advanced-launcher-target="shareWidget">
-        <h3 class="advanced-launcher__setting-title" data-advanced-launcher-target="shareLabel">Shareable link</h3>
-        <div class="advanced-launcher__share-row">
-          <input
-            class="usa-input"
-            type="text"
-            id="generated_tokenized_url"
-            readonly
-            autocomplete="off"
-            data-advanced-launcher-target="generatedUrl">
-          <button
-            type="button"
-            class="usa-button usa-button--outline"
-            data-action="advanced-launcher#copyGeneratedLink"
-            data-advanced-launcher-target="copyButton">
-            Copy link
-          </button>
-          <a
-            class="usa-button"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-advanced-launcher-target="openGeneratedLink">
-            Open in new tab
-          </a>
-        </div>
+        <fieldset class="usa-fieldset">
+          <legend class="usa-legend">Link type</legend>
+          <div class="advanced-launcher__link-type-row">
+            <div class="advanced-launcher__link-type-radios">
+              <div class="usa-radio">
+                <input class="usa-radio__input usa-radio__input--tile" type="radio"
+                       name="launch_type" id="launch_type_tokenized" value="tokenized" checked>
+                <label class="usa-radio__label" for="launch_type_tokenized">Tokenized</label>
+              </div>
+              <div class="usa-radio">
+                <input class="usa-radio__input usa-radio__input--tile" type="radio"
+                       name="launch_type" id="launch_type_generic" value="generic"
+                       data-advanced-launcher-target="genericLinkType">
+                <label class="usa-radio__label" for="launch_type_generic">Generic</label>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="usa-button advanced-launcher__launch-button"
+              data-action="advanced-launcher#copyShareLink"
+              data-advanced-launcher-target="copyLaunchButton">
+              Copy link
+            </button>
+            <button
+              type="button"
+              class="usa-button usa-button--outline advanced-launcher__launch-button"
+              data-action="advanced-launcher#openShareLink"
+              data-advanced-launcher-target="openLaunchButton">
+              Open in new tab
+            </button>
+          </div>
+        </fieldset>
       </div>
     </section>
   <% end %>

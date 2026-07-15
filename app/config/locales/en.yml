@@ -1135,6 +1135,38 @@ en:
       description: Select the person whose community engagement report you want to work on.
       launch: Get started
       title: Who are you reporting for?
+  launcher:
+    advanced:
+      household:
+        archetypes:
+          clean_slate:
+            description: Carlos Santos did not attest to any activities so they need to add activities to meet CE.
+            title: "%{member_name}: Clean slate"
+          needs_documentation_multiple_activities:
+            description: Lamine Santos was in a work program and has volunteered. Together these activities would meet CE.
+            title: "%{member_name}: Needs documentation (2+ activities)"
+          needs_documentation_one_activity:
+            description: Dominic Santos has 70 hours of employment that was verified via state data, they also volunteered for 15 hrs but need documentation to prove it. Together these activities would meet CE.
+            title: "%{member_name}: Needs documentation (1 activity)"
+          short_of_meeting_ce:
+            description: Andy Santos has 31.5 hours of employment that was verified by state data. They need to add more activities to meet CE.
+            title: "%{member_name}: Short of meeting CE"
+        description: Select an archetype for each member you want to include, then generate one link for their member list.
+        errors:
+          no_archetypes_selected: Select at least one household member before generating a household link.
+          unsupported_agency: Household setup isn't available for the selected agency because it doesn't support community engagement activities.
+        selection_hint: Select at least one member to generate a household link. The first member you select is the primary applicant.
+        title: Household members
+        unavailable: Household setup isn't available for this agency because it doesn't support community engagement activities. Select a different agency to build a household.
+      individual:
+        pre_populated_activities: Build your own (pre-populated)
+      launch_configuration:
+        title: Launch configuration
+      launch_mode:
+        household: Household
+        individual: Individual
+      settings:
+        title: Agency settings
   maintenance:
     body_1: The site is not available right now. Any information you entered will not be saved.
     body_2: Visit your agency's website for more information on how to submit proof of income for your benefits.

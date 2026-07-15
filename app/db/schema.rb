@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_29_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_13_200000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -253,6 +253,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_29_120000) do
     t.string "auth_token", null: false
     t.string "client_agency_id", null: false
     t.datetime "created_at", null: false
+    t.jsonb "launcher_overrides", default: {}, null: false
     t.string "reference_id", null: false
     t.datetime "updated_at", null: false
     t.index ["auth_token"], name: "index_households_on_auth_token", unique: true
