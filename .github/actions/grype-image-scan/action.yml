@@ -1,0 +1,40 @@
+name: Grype image vulnerability scan
+description: >
+  Run Grype (anchore/scan-action) against a built image using the project's
+  canonical severity cutoff. Callers vary only the output format / fail
+  behaviour, so the gating scan and the auto-fixer share one cutoff. Edit it
+  here, once.
+
+inputs:
+  image:
+    description: Image ref to scan
+    required: true
+  output-format:
+    description: "Grype output format (e.g. table, json)"
+    required: false
+    default: table
+  output-file:
+    description: File to write results to; empty writes to stdout
+    required: false
+    default: ""
+  fail-build:
+    description: Whether to fail the build when vulnerabilities are found
+    required: false
+    default: true
+  only-fixed:
+    description: Only report vulnerabilities that have a fix available
+    required: false
+    default: false
+
+runs:
+  using: composite
+  steps:
+    - name: Run Grype vulnerability scan
+      uses: anchore/scan-action@v7
+      with:
+        image: ${{ inputs.image }}
+        output-format: ${{ inputs['output-format'] }}
+        output-file: ${{ inputs['output-file'] }}
+        severity-cutoff: high
+        fail-build: ${{ inputs['fail-build'] }}
+        only-fixed: ${{ inputs['only-fixed'] }}
