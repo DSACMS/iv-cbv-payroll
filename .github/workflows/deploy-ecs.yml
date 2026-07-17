@@ -64,13 +64,9 @@ jobs:
 
       - name: Download app task definition
         run: |
-          task_def_arn=$(aws ecs describe-services \
-            --cluster "${CLUSTER_NAME}" \
-            --services "emmy-${{ inputs.environment }}-app" \
-            --query 'services[0].taskDefinition' --output text)
-          echo "Current app task definition: ${task_def_arn}"
+          echo "Downloading latest app task definition from family ${CLUSTER_NAME}"
           aws ecs describe-task-definition \
-            --task-definition "${task_def_arn}" \
+            --task-definition "${CLUSTER_NAME}" \
             --query taskDefinition --output json > app-task-definition.json
 
       - name: Render app task definition
