@@ -21,7 +21,7 @@ For a guide to running the Emmy project on your own, and submitting changes, see
 
 The Emmy core team is a group of technologists, composed of engineers, designers, product, and procurement specialists at Centers of Medicare and Medicaid Services (CMS). The products developed are open source and SHARE IT compliant.
 
-A list of core team members responsible for the code and documentation in this repository can be found in [COMMUNITY.md](/COMMUNITY.md) and [CODEOWNERS.md](/CODEOWNERS.md).
+A list of core team members responsible for the code and documentation in this repository can be found in [COMMUNITY.md](/COMMUNITY.md) and [CODEOWNERS](/.github/CODEOWNERS).
 
 ## Documentation
 
