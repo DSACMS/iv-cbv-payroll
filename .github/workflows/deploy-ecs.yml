@@ -42,6 +42,7 @@ jobs:
       EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
       AWS_REGION: us-east-1
       CLUSTER_NAME: emmy-${{ inputs.environment }}
+      APP_TASK_FAMILY: emmy-${{ inputs.environment }}
 
     steps:
       - uses: actions/checkout@v7
@@ -64,9 +65,9 @@ jobs:
 
       - name: Download app task definition
         run: |
-          echo "Downloading latest app task definition from family ${CLUSTER_NAME}"
+          echo "Downloading latest app task definition from family ${APP_TASK_FAMILY}"
           aws ecs describe-task-definition \
-            --task-definition "${CLUSTER_NAME}" \
+            --task-definition "${APP_TASK_FAMILY}" \
             --query taskDefinition --output json > app-task-definition.json
 
       - name: Render app task definition
