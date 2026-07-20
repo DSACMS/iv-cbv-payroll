@@ -28,12 +28,20 @@ runs:
 
     # npm audit fix applies non-breaking updates only (no --force). Fixes that
     # require a major bump are surfaced by the audit but left for manual review.
+    # Gated on the npm:audit task so it runs only when a non-ignored advisory is
+    # present; otherwise npm audit fix rewrites package-lock.json for cosmetic
+    # normalization (e.g. libc metadata) and churns out empty PRs.
     - name: Apply non-breaking npm audit fixes
       id: fix
       if: inputs.fix == 'true'
       shell: bash
       working-directory: app
       run: |
+        if bundle exec rake npm:audit; then
+          echo "No actionable npm advisories — skipping npm audit fix."
+          echo "changes_made=false" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
         npm audit fix || true
         if git diff --quiet -- package-lock.json package.json; then
           echo "changes_made=false" >> "$GITHUB_OUTPUT"
