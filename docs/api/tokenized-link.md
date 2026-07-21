@@ -32,7 +32,7 @@ The API\_KEY is a 32 character secret that should not be disclosed publicly. Par
 
 If a request is not authenticated with a valid API\_KEY, the server will respond with a **401 Unauthorized** response.
 
-If the API\_KEY is compromised, email us immediately (EMMY@cms.hhs.gov) and we can disable the old API\_KEY and generate a new one.
+If the API\_KEY is compromised, email us immediately (emmy@cms.hhs.gov) and we can disable the old API\_KEY and generate a new one.
 
 # **Endpoints**
 
@@ -55,6 +55,9 @@ After the applicant follows the link, the payroll data they link during the sess
 | **Request Fields** |  |  |
 | language | No | Applicant's preferred written language, if known. When provided, the Emmy session will automatically begin in this language if we support this language. When omitted, will default to "en". Formatted as ISO 639-1 (2-character) code. |
 | agency_partner_metadata | Yes | Agency-specific metadata fields that will be used for indexing the income report in the document imaging system after it is sent back to the state agency. The specific indexing fields sent by an agency will be identified during an implementation call. Sample fields sent by some state agencies include `case_number` (String), `date_of_birth` (Date String), `doc_id` (String) |
+
+| Field Name | Required? | Description |
+| :-- | :-- | :-- |
 | **Response Fields** |  |  |
 | url | Yes | A unique URL containing a token that represents the session corresponding to the metadata submitted in the request.The URL is valid until 11:59:59 p.m. Eastern Time of the 14th day after its creation. |
 | expiration_date | Yes | Expiration date of the URL, formatted as an ISO8601 datetime. After this date, the user would need to use a new tokenized URL to access Emmy. |
