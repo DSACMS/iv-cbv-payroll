@@ -55,11 +55,11 @@ After the applicant follows the link, the payroll data they link during the sess
 | **Request Fields** |  |  |
 | language | No | Applicant's preferred written language, if known. When provided, the Emmy session will automatically begin in this language if we support this language. When omitted, will default to "en". Formatted as ISO 639-1 (2-character) code. |
 | agency_partner_metadata | Yes | Agency-specific metadata fields that will be used for indexing the income report in the document imaging system after it is sent back to the state agency. The specific indexing fields sent by an agency will be identified during an implementation call. Sample fields sent by some state agencies include `case_number` (String), `date_of_birth` (Date String), `doc_id` (String) |
-| **Response Fields** |  |  |  |  |  |  |  |
-| url | Yes | A unique URL containing a token that represents the session corresponding to the metadata submitted in the request.The URL is valid until 11:59:59 p.m. Eastern Time of the 14th day after its creation. |  |  |  |  |  |
-| expiration_date | Yes | Expiration date of the URL, formatted as an ISO8601 datetime. After this date, the user would need to use a new tokenized URL to access Emmy. |  |  |  |  |  |
-| language | Yes | Language code that the user will begin Emmy in. This will match the requested language if Emmy supports the language. Otherwise, it will fall back to "en" (English). |  |  |  |  |  |
-| agency_partner_metadata | Yes | Object including all agency-specific metadata fields used for indexing the income report. Values will match whatever is provided in the request's `agency_partner_metadata` field. |  |  |  |  |  |
+| **Response Fields** |  |  |
+| url | Yes | A unique URL containing a token that represents the session corresponding to the metadata submitted in the request.The URL is valid until 11:59:59 p.m. Eastern Time of the 14th day after its creation. |
+| expiration_date | Yes | Expiration date of the URL, formatted as an ISO8601 datetime. After this date, the user would need to use a new tokenized URL to access Emmy. |
+| language | Yes | Language code that the user will begin Emmy in. This will match the requested language if Emmy supports the language. Otherwise, it will fall back to "en" (English). |
+| agency_partner_metadata | Yes | Object including all agency-specific metadata fields used for indexing the income report. Values will match whatever is provided in the request's `agency_partner_metadata` field. |
 
 ### **Sample Request Payload:**
 
