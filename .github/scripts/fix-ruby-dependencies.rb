@@ -63,7 +63,8 @@ end
 
 def update_gems(gems, runner:)
   gems.each do |gem_name|
-    warn "bundle update --conservative #{gem_name} failed" unless runner.call("bundle update --conservative #{gem_name}")
+    cmd = "BUNDLE_FROZEN=false bundle update --conservative #{gem_name}"
+    warn "#{cmd} failed" unless runner.call(cmd)
   end
 end
 

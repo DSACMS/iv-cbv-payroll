@@ -101,8 +101,24 @@ class FixRubyDependenciesTest < Minitest::Test
       main(results: results, runner: runner.to_proc)
     end
 
-    assert_includes runner.commands, 'bundle update --conservative nokogiri'
-    assert_includes runner.commands, 'bundle update --conservative rack'
+    assert_includes runner.commands, 'BUNDLE_FROZEN=false bundle update --conservative nokogiri'
+    assert_includes runner.commands, 'BUNDLE_FROZEN=false bundle update --conservative rack'
+  ensure
+    ENV.delete('GITHUB_OUTPUT')
+  end
+
+  def test_update_disables_frozen_mode
+    results = [unpatched(name: 'loofah', version: '2.25.1', id: 'CVE-1', patched: ['>= 2.25.2'])]
+    runner = FakeRunner.new(diff_dirty: true)
+
+    Tempfile.create('gh_output') do |gh_out|
+      ENV['GITHUB_OUTPUT'] = gh_out.path
+      main(results: results, runner: runner.to_proc)
+    end
+
+    update = runner.commands.find { |c| c.include?('bundle update') }
+    refute_nil update, 'expected a bundle update command to be run'
+    assert_match(/\ABUNDLE_FROZEN=false /, update)
   ensure
     ENV.delete('GITHUB_OUTPUT')
   end
