@@ -117,6 +117,7 @@ class FixRubyDependenciesTest < Minitest::Test
     end
 
     update = runner.commands.find { |c| c.include?('bundle update') }
+    refute_nil update, 'expected a bundle update command to be run'
     assert_match(/\ABUNDLE_FROZEN=false /, update)
   ensure
     ENV.delete('GITHUB_OUTPUT')
