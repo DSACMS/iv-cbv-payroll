@@ -1,1 +1,6 @@
-pg8000
+## The following requirements were added by pip freeze:
+asn1crypto==1.5.1
+pg8000==1.31.5
+python-dateutil==2.9.0.post0
+scramp==1.4.12
+six==1.17.0
