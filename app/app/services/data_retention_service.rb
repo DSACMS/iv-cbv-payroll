@@ -15,6 +15,7 @@ class DataRetentionService
     redact_incomplete_cbv_flows
     redact_complete_cbv_flows
     redact_activity_flow_summaries
+    delete_delivered_documents
   end
 
   def redact_invitations
@@ -96,6 +97,14 @@ class DataRetentionService
       end
   end
 
+  def delete_delivered_documents
+    ActivityFlow
+      .completed
+      .where(documents_deleted_at: nil)
+      .where("completed_at < ?", REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER.ago)
+      .find_each { |activity_flow| delete_documents_for(activity_flow) }
+  end
+
   # Use after conducting a user test or other time we want to manually redact a
   # specific person's data in the system.
   def self.manually_redact_by_case_number!(case_number)
@@ -120,6 +129,29 @@ class DataRetentionService
   end
 
   private
+
+  def delete_documents_for(activity_flow)
+    deleted_keys = document_uploads_for(activity_flow).map do |attachment|
+      key = attachment.blob.key
+      attachment.purge
+      key
+    end
+
+    activity_flow.update_column(:documents_deleted_at, Time.current)
+
+    Rails.logger.info(
+      "Deleted delivered documents for activity_flow_id=#{activity_flow.id} " \
+      "keys=#{deleted_keys.join(",")} deleted_at=#{activity_flow.documents_deleted_at.iso8601}"
+    )
+  end
+
+  def document_uploads_for(activity_flow)
+    activity_flow.class
+      .reflect_on_all_associations(:has_many)
+      .select { |reflection| reflection.klass.include?(DocumentUploadable) }
+      .flat_map { |reflection| activity_flow.public_send(reflection.name) }
+      .flat_map(&:document_uploads_attachments)
+  end
 
   def redact_applicant_if_no_active_invitations_or_cbv_flows(applicant)
     return unless applicant
