@@ -620,7 +620,7 @@ RSpec.describe DataRetentionService do
           .from(nil).to(be_present)
       end
 
-      it "logs the report id and deleted keys" do
+      it "logs the activity flow id and deleted keys" do
         allow(Rails.logger).to receive(:info)
 
         service.delete_delivered_documents
