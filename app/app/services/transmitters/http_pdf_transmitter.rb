@@ -34,9 +34,15 @@ class Transmitters::HttpPdfTransmitter < Transmitters::BasePdfTransmitter
       end
     end
 
+    Rails.logger.info "Sending PDF transmission to #{url}"
+    request_started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     res = Net::HTTP.start(url.hostname, url.port, use_ssl: url.scheme == "https") do |http|
       http.request(req)
     end
+    request_duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - request_started_at
+    Rails.logger.info(
+      "PDF transmission response from #{url}: status=#{res.code} duration=#{format("%.3f", request_duration)}s"
+    )
 
     unless res.is_a?(Net::HTTPSuccess)
       raise_response_error!(res, HttpPdfTransmitterError)

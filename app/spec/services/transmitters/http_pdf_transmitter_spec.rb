@@ -42,6 +42,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
 
     before do
       allow(subject).to receive_messages(timestamp: time_now.to_i, signature: sig)
+      allow(Rails.logger).to receive(:info)
     end
 
     it "sends #pdf_output as a POST request" do
@@ -65,6 +66,23 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
       expect(
         stub
       ).to have_been_made
+    end
+
+    it "logs the request destination and response status with duration" do
+      stub_request(:post, transmission_method_configuration["pdf_api_url"])
+        .to_return(status: 200, body: "OK")
+      expect(Rails.logger).to receive(:info)
+        .with("Sending PDF transmission to http://fake-state.api.gov/api/v1/income-report-pdf")
+        .ordered
+      expect(Rails.logger).to receive(:info)
+        .with(
+          a_string_matching(
+            %r{\APDF transmission response from http://fake-state\.api\.gov/api/v1/income-report-pdf: status=200 duration=\d+\.\d{3}s\z}
+          )
+        )
+        .ordered
+
+      subject.deliver
     end
 
     context "with custom headers defined" do

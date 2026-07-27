@@ -17,9 +17,15 @@ class Transmitters::JsonTransmitter
         req[header_name] = header_value
       end
     end
+    Rails.logger.info "Sending JSON transmission to #{api_url}"
+    request_started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     res = Net::HTTP.start(api_url.hostname, api_url.port, use_ssl: api_url.scheme == "https") do |http|
       http.request(req)
     end
+    request_duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - request_started_at
+    Rails.logger.info(
+      "JSON transmission response from #{api_url}: status=#{res.code} duration=#{format("%.3f", request_duration)}s"
+    )
 
     case res
     when Net::HTTPSuccess, Net::HTTPRedirection

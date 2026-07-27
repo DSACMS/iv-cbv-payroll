@@ -32,6 +32,7 @@ RSpec.describe Transmitters::JsonTransmitter do
     allow(mock_client_agency).to receive_messages(transmission_method_configuration: transmission_method_configuration, id: "sandbox")
     allow(CbvApplicant).to receive(:valid_attributes_for_agency).with("sandbox").and_return([ "case_number" ])
     allow(Rails.logger).to receive(:error)
+    allow(Rails.logger).to receive(:info)
   end
 
   describe "#payload" do
@@ -71,6 +72,23 @@ RSpec.describe Transmitters::JsonTransmitter do
       end
 
       expect(cbv_flow.reload.json_transmitted_at).to be_present
+    end
+
+    it "logs the request destination and response status with duration" do
+      expect(Rails.logger).to receive(:info)
+        .with("Sending JSON transmission to http://fake-state.api.gov/api/v1/income-report")
+        .ordered
+      expect(Rails.logger).to receive(:info)
+        .with(
+          a_string_matching(
+            %r{\AJSON transmission response from http://fake-state\.api\.gov/api/v1/income-report: status=200 duration=\d+\.\d{3}s\z}
+          )
+        )
+        .ordered
+
+      VCR.use_cassette("json_transmitter_200") do
+        described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver
+      end
     end
   end
 
