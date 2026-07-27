@@ -101,7 +101,7 @@ class DataRetentionService
     ActivityFlow
       .completed
       .where(documents_deleted_at: nil)
-      .where("completed_at < ?", REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER.ago)
+      .where("activity_flows.updated_at < ?", REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER.ago)
       .find_each { |activity_flow| delete_documents_for(activity_flow) }
   end
 

@@ -579,10 +579,9 @@ RSpec.describe DataRetentionService do
 
   describe "#delete_delivered_documents" do
     let(:service) { described_class.new }
-    let(:now) { Time.current }
-    let(:completed_at) { 8.days.ago }
-    let!(:activity_flow) { create(:activity_flow, completed_at: completed_at) }
+    let!(:activity_flow) { create(:activity_flow, completed_at: Time.current) }
     let!(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+    let(:now) { activity_flow.updated_at + DataRetentionService::REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER + 1.minute }
 
     def attach_document(activity)
       activity.document_uploads.attach(
@@ -630,8 +629,8 @@ RSpec.describe DataRetentionService do
       end
     end
 
-    context "when the flow was delivered within the retention window" do
-      let(:completed_at) { 6.days.ago }
+    context "when the flow was updated within the retention window" do
+      let(:now) { activity_flow.updated_at + DataRetentionService::REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER - 1.minute }
 
       before { attach_document(volunteering_activity) }
 
