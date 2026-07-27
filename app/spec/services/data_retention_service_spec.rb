@@ -579,7 +579,7 @@ RSpec.describe DataRetentionService do
 
   describe "#delete_delivered_documents" do
     let(:service) { described_class.new }
-    let(:now) { Time.now }
+    let(:now) { Time.current }
     let(:completed_at) { 8.days.ago }
     let!(:activity_flow) { create(:activity_flow, completed_at: completed_at) }
     let!(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
