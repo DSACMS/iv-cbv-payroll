@@ -168,7 +168,7 @@ GEM
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
     csv (3.3.5)
-    datadog (2.38.0)
+    datadog (2.39.0)
       cgi
       datadog-ruby_core_source (~> 3.5, >= 3.5.3)
       libdatadog (~> 36.0.0.1.0)
@@ -332,7 +332,7 @@ GEM
       base64
       json-logic-rb (~> 0.1.5)
       mutex_m
-    msgpack (1.8.3)
+    msgpack (1.8.4)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     mutex_m (0.3.0)
@@ -656,7 +656,7 @@ DEPENDENCIES
   css_parser (~> 3.0.0)
   cssbundling-rails
   csv
-  datadog (~> 2.0)
+  datadog (~> 2.39)
   debase (~> 0.2.9)
   debase-ruby_core_source (~> 4.0)
   debug
