@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : "" %> | <%= t(activity_flow? ? "shared.pilot_name_hr1_full" : "shared.pilot_name") %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+  </head>
+  <body>
+    <div id="root">
+      <a class="usa-skipnav" href="#main-content"><%= t("shared.skip_link") %></a>
+      <main id="main-content">
+        <%= yield :activity_flow_header %>
+          <% if ENV["SITE_ALERT_ENABLED"] == "true" %>
+            <%= render Uswds::Alert.new(type: ENV["SITE_ALERT_TYPE"] || :info, heading: get_site_alert_title, class: "margin-bottom-4") do %>
+              <%= get_site_alert_body %>
+            <% end %>
+          <% end %>
+          <% if flash[:notice] %>
+            <%= render Uswds::Alert.new(heading: "Information", class: "margin-bottom-4") do %>
+              <%= flash[:notice].html_safe %>
+            <% end %>
+          <% end %>
+          <% if flash[:alert] %>
+            <%= render Uswds::Alert.new(type: :error, heading: flash[:alert_heading] || "Error", class: "margin-bottom-4") do %>
+              <%= flash[:alert].html_safe %>
+            <% end %>
+          <% end %>
+          <% if flash[:slim_alert] %>
+            <%= render Uswds::Alert.new(type: flash[:slim_alert]["type"], slim: true, class: "margin-bottom-4") do %>
+              <% if flash[:slim_alert]["message_html"] %>
+                <%= flash[:slim_alert]["message_html"].html_safe %>
+              <% elsif flash[:slim_alert]["message"] %>
+                <%= flash[:slim_alert]["message"] %>
+              <% end %>
+            <% end %>
+          <% end %>
+          <p><small>NO CHROME</small></p>
+          <%= yield %>
+      </main>
+      <% if session_timeout_enabled? %>
+        <%= render partial: "cbv/sessions/timeout_modal", locals: {
+          timeout: session_timeout_duration
+        } %>
+      <% end %>
+    </div>
+    <%= render partial: "help/help_modal" %>
+  </body>
+</html>

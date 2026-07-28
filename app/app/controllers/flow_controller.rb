@@ -129,5 +129,15 @@ class FlowController < ApplicationController
     if params[:launcher_timeout].present?
       session[:launcher_timeout] = params[:launcher_timeout].to_i.minutes.to_i
     end
+
+    if params[:embed].present?
+      session[:embed] = true
+    end
+
+    # this is last on purpose so that no embedding is the override
+    if params[:noembed].present?
+      session.delete("embed")
+    end
+    #
   end
 end

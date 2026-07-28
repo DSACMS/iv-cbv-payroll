@@ -21,11 +21,27 @@ class ApplicationController < ActionController::Base
     I18n.with_locale(locale, &action)
   end
 
+  layout :select_layout
+
   def agency_config
     Rails.application.config.client_agencies
   end
 
   private
+
+  def select_layout
+    if params[:embed] || session[:embed]
+      # allow resetting with "chrome" query parameter
+      if params[:noembed]
+        session.delete("embed")
+        return "application"
+      end
+      session[:embed] = true
+      "nochrome"
+    else
+      "application"
+    end
+  end
 
   def set_device_id_cookie
     cookies.permanent.signed[:device_id] ||= {
