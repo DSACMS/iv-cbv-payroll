@@ -167,7 +167,7 @@ GEM
       ssrf_filter (~> 1.5)
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
-    csv (3.3.5)
+    csv (3.3.6)
     datadog (2.39.0)
       cgi
       datadog-ruby_core_source (~> 3.5, >= 3.5.3)
