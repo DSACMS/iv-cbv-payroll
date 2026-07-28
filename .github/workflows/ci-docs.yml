@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       # This is the GitHub Actions-friendly port of the linter used in the Makefile.
-      - uses: tcort/github-action-markdown-link-check@v1.1.2
+      - uses: tcort/github-action-markdown-link-check@v1.1.3
         with:
           use-quiet-mode: "yes" # errors only.
           config-file: ".github/workflows/markdownlint-config.json"
