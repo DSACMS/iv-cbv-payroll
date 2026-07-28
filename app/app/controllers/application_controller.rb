@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
   helper :view
-  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
+  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?, :embedded?
   around_action :switch_locale
   before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :set_device_id_cookie
   after_action :apply_iframe_embedding
@@ -139,6 +139,10 @@ class ApplicationController < ActionController::Base
 
   def internal_environment?
     Rails.application.config.is_internal_environment
+  end
+
+  def embedded?
+    session[:embed].present?
   end
 
   def activity_hub_enabled?

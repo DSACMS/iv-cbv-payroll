@@ -27,6 +27,7 @@
     <%= f.submit t(".continue") %>
   <% end %>
 
+  <% unless embedded? %>
   <div class="divider margin-bottom-5"></div>
 
   <h2><%= t(".common_questions_header") %></h2>
@@ -66,5 +67,6 @@
       <%= t(".what_if_i_cant_use_this_body_1_html", agency_acronym: agency_translation("shared.agency_acronym")) %>
       <%= agency_translation(".what_if_i_cant_use_this_body_2_html", agency_url: current_agency.agency_contact_website, agency_acronym: agency_translation("shared.agency_acronym")) %>
     <% end %>
+  <% end %>
   <% end %>
 </div>

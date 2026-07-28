@@ -89,7 +89,7 @@
     </div>
   <% end %>
 
-  <% unless @flow.is_a?(ActivityFlow) %>
+  <% unless @flow.is_a?(ActivityFlow) || embedded? %>
     <div class="divider margin-bottom-2 margin-top-5"></div>
 
     <h2><%= t(".common_questions_header") %></h2>
