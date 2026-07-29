@@ -46,6 +46,7 @@ class ClientAgencyConfig
       caseworker_fallback_email
       caseworker_feedback_form
       default_origin
+      embed
       invitation_valid_days
       logo_path
       logo_square_path
@@ -79,6 +80,7 @@ class ClientAgencyConfig
       @authorized_emails = yaml["authorized_emails"] || ""
       @caseworker_feedback_form = yaml["caseworker_feedback_form"]
       @default_origin = yaml["default_origin"]
+      @embed = yaml["embed"] || {}
       @invitation_valid_days = yaml["invitation_valid_days"]
       @logo_path = yaml["logo_path"]
       @logo_square_path = yaml["logo_square_path"]

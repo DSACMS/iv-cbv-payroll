@@ -1,7 +1,12 @@
 <% title = t(".header") %>
 <% content_for :title, title %>
 <div data-controller="cbv-entry-page">
-  <h1><%= title %></h1>
+  <% if embedded? %>
+    <h1 class="<%= current_agency.embed["title_class"] %>"><%= title %></h1>
+  <% else %>
+    <h1><%= title %></h1>
+  <% end %>
+
 
   <p><%= t(".subheader_html", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
 

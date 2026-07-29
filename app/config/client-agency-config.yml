@@ -156,6 +156,8 @@
 # Uncomment for local testing:
 #    - http://localhost:8000
 #    - https://*.ngrok-free.app
+  embed:
+    title_class: sandbox-title
 
 - id: research
   agency_name: Example State Department of Health
