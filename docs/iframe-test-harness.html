@@ -51,12 +51,15 @@
       font-family: monospace;
     }
 
+    div#wrapper {
+      padding: 0.5rem;
+    }
+
     iframe {
-      width: 100%;
+      width: calc(100vw - 1rem);
       height: calc(100vh - 11rem);
       border: 0;
-      margin-left: 1em;
-      margin-right: 1em;
+      overflow: hidden;
       display: block;
     }
   </style>
@@ -86,7 +89,9 @@
     logs a <code>frame-ancestors</code> CSP violation in the dev console.
   </p>
 </header>
+<div id="wrapper">
 <iframe id="target-frame" title="Embedded Emmy app"></iframe>
+</div>
 
 <script>
   function handleFrameResizeMessage(message){
