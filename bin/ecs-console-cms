@@ -1,0 +1,13 @@
+#!/bin/bash
+# Open a Rails console in a temporary, audited CMS Cloud ECS Exec task.
+# Usage: bin/ecs-console-cms [environment] [readonly|admin]
+set -euo pipefail
+
+environment="${1:-dev}"
+access_mode="${2:-readonly}"
+script_dir=$(cd "$(dirname "$0")" && pwd)
+
+exec "$script_dir/run-command-cms" \
+  --access-mode "$access_mode" \
+  "$environment" \
+  '["bin/rails", "console"]'

@@ -1,0 +1,201 @@
+#!/bin/bash
+# -----------------------------------------------------------------------------
+# Run a command in a temporary, audited CMS Cloud ECS Exec task.
+#
+# The CMS Cloud infrastructure provides separate read-only and administrative
+# console task definitions and operator roles. This script assumes the
+# requested operator role, starts its task, waits for its ECS Exec agent, runs
+# the command interactively, and stops the task when the session ends.
+#
+# Optional parameters:
+#   --access-mode - Console task access level: readonly (default) or admin.
+#
+# Positional parameters:
+#   environment (required) - Application environment, such as dev, demo, or
+#     prod.
+#   command (required) - JSON list representing the command to run.
+#     e.g. '["bin/rails", "runner", "puts Rails.env"]'
+# -----------------------------------------------------------------------------
+set -euo pipefail
+
+usage() {
+  cat <<EOF
+Usage: $0 [--access-mode readonly|admin] environment command
+
+Example: $0 dev '["bin/rails", "runner", "puts Rails.env"]'
+Example: $0 --access-mode admin prod '["bin/rails", "console"]'
+EOF
+}
+
+access_mode="readonly"
+while (($#)); do
+  case "$1" in
+    --access-mode)
+      access_mode="${2:-}"
+      shift 2
+      ;;
+    --help)
+      usage
+      exit 0
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [[ "$access_mode" != "readonly" && "$access_mode" != "admin" ]]; then
+  echo "--access-mode must be readonly or admin" >&2
+  exit 2
+fi
+
+if (($# != 2)); then
+  usage >&2
+  exit 2
+fi
+
+environment="$1"
+command="$2"
+
+case "$environment" in
+  dev|test)
+    aws_account_id="554269192106"
+    ;;
+  sandbox|demo|uat|prod)
+    aws_account_id="162263641551"
+    ;;
+  *)
+    echo "Unsupported CMS Cloud environment: ${environment}" >&2
+    echo "Supported environments: dev, test, sandbox, demo, uat, prod" >&2
+    exit 2
+    ;;
+esac
+
+command_for_shell=$(jq -er '
+  if type == "array" and length > 0 and all(.[]; type == "string") then
+    @sh
+  else
+    error("command must be a non-empty JSON array of strings")
+  end
+' <<<"$command")
+
+cluster_name="emmy-${environment}"
+service_name="emmy-${environment}-app"
+task_definition="emmy-${environment}-console-${access_mode}"
+container_name="emmy-console-${access_mode}"
+operator_role_arn="arn:aws:iam::${aws_account_id}:role/${task_definition}-operator"
+task_arn=""
+
+cleanup() {
+  if [[ -z "$task_arn" ]]; then
+    return
+  fi
+
+  echo
+  echo "Stopping temporary CMS console task ${task_arn}..."
+  aws ecs stop-task \
+    --no-cli-pager \
+    --cluster "$cluster_name" \
+    --task "$task_arn" \
+    --reason "CMS Cloud console session ended" >/dev/null || true
+  aws ecs wait tasks-stopped \
+    --no-cli-pager \
+    --cluster "$cluster_name" \
+    --tasks "$task_arn" || true
+}
+
+trap cleanup EXIT
+trap 'exit 130' INT TERM
+
+echo "========================="
+echo "Running CMS Cloud command"
+echo "========================="
+echo "  environment=${environment}"
+echo "  access_mode=${access_mode}"
+echo "  command=${command}"
+echo
+
+network_configuration=$(aws ecs describe-services \
+  --no-cli-pager \
+  --cluster "$cluster_name" \
+  --services "$service_name" \
+  --query 'services[0].networkConfiguration' \
+  --output json)
+
+if [[ "$network_configuration" == "null" ]]; then
+  echo "Could not find network configuration for ${service_name} in ${cluster_name}" >&2
+  exit 1
+fi
+
+echo "Assuming CMS Cloud console operator role ${operator_role_arn}..."
+read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN < <(
+  aws sts assume-role \
+    --no-cli-pager \
+    --role-arn "$operator_role_arn" \
+    --role-session-name "emmy-console-$(date +%s)" \
+    --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' \
+    --output text
+)
+export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+
+caller_arn=$(aws sts get-caller-identity --no-cli-pager --query Arn --output text)
+echo "Using CMS Cloud identity ${caller_arn}"
+echo
+
+task_arn=$(aws ecs run-task \
+  --no-cli-pager \
+  --cluster "$cluster_name" \
+  --task-definition "$task_definition" \
+  --enable-execute-command \
+  --propagate-tags TASK_DEFINITION \
+  --launch-type FARGATE \
+  --network-configuration "$network_configuration" \
+  --query 'tasks[0].taskArn' \
+  --output text)
+
+if [[ -z "$task_arn" || "$task_arn" == "None" ]]; then
+  echo "Failed to start ${task_definition}" >&2
+  exit 1
+fi
+
+echo "Started temporary CMS console task ${task_arn}"
+echo "Waiting for the ECS Exec agent..."
+
+for _ in {1..60}; do
+  task_status=$(aws ecs describe-tasks \
+    --no-cli-pager \
+    --cluster "$cluster_name" \
+    --tasks "$task_arn" \
+    --query 'tasks[0].lastStatus' \
+    --output text)
+  agent_status=$(aws ecs describe-tasks \
+    --no-cli-pager \
+    --cluster "$cluster_name" \
+    --tasks "$task_arn" \
+    --query "tasks[0].containers[?name=='${container_name}'] | [0].managedAgents[?name=='ExecuteCommandAgent'] | [0].lastStatus" \
+    --output text)
+
+  if [[ "$agent_status" == "RUNNING" ]]; then
+    break
+  fi
+  if [[ "$task_status" == "STOPPED" ]]; then
+    echo "Console task stopped before ECS Exec became available:" >&2
+    aws ecs describe-tasks --no-cli-pager --cluster "$cluster_name" --tasks "$task_arn" >&2
+    exit 1
+  fi
+  sleep 2
+done
+
+if [[ "$agent_status" != "RUNNING" ]]; then
+  echo "Timed out waiting for the ECS Exec agent in ${task_arn}" >&2
+  exit 1
+fi
+
+echo "Starting ECS Exec session..."
+aws ecs execute-command \
+  --no-cli-pager \
+  --cluster "$cluster_name" \
+  --task "$task_arn" \
+  --container "$container_name" \
+  --interactive \
+  --command "sh -lc $(printf '%q' "exec ${command_for_shell}")"
