@@ -101,8 +101,14 @@ class DataRetentionService
     ActivityFlow
       .completed
       .where(documents_deleted_at: nil)
-      .where("activity_flows.updated_at < ?", REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER.ago)
-      .find_each { |activity_flow| delete_documents_for(activity_flow) }
+      .where("completed_at < ?", REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER.ago)
+      .find_each do |activity_flow|
+        delete_documents_for(activity_flow)
+      rescue StandardError => e
+        Rails.logger.error(
+          "Failed to delete delivered documents for activity_flow_id=#{activity_flow.id}: #{e.message}"
+        )
+      end
   end
 
   # Use after conducting a user test or other time we want to manually redact a
@@ -131,10 +137,29 @@ class DataRetentionService
   private
 
   def delete_documents_for(activity_flow)
-    deleted_keys = document_uploads_for(activity_flow).map do |attachment|
+    deleted_keys = []
+    failed_keys = []
+
+    document_uploads_for(activity_flow).each do |attachment|
       key = attachment.blob.key
-      attachment.purge
-      key
+
+      begin
+        attachment.purge
+        deleted_keys << key
+      rescue StandardError => e
+        failed_keys << key
+        Rails.logger.error(
+          "Failed to delete document for activity_flow_id=#{activity_flow.id} key=#{key}: #{e.message}"
+        )
+      end
+    end
+
+    if failed_keys.any?
+      Rails.logger.error(
+        "Did not mark documents deleted for activity_flow_id=#{activity_flow.id} " \
+        "because #{failed_keys.length} of #{deleted_keys.length + failed_keys.length} documents could not be deleted"
+      )
+      return
     end
 
     activity_flow.update_column(:documents_deleted_at, Time.current)
