@@ -53,8 +53,10 @@
 
     iframe {
       width: 100%;
-      height: calc(100vh - 9rem);
+      height: calc(100vh - 11rem);
       border: 0;
+      margin-left: 1em;
+      margin-right: 1em;
       display: block;
     }
   </style>
@@ -87,6 +89,24 @@
 <iframe id="target-frame" title="Embedded Emmy app"></iframe>
 
 <script>
+  function handleFrameResizeMessage(message){
+    // we got a message from our containing frame
+    console.log("frame reports: ", message);
+    // only response to a message with the expected structure and type field
+    if (message.type !== "frame-resized") return;
+    // set height
+    console.log("setting height to: ", message.height);
+    document.getElementById("target-frame").style.height = message.height + 'px';
+  }
+  window.addEventListener("message", (event) => {
+    // TODO: overly restrictive origin check, should probably check against parsedUrl
+    if (event.origin !== "http://localhost:3000") {
+      console.log("Got message from other origin: ", event.origin);
+      return
+    }
+    handleFrameResizeMessage(event.data);
+  });
+
   document.getElementById("origin").textContent =
     window.location.origin === "null"
       ? "null (file://) — 🚨🚨🚨 CSP cannot allowlist this; serve from a real origin"
