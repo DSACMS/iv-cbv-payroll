@@ -221,6 +221,7 @@
     work_programs: true
     employment: true
   allowed_iframe_ancestors:
+    - https://ac1752691868225.lightning.force.com
     - https://ac1752691868225.my.salesforce-sites.com
     - https://ac1752691868225.my.salesforce.com
     - https://ac1752691868225.my.site.com
