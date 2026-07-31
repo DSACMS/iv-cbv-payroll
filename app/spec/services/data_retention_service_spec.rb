@@ -580,8 +580,8 @@ RSpec.describe DataRetentionService do
   describe "#delete_delivered_documents" do
     let(:service) { described_class.new }
     let(:now) { Time.current }
-    let(:completed_at) { 8.days.ago }
-    let!(:activity_flow) { create(:activity_flow, completed_at: completed_at) }
+    let(:transmitted_at) { 8.days.ago }
+    let!(:activity_flow) { create(:activity_flow, completed_at: 8.days.ago, transmitted_at: transmitted_at) }
     let!(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
 
     def attach_document(activity)
@@ -630,8 +630,8 @@ RSpec.describe DataRetentionService do
       end
     end
 
-    context "when the flow was delivered within the retention window" do
-      let(:completed_at) { 6.days.ago }
+    context "when the flow was transmitted within the retention window" do
+      let(:transmitted_at) { 6.days.ago }
 
       before { attach_document(volunteering_activity) }
 
@@ -643,14 +643,15 @@ RSpec.describe DataRetentionService do
       end
     end
 
-    context "when the flow is not yet delivered" do
-      let!(:activity_flow) { create(:activity_flow, completed_at: nil) }
+    context "when the flow was completed but never transmitted" do
+      let(:transmitted_at) { nil }
 
       before { attach_document(volunteering_activity) }
 
       it "does not purge documents" do
         service.delete_delivered_documents
 
+        expect(activity_flow.reload.completed_at).to be_present
         expect(volunteering_activity.reload.document_uploads.attached?).to be(true)
         expect(activity_flow.reload.documents_deleted_at).to be_nil
       end
@@ -698,7 +699,7 @@ RSpec.describe DataRetentionService do
     end
 
     context "when a flow raises while its documents are being deleted" do
-      let!(:other_flow) { create(:activity_flow, completed_at: completed_at) }
+      let!(:other_flow) { create(:activity_flow, completed_at: 8.days.ago, transmitted_at: transmitted_at) }
       let!(:other_activity) { create(:volunteering_activity, activity_flow: other_flow) }
 
       before do

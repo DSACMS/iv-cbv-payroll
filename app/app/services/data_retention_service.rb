@@ -99,9 +99,9 @@ class DataRetentionService
 
   def delete_delivered_documents
     ActivityFlow
-      .completed
+      .transmitted
       .where(documents_deleted_at: nil)
-      .where("completed_at < ?", REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER.ago)
+      .where("transmitted_at < ?", REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER.ago)
       .find_each do |activity_flow|
         delete_documents_for(activity_flow)
       rescue StandardError => e
