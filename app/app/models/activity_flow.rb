@@ -21,6 +21,7 @@ class ActivityFlow < Flow
 
   scope :completed, -> { where.not(completed_at: nil) }
   scope :incomplete, -> { where(completed_at: nil) }
+  scope :transmitted, -> { where.not(transmitted_at: nil) }
 
   def self.create_from_invitation(invitation, device_id, params = {})
     flow = create(

@@ -577,6 +577,161 @@ RSpec.describe DataRetentionService do
     end
   end
 
+  describe "#delete_delivered_documents" do
+    let(:service) { described_class.new }
+    let(:now) { Time.current }
+    let(:transmitted_at) { 8.days.ago }
+    let!(:activity_flow) { create(:activity_flow, completed_at: 8.days.ago, transmitted_at: transmitted_at) }
+    let!(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+
+    def attach_document(activity)
+      activity.document_uploads.attach(
+        io: StringIO.new("hello"),
+        filename: "proof.txt",
+        content_type: "text/plain"
+      )
+      activity.document_uploads_attachments.last
+    end
+
+    around do |ex|
+      Timecop.freeze(now, &ex)
+    end
+
+    context "for a delivered flow past the retention window" do
+      let!(:attachment) { attach_document(volunteering_activity) }
+      let(:blob) { attachment.blob }
+
+      it "purges the uploaded documents" do
+        expect { service.delete_delivered_documents }
+          .to change { volunteering_activity.reload.document_uploads.attached? }
+          .from(true).to(false)
+      end
+
+      it "removes the blob and its stored file" do
+        service.delete_delivered_documents
+
+        expect(ActiveStorage::Blob.exists?(blob.id)).to be(false)
+        expect(blob.service.exist?(blob.key)).to be(false)
+      end
+
+      it "marks the flow's documents as deleted" do
+        expect { service.delete_delivered_documents }
+          .to change { activity_flow.reload.documents_deleted_at }
+          .from(nil).to(be_present)
+      end
+
+      it "logs the activity flow id and deleted keys" do
+        allow(Rails.logger).to receive(:info)
+
+        service.delete_delivered_documents
+
+        expect(Rails.logger).to have_received(:info)
+          .with(a_string_including("activity_flow_id=#{activity_flow.id}", blob.key))
+      end
+    end
+
+    context "when the flow was transmitted within the retention window" do
+      let(:transmitted_at) { 6.days.ago }
+
+      before { attach_document(volunteering_activity) }
+
+      it "does not purge documents or mark the flow" do
+        service.delete_delivered_documents
+
+        expect(volunteering_activity.reload.document_uploads.attached?).to be(true)
+        expect(activity_flow.reload.documents_deleted_at).to be_nil
+      end
+    end
+
+    context "when the flow was completed but never transmitted" do
+      let(:transmitted_at) { nil }
+
+      before { attach_document(volunteering_activity) }
+
+      it "does not purge documents" do
+        service.delete_delivered_documents
+
+        expect(activity_flow.reload.completed_at).to be_present
+        expect(volunteering_activity.reload.document_uploads.attached?).to be(true)
+        expect(activity_flow.reload.documents_deleted_at).to be_nil
+      end
+    end
+
+    context "when the flow's documents were already deleted" do
+      before { activity_flow.update_column(:documents_deleted_at, 1.day.ago) }
+
+      it "does not re-process the flow" do
+        expect { service.delete_delivered_documents }
+          .not_to change { activity_flow.reload.documents_deleted_at }
+      end
+    end
+
+    context "when purging one document fails" do
+      let!(:failing_attachment) { attach_document(volunteering_activity) }
+      let!(:other_attachment) { attach_document(volunteering_activity) }
+
+      before do
+        failing_key = failing_attachment.blob.key
+
+        allow_any_instance_of(ActiveStorage::Attachment).to receive(:purge).and_wrap_original do |method, *args|
+          raise "storage unavailable" if method.receiver.blob.key == failing_key
+
+          method.call(*args)
+        end
+      end
+
+      it "purges the remaining documents and logs the failure" do
+        allow(Rails.logger).to receive(:error)
+
+        service.delete_delivered_documents
+
+        expect(ActiveStorage::Blob.exists?(other_attachment.blob_id)).to be(false)
+        expect(ActiveStorage::Blob.exists?(failing_attachment.blob_id)).to be(true)
+        expect(Rails.logger).to have_received(:error)
+          .with(a_string_including("key=#{failing_attachment.blob.key}", "storage unavailable"))
+      end
+
+      it "does not mark the flow's documents as deleted" do
+        service.delete_delivered_documents
+
+        expect(activity_flow.reload.documents_deleted_at).to be_nil
+      end
+    end
+
+    context "when a flow raises while its documents are being deleted" do
+      let!(:other_flow) { create(:activity_flow, completed_at: 8.days.ago, transmitted_at: transmitted_at) }
+      let!(:other_activity) { create(:volunteering_activity, activity_flow: other_flow) }
+
+      before do
+        attach_document(volunteering_activity)
+        attach_document(other_activity)
+
+        failing_flow_id = activity_flow.id
+
+        allow_any_instance_of(ActivityFlow).to receive(:update_column).and_wrap_original do |method, *args|
+          raise ActiveRecord::StatementInvalid, "connection lost" if method.receiver.id == failing_flow_id
+
+          method.call(*args)
+        end
+      end
+
+      it "logs the failure and processes the remaining flows" do
+        allow(Rails.logger).to receive(:error)
+
+        service.delete_delivered_documents
+
+        expect(Rails.logger).to have_received(:error).with(
+          a_string_including(
+            "Failed to delete delivered documents for activity_flow_id=#{activity_flow.id}",
+            "connection lost"
+          )
+        )
+        expect(other_flow.reload.documents_deleted_at).to be_present
+        expect(activity_flow.reload.documents_deleted_at).to be_nil
+      end
+    end
+  end
+
   describe ".redact_case_numbers_by_agency" do
     let(:agency_to_redact) { "sandbox" }
     let!(:cbv_flow_invitation) { create(:cbv_flow_invitation, cbv_applicant_attributes: { case_number: "DELETEME001", client_agency_id: agency_to_redact }) }

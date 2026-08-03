@@ -1,0 +1,442 @@
+erDiagram
+	direction TB
+	"ActiveStorage::Attachment" {
+		datetime created_at
+		string name
+		string record_type
+	}
+	"ActiveStorage::Blob" {
+		integer byte_size
+		string checksum
+		string content_type
+		datetime created_at
+		string filename
+		string key
+		text metadata
+		string service_name
+	}
+	"ActiveStorage::VariantRecord" {
+		string variation_digest
+	}
+	ActivityFlow {
+		jsonb additional_information
+		string argyle_user_id
+		datetime completed_at
+		string confirmation_code
+		datetime created_at
+		string device_id
+		datetime documents_deleted_at
+		uuid end_user_id
+		integer renewal_required_months
+		integer reporting_window_months
+		string reporting_window_type
+		datetime transmitted_at
+		datetime updated_at
+	}
+	ActivityFlowEmploymentSummary {
+		datetime created_at
+		string employer_address
+		string employer_name
+		string employer_phone_number
+		date employment_start_date
+		string employment_status
+		date employment_termination_date
+		string employment_type
+		datetime redacted_at
+		datetime updated_at
+	}
+	ActivityFlowInvitation {
+		string auth_token
+		string client_agency_id
+		datetime created_at
+		jsonb pre_populated_activities
+		string reference_id
+		datetime updated_at
+	}
+	ActivityFlowMonthlySummary {
+		integer accrued_gross_earnings_cents
+		datetime created_at
+		date month
+		integer paychecks_count
+		datetime redacted_at
+		decimal total_gig_hours
+		decimal total_mileage
+		decimal total_w2_hours
+		datetime updated_at
+	}
+	ApiAccessToken {
+		string access_token
+		datetime created_at
+		datetime deleted_at
+		datetime updated_at
+	}
+	CbvApplicant {
+		string agency_id_number
+		string beacon_id
+		string case_number
+		string client_id_number
+		datetime created_at
+		date date_of_birth
+		string doc_id
+		string first_name
+		jsonb income_changes
+		string last_name
+		string middle_name
+		datetime redacted_at
+		date snap_application_date
+		datetime updated_at
+	}
+	CbvFlow {
+		jsonb additional_information
+		string argyle_user_id
+		string confirmation_code
+		datetime consented_to_authorized_use_at
+		datetime created_at
+		string device_id
+		uuid end_user_id
+		boolean has_other_jobs
+		datetime json_transmitted_at
+		date payroll_data_available_from
+		string pinwheel_token_id
+		datetime redacted_at
+		datetime transmitted_at
+		datetime updated_at
+	}
+	CbvFlowInvitation {
+		string auth_token
+		string client_agency_id
+		datetime created_at
+		string email_address
+		datetime expires_at
+		string language
+		datetime redacted_at
+		datetime updated_at
+	}
+	EducationActivity {
+		text additional_comments
+		string city
+		string contact_email
+		string contact_name
+		string contact_phone_number
+		datetime created_at
+		integer credit_hours
+		string data_source
+		boolean draft
+		boolean pre_populated
+		string school_name
+		string state
+		string status
+		string street_address
+		string street_address_line_2
+		datetime updated_at
+		string zip_code
+	}
+	EducationActivityMonth {
+		datetime created_at
+		decimal hours
+		date month
+		datetime updated_at
+	}
+	EmploymentActivity {
+		text additional_comments
+		string city
+		string contact_email
+		string contact_name
+		string contact_phone_number
+		datetime created_at
+		string data_source
+		boolean draft
+		string employer_name
+		boolean is_self_employed
+		boolean pre_populated
+		string state
+		string street_address
+		string street_address_line_2
+		datetime updated_at
+		string zip_code
+	}
+	EmploymentActivityMonth {
+		datetime created_at
+		decimal gross_income
+		decimal hours
+		date month
+		datetime updated_at
+	}
+	Household {
+		string auth_token
+		string client_agency_id
+		datetime created_at
+		jsonb launcher_overrides
+		string reference_id
+		datetime updated_at
+	}
+	HouseholdMember {
+		datetime created_at
+		string display_name
+		string reference_id
+		string role_label
+		datetime updated_at
+	}
+	Identity {
+		datetime created_at
+		date date_of_birth
+		string first_name
+		string last_name
+		datetime updated_at
+	}
+	JobTrainingActivity {
+		text additional_comments
+		string city
+		string contact_email
+		string contact_name
+		string contact_phone_number
+		datetime created_at
+		string data_source
+		boolean draft
+		string organization_address
+		string organization_name
+		boolean pre_populated
+		string program_name
+		string state
+		string street_address
+		string street_address_line_2
+		datetime updated_at
+		string zip_code
+	}
+	JobTrainingActivityMonth {
+		datetime created_at
+		decimal hours
+		date month
+		datetime updated_at
+	}
+	NscEnrollmentTerm {
+		datetime created_at
+		decimal credit_hours
+		string enrollment_status
+		string first_name
+		string last_name
+		string middle_name
+		string school_name
+		date term_begin
+		date term_end
+		datetime updated_at
+	}
+	PayrollAccount {
+		string additional_information
+		string aggregator_account_id
+		datetime created_at
+		string data_source
+		boolean draft
+		string flow_type
+		datetime income_synced_at
+		datetime redacted_at
+		string supported_jobs
+		string synchronization_status
+		datetime updated_at
+	}
+	"SolidQueue::BlockedExecution" {
+		string concurrency_key
+		datetime created_at
+		datetime expires_at
+		integer priority
+		string queue_name
+	}
+	"SolidQueue::ClaimedExecution" {
+		datetime created_at
+	}
+	"SolidQueue::FailedExecution" {
+		datetime created_at
+		text error
+	}
+	"SolidQueue::Job" {
+		string active_job_id
+		text arguments
+		string class_name
+		string concurrency_key
+		datetime created_at
+		datetime finished_at
+		integer priority
+		string queue_name
+		datetime scheduled_at
+		datetime updated_at
+	}
+	"SolidQueue::Pause" {
+		datetime created_at
+		string queue_name
+	}
+	"SolidQueue::Process" {
+		datetime created_at
+		string hostname
+		string kind
+		datetime last_heartbeat_at
+		text metadata
+		string name
+		integer pid
+	}
+	"SolidQueue::ReadyExecution" {
+		datetime created_at
+		integer priority
+		string queue_name
+	}
+	"SolidQueue::RecurringExecution" {
+		datetime created_at
+		datetime run_at
+	}
+	"SolidQueue::RecurringTask" {
+		text arguments
+		string class_name
+		string command
+		datetime created_at
+		text description
+		string key
+		integer priority
+		string queue_name
+		string schedule
+		boolean static
+		datetime updated_at
+	}
+	"SolidQueue::ScheduledExecution" {
+		datetime created_at
+		integer priority
+		string queue_name
+		datetime scheduled_at
+	}
+	"SolidQueue::Semaphore" {
+		datetime created_at
+		datetime expires_at
+		datetime updated_at
+		integer value
+	}
+	User {
+		string client_agency_id
+		datetime created_at
+		datetime current_sign_in_at
+		string current_sign_in_ip
+		string email
+		string encrypted_password
+		jsonb invalidated_session_ids
+		boolean is_service_account
+		datetime last_sign_in_at
+		string last_sign_in_ip
+		datetime remember_created_at
+		datetime reset_password_sent_at
+		string reset_password_token
+		integer sign_in_count
+		datetime updated_at
+	}
+	VolunteeringActivity {
+		text additional_comments
+		string city
+		string coordinator_email
+		string coordinator_name
+		string coordinator_phone_number
+		datetime created_at
+		string data_source
+		date date
+		boolean draft
+		integer hours
+		string organization_name
+		boolean pre_populated
+		string state
+		string street_address
+		string street_address_line_2
+		datetime updated_at
+		string zip_code
+	}
+	VolunteeringActivityMonth {
+		datetime created_at
+		decimal hours
+		date month
+		datetime updated_at
+	}
+	WebhookEvent {
+		datetime created_at
+		string event_name
+		string event_outcome
+		datetime updated_at
+	}
+	Record ||--}o "ActiveStorage::Attachment" : ""
+	"ActiveStorage::Blob" ||--}o "ActiveStorage::Attachment" : ""
+	"ActiveStorage::VariantRecord" ||--}o "ActiveStorage::Attachment" : ""
+	EducationActivity ||--}o "ActiveStorage::Attachment" : ""
+	EmploymentActivity ||--}o "ActiveStorage::Attachment" : ""
+	JobTrainingActivity ||--}o "ActiveStorage::Attachment" : ""
+	VolunteeringActivity ||--}o "ActiveStorage::Attachment" : ""
+	"ActiveStorage::Blob" ||--}o "ActiveStorage::VariantRecord" : ""
+	"ActiveStorage::Blob" o|..|o "ActiveStorage::Blob" : ""
+	ActivityFlow ||--}o Activity : ""
+	ActivityFlow ||--}o EducationActivity : ""
+	ActivityFlow ||--}o EmploymentActivity : ""
+	ActivityFlow ||--}o JobTrainingActivity : ""
+	ActivityFlow ||--}o VolunteeringActivity : ""
+	CbvApplicant ||--}o ActivityFlow : ""
+	"CbvApplicant::Accenture" ||--}o ActivityFlow : ""
+	"CbvApplicant::LaLdh" ||--}o ActivityFlow : ""
+	"CbvApplicant::NhDhhs" ||--}o ActivityFlow : ""
+	"CbvApplicant::Research" ||--}o ActivityFlow : ""
+	"CbvApplicant::Sandbox" ||--}o ActivityFlow : ""
+	Identity o|--}o ActivityFlow : ""
+	ActivityFlowInvitation o|--}o ActivityFlow : ""
+	ActivityFlow o|..}o HouseholdMember : ""
+	ActivityFlow o|--}o VolunteeringActivity : ""
+	ActivityFlow o|--}o JobTrainingActivity : ""
+	ActivityFlow o|--}o EducationActivity : ""
+	ActivityFlow o|--}o EmploymentActivity : ""
+	Flow ||--}o PayrollAccount : ""
+	ActivityFlow ||--}o PayrollAccount : ""
+	CbvFlow ||--}o PayrollAccount : ""
+	Flow ||--}o "PayrollAccount::Argyle" : ""
+	Flow ||--}o "PayrollAccount::Pinwheel" : ""
+	ActivityFlow ||--}o ActivityFlowMonthlySummary : ""
+	ActivityFlow ||--}o ActivityFlowEmploymentSummary : ""
+	PayrollAccount ||--}o ActivityFlowEmploymentSummary : ""
+	"PayrollAccount::Argyle" ||--}o ActivityFlowEmploymentSummary : ""
+	"PayrollAccount::Pinwheel" ||--}o ActivityFlowEmploymentSummary : ""
+	CbvApplicant o|--}o ActivityFlowInvitation : ""
+	"CbvApplicant::Accenture" o|--}o ActivityFlowInvitation : ""
+	"CbvApplicant::LaLdh" o|--}o ActivityFlowInvitation : ""
+	"CbvApplicant::NhDhhs" o|--}o ActivityFlowInvitation : ""
+	"CbvApplicant::Research" o|--}o ActivityFlowInvitation : ""
+	"CbvApplicant::Sandbox" o|--}o ActivityFlowInvitation : ""
+	ActivityFlowInvitation ||--|o HouseholdMember : ""
+	PayrollAccount ||--}o ActivityFlowMonthlySummary : ""
+	"PayrollAccount::Argyle" ||--}o ActivityFlowMonthlySummary : ""
+	"PayrollAccount::Pinwheel" ||--}o ActivityFlowMonthlySummary : ""
+	User ||--}o ApiAccessToken : ""
+	CbvApplicant o|--}o CbvFlow : ""
+	"CbvApplicant::Accenture" o|--}o CbvFlow : ""
+	"CbvApplicant::LaLdh" o|--}o CbvFlow : ""
+	"CbvApplicant::NhDhhs" o|--}o CbvFlow : ""
+	"CbvApplicant::Research" o|--}o CbvFlow : ""
+	"CbvApplicant::Sandbox" o|--}o CbvFlow : ""
+	CbvApplicant o|--}o CbvFlowInvitation : ""
+	"CbvApplicant::Accenture" o|--}o CbvFlowInvitation : ""
+	"CbvApplicant::LaLdh" o|--}o CbvFlowInvitation : ""
+	"CbvApplicant::NhDhhs" o|--}o CbvFlowInvitation : ""
+	"CbvApplicant::Research" o|--}o CbvFlowInvitation : ""
+	"CbvApplicant::Sandbox" o|--}o CbvFlowInvitation : ""
+	CbvFlowInvitation o|--}o CbvFlow : ""
+	User ||--}o CbvFlowInvitation : ""
+	EducationActivity o|..}o "ActiveStorage::Blob" : ""
+	EducationActivity ||--}o NscEnrollmentTerm : ""
+	EducationActivity ||--}o EducationActivityMonth : ""
+	EmploymentActivity o|..}o "ActiveStorage::Blob" : ""
+	EmploymentActivity ||--}o EmploymentActivityMonth : ""
+	Household ||--}o HouseholdMember : ""
+	JobTrainingActivity o|..}o "ActiveStorage::Blob" : ""
+	JobTrainingActivity ||--}o JobTrainingActivityMonth : ""
+	PayrollAccount ||--}o WebhookEvent : ""
+	"PayrollAccount::Argyle" ||--}o WebhookEvent : ""
+	"PayrollAccount::Pinwheel" ||--}o WebhookEvent : ""
+	"SolidQueue::BlockedExecution" o|--|o "SolidQueue::Semaphore" : ""
+	"SolidQueue::Process" ||--}o "SolidQueue::ClaimedExecution" : ""
+	"SolidQueue::Job" o|--|o "SolidQueue::RecurringExecution" : ""
+	"SolidQueue::Job" o|--|o "SolidQueue::FailedExecution" : ""
+	"SolidQueue::Job" o|--|o "SolidQueue::ScheduledExecution" : ""
+	"SolidQueue::Job" o|--|o "SolidQueue::BlockedExecution" : ""
+	"SolidQueue::Job" o|--|o "SolidQueue::ReadyExecution" : ""
+	"SolidQueue::Job" o|--|o "SolidQueue::ClaimedExecution" : ""
+	"SolidQueue::Process" o|--}o "SolidQueue::Process" : ""
+	"SolidQueue::RecurringTask" o|--}o "SolidQueue::RecurringExecution" : ""
+	VolunteeringActivity o|..}o "ActiveStorage::Blob" : ""
+	VolunteeringActivity ||--}o VolunteeringActivityMonth : ""
