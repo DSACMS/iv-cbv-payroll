@@ -44,7 +44,7 @@ Public documentation is in the [/docs](/docs) subfolder.
 
 ### Versioning
 
-Emmy App is at **0.1.0**. We follow semantic versioning with one deviation:
+Emmy App follows semantic versioning with one deviation:
 user-facing interface changes are promoted to MAJOR, because states train staff
 and applicants using static materials that a "cosmetic" change can invalidate.
 See [docs/versioning.md](/docs/versioning.md) for the rubric and
