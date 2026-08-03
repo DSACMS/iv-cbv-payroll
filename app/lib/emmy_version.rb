@@ -4,6 +4,10 @@ module EmmyVersion
   VERSION_FILE = "version.txt"
 
   def self.current
-    @current ||= Rails.root.join(VERSION_FILE).read.strip.freeze
+    @current ||= begin
+      Rails.root.join(VERSION_FILE).read.strip.freeze
+    rescue SystemCallError, IOError
+      "unknown"
+    end
   end
 end
