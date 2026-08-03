@@ -54,6 +54,8 @@ RUN apt-get update -qq && \
       libcurl4t64 \
       libexif-dev \
       libexif12 \
+      libexpat1 \
+      libexpat1-dev \
       libgcrypt20 \
       libgraphite2-3 \
       libgraphite2-dev \
