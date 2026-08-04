@@ -49,34 +49,6 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
-  describe '#enable_mini_profiler_in_demo' do
-    before do
-      routes.draw do
-        get 'test_action', to: 'anonymous#test_action'
-      end
-
-      allow(Rails.application.config).to receive(:is_internal_environment).and_return(is_internal_environment)
-    end
-
-    context 'when in demo environment' do
-      let(:is_internal_environment) { true }
-
-      it 'authorizes mini profiler' do
-        expect(Rack::MiniProfiler).to receive(:authorize_request)
-        get :test_action
-      end
-    end
-
-    context 'when not in demo environment' do
-      let(:is_internal_environment) { false }
-
-      it 'does not authorize mini profiler' do
-        expect(Rack::MiniProfiler).not_to receive(:authorize_request)
-        get :test_action
-      end
-    end
-  end
-
   describe '#detect_client_agency_from_domain' do
     before do
       routes.draw do
