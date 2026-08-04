@@ -51,6 +51,7 @@ Rails.application.routes.draw do
     scope "/activities", as: :activities_flow, module: :activities do
       root to: "activities#index"
       resource :entry, only: %i[show], controller: "entries"
+      post "presigned_uploads", to: "presigned_uploads#create", as: :presigned_uploads
       resources :community_service, only: %i[new create edit update destroy], controller: "volunteering" do
         resources :document_uploads, only: %i[new create destroy], controller: "/activities/document_uploads"
         resources :months, only: %i[edit update], controller: "volunteering/months"
@@ -142,6 +143,10 @@ Rails.application.routes.draw do
     scope :events do
       post :user_action, to: "user_events#user_action"
     end
+  end
+
+  if ENV["UNSCANNED_BUCKET_NAME"].blank?
+    post "/uploads/fake_s3", to: "fake_s3_uploads#create", as: :fake_s3_uploads
   end
 
   mount MissionControl::Jobs::Engine, at: "/jobs"

@@ -48,6 +48,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: "Helping Hands"), skip_axe_rules: %w[heading-order])
     attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
+
+    expect(page).to have_content(I18n.t("activities.document_uploads.heading", document_count: 1))
+    expect(page).to have_content("document_upload.pdf")
     click_button I18n.t("activities.document_uploads.new.continue")
 
     # Review page

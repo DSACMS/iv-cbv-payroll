@@ -21,7 +21,10 @@ class Activities::DocumentUploadsController < Activities::BaseController
   end
 
   def destroy
-    @activity.document_uploads_attachments.find(params[:id]).purge
+    attachment = @activity.document_uploads_attachments.find(params[:id])
+    blob = attachment.blob
+    attachment.delete
+    blob.destroy
 
     redirect_to upload_page_path
   end
