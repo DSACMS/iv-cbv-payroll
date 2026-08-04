@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   helper :view
   helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
   around_action :switch_locale
-  before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :enable_mini_profiler_in_demo, :set_device_id_cookie
+  before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :set_device_id_cookie
   after_action :apply_iframe_embedding
 
   rescue_from ActionController::InvalidAuthenticityToken do
@@ -137,12 +137,6 @@ class ApplicationController < ActionController::Base
 
   def normalize_token(token)
     ALPHANUMERIC_PREFIX_REGEXP.match(token.to_s)&.[](1)
-  end
-
-  def enable_mini_profiler_in_demo
-    return unless Rails.application.config.is_internal_environment
-
-    Rack::MiniProfiler.authorize_request
   end
 
   def client_agency_from_domain
