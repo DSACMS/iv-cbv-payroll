@@ -96,7 +96,7 @@ RSpec.describe PresignedUploadService do
     it "points uploads at the local stand-in when the unscanned service is Disk" do
       upload = described_class.new.call([ pdf ]).first
 
-      expect(upload[:url]).to eq(Rails.application.routes.url_helpers.fake_s3_uploads_path)
+      expect(upload[:url]).to eq(Rails.application.routes.url_helpers.activities_flow_local_uploads_path)
     end
   end
 

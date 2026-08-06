@@ -86,7 +86,7 @@ class PresignedUploadService
       )
       [ post.url, post.fields ]
     else
-      [ fake_s3_uploads_path, { "key" => key, "Content-Type" => content_type } ]
+      [ activities_flow_local_uploads_path, { "key" => key, "Content-Type" => content_type } ]
     end
   end
 end
