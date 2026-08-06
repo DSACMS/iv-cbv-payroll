@@ -98,6 +98,12 @@ RSpec.describe PresignedUploadService do
 
       expect(upload[:url]).to eq(Rails.application.routes.url_helpers.activities_flow_local_uploads_path)
     end
+
+    it "carries a CSRF token in the local stand-in's form fields" do
+      upload = described_class.new(authenticity_token: "a-token").call([ pdf ]).first
+
+      expect(upload[:fields]).to include("authenticity_token" => "a-token")
+    end
   end
 
   describe "#call against S3" do
@@ -122,6 +128,12 @@ RSpec.describe PresignedUploadService do
       expect(policy_conditions(upload)).to include(
         [ "content-length-range", 0, described_class::MAX_UPLOAD_BYTES ]
       )
+    end
+
+    it "does not leak a CSRF token into the S3 policy fields" do
+      upload = described_class.new(service: service, authenticity_token: "a-token").call([ pdf ]).first
+
+      expect(upload[:fields]).not_to include("authenticity_token")
     end
 
     it "pins the exact key and content type in the signed policy" do

@@ -24,7 +24,7 @@ class Activities::DocumentUploadsController < Activities::BaseController
     attachment = @activity.document_uploads_attachments.find(params[:id])
     blob = attachment.blob
     attachment.delete
-    blob.destroy
+    blob.destroy unless blob.attachments.exists?
 
     redirect_to upload_page_path
   end

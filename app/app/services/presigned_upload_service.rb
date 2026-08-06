@@ -18,8 +18,9 @@ class PresignedUploadService
 
   include Rails.application.routes.url_helpers
 
-  def initialize(service: ActiveStorage::Blob.services.fetch(SERVICE_NAME))
+  def initialize(service: ActiveStorage::Blob.services.fetch(SERVICE_NAME), authenticity_token: nil)
     @service = service
+    @authenticity_token = authenticity_token
   end
 
   def call(files)
@@ -30,7 +31,7 @@ class PresignedUploadService
 
   private
 
-  attr_reader :service
+  attr_reader :service, :authenticity_token
 
   def normalize(file)
     {
@@ -86,7 +87,14 @@ class PresignedUploadService
       )
       [ post.url, post.fields ]
     else
-      [ activities_flow_local_uploads_path, { "key" => key, "Content-Type" => content_type } ]
+      [
+        activities_flow_local_uploads_path,
+        {
+          "key" => key,
+          "Content-Type" => content_type,
+          "authenticity_token" => authenticity_token
+        }.compact
+      ]
     end
   end
 end

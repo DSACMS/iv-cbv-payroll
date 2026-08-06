@@ -54,6 +54,31 @@ RSpec.describe Activities::LocalUploadsController, type: :controller do
       expect(response).to have_http_status(:bad_request)
     end
 
+    it "refuses to write anything without the CSRF token the presign response carries" do
+      ActionController::Base.allow_forgery_protection = true
+
+      post :create, params: { key: key, file: pdf }
+
+      expect(response).not_to have_http_status(:no_content)
+      expect(service.exist?(key)).to be(false)
+    ensure
+      ActionController::Base.allow_forgery_protection = false
+    end
+
+    it "accepts the CSRF token as a form field, since the S3 path cannot send a header" do
+      ActionController::Base.allow_forgery_protection = true
+
+      post :create, params: {
+        key: key,
+        file: pdf,
+        authenticity_token: controller.send(:form_authenticity_token)
+      }
+
+      expect(response).to have_http_status(:no_content)
+    ensure
+      ActionController::Base.allow_forgery_protection = false
+    end
+
     it "refuses to write anything without a flow session" do
       session.delete(:flow_id)
 

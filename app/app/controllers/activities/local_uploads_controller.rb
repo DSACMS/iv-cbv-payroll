@@ -1,7 +1,5 @@
 module Activities
   class LocalUploadsController < Activities::BaseController
-    skip_forgery_protection
-
     KEY_FORMAT = /\A[a-z0-9]{28}\z/
 
     def create

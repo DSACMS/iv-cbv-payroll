@@ -388,6 +388,32 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       )
     end
 
+    it "keeps the blob when another activity still has it attached" do
+      shared_blob = ActiveStorage::Blob.create!(
+        filename: "shared.pdf",
+        content_type: "application/pdf",
+        byte_size: 8,
+        checksum: Digest::MD5.base64digest("%PDF-1.4"),
+        service_name: PresignedUploadService::SERVICE_NAME,
+        metadata: { identified: true, analyzed: true }
+      )
+      first = create(:volunteering_activity, activity_flow: activity_flow)
+      second = create(:volunteering_activity, activity_flow: activity_flow)
+      first.document_uploads.attach(shared_blob)
+      second.document_uploads.attach(shared_blob)
+
+      expect {
+        delete :destroy, params: {
+          community_service_id: first.id,
+          id: first.document_uploads_attachments.first.id
+        }
+      }.not_to raise_error
+
+      expect(ActiveStorage::Blob.exists?(shared_blob.id)).to be(true)
+      expect(second.reload.document_uploads.count).to eq(1)
+      expect(first.reload.document_uploads).to be_empty
+    end
+
     it "does not try to delete the object from the quarantine bucket" do
       volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
       volunteering_activity.document_uploads.attach(

@@ -1,7 +1,9 @@
 module Activities
   class PresignedUploadsController < Activities::BaseController
     def create
-      uploads = PresignedUploadService.new.call(requested_uploads)
+      uploads = PresignedUploadService
+        .new(authenticity_token: form_authenticity_token)
+        .call(requested_uploads)
 
       render json: { uploads: uploads }
     rescue PresignedUploadService::UnacceptableUpload => e
