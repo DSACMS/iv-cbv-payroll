@@ -138,27 +138,9 @@ Once the server is running, you can exercise the full flow with sandbox data
 (this mirrors the "Manual Testing" section of
 [`CONTRIBUTING.md`](/CONTRIBUTING.md)):
 
-1. Go to <http://localhost:3000/sandbox/sso> and sign in as a caseworker with
-   your Nava credentials. (Ask the team to get you set up to log in.)
-2. Create an invitation for an applicant. Any email works — nothing is actually
-   sent locally.
-3. In a terminal, open a Rails console and grab the invitation link:
-   ```bash
-   cd app
-   bin/rails console
-   ```
-   ```ruby
-   CbvFlowInvitation.last.to_url
-   ```
-4. Open that URL to start acting as an applicant. Search for an employer; when
-   you select one, the local page shows fake credentials at the bottom — use
-   those to sign in and complete the flow, including the generated PDF.
-5. To see the caseworker's version of the report PDF, append
-   `?is_caseworker=true` to the `/cbv/summary.pdf` path.
-6. To switch which client agency a flow belongs to, from the Rails console:
-   ```ruby
-   CbvFlow.last.update(client_agency_id: 'la_ldh') # or 'sandbox'
-   ```
+1. Go to <http://localhost:3000/launcher> to get the interface to generate a link for an applicant
+2. Create an invitation for an applicant. This will generate a link URL, looking something like: `http://localhost:3000/activities/start/aqkAp4YxZd?reporting_window=application&reporting_window_months=2`
+3. Open that URL to start acting as an applicant. Search for an employer. Note: this is where your local replication will break down if you haven't set up an Argyle servicce.
 
 ## Optional: test the outbound JSON API
 
