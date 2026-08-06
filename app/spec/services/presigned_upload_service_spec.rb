@@ -2,7 +2,7 @@ require "rails_helper"
 require "active_storage/service/s3_service"
 
 RSpec.describe PresignedUploadService do
-  let(:checksum) { Digest::MD5.base64digest("%PDF-1.4") }
+  let(:checksum) { Digest::SHA256.base64digest("%PDF-1.4") }
   let(:pdf) { { filename: "verification.pdf", content_type: "application/pdf", byte_size: 1_024, checksum: checksum } }
 
   def policy_conditions(upload)

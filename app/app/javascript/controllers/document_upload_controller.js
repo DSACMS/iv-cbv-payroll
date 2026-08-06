@@ -78,7 +78,10 @@ export default class extends Controller {
   }
 
   async #requestPresignedUploads(files) {
-    const checksums = await Promise.all(files.map((file) => fileChecksum(file)))
+    const checksums = []
+    for (const file of files) {
+      checksums.push(await fileChecksum(file))
+    }
 
     const response = await fetch(this.presignUrlValue, {
       method: "POST",

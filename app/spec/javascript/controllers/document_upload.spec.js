@@ -1,9 +1,10 @@
 import { describe, beforeEach, afterEach, it, expect, vi } from "vitest"
 import DocumentUploadController from "@js/controllers/document_upload_controller"
+import fileChecksum from "@js/utilities/file_checksum"
 
-vi.mock("@js/utilities/file_checksum", () => ({
-  default: vi.fn(() => Promise.resolve("dGVzdC1jaGVja3N1bS1oZXJlMDA==")),
-}))
+const CHECKSUM = "n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg="
+
+vi.mock("@js/utilities/file_checksum", () => ({ default: vi.fn() }))
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024
 const TOO_LARGE = "Each file must be smaller than 25 MB."
@@ -69,6 +70,8 @@ describe("DocumentUploadController", () => {
       </form>
     `
 
+    fileChecksum.mockImplementation(() => Promise.resolve(CHECKSUM))
+
     window.Stimulus.register("document-upload", DocumentUploadController)
     input = document.querySelector("input[type=file]")
   })
@@ -124,6 +127,38 @@ describe("DocumentUploadController", () => {
     expect(names).toEqual(["key", "policy", "file"])
   })
 
+  it("hashes one file at a time so a multi-file selection cannot exhaust memory", async () => {
+    let concurrent = 0
+    let peak = 0
+    fileChecksum.mockImplementation(async () => {
+      peak = Math.max(peak, (concurrent += 1))
+      await Promise.resolve()
+      concurrent -= 1
+      return CHECKSUM
+    })
+
+    fetch
+      .mockResolvedValueOnce(
+        jsonResponse({
+          uploads: [
+            presignedUploadFor("a.pdf", "signed-id-1"),
+            presignedUploadFor("b.pdf", "signed-id-2"),
+            presignedUploadFor("c.pdf", "signed-id-3"),
+          ],
+        })
+      )
+      .mockResolvedValue({ ok: true, status: 204 })
+
+    await selectFiles(
+      buildFile("a.pdf", "application/pdf", 1024),
+      buildFile("b.pdf", "application/pdf", 1024),
+      buildFile("c.pdf", "application/pdf", 1024)
+    )
+
+    expect(fileChecksum).toHaveBeenCalledTimes(3)
+    expect(peak).toBe(1)
+  })
+
   it("sends the browser-computed checksum with the presign request", async () => {
     fetch
       .mockResolvedValueOnce(
@@ -139,7 +174,7 @@ describe("DocumentUploadController", () => {
       filename: "verification.pdf",
       content_type: "application/pdf",
       byte_size: 1024,
-      checksum: "dGVzdC1jaGVja3N1bS1oZXJlMDA==",
+      checksum: CHECKSUM,
     })
   })
 

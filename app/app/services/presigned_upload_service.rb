@@ -4,7 +4,7 @@ class PresignedUploadService
   SERVICE_NAME = ENV["UNSCANNED_BUCKET_NAME"].present? ? :unscanned : :unscanned_local
   MAX_UPLOAD_BYTES = 25.megabytes
   ALLOWED_CONTENT_TYPE = %r{\A(?:image/[a-z0-9.+-]+|application/pdf)\z}
-  CHECKSUM_FORMAT = %r{\A[A-Za-z0-9+/]{22}==\z}
+  CHECKSUM_FORMAT = %r{\A[A-Za-z0-9+/]{43}=\z}
   POLICY_TTL = 15.minutes
 
   class UnacceptableUpload < StandardError

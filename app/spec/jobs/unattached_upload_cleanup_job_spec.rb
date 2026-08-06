@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe UnattachedUploadCleanupJob do
   let(:activity_flow) { create(:activity_flow) }
-  let(:checksum) { Digest::MD5.base64digest("%PDF-1.4") }
+  let(:checksum) { Digest::SHA256.base64digest("%PDF-1.4") }
 
   def upload_blob(created_at:)
     signed_id = PresignedUploadService.new.call([

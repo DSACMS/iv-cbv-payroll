@@ -5,8 +5,7 @@ RSpec.describe Activities::PresignedUploadsController, type: :controller do
 
   let(:activity_flow) { create(:activity_flow) }
   let(:json) { response.parsed_body }
-  # Base64 MD5, computed in the browser because the server never sees the bytes.
-  let(:checksum) { Digest::MD5.base64digest("%PDF-1.4") }
+  let(:checksum) { Digest::SHA256.base64digest("%PDF-1.4") }
 
   before do
     session[:flow_id] = activity_flow.id

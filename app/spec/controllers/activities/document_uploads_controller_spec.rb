@@ -252,7 +252,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
     context "with a file uploaded directly to the quarantine bucket" do
       let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
 
-      let(:checksum) { Digest::MD5.base64digest("%PDF-1.4") }
+      let(:checksum) { Digest::SHA256.base64digest("%PDF-1.4") }
 
       let(:signed_id) do
         PresignedUploadService.new.call([
@@ -393,7 +393,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         filename: "shared.pdf",
         content_type: "application/pdf",
         byte_size: 8,
-        checksum: Digest::MD5.base64digest("%PDF-1.4"),
+        checksum: Digest::SHA256.base64digest("%PDF-1.4"),
         service_name: PresignedUploadService::SERVICE_NAME,
         metadata: { identified: true, analyzed: true }
       )
