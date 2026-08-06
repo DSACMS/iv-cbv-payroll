@@ -2,7 +2,9 @@ class HealthCheckController < ActionController::Base
   def ok
     # keep the database connection alive
     ActiveRecord::Base.connection.execute("SELECT 1")
-    render json: { status: "ok", version: ENV["IMAGE_TAG"] }
+    # `version` is the deployed image tag (a git SHA) and is consumed by
+    # bin/will-deploy; `release_version` is the semantic version from version.txt.
+    render json: { status: "ok", ref: ENV["IMAGE_TAG"], version: EmmyVersion.current }
   end
 
   def test_queueing
