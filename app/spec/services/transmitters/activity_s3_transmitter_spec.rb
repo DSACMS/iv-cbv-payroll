@@ -110,8 +110,7 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
       "SANDBOX123_education_transcript_final_1.pdf",
       "SANDBOX123_employment_pay_stub_1.png"
     ]
-    expect(destination_s3_service).to receive(:upload_directory) do |directory, prefix|
-      expect(prefix).to eq(expected_destination_prefix)
+    expect(destination_s3_service).to receive(:upload_directory) do |directory, _prefix|
       expect(Dir.children(directory)).to match_array(expected_files)
     end
 

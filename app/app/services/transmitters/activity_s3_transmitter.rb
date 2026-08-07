@@ -85,7 +85,11 @@ class Transmitters::ActivityS3Transmitter
   end
 
   def destination_prefix
-    "#{@transmission_config.fetch("s3_directory", "outfiles")}/#{@activity_flow.confirmation_code}/"
+    File.join(
+      @transmission_config.fetch("s3_directory", "outfiles"),
+      @activity_flow.confirmation_code,
+      ""
+    )
   end
 
   def pdf_content
