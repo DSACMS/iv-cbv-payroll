@@ -20,14 +20,15 @@ RSpec.describe ClientAgencyConfig do
           environment: foo
         argyle:
           environment: foo
-        transmission_method: foo
+        income_flow_transmission_method: foo
+        activity_flow_transmission_method: encrypted_s3
       - id: bar
         agency_name: Bar Agency Name
         pinwheel:
           environment: bar
         argyle:
           environment: foo
-        transmission_method: foo
+        income_flow_transmission_method: foo
     YAML
 
     describe "#initialize" do
@@ -60,6 +61,17 @@ RSpec.describe ClientAgencyConfig do
         config = described_class.new(sample_config_path)
         expect(config["foo"].allowed_iframe_ancestors).to eq([])
       end
+
+      it "supports a separate ActivityFlow transmission method" do
+        config = described_class.new(sample_config_path)
+        expect(config["foo"].activity_flow_transmission_method)
+          .to eq(Transmitters::ActivityS3Transmitter::TRANSMISSION_METHOD)
+      end
+
+      it "does not infer ActivityFlow transmission from the income flow method" do
+        config = described_class.new(sample_config_path)
+        expect(config["bar"].activity_flow_transmission_method).to be_nil
+      end
     end
   end
 
@@ -73,7 +85,7 @@ RSpec.describe ClientAgencyConfig do
               environment: foo
             argyle:
               environment: foo
-            transmission_method: foo
+            income_flow_transmission_method: foo
             allowed_iframe_ancestors:
               - https://example-portal.com
               - https://partner.gov
@@ -94,7 +106,7 @@ RSpec.describe ClientAgencyConfig do
               environment: foo
             argyle:
               environment: foo
-            transmission_method: foo
+            income_flow_transmission_method: foo
             allowed_iframe_ancestors: "https://example-portal.com"
         YAML
 
@@ -113,7 +125,7 @@ RSpec.describe ClientAgencyConfig do
               environment: foo
             argyle:
               environment: foo
-            transmission_method: foo
+            income_flow_transmission_method: foo
         YAML
 
         it "returns an empty array" do
@@ -137,6 +149,15 @@ RSpec.describe ClientAgencyConfig do
       config = described_class.new(Rails.root.join("config/client-agency-config.yml"))
 
       expect(config["la_ldh"].caseworker_fallback_email).to eq("fallback@example.gov")
+    end
+
+    it "configures sandbox income and ActivityFlow transmission separately" do
+      config = described_class.new(Rails.root.join("config/client-agency-config.yml"))
+
+      expect(config["sandbox"].income_flow_transmission_method)
+        .to eq(Transmitters::SharedEmailTransmitter::TRANSMISSION_METHOD)
+      expect(config["sandbox"].activity_flow_transmission_method)
+        .to eq(Transmitters::ActivityS3Transmitter::TRANSMISSION_METHOD)
     end
   end
 
@@ -207,7 +228,7 @@ RSpec.describe ClientAgencyConfig do
             pay_income_days:
               w2: 90
               gig: 0
-            transmission_method: shared_email
+            income_flow_transmission_method: shared_email
         YAML
 
         it "raises an error" do
@@ -217,7 +238,7 @@ RSpec.describe ClientAgencyConfig do
         end
       end
 
-      context "missing transmission method" do
+      context "missing income flow transmission method" do
         let(:sample_config) { <<~YAML }
           - id: foo
             agency_name: foo
@@ -225,13 +246,13 @@ RSpec.describe ClientAgencyConfig do
               environment: foo
             argyle:
               environment: foo
-            transmission_method:
+            income_flow_transmission_method:
         YAML
 
         it "raises an error" do
           expect do
             described_class.new(sample_config_path)
-          end.to raise_error(ArgumentError, "Client Agency foo missing required attribute `transmission_method`")
+          end.to raise_error(ArgumentError, "Client Agency foo missing required attribute `income_flow_transmission_method`")
         end
       end
 
@@ -244,7 +265,7 @@ RSpec.describe ClientAgencyConfig do
               environment: foo
             argyle:
               environment: foo
-            transmission_method: shared_email
+            income_flow_transmission_method: shared_email
         YAML
 
         it "raises an error" do
@@ -263,7 +284,7 @@ RSpec.describe ClientAgencyConfig do
               environment: foo
             argyle:
               environment: foo
-            transmission_method: shared_email
+            income_flow_transmission_method: shared_email
         YAML
 
         it "raises an error" do
@@ -281,7 +302,7 @@ RSpec.describe ClientAgencyConfig do
               environment: foo
             argyle:
               environment: foo
-            transmission_method: shared_email
+            income_flow_transmission_method: shared_email
             applicant_attributes:
               case_number:
                 redaction_type: bogus
@@ -302,7 +323,7 @@ RSpec.describe ClientAgencyConfig do
               environment: foo
             argyle:
               environment: foo
-            transmission_method: shared_email
+            income_flow_transmission_method: shared_email
             applicant_attributes:
               case_number:
                 required: true
@@ -332,7 +353,7 @@ RSpec.describe ClientAgencyConfig do
           environment: foo
         argyle:
           environment: foo
-        transmission_method: shared_email
+        income_flow_transmission_method: shared_email
         applicant_attributes:
           first_name:
             required: true

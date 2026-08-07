@@ -16,7 +16,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
   let(:client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
 
   before do
-    allow(client_agency).to receive_messages(id: "sandbox", transmission_method_configuration: transmission_method_configuration, transmission_method: Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD)
+    allow(client_agency).to receive_messages(id: "sandbox", transmission_method_configuration: transmission_method_configuration)
   end
 
 

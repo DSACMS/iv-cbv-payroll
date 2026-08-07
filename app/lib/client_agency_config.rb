@@ -58,7 +58,8 @@ class ClientAgencyConfig
       argyle_environment
       staff_portal_enabled
       sso
-      transmission_method
+      income_flow_transmission_method
+      activity_flow_transmission_method
       transmission_method_configuration
       weekly_report
       applicant_attributes
@@ -88,7 +89,8 @@ class ClientAgencyConfig
       @pinwheel_environment = yaml["pinwheel"]["environment"] || "sandbox"
       @pilot_ended = yaml["pilot_ended"] || false
       @argyle_environment = yaml["argyle"]["environment"] || "sandbox"
-      @transmission_method = yaml["transmission_method"]
+      @income_flow_transmission_method = yaml["income_flow_transmission_method"]
+      @activity_flow_transmission_method = yaml["activity_flow_transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
       @staff_portal_enabled = yaml["staff_portal_enabled"]
       @sso = yaml["sso"]
@@ -107,7 +109,7 @@ class ClientAgencyConfig
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.gig") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:gig])
       raise ArgumentError.new("Client Agency #{@id} invalid value for application_reporting_months") unless VALID_APPLICATION_REPORTING_MONTHS.include?(@application_reporting_months)
       raise ArgumentError.new("Client Agency #{@id} invalid value for renewal_required_months") unless @renewal_required_months.blank? || VALID_RENEWAL_REQUIRED_MONTHS.include?(@renewal_required_months)
-      raise ArgumentError.new("Client Agency #{@id} missing required attribute `transmission_method`") if @transmission_method.blank?
+      raise ArgumentError.new("Client Agency #{@id} missing required attribute `income_flow_transmission_method`") if @income_flow_transmission_method.blank?
 
       @applicant_attributes.each do |name, options|
         redaction_type = options.is_a?(Hash) ? options["redaction_type"] : nil

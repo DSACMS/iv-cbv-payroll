@@ -45,7 +45,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
   end
 
   def transmitter_class
-    case @current_agency.transmission_method
+    case @current_agency.income_flow_transmission_method
     when Transmitters::SharedEmailTransmitter::TRANSMISSION_METHOD
       Transmitters::SharedEmailTransmitter
     when Transmitters::SftpTransmitter::TRANSMISSION_METHOD
@@ -59,7 +59,7 @@ class CaseWorkerTransmitterJob < ApplicationJob
     when Transmitters::JsonAndPdfTransmitter::TRANSMISSION_METHOD
       Transmitters::JsonAndPdfTransmitter
     else
-      raise "Unsupported transmission method: #{@current_agency.transmission_method}"
+      raise "Unsupported income flow transmission method: #{@current_agency.income_flow_transmission_method}"
     end
   end
 

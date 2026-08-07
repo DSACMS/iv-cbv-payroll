@@ -14,6 +14,7 @@ class Activities::SummaryController < Activities::BaseController
 
     ensure_confirmation_code
     mark_as_completed
+    enqueue_transmission
 
     redirect_to after_submit_path
   end
@@ -36,6 +37,15 @@ class Activities::SummaryController < Activities::BaseController
 
   def mark_as_completed
     @flow.completed_at.nil? ? @flow.update!(completed_at: Time.zone.now) : @flow.touch(:completed_at)
+  end
+
+  def enqueue_transmission
+    return if @flow.activity_flow_invitation_id.blank?
+
+    agency = Rails.application.config.client_agencies[@flow.cbv_applicant.client_agency_id]
+    return unless agency.activity_flow_transmission_method == Transmitters::ActivityS3Transmitter::TRANSMISSION_METHOD
+
+    ActivityFlowTransmitterJob.perform_later(@flow.id)
   end
 
   def load_summary_data

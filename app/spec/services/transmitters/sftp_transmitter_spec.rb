@@ -22,8 +22,7 @@ RSpec.describe Transmitters::SftpTransmitter do
 
   before do
     allow(client_agency).to receive_messages(
-      transmission_method_configuration: transmission_method_configuration,
-      transmission_method: described_class::TRANSMISSION_METHOD
+      transmission_method_configuration: transmission_method_configuration
     )
     allow(SftpGateway).to receive(:new).and_return(sftp_gateway)
     allow(Transmitters::PdfFilenameFormatter).to receive(:format).and_return(formatted_filename)

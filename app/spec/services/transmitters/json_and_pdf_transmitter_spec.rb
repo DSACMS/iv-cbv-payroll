@@ -21,7 +21,7 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
 
 
   before do
-    allow(client_agency).to receive_messages(id: "sandbox", transmission_method_configuration: transmission_method_configuration, transmission_method: Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD)
+    allow(client_agency).to receive_messages(id: "sandbox", transmission_method_configuration: transmission_method_configuration)
   end
 
   context 'success responses from agency' do
