@@ -37,6 +37,7 @@ export default class extends Controller {
     }
 
     this.#showError(null)
+    this.#blockSubmit(true)
 
     try {
       const uploads = await this.#requestPresignedUploads(files)
@@ -49,7 +50,14 @@ export default class extends Controller {
       this.#showError(error.message || this.errorUploadFailedValue)
     } finally {
       this.#clearInput()
+      this.#blockSubmit(false)
     }
+  }
+
+  #blockSubmit(blocked) {
+    this.element.querySelectorAll("input[type=submit], button[type=submit]").forEach((button) => {
+      button.disabled = blocked
+    })
   }
 
   remove(event) {

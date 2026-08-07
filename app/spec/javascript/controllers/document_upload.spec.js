@@ -67,6 +67,7 @@ describe("DocumentUploadController", () => {
         <div class="usa-error-message" hidden data-document-upload-target="error"></div>
         <h2 hidden data-document-upload-target="listHeading"></h2>
         <ul hidden data-document-upload-target="list"></ul>
+        <input type="submit" value="Continue">
       </form>
     `
 
@@ -92,6 +93,7 @@ describe("DocumentUploadController", () => {
       (node) => node.value
     )
   const listItems = () => document.querySelectorAll("[data-document-upload-target=list] li")
+  const submitButton = () => document.querySelector("input[type=submit]")
 
   it("uploads a selected file to the bucket and records a signed ID", async () => {
     fetch
@@ -125,6 +127,39 @@ describe("DocumentUploadController", () => {
     const names = Array.from(body.keys())
 
     expect(names).toEqual(["key", "policy", "file"])
+  })
+
+  it("blocks Continue until the upload finishes, so the form cannot submit without the signed ID", async () => {
+    let submitDisabledDuringUpload = null
+    fetch
+      .mockResolvedValueOnce(
+        jsonResponse({ uploads: [presignedUploadFor("verification.pdf", "signed-id-1")] })
+      )
+      .mockImplementationOnce(async () => {
+        submitDisabledDuringUpload = submitButton().disabled
+        return { ok: true, status: 204 }
+      })
+
+    expect(submitButton().disabled).toBe(false)
+
+    await selectFiles(buildFile("verification.pdf", "application/pdf", 1024))
+
+    expect(submitDisabledDuringUpload).toBe(true)
+    expect(submitButton().disabled).toBe(false)
+    expect(signedIdValues()).toEqual(["signed-id-1"])
+  })
+
+  it("re-enables Continue when the upload fails", async () => {
+    fetch
+      .mockResolvedValueOnce(
+        jsonResponse({ uploads: [presignedUploadFor("verification.pdf", "signed-id-1")] })
+      )
+      .mockResolvedValueOnce(s3Response(403, "AccessDenied"))
+
+    await selectFiles(buildFile("verification.pdf", "application/pdf", 1024))
+
+    expect(submitButton().disabled).toBe(false)
+    expect(errorText()).toBe(FAILED)
   })
 
   it("hashes one file at a time so a multi-file selection cannot exhaust memory", async () => {

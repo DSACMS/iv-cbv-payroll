@@ -44,7 +44,7 @@ class PresignedUploadService
 
   def presign(file)
     blob = build_blob(file)
-    url, fields = destination_for(blob.key, file[:content_type])
+    url, fields = destination_for(blob.key, file[:content_type], file[:byte_size])
 
     {
       filename: file[:filename],
@@ -72,7 +72,7 @@ class PresignedUploadService
     raise UnacceptableUpload, :upload_failed unless CHECKSUM_FORMAT.match?(file[:checksum])
   end
 
-  def destination_for(key, content_type)
+  def destination_for(key, content_type, byte_size)
     if service.respond_to?(:bucket)
       config = service.client.client.config
 
@@ -82,7 +82,7 @@ class PresignedUploadService
         service.bucket.name,
         key: key,
         content_type: content_type,
-        content_length_range: 0..MAX_UPLOAD_BYTES,
+        content_length_range: byte_size..byte_size,
         signature_expiration: POLICY_TTL.from_now
       )
       [ post.url, post.fields ]

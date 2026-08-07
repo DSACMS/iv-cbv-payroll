@@ -124,9 +124,17 @@ RSpec.describe PresignedUploadService do
       expect(upload[:fields]).to include("policy", "x-amz-signature", "x-amz-credential")
     end
 
-    it "bounds the upload size in the policy so S3 itself rejects an oversized body" do
+    it "pins the exact byte size in the policy so the object cannot differ from the blob" do
       expect(policy_conditions(upload)).to include(
-        [ "content-length-range", 0, described_class::MAX_UPLOAD_BYTES ]
+        [ "content-length-range", 1_024, 1_024 ]
+      )
+    end
+
+    it "matches the byte size recorded on the blob" do
+      blob = ActiveStorage::Blob.find_signed!(upload[:signed_id])
+
+      expect(policy_conditions(upload)).to include(
+        [ "content-length-range", blob.byte_size, blob.byte_size ]
       )
     end
 
