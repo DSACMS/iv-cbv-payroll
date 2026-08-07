@@ -159,6 +159,20 @@ RSpec.describe ClientAgencyConfig do
       expect(config["sandbox"].activity_flow_transmission_method)
         .to eq(Transmitters::ActivityS3Transmitter::TRANSMISSION_METHOD)
     end
+
+    it "loads the sandbox S3 destination from the outbound transmission environment" do
+      ClimateControl.modify(
+        OUTBOUND_TRANSMISSION_S3_BUCKET_NAME: "outbound-bucket",
+        OUTBOUND_TRANSMISSION_S3_DIRECTORY: "outbound-directory"
+      ) do
+        config = described_class.new(Rails.root.join("config/client-agency-config.yml"))
+
+        expect(config["sandbox"].transmission_method_configuration).to include(
+          "bucket" => "outbound-bucket",
+          "s3_directory" => "outbound-directory"
+        )
+      end
+    end
   end
 
   context "invalid config" do

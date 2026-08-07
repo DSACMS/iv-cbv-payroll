@@ -115,8 +115,8 @@
   activity_flow_transmission_method: encrypted_s3
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
-    bucket: <%= ENV["SANDBOX_S3_BUCKET_NAME"] %>
-    s3_directory: <%= ENV.fetch("SANDBOX_S3_DIRECTORY", "outfiles") %>
+    bucket: <%= ENV["OUTBOUND_TRANSMISSION_S3_BUCKET_NAME"] %>
+    s3_directory: <%= ENV.fetch("OUTBOUND_TRANSMISSION_S3_DIRECTORY", "outfiles") %>
   staff_portal_enabled: true
   pilot_ended: false
   sso:
