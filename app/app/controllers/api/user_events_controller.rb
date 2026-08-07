@@ -1,21 +1,8 @@
 class Api::UserEventsController < ApplicationController
   def user_action
-    base_attributes = {
-      time: Time.now.to_i
-    }
+    @flow = flow_class.find(session[:flow_id]) if session[:flow_id].present?
 
-    if session[:flow_id].present?
-      @flow = flow_class.find(session[:flow_id])
-
-      base_attributes.merge!({
-        cbv_flow_id: @flow.id,
-        cbv_applicant_id: @flow.cbv_applicant_id,
-        client_agency_id: @flow.cbv_applicant.client_agency_id,
-        invitation_id: @flow.invitation_id
-      })
-    end
-
-    event_attributes = (user_action_params[:attributes] || {}).merge(base_attributes)
+    event_attributes = (user_action_params[:attributes] || {}).merge(standard_track_attributes)
     event_name = user_action_params[:event_name]
 
     if TrackEvent.constants.map(&:to_s).include?(event_name)

@@ -25,6 +25,7 @@ class GenericEventTracker
         device_id: request.cookie_jar.signed[:device_id],
         ip: request.remote_ip,
         cbv_flow_id: request.session[:flow_id],
+        flow_type: request.session[:flow_type].to_s == "activity" ? "ce" : "income",
         client_agency_id: url_params["client_agency_id"],
         locale: url_params["locale"] || I18n.locale.to_s,
         user_agent: request.headers["User-Agent"]

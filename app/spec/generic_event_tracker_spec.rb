@@ -14,6 +14,7 @@ RSpec.describe GenericEventTracker do
       expect(EventTrackingJob).to receive(:perform_later).with("myEvent", anything, hash_including(
         time: an_instance_of(Integer),
         cbv_flow_id: "cbv_flow_id",
+        flow_type: "income",
         locale: an_instance_of(String),
         user_agent: "user_agent",
         client_agency_id: "client_agency_id",
@@ -21,6 +22,13 @@ RSpec.describe GenericEventTracker do
       ))
       cookie_jar = instance_double(ActionDispatch::Cookies::CookieJar, signed: { device_id: nil })
       request_mock = instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { flow_id: "cbv_flow_id" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" }, cookie_jar: cookie_jar)
+      described_class.new.track("myEvent", request_mock, {})
+    end
+
+    it 'populates flow_type as "ce" when the session flow_type is activity' do
+      expect(EventTrackingJob).to receive(:perform_later).with("myEvent", anything, hash_including(flow_type: "ce"))
+      cookie_jar = instance_double(ActionDispatch::Cookies::CookieJar, signed: { device_id: nil })
+      request_mock = instance_double(ActionDispatch::Request, params: { "client_agency_id" => "client_agency_id" }, session: { flow_id: "activity_flow_id", flow_type: "activity" }, remote_ip: "ip", headers: { "User-Agent" => "user_agent" }, cookie_jar: cookie_jar)
       described_class.new.track("myEvent", request_mock, {})
     end
 

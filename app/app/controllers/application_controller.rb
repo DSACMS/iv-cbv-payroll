@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include Trackable
+
   ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
   helper :view

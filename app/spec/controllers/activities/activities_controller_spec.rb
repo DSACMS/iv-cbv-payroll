@@ -4,6 +4,18 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
   include_context "activity_hub"
   render_views
 
+  describe "tracking" do
+    let(:current_flow) { create(:activity_flow) }
+    let(:tracked_flow) { current_flow }
+    let(:perform_tracked_action) do
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it_behaves_like "tracks an event", TrackEvent::HubViewed
+  end
+
   describe "#index" do
     let(:current_flow) { create(:activity_flow) }
 
