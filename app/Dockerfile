@@ -52,6 +52,7 @@ RUN apt-get update -qq && \
       libcurl3t64-gnutls \
       libcurl4-openssl-dev \
       libcurl4t64 \
+      libde265-0 \
       libexif-dev \
       libexif12 \
       libexpat1 \
