@@ -5,6 +5,16 @@
 # https://guides.rubyonrails.org/security.html#content-security-policy-header
 
 Rails.application.configure do
+  unscanned_bucket_origins =
+    if (bucket = ENV["UNSCANNED_BUCKET_NAME"]).present?
+      [
+        "https://#{bucket}.s3.amazonaws.com",
+        "https://#{bucket}.s3.#{ENV.fetch("AWS_REGION", "us-east-1")}.amazonaws.com"
+      ]
+    else
+      []
+    end
+
   config.content_security_policy do |policy|
     policy.default_src :self
     policy.font_src :self, "https://*.cloudinary.com"
@@ -18,7 +28,7 @@ Rails.application.configure do
       https://cdn.getpinwheel.com
       https://*.argyle.com
     ]
-    policy.connect_src :self, "https://*.nr-data.net", "https://*.argyle.com"
+    policy.connect_src :self, "https://*.nr-data.net", "https://*.argyle.com", *unscanned_bucket_origins
     policy.worker_src :self, "blob:"
     policy.frame_src :self, "https://cdn.getpinwheel.com"
 

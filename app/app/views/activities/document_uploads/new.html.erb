@@ -42,7 +42,18 @@
   ) %>
 <% end %>
 
-<%= form_with(builder: UswdsFormBuilder, scope: :activity, model: @activity, url: upload_path, method: :post) do |f| %>
+<%= form_with(builder: UswdsFormBuilder, scope: :activity, model: @activity, url: upload_path, method: :post, data: {
+      controller: "document-upload",
+      document_upload_presign_url_value: activities_flow_presigned_uploads_path,
+      document_upload_max_file_size_value: PresignedUploadService::MAX_UPLOAD_BYTES,
+      document_upload_allowed_types_value: "image/*,application/pdf",
+      document_upload_heading_template_value: t("activities.document_uploads.heading", document_count: "%{count}"),
+      document_upload_remove_label_value: t("activities.document_uploads.remove_file"),
+      document_upload_icon_href_value: uswds_sprite_icon_href("file_present"),
+      document_upload_error_too_large_value: t(".errors.too_large", limit: number_to_human_size(PresignedUploadService::MAX_UPLOAD_BYTES)),
+      document_upload_error_unsupported_type_value: t(".errors.unsupported_type"),
+      document_upload_error_upload_failed_value: t(".errors.upload_failed")
+    }) do |f| %>
   <% if @activity.document_uploads.any? %>
     <% @activity.document_uploads.each do |attachment| %>
       <%# Keep existing uploads attached when the form is re-submitted with new files. %>
@@ -50,12 +61,26 @@
     <% end %>
   <% end %>
 
+  <div hidden data-document-upload-target="signedIds"></div>
+
   <%= f.file_field :document_uploads,
       multiple: true,
       label: t(".input_label"),
       label_class: "font-heading-lg text-bold",
       hint: t(".input_hint"),
-      accept: "image/*,.pdf" %>
+      accept: "image/*,.pdf",
+      data: {
+        document_upload_target: "input",
+        action: "change->document-upload#select",
+        errormessage: t(".errors.unsupported_type")
+      } %>
+
+  <div class="usa-error-message" hidden data-document-upload-target="error" role="alert"></div>
+
+  <div class="document-uploads">
+    <h2 class="document-uploads__heading" hidden data-document-upload-target="listHeading"></h2>
+    <ul class="document-uploads__list" hidden data-document-upload-target="list"></ul>
+  </div>
 
   <%= render(AccordionComponent.new(id: "document-upload-suggestions")) do |accordion| %>
     <% accordion.with_title { t(".suggestion_title") } %>

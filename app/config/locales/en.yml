@@ -147,6 +147,11 @@ en:
       new:
         continue: Continue to review
         description: 'Upload documents that verify the information you entered for:'
+        errors:
+          empty: That file is empty. Choose a different file.
+          too_large: Each file must be smaller than %{limit}.
+          unsupported_type: Select a PDF, PNG, JPG, or HEIC file.
+          upload_failed: We could not upload that file. Check your connection and try again.
         input_hint: Select PDF, PNG, JPG, or HEIC files
         input_label: Add documents
         suggestion_text_html: "<ul><li>Document Type Placeholder 1</li><li>Document Type Placeholder 2</li><li>Document Type Placeholder 3</li></ul>"

@@ -248,6 +248,50 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response).to render_template(:new)
       expect(response).to have_http_status(:ok)
     end
+
+    context "with a file uploaded directly to the quarantine bucket" do
+      let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+
+      let(:checksum) { Digest::SHA256.base64digest("%PDF-1.4") }
+
+      let(:signed_id) do
+        PresignedUploadService.new.call([
+          { filename: "verification.pdf", content_type: "application/pdf", byte_size: 8, checksum: checksum }
+        ]).first[:signed_id]
+      end
+
+      it "attaches the blob the policy endpoint already created" do
+        expect do
+          post :create, params: {
+            community_service_id: volunteering_activity.id,
+            activity: { document_uploads: [ signed_id ] }
+          }
+        end.to change { volunteering_activity.reload.document_uploads.count }.by(1)
+
+        blob = volunteering_activity.document_uploads.last.blob
+
+        expect(blob).to eq(ActiveStorage::Blob.find_signed!(signed_id))
+        expect(blob.service_name).to eq(PresignedUploadService::SERVICE_NAME.to_s)
+        expect(blob.filename.to_s).to eq("verification.pdf")
+      end
+
+      it "keeps previously attached files alongside the new upload" do
+        volunteering_activity.document_uploads.attach(
+          io: StringIO.new("%PDF-1.4"),
+          filename: "existing.pdf",
+          content_type: "application/pdf"
+        )
+        existing = volunteering_activity.document_uploads.first
+
+        post :create, params: {
+          community_service_id: volunteering_activity.id,
+          activity: { document_uploads: [ existing.signed_id, signed_id ] }
+        }
+
+        expect(volunteering_activity.reload.document_uploads.map { |u| u.filename.to_s })
+          .to contain_exactly("existing.pdf", "verification.pdf")
+      end
+    end
   end
 
   describe "DELETE #destroy" do
@@ -342,6 +386,52 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response).to redirect_to(
         new_activities_flow_community_service_document_upload_path(community_service_id: volunteering_activity, from_review: 1)
       )
+    end
+
+    it "keeps the blob when another activity still has it attached" do
+      shared_blob = ActiveStorage::Blob.create!(
+        filename: "shared.pdf",
+        content_type: "application/pdf",
+        byte_size: 8,
+        checksum: Digest::SHA256.base64digest("%PDF-1.4"),
+        service_name: PresignedUploadService::SERVICE_NAME,
+        metadata: { identified: true, analyzed: true }
+      )
+      first = create(:volunteering_activity, activity_flow: activity_flow)
+      second = create(:volunteering_activity, activity_flow: activity_flow)
+      first.document_uploads.attach(shared_blob)
+      second.document_uploads.attach(shared_blob)
+
+      expect {
+        delete :destroy, params: {
+          community_service_id: first.id,
+          id: first.document_uploads_attachments.first.id
+        }
+      }.not_to raise_error
+
+      expect(ActiveStorage::Blob.exists?(shared_blob.id)).to be(true)
+      expect(second.reload.document_uploads.count).to eq(1)
+      expect(first.reload.document_uploads).to be_empty
+    end
+
+    it "does not try to delete the object from the quarantine bucket" do
+      volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
+      volunteering_activity.document_uploads.attach(
+        io: StringIO.new("%PDF-1.4"),
+        filename: "verification.pdf",
+        content_type: "application/pdf"
+      )
+      attachment = volunteering_activity.document_uploads_attachments.first
+      blob = attachment.blob
+
+      expect(ActiveStorage::Blob.services.fetch(PresignedUploadService::SERVICE_NAME)).not_to receive(:delete)
+
+      expect do
+        delete :destroy, params: { community_service_id: volunteering_activity.id, id: attachment.id }
+      end.not_to have_enqueued_job(ActiveStorage::PurgeJob)
+
+      expect(ActiveStorage::Blob.where(id: blob.id)).to be_empty
+      expect(volunteering_activity.reload.document_uploads).to be_empty
     end
   end
 
