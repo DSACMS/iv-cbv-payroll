@@ -52,6 +52,7 @@ RUN apt-get update -qq && \
       libcurl3t64-gnutls \
       libcurl4-openssl-dev \
       libcurl4t64 \
+      libde265-0 \
       libexif-dev \
       libexif12 \
       libexpat1 \
@@ -61,6 +62,9 @@ RUN apt-get update -qq && \
       libgraphite2-dev \
       libgssapi-krb5-2 \
       libgssrpc4t64 \
+      libheif-plugin-dav1d \
+      libheif-plugin-libde265 \
+      libheif1 \
       libk5crypto3 \
       libkadm5clnt-mit12 \
       libkadm5srv-mit12 \
