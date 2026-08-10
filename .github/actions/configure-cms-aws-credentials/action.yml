@@ -5,15 +5,6 @@ inputs:
   environment:
     description: CMS deployment environment.
     required: true
-  nonprod-role-to-assume:
-    description: Deploy role for dev and test.
-    required: true
-  default-role-to-assume:
-    description: Deploy role for sandbox, demo, UAT, and production.
-    required: true
-  aws-region:
-    description: AWS region for the deployment.
-    required: true
 
 runs:
   using: composite
@@ -23,8 +14,8 @@ runs:
       shell: bash
       env:
         ENVIRONMENT: ${{ inputs.environment }}
-        NONPROD_ROLE_TO_ASSUME: ${{ inputs.nonprod-role-to-assume }}
-        DEFAULT_ROLE_TO_ASSUME: ${{ inputs.default-role-to-assume }}
+        NONPROD_ROLE_TO_ASSUME: ${{ vars.AWS_NONPROD_ROLE_TO_ASSUME }}
+        DEFAULT_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
       run: |
         case "${ENVIRONMENT}" in
           dev|test)
@@ -45,6 +36,6 @@ runs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v6
       with:
-        aws-region: ${{ inputs.aws-region }}
+        aws-region: us-east-1
         role-to-assume: ${{ steps.target_role.outputs.role_to_assume }}
         role-session-name: gha-${{ inputs.environment }}-${{ github.run_id }}
