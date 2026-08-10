@@ -47,3 +47,4 @@ runs:
       with:
         aws-region: ${{ inputs.aws-region }}
         role-to-assume: ${{ steps.target_role.outputs.role_to_assume }}
+        role-session-name: gha-${{ inputs.environment }}-${{ github.run_id }}
