@@ -4,7 +4,7 @@ class HealthCheckController < ActionController::Base
     ActiveRecord::Base.connection.execute("SELECT 1")
     # `version` is the deployed image tag (a git SHA) and is consumed by
     # bin/will-deploy; `release_version` is the semantic version from version.txt.
-    render json: { status: "ok", ref: ENV["IMAGE_TAG"], version: EmmyVersion.current }
+    render json: { status: "ok", version: ENV["IMAGE_TAG"], release_version: EmmyVersion.current }
   end
 
   def test_queueing
