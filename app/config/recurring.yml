@@ -8,3 +8,6 @@ production:
   draft_cleanup:
     class: DraftCleanupJob
     schedule: every hour
+  unattached_upload_cleanup:
+    class: UnattachedUploadCleanupJob
+    schedule: every hour

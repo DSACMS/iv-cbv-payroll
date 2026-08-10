@@ -3,7 +3,24 @@
 Releases are published manually in GitHub using the output of the
 [`app/bin/will-deploy`](../app/bin/will-deploy) script as the release body.
 
-## 1. Generate the release notes
+## 1. Decide the version number
+
+Classify the release **MAJOR**, **MINOR**, or **PATCH** using the rubric in
+[versioning.md](./versioning.md). The tiebreaker: *could a state's existing
+training material now mislead someone?* If yes, it's MAJOR.
+
+While Emmy App is pre-1.0, a MAJOR-tier release bumps the middle digit
+(`0.1.0` → `0.2.0`) and a MINOR- or PATCH-tier release bumps the last digit
+(`0.1.0` → `0.1.1`).
+
+Then, in a PR merged to `main` before the deploy:
+
+1. Update [`app/version.txt`](../app/version.txt) to the new version.
+2. Update the `"version"` field in [`code.json`](../code.json) to match.
+3. Add a [`CHANGELOG.md`](../CHANGELOG.md) entry with the tier of each
+   user-facing change.
+
+## 2. Generate the release notes
 
 From the `app/` directory on an up-to-date `main`, run:
 
@@ -30,7 +47,7 @@ The script will:
    change lists, and a link to the full diff on GitHub.
 5. Copy the message to your clipboard and print it to the terminal.
 
-## 2. Review the PR titles before publishing
+## 3. Review the PR titles before publishing
 
 > ⚠️ **Check the language in PR titles for anything not appropriate for public
 > viewing.** The will-deploy output is built directly from commit subjects
@@ -39,13 +56,26 @@ The script will:
 > disclosed, joke titles, or anything that reveals non-public
 > security details. Edit the text before pasting it into the release body.
 
-## 3. Create the GitHub release
+## 4. Create the GitHub release
 
 1. Go to <https://github.com/DSACMS/iv-cbv-payroll/releases/new>.
-2. **Tag**: create a new tag on `main` for the deploy SHA (the short SHA from
-   the first line of the will-deploy output is the commit being released).
-3. **Title**: the release tag, or a short summary of the deploy.
-4. **Description**: paste the will-deploy output (with any edits from step 2).
-   GitHub's Markdown renderer handles the Jira and PR links the script emits.
+2. **Tag**: create a new `v<version>` tag (e.g. `v0.1.0`) on `main`, pointing at
+   the deploy SHA — the short SHA from the first line of the will-deploy output
+   is the commit being released. The version must match `app/version.txt` on
+   that commit.
+
+   The `deploy/prod/<timestamp>` tags created by the deploy pipeline are deploy
+   markers, not releases. Don't use them as the release tag.
+3. **Title**: `v<version>`, optionally with a short summary of the deploy.
+4. **Description**: paste the will-deploy output (with any edits from step 3),
+   with the release tier (MAJOR / MINOR / PATCH) on the first line. GitHub's
+   Markdown renderer handles the Jira and PR links the script emits.
 5. Leave "Set as the latest release" checked.
 6. Click **Publish release**.
+
+## 5. Notify states on a MAJOR release
+
+MAJOR means a state's training materials or integration may no longer match the
+application. Send the notification with before/after screenshots and enough lead
+time for states to update their materials. MINOR and PATCH releases ship on the
+normal cadence and appear in the changelog only.

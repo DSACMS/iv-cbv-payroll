@@ -3,7 +3,7 @@ module DocumentUploadable
   extend ActiveSupport::Concern
 
   included do
-    has_many_attached :document_uploads
+    has_many_attached :document_uploads, service: PresignedUploadService::SERVICE_NAME
   end
 
   # Required!

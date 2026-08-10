@@ -78,10 +78,6 @@ gem "aws-sdk-rails"
 gem "aws-sdk-s3"
 gem "aws-actionmailer-ses"
 
-# profiling
-gem "rack-mini-profiler"
-gem "stackprof"
-
 # https://www.ruby-lang.org/en/news/2024/08/01/dos-rexml-cve-2024-41123/
 gem "rexml", "~> 3.4.2"
 gem "gpgme", "~> 2.0"
@@ -91,6 +87,10 @@ gem "cgi", ">= 0.4.2"     # Fixing GHSA-mhwm-jh88-3gjf
 gem "thor", ">= 1.4.0"    # Fixing GHSA-mqcp-p2hv-vw6x
 
 group :development, :test do
+  # profiling
+  gem "rack-mini-profiler"
+  gem "stackprof"
+
   gem "brakeman"
   gem "bundler-audit", "~> 0.9"
   gem "capybara"
@@ -115,9 +115,6 @@ group :development do
   gem "debase", "~> 0.2.9", require: false
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
-
-  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
-  # gem "rack-mini-profiler"
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"

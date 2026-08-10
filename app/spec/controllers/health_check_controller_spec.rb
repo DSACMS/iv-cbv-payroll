@@ -8,7 +8,12 @@ RSpec.describe HealthCheckController do
   describe "#ok" do
     it "renders successfully" do
       get :ok
-      expect(response.body).to eq(JSON.generate(status: :ok, version: "foobar"))
+      expect(response.body).to eq(JSON.generate(status: :ok, ref: "foobar", version: EmmyVersion.current))
+    end
+
+    it "reports the version from version.txt" do
+      get :ok
+      expect(JSON.parse(response.body)["version"]).to match(/\A\d+\.\d+\.\d+\z/)
     end
   end
 end

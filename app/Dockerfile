@@ -39,6 +39,8 @@ RUN apt-get update -qq && \
       openssh-client \
       # CVE-2026-4437 \
       libc-bin libc-dev-bin libc6 libc6-dev \
+      # CVE-2025-68431 CVE-2026-32740 CVE-2026-32882 CVE-2026-47178 \
+      libheif1 \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -52,6 +54,7 @@ RUN apt-get update -qq && \
       libcurl3t64-gnutls \
       libcurl4-openssl-dev \
       libcurl4t64 \
+      libde265-0 \
       libexif-dev \
       libexif12 \
       libexpat1 \

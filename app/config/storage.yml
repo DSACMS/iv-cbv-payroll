@@ -10,6 +10,14 @@ amazon:
   service: S3
   bucket: <%= ENV["BUCKET_NAME"] %>
 
+unscanned:
+  service: S3
+  bucket: <%= ENV["UNSCANNED_BUCKET_NAME"] %>
+
+unscanned_local:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage_unscanned") %>
+
 processed:
   service: S3
   bucket: <%= ENV["PROCESSED_BUCKET_NAME"] %>
