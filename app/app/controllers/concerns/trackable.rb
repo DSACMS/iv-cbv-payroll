@@ -29,7 +29,9 @@ module Trackable
     # Snapshot @flow before calling current_agency: ApplicationController#current_agency
     # reassigns `@flow = @cbv_flow` as a legacy compatibility shim, which clobbers @flow
     # back to nil in any controller (like Api::UserEventsController) that sets @flow
-    # directly without also setting the legacy @cbv_flow alias.
+    # directly without also setting the legacy @cbv_flow alias. This snapshot (and the
+    # shim itself, in ApplicationController#current_agency) can be deleted once every
+    # controller is converted to use @flow exclusively and @cbv_flow is retired.
     flow = @flow
     attrs = { client_agency_id: current_agency&.id }
     return attrs unless flow
