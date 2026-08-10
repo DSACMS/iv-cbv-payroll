@@ -1,0 +1,45 @@
+name: Configure CMS AWS credentials
+description: Configure credentials for the CMS account that owns the deployment environment.
+
+inputs:
+  environment:
+    description: CMS deployment environment.
+    required: true
+  default-role-to-assume:
+    description: Deploy role for sandbox, demo, UAT, and production.
+    required: true
+  aws-region:
+    description: AWS region for the deployment.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: target_role
+      name: Select target role
+      shell: bash
+      env:
+        ENVIRONMENT: ${{ inputs.environment }}
+        DEFAULT_ROLE_TO_ASSUME: ${{ inputs.default-role-to-assume }}
+      run: |
+        case "${ENVIRONMENT}" in
+          dev|test)
+            role_to_assume="arn:aws:iam::554269192106:role/GitHubActionsIvCbvPayrollDeploy"
+            ;;
+          sandbox|demo|uat|prod)
+            role_to_assume="${DEFAULT_ROLE_TO_ASSUME}"
+            ;;
+          *)
+            echo "Unsupported CMS Cloud environment: ${ENVIRONMENT}" >&2
+            exit 1
+            ;;
+        esac
+
+        echo "Using deploy role: ${role_to_assume}"
+        echo "role_to_assume=${role_to_assume}" >> "$GITHUB_OUTPUT"
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v6
+      with:
+        aws-region: ${{ inputs.aws-region }}
+        role-to-assume: ${{ steps.target_role.outputs.role_to_assume }}
