@@ -32,7 +32,7 @@
     "happy-dom": ">=20.11.1",
     "jsdom": "^30.0.0",
     "prettier": "^3.9.6",
-    "vite": "^8.1.5",
+    "vite": "^8.2.1",
     "vitest": "^4.1.10"
   },
   "resolutions": {
