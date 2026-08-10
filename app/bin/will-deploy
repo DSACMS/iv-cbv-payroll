@@ -31,9 +31,9 @@ def run_command(*command)
   stdout.strip
 end
 
-def fetch_production_version
+def fetch_production_ref
   response = URI.open("https://snap-income-pilot.com/health", &:read)
-  JSON.parse(response).fetch("version")
+  JSON.parse(response).fetch("ref")
 end
 
 def commit_lines(prod, current_sha)
@@ -103,7 +103,7 @@ if ARGV.first == "--test"
 end
 
 run_command("git", "fetch", "--quiet")
-prod = fetch_production_version
+prod = fetch_production_ref
 current_sha = run_command("git", "rev-parse", "origin/main")
 
 both_changes = []

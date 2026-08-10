@@ -10,7 +10,7 @@ AWS_PROFILE=prod aws ecr get-login-password --region us-east-1 | \
   docker login --username AWS --password-stdin 730335532059.dkr.ecr.us-east-1.amazonaws.com
 
 # 2. Get the latest Production image name
-image_tag=$(curl https://snap-income-pilot.com/health | jq -r .version)
+image_tag=$(curl https://snap-income-pilot.com/health | jq -r .ref)
 image_name="730335532059.dkr.ecr.us-east-1.amazonaws.com/iv-cbv-payroll-app:$image_tag"
 
 # 3. Run the docker image
