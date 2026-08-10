@@ -30,7 +30,7 @@ runs:
             role_to_assume="${DEFAULT_ROLE_TO_ASSUME}"
             ;;
           *)
-            echo "Unsupported CMS Cloud environment: ${ENVIRONMENT}" >&2
+            echo "Unsupported CMS Cloud environment: ${ENVIRONMENT}. Supported environments: dev, test, sandbox, demo, uat, prod." >&2
             exit 1
             ;;
         esac

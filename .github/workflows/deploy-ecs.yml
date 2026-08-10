@@ -9,7 +9,7 @@ on:
         required: true
         type: string
       environment:
-        description: "the name of the application environment (e.g. dev, staging, prod)"
+        description: "the name of the application environment (e.g. dev, test, sandbox, demo, uat, prod)"
         required: true
         type: string
       image_tag:
@@ -23,7 +23,7 @@ on:
         required: true
         type: string
       environment:
-        description: "the name of the application environment (e.g. dev, staging, prod)"
+        description: "the name of the application environment (e.g. dev, test, sandbox, demo, uat, prod)"
         required: true
         type: string
       image_tag:

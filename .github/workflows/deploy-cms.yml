@@ -25,7 +25,14 @@ on:
       environment:
         description: "the name of the application environment (e.g. uat)"
         required: true
-        type: string
+        type: choice
+        options:
+          - dev
+          - test
+          - sandbox
+          - demo
+          - uat
+          - prod
       ref:
         description: "the branch, tag, or SHA to deploy"
         required: true
