@@ -14,8 +14,8 @@ functional change to the application.
 
 - **MINOR** — Adopt semantic versioning with interface changes promoted to
   MAJOR. Rubric documented in [docs/versioning.md](./docs/versioning.md).
-- **MINOR** — `GET /health` now reports a `release_version` field alongside the
-  existing `version` (deployed image tag).
+- **MINOR** — `GET /health` now reports the semantic version as `version` and
+  the deployed image tag as `ref`.
 
 ### Before this release
 

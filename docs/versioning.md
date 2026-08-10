@@ -79,9 +79,9 @@ three-slot rubric then.
   in the release PR.
 - [`code.json`](../code.json) mirrors it for federal source-code inventory.
 - `EmmyVersion.current` reads `version.txt` at runtime.
-- `GET /health` reports it as `release_version`, so states can check which
-  version an environment is running. (The `version` field in that response is
-  the deployed image tag, not the semantic version.)
+- `GET /health` reports it as `version`, so states can check which version an
+  environment is running. (The `ref` field in that response is the deployed
+  image tag.)
 
 ## Scope of this version line
 
