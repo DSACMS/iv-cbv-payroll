@@ -5,6 +5,9 @@ inputs:
   environment:
     description: CMS deployment environment.
     required: true
+  nonprod-role-to-assume:
+    description: Deploy role for dev and test.
+    required: true
   default-role-to-assume:
     description: Deploy role for sandbox, demo, UAT, and production.
     required: true
@@ -20,11 +23,12 @@ runs:
       shell: bash
       env:
         ENVIRONMENT: ${{ inputs.environment }}
+        NONPROD_ROLE_TO_ASSUME: ${{ inputs.nonprod-role-to-assume }}
         DEFAULT_ROLE_TO_ASSUME: ${{ inputs.default-role-to-assume }}
       run: |
         case "${ENVIRONMENT}" in
           dev|test)
-            role_to_assume="arn:aws:iam::554269192106:role/GitHubActionsIvCbvPayrollDeploy"
+            role_to_assume="${NONPROD_ROLE_TO_ASSUME}"
             ;;
           sandbox|demo|uat|prod)
             role_to_assume="${DEFAULT_ROLE_TO_ASSUME}"
