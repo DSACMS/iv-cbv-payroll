@@ -6,6 +6,7 @@
 #
 
 require "sinatra"
+require "fileutils"
 require "json"
 require "openssl"
 
@@ -26,11 +27,32 @@ class JsonApiSignature
 end
 
 class JsonApiReceiver < Sinatra::Base
+  post "/documents" do
+    content = request.body.read
+    unless valid_signature?(content)
+      puts "❌ Invalid signature"
+      halt 401, { error: "Unauthorized" }.to_json
+    end
+
+    filename = File.basename(request.env.fetch("HTTP_CONTENT_DISPOSITION", "")[/filename="([^"]+)"/, 1].to_s)
+    halt 400, { error: "Missing document filename" }.to_json if filename.empty?
+
+    directory = File.expand_path("../tmp/transmitted_documents", __dir__)
+    FileUtils.mkdir_p(directory)
+    file_path = File.join(directory, filename)
+    File.binwrite(file_path, content)
+    puts "Document written successfully to #{file_path}"
+    status 200
+  rescue => e
+    puts "Error writing document: #{e.message}"
+    status 500
+  end
+
   post "/pdf" do
     pdf_content = request.body.read
 
     begin
-      file_path = File.expand_path("../app/tmp/transmitted_pdf.pdf")
+      file_path = File.expand_path("../tmp/transmitted_pdf.pdf", __dir__)
       File.open(file_path, "wb") do |file|
         file.write(pdf_content)
       end
@@ -58,9 +80,7 @@ class JsonApiReceiver < Sinatra::Base
     end
 
     if signature && timestamp
-      api_key = ENV.fetch("JSON_API_KEY", "your-api-key-here")
-
-      unless JsonApiSignature.verify(body, timestamp, signature, api_key)
+      unless valid_signature?(body)
         puts "❌ Invalid signature"
         status 401
         return { error: "Unauthorized" }.to_json
@@ -77,6 +97,14 @@ class JsonApiReceiver < Sinatra::Base
       status 400
       { error: "Invalid JSON" }.to_json
     end
+  end
+
+  def valid_signature?(body)
+    signature = request.env["HTTP_X_IVAAS_SIGNATURE"]
+    timestamp = request.env["HTTP_X_IVAAS_TIMESTAMP"]
+    return false unless signature && timestamp
+
+    JsonApiSignature.verify(body, timestamp, signature, ENV.fetch("JSON_API_KEY", "your-api-key-here"))
   end
 
   run! if __FILE__ == $0

@@ -69,6 +69,35 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
     end
   end
 
+  context "when the agency uses HTTP document transmission" do
+    let(:transmission_method) { Transmitters::HttpDocumentTransmitter::TRANSMISSION_METHOD }
+    let(:http_transmitter) { instance_double(Transmitters::HttpDocumentTransmitter) }
+
+    before do
+      allow(Transmitters::HttpDocumentTransmitter).to receive(:new)
+        .with(activity_flow, current_agency)
+        .and_return(http_transmitter)
+    end
+
+    it "marks the flow transmitted after document delivery succeeds" do
+      allow(http_transmitter).to receive(:deliver)
+
+      expect {
+        described_class.new.perform(activity_flow.id)
+      }.to change { activity_flow.reload.transmitted_at }.from(nil)
+    end
+
+    it "leaves the flow untransmitted when document delivery fails" do
+      allow(http_transmitter).to receive(:deliver).and_raise(StandardError, "delivery failed")
+
+      expect {
+        described_class.new.perform(activity_flow.id)
+      }.to raise_error(StandardError, "delivery failed")
+
+      expect(activity_flow.reload.transmitted_at).to be_nil
+    end
+  end
+
   describe "retry behavior" do
     let(:retry_test_time) { Time.zone.parse("2026-08-06 10:00:00") }
 

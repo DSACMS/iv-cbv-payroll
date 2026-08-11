@@ -112,11 +112,12 @@
   argyle:
     environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: shared_email
-  activity_flow_transmission_method: encrypted_s3
+  activity_flow_transmission_method: <%= ENV.fetch("SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD", "encrypted_s3") %>
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
     bucket: <%= ENV["OUTBOUND_TRANSMISSION_S3_BUCKET_NAME"] %>
     s3_directory: <%= ENV.fetch("OUTBOUND_TRANSMISSION_S3_DIRECTORY", "outfiles") %>
+    documents_api_url: <%= ENV["SANDBOX_ACTIVITY_DOCUMENTS_API_URL"] %>
   staff_portal_enabled: true
   pilot_ended: false
   sso:
