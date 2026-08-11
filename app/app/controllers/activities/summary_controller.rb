@@ -42,9 +42,6 @@ class Activities::SummaryController < Activities::BaseController
   def enqueue_transmission
     return if @flow.activity_flow_invitation_id.blank?
 
-    agency = Rails.application.config.client_agencies[@flow.cbv_applicant.client_agency_id]
-    return unless agency.activity_flow_transmission_method == Transmitters::ActivityS3Transmitter::TRANSMISSION_METHOD
-
     ActivityFlowTransmitterJob.perform_later(@flow.id)
   end
 

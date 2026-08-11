@@ -16,14 +16,24 @@ class ActivityFlowTransmitterJob < ApplicationJob
   def perform(activity_flow_id)
     activity_flow = ActivityFlow.find(activity_flow_id)
     current_agency = Rails.application.config.client_agencies[activity_flow.cbv_applicant.client_agency_id]
+    transmission_method = current_agency.activity_flow_transmission_method
+
+    return if transmission_method.blank?
 
     with_flow_tags(activity_flow) do
-      unless current_agency.activity_flow_transmission_method == Transmitters::ActivityS3Transmitter::TRANSMISSION_METHOD
-        raise "Unsupported activity flow transmission method: #{current_agency.activity_flow_transmission_method}"
-      end
-
-      Transmitters::ActivityS3Transmitter.new(activity_flow, current_agency).deliver
+      transmitter_class(transmission_method).new(activity_flow, current_agency).deliver
       activity_flow.touch(:transmitted_at)
+    end
+  end
+
+  private
+
+  def transmitter_class(transmission_method)
+    case transmission_method
+    when Transmitters::ActivityS3Transmitter::TRANSMISSION_METHOD
+      Transmitters::ActivityS3Transmitter
+    else
+      raise "Unsupported activity flow transmission method: #{transmission_method}"
     end
   end
 end

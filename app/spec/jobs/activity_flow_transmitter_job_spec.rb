@@ -11,10 +11,11 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
       confirmation_code: "SANDBOX123"
     )
   end
+  let(:transmission_method) { Transmitters::ActivityS3Transmitter::TRANSMISSION_METHOD }
   let(:current_agency) do
     instance_double(
       ClientAgencyConfig::ClientAgency,
-      activity_flow_transmission_method: Transmitters::ActivityS3Transmitter::TRANSMISSION_METHOD,
+      activity_flow_transmission_method: transmission_method,
       applicant_attribute_names: [],
       applicant_attributes: {}
     )
@@ -46,6 +47,26 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
     }.to raise_error(StandardError, "upload failed")
 
     expect(activity_flow.reload.transmitted_at).to be_nil
+  end
+
+  context "when no activity flow transmitter is configured" do
+    let(:transmission_method) { nil }
+
+    it "leaves the flow untransmitted" do
+      expect {
+        described_class.new.perform(activity_flow.id)
+      }.not_to change { activity_flow.reload.transmitted_at }
+    end
+  end
+
+  context "when the configured transmission method is unsupported" do
+    let(:transmission_method) { "sftp" }
+
+    it "raises a configuration error" do
+      expect {
+        described_class.new.perform(activity_flow.id)
+      }.to raise_error("Unsupported activity flow transmission method: sftp")
+    end
   end
 
   describe "retry behavior" do
