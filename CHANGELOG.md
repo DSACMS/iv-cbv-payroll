@@ -9,22 +9,22 @@ integrations, and are accompanied by a notification.
 
 ## 0.2.0
 
-📝 *Emmy Income only user facing changes*
-  • No changes, nothing to review!
-🏆 *Emmy CE only user facing changes*
-  • Add two more URLs for accenture iframe [(#1961)](https://github.com/DSACMS/iv-cbv-payroll/pull/1961) - Tom Dooner
-  • Upload supporting docs directly to S3 client-side [(#1955)](https://github.com/DSACMS/iv-cbv-payroll/pull/1955) - Ben Calegari [[FFS-4542]](https://jiraent.cms.gov/browse/FFS-4542)
-⚙️ *Other/Maintenance (Not user facing)*
-  • Bump redis, webpack, postcss, vite, hadolint/hadolint-action, jsdom, webpack-cli, solid_queue, aws-sdk-s3
-  • Fix health check version contract [(#1964)](https://github.com/DSACMS/iv-cbv-payroll/pull/1964) - Daphne Gold
-  • Bump npm (fast-uri, nanoid) and system packages (libheif1) for vuln scans [(#1960)](https://github.com/DSACMS/iv-cbv-payroll/pull/1960) - Tom Dooner
-  • Bump json gem 2.21.1 -> 2.21.2 [(#1959)](https://github.com/DSACMS/iv-cbv-payroll/pull/1959) - github-actions[bot]
-  • Local Replication Guide [(#1928)](https://github.com/DSACMS/iv-cbv-payroll/pull/1928) - Nočnica Mellifera
-  • Adopt semantic versioning at 0.1.0 [(#1941)](https://github.com/DSACMS/iv-cbv-payroll/pull/1941) - Nočnica Mellifera
-  • Disable rack-mini-profiler in Sandbox, UAT, Production [by 8/18] [(#1954)](https://github.com/DSACMS/iv-cbv-payroll/pull/1954) - Daphne Gold [[FFS-4623]](https://jiraent.cms.gov/browse/FFS-4623)
+### Emmy Income only user facing changes
+- No changes, nothing to review!
 
-See the [full diff on Github](https://github.com/DSACMS/iv-cbv-payroll/compare/c2b8d44..8f18a4b).
+### Emmy CE only user facing changes
+- Add two more URLs for accenture iframe [(#1961)](https://github.com/DSACMS/iv-cbv-payroll/pull/1961) - Tom Dooner
+- Upload supporting docs directly to S3 client-side [(#1955)](https://github.com/DSACMS/iv-cbv-payroll/pull/1955) - Ben Calegari [[FFS-4542]](https://jiraent.cms.gov/browse/FFS-4542)
 
+### Other/Maintenance (Not user facing)
+- Bump @rails/actioncable, happy-dom, rubocop, bootsnap, newrelic_rpm, datadog, redis, webpack, postcss, vite, hadolint/hadolint-action, jsdom, webpack-cli, solid_queue, aws-sdk-s3
+- Fix documentation link checks [(#1965)](https://github.com/DSACMS/iv-cbv-payroll/pull/1965) - Tom Dooner
+- Fix health check version contract [(#1964)](https://github.com/DSACMS/iv-cbv-payroll/pull/1964) - Daphne Gold
+- Bump npm (fast-uri, nanoid) and system packages (libheif1) for vuln scans [(#1960)](https://github.com/DSACMS/iv-cbv-payroll/pull/1960) - Tom Dooner
+- Bump json gem 2.21.1 -> 2.21.2 [(#1959)](https://github.com/DSACMS/iv-cbv-payroll/pull/1959) - github-actions[bot]
+- Local Replication Guide [(#1928)](https://github.com/DSACMS/iv-cbv-payroll/pull/1928) - Nočnica Mellifera
+- Adopt semantic versioning at 0.1.0 [(#1941)](https://github.com/DSACMS/iv-cbv-payroll/pull/1941) - Nočnica Mellifera
+- Disable rack-mini-profiler in Sandbox, UAT, Production [by 8/18] [(#1954)](https://github.com/DSACMS/iv-cbv-payroll/pull/1954) - Daphne Gold [[FFS-4623]](https://jiraent.cms.gov/browse/FFS-4623)
 
 ## 0.1.0
 
