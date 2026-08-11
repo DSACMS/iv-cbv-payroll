@@ -17,6 +17,15 @@
         },
         {
           "pattern": "^https://www.hhs.gov"
+        },
+        {
+          "pattern": "^https://medium.com/interleap/terraform-destroy-replace-buckets-cf9d63d0029d$"
+        },
+        {
+          "pattern": "^https://([^.]+\\.)*your-agency\\.gov/api/v1/income-report$"
+        },
+        {
+          "pattern": "^https://hhs.responsibledisclosure.com/$"
         }
     ],
     "replacementPatterns": [
