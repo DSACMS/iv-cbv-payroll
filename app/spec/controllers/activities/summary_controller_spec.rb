@@ -810,5 +810,42 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       expect(activity_flow.reload.confirmation_code).to eq(test_confirmation_code)
     end
+
+    context "for tokenized flows" do
+      it "enqueues transmission for a tokenized flow" do
+        invitation = create(
+          :activity_flow_invitation,
+          cbv_applicant: activity_flow.cbv_applicant,
+          client_agency_id: "sandbox"
+        )
+        activity_flow.update!(activity_flow_invitation: invitation)
+
+        expect {
+          patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+        }.to have_enqueued_job(ActivityFlowTransmitterJob).with(activity_flow.id)
+      end
+
+      it "enqueues transmission when the agency has no activity flow transmitter configured" do
+        allow(Rails.application.config.client_agencies["sandbox"])
+          .to receive(:activity_flow_transmission_method)
+          .and_return(nil)
+        invitation = create(
+          :activity_flow_invitation,
+          cbv_applicant: activity_flow.cbv_applicant,
+          client_agency_id: "sandbox"
+        )
+        activity_flow.update!(activity_flow_invitation: invitation)
+
+        expect {
+          patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+        }.to have_enqueued_job(ActivityFlowTransmitterJob).with(activity_flow.id)
+      end
+
+      it "keeps generic flows on their current behavior" do
+        expect {
+          patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+        }.not_to have_enqueued_job(ActivityFlowTransmitterJob)
+      end
+    end
   end
 end

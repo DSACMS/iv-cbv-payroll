@@ -15,7 +15,7 @@ docker run -p 2222:22 -d --name sftp_test_server -v $(pwd)/tmp/test-sftp-keys/te
 2. Edit `config/client-agency-config.yml` so the sandbox agency has the following:
 
 ```yaml
-transmission_method: sftp
+income_flow_transmission_method: sftp
 transmission_method_configuration:
   url: 127.0.0.1
   user: testuser

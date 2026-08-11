@@ -7,8 +7,8 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   include ActiveSupport::Testing::TimeHelpers
 
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
-  let(:transmission_method) {
-    raise "define this transmission method in your spec"
+  let(:income_flow_transmission_method) {
+    raise "define this income flow transmission method in your spec"
   }
   let(:transmission_method_configuration) {
     {}
@@ -47,7 +47,12 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     allow(Aggregators::AggregatorReports::PinwheelReport).to receive(:new).and_return(pinwheel_report)
 
     allow_any_instance_of(described_class).to receive(:current_agency).and_return(mock_client_agency)
-    allow(mock_client_agency).to receive_messages(id: mocked_client_agency_id, logo_path: mocked_client_logo_path, transmission_method: transmission_method, transmission_method_configuration: transmission_method_configuration)
+    allow(mock_client_agency).to receive_messages(
+      id: mocked_client_agency_id,
+      logo_path: mocked_client_logo_path,
+      income_flow_transmission_method: income_flow_transmission_method,
+      transmission_method_configuration: transmission_method_configuration
+    )
 
     allow_any_instance_of(described_class)
       .to receive(:event_logger)
@@ -71,7 +76,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   end
 
   describe "concurrency key" do
-    let(:transmission_method) { "shared_email" }
+    let(:income_flow_transmission_method) { "shared_email" }
 
     context "for NH DHHS cbv_flows" do
       let(:nh_dhhs_applicant) { create(:cbv_applicant, client_agency_id: "nh_dhhs", case_number: "NH123456") }
@@ -106,7 +111,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     end
 
     context "when the applicant has been redacted" do
-      let(:transmission_method) { "shared_email" }
+      let(:income_flow_transmission_method) { "shared_email" }
       let(:transmission_method_configuration) { { "email" => "caseworker@example.com" } }
 
       before do
@@ -126,8 +131,8 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       end
     end
 
-    context "when transmission method is shared_email" do
-      let(:transmission_method) { "shared_email" }
+    context "when income flow transmission method is shared_email" do
+      let(:income_flow_transmission_method) { "shared_email" }
       let(:transmission_method_configuration) { {
         "email" => 'test@example.com'
       } }
@@ -172,10 +177,10 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
     end
 
-    context "when transmission method is sftp" do
+    context "when income flow transmission method is sftp" do
       let(:user) { create(:user, email: "test@test.com") }
       let(:sftp_double) { instance_double(SftpGateway) }
-      let(:transmission_method) { "sftp" }
+      let(:income_flow_transmission_method) { "sftp" }
       let(:mocked_client_id) { "sandbox" }
       let(:transmission_method_configuration) { {
         "user" => "user",
@@ -207,12 +212,12 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
     end
 
-    context "when transmission method is encrypted_s3" do
+    context "when income flow transmission method is encrypted_s3" do
       include_context "gpg_setup"
 
       let(:user) { create(:user, email: "test@test.com") }
       let(:s3_service_double) { instance_double(S3Service) }
-      let(:transmission_method) { "encrypted_s3" }
+      let(:income_flow_transmission_method) { "encrypted_s3" }
       let(:mocked_client_id) { "sandbox" }
       let(:transmission_method_configuration) { {
         "bucket" => "test-bucket",
@@ -264,8 +269,8 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
     end
 
-    context "when transmission method is json" do
-      let(:transmission_method) { "json" }
+    context "when income flow transmission method is json" do
+      let(:income_flow_transmission_method) { "json" }
       let(:agency_api_url) { "http://fake-state.api.gov/api/v1/income-report" }
       let(:transmission_method_configuration) { { "url" => agency_api_url } }
 
@@ -280,8 +285,8 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
     end
 
-    context "when transmission method is #{Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD}" do
-      let(:transmission_method) { Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD }
+    context "when income flow transmission method is #{Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD}" do
+      let(:income_flow_transmission_method) { Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD }
       let(:transmission_method_configuration) do
         {
           "url" => "http://fake-state.api.gov/api/v1/income-report-pdf"
@@ -299,8 +304,8 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       it_behaves_like "tracks an ApplicantSharedIncomeSummary event"
     end
 
-    context "when transmission method is json_and_pdf" do
-      let(:transmission_method) { Transmitters::JsonAndPdfTransmitter::TRANSMISSION_METHOD }
+    context "when income flow transmission method is json_and_pdf" do
+      let(:income_flow_transmission_method) { Transmitters::JsonAndPdfTransmitter::TRANSMISSION_METHOD }
       let(:transmission_method_configuration) do
         {
           "url" => "http://fake-state.api.gov/api/v1/income-report-pdf"
@@ -319,7 +324,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     end
 
     context "when transmission fails with a silenceable error" do
-      let(:transmission_method) { Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD }
+      let(:income_flow_transmission_method) { Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD }
       let(:error_message) { "Unexpected response from agency: code=403 message=Forbidden body=" }
 
       before do
@@ -345,7 +350,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     end
 
     context "when transmission fails with a non-silenced error" do
-      let(:transmission_method) { Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD }
+      let(:income_flow_transmission_method) { Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD }
       let(:error_message) { "Unexpected response from agency: code=500 message=Internal Server Error body=" }
 
       before do
@@ -370,7 +375,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   end
 
   describe "retry schedule" do
-    let(:transmission_method) { "shared_email" }
+    let(:income_flow_transmission_method) { "shared_email" }
     let(:invalid_flow_id) { 99_999_999 }
     let(:retry_test_time) { Time.zone.parse("2026-04-28 10:00:00") }
 

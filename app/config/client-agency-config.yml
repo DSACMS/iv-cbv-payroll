@@ -10,7 +10,7 @@
     environment: <%= ENV["LA_LDH_PINWHEEL_ENVIRONMENT"] %>
   argyle:
     environment: <%= ENV["LA_LDH_ARGYLE_ENVIRONMENT"] %>
-  transmission_method: <%= ENV.fetch("LA_LDH_TRANSMISSION_METHOD", "json") %>
+  income_flow_transmission_method: <%= ENV.fetch("LA_LDH_TRANSMISSION_METHOD", "json") %>
   transmission_method_configuration:
     json_api_url: <%= ENV["LA_LDH_INCOME_REPORT_URL"] %>
     pdf_api_url: <%= ENV["LA_LDH_PDF_API_URL"] %>
@@ -58,7 +58,7 @@
     environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
   argyle:
     environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
-  transmission_method: sftp
+  income_flow_transmission_method: sftp
   transmission_method_configuration:
     user: <%= ENV['NH_DHHS_SFTP_USER'] %>
     private_key: <%= ENV['NH_DHHS_SFTP_PRIVATE_KEY'].inspect %>
@@ -111,9 +111,12 @@
     environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
   argyle:
     environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
-  transmission_method: shared_email
+  income_flow_transmission_method: shared_email
+  activity_flow_transmission_method: encrypted_s3
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
+    bucket: <%= ENV["OUTBOUND_TRANSMISSION_S3_BUCKET_NAME"] %>
+    s3_directory: <%= ENV.fetch("OUTBOUND_TRANSMISSION_S3_DIRECTORY", "outfiles") %>
   staff_portal_enabled: true
   pilot_ended: false
   sso:
@@ -167,7 +170,7 @@
     environment: <%= ENV["RESEARCH_PINWHEEL_ENVIRONMENT"] %>
   argyle:
     environment: <%= ENV["RESEARCH_ARGYLE_ENVIRONMENT"] %>
-  transmission_method: shared_email
+  income_flow_transmission_method: shared_email
   transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
   staff_portal_enabled: true
@@ -206,7 +209,7 @@
     environment: <%= ENV["SANDBOX_PINWHEEL_ENVIRONMENT"] %>
   argyle:
     environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
-  transmission_method: json
+  income_flow_transmission_method: json
   transmission_method_configuration:
     json_api_url: <%= ENV["ACCENTURE_INCOME_REPORT_URL"] %>
   application_reporting_months: 2
