@@ -60,7 +60,7 @@ gem "faker", "~> 3.8"
 # Use Sass to process CSS
 # gem "sassc-rails"
 
-gem "datadog", "~> 2.39", require: false
+gem "datadog", "~> 2.40", require: false
 gem "mixpanel-ruby"
 gem "newrelic_rpm"
 gem "rails_semantic_logger", require: false
