@@ -44,7 +44,7 @@
           <p><%= t(".share_invitation_link_content") %></p>
 
           <div data-controller="copy-link" class="display-flex">
-            <%= form_with(builder: UswdsFormBuilder, html: { class: "display-contents" }) do |f| %>
+            <%= form_with(builder: UswdsFormBuilder, html: { class: "display-contents", id: "link-copy-form" }) do |f| %>
               <%= f.label :invitation_link, t(".invitation_link_label"), class: "usa-sr-only" %>
               <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input margin-top-0 maxw-card-lg" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
               <%= f.button_with_icon(t(".copy_link"),
@@ -52,7 +52,7 @@
                 icon: "content_copy",
                 icon_position: :leading,
                 variant: :primary,
-                type: "button",
+                type: "submit",
                 data: {
                   copy_link_target: "copyLinkButton",
                   action: "click->copy-link#copy"
@@ -68,6 +68,13 @@
                   copy_link_target: "successButton"
                 }) %>
             <% end %>
+
+            <script nonce="<%= content_security_policy_nonce %>">
+              document.getElementById('link-copy-form').addEventListener("submit", (e) => {
+                // never submit this form
+                e.preventDefault();
+              });
+            </script>
           </div>
         </div>
       </li>
