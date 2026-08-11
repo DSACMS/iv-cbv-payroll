@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "happy-dom": ">=20.11.1",
-    "jsdom": "^30.0.0",
+    "jsdom": "^30.0.1",
     "prettier": "^3.9.6",
     "vite": "^8.1.5",
     "vitest": "^4.1.10"
