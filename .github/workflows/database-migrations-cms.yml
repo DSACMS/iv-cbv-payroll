@@ -51,6 +51,8 @@ jobs:
         uses: ./.github/actions/configure-cms-aws-credentials
         with:
           environment: ${{ inputs.environment }}
+          nonprod-role-to-assume: ${{ vars.AWS_NONPROD_ROLE_TO_ASSUME }}
+          default-role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
 
       - name: Verify image is published to ECR
         run: |
