@@ -9,7 +9,7 @@ on:
         required: true
         type: string
       environment:
-        description: "the name of the application environment (e.g. dev, staging, prod)"
+        description: "the name of the application environment (e.g. dev, test, sandbox, demo, uat, prod)"
         required: true
         type: string
       image_tag:
@@ -23,7 +23,7 @@ on:
         required: true
         type: string
       environment:
-        description: "the name of the application environment (e.g. dev, staging, prod)"
+        description: "the name of the application environment (e.g. dev, test, sandbox, demo, uat, prod)"
         required: true
         type: string
       image_tag:
@@ -40,7 +40,6 @@ jobs:
       id-token: write
     env:
       EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
-      AWS_REGION: us-east-1
       CLUSTER_NAME: emmy-${{ inputs.environment }}
       APP_TASK_FAMILY: emmy-${{ inputs.environment }}
 
@@ -48,10 +47,11 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: ./.github/actions/configure-cms-aws-credentials
         with:
-          aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
+          environment: ${{ inputs.environment }}
+          nonprod-role-to-assume: ${{ vars.AWS_NONPROD_ROLE_TO_ASSUME }}
+          default-role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
 
       - name: Verify image is published to ECR
         run: |

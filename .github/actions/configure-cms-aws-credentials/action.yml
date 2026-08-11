@@ -1,0 +1,47 @@
+name: Configure CMS AWS credentials
+description: Configure credentials for the CMS account that owns the deployment environment.
+
+inputs:
+  environment:
+    description: CMS deployment environment.
+    required: true
+  nonprod-role-to-assume:
+    description: Deploy role for dev and test.
+    required: true
+  default-role-to-assume:
+    description: Deploy role for sandbox, demo, UAT, and production.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: target_role
+      name: Select target role
+      shell: bash
+      env:
+        ENVIRONMENT: ${{ inputs.environment }}
+        NONPROD_ROLE_TO_ASSUME: ${{ inputs.nonprod-role-to-assume }}
+        DEFAULT_ROLE_TO_ASSUME: ${{ inputs.default-role-to-assume }}
+      run: |
+        case "${ENVIRONMENT}" in
+          dev|test)
+            role_to_assume="${NONPROD_ROLE_TO_ASSUME}"
+            ;;
+          sandbox|demo|uat|prod)
+            role_to_assume="${DEFAULT_ROLE_TO_ASSUME}"
+            ;;
+          *)
+            echo "Unsupported CMS Cloud environment: ${ENVIRONMENT}. Supported environments: dev, test, sandbox, demo, uat, prod." >&2
+            exit 1
+            ;;
+        esac
+
+        echo "Using deploy role: ${role_to_assume}"
+        echo "role_to_assume=${role_to_assume}" >> "$GITHUB_OUTPUT"
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v6
+      with:
+        aws-region: us-east-1
+        role-to-assume: ${{ steps.target_role.outputs.role_to_assume }}
+        role-session-name: gha-${{ inputs.environment }}-${{ github.run_id }}
