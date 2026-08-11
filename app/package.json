@@ -25,12 +25,14 @@
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets",
     "build:css": "postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css",
     "test": "vitest",
+    "pa11y-scan": "pa11y-ci",
     "format": "prettier --write \"app/javascript/**/*.{js,jsx,ts,tsx,json}\" \"spec/javascript/**/*.{js,jsx,ts,tsx,json}\"",
     "format:precommit": "prettier --write"
   },
   "devDependencies": {
     "happy-dom": ">=20.11.1",
     "jsdom": "^30.0.1",
+    "pa11y-ci": "^4.1.1",
     "prettier": "^3.9.6",
     "vite": "^8.2.1",
     "vitest": "^4.1.10"

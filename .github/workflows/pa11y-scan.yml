@@ -1,0 +1,45 @@
+name: Pa11y accessibility scan
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  pa11y-scan:
+    name: Pa11y Scan
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    services:
+      postgres:
+        image: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports: ["5432:5432"]
+        env:
+          POSTGRES_DB: iv_cbv_payroll_test
+          POSTGRES_USER: cidbuser
+          POSTGRES_PASSWORD: postgres
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - id: setup
+        uses: ./.github/actions/setup-project
+        with:
+          rails_env: test
+
+      - uses: ./.github/actions/run-server
+        with:
+          database_url: ${{ steps.setup.outputs.database_url }}
+
+      - name: Install dev Javascript dependencies
+        working-directory: app
+        run: npm install --include=dev
+
+      - name: Run pa11y scan
+        working-directory: app
+        run: npm run pa11y-scan

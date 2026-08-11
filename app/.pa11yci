@@ -3,6 +3,7 @@
     "standard": "WCAG2AA",
     "runners": ["htmlcs"],
     "hideElements": ".display-none",
+    "useIncognitoBrowserContext": false,
     "chromeLaunchConfig": {
       "ignoreHTTPSErrors": true,
       "headless": true,
@@ -11,7 +12,7 @@
   },
   "urls": [
     "http://localhost:3000",
-    "http://localhost:3000/cbv/entry",
+    "http://localhost:3000/cbv/links/sandbox",
     "http://localhost:3000/cbv/employer_search",
     "http://localhost:3000/cbv/missing_results",
     "http://localhost:3000/cbv/add_job",
