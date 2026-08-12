@@ -1,21 +1,3 @@
-# Shared Mixpanel event-tracking helper for both the CBV (Income) and
-# Activities (CE) flows. See the taxonomy design doc for the full naming
-# convention and standard-parameter list:
-# docs/superpowers/specs/2026-08-06-ce-mixpanel-taxonomy-confluence-page.txt
-#
-# Usage from a controller:
-#
-#   track_event(TrackEvent::HubViewed, some_extra_param: "value")
-#
-# `client_agency_id`, `cbv_flow_id`, `cbv_applicant_id`, and `invitation_id`
-# are attached automatically from `current_agency`/`@flow`. `time`,
-# `flow_type`, `device_id`, and `locale` are attached automatically further
-# downstream in GenericEventTracker#prep_request_attributes. Add new event
-# names to TrackEvent before referencing them here.
-#
-# From frontend/Stimulus code, use `trackUserAction()`
-# (app/javascript/utilities/api.js) instead, which round-trips through this
-# same pipeline via Api::UserEventsController.
 module Trackable
   extend ActiveSupport::Concern
 
