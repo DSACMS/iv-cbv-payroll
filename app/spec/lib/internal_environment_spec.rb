@@ -45,6 +45,12 @@ RSpec.describe InternalEnvironment do
       it { is_expected.to be true }
     end
 
+    context "when the domain is CMS test" do
+      let(:domain_name) { "test.emmy.cms.gov" }
+
+      it { is_expected.to be true }
+    end
+
     context "when the domain is CMS demo" do
       let(:domain_name) { "demo.emmy.cms.gov" }
 
