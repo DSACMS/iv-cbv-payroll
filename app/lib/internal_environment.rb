@@ -7,6 +7,7 @@ module InternalEnvironment
     # CMS-hosted environments
     "uat.emmy.cms.gov",
     "dev.emmy.cms.gov",
+    "test.emmy.cms.gov",
     "demo.emmy.cms.gov",
     "sandbox.emmy.cms.gov"
   ].freeze
