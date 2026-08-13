@@ -1,4 +1,6 @@
 class Activities::ActivitiesController < Activities::BaseController
+  after_action :track_hub_viewed_event, only: :index
+
   def index
     unless @flow.identity
       @flow.identity = IdentityService.new(request, @flow.cbv_applicant).get_identity
@@ -16,5 +18,11 @@ class Activities::ActivitiesController < Activities::BaseController
     @employment_activities = @flow.employment_activities.published.includes(:employment_activity_months).order(created_at: :desc)
     @employment_draft_activities = @flow.employment_activities.pre_populated_drafts.includes(:employment_activity_months).order(created_at: :desc)
     @persisted_report = PersistedReportAdapter.new(@flow) if @employment_payroll_accounts.any?
+  end
+
+  private
+
+  def track_hub_viewed_event
+    track_event(TrackEvent::HubViewed)
   end
 end

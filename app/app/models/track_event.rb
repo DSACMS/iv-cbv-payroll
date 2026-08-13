@@ -80,5 +80,6 @@ module TrackEvent
   CaseworkerInvitedApplicantToFlow = "CaseworkerInvitedApplicantToFlow"
   CbvPageView = "CbvPageView"
   EmailSent = "EmailSent"
+  HubViewed = "HubViewed"
   IncomeSummaryMatchedAgencyNames = "IncomeSummaryMatchedAgencyNames"
 end
