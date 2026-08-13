@@ -15,7 +15,9 @@ readonly CMS_TEST_BASE_URL="${CMS_TEST_BASE_URL:-https://test.emmy.cms.gov}"
 readonly CMS_SANDBOX_BASE_URL="${CMS_SANDBOX_BASE_URL:-https://sandbox.emmy.cms.gov}"
 readonly CMS_DEMO_BASE_URL="${CMS_DEMO_BASE_URL:-https://demo.emmy.cms.gov}"
 readonly CMS_UAT_BASE_URL="${CMS_UAT_BASE_URL:-https://uat.emmy.cms.gov}"
-readonly CMS_PROD_BASE_URL="${CMS_PROD_BASE_URL:-https://sandbox.emmy.cms.gov}" # TODO: remove sandbox subdomain when apex DNS works (see FFS-4704)
+# Apex DNS for CMS production is not live yet (FFS-4704). Use the distinct
+# Accenture production domain until the apex DNS record is available.
+readonly CMS_PROD_BASE_URL="${CMS_PROD_BASE_URL:-https://accenture.emmy.cms.gov}"
 
 require_command() {
   command -v "$1" >/dev/null || {
@@ -24,15 +26,29 @@ require_command() {
   }
 }
 
+require_expected_host() {
+  local url="$1"
+
+  [[ "$url" =~ ^https://([a-z0-9.-]+\.)?(emmy\.cms\.gov|reportmyincome\.org)(/|$) ]] || {
+    echo "Refusing to use unexpected health URL: ${url}" >&2
+    exit 1
+  }
+}
+
+latest_run_id() {
+  gh run list --repo "$REPOSITORY" --workflow "$1" --limit 1 \
+    --json databaseId --jq '.[0].databaseId // 0'
+}
+
 wait_for_run() {
   local workflow="$1"
-  local started_at="$2"
+  local since_id="$2"
   local run_id=""
 
   for _ in {1..30}; do
     run_id=$(gh run list --repo "$REPOSITORY" --workflow "$workflow" --event workflow_dispatch \
-      --limit 20 --json databaseId,createdAt \
-      --jq ".[] | select(.createdAt >= \"${started_at}\") | .databaseId" | head -n 1)
+      --limit 20 --json databaseId \
+      --jq "[.[] | select(.databaseId > ${since_id}) | .databaseId] | min // empty")
     [[ -n "$run_id" ]] && break
     sleep 2
   done
@@ -70,36 +86,57 @@ verify_health() {
 deploy_nava() {
   local environment="$1"
   local health_url="$2"
-  local started_at
-  started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+  local since_id
+  since_id=$(latest_run_id cd-app.yml)
 
   echo "Dispatching Nava ${environment} deployment for ${DEPLOY_SHA}..."
   gh workflow run cd-app.yml --repo "$REPOSITORY" --ref main \
     -f environment="$environment" -f commit_sha="$DEPLOY_SHA"
-  wait_for_run cd-app.yml "$started_at"
+  wait_for_run cd-app.yml "$since_id"
   verify_health "Nava ${environment}" "$health_url" "$DEPLOY_SHA"
 }
 
 deploy_cms() {
   local environment="$1"
-  local health_url="$2"
-  local started_at
-  started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+  local base_url="$2"
+  local since_id
+  since_id=$(latest_run_id deploy-cms.yml)
 
   echo "Dispatching CMS Cloud ${environment} deployment for ${DEPLOY_SHA}..."
   gh workflow run deploy-cms.yml --repo "$REPOSITORY" --ref main \
     -f environment="$environment" -f ref="$DEPLOY_SHA"
-  wait_for_run deploy-cms.yml "$started_at"
-  verify_health "CMS Cloud ${environment}" "$health_url" "$DEPLOY_SHA"
+  wait_for_run deploy-cms.yml "$since_id"
+
+  if [[ -z "$base_url" ]]; then
+    echo "WARNING: no health URL configured for CMS Cloud ${environment}; deployment was NOT verified." >&2
+    return
+  fi
+
+  verify_health "CMS Cloud ${environment}" "$base_url" "$DEPLOY_SHA"
 }
 
 require_command gh
 require_command curl
 require_command jq
 
+for url in "$NAVA_DEMO_HEALTH_URL" "$NAVA_PROD_HEALTH_URL" \
+  "$CMS_DEV_BASE_URL" "$CMS_TEST_BASE_URL" "$CMS_SANDBOX_BASE_URL" \
+  "$CMS_DEMO_BASE_URL" "$CMS_UAT_BASE_URL" "$CMS_PROD_BASE_URL"; do
+  [[ -n "$url" ]] && require_expected_host "$url"
+done
+
 read -r -p "Ref, branch, tag, or SHA to deploy: " requested_ref
 [[ -n "$requested_ref" ]] || { echo "A ref is required." >&2; exit 1; }
 DEPLOY_SHA=$(gh api "repos/${REPOSITORY}/commits/${requested_ref}" --jq .sha)
+[[ "$DEPLOY_SHA" =~ ^[0-9a-f]{40}$ ]] || {
+  echo "Could not resolve '${requested_ref}' to a commit SHA." >&2
+  exit 1
+}
+compare_status=$(gh api "repos/${REPOSITORY}/compare/main...${DEPLOY_SHA}" --jq .status)
+[[ "$compare_status" == "identical" || "$compare_status" == "behind" ]] || {
+  echo "${DEPLOY_SHA} is not on main (compare status: ${compare_status}); refusing to deploy unreviewed code." >&2
+  exit 1
+}
 echo "Deploying immutable commit: ${DEPLOY_SHA}"
 
 deploy_nava demo "$NAVA_DEMO_HEALTH_URL"
@@ -118,4 +155,4 @@ deploy_nava prod "$NAVA_PROD_HEALTH_URL"
 deploy_cms uat "$CMS_UAT_BASE_URL"
 deploy_cms prod "$CMS_PROD_BASE_URL"
 
-echo "All deployments completed and passed health checks."
+echo "All deployments completed; configured health checks passed."
