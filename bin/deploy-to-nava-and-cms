@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+# This is a helper script while we're still working on environment promotion
+# between Nava and CMS. Although this takes a really long time to run (about an
+# hour), at least it's better and safer than triggering these all manually.
+#
+# This script deploys one Git commit through each environment in order.
+
+set -euo pipefail
+
+readonly REPOSITORY="DSACMS/iv-cbv-payroll"
+readonly NAVA_DEMO_HEALTH_URL="${NAVA_DEMO_HEALTH_URL:-https://demo.reportmyincome.org}"
+readonly NAVA_PROD_HEALTH_URL="${NAVA_PROD_HEALTH_URL:-https://reportmyincome.org}"
+readonly CMS_DEV_BASE_URL="${CMS_DEV_BASE_URL:-https://dev.emmy.cms.gov}"
+readonly CMS_TEST_BASE_URL="${CMS_TEST_BASE_URL:-https://test.emmy.cms.gov}"
+readonly CMS_SANDBOX_BASE_URL="${CMS_SANDBOX_BASE_URL:-https://sandbox.emmy.cms.gov}"
+readonly CMS_DEMO_BASE_URL="${CMS_DEMO_BASE_URL:-https://demo.emmy.cms.gov}"
+readonly CMS_UAT_BASE_URL="${CMS_UAT_BASE_URL:-https://uat.emmy.cms.gov}"
+readonly CMS_PROD_BASE_URL="${CMS_PROD_BASE_URL:-https://sandbox.emmy.cms.gov}" # TODO: remove sandbox subdomain when apex DNS works (see FFS-4704)
+
+require_command() {
+  command -v "$1" >/dev/null || {
+    echo "Required command not found: $1" >&2
+    exit 1
+  }
+}
+
+wait_for_run() {
+  local workflow="$1"
+  local started_at="$2"
+  local run_id=""
+
+  for _ in {1..30}; do
+    run_id=$(gh run list --repo "$REPOSITORY" --workflow "$workflow" --event workflow_dispatch \
+      --limit 20 --json databaseId,createdAt \
+      --jq ".[] | select(.createdAt >= \"${started_at}\") | .databaseId" | head -n 1)
+    [[ -n "$run_id" ]] && break
+    sleep 2
+  done
+
+  [[ -n "$run_id" ]] || {
+    echo "Could not find the dispatched ${workflow} workflow run." >&2
+    exit 1
+  }
+
+  echo "Waiting for GitHub Actions run ${run_id}..."
+  gh run watch "$run_id" --repo "$REPOSITORY" --exit-status
+}
+
+verify_health() {
+  local environment="$1"
+  local base_url="$2"
+  local expected_sha="$3"
+  local health_url="${base_url%/}/health"
+  local response
+
+  echo "Verifying ${environment} at ${health_url}..."
+  for _ in {1..30}; do
+    if response=$(curl --fail --silent --show-error --max-time 15 "$health_url") &&
+        jq -e --arg sha "$expected_sha" '.status == "ok" and .ref == $sha' >/dev/null <<<"$response"; then
+      echo "${environment} is healthy and reports ${expected_sha}."
+      return
+    fi
+    sleep 10
+  done
+
+  echo "${environment} did not become healthy with ref ${expected_sha}: ${health_url}" >&2
+  exit 1
+}
+
+deploy_nava() {
+  local environment="$1"
+  local health_url="$2"
+  local started_at
+  started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+  echo "Dispatching Nava ${environment} deployment for ${DEPLOY_SHA}..."
+  gh workflow run cd-app.yml --repo "$REPOSITORY" --ref main \
+    -f environment="$environment" -f commit_sha="$DEPLOY_SHA"
+  wait_for_run cd-app.yml "$started_at"
+  verify_health "Nava ${environment}" "$health_url" "$DEPLOY_SHA"
+}
+
+deploy_cms() {
+  local environment="$1"
+  local health_url="$2"
+  local started_at
+  started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+  echo "Dispatching CMS Cloud ${environment} deployment for ${DEPLOY_SHA}..."
+  gh workflow run deploy-cms.yml --repo "$REPOSITORY" --ref main \
+    -f environment="$environment" -f ref="$DEPLOY_SHA"
+  wait_for_run deploy-cms.yml "$started_at"
+  verify_health "CMS Cloud ${environment}" "$health_url" "$DEPLOY_SHA"
+}
+
+require_command gh
+require_command curl
+require_command jq
+
+read -r -p "Ref, branch, tag, or SHA to deploy: " requested_ref
+[[ -n "$requested_ref" ]] || { echo "A ref is required." >&2; exit 1; }
+DEPLOY_SHA=$(gh api "repos/${REPOSITORY}/commits/${requested_ref}" --jq .sha)
+echo "Deploying immutable commit: ${DEPLOY_SHA}"
+
+deploy_nava demo "$NAVA_DEMO_HEALTH_URL"
+deploy_cms dev "$CMS_DEV_BASE_URL"
+deploy_cms test "$CMS_TEST_BASE_URL"
+deploy_cms sandbox "$CMS_SANDBOX_BASE_URL"
+deploy_cms demo "$CMS_DEMO_BASE_URL"
+
+read -r -p "Lower environments succeeded. Type DEPLOY_PRODUCTION to continue: " confirmation
+[[ "$confirmation" == "DEPLOY_PRODUCTION" ]] || {
+  echo "Production deployments cancelled."
+  exit 0
+}
+
+deploy_nava prod "$NAVA_PROD_HEALTH_URL"
+deploy_cms uat "$CMS_UAT_BASE_URL"
+deploy_cms prod "$CMS_PROD_BASE_URL"
+
+echo "All deployments completed and passed health checks."
