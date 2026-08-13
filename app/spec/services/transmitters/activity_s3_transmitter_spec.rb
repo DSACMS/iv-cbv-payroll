@@ -12,7 +12,6 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
       confirmation_code: "SANDBOX123"
     )
   end
-  let(:processed_bucket_name) { "processed-bucket" }
   let(:destination_bucket_name) { "outbound-bucket" }
   let(:expected_destination_prefix) { "outfiles/SANDBOX123/" }
   let(:report_file_name) { "HR1_Report_2026-08-04.pdf" }
@@ -25,28 +24,21 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
       }
     )
   end
-  let(:processed_s3_service) { instance_double(S3Service) }
+  let(:processed_download_service) { instance_double(ProcessedDownloadService) }
   let(:destination_s3_service) { instance_double(S3Service) }
   let(:pdf_content) { "%PDF-1.4 report" }
   let(:transmitter) { described_class.new(activity_flow, current_agency) }
 
-  around do |example|
-    stub_environment_variable("PROCESSED_BUCKET_NAME", processed_bucket_name, &example)
-  end
-
   before do
-    allow(S3Service).to receive(:new)
-      .with({ "bucket" => processed_bucket_name })
-      .and_return(processed_s3_service)
+    allow(ProcessedDownloadService).to receive(:new).and_return(processed_download_service)
     allow(S3Service).to receive(:new)
       .with({ "bucket" => destination_bucket_name })
       .and_return(destination_s3_service)
     allow(transmitter).to receive(:pdf_content).and_return(pdf_content)
   end
 
-  it "uses the processed and agency destination buckets by default" do
-    expect(S3Service).to have_received(:new)
-      .with({ "bucket" => processed_bucket_name })
+  it "uses the processed download service and agency destination bucket by default" do
+    expect(ProcessedDownloadService).to have_received(:new)
     expect(S3Service).to have_received(:new)
       .with({ "bucket" => destination_bucket_name })
   end
@@ -61,7 +53,7 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
   end
 
   it "uploads only the report when the flow has no supporting documents" do
-    expect(processed_s3_service).not_to receive(:download_file)
+    expect(processed_download_service).not_to receive(:download_file)
     expect(destination_s3_service).to receive(:upload_directory).ordered do |directory, prefix|
       expect(prefix).to eq(expected_destination_prefix)
       expect(Dir.children(directory)).to contain_exactly(report_file_name)
@@ -97,7 +89,7 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
     attach_document(draft, "Draft Document.pdf")
 
     downloaded_keys = []
-    allow(processed_s3_service).to receive(:download_file) do |key, file_path|
+    allow(processed_download_service).to receive(:download_file) do |key, file_path|
       downloaded_keys << key
       File.binwrite(file_path, "cleared #{key}")
     end
@@ -128,7 +120,7 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
   it "does not begin the destination upload when a processed object is missing" do
     activity = create(:volunteering_activity, activity_flow: activity_flow)
     attach_document(activity, "Timesheet.pdf")
-    allow(processed_s3_service).to receive(:download_file).and_raise(StandardError, "missing processed object")
+    allow(processed_download_service).to receive(:download_file).and_raise(StandardError, "missing processed object")
 
     expect(destination_s3_service).not_to receive(:upload_directory)
 
@@ -142,7 +134,7 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
     unknown = attach_document(activity, "Other Document")
     unknown.blob.update!(content_type: "application/x-unknown")
 
-    allow(processed_s3_service).to receive(:download_file) do |_key, file_path|
+    allow(processed_download_service).to receive(:download_file) do |_key, file_path|
       File.binwrite(file_path, "cleared document")
     end
     expect(destination_s3_service).to receive(:upload_directory) do |directory, _prefix|

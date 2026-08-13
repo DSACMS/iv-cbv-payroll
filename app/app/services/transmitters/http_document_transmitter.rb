@@ -6,7 +6,7 @@ class Transmitters::HttpDocumentTransmitter
   def initialize(activity_flow, current_agency)
     @activity_flow = activity_flow
     @current_agency = current_agency
-    @processed_s3_service = S3Service.new("bucket" => ENV.fetch("PROCESSED_BUCKET_NAME"))
+    @processed_s3_service = ProcessedDownloadService.new
   end
 
   def deliver

@@ -7,7 +7,7 @@ class Transmitters::ActivityS3Transmitter
   def initialize(activity_flow, current_agency)
     @activity_flow = activity_flow
     @transmission_config = current_agency.transmission_method_configuration
-    @processed_s3_service = S3Service.new("bucket" => ENV.fetch("PROCESSED_BUCKET_NAME"))
+    @processed_s3_service = ProcessedDownloadService.new
     @destination_s3_service = S3Service.new("bucket" => @transmission_config.fetch("bucket"))
   end
 

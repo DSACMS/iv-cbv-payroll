@@ -11,8 +11,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
       confirmation_code: "SANDBOX123"
     )
   end
-  let(:processed_bucket_name) { "processed-bucket" }
-  let(:processed_s3_service) { instance_double(S3Service) }
+  let(:processed_download_service) { instance_double(ProcessedDownloadService) }
   let(:api_url) { "http://fake-state.api.gov/documents" }
   let(:current_agency) do
     instance_double(
@@ -23,14 +22,8 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
   end
   let(:transmitter) { described_class.new(activity_flow, current_agency) }
 
-  around do |example|
-    stub_environment_variable("PROCESSED_BUCKET_NAME", processed_bucket_name, &example)
-  end
-
   before do
-    allow(S3Service).to receive(:new)
-      .with({ "bucket" => processed_bucket_name })
-      .and_return(processed_s3_service)
+    allow(ProcessedDownloadService).to receive(:new).and_return(processed_download_service)
     allow(User).to receive(:api_key_for_agency).with("sandbox").and_return("api-key")
     allow(Rails.logger).to receive(:info)
   end
@@ -40,7 +33,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
     pdf = attach_document(volunteering, "Time Sheet.PDF", "application/pdf")
     image = attach_document(volunteering, "Time Sheet.jpg", "image/jpeg")
     files = { pdf.blob.key => "pdf content", image.blob.key => "image content" }
-    allow(processed_s3_service).to receive(:download_file) do |key, path|
+    allow(processed_download_service).to receive(:download_file) do |key, path|
       File.binwrite(path, files.fetch(key))
     end
 
@@ -68,7 +61,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
   end
 
   it "does not make HTTP requests when the flow has no supporting documents" do
-    expect(processed_s3_service).not_to receive(:download_file)
+    expect(processed_download_service).not_to receive(:download_file)
     expect(Rails.logger).to receive(:info).with(include("document_count=0"))
 
     transmitter.deliver
@@ -77,7 +70,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
   it "does not transmit later documents when downloading a document fails" do
     activity = create(:volunteering_activity, activity_flow: activity_flow)
     attachment = attach_document(activity, "Timesheet.pdf", "application/pdf")
-    allow(processed_s3_service).to receive(:download_file).and_raise(StandardError, "missing processed object")
+    allow(processed_download_service).to receive(:download_file).and_raise(StandardError, "missing processed object")
 
     expect { transmitter.deliver }.to raise_error(StandardError, "missing processed object")
   end
@@ -85,7 +78,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
   it "raises a transmitter error when the agency rejects a document" do
     activity = create(:volunteering_activity, activity_flow: activity_flow)
     attachment = attach_document(activity, "Timesheet.pdf", "application/pdf")
-    allow(processed_s3_service).to receive(:download_file) { |_key, path| File.binwrite(path, "document content") }
+    allow(processed_download_service).to receive(:download_file) { |_key, path| File.binwrite(path, "document content") }
     stub_request(:post, api_url).to_return(status: [ 500, "Internal Server Error" ])
 
     expect { transmitter.deliver }
@@ -95,7 +88,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
   it "raises a silenceable error for configured response codes" do
     activity = create(:volunteering_activity, activity_flow: activity_flow)
     attach_document(activity, "Timesheet.pdf", "application/pdf")
-    allow(processed_s3_service).to receive(:download_file) { |_key, path| File.binwrite(path, "document content") }
+    allow(processed_download_service).to receive(:download_file) { |_key, path| File.binwrite(path, "document content") }
     allow(current_agency).to receive(:transmission_method_configuration)
       .and_return({ "documents_api_url" => api_url, "silently_retry_error_codes" => [ 403 ] })
     stub_request(:post, api_url).to_return(status: [ 403, "Forbidden" ])
@@ -108,7 +101,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
       .and_return({ "documents_api_url" => "not a url" })
     activity = create(:volunteering_activity, activity_flow: activity_flow)
     attachment = attach_document(activity, "Timesheet.pdf", "application/pdf")
-    allow(processed_s3_service).to receive(:download_file) { |_key, path| File.binwrite(path, "document content") }
+    allow(processed_download_service).to receive(:download_file) { |_key, path| File.binwrite(path, "document content") }
 
     expect { transmitter.deliver }
       .to raise_error(ArgumentError, 'Invalid documents_api_url "not a url": must be an absolute HTTP(S) URL')
