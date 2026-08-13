@@ -14,10 +14,17 @@ unscanned:
   service: S3
   bucket: <%= ENV["UNSCANNED_BUCKET_NAME"] %>
 
+processed:
+  service: S3
+  bucket: <%= ENV["PROCESSED_BUCKET_NAME"] %>
+
+# Use these _local ones for dev/testing only.
+# They don't actually scan for viruses.
 unscanned_local:
   service: Disk
   root: <%= Rails.root.join("tmp/storage_unscanned") %>
 
-processed:
-  service: S3
-  bucket: <%= ENV["PROCESSED_BUCKET_NAME"] %>
+processed_local:
+  service: Disk
+  # Local uploads are not virus-scanned, so use the same storage as unscanned_local.
+  root: <%= Rails.root.join("tmp/storage_unscanned") %>

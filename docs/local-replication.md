@@ -6,7 +6,7 @@ you'll have the app serving at `http://localhost:3000` and be able to walk
 through the applicant and caseworker flows against sandbox data.
 
 > This is a practical quick-start, but fundamentally Emmy is a connector
-> between agencies, applicants, and verification data sources. As such 
+> between agencies, applicants, and verification data sources. As such
 > you will either need to have access to data services like Argyle, or create
 > stubs as needed for those services.
 
@@ -161,7 +161,9 @@ JSON_API_KEY=$(bin/rails runner "puts User.api_key_for_agency('agency_id')") rub
 Then point the Emmy App at the receiver (running on port 4567) by adding the
 `LA_LDH_*` variables shown in the
 ["JSON API Testing" section of `CONTRIBUTING.md`](/CONTRIBUTING.md) to your
-`.env.local`.
+`.env.local`. To transmit activity supporting documents, also set
+`SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=http` and
+`SANDBOX_ACTIVITY_DOCUMENTS_API_URL=http://localhost:4567/documents`.
 
 ## Running tests
 
