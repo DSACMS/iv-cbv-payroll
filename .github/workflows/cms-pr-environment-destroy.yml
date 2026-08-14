@@ -1,8 +1,12 @@
-# TEST PLACEHOLDER: This workflow intentionally performs no AWS operations.
 name: CMS Cloud PR Environment Destroy
-run-name: Test CMS Cloud PR Environment Destroy ${{ inputs.pr_number }}
+run-name: Destroy CMS Cloud PR Environment ${{ inputs.pr_number }}
 
 on:
+  workflow_call:
+    inputs:
+      pr_number:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       pr_number:
@@ -10,15 +14,32 @@ on:
         required: true
         type: string
 
-permissions:
-  contents: read
-
 jobs:
-  placeholder:
-    name: Test placeholder
+  destroy:
+    name: Destroy review environment
     runs-on: ubuntu-latest
+    concurrency: cms-pr-environment-${{ inputs.pr_number }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+
     steps:
-      - name: Echo review-app input
+      - uses: actions/checkout@v7
+        with:
+          # TEMPORARY: Use the manually selected branch while testing the
+          # lifecycle script before it is available on the default branch.
+          ref: ${{ github.ref }}
+
+      - name: Configure CMS Cloud nonprod credentials
+        uses: ./.github/actions/configure-cms-aws-credentials
+        with:
+          environment: dev
+          nonprod-role-to-assume: ${{ vars.AWS_NONPROD_ROLE_TO_ASSUME }}
+          default-role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
+
+      - name: Destroy review app
         env:
+          GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ inputs.pr_number }}
-        run: echo "Test placeholder for destroying PR ${PR_NUMBER}"
+        run: ./bin/cms-pr-environment destroy "${PR_NUMBER}"

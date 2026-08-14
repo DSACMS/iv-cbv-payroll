@@ -9,15 +9,45 @@ A temporary environment is created for each pull request that stays up while the
 
 ## Lifecycle of pull request environments
 
-A pull request environment is created when a pull request is opened or reopened, and destroyed when the pull request is merged or closed. When new commits are pushed up to the pull request, the pull request environment is updated.
+Legacy Nava pull request environments are created when a pull request is opened
+or reopened, updated when new commits are pushed, and destroyed when the pull
+request is merged or closed.
 
-## Isolate database migrations into separate pull requests
+CMS Cloud review apps are created manually from the **CMS Cloud PR Environment
+Update** workflow. They reuse the CMS Cloud `dev` network, IAM roles, secrets,
+database, cache, identity provider, and storage. Each review app has its own ECS
+web service, ALB route, and PostgreSQL schema named for the pull request. The PR
+image runs Solid Queue within Puma, so review apps do not create a separate
+worker service.
 
-Database migrations are not reflected in PR environments. In particular, PR environments shares the same database with the dev environment, so database migrations that exist in the pull request are not run on the database to avoid impacting the dev environment.
+Review apps share the existing CMS Cloud dev ALB. Each app creates only a
+target group and a host-header listener rule that forwards its hostname to its
+ECS service; it does not provision another load balancer.
 
-Therefore, isolate database changes in their own pull request and merge that pull request first before opening pull requests with application changes that depend on those database changes. Note that it is still okay and encouraged to develop database and application changes together during local development.
+The same listener rule forwards agency-specific review hosts such as
+`la-pr-123.dev.emmy.cms.gov` and `nh-pr-123.dev.emmy.cms.gov` to that target
+group. The review task replaces all agency domain environment variables with
+`<agency>-pr-<number>.dev.emmy.cms.gov`, keeping agency links and allowed hosts
+inside the review app rather than sending them to the shared dev service.
 
-This guidance is not strict. It is still okay to combine database migrations and application changes in a single pull request. However, when doing so, note that the PR environment may not be fully functional if the application changes rely on the database migrations.
+The CMS Cloud review hostname defaults to
+`pr-<number>.dev.emmy.cms.gov`. Public DNS must wildcard `*.dev.emmy.cms.gov`
+to the dev ALB. The existing dev certificate's wildcard SAN covers the main
+and agency-specific review hostnames.
+
+## Database migrations in review apps
+
+CMS Cloud review apps run the selected commit's migrations inside their
+PR-specific schema. The legacy Nava review environments also use isolated
+schemas, but their migration behavior may differ from the CMS Cloud workflow.
+
+Schema isolation prevents a review migration from changing the dev schema, but
+it does not isolate database-wide operations or SQL that explicitly names
+another schema. Review migration code must not create extensions, roles, or
+other cluster-level resources.
+
+Application and migration changes can be acceptance-tested together when the
+migration stays within the configured schema.
 
 ## Implementing pull request environments for each application
 

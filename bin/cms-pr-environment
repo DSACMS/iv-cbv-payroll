@@ -1,0 +1,683 @@
+#!/usr/bin/env bash
+# Create, update, destroy, or garbage-collect CMS Cloud dev review apps.
+set -euo pipefail
+
+readonly environment="dev"
+readonly cluster_name="emmy-${environment}"
+readonly base_service_name="emmy-${environment}-app"
+readonly app_container_name="emmy-app"
+
+log() { printf '[cms-pr-environment] %s\n' "$*" >&2; }
+
+# Opens a collapsible phase in GitHub Actions and prints a normal heading elsewhere.
+start_group() {
+  if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+    printf '::group::%s\n' "$1"
+  else
+    log "$1"
+  fi
+}
+
+# Closes a GitHub Actions phase without emitting workflow commands during local use.
+end_group() {
+  if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+    printf '::endgroup::\n'
+  fi
+}
+
+usage() {
+  echo "Usage: $0 update <pr-number> <image-tag> <image-repository>" >&2
+  echo "       $0 destroy <pr-number>" >&2
+  echo "       $0 scan" >&2
+}
+
+# Validates that a PR identifier is numeric and exits with a usage error otherwise.
+require_pr_number() {
+  if [[ ! "$1" =~ ^[0-9]+$ ]]; then
+    echo "PR number must contain only digits: $1" >&2
+    exit 2
+  fi
+}
+
+service_name() { echo "emmy-dev-p-$1"; }
+task_family() { echo "emmy-dev-p-$1"; }
+target_group_name() { echo "emmy-dev-p-$1"; }
+schema_name() { echo "p_$1"; }
+hostname() { echo "pr-$1.dev.emmy.cms.gov"; }
+agency_hostname() { echo "$1-pr-$2.dev.emmy.cms.gov"; }
+agency_hostname_pattern() { echo "*-pr-$1.dev.emmy.cms.gov"; }
+
+# Builds the common ECS tag payload used to identify and garbage-collect review resources.
+tags_json() {
+  local pr_number="$1"
+  local image_tag="${2:-unknown}"
+  jq -nc \
+    --arg pr_number "$pr_number" \
+    --arg image_tag "$image_tag" \
+    '[
+      {key: "Project", value: "EMMY"},
+      {key: "Environment", value: "dev"},
+      {key: "ReviewApp", value: "true"},
+      {key: "Repository", value: "DSACMS/iv-cbv-payroll"},
+      {key: "PullRequest", value: $pr_number},
+      {key: "ImageTag", value: $image_tag}
+    ]'
+}
+
+# Builds the equivalent ELBv2 tag payload, whose API uses capitalized tag keys.
+elbv2_tags_json() {
+  local pr_number="$1"
+  local image_tag="${2:-unknown}"
+  jq -nc \
+    --arg pr_number "$pr_number" \
+    --arg image_tag "$image_tag" \
+    '[
+      {Key: "Project", Value: "EMMY"},
+      {Key: "Environment", Value: "dev"},
+      {Key: "ReviewApp", Value: "true"},
+      {Key: "Repository", Value: "DSACMS/iv-cbv-payroll"},
+      {Key: "PullRequest", Value: $pr_number},
+      {Key: "ImageTag", Value: $image_tag}
+    ]'
+}
+
+# Returns the ARN of the shared CMS dev application load balancer.
+load_balancer_arn() {
+  aws elbv2 describe-load-balancers \
+    --names emmy-dev-alb \
+    --query 'LoadBalancers[0].LoadBalancerArn' \
+    --output text
+}
+
+# Returns the HTTPS listener ARN from the shared CMS dev load balancer.
+listener_arn() {
+  aws elbv2 describe-listeners \
+    --load-balancer-arn "$(load_balancer_arn)" \
+    --query "Listeners[?Port == \`443\`].ListenerArn | [0]" \
+    --output text
+}
+
+# Returns the VPC containing the shared load balancer and review-app target groups.
+vpc_id() {
+  aws elbv2 describe-load-balancers \
+    --names emmy-dev-alb \
+    --query 'LoadBalancers[0].VpcId' \
+    --output text
+}
+
+# Returns the live dev ECS service so review apps can inherit its runtime configuration.
+base_service() {
+  aws ecs describe-services \
+    --cluster "$cluster_name" \
+    --services "$base_service_name" \
+    --query 'services[0]' \
+    --output json
+}
+
+# Runs a one-off command with a review task definition and propagates its container exit status.
+run_review_task() {
+  local task_definition="$1"
+  local network_configuration="$2"
+  local command_json="$3"
+  local environment_json="${4:-[]}"
+  local overrides task_arn exit_code stopped_reason
+
+  log "Starting one-off ECS task from ${task_definition} with command ${command_json}"
+  overrides="$(jq -nc \
+    --arg container "$app_container_name" \
+    --argjson command "$command_json" \
+    --argjson environment "$environment_json" \
+    '{containerOverrides: [{name: $container, command: $command, environment: $environment}]}')"
+
+  task_arn="$(aws ecs run-task \
+    --cluster "$cluster_name" \
+    --task-definition "$task_definition" \
+    --launch-type FARGATE \
+    --network-configuration "$network_configuration" \
+    --overrides "$overrides" \
+    --query 'tasks[0].taskArn' \
+    --output text)"
+
+  if [[ -z "$task_arn" || "$task_arn" == "None" ]]; then
+    echo "ECS did not start task $task_definition" >&2
+    return 1
+  fi
+
+  log "Started ${task_arn}; waiting for it to stop"
+  aws ecs wait tasks-stopped --cluster "$cluster_name" --tasks "$task_arn"
+  exit_code="$(aws ecs describe-tasks \
+    --cluster "$cluster_name" \
+    --tasks "$task_arn" \
+    --query "tasks[0].containers[?name == '${app_container_name}'].exitCode | [0]" \
+    --output text)"
+
+  if [[ "$exit_code" != "0" ]]; then
+    stopped_reason="$(aws ecs describe-tasks \
+      --cluster "$cluster_name" \
+      --tasks "$task_arn" \
+      --query 'tasks[0].stoppedReason' \
+      --output text)"
+    echo "Task $task_arn failed with exit code $exit_code: $stopped_reason" >&2
+    return 1
+  fi
+
+  log "One-off ECS task ${task_arn} completed successfully"
+}
+
+# Clones the live dev task definition and writes a registerable PR-specific version to a file.
+# The review version replaces its image, schema, domains, and embedded queue-worker setting.
+render_task_definition() {
+  local pr_number="$1"
+  local image_tag="$2"
+  local image_repository="$3"
+  local output_file="$4"
+  local base_task_definition
+
+  if [[ ! "$image_tag" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "Image tag must be a full Git commit SHA: $image_tag" >&2
+    exit 2
+  fi
+
+  if [[ ! "$image_repository" =~ ^[0-9]{12}\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/[a-zA-Z0-9._/-]+$ ]]; then
+    echo "Image repository is not an ECR repository URL: $image_repository" >&2
+    exit 2
+  fi
+
+  base_task_definition="$(base_service | jq -r '.taskDefinition')"
+  log "Cloning live dev task definition ${base_task_definition} into family $(task_family "$pr_number")"
+  log "Setting app image to ${image_repository}:${image_tag}, schema to $(schema_name "$pr_number"), and hostname to $(hostname "$pr_number")"
+  aws ecs describe-task-definition \
+    --task-definition "$base_task_definition" \
+    --query taskDefinition \
+    --output json |
+    jq \
+      --arg family "$(task_family "$pr_number")" \
+      --arg image "${image_repository}:${image_tag}" \
+      --arg image_tag "$image_tag" \
+      --arg domain "$(hostname "$pr_number")" \
+      --arg la_domain "$(agency_hostname la "$pr_number")" \
+      --arg nh_domain "$(agency_hostname nh "$pr_number")" \
+      --arg sandbox_domain "$(agency_hostname sandbox "$pr_number")" \
+      --arg research_domain "$(agency_hostname research "$pr_number")" \
+      --arg accenture_domain "$(agency_hostname accenture "$pr_number")" \
+      --arg schema "$(schema_name "$pr_number")" \
+      --arg container "$app_container_name" '
+      def environment_override($name; $value):
+        map(select(.name != $name)) + [{name: $name, value: $value}];
+
+      .family = $family |
+      .containerDefinitions |= map(
+        if .name == $container then
+          .image = $image |
+          .secrets = ((.secrets // []) | map(select(
+            .name != "LA_LDH_DOMAIN_NAME" and
+            .name != "NH_DHHS_DOMAIN_NAME" and
+            .name != "SANDBOX_DOMAIN_NAME" and
+            .name != "RESEARCH_DOMAIN_NAME" and
+            .name != "ACCENTURE_DOMAIN_NAME"
+          ))) |
+          .environment = ((.environment // []) |
+            environment_override("IMAGE_TAG"; $image_tag) |
+            environment_override("DOMAIN_NAME"; $domain) |
+            environment_override("LA_LDH_DOMAIN_NAME"; $la_domain) |
+            environment_override("NH_DHHS_DOMAIN_NAME"; $nh_domain) |
+            environment_override("SANDBOX_DOMAIN_NAME"; $sandbox_domain) |
+            environment_override("RESEARCH_DOMAIN_NAME"; $research_domain) |
+            environment_override("ACCENTURE_DOMAIN_NAME"; $accenture_domain) |
+            environment_override("DB_SCHEMA"; $schema) |
+            environment_override("SOLID_QUEUE_IN_PUMA"; "true"))
+        else . end
+      ) |
+      {
+        family,
+        taskRoleArn,
+        executionRoleArn,
+        networkMode,
+        containerDefinitions,
+        volumes,
+        placementConstraints,
+        requiresCompatibilities,
+        cpu,
+        memory,
+        runtimePlatform,
+        ephemeralStorage,
+        proxyConfiguration,
+        ipcMode,
+        pidMode,
+        inferenceAccelerators
+      } |
+      with_entries(select(.value != null))' > "$output_file"
+}
+
+# Returns the review app's target group ARN, creating and tagging the group when absent.
+ensure_target_group() {
+  local pr_number="$1"
+  local image_tag="$2"
+  local name arn vpc
+  name="$(target_group_name "$pr_number")"
+
+  arn="$(aws elbv2 describe-target-groups \
+    --names "$name" \
+    --query 'TargetGroups[0].TargetGroupArn' \
+    --output text 2>/dev/null || true)"
+
+  if [[ -z "$arn" || "$arn" == "None" ]]; then
+    vpc="$(vpc_id)"
+    log "Creating target group ${name} in VPC ${vpc}"
+    arn="$(aws elbv2 create-target-group \
+      --name "$name" \
+      --protocol HTTP \
+      --port 8000 \
+      --target-type ip \
+      --vpc-id "$vpc" \
+      --health-check-protocol HTTP \
+      --health-check-path /health \
+      --health-check-port traffic-port \
+      --tags "$(elbv2_tags_json "$pr_number" "$image_tag")" \
+      --query 'TargetGroups[0].TargetGroupArn' \
+      --output text)"
+    log "Created target group ${arn}"
+  else
+    log "Reusing existing target group ${arn}"
+  fi
+
+  echo "$arn"
+}
+
+# Finds the shared ALB listener rule whose host-header values contain a review hostname.
+listener_rule_for_hostname() {
+  local review_hostname="$1"
+  aws elbv2 describe-rules \
+    --listener-arn "$(listener_arn)" \
+    --output json |
+    jq -r --arg hostname "$review_hostname" '
+      first(
+        .Rules[] |
+        select(any(.Conditions[]?; .Field == "host-header" and (.Values | index($hostname)))) |
+        .RuleArn
+      ) // "None"'
+}
+
+# Returns the first unused review-app listener priority in the reserved 10000-49999 range.
+available_rule_priority() {
+  local priority
+  declare -A used_priorities=()
+
+  while read -r priority; do
+    [[ -n "$priority" ]] && used_priorities["$priority"]=true
+  done < <(aws elbv2 describe-rules \
+    --listener-arn "$(listener_arn)" \
+    --query "Rules[?Priority != \`default\`].Priority" \
+    --output text | tr '\t' '\n')
+
+  for priority in $(seq 10000 49999); do
+    if [[ -z "${used_priorities[$priority]:-}" ]]; then
+      echo "$priority"
+      return
+    fi
+  done
+
+  echo "No ALB listener-rule priority is available for a review app" >&2
+  return 1
+}
+
+# Creates or updates the shared ALB rule for a PR's main and agency-specific hostnames.
+# Creation retries with a newly discovered priority to tolerate concurrent workflow runs.
+ensure_listener_rule() {
+  local pr_number="$1"
+  local image_tag="$2"
+  local target_group_arn="$3"
+  local review_hostname agency_pattern rule_arn priority
+  review_hostname="$(hostname "$pr_number")"
+  agency_pattern="$(agency_hostname_pattern "$pr_number")"
+  rule_arn="$(listener_rule_for_hostname "$review_hostname")"
+
+  if [[ -z "$rule_arn" || "$rule_arn" == "None" ]]; then
+    for _ in {1..5}; do
+      priority="$(available_rule_priority)"
+      log "Creating listener rule for ${review_hostname} and ${agency_pattern} at priority ${priority}"
+      if aws elbv2 create-rule \
+        --listener-arn "$(listener_arn)" \
+        --priority "$priority" \
+        --conditions "Field=host-header,Values=${review_hostname},${agency_pattern}" \
+        --actions "Type=forward,TargetGroupArn=${target_group_arn}" \
+        --tags "$(elbv2_tags_json "$pr_number" "$image_tag")" >/dev/null; then
+        log "Created listener rule forwarding to ${target_group_arn}"
+        return
+      fi
+      echo "Listener-rule creation raced with another review app; retrying." >&2
+    done
+    echo "Could not allocate an ALB listener-rule priority for ${review_hostname}." >&2
+    return 1
+  else
+    log "Updating listener rule ${rule_arn} to forward to ${target_group_arn}"
+    aws elbv2 modify-rule \
+      --rule-arn "$rule_arn" \
+      --conditions "Field=host-header,Values=${review_hostname},${agency_pattern}" \
+      --actions "Type=forward,TargetGroupArn=${target_group_arn}" >/dev/null
+  fi
+}
+
+# Creates or updates the PR ECS service using the dev service's network and capacity settings.
+# The service has one web task and forwards its target group to the app container on port 8000.
+ensure_service() {
+  local pr_number="$1"
+  local task_definition_arn="$2"
+  local target_group_arn="$3"
+  local image_tag="$4"
+  local base_service_json review_service_name service_count network_configuration capacity_provider_strategy
+  base_service_json="$(base_service)"
+  review_service_name="$(service_name "$pr_number")"
+  network_configuration="$(jq -c '.networkConfiguration' <<< "$base_service_json")"
+  capacity_provider_strategy="$(jq -c '.capacityProviderStrategy' <<< "$base_service_json")"
+  service_count="$(aws ecs describe-services \
+    --cluster "$cluster_name" \
+    --services "$review_service_name" \
+    --query 'length(services)' \
+    --output text)"
+
+  if [[ "$service_count" == "0" ]]; then
+    log "Creating ECS service ${review_service_name} with task definition ${task_definition_arn}"
+    aws ecs create-service \
+      --cluster "$cluster_name" \
+      --service-name "$review_service_name" \
+      --task-definition "$task_definition_arn" \
+      --desired-count 1 \
+      --capacity-provider-strategy "$capacity_provider_strategy" \
+      --network-configuration "$network_configuration" \
+      --load-balancers "targetGroupArn=${target_group_arn},containerName=${app_container_name},containerPort=8000" \
+      --deployment-configuration "maximumPercent=200,minimumHealthyPercent=100,deploymentCircuitBreaker={enable=true,rollback=true}" \
+      --enable-ecs-managed-tags \
+      --tags "$(tags_json "$pr_number" "$image_tag")" >/dev/null
+  else
+    log "Updating ECS service ${review_service_name} to task definition ${task_definition_arn}"
+    aws ecs update-service \
+      --cluster "$cluster_name" \
+      --service "$review_service_name" \
+      --task-definition "$task_definition_arn" \
+      --desired-count 1 \
+      --capacity-provider-strategy "$capacity_provider_strategy" \
+      --network-configuration "$network_configuration" \
+      --load-balancers "targetGroupArn=${target_group_arn},containerName=${app_container_name},containerPort=8000" \
+      --deployment-configuration "maximumPercent=200,minimumHealthyPercent=100,deploymentCircuitBreaker={enable=true,rollback=true}" \
+      --force-new-deployment >/dev/null
+  fi
+
+  log "Waiting for ECS service ${review_service_name} to become stable"
+  aws ecs wait services-stable \
+    --cluster "$cluster_name" \
+    --services "$review_service_name"
+  log "ECS service ${review_service_name} is stable"
+}
+
+# Replaces this workflow's marked section in a PR body, or appends it when none exists.
+update_pr_body() {
+  local pr_number="$1"
+  local contents="$2"
+  local begin_marker='<!-- begin CMS review environment info -->'
+  local end_marker='<!-- end CMS review environment info -->'
+  local body before after
+
+  log "Updating PR ${pr_number} with review-app status"
+  body="$(gh pr view "$pr_number" --json body --jq .body)"
+  if [[ "$body" == *"$begin_marker"*"$end_marker"* ]]; then
+    before="${body%%"$begin_marker"*}"
+    after="${body#*"$end_marker"}"
+    body="${before}${contents}${after}"
+  else
+    body="${body}"$'\n\n'"${contents}"
+  fi
+
+  gh pr edit "$pr_number" --body "$body"
+}
+
+# Registers and migrates a PR task definition, provisions its routing and service, and reports it.
+# The function waits for the public health endpoint before publishing the review-app URL.
+update_environment() {
+  local pr_number="$1"
+  local image_tag="$2"
+  local image_repository="$3"
+  local rendered_task_definition task_definition_arn target_group_arn network_configuration endpoint deadline info
+  require_pr_number "$pr_number"
+  log "Updating CMS dev review app for PR ${pr_number} with image ${image_tag}"
+
+  start_group "Render and register the PR task definition"
+  rendered_task_definition="$(mktemp)"
+  trap '[[ -z "${rendered_task_definition:-}" ]] || rm -f "$rendered_task_definition"' EXIT
+  render_task_definition "$pr_number" "$image_tag" "$image_repository" "$rendered_task_definition"
+  task_definition_arn="$(aws ecs register-task-definition \
+    --cli-input-json "file://${rendered_task_definition}" \
+    --tags "$(tags_json "$pr_number" "$image_tag")" \
+    --query 'taskDefinition.taskDefinitionArn' \
+    --output text)"
+  log "Registered task definition ${task_definition_arn}"
+  rm -f "$rendered_task_definition"
+  rendered_task_definition=""
+  end_group
+
+  start_group "Create and migrate database schema $(schema_name "$pr_number")"
+  network_configuration="$(base_service | jq -c '.networkConfiguration')"
+  run_review_task "$task_definition_arn" "$network_configuration" '["db-migrate"]'
+  end_group
+
+  start_group "Configure shared dev ALB routing"
+  target_group_arn="$(ensure_target_group "$pr_number" "$image_tag")"
+  ensure_listener_rule "$pr_number" "$image_tag" "$target_group_arn"
+  end_group
+
+  start_group "Create or update the review ECS service"
+  ensure_service "$pr_number" "$task_definition_arn" "$target_group_arn" "$image_tag"
+  end_group
+
+  endpoint="https://$(hostname "$pr_number")"
+  start_group "Wait for ${endpoint}/health"
+  deadline=$(($(date +%s) + 300))
+  until curl --silent --show-error --fail --max-time 5 "${endpoint}/health" >/dev/null; do
+    if (( $(date +%s) > deadline )); then
+      echo "Timed out waiting for ${endpoint}/health" >&2
+      return 1
+    fi
+    log "Health endpoint is not ready; retrying in 10 seconds"
+    sleep 10
+  done
+  log "Health endpoint is responding successfully"
+  end_group
+
+  info="$(cat <<EOF
+<!-- begin CMS review environment info -->
+## CMS Cloud review environment
+- Link to launcher: ${endpoint}/launcher/advanced
+- Deployed commit: ${image_tag}
+<!-- end CMS review environment info -->
+EOF
+)"
+  start_group "Publish review-app details"
+  update_pr_body "$pr_number" "$info"
+  echo "$info"
+  if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+    echo "$info" >> "$GITHUB_STEP_SUMMARY"
+  fi
+  end_group
+  log "Review app update completed: ${endpoint}"
+}
+
+# Removes review-app webhooks and schema before deleting its ECS, ALB, and task resources.
+# AWS cleanup continues after data-cleanup failures, but the function returns failure afterward.
+destroy_environment() {
+  local pr_number="$1"
+  local review_service_name review_hostname service_count task_definition_arn network_configuration rule_arn target_group_arn info
+  local deregistered_count=0
+  require_pr_number "$pr_number"
+  review_service_name="$(service_name "$pr_number")"
+  review_hostname="$(hostname "$pr_number")"
+  log "Destroying CMS dev review app for PR ${pr_number}"
+  log "Discovering ECS service ${review_service_name} and task definition family $(task_family "$pr_number")"
+  service_count="$(aws ecs describe-services \
+    --cluster "$cluster_name" \
+    --services "$review_service_name" \
+    --query 'length(services)' \
+    --output text)"
+  log "Found ${service_count} active ECS service record(s)"
+
+  cleanup_failed=false
+  if [[ "$service_count" != "0" ]]; then
+    task_definition_arn="$(aws ecs describe-services \
+      --cluster "$cluster_name" \
+      --services "$review_service_name" \
+      --query 'services[0].taskDefinition' \
+      --output text)"
+  else
+    task_definition_arn="$(aws ecs describe-task-definition \
+      --task-definition "$(task_family "$pr_number")" \
+      --query 'taskDefinition.taskDefinitionArn' \
+      --output text 2>/dev/null || true)"
+  fi
+
+  if [[ "$service_count" != "0" ]]; then
+    start_group "Scale the review ECS service to zero"
+    log "Scaling ${review_service_name} to zero tasks"
+    aws ecs update-service \
+      --cluster "$cluster_name" \
+      --service "$review_service_name" \
+      --desired-count 0 >/dev/null
+    aws ecs wait services-stable \
+      --cluster "$cluster_name" \
+      --services "$review_service_name"
+    log "ECS service ${review_service_name} is stable at zero tasks"
+    end_group
+  fi
+
+  if [[ -n "$task_definition_arn" && "$task_definition_arn" != "None" ]]; then
+    start_group "Remove review-app webhooks and schema $(schema_name "$pr_number")"
+    network_configuration="$(base_service | jq -c '.networkConfiguration')"
+    if ! run_review_task \
+      "$task_definition_arn" \
+      "$network_configuration" \
+      '["sh", "-lc", "webhook_status=0; schema_status=0; bin/rails pr_webhooks:destroy || webhook_status=\u0024?; db-drop-schema || schema_status=\u0024?; [ \u0024webhook_status -eq 0 ] && [ \u0024schema_status -eq 0 ]"]' \
+      "$(jq -nc --arg pr_number "$pr_number" '[{name: "PR_NUMBER", value: $pr_number}]')"; then
+      echo "Review-app data cleanup failed; continuing with AWS resource cleanup." >&2
+      cleanup_failed=true
+    fi
+    end_group
+  else
+    log "No active task definition found; skipping webhook and schema cleanup"
+  fi
+
+  if [[ "$service_count" != "0" ]]; then
+    start_group "Delete the review ECS service"
+    log "Deleting ECS service ${review_service_name}"
+    aws ecs delete-service \
+      --cluster "$cluster_name" \
+      --service "$review_service_name" \
+      --force >/dev/null
+    aws ecs wait services-inactive \
+      --cluster "$cluster_name" \
+      --services "$review_service_name"
+    log "ECS service ${review_service_name} is inactive"
+    end_group
+  fi
+
+  start_group "Delete shared ALB routing resources"
+  rule_arn="$(listener_rule_for_hostname "$review_hostname")"
+  if [[ -n "$rule_arn" && "$rule_arn" != "None" ]]; then
+    log "Deleting listener rule ${rule_arn}"
+    aws elbv2 delete-rule --rule-arn "$rule_arn"
+  else
+    log "No listener rule found for ${review_hostname}"
+  fi
+
+  target_group_arn="$(aws elbv2 describe-target-groups \
+    --names "$(target_group_name "$pr_number")" \
+    --query 'TargetGroups[0].TargetGroupArn' \
+    --output text 2>/dev/null || true)"
+  if [[ -n "$target_group_arn" && "$target_group_arn" != "None" ]]; then
+    log "Deleting target group ${target_group_arn}"
+    aws elbv2 delete-target-group --target-group-arn "$target_group_arn"
+  else
+    log "No target group found for PR ${pr_number}"
+  fi
+  end_group
+
+  start_group "Deregister review task definitions"
+  while read -r task_definition_arn; do
+    if [[ -n "$task_definition_arn" ]]; then
+      log "Deregistering task definition ${task_definition_arn}"
+      aws ecs deregister-task-definition --task-definition "$task_definition_arn" >/dev/null
+      ((deregistered_count += 1))
+    fi
+  done < <(aws ecs list-task-definitions \
+    --family-prefix "$(task_family "$pr_number")" \
+    --status ACTIVE \
+    --query "taskDefinitionArns[?contains(@, ':task-definition/$(task_family "$pr_number"):')]" \
+    --output text | tr '\t' '\n')
+  log "Deregistered ${deregistered_count} task definition revision(s)"
+  end_group
+
+  info="$(cat <<EOF
+<!-- begin CMS review environment info -->
+## CMS Cloud review environment
+♻️ Environment destroyed ♻️
+<!-- end CMS review environment info -->
+EOF
+)"
+  start_group "Publish destruction status"
+  update_pr_body "$pr_number" "$info"
+  echo "$info"
+  end_group
+
+  if [[ "$cleanup_failed" == "true" ]]; then
+    log "AWS resources were removed, but webhook or schema cleanup failed"
+    return 1
+  fi
+
+  log "Review app destruction completed for PR ${pr_number}"
+}
+
+# Discovers PR numbers from review ECS resources and destroys those whose PRs are no longer open.
+scan_environments() {
+  local pr_number state
+  log "Scanning ECS services and task definitions for orphaned CMS dev review apps"
+  while read -r pr_number; do
+    [[ -z "$pr_number" ]] && continue
+    require_pr_number "$pr_number"
+    state="$(gh pr view "$pr_number" --json state --jq .state)"
+    log "PR ${pr_number} is ${state}"
+    if [[ "$state" == "CLOSED" || "$state" == "MERGED" ]]; then
+      log "PR ${pr_number} is no longer open; destroying its review app"
+      destroy_environment "$pr_number"
+    else
+      log "Keeping review app for open PR ${pr_number}"
+    fi
+  done < <(
+    {
+      aws ecs list-services \
+        --cluster "$cluster_name" \
+        --query 'serviceArns[]' \
+        --output text
+      aws ecs list-task-definitions \
+        --family-prefix emmy-dev-p- \
+        --status ACTIVE \
+        --query 'taskDefinitionArns[]' \
+        --output text
+    } | tr '\t' '\n' | sed -n 's#.*emmy-dev-p-\([0-9][0-9]*\).*#\1#p' | sort -u
+  )
+}
+
+case "${1:-}" in
+  update)
+    [[ $# == 4 ]] || { usage; exit 2; }
+    update_environment "$2" "$3" "$4"
+    ;;
+  destroy)
+    [[ $# == 2 ]] || { usage; exit 2; }
+    destroy_environment "$2"
+    ;;
+  scan)
+    [[ $# == 1 ]] || { usage; exit 2; }
+    scan_environments
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac

@@ -1,0 +1,33 @@
+name: Scan orphaned CMS Cloud review environments
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 7 * * *"
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+jobs:
+  scan:
+    name: Remove review apps for closed pull requests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Configure CMS Cloud nonprod credentials
+        uses: ./.github/actions/configure-cms-aws-credentials
+        with:
+          environment: dev
+          nonprod-role-to-assume: ${{ vars.AWS_NONPROD_ROLE_TO_ASSUME }}
+          default-role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
+
+      - name: Remove orphaned review apps
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: ./bin/cms-pr-environment scan

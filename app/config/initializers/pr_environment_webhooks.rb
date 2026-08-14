@@ -13,11 +13,10 @@ Rails.application.config.to_prepare do
   Rails.application.config.pr_env_webhooks_initialization_error = nil
 
   domain = ENV["DOMAIN_NAME"]
-  pr_match = domain&.match(/\Ap-(\d+)\.navapbc\.cloud\z/)
+  pr_number = InternalEnvironment.review_app_pr_number(domain)
 
-  if Rails.env.production? && pr_match && defined?(::Rails::Server)
+  if Rails.env.production? && pr_number && defined?(::Rails::Server)
     begin
-      pr_number = pr_match[1]
       receiver_base_url = "https://#{domain}"
       subscription_name = "pr-#{pr_number}"
 

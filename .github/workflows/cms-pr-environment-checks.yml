@@ -1,8 +1,15 @@
-# TEST PLACEHOLDER: This workflow intentionally performs no AWS operations.
 name: CMS Cloud PR Environment Update
-run-name: Test CMS Cloud PR Environment Update ${{ inputs.pr_number }}
+run-name: Update CMS Cloud PR Environment ${{ inputs.pr_number }}
 
 on:
+  workflow_call:
+    inputs:
+      pr_number:
+        required: true
+        type: string
+      commit_hash:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       pr_number:
@@ -14,16 +21,71 @@ on:
         required: true
         type: string
 
-permissions:
-  contents: read
-
 jobs:
-  placeholder:
-    name: Test placeholder
+  validate:
+    name: Validate review-app inputs
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+
     steps:
-      - name: Echo review-app inputs
+      - name: Verify commit belongs to the pull request
         env:
+          GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ inputs.pr_number }}
           COMMIT_HASH: ${{ inputs.commit_hash }}
-        run: echo "Test placeholder for PR ${PR_NUMBER} at ${COMMIT_HASH}"
+        run: |
+          if [[ ! "${PR_NUMBER}" =~ ^[0-9]+$ ]]; then
+            echo "PR number must contain only digits: ${PR_NUMBER}" >&2
+            exit 1
+          fi
+          head_sha="$(gh pr view "${PR_NUMBER}" --repo "${GITHUB_REPOSITORY}" --json headRefOid --jq .headRefOid)"
+          if [[ "${COMMIT_HASH}" != "${head_sha}" ]]; then
+            echo "Commit ${COMMIT_HASH} is not the current head of PR ${PR_NUMBER} (${head_sha})." >&2
+            exit 1
+          fi
+
+  build-and-publish:
+    name: Build and publish review image
+    needs: validate
+    uses: ./.github/workflows/build-and-publish-to-cms.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      app_name: app
+      ref: ${{ inputs.commit_hash }}
+    secrets: inherit
+
+  update:
+    name: Update review environment
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+    concurrency: cms-pr-environment-${{ inputs.pr_number }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # TEMPORARY: Use the manually selected branch while testing the
+          # lifecycle script before it is available on the default branch.
+          ref: ${{ github.ref }}
+
+      - name: Configure CMS Cloud nonprod credentials
+        uses: ./.github/actions/configure-cms-aws-credentials
+        with:
+          environment: dev
+          nonprod-role-to-assume: ${{ vars.AWS_NONPROD_ROLE_TO_ASSUME }}
+          default-role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
+
+      - name: Create or update review app
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+          COMMIT_HASH: ${{ inputs.commit_hash }}
+          EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
+        run: ./bin/cms-pr-environment update "${PR_NUMBER}" "${COMMIT_HASH}" "${EMMY_IMAGE_REPO}"
