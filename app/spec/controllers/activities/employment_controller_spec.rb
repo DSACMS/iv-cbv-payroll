@@ -13,6 +13,11 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   end
 
   describe "GET #new" do
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { get :new }
+
+    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed
+
     it "renders the form with the page title" do
       get :new
 
@@ -41,6 +46,10 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
   describe "GET #edit" do
     let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { get :edit, params: { id: employment_activity.id } }
+
+    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed
 
     it "renders the employment info form" do
       get :edit, params: { id: employment_activity.id }
@@ -54,6 +63,20 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   describe "POST #create" do
     let(:employment_attributes) { attributes_for(:employment_activity).except(:activity_flow) }
     let(:employment_params) { { employment_activity: employment_attributes } }
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { post :create, params: employment_params }
+
+    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoSubmitted
+
+    context "when validation fails" do
+      let(:perform_tracked_action) { post :create, params: { employment_activity: { employer_name: "" } } }
+
+      before do
+        allow_any_instance_of(EmploymentActivity).to receive(:save).and_return(false)
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentInfoValidationFailed
+    end
 
     it "creates an employment activity and redirects to the first month page" do
       expect do
@@ -100,6 +123,20 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
   describe "PATCH #update" do
     let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) do
+      patch :update, params: { id: employment_activity.id, employment_activity: { employer_name: "Updated Corp" } }
+    end
+
+    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoSubmitted
+
+    context "when validation fails" do
+      before do
+        allow_any_instance_of(EmploymentActivity).to receive(:update).and_return(false)
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentInfoValidationFailed
+    end
 
     it "updates the activity and redirects to the first month page" do
       patch :update, params: { id: employment_activity.id, employment_activity: { employer_name: "Updated Corp" } }
@@ -184,12 +221,16 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
   describe "GET #review" do
     let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { get :review, params: { id: employment_activity.id } }
 
     before do
       activity_flow.reporting_months.each do |month|
         create(:employment_activity_month, employment_activity: employment_activity, month: month.beginning_of_month, hours: 25, gross_income: 500)
       end
     end
+
+    it_behaves_like "tracks an event", TrackEvent::EmploymentReviewViewed
 
     it "renders the review page" do
       get :review, params: { id: employment_activity.id }
@@ -248,12 +289,18 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
   describe "PATCH #save_review" do
     let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) do
+      patch :save_review, params: { id: employment_activity.id, employment_activity: { additional_comments: "" } }
+    end
 
     before do
       activity_flow.reporting_months.each do |month|
         create(:employment_activity_month, employment_activity: employment_activity, month: month.beginning_of_month, hours: 10, gross_income: 100)
       end
     end
+
+    it_behaves_like "tracks an event", TrackEvent::EmploymentReviewSubmitted
 
     it "saves additional comments and redirects to the hub" do
       patch :save_review, params: { id: employment_activity.id, employment_activity: { additional_comments: "Some notes" } }

@@ -23,6 +23,11 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
   end
 
   describe "GET #edit" do
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
+
+    it_behaves_like "tracks an event", TrackEvent::EmploymentMonthViewed
+
     it "redirects to month 0 for an out-of-range month index" do
       get :edit, params: { employment_id: employment_activity.id, id: 99 }
 
@@ -39,6 +44,29 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
   end
 
   describe "PATCH #update" do
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 0,
+        employment_activity_month: { gross_income: 339, hours: 45 }
+      }
+    end
+
+    it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSubmitted
+
+    context "when validation fails" do
+      let(:perform_tracked_action) do
+        patch :update, params: {
+          employment_id: employment_activity.id,
+          id: 0,
+          employment_activity_month: { gross_income: 0, hours: 0 }
+        }
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentMonthValidationFailed
+    end
+
     it "saves month values and redirects to document upload on single month flows" do
       patch :update, params: {
         employment_id: employment_activity.id,
