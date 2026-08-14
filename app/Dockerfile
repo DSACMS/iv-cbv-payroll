@@ -50,6 +50,7 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       curl \
       krb5-multidev \
+      libaprutil1t64 \
       libcap2 \
       libcurl3t64-gnutls \
       libcurl4-openssl-dev \
