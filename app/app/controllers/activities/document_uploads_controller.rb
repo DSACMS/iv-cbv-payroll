@@ -2,7 +2,6 @@ class Activities::DocumentUploadsController < Activities::BaseController
   before_action :set_activity
   before_action :set_back_url, only: %i[new]
   after_action :track_employment_upload_viewed_event, only: :new
-  after_action :track_employment_upload_submitted_event, only: :create
 
   helper_method :upload_path, :remove_document_upload_path
 
@@ -12,12 +11,15 @@ class Activities::DocumentUploadsController < Activities::BaseController
   def create
     if params.exclude?(:activity)
       # User clicked the submit button without adding any files
+      track_employment_upload_submitted_event
       return redirect_to after_activity_path
     end
 
     if @activity.update(document_upload_params)
+      track_employment_upload_submitted_event
       redirect_to after_activity_path
     else
+      track_employment_upload_validation_failed_event
       render :new
     end
   end
@@ -202,5 +204,11 @@ class Activities::DocumentUploadsController < Activities::BaseController
       employment_activity_id: @activity.id,
       document_count: @activity.document_uploads.count
     )
+  end
+
+  def track_employment_upload_validation_failed_event
+    return unless params[:employment_id].present?
+
+    track_event(TrackEvent::EmploymentDocumentUploadValidationFailed, employment_activity_id: @activity.id)
   end
 end

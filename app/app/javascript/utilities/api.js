@@ -8,6 +8,7 @@ const ARGYLE_TOKENS_GENERATE = "/api/argyle/tokens"
 export const trackUserAction = async (eventName, attributes = {}) => {
   return fetchInternal(EVENTS_USER_ACTION, {
     method: "post",
+    keepalive: true,
     body: JSON.stringify({ events: { event_name: eventName, attributes } }),
   })
 }

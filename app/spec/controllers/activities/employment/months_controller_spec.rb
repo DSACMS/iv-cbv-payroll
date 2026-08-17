@@ -26,7 +26,8 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
 
-    it_behaves_like "tracks an event", TrackEvent::EmploymentMonthViewed
+    it_behaves_like "tracks an event", TrackEvent::EmploymentMonthViewed,
+      extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0 } }
 
     it "redirects to month 0 for an out-of-range month index" do
       get :edit, params: { employment_id: employment_activity.id, id: 99 }
@@ -34,6 +35,12 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       expect(response).to redirect_to(
         edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 0)
       )
+    end
+
+    it "does not track an event for an out-of-range month index" do
+      expect(EventTrackingJob).not_to receive(:perform_later)
+
+      get :edit, params: { employment_id: employment_activity.id, id: 99 }
     end
 
     it "renders the gross income currency field" do
@@ -53,7 +60,8 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       }
     end
 
-    it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSubmitted
+    it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSubmitted,
+      extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0 } }
 
     context "when validation fails" do
       let(:perform_tracked_action) do
@@ -64,7 +72,18 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         }
       end
 
-      it_behaves_like "tracks an event", TrackEvent::EmploymentMonthValidationFailed
+      it_behaves_like "tracks an event", TrackEvent::EmploymentMonthValidationFailed,
+        extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0 } }
+    end
+
+    it "does not track an event for an out-of-range month index" do
+      expect(EventTrackingJob).not_to receive(:perform_later)
+
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 99,
+        employment_activity_month: { gross_income: 339, hours: 45 }
+      }
     end
 
     it "saves month values and redirects to document upload on single month flows" do

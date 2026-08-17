@@ -112,7 +112,8 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       let(:tracked_flow) { activity_flow }
       let(:perform_tracked_action) { get :new, params: { employment_id: employment_activity.id } }
 
-      it_behaves_like "tracks an event", TrackEvent::EmploymentDocumentUploadViewed
+      it_behaves_like "tracks an event", TrackEvent::EmploymentDocumentUploadViewed,
+        extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
     end
 
     it "renders the upload form for an employment activity" do
@@ -249,7 +250,34 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       let(:tracked_flow) { activity_flow }
       let(:perform_tracked_action) { post :create, params: { employment_id: employment_activity.id } }
 
-      it_behaves_like "tracks an event", TrackEvent::EmploymentDocumentUploadSubmitted
+      it_behaves_like "tracks an event", TrackEvent::EmploymentDocumentUploadSubmitted,
+        extra_attributes: -> { { employment_activity_id: kind_of(Integer), document_count: 0 } }
+    end
+
+    context "employment scope validation failure" do
+      let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) do
+        post :create, params: {
+          employment_id: employment_activity.id,
+          activity: { document_uploads: [ "existing-upload-token" ] }
+        }
+      end
+
+      before do
+        allow_any_instance_of(EmploymentActivity).to receive(:update).and_return(false)
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentDocumentUploadValidationFailed,
+        extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
+
+      it "does not track EmploymentDocumentUploadSubmitted" do
+        expect(EventTrackingJob).not_to receive(:perform_later).with(
+          TrackEvent::EmploymentDocumentUploadSubmitted, anything, anything
+        )
+
+        perform_tracked_action
+      end
     end
 
     it "renders new when the update fails" do

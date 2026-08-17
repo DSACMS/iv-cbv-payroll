@@ -20,6 +20,8 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def track_month_submission_event
+    return unless @activity_month.present?
+
     event = @error ? TrackEvent::EmploymentMonthValidationFailed : TrackEvent::EmploymentMonthSubmitted
     track_event(
       event,

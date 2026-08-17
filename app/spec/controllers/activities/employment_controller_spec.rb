@@ -16,7 +16,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :new }
 
-    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed
+    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed, extra_attributes: -> { { employment_activity_id: nil } }
 
     it "renders the form with the page title" do
       get :new
@@ -49,7 +49,8 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { id: employment_activity.id } }
 
-    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed
+    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed,
+      extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
 
     it "renders the employment info form" do
       get :edit, params: { id: employment_activity.id }
@@ -66,7 +67,8 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { post :create, params: employment_params }
 
-    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoSubmitted
+    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoSubmitted,
+      extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
 
     context "when validation fails" do
       let(:perform_tracked_action) { post :create, params: { employment_activity: { employer_name: "" } } }
@@ -75,7 +77,8 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         allow_any_instance_of(EmploymentActivity).to receive(:save).and_return(false)
       end
 
-      it_behaves_like "tracks an event", TrackEvent::EmploymentInfoValidationFailed
+      it_behaves_like "tracks an event", TrackEvent::EmploymentInfoValidationFailed,
+        extra_attributes: -> { { employment_activity_id: nil } }
     end
 
     it "creates an employment activity and redirects to the first month page" do
@@ -128,14 +131,16 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       patch :update, params: { id: employment_activity.id, employment_activity: { employer_name: "Updated Corp" } }
     end
 
-    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoSubmitted
+    it_behaves_like "tracks an event", TrackEvent::EmploymentInfoSubmitted,
+      extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
 
     context "when validation fails" do
       before do
         allow_any_instance_of(EmploymentActivity).to receive(:update).and_return(false)
       end
 
-      it_behaves_like "tracks an event", TrackEvent::EmploymentInfoValidationFailed
+      it_behaves_like "tracks an event", TrackEvent::EmploymentInfoValidationFailed,
+        extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
     end
 
     it "updates the activity and redirects to the first month page" do
@@ -230,7 +235,8 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       end
     end
 
-    it_behaves_like "tracks an event", TrackEvent::EmploymentReviewViewed
+    it_behaves_like "tracks an event", TrackEvent::EmploymentReviewViewed,
+      extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
 
     it "renders the review page" do
       get :review, params: { id: employment_activity.id }
@@ -300,7 +306,8 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       end
     end
 
-    it_behaves_like "tracks an event", TrackEvent::EmploymentReviewSubmitted
+    it_behaves_like "tracks an event", TrackEvent::EmploymentReviewSubmitted,
+      extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
 
     it "saves additional comments and redirects to the hub" do
       patch :save_review, params: { id: employment_activity.id, employment_activity: { additional_comments: "Some notes" } }

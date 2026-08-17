@@ -82,6 +82,7 @@ module TrackEvent
   EmailSent = "EmailSent"
   EmploymentBackClicked = "EmploymentBackClicked"
   EmploymentDocumentUploadSubmitted = "EmploymentDocumentUploadSubmitted"
+  EmploymentDocumentUploadValidationFailed = "EmploymentDocumentUploadValidationFailed"
   EmploymentDocumentUploadViewed = "EmploymentDocumentUploadViewed"
   EmploymentExitClicked = "EmploymentExitClicked"
   EmploymentExitModalCancelled = "EmploymentExitModalCancelled"
