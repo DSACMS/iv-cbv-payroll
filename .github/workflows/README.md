@@ -28,6 +28,7 @@ Each app should have:
 
 - `cd-[app_name]`: deploys an application
   - Based on [`cd-app`](https://github.com/navapbc/template-infra/blob/main/.github/workflows/cd-%7B%7Bapp_name%7D%7D.yml.jinja)
+- [`cd-cms-app`](./cd-cms-app.yml): on merge to `main`, deploys the app to the CMS Cloud `dev` and `test` environments by calling [`deploy-cms`](./deploy-cms.yml) once per environment
 
 The CD workflow uses these reusable workflows:
 
@@ -47,6 +48,11 @@ graph TD
   build-and-publish
 
   cd-app-->|calls|deploy-->|calls|database-migrations-->|calls|build-and-publish
+
+  cd-cms-app-->|calls|deploy-cms
+  deploy-cms-->|calls|build-and-publish-to-cms
+  deploy-cms-->|calls|database-migrations-cms
+  deploy-cms-->|calls|deploy-ecs
 ```
 
 ## ⛑️ Helper workflows
