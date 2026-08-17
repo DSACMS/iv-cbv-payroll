@@ -1,0 +1,24 @@
+# TEST PLACEHOLDER: This workflow intentionally performs no AWS operations.
+name: CMS Cloud PR Environment Destroy
+run-name: Test CMS Cloud PR Environment Destroy ${{ inputs.pr_number }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  placeholder:
+    name: Test placeholder
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo review-app input
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+        run: echo "Test placeholder for destroying PR ${PR_NUMBER}"
