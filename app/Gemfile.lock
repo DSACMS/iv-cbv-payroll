@@ -168,14 +168,14 @@ GEM
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
     csv (3.3.6)
-    datadog (2.40.0)
+    datadog (2.41.0)
       cgi
       datadog-ruby_core_source (~> 3.5, >= 3.5.4)
-      libdatadog (~> 36.0.0.1.0)
+      libdatadog (~> 40.0.0.1.0)
       libddwaf (~> 1.30.0.0.0)
       logger
       msgpack
-    datadog-ruby_core_source (3.5.4)
+    datadog-ruby_core_source (3.5.5)
     date (3.5.1)
     debase (0.2.9)
       debase-ruby_core_source (>= 3.4.1)
@@ -275,10 +275,10 @@ GEM
       regexp_parser (~> 2.0)
       simpleidn (~> 0.2)
     language_server-protocol (3.17.0.6)
-    libdatadog (36.0.0.1.0)
-    libdatadog (36.0.0.1.0-aarch64-linux)
-    libdatadog (36.0.0.1.0-arm64-darwin)
-    libdatadog (36.0.0.1.0-x86_64-linux)
+    libdatadog (40.0.0.1.0)
+    libdatadog (40.0.0.1.0-aarch64-linux)
+    libdatadog (40.0.0.1.0-arm64-darwin)
+    libdatadog (40.0.0.1.0-x86_64-linux)
     libddwaf (1.30.0.0.2-aarch64-linux)
       ffi (~> 1.0)
     libddwaf (1.30.0.0.2-arm64-darwin)
@@ -656,7 +656,7 @@ DEPENDENCIES
   css_parser (~> 3.0.0)
   cssbundling-rails
   csv
-  datadog (~> 2.40)
+  datadog (~> 2.41)
   debase (~> 0.2.9)
   debase-ruby_core_source (~> 4.0)
   debug
