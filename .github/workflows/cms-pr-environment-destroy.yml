@@ -1,5 +1,5 @@
 name: CMS Cloud PR Environment Destroy
-run-name: Destroy CMS Cloud PR Environment ${{ inputs.pr_number }}
+run-name: Destroy CMS Cloud PR Environment ${{ inputs.pr_number || github.event.pull_request.number }}
 
 on:
   workflow_call:
@@ -13,12 +13,65 @@ on:
         description: Pull request number
         required: true
         type: string
+  pull_request_target:
+    types: [closed]
 
 jobs:
+  resolve:
+    name: Resolve review app
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: read
+
+    outputs:
+      pr_number: ${{ steps.resolve.outputs.pr_number }}
+      should_destroy: ${{ steps.resolve.outputs.should_destroy }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # pull_request_target checks out the trusted base branch. A manual
+          # run uses the selected branch while this workflow is being tested.
+          ref: ${{ github.ref }}
+
+      - name: Resolve review app
+        id: resolve
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_PR_NUMBER: ${{ inputs.pr_number }}
+        run: |
+          if [[ "${EVENT_NAME}" == "pull_request_target" ]]; then
+            pr_number="${EVENT_PR_NUMBER}"
+          else
+            pr_number="${REQUESTED_PR_NUMBER}"
+          fi
+
+          if [[ ! "${pr_number}" =~ ^[0-9]+$ ]]; then
+            echo "PR number must contain only digits: ${pr_number}" >&2
+            exit 1
+          fi
+
+          should_destroy=true
+          if [[ "${EVENT_NAME}" == "pull_request_target" ]] && \
+            ! ./bin/cms-pr-environment is-deployed "${pr_number}"; then
+            echo "PR ${pr_number} does not have an active CMS review app; skipping."
+            should_destroy=false
+          fi
+
+          {
+            echo "pr_number=${pr_number}"
+            echo "should_destroy=${should_destroy}"
+          } >> "${GITHUB_OUTPUT}"
+
   destroy:
     name: Destroy review environment
+    needs: resolve
+    if: needs.resolve.outputs.should_destroy == 'true'
     runs-on: ubuntu-latest
-    concurrency: cms-pr-environment-${{ inputs.pr_number }}
+    concurrency: cms-pr-environment-${{ needs.resolve.outputs.pr_number }}
     permissions:
       contents: read
       deployments: write
@@ -28,8 +81,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          # TEMPORARY: Use the manually selected branch while testing the
-          # lifecycle script before it is available on the default branch.
           ref: ${{ github.ref }}
 
       - name: Configure CMS Cloud nonprod credentials
@@ -42,5 +93,5 @@ jobs:
       - name: Destroy review app
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ inputs.pr_number }}
+          PR_NUMBER: ${{ needs.resolve.outputs.pr_number }}
         run: ./bin/cms-pr-environment destroy "${PR_NUMBER}"
