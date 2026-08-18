@@ -1,0 +1,30 @@
+name: Deploy CMS App
+run-name: Deploy ${{ github.ref_name }} to CMS dev and test
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "app/**"
+      - "bin/**"
+      - "infra/**"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    name: Deploy to CMS (${{ matrix.environment }})
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [dev, test]
+    uses: ./.github/workflows/deploy-cms.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      environment: ${{ matrix.environment }}
+      ref: ${{ github.sha }}
