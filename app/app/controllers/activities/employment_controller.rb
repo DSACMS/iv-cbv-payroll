@@ -24,7 +24,11 @@ class Activities::EmploymentController < Activities::BaseController
       track_event(TrackEvent::EmploymentInfoSubmitted, employment_activity_id: @employment_activity.id)
       redirect_to edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: 0)
     else
-      track_event(TrackEvent::EmploymentInfoValidationFailed, employment_activity_id: @employment_activity&.id)
+      track_event(
+        TrackEvent::EmploymentInfoValidationFailed,
+        employment_activity_id: @employment_activity&.id,
+        error_message: @employment_activity.errors.full_messages.join(", ")
+      )
       render :new, status: :unprocessable_content
     end
   end
@@ -45,7 +49,11 @@ class Activities::EmploymentController < Activities::BaseController
       )
       end
     else
-      track_event(TrackEvent::EmploymentInfoValidationFailed, employment_activity_id: @employment_activity.id)
+      track_event(
+        TrackEvent::EmploymentInfoValidationFailed,
+        employment_activity_id: @employment_activity.id,
+        error_message: @employment_activity.errors.full_messages.join(", ")
+      )
       render :edit, status: :unprocessable_content
     end
   end

@@ -209,6 +209,10 @@ class Activities::DocumentUploadsController < Activities::BaseController
   def track_employment_upload_validation_failed_event
     return unless params[:employment_id].present?
 
-    track_event(TrackEvent::EmploymentDocumentUploadValidationFailed, employment_activity_id: @activity.id)
+    track_event(
+      TrackEvent::EmploymentDocumentUploadValidationFailed,
+      employment_activity_id: @activity.id,
+      error_message: @activity.errors.full_messages.join(", ")
+    )
   end
 end

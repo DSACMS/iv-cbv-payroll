@@ -269,7 +269,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       end
 
       it_behaves_like "tracks an event", TrackEvent::EmploymentDocumentUploadValidationFailed,
-        extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
+        extra_attributes: -> { { employment_activity_id: kind_of(Integer), error_message: kind_of(String) } }
 
       it "does not track EmploymentDocumentUploadSubmitted" do
         expect(EventTrackingJob).not_to receive(:perform_later).with(

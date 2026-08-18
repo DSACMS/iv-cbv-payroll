@@ -15,7 +15,8 @@ class Activities::Employment::MonthsController < Activities::BaseController
     track_event(
       TrackEvent::EmploymentMonthViewed,
       employment_activity_id: @employment_activity.id,
-      month_index: @month_index
+      month_index: @month_index,
+      month: I18n.l(@current_month, format: :month_year)
     )
   end
 
@@ -23,11 +24,13 @@ class Activities::Employment::MonthsController < Activities::BaseController
     return unless @activity_month.present?
 
     event = @error ? TrackEvent::EmploymentMonthValidationFailed : TrackEvent::EmploymentMonthSubmitted
-    track_event(
-      event,
+    attributes = {
       employment_activity_id: @employment_activity.id,
-      month_index: @month_index
-    )
+      month_index: @month_index,
+      month: I18n.l(@current_month, format: :month_year)
+    }
+    attributes[:error_message] = @activity_month.errors.full_messages.join(", ") if @error
+    track_event(event, attributes)
   end
 
   def set_employment_activity

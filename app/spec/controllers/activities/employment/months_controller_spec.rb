@@ -27,7 +27,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
     let(:perform_tracked_action) { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentMonthViewed,
-      extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0 } }
+      extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String) } }
 
     it "redirects to month 0 for an out-of-range month index" do
       get :edit, params: { employment_id: employment_activity.id, id: 99 }
@@ -61,7 +61,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
     end
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSubmitted,
-      extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0 } }
+      extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String) } }
 
     context "when validation fails" do
       let(:perform_tracked_action) do
@@ -73,7 +73,9 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       end
 
       it_behaves_like "tracks an event", TrackEvent::EmploymentMonthValidationFailed,
-        extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0 } }
+        extra_attributes: -> {
+          { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_message: kind_of(String) }
+        }
     end
 
     it "does not track an event for an out-of-range month index" do
