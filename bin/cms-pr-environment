@@ -559,18 +559,27 @@ ensure_service() {
   local task_definition_arn="$2"
   local target_group_arn="$3"
   local image_tag="$4"
-  local base_service_json review_service_name service_count network_configuration capacity_provider_strategy
+  local base_service_json review_service_name service_status network_configuration capacity_provider_strategy
   base_service_json="$(base_service)"
   review_service_name="$(service_name "$pr_number")"
   network_configuration="$(jq -c '.networkConfiguration' <<< "$base_service_json")"
   capacity_provider_strategy="$(jq -c '.capacityProviderStrategy' <<< "$base_service_json")"
-  service_count="$(aws ecs describe-services \
+  service_status="$(aws ecs describe-services \
     --cluster "$cluster_name" \
     --services "$review_service_name" \
-    --query 'length(services)' \
+    --query 'services[0].status' \
     --output text)"
 
-  if [[ "$service_count" == "0" ]]; then
+  log "ECS service ${review_service_name} status is ${service_status}"
+  if [[ "$service_status" == "DRAINING" ]]; then
+    log "Waiting for the previous ECS service ${review_service_name} to become inactive"
+    aws ecs wait services-inactive \
+      --cluster "$cluster_name" \
+      --services "$review_service_name"
+    service_status="INACTIVE"
+  fi
+
+  if [[ "$service_status" == "INACTIVE" || "$service_status" == "None" ]]; then
     log "Creating ECS service ${review_service_name} with task definition ${task_definition_arn}"
     aws ecs create-service \
       --cluster "$cluster_name" \
@@ -583,7 +592,7 @@ ensure_service() {
       --deployment-configuration "maximumPercent=200,minimumHealthyPercent=100,deploymentCircuitBreaker={enable=true,rollback=true}" \
       --enable-ecs-managed-tags \
       --tags "$(tags_json "$pr_number" "$image_tag")" >/dev/null
-  else
+  elif [[ "$service_status" == "ACTIVE" ]]; then
     log "Updating ECS service ${review_service_name} to task definition ${task_definition_arn}"
     aws ecs update-service \
       --cluster "$cluster_name" \
@@ -595,6 +604,9 @@ ensure_service() {
       --load-balancers "targetGroupArn=${target_group_arn},containerName=${app_container_name},containerPort=8000" \
       --deployment-configuration "maximumPercent=200,minimumHealthyPercent=100,deploymentCircuitBreaker={enable=true,rollback=true}" \
       --force-new-deployment >/dev/null
+  else
+    echo "Unexpected ECS service status for ${review_service_name}: ${service_status}" >&2
+    return 1
   fi
 
   log "Waiting for ECS service ${review_service_name} to become stable"
