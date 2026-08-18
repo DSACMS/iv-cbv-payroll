@@ -48,8 +48,12 @@ RUN apt-get update -qq && \
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
+      bsdutils \
       curl \
       krb5-multidev \
+      libaprutil1t64 \
+      libblkid-dev \
+      libblkid1 \
       libcap2 \
       libcurl3t64-gnutls \
       libcurl4-openssl-dev \
@@ -71,12 +75,16 @@ RUN apt-get update -qq && \
       libkrb5-3 \
       libkrb5-dev \
       libkrb5support0 \
+      liblastlog2-2 \
       liblcms2-2 \
       liblcms2-dev \
       liblzma-dev \
       liblzma5 \
+      libmount-dev \
+      libmount1 \
       libnghttp2-14 \
       libnghttp2-dev \
+      libsmartcols1 \
       libssh2-1-dev \
       libssh2-1t64 \
       libsystemd0 \
@@ -84,9 +92,14 @@ RUN apt-get update -qq && \
       libtasn1-6-dev \
       libudev1 \
       libunbound8 \
+      libuuid1 \
       libxml2 \
       libxml2-dev \
       linux-libc-dev \
+      login \
+      mount \
+      util-linux \
+      uuid-dev \
       xz-utils \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
