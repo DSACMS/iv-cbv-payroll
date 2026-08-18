@@ -3,7 +3,7 @@ import CSRF from "../utilities/csrf"
 import fileChecksum from "../utilities/file_checksum"
 
 export default class extends Controller {
-  static targets = ["input", "list", "listHeading", "error", "signedIds"]
+  static targets = ["input", "listSection", "list", "listHeading", "error", "signedIds"]
 
   static values = {
     presignUrl: String,
@@ -178,7 +178,7 @@ export default class extends Controller {
 
     const remove = document.createElement("button")
     remove.type = "button"
-    remove.className = "usa-button usa-button--unstyled document-uploads__remove-link"
+    remove.className = "usa-button usa-button--unstyled margin-0 document-uploads__remove-link"
     remove.dataset.action = "document-upload#remove"
     remove.textContent = this.removeLabelValue
 
@@ -190,8 +190,7 @@ export default class extends Controller {
   #refreshList() {
     const count = this.listTarget.children.length
 
-    this.listTarget.hidden = count === 0
-    this.listHeadingTarget.hidden = count === 0
+    this.listSectionTarget.hidden = count === 0
     this.listHeadingTarget.textContent = this.headingTemplateValue.replace("%{count}", count)
   }
 

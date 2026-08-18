@@ -60,6 +60,15 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(activities_flow_community_service_document_uploads_path)
       expect(response.body).not_to include(I18n.t("activities.document_uploads.heading_previous", document_count: 0))
       expect(response.body).to include(I18n.t("activities.document_uploads.new.input_label"))
+
+      rendered = Capybara.string(response.body)
+      upload_form = rendered.find("form[data-controller='document-upload']", visible: :all)
+      ordered_elements = upload_form.all(
+        "[data-document-upload-target='listSection'], input[type='file']",
+        visible: :all
+      )
+      expect(ordered_elements.map { |element| element[:"data-document-upload-target"] })
+        .to eq([ "listSection", "input" ])
     end
 
     it "shows the Save changes label and preserves from_review in the form action when from_review is set" do
