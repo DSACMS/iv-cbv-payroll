@@ -28,7 +28,7 @@ Each app should have:
 
 - `cd-[app_name]`: deploys an application
   - Based on [`cd-app`](https://github.com/navapbc/template-infra/blob/main/.github/workflows/cd-%7B%7Bapp_name%7D%7D.yml.jinja)
-- [`cd-cms-app`](./cd-cms-app.yml): on push to `main`, deploys the app to the CMS Cloud `dev` and `test` environments by calling [`deploy-cms`](./deploy-cms.yml) once per environment
+- [`cd-cms-app`](./cd-cms-app.yml): on push to `main`, deploys the app to the CMS Cloud `dev` and `test` environments by calling [`deploy-cms`](./deploy-cms.yml) once per environment. Sole owner of automatic CMS image builds — `build-and-publish`'s `publish_to_cms` input defaults to `false` so the Nava CD chain does not build the same image concurrently
 
 The CD workflow uses these reusable workflows:
 

@@ -13,10 +13,10 @@ on:
         required: true
         type: string
       publish_to_cms:
-        description: Whether to also publish the image to the CMS Artifactory/ECR registry. Disable for PR environments, which don't deploy from it.
+        description: Whether to also publish the image to the CMS Artifactory/ECR registry. Automatic CMS publishing is owned by cd-cms-app; enable this only for one-off manual builds.
         required: false
         type: boolean
-        default: true
+        default: false
   workflow_dispatch:
     inputs:
       app_name:
@@ -28,10 +28,10 @@ on:
         required: true
         type: string
       publish_to_cms:
-        description: Whether to also publish the image to the CMS Artifactory/ECR registry. Disable for PR environments, which don't deploy from it.
+        description: Whether to also publish the image to the CMS Artifactory/ECR registry. Automatic CMS publishing is owned by cd-cms-app; enable this only for one-off manual builds.
         required: false
         type: boolean
-        default: true
+        default: false
 
 jobs:
   get-commit-hash:
