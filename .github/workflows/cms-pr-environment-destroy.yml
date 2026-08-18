@@ -21,6 +21,7 @@ jobs:
     concurrency: cms-pr-environment-${{ inputs.pr_number }}
     permissions:
       contents: read
+      deployments: write
       id-token: write
       pull-requests: write
 

@@ -25,16 +25,28 @@ end_group() {
   fi
 }
 
+# Prints the supported review-app lifecycle and GitHub deployment commands.
 usage() {
   echo "Usage: $0 update <pr-number> <image-tag> <image-repository>" >&2
   echo "       $0 destroy <pr-number>" >&2
   echo "       $0 scan" >&2
+  echo "       $0 is-deployed <pr-number> [excluded-deployment-id]" >&2
+  echo "       $0 deployment-start <pr-number> <commit-hash>" >&2
+  echo "       $0 deployment-status <pr-number> <deployment-id> <state> <description>" >&2
 }
 
 # Validates that a PR identifier is numeric and exits with a usage error otherwise.
 require_pr_number() {
   if [[ ! "$1" =~ ^[0-9]+$ ]]; then
     echo "PR number must contain only digits: $1" >&2
+    exit 2
+  fi
+}
+
+# Validates that an image or deployment reference is a full Git commit SHA.
+require_commit_hash() {
+  if [[ ! "$1" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "Commit hash must be a full Git commit SHA: $1" >&2
     exit 2
   fi
 }
@@ -46,6 +58,191 @@ schema_name() { echo "p_$1"; }
 hostname() { echo "pr-$1.dev.emmy.cms.gov"; }
 agency_hostname() { echo "$1-pr-$2.dev.emmy.cms.gov"; }
 agency_hostname_pattern() { echo "*-pr-$1.dev.emmy.cms.gov"; }
+github_environment_name() { echo "cms-dev-pr-$1"; }
+
+# Returns the Actions repository or discovers it from the current checkout for local use.
+github_repository() {
+  if [[ -n "${GITHUB_REPOSITORY:-}" ]]; then
+    echo "$GITHUB_REPOSITORY"
+  else
+    gh repo view --json nameWithOwner --jq .nameWithOwner
+  fi
+}
+
+# Returns the current Actions run URL, omitting it when the script is run locally.
+github_run_url() {
+  if [[ -n "${GITHUB_RUN_ID:-}" ]]; then
+    echo "${GITHUB_SERVER_URL:-https://github.com}/$(github_repository)/actions/runs/${GITHUB_RUN_ID}"
+  fi
+}
+
+# Lists GitHub deployment IDs for a PR environment from newest to oldest.
+github_deployment_ids() {
+  local pr_number="$1"
+  gh api --method GET \
+    "repos/$(github_repository)/deployments" \
+    -f environment="$(github_environment_name "$pr_number")" \
+    -F per_page=100 \
+    --paginate \
+    --jq '.[].id'
+}
+
+# Returns the most recent state for a GitHub deployment, or none before its first status.
+github_deployment_state() {
+  local deployment_id="$1"
+  gh api --method GET \
+    "repos/$(github_repository)/deployments/${deployment_id}/statuses" \
+    -F per_page=1 \
+    --jq '.[0].state // "none"'
+}
+
+# Reports whether any GitHub deployment for the PR has not been explicitly destroyed.
+has_active_github_deployment() {
+  local pr_number="$1"
+  local excluded_deployment_id="${2:-}"
+  local deployment_ids deployment_id state
+  deployment_ids="$(github_deployment_ids "$pr_number")"
+
+  while read -r deployment_id; do
+    [[ -z "$deployment_id" ]] && continue
+    [[ "$deployment_id" == "$excluded_deployment_id" ]] && continue
+    state="$(github_deployment_state "$deployment_id")"
+    if [[ "$state" != "inactive" ]]; then
+      log "Found ${state} GitHub deployment ${deployment_id} for PR ${pr_number}"
+      return 0
+    fi
+  done <<< "$deployment_ids"
+
+  log "No active GitHub deployment exists for PR ${pr_number}"
+  return 1
+}
+
+# Creates a transient GitHub deployment for the PR commit and returns its numeric ID.
+create_github_deployment() {
+  local pr_number="$1"
+  local commit_hash="$2"
+  local repository deployment_id
+  repository="$(github_repository)"
+
+  log "Creating GitHub deployment for PR ${pr_number} at ${commit_hash}"
+  deployment_id="$(jq -nc \
+    --arg ref "$commit_hash" \
+    --arg environment "$(github_environment_name "$pr_number")" \
+    --arg pr_number "$pr_number" \
+    '{
+      ref: $ref,
+      environment: $environment,
+      description: ("CMS dev review app for PR " + $pr_number),
+      payload: {pull_request: $pr_number},
+      auto_merge: false,
+      required_contexts: [],
+      transient_environment: true,
+      production_environment: false
+    }' |
+    gh api --method POST "repos/${repository}/deployments" --input - --jq .id)"
+
+  if [[ ! "$deployment_id" =~ ^[0-9]+$ ]]; then
+    echo "GitHub did not return a deployment ID: ${deployment_id}" >&2
+    return 1
+  fi
+
+  log "Created GitHub deployment ${deployment_id}"
+  echo "$deployment_id"
+}
+
+# Marks deployments older than the current successful deployment inactive.
+inactivate_older_github_deployments() {
+  local pr_number="$1"
+  local current_deployment_id="$2"
+  local deployment_ids deployment_id state seen_current=false
+  deployment_ids="$(github_deployment_ids "$pr_number")"
+
+  while read -r deployment_id; do
+    [[ -z "$deployment_id" ]] && continue
+    if [[ "$deployment_id" == "$current_deployment_id" ]]; then
+      seen_current=true
+      continue
+    fi
+    [[ "$seen_current" == "true" ]] || continue
+    state="$(github_deployment_state "$deployment_id")"
+    if [[ "$state" != "inactive" ]]; then
+      set_github_deployment_status \
+        "$pr_number" "$deployment_id" inactive "Superseded by a newer deployment"
+    fi
+  done <<< "$deployment_ids"
+}
+
+# Posts a GitHub deployment status with links to the workflow and live review app.
+set_github_deployment_status() {
+  local pr_number="$1"
+  local deployment_id="$2"
+  local state="$3"
+  local description="$4"
+  local repository run_url environment_url payload current_state
+
+  if [[ ! "$deployment_id" =~ ^[0-9]+$ ]]; then
+    echo "Deployment ID must contain only digits: ${deployment_id}" >&2
+    return 2
+  fi
+  if [[ ! "$state" =~ ^(queued|in_progress|success|failure|inactive)$ ]]; then
+    echo "Unsupported GitHub deployment state: ${state}" >&2
+    return 2
+  fi
+
+  current_state="$(github_deployment_state "$deployment_id")"
+  if [[ "$current_state" == "inactive" ]]; then
+    log "GitHub deployment ${deployment_id} is already inactive; leaving it destroyed"
+    return
+  fi
+
+  repository="$(github_repository)"
+  run_url="$(github_run_url)"
+  environment_url="https://$(hostname "$pr_number")"
+  log "Marking GitHub deployment ${deployment_id} ${state}: ${description}"
+  payload="$(jq -nc \
+    --arg state "$state" \
+    --arg description "$description" \
+    --arg environment "$(github_environment_name "$pr_number")" \
+    --arg environment_url "$environment_url" \
+    --arg log_url "$run_url" '
+      {
+        state: $state,
+        description: $description,
+        environment: $environment,
+        auto_inactive: false
+      }
+      + if $state == "success" then {environment_url: $environment_url} else {} end
+      + if $log_url != "" then {log_url: $log_url} else {} end
+    ')"
+  gh api --method POST \
+    "repos/${repository}/deployments/${deployment_id}/statuses" \
+    --input - <<< "$payload" >/dev/null
+
+  if [[ "$state" == "success" ]]; then
+    inactivate_older_github_deployments "$pr_number" "$deployment_id"
+  fi
+}
+
+# Marks every GitHub deployment for a destroyed PR environment inactive.
+inactivate_github_environment() {
+  local pr_number="$1"
+  local deployment_ids deployment_id state
+  deployment_ids="$(github_deployment_ids "$pr_number")"
+
+  if [[ -z "$deployment_ids" ]]; then
+    log "No GitHub deployments found for PR ${pr_number}"
+    return
+  fi
+
+  while read -r deployment_id; do
+    [[ -z "$deployment_id" ]] && continue
+    state="$(github_deployment_state "$deployment_id")"
+    if [[ "$state" != "inactive" ]]; then
+      set_github_deployment_status \
+        "$pr_number" "$deployment_id" inactive "Review app destroyed"
+    fi
+  done <<< "$deployment_ids"
+}
 
 # Builds the common ECS tag payload used to identify and garbage-collect review resources.
 tags_json() {
@@ -173,10 +370,7 @@ render_task_definition() {
   local output_file="$4"
   local base_task_definition
 
-  if [[ ! "$image_tag" =~ ^[0-9a-f]{40}$ ]]; then
-    echo "Image tag must be a full Git commit SHA: $image_tag" >&2
-    exit 2
-  fi
+  require_commit_hash "$image_tag"
 
   if [[ ! "$image_repository" =~ ^[0-9]{12}\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/[a-zA-Z0-9._/-]+$ ]]; then
     echo "Image repository is not an ECR repository URL: $image_repository" >&2
@@ -625,6 +819,10 @@ EOF
   echo "$info"
   end_group
 
+  start_group "Mark GitHub deployment inactive"
+  inactivate_github_environment "$pr_number"
+  end_group
+
   if [[ "$cleanup_failed" == "true" ]]; then
     log "AWS resources were removed, but webhook or schema cleanup failed"
     return 1
@@ -659,7 +857,16 @@ scan_environments() {
         --status ACTIVE \
         --query 'taskDefinitionArns[]' \
         --output text
-    } | tr '\t' '\n' | sed -n 's#.*emmy-dev-p-\([0-9][0-9]*\).*#\1#p' | sort -u
+      gh api --method GET \
+        "repos/$(github_repository)/deployments" \
+        -F per_page=100 \
+        --paginate \
+        --jq '.[].environment'
+    } | tr '\t' '\n' |
+      sed -n \
+        -e 's#.*emmy-dev-p-\([0-9][0-9]*\).*#\1#p' \
+        -e 's#^cms-dev-pr-\([0-9][0-9]*\)$#\1#p' |
+      sort -u
   )
 }
 
@@ -675,6 +882,26 @@ case "${1:-}" in
   scan)
     [[ $# == 1 ]] || { usage; exit 2; }
     scan_environments
+    ;;
+  is-deployed)
+    [[ $# == 2 || $# == 3 ]] || { usage; exit 2; }
+    require_pr_number "$2"
+    if [[ -n "${3:-}" && ! "$3" =~ ^[0-9]+$ ]]; then
+      echo "Excluded deployment ID must contain only digits: $3" >&2
+      exit 2
+    fi
+    has_active_github_deployment "$2" "${3:-}"
+    ;;
+  deployment-start)
+    [[ $# == 3 ]] || { usage; exit 2; }
+    require_pr_number "$2"
+    require_commit_hash "$3"
+    create_github_deployment "$2" "$3"
+    ;;
+  deployment-status)
+    [[ $# == 5 ]] || { usage; exit 2; }
+    require_pr_number "$2"
+    set_github_deployment_status "$2" "$3" "$4" "$5"
     ;;
   *)
     usage
