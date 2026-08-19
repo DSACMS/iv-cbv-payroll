@@ -10,7 +10,7 @@
 # on PR review apps. Teardown happens via `rake pr_webhooks:destroy`, invoked
 # by `bin/destroy-pr-environment`.
 Rails.application.config.to_prepare do
-  Rails.application.config.pr_env_webhooks_initialization_error = nil
+  Rails.application.config.webhooks_initialization_error = nil
 
   domain = ENV["DOMAIN_NAME"]
   pr_match = domain&.match(/\Ap-(\d+)\.navapbc\.cloud\z/)
@@ -33,7 +33,7 @@ Rails.application.config.to_prepare do
           .create_subscriptions_if_necessary(receiver_base_url, subscription_name)
       end
     rescue => ex
-      Rails.application.config.pr_env_webhooks_initialization_error = ex.message
+      Rails.application.config.webhooks_initialization_error = ex.message
       Rails.logger.error "🟥 Unable to configure webhooks for PR environment: #{ex}"
       Rails.logger.error "🟥   in #{ex.backtrace.first}"
     end
