@@ -52,6 +52,13 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed,
       extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
 
+    context "when from_edit and from_review are present" do
+      let(:perform_tracked_action) { get :edit, params: { id: employment_activity.id, from_edit: 1, from_review: 1 } }
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed,
+        extra_attributes: -> { { employment_activity_id: kind_of(Integer), from_edit: "1", from_review: "1" } }
+    end
+
     it "renders the employment info form" do
       get :edit, params: { id: employment_activity.id }
 
