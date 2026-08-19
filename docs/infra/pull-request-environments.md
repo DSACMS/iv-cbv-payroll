@@ -30,6 +30,14 @@ group. The review task replaces all agency domain environment variables with
 `<agency>-pr-<number>.dev.emmy.cms.gov`, keeping agency links and allowed hosts
 inside the review app rather than sending them to the shared dev service.
 
+Agency domain variables must follow the `*_DOMAIN_NAME` convention and be
+present in the live dev task definition as an environment variable or secret.
+The first segment is used as the review hostname prefix: for example,
+`LA_LDH_DOMAIN_NAME` becomes `la-pr-123.dev.emmy.cms.gov`, and a future
+`MD_DHS_DOMAIN_NAME` would become `md-pr-123.dev.emmy.cms.gov`. The
+`cms-pr-environment` script discovers these variables automatically, so adding
+an agency that follows this convention does not require updating the script.
+
 The CMS Cloud review hostname defaults to
 `pr-<number>.dev.emmy.cms.gov`. Public DNS must wildcard `*.dev.emmy.cms.gov`
 to the dev ALB. The existing dev certificate's wildcard SAN covers the main

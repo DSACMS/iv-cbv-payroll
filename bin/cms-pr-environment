@@ -56,7 +56,6 @@ task_family() { echo "emmy-dev-p-$1"; }
 target_group_name() { echo "emmy-dev-p-$1"; }
 schema_name() { echo "p_$1"; }
 hostname() { echo "pr-$1.dev.emmy.cms.gov"; }
-agency_hostname() { echo "$1-pr-$2.dev.emmy.cms.gov"; }
 agency_hostname_pattern() { echo "*-pr-$1.dev.emmy.cms.gov"; }
 github_environment_name() { echo "cms-dev-pr-$1"; }
 
@@ -248,14 +247,18 @@ inactivate_github_environment() {
 tags_json() {
   local pr_number="$1"
   local image_tag="${2:-unknown}"
+  local repository
+  repository="$(github_repository)"
   jq -nc \
+    --arg environment "$environment" \
+    --arg repository "$repository" \
     --arg pr_number "$pr_number" \
     --arg image_tag "$image_tag" \
     '[
       {key: "Project", value: "Emmy"},
-      {key: "Environment", value: "dev"},
+      {key: "Environment", value: $environment},
       {key: "ReviewApp", value: "true"},
-      {key: "Repository", value: "DSACMS/iv-cbv-payroll"},
+      {key: "Repository", value: $repository},
       {key: "PullRequest", value: $pr_number},
       {key: "ImageTag", value: $image_tag}
     ]'
@@ -263,19 +266,7 @@ tags_json() {
 
 # Builds the equivalent ELBv2 tag payload, whose API uses capitalized tag keys.
 elbv2_tags_json() {
-  local pr_number="$1"
-  local image_tag="${2:-unknown}"
-  jq -nc \
-    --arg pr_number "$pr_number" \
-    --arg image_tag "$image_tag" \
-    '[
-      {Key: "Project", Value: "Emmy"},
-      {Key: "Environment", Value: "dev"},
-      {Key: "ReviewApp", Value: "true"},
-      {Key: "Repository", Value: "DSACMS/iv-cbv-payroll"},
-      {Key: "PullRequest", Value: $pr_number},
-      {Key: "ImageTag", Value: $image_tag}
-    ]'
+  tags_json "$@" | jq -c '[.[] | {Key: .key, Value: .value}]'
 }
 
 # Returns the ARN of the shared CMS dev application load balancer.
@@ -361,14 +352,31 @@ run_review_task() {
   log "One-off ECS task ${task_arn} completed successfully"
 }
 
+# Builds the fixed environment overrides that distinguish a review task from the dev task.
+review_environment_json() {
+  local pr_number="$1"
+  local image_tag="$2"
+  jq -nc \
+    --arg image_tag "$image_tag" \
+    --arg domain "$(hostname "$pr_number")" \
+    --arg schema "$(schema_name "$pr_number")" \
+    '[
+      {name: "IMAGE_TAG", value: $image_tag},
+      {name: "DOMAIN_NAME", value: $domain},
+      {name: "DB_SCHEMA", value: $schema},
+      {name: "SOLID_QUEUE_IN_PUMA", value: "true"}
+    ]'
+}
+
 # Clones the live dev task definition and writes a registerable PR-specific version to a file.
-# The review version replaces its image, schema, domains, and embedded queue-worker setting.
+# Agency domain variables are discovered from the dev container so future agencies need no entry here.
+# Their first name segment remains the hostname prefix (LA_LDH_DOMAIN_NAME becomes la-pr-1234...).
 render_task_definition() {
   local pr_number="$1"
   local image_tag="$2"
   local image_repository="$3"
   local output_file="$4"
-  local base_task_definition
+  local base_task_definition environment_json
 
   require_commit_hash "$image_tag"
 
@@ -378,6 +386,7 @@ render_task_definition() {
   fi
 
   base_task_definition="$(base_service | jq -r '.taskDefinition')"
+  environment_json="$(review_environment_json "$pr_number" "$image_tag")"
   log "Cloning live dev task definition ${base_task_definition} into family $(task_family "$pr_number")"
   log "Setting app image to ${image_repository}:${image_tag}, schema to $(schema_name "$pr_number"), and hostname to $(hostname "$pr_number")"
   aws ecs describe-task-definition \
@@ -387,39 +396,31 @@ render_task_definition() {
     jq \
       --arg family "$(task_family "$pr_number")" \
       --arg image "${image_repository}:${image_tag}" \
-      --arg image_tag "$image_tag" \
       --arg domain "$(hostname "$pr_number")" \
-      --arg la_domain "$(agency_hostname la "$pr_number")" \
-      --arg nh_domain "$(agency_hostname nh "$pr_number")" \
-      --arg sandbox_domain "$(agency_hostname sandbox "$pr_number")" \
-      --arg research_domain "$(agency_hostname research "$pr_number")" \
-      --arg accenture_domain "$(agency_hostname accenture "$pr_number")" \
-      --arg schema "$(schema_name "$pr_number")" \
+      --argjson environment "$environment_json" \
       --arg container "$app_container_name" '
-      def environment_override($name; $value):
-        map(select(.name != $name)) + [{name: $name, value: $value}];
+      def is_agency_domain:
+        . != "DOMAIN_NAME" and endswith("_DOMAIN_NAME");
+
+      def review_agency_domain($name):
+        ($name | sub("_DOMAIN_NAME$"; "") | split("_")[0] | ascii_downcase) + "-" + $domain;
+
+      def environment_overrides($overrides):
+        reduce $overrides[] as $override
+          (.; map(select(.name != $override.name)) + [$override]);
 
       .family = $family |
       .containerDefinitions |= map(
         if .name == $container then
           .image = $image |
-          .secrets = ((.secrets // []) | map(select(
-            .name != "LA_LDH_DOMAIN_NAME" and
-            .name != "NH_DHHS_DOMAIN_NAME" and
-            .name != "SANDBOX_DOMAIN_NAME" and
-            .name != "RESEARCH_DOMAIN_NAME" and
-            .name != "ACCENTURE_DOMAIN_NAME"
-          ))) |
+          (.secrets // []) as $secrets |
+          (($secrets + (.environment // [])) |
+            map(select(.name | is_agency_domain)) |
+            map({name: .name, value: review_agency_domain(.name)}) |
+            unique_by(.name)) as $agency_domains |
+          .secrets = ($secrets | map(select((.name | is_agency_domain) | not))) |
           .environment = ((.environment // []) |
-            environment_override("IMAGE_TAG"; $image_tag) |
-            environment_override("DOMAIN_NAME"; $domain) |
-            environment_override("LA_LDH_DOMAIN_NAME"; $la_domain) |
-            environment_override("NH_DHHS_DOMAIN_NAME"; $nh_domain) |
-            environment_override("SANDBOX_DOMAIN_NAME"; $sandbox_domain) |
-            environment_override("RESEARCH_DOMAIN_NAME"; $research_domain) |
-            environment_override("ACCENTURE_DOMAIN_NAME"; $accenture_domain) |
-            environment_override("DB_SCHEMA"; $schema) |
-            environment_override("SOLID_QUEUE_IN_PUMA"; "true"))
+            environment_overrides($environment + $agency_domains))
         else . end
       ) |
       {
