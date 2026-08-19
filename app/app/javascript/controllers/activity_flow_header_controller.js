@@ -21,14 +21,23 @@ export default class extends Controller {
       this._formListeners.push(el)
     })
 
-    // Bind tracking handlers directly to their target elements. USWDS moves
-    // the modal to <body> on init, which would break Stimulus data-action
-    // delegation once the modal is reparented outside the controller root.
+    // USWDS moves the modal to <body> on init, which happens before this
+    // controller connects. That takes the modal's buttons out of this
+    // controller's element, so Stimulus targets (scoped to descendants of
+    // this.element) can no longer find them - query the reparented modal
+    // directly by its id instead.
+    const modal = document.getElementById("exit-confirmation-modal")
+    const modalButton = (name) =>
+      modal?.querySelector(`[data-activity-flow-header-target="${name}"]`)
+
     this._trackingBindings = [
-      [this._hasTarget("modalConfirmButton") && this.modalConfirmButtonTarget, () => this._trackEvent("ExitModalConfirmed")],
-      [this._hasTarget("modalCancelButton") && this.modalCancelButtonTarget, () => this._trackEvent("ExitModalCancelled")],
-      [this._hasTarget("modalCloseButton") && this.modalCloseButtonTarget, () => this._trackEvent("ExitModalCancelled")],
-      [this._hasTarget("backButton") && this.backButtonTarget, () => this._trackEvent("BackClicked")],
+      [modalButton("modalConfirmButton"), () => this._trackEvent("ExitModalConfirmed")],
+      [modalButton("modalCancelButton"), () => this._trackEvent("ExitModalCancelled")],
+      [modalButton("modalCloseButton"), () => this._trackEvent("ExitModalCancelled")],
+      [
+        this._hasTarget("backButton") && this.backButtonTarget,
+        () => this._trackEvent("BackClicked"),
+      ],
     ]
     this._trackingBindings.forEach(([el, handler]) => {
       if (el) el.addEventListener("click", handler)

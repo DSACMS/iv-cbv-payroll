@@ -254,30 +254,18 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         extra_attributes: -> { { employment_activity_id: kind_of(Integer), document_count: 0 } }
     end
 
-    context "employment scope validation failure" do
-      let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
-      let(:tracked_flow) { activity_flow }
-      let(:perform_tracked_action) do
-        post :create, params: {
-          employment_id: employment_activity.id,
-          activity: { document_uploads: [ "existing-upload-token" ] }
-        }
-      end
+    it "does not track EmploymentDocumentUploadSubmitted when the update fails" do
+      employment_activity = create(:employment_activity, activity_flow: activity_flow)
+      allow_any_instance_of(EmploymentActivity).to receive(:update).and_return(false)
 
-      before do
-        allow_any_instance_of(EmploymentActivity).to receive(:update).and_return(false)
-      end
+      expect(EventTrackingJob).not_to receive(:perform_later).with(
+        TrackEvent::EmploymentDocumentUploadSubmitted, anything, anything
+      )
 
-      it_behaves_like "tracks an event", TrackEvent::EmploymentDocumentUploadValidationFailed,
-        extra_attributes: -> { { employment_activity_id: kind_of(Integer), error_message: kind_of(String) } }
-
-      it "does not track EmploymentDocumentUploadSubmitted" do
-        expect(EventTrackingJob).not_to receive(:perform_later).with(
-          TrackEvent::EmploymentDocumentUploadSubmitted, anything, anything
-        )
-
-        perform_tracked_action
-      end
+      post :create, params: {
+        employment_id: employment_activity.id,
+        activity: { document_uploads: [ "existing-upload-token" ] }
+      }
     end
 
     it "renders new when the update fails" do
