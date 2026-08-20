@@ -83,8 +83,10 @@ RSpec.describe PagesController do
 
     context "when an activity flow timeout is present" do
       before do
+        stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
+        stub_client_agency_config_value("sandbox", "pilot_ended", false)
+        request.host = "sandbox.reportmyincome.org"
         get :home, params: {
-          cbv_flow_timeout: true,
           activity_flow_timeout: true,
           client_agency_id: "sandbox"
         }

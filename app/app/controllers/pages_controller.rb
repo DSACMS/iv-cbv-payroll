@@ -3,7 +3,7 @@ class PagesController < ApplicationController
   helper_method :activity_flow_timeout?
 
   def home
-    return unless params[:cbv_flow_timeout].present?
+    return unless flow_timeout?
 
     # i18n-tasks-use t("pages.home.activity_flow_timeout.alert_html")
     message_key = activity_flow_timeout? ? "pages.home.activity_flow_timeout.alert_html" : "cbv.error_missing_token_html"
@@ -38,12 +38,16 @@ class PagesController < ApplicationController
     params[:activity_flow_timeout].present?
   end
 
+  def flow_timeout?
+    params[:cbv_flow_timeout].present? || activity_flow_timeout?
+  end
+
   def redirect_to_client_agency_entries
     # Don't redirect to CBV flow if the pilot has ended - let the home page render the pilot end message
     return if pilot_ended?
 
-    # Don't redirect if we just came from a CBV flow timeout
-    return if params[:cbv_flow_timeout].present?
+    # Don't redirect if we just came from a flow timeout
+    return if flow_timeout?
 
     client_agency_id = client_agency_from_domain
     if client_agency_id.present?

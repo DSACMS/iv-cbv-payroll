@@ -45,7 +45,6 @@ RSpec.describe Cbv::SessionsController, type: :controller do
         it 'redirects to the activity flow timeout page' do
           delete :end, params: { timeout: 'true' }
           expect(response).to redirect_to(root_url(
-            cbv_flow_timeout: true,
             activity_flow_timeout: true,
             client_agency_id: "sandbox"
           ))
@@ -79,7 +78,7 @@ RSpec.describe Cbv::SessionsController, type: :controller do
       it "redirects to root with the activity flow timeout flag" do
         delete :end
 
-        expect(response).to redirect_to(root_url(cbv_flow_timeout: true, activity_flow_timeout: true))
+        expect(response).to redirect_to(root_url(activity_flow_timeout: true))
       end
     end
 
