@@ -116,6 +116,17 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
     end
 
+    context "education scope" do
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "Test University")
+      end
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :new, params: { education_id: education_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::EducationDocumentUploadViewed,
+        extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
+    end
+
     it "renders the upload form for an employment activity" do
       employment_activity = create(:employment_activity, activity_flow: activity_flow)
       month_record = create(:employment_activity_month, employment_activity: employment_activity, hours: 18)
@@ -252,6 +263,36 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       it_behaves_like "tracks an event", TrackEvent::EmploymentDocumentUploadSubmitted,
         extra_attributes: -> { { employment_activity_id: kind_of(Integer), document_count: 0 } }
+    end
+
+    context "education scope tracking" do
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "Test University")
+      end
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { post :create, params: { education_id: education_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::EducationDocumentUploadSubmitted,
+        extra_attributes: -> { { education_activity_id: kind_of(Integer), document_count: 0 } }
+    end
+
+    it "does not track EducationDocumentUploadSubmitted when the update fails" do
+      education_activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :fully_self_attested,
+        school_name: "Test University"
+      )
+      allow_any_instance_of(EducationActivity).to receive(:update).and_return(false)
+
+      expect(EventTrackingJob).not_to receive(:perform_later).with(
+        TrackEvent::EducationDocumentUploadSubmitted, anything, anything
+      )
+
+      post :create, params: {
+        education_id: education_activity.id,
+        activity: { document_uploads: [ "existing-upload-token" ] }
+      }
     end
 
     it "does not track EmploymentDocumentUploadSubmitted when the update fails" do

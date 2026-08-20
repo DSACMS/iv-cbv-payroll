@@ -14,6 +14,8 @@ class Activities::EducationController < Activities::BaseController
 
   before_action :set_education_activity, only: %i[show edit update destroy review save_review]
   before_action :set_back_url, only: %i[edit review]
+  after_action :track_info_viewed_event, only: %i[new edit]
+  after_action :track_review_viewed_event, only: :review
 
   def verify
     @identity = current_identity!
@@ -46,12 +48,18 @@ class Activities::EducationController < Activities::BaseController
   def update
     if @education_activity.fully_self_attested?
       if @education_activity.update(fully_self_attested_education_params)
+        track_event(TrackEvent::EducationInfoSubmitted, education_activity_id: @education_activity.id)
         if params[:from_review].present?
           redirect_to review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence)
         else
           redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0, from_edit: params[:from_edit].presence)
         end
       else
+        track_event(
+          TrackEvent::EducationInfoValidationFailed,
+          education_activity_id: @education_activity.id,
+          error_message: @education_activity.errors.full_messages.join(", ")
+        )
         render :edit_fully_self_attested, status: :unprocessable_content
       end
     elsif @education_activity.update(education_params)
@@ -104,6 +112,7 @@ class Activities::EducationController < Activities::BaseController
   def save_review
     @education_activity.update(review_params)
     @education_activity.publish!
+    track_event(TrackEvent::EducationReviewSubmitted, education_activity_id: @education_activity.id)
     if @education_activity.fully_self_attested?
       redirect_to activities_flow_root_path
     else
@@ -180,8 +189,14 @@ class Activities::EducationController < Activities::BaseController
     @education_activity = @flow.education_activities.new(fully_self_attested_education_params.merge(draft: true))
     @education_activity.data_source = :fully_self_attested
     if @education_activity.save
+      track_event(TrackEvent::EducationInfoSubmitted, education_activity_id: @education_activity.id)
       redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0)
     else
+      track_event(
+        TrackEvent::EducationInfoValidationFailed,
+        education_activity_id: @education_activity&.id,
+        error_message: @education_activity.errors.full_messages.join(", ")
+      )
       render :new, status: :unprocessable_content
     end
   end
@@ -207,4 +222,17 @@ class Activities::EducationController < Activities::BaseController
     end
   end
   helper_method :summer_logic_applied?
+
+  def track_info_viewed_event
+    return unless response.successful?
+    return if action_name == "edit" && !@education_activity&.fully_self_attested?
+
+    track_event(TrackEvent::EducationInfoViewed, education_activity_id: @education_activity&.id)
+  end
+
+  def track_review_viewed_event
+    return unless response.successful?
+
+    track_event(TrackEvent::EducationReviewViewed, education_activity_id: @education_activity.id)
+  end
 end
