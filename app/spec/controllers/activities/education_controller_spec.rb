@@ -51,7 +51,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       end
 
       it_behaves_like "tracks an event", TrackEvent::EducationInfoValidationFailed,
-        extra_attributes: -> { { education_activity_id: nil, error_message: kind_of(String) } }
+        extra_attributes: -> { { education_activity_id: nil, error_fields: kind_of(Array) } }
     end
 
     it "creates a validated EducationActivity and redirects to #show" do
@@ -275,19 +275,42 @@ RSpec.describe Activities::EducationController, type: :controller do
     it_behaves_like "tracks an event", TrackEvent::EducationInfoViewed,
       extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
 
-    it "does not track EducationInfoViewed for non-fully-self-attested activities" do
-      partial_activity = create(
-        :education_activity,
-        activity_flow: activity_flow,
-        data_source: :partially_self_attested,
-        status: :succeeded
-      )
+    context "when partially self-attested" do
+      let(:partial_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :partially_self_attested, status: :succeeded)
+      end
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :edit, params: { id: partial_activity.id } }
 
-      expect(EventTrackingJob).not_to receive(:perform_later).with(
-        TrackEvent::EducationInfoViewed, anything, anything
-      )
+      it_behaves_like "tracks an event", TrackEvent::EducationEnrollmentReviewViewed,
+        extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
 
-      get :edit, params: { id: partial_activity.id }
+      it "does not track EducationInfoViewed" do
+        expect(EventTrackingJob).not_to receive(:perform_later).with(
+          TrackEvent::EducationInfoViewed, anything, anything
+        )
+
+        get :edit, params: { id: partial_activity.id }
+      end
+    end
+
+    context "when validated" do
+      let(:validated_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :validated, status: :succeeded)
+      end
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :edit, params: { id: validated_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::EducationEnrollmentReviewViewed,
+        extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
+
+      it "does not track EducationInfoViewed" do
+        expect(EventTrackingJob).not_to receive(:perform_later).with(
+          TrackEvent::EducationInfoViewed, anything, anything
+        )
+
+        get :edit, params: { id: validated_activity.id }
+      end
     end
 
     it "renders the fully self-attested education info form for fully self-attested activities" do
@@ -616,6 +639,8 @@ RSpec.describe Activities::EducationController, type: :controller do
       let(:education_activity) do
         create(:education_activity, activity_flow: activity_flow)
       end
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :review, params: { id: education_activity.id, from_edit: 1 } }
 
       before do
         create(
@@ -631,6 +656,9 @@ RSpec.describe Activities::EducationController, type: :controller do
           enrollment_status: :full_time
         )
       end
+
+      it_behaves_like "tracks an event", TrackEvent::EducationReviewViewed,
+        extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
 
       it "renders validated enrollment info without edit links to entry pages" do
         get :review, params: { id: education_activity.id, from_edit: 1 }
@@ -965,7 +993,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         end
 
         it_behaves_like "tracks an event", TrackEvent::EducationInfoValidationFailed,
-          extra_attributes: -> { { education_activity_id: kind_of(Integer), error_message: kind_of(String) } }
+          extra_attributes: -> { { education_activity_id: kind_of(Integer), error_fields: kind_of(Array) } }
       end
     end
 

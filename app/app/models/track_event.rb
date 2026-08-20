@@ -82,6 +82,7 @@ module TrackEvent
   EducationBackClicked = "EducationBackClicked"
   EducationDocumentUploadSubmitted = "EducationDocumentUploadSubmitted"
   EducationDocumentUploadViewed = "EducationDocumentUploadViewed"
+  EducationEnrollmentReviewViewed = "EducationEnrollmentReviewViewed"
   EducationExitClicked = "EducationExitClicked"
   EducationExitModalCancelled = "EducationExitModalCancelled"
   EducationExitModalConfirmed = "EducationExitModalConfirmed"

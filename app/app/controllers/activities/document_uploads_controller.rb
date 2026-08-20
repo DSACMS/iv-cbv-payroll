@@ -4,7 +4,7 @@ class Activities::DocumentUploadsController < Activities::BaseController
   after_action :track_employment_upload_viewed_event, only: :new
   after_action :track_education_upload_viewed_event, only: :new
 
-  helper_method :upload_path, :remove_document_upload_path
+  helper_method :upload_path, :remove_document_upload_path, :track_event_prefix
 
   def new
   end
@@ -189,6 +189,14 @@ class Activities::DocumentUploadsController < Activities::BaseController
         Make sure to add it there if you're adding DocumentUploadable to a
         new activity type.
       ERROR
+    end
+  end
+
+  def track_event_prefix
+    if params[:education_id]
+      "Education"
+    elsif params[:employment_id]
+      "Employment"
     end
   end
 

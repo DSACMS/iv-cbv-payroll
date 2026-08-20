@@ -60,7 +60,7 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
       education_activity_id: @education_activity.id,
       term_index: @term_index
     }
-    attributes[:error_message] = @current_term.errors.full_messages.join(", ") if @error
+    attributes[:error_fields] = @current_term.errors.attribute_names.map(&:to_s) if @error
     track_event(event, attributes)
   end
 

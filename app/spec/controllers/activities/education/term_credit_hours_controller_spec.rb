@@ -106,6 +106,8 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
       allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
 
+      expect(EventTrackingJob).not_to receive(:perform_later)
+
       get :edit, params: { education_id: education_activity.id, id: 0 }
 
       expect(response).to redirect_to(activities_flow_root_path)
@@ -229,7 +231,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
 
       it_behaves_like "tracks an event", TrackEvent::EducationTermCreditHoursValidationFailed,
         extra_attributes: -> {
-          { education_activity_id: kind_of(Integer), term_index: 0, error_message: kind_of(String) }
+          { education_activity_id: kind_of(Integer), term_index: 0, error_fields: [ "credit_hours" ] }
         }
     end
 

@@ -6,7 +6,7 @@ class Activities::Education::MonthsController < Activities::BaseController
 
   before_action :set_back_url, only: %i[edit update]
   after_action :track_month_viewed_event, only: :edit
-  after_action :track_month_submission_event, only: :update
+  after_action :track_month_submitted_event, only: :update
 
   private
 
@@ -21,7 +21,7 @@ class Activities::Education::MonthsController < Activities::BaseController
     )
   end
 
-  def track_month_submission_event
+  def track_month_submitted_event
     return unless @activity_month.present?
 
     event = @error ? TrackEvent::EducationMonthValidationFailed : TrackEvent::EducationMonthSubmitted
@@ -30,7 +30,7 @@ class Activities::Education::MonthsController < Activities::BaseController
       month_index: @month_index,
       month: I18n.l(@current_month, format: :month_year)
     }
-    attributes[:error_message] = @activity_month.errors.full_messages.join(", ") if @error
+    attributes[:error_fields] = @activity_month.errors.attribute_names.map(&:to_s) if @error
     track_event(event, attributes)
   end
 

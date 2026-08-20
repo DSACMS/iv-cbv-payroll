@@ -58,7 +58,7 @@ class Activities::EducationController < Activities::BaseController
         track_event(
           TrackEvent::EducationInfoValidationFailed,
           education_activity_id: @education_activity.id,
-          error_message: @education_activity.errors.full_messages.join(", ")
+          error_fields: @education_activity.errors.attribute_names.map(&:to_s)
         )
         render :edit_fully_self_attested, status: :unprocessable_content
       end
@@ -112,6 +112,7 @@ class Activities::EducationController < Activities::BaseController
   def save_review
     @education_activity.update(review_params)
     @education_activity.publish!
+    # Fires for every data source; see track_review_viewed_event.
     track_event(TrackEvent::EducationReviewSubmitted, education_activity_id: @education_activity.id)
     if @education_activity.fully_self_attested?
       redirect_to activities_flow_root_path
@@ -195,7 +196,7 @@ class Activities::EducationController < Activities::BaseController
       track_event(
         TrackEvent::EducationInfoValidationFailed,
         education_activity_id: @education_activity&.id,
-        error_message: @education_activity.errors.full_messages.join(", ")
+        error_fields: @education_activity.errors.attribute_names.map(&:to_s)
       )
       render :new, status: :unprocessable_content
     end
@@ -225,11 +226,17 @@ class Activities::EducationController < Activities::BaseController
 
   def track_info_viewed_event
     return unless response.successful?
-    return if action_name == "edit" && !@education_activity&.fully_self_attested?
 
-    track_event(TrackEvent::EducationInfoViewed, education_activity_id: @education_activity&.id)
+    if action_name == "edit" && !@education_activity&.fully_self_attested?
+      track_event(TrackEvent::EducationEnrollmentReviewViewed, education_activity_id: @education_activity&.id)
+    else
+      track_event(TrackEvent::EducationInfoViewed, education_activity_id: @education_activity&.id)
+    end
   end
 
+  # Fires for every data source (validated, partially_self_attested, fully_self_attested)
+  # since the review page and review step are shared across all of them, not just the
+  # self-attested paths.
   def track_review_viewed_event
     return unless response.successful?
 
