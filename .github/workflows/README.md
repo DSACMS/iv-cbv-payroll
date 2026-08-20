@@ -39,6 +39,8 @@ The CD workflow uses these reusable workflows:
 - [`database-migrations-cms`](./database-migrations-cms.yml): runs CMS database migrations by rendering the `emmy-<env>-migrate` task definition with the new image and running it as a one-off task, using `aws-actions/amazon-ecs-render-task-definition` and `aws-actions/amazon-ecs-deploy-task-definition` (run-task mode)
 - [`deploy-ecs`](./deploy-ecs.yml): updates the CMS ECS `app` and `solid-queue` services to an existing image tag, using `aws-actions/amazon-ecs-render-task-definition` and `aws-actions/amazon-ecs-deploy-task-definition`
 - [`build-and-publish-to-cms`](./build-and-publish-to-cms.yml): builds and publishes a SHA-tagged image to the CMS image repository
+- [`cms-pr-environment-checks`](./cms-pr-environment-checks.yml): provisions or updates a CMS Cloud dev review app, reusing the dev task configuration with a PR image and isolated database schema
+- [`cms-pr-environment-destroy`](./cms-pr-environment-destroy.yml): removes a CMS Cloud review app and its database schema
 
 ```mermaid
 graph TD

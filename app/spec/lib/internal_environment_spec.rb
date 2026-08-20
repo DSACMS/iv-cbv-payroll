@@ -1,6 +1,28 @@
 require "rails_helper"
 
 RSpec.describe InternalEnvironment do
+  describe ".review_app_pr_number" do
+    subject(:review_app_pr_number) { described_class.review_app_pr_number(domain_name) }
+
+    context "with a legacy Nava review-app domain" do
+      let(:domain_name) { "p-123.navapbc.cloud" }
+
+      it { is_expected.to eq("123") }
+    end
+
+    context "with a CMS Cloud review-app domain" do
+      let(:domain_name) { "pr-456.dev.emmy.cms.gov" }
+
+      it { is_expected.to eq("456") }
+    end
+
+    context "with a lookalike domain" do
+      let(:domain_name) { "pr-456.dev.emmy.cms.gov.evil.com" }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe ".internal?" do
     subject(:internal_environment) do
       described_class.internal?(domain_name: domain_name, rails_env: rails_env)
@@ -69,8 +91,20 @@ RSpec.describe InternalEnvironment do
       it { is_expected.to be true }
     end
 
+    context "when the domain is a CMS Cloud PR review app" do
+      let(:domain_name) { "pr-123.dev.emmy.cms.gov" }
+
+      it { is_expected.to be true }
+    end
+
     context "when the domain looks like a PR review app but does not match the expected pattern" do
       let(:domain_name) { "p-123.navapbc.cloud.evil.com" }
+
+      it { is_expected.to be false }
+    end
+
+    context "when the domain looks like a CMS Cloud PR review app but has a suffix" do
+      let(:domain_name) { "pr-123.dev.emmy.cms.gov.evil.com" }
 
       it { is_expected.to be false }
     end
