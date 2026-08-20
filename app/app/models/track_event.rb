@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module TrackEvent
-  ApplicantAccessedAddYourWorkPage = "ApplicantAccessedAddYourWorkPage"
   ApplicantAccessedArgyleModalMFAScreen = "ApplicantAccessedArgyleModalMFAScreen"
   ApplicantAccessedExpiredLinkPage = "ApplicantAccessedExpiredLinkPage"
   ApplicantAccessedFlowWithoutCookie = "ApplicantAccessedFlowWithoutCookie"
@@ -24,7 +23,6 @@ module TrackEvent
   ApplicantClosedPinwheelModal = "ApplicantClosedPinwheelModal"
   ApplicantConsentedToTerms = "ApplicantConsentedToTerms"
   ApplicantContinuedFromAddJobsPage = "ApplicantContinuedFromAddJobsPage"
-  ApplicantContinuedFromAddYourWorkPage = "ApplicantContinuedFromAddYourWorkPage"
   ApplicantContinuedFromOtherJobsPage = "ApplicantContinuedFromOtherJobsPage"
   ApplicantCopiedInvitationLink = "ApplicantCopiedInvitationLink"
   ApplicantCreatedArgyleAccount = "ApplicantCreatedArgyleAccount"
@@ -82,6 +80,8 @@ module TrackEvent
   CaseworkerInvitedApplicantToFlow = "CaseworkerInvitedApplicantToFlow"
   CbvPageView = "CbvPageView"
   EmailSent = "EmailSent"
+  EmploymentAddYourWorkSubmitted = "EmploymentAddYourWorkSubmitted"
+  EmploymentAddYourWorkViewed = "EmploymentAddYourWorkViewed"
   EmploymentBackClicked = "EmploymentBackClicked"
   EmploymentDocumentUploadSubmitted = "EmploymentDocumentUploadSubmitted"
   EmploymentDocumentUploadViewed = "EmploymentDocumentUploadViewed"

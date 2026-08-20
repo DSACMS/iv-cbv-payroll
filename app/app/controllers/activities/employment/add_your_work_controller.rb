@@ -1,7 +1,7 @@
 class Activities::Employment::AddYourWorkController < Activities::BaseController
   ADD_WORK_METHODS = %w[connect_automatically enter_paid_manually enter_unpaid_manually].freeze
 
-  after_action :track_page_accessed_event, only: :show
+  after_action :track_viewed_event, only: :show
 
   def show
   end
@@ -14,7 +14,7 @@ class Activities::Employment::AddYourWorkController < Activities::BaseController
       return redirect_to activities_flow_income_add_your_work_path
     end
 
-    track_event(TrackEvent::ApplicantContinuedFromAddYourWorkPage, add_work_method: add_work_method)
+    track_event(TrackEvent::EmploymentAddYourWorkSubmitted, add_work_method: add_work_method)
 
     redirect_to next_step_path(add_work_method)
   end
@@ -29,7 +29,9 @@ class Activities::Employment::AddYourWorkController < Activities::BaseController
     end
   end
 
-  def track_page_accessed_event
-    track_event(TrackEvent::ApplicantAccessedAddYourWorkPage)
+  def track_viewed_event
+    return unless response.successful?
+
+    track_event(TrackEvent::EmploymentAddYourWorkViewed)
   end
 end

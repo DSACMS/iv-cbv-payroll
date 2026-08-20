@@ -49,7 +49,7 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(Capybara.string(response.body)).not_to have_link("Back")
     end
 
-    it_behaves_like "tracks an event", TrackEvent::ApplicantAccessedAddYourWorkPage
+    it_behaves_like "tracks an event", TrackEvent::EmploymentAddYourWorkViewed
   end
 
   describe "#create" do
@@ -80,9 +80,9 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(response).to redirect_to(activities_flow_income_add_your_work_path)
     end
 
-    it "does not track a continued event when nothing is selected" do
+    it "does not track a submitted event when nothing is selected" do
       expect(EventTrackingJob).not_to receive(:perform_later)
-        .with(TrackEvent::ApplicantContinuedFromAddYourWorkPage, anything, anything)
+        .with(TrackEvent::EmploymentAddYourWorkSubmitted, anything, anything)
 
       post :create
     end
@@ -91,7 +91,7 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       context "when the applicant selects #{add_work_method}" do
         let(:perform_tracked_action) { post :create, params: { add_work_method: add_work_method } }
 
-        it_behaves_like "tracks an event", TrackEvent::ApplicantContinuedFromAddYourWorkPage,
+        it_behaves_like "tracks an event", TrackEvent::EmploymentAddYourWorkSubmitted,
           extra_attributes: -> { { add_work_method: add_work_method } }
       end
     end
