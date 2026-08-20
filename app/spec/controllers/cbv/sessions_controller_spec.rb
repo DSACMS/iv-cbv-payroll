@@ -71,6 +71,18 @@ RSpec.describe Cbv::SessionsController, type: :controller do
       end
     end
 
+    context "when the ActivityFlow record is missing" do
+      before do
+        session[:flow_type] = :activity
+      end
+
+      it "redirects to root with the activity flow timeout flag" do
+        delete :end
+
+        expect(response).to redirect_to(root_url(cbv_flow_timeout: true, activity_flow_timeout: true))
+      end
+    end
+
     context 'when flow_type is missing' do
       it 'redirects to root with timeout flag without raising an error' do
         session[:flow_type] = nil
