@@ -12,11 +12,15 @@ module InternalEnvironment
     "sandbox.emmy.cms.gov"
   ].freeze
 
-  PR_REVIEW_APP_DOMAIN_PATTERN = /\Ap-\d+\.navapbc\.cloud\z/
+  PR_REVIEW_APP_DOMAIN_PATTERN = /\A(?:p-(\d+)\.navapbc\.cloud|pr-(\d+)\.dev\.emmy\.cms\.gov)\z/
 
   def self.internal?(domain_name:, rails_env:)
     return true if rails_env.development? || rails_env.test?
 
-    DOMAINS.include?(domain_name) || domain_name.to_s.match?(PR_REVIEW_APP_DOMAIN_PATTERN)
+    DOMAINS.include?(domain_name) || review_app_pr_number(domain_name).present?
+  end
+
+  def self.review_app_pr_number(domain_name)
+    domain_name.to_s.match(PR_REVIEW_APP_DOMAIN_PATTERN)&.captures&.compact&.first
   end
 end

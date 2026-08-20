@@ -55,4 +55,33 @@ class Activities::BaseController < FlowController
   def track_invitation_clicked_event(invitation, flow)
     # No-op for activities currently
   end
+
+  # Threads the from_edit/from_review navigation params (see the comment atop
+  # each activity type controller) into every tracked event for the
+  # controllers listed in activity_type_controller?, so call sites don't need
+  # to pass them manually. Hub-level controllers (Hub, Entries, Submit,
+  # Success, Summary) aren't in that list, since from_edit/from_review aren't
+  # meaningful navigation context for them.
+  def standard_track_attributes
+    attrs = super
+    return attrs unless activity_type_controller?
+
+    attrs.merge(
+      from_edit: params[:from_edit].presence,
+      from_review: params[:from_review].presence
+    )
+  end
+
+  def activity_type_controller?
+    is_a?(Activities::EmploymentController) ||
+      is_a?(Activities::EducationController) ||
+      is_a?(Activities::JobTrainingController) ||
+      is_a?(Activities::VolunteeringController) ||
+      is_a?(Activities::DocumentUploadsController) ||
+      is_a?(Activities::Employment::MonthsController) ||
+      is_a?(Activities::Education::MonthsController) ||
+      is_a?(Activities::JobTraining::MonthsController) ||
+      is_a?(Activities::Volunteering::MonthsController) ||
+      is_a?(Activities::Education::TermCreditHoursController)
+  end
 end

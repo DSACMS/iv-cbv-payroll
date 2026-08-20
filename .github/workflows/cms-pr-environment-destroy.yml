@@ -1,24 +1,97 @@
-# TEST PLACEHOLDER: This workflow intentionally performs no AWS operations.
 name: CMS Cloud PR Environment Destroy
-run-name: Test CMS Cloud PR Environment Destroy ${{ inputs.pr_number }}
+run-name: Destroy CMS Cloud PR Environment ${{ inputs.pr_number || github.event.pull_request.number }}
 
 on:
+  workflow_call:
+    inputs:
+      pr_number:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       pr_number:
         description: Pull request number
         required: true
         type: string
-
-permissions:
-  contents: read
+  pull_request_target:
+    types: [closed]
 
 jobs:
-  placeholder:
-    name: Test placeholder
+  resolve:
+    name: Resolve review app
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: read
+
+    outputs:
+      pr_number: ${{ steps.resolve.outputs.pr_number }}
+      should_destroy: ${{ steps.resolve.outputs.should_destroy }}
+
     steps:
-      - name: Echo review-app input
+      - uses: actions/checkout@v7
+        with:
+          # pull_request_target checks out the trusted base branch. A manual
+          # run uses the selected branch while this workflow is being tested.
+          ref: ${{ github.ref }}
+
+      - name: Resolve review app
+        id: resolve
         env:
-          PR_NUMBER: ${{ inputs.pr_number }}
-        run: echo "Test placeholder for destroying PR ${PR_NUMBER}"
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_PR_NUMBER: ${{ inputs.pr_number }}
+        run: |
+          if [[ "${EVENT_NAME}" == "pull_request_target" ]]; then
+            pr_number="${EVENT_PR_NUMBER}"
+          else
+            pr_number="${REQUESTED_PR_NUMBER}"
+          fi
+
+          if [[ ! "${pr_number}" =~ ^[0-9]+$ ]]; then
+            echo "PR number must contain only digits: ${pr_number}" >&2
+            exit 1
+          fi
+
+          should_destroy=true
+          if [[ "${EVENT_NAME}" == "pull_request_target" ]] && \
+            ! ./bin/cms-pr-environment is-deployed "${pr_number}"; then
+            echo "PR ${pr_number} does not have an active CMS review app; skipping."
+            should_destroy=false
+          fi
+
+          {
+            echo "pr_number=${pr_number}"
+            echo "should_destroy=${should_destroy}"
+          } >> "${GITHUB_OUTPUT}"
+
+  destroy:
+    name: Destroy review environment
+    needs: resolve
+    if: needs.resolve.outputs.should_destroy == 'true'
+    runs-on: ubuntu-latest
+    concurrency: cms-pr-environment-${{ needs.resolve.outputs.pr_number }}
+    permissions:
+      contents: read
+      deployments: write
+      id-token: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Configure CMS Cloud nonprod credentials
+        uses: ./.github/actions/configure-cms-aws-credentials
+        with:
+          environment: dev
+          nonprod-role-to-assume: ${{ vars.AWS_NONPROD_ROLE_TO_ASSUME }}
+          default-role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
+
+      - name: Destroy review app
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.resolve.outputs.pr_number }}
+        run: ./bin/cms-pr-environment destroy "${PR_NUMBER}"

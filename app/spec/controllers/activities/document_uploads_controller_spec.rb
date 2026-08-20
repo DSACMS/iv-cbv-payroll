@@ -60,6 +60,15 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(activities_flow_community_service_document_uploads_path)
       expect(response.body).not_to include(I18n.t("activities.document_uploads.heading_previous", document_count: 0))
       expect(response.body).to include(I18n.t("activities.document_uploads.new.input_label"))
+
+      rendered = Capybara.string(response.body)
+      upload_form = rendered.find("form[data-controller='document-upload']", visible: :all)
+      ordered_elements = upload_form.all(
+        "[data-document-upload-target='listSection'], input[type='file']",
+        visible: :all
+      )
+      expect(ordered_elements.map { |element| element[:"data-document-upload-target"] })
+        .to eq([ "listSection", "input" ])
     end
 
     it "shows the Save changes label and preserves from_review in the form action when from_review is set" do
@@ -105,6 +114,15 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("shared.credit_hours", count: 15))
       expect(response.body).to include(activities_flow_education_document_uploads_path)
       expect(response.body).to include(I18n.t("activities.education.document_upload_suggestion_text_html"))
+    end
+
+    context "employment scope" do
+      let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :new, params: { employment_id: employment_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentDocumentUploadViewed,
+        extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
     end
 
     it "renders the upload form for an employment activity" do
@@ -234,6 +252,29 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       post :create, params: { employment_id: employment_activity.id }
 
       expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity))
+    end
+
+    context "employment scope tracking" do
+      let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { post :create, params: { employment_id: employment_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentDocumentUploadSubmitted,
+        extra_attributes: -> { { employment_activity_id: kind_of(Integer), document_count: 0 } }
+    end
+
+    it "does not track EmploymentDocumentUploadSubmitted when the update fails" do
+      employment_activity = create(:employment_activity, activity_flow: activity_flow)
+      allow_any_instance_of(EmploymentActivity).to receive(:update).and_return(false)
+
+      expect(EventTrackingJob).not_to receive(:perform_later).with(
+        TrackEvent::EmploymentDocumentUploadSubmitted, anything, anything
+      )
+
+      post :create, params: {
+        employment_id: employment_activity.id,
+        activity: { document_uploads: [ "existing-upload-token" ] }
+      }
     end
 
     it "renders new when the update fails" do
