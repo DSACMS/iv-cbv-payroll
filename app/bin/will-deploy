@@ -12,7 +12,12 @@ require "json"
 require "open-uri"
 require "open3"
 
-NO_CHANGES_PLACEHOLDER = "  • No changes, nothing to review!"
+NO_CHANGES_PLACEHOLDER = "- No changes, nothing to review!"
+APP_ROOT = File.expand_path("..", __dir__)
+REPOSITORY_ROOT = File.expand_path("..", APP_ROOT)
+CHANGELOG_PATH = File.join(REPOSITORY_ROOT, "CHANGELOG.md")
+CODE_JSON_PATH = File.join(REPOSITORY_ROOT, "code.json")
+VERSION_PATH = File.join(APP_ROOT, "version.txt")
 
 def linkify_jira(text)
   linked_text = text.gsub(/\(#(\d+)\)/) do
@@ -33,7 +38,55 @@ end
 
 def fetch_production_ref
   response = URI.open("https://snap-income-pilot.com/health", &:read)
-  JSON.parse(response).fetch("ref")
+  JSON.parse(response).fetch("version")
+end
+
+def next_minor_version
+  current_version = JSON.parse(File.read(CODE_JSON_PATH)).fetch("version")
+  match = current_version.match(/\A(\d+)\.(\d+)\.(\d+)\z/)
+  raise "Invalid semantic version in code.json: #{current_version}" unless match
+
+  "#{match[1]}.#{match[2].to_i + 1}.0"
+end
+
+def append_changelog_section(output, heading, changes, empty_message: nil)
+  original_length = output.length
+  append_changes(output, "### #{heading}", changes, empty_message: empty_message)
+  output << "\n" if output.length > original_length
+end
+
+def update_release_files(version, both_changes:, income_changes:, ce_changes:, other_changes:)
+  changelog = File.read(CHANGELOG_PATH)
+  first_release_heading = changelog.index(/^## /)
+  raise "Could not find a release heading in CHANGELOG.md" unless first_release_heading
+
+  changelog_entry = +"## #{version}\n\n"
+  append_changelog_section(
+    changelog_entry,
+    "User facing changes to Emmy Income + Emmy CE",
+    both_changes
+  )
+  append_changelog_section(
+    changelog_entry,
+    "Emmy Income only user facing changes",
+    income_changes,
+    empty_message: NO_CHANGES_PLACEHOLDER
+  )
+  append_changelog_section(
+    changelog_entry,
+    "Emmy CE only user facing changes",
+    ce_changes,
+    empty_message: NO_CHANGES_PLACEHOLDER
+  )
+  append_changelog_section(changelog_entry, "Other/Maintenance (Not user facing)", other_changes)
+  File.write(CHANGELOG_PATH, changelog.insert(first_release_heading, changelog_entry))
+
+  code_json = File.read(CODE_JSON_PATH)
+  updated_code_json = code_json.sub(/("version"\s*:\s*)"[^"]*"/) { "#{Regexp.last_match(1)}\"#{version}\"" }
+  raise "Could not find version in code.json" if updated_code_json == code_json
+
+  File.write(CODE_JSON_PATH, updated_code_json)
+  File.write(VERSION_PATH, "#{version}\n")
 end
 
 def commit_lines(prod, current_sha)
@@ -84,7 +137,7 @@ def append_changes(output, heading, changes, empty_message: nil)
     output << "#{empty_message}\n"
   else
     changes.each do |change|
-      output << "  • #{linkify_jira(change)}\n"
+      output << "- #{linkify_jira(change)}\n"
     end
   end
   output
@@ -105,6 +158,7 @@ end
 run_command("git", "fetch", "--quiet")
 prod = fetch_production_ref
 current_sha = run_command("git", "rev-parse", "origin/main")
+commits = commit_lines(prod, current_sha)
 
 both_changes = []
 income_changes = []
@@ -116,7 +170,7 @@ warn "Categorizing changes for deployment..."
 warn "======================================"
 warn ""
 
-commit_lines(prod, current_sha).each do |commit_line|
+commits.each do |commit_line|
   commit, commit_hash = commit_line.split("|", 2)
 
   if (match = commit.match(/\(#(\d+)\)/))
@@ -180,7 +234,16 @@ append_changes(
 )
 append_changes(output, "⚙️ *Other/Maintenance (Not user facing)*", other_changes)
 output << "\n"
-output << "See the [full diff on Github](https://github.com/DSACMS/iv-cbv-payroll/compare/#{prod[0, 7]}..#{current_sha[0, 7]}).\n"
+output << "See the full diff: https://github.com/DSACMS/iv-cbv-payroll/compare/#{prod[0, 7]}..#{current_sha[0, 7]}\n"
+
+next_version = next_minor_version
+update_release_files(
+  next_version,
+  both_changes: both_changes,
+  income_changes: income_changes,
+  ce_changes: ce_changes,
+  other_changes: other_changes
+)
 
 puts output
 copy_to_clipboard(output)
