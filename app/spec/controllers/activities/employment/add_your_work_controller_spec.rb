@@ -92,7 +92,7 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
         let(:perform_tracked_action) { post :create, params: { add_work_method: add_work_method } }
 
         it_behaves_like "tracks an event", TrackEvent::ApplicantContinuedFromAddYourWorkPage,
-          extra_attributes: { add_work_method: add_work_method }
+          extra_attributes: -> { { add_work_method: add_work_method } }
       end
     end
   end
