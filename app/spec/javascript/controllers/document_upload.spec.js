@@ -61,12 +61,14 @@ describe("DocumentUploadController", () => {
         data-document-upload-error-upload-failed-value="${FAILED}"
       >
         <div hidden data-document-upload-target="signedIds"></div>
+        <div class="document-uploads" hidden data-document-upload-target="listSection">
+          <h2 data-document-upload-target="listHeading"></h2>
+          <ul data-document-upload-target="list"></ul>
+        </div>
         <input type="file" multiple
                data-document-upload-target="input"
                data-action="change->document-upload#select">
         <div class="usa-error-message" hidden data-document-upload-target="error"></div>
-        <h2 hidden data-document-upload-target="listHeading"></h2>
-        <ul hidden data-document-upload-target="list"></ul>
         <input type="submit" value="Continue">
       </form>
     `
@@ -318,8 +320,9 @@ describe("DocumentUploadController", () => {
     )
 
     const heading = document.querySelector("[data-document-upload-target=listHeading]")
+    const section = document.querySelector("[data-document-upload-target=listSection]")
 
-    expect(heading.hidden).toBe(false)
+    expect(section.hidden).toBe(false)
     expect(heading.textContent).toBe("Uploaded documents (2)")
   })
 
@@ -332,10 +335,12 @@ describe("DocumentUploadController", () => {
 
     await selectFiles(buildFile("verification.pdf", "application/pdf", 1024))
 
-    document.querySelector(".document-uploads__remove-link").click()
+    const removeLink = document.querySelector(".document-uploads__remove-link")
+    expect(removeLink.classList).toContain("margin-0")
+    removeLink.click()
 
     expect(signedIdValues()).toEqual([])
     expect(listItems()).toHaveLength(0)
-    expect(document.querySelector("[data-document-upload-target=listHeading]").hidden).toBe(true)
+    expect(document.querySelector("[data-document-upload-target=listSection]").hidden).toBe(true)
   })
 })
