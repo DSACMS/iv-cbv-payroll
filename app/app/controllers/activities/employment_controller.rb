@@ -11,6 +11,8 @@ class Activities::EmploymentController < Activities::BaseController
   before_action :set_employment_activity, only: %i[edit update review save_review]
   before_action :ensure_review_ready, only: %i[review save_review]
   before_action :set_back_url, only: %i[new create edit review]
+  after_action :track_info_viewed_event, only: %i[new edit]
+  after_action :track_review_viewed_event, only: :review
 
   def new
     @employment_activity = @flow.employment_activities.new
@@ -19,8 +21,14 @@ class Activities::EmploymentController < Activities::BaseController
   def create
     @employment_activity = @flow.employment_activities.new(employment_activity_params.merge(draft: true))
     if @employment_activity.save
+      track_event(TrackEvent::EmploymentInfoSubmitted, employment_activity_id: @employment_activity.id)
       redirect_to edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: 0)
     else
+      track_event(
+        TrackEvent::EmploymentInfoValidationFailed,
+        employment_activity_id: @employment_activity&.id,
+        error_message: @employment_activity.errors.full_messages.join(", ")
+      )
       render :new, status: :unprocessable_content
     end
   end
@@ -30,6 +38,7 @@ class Activities::EmploymentController < Activities::BaseController
 
   def update
     if @employment_activity.update(employment_activity_params)
+      track_event(TrackEvent::EmploymentInfoSubmitted, employment_activity_id: @employment_activity.id)
       if params[:from_review].present?
         redirect_to review_activities_flow_income_employment_path(id: @employment_activity, from_edit: params[:from_edit].presence)
       else
@@ -40,6 +49,11 @@ class Activities::EmploymentController < Activities::BaseController
       )
       end
     else
+      track_event(
+        TrackEvent::EmploymentInfoValidationFailed,
+        employment_activity_id: @employment_activity.id,
+        error_message: @employment_activity.errors.full_messages.join(", ")
+      )
       render :edit, status: :unprocessable_content
     end
   end
@@ -50,6 +64,7 @@ class Activities::EmploymentController < Activities::BaseController
   def save_review
     @employment_activity.update(review_params)
     @employment_activity.publish!
+    track_event(TrackEvent::EmploymentReviewSubmitted, employment_activity_id: @employment_activity.id)
     redirect_to after_activity_path
   end
 
@@ -97,5 +112,17 @@ class Activities::EmploymentController < Activities::BaseController
 
   def employment_activity_params
     params.require(:employment_activity).permit(*EmploymentActivity::FIELDS)
+  end
+
+  def track_info_viewed_event
+    return unless response.successful?
+
+    track_event(TrackEvent::EmploymentInfoViewed, employment_activity_id: @employment_activity&.id)
+  end
+
+  def track_review_viewed_event
+    return unless response.successful?
+
+    track_event(TrackEvent::EmploymentReviewViewed, employment_activity_id: @employment_activity.id)
   end
 end

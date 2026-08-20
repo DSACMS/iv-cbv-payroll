@@ -22,6 +22,16 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
     it_behaves_like "tracks an event", TrackEvent::HubViewed
 
+    it "does not include from_edit/from_review navigation params in the tracked event, even when present in the request" do
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::HubViewed,
+        anything,
+        hash_excluding(:from_edit, :from_review)
+      )
+
+      get :index, params: { from_edit: 1, from_review: 1 }
+    end
+
     it "shows current flow community service activities" do
       expect(
         assigns(:community_service_activities)

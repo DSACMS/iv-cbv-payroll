@@ -4,8 +4,34 @@ class Activities::Employment::MonthsController < Activities::BaseController
   include MonthlyHoursInput
 
   before_action :set_back_url, only: %i[edit update]
+  after_action :track_month_viewed_event, only: :edit
+  after_action :track_month_submission_event, only: :update
 
   private
+
+  def track_month_viewed_event
+    return unless response.successful?
+
+    track_event(
+      TrackEvent::EmploymentMonthViewed,
+      employment_activity_id: @employment_activity.id,
+      month_index: @month_index,
+      month: I18n.l(@current_month, format: :month_year)
+    )
+  end
+
+  def track_month_submission_event
+    return unless @activity_month.present?
+
+    event = @error ? TrackEvent::EmploymentMonthValidationFailed : TrackEvent::EmploymentMonthSubmitted
+    attributes = {
+      employment_activity_id: @employment_activity.id,
+      month_index: @month_index,
+      month: I18n.l(@current_month, format: :month_year)
+    }
+    attributes[:error_message] = @activity_month.errors.full_messages.join(", ") if @error
+    track_event(event, attributes)
+  end
 
   def set_employment_activity
     @employment_activity = @flow.employment_activities.find(params[:employment_id])

@@ -12,7 +12,8 @@
   <%= render ActivityFlowHeaderComponent.new(
     title: t(@activity.document_upload_header_title_i18n_key),
     exit_url: activities_flow_root_path,
-    back_url: @back_url
+    back_url: @back_url,
+    track_event_prefix: params[:employment_id].present? ? "Employment" : nil
   ) %>
 <% end %>
 
