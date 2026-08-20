@@ -24,12 +24,17 @@ class Cbv::SessionsController < Cbv::BaseController
   end
 
   def timeout_path
+    if activity_flow? && session[:flow_id].present?
+      client_agency_id = ActivityFlow.includes(:cbv_applicant).find(session[:flow_id]).cbv_applicant.client_agency_id
+      return root_url(cbv_flow_timeout: true, activity_flow_timeout: true, client_agency_id: client_agency_id)
+    end
+
     return root_url(cbv_flow_timeout: true) unless session[:flow_type]&.to_sym == :cbv && session[:flow_id].present?
 
     client_agency_id = CbvFlow.includes(:cbv_applicant).find(session[:flow_id]).cbv_applicant.client_agency_id
     cbv_flow_session_timeout_path(client_agency_id: client_agency_id)
   rescue ActiveRecord::RecordNotFound
-    Rails.logger.info "Unable to find CbvFlow in sessions#end. Redirecting to root with timeout"
+    Rails.logger.info "Unable to find flow in sessions#end. Redirecting to root with timeout"
     root_url(cbv_flow_timeout: true)
   end
 end
