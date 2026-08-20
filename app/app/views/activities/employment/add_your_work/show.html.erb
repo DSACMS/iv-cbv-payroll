@@ -1,0 +1,19 @@
+<% content_for :title, t(".header") %>
+
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.employment.title_singular"),
+    exit_url: activities_flow_root_path
+  ) %>
+<% end %>
+
+<h1><%= t(".header") %></h1>
+<p><%= t(".description") %></p>
+
+<%= form_with(url: activities_flow_income_add_your_work_path, class: "maxw-none", builder: UswdsFormBuilder, id: "add_your_work_form") do |f| %>
+  <%= f.radio_button(:add_work_method, "connect_automatically", { label: tag.span(t(".options.automatic.label"), class: "text-bold"), hint: t(".options.automatic.hint") }) %>
+  <%= f.radio_button(:add_work_method, "enter_paid_manually", { label: tag.span(t(".options.paid.label"), class: "text-bold"), hint: t(".options.paid.hint") }) %>
+  <%= f.radio_button(:add_work_method, "enter_unpaid_manually", { label: tag.span(t(".options.unpaid.label"), class: "text-bold"), hint: t(".options.unpaid.hint") }) %>
+
+  <%= f.submit t("continue") %>
+<% end %>

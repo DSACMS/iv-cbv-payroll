@@ -28,6 +28,13 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       click_button I18n.t("activities.hub.add")
     end
 
+    # Add your work page
+    verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+    click_button I18n.t("continue")
+    expect(page).to have_content(I18n.t("shared.next_path.notice_no_answer"))
+    find("label[for='add_work_method_connect_automatically']").click
+    click_button I18n.t("continue")
+
     # Employer search page
     verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
     find('.usa-input[type="search"]').fill_in with: "blahblahblah"

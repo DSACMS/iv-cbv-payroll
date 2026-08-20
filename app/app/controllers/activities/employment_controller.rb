@@ -93,7 +93,7 @@ class Activities::EmploymentController < Activities::BaseController
 
   def set_back_url
     if action_name.in?(%w[new create])
-      @back_url = activities_flow_income_employer_search_path
+      @back_url = activities_flow_income_add_your_work_path
     elsif action_name == "edit" && params[:from_review].present?
       @back_url = review_activities_flow_income_employment_path(
         id: @employment_activity,

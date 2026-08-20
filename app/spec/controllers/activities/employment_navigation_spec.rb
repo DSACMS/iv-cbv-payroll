@@ -32,16 +32,16 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   # ── Creation flow ──
 
   describe "creation flow" do
-    it "employer info back goes to employer search" do
+    it "employer info back goes to the add your work page" do
       get :new
-      expected = activities_flow_income_employer_search_path
+      expected = activities_flow_income_add_your_work_path
       expect(Capybara.string(response.body)).to have_link("Back", href: expected)
     end
 
     it "employer info back still shows when create fails validation" do
       post :create, params: { employment_activity: { employer_name: "" } }
       expect(response).to have_http_status(:unprocessable_content)
-      expected = activities_flow_income_employer_search_path
+      expected = activities_flow_income_add_your_work_path
       expect(Capybara.string(response.body)).to have_link("Back", href: expected)
     end
 

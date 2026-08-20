@@ -32,6 +32,12 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index, params: { from_edit: 1, from_review: 1 }
     end
 
+    it "points the employment add button at the add your work page" do
+      expect(Capybara.string(response.body)).to have_css(
+        "[data-activity-type='employment'] form[action='#{activities_flow_income_add_your_work_path}']"
+      )
+    end
+
     it "shows current flow community service activities" do
       expect(
         assigns(:community_service_activities)

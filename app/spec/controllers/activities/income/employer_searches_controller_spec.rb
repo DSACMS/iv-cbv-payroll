@@ -26,6 +26,11 @@ RSpec.describe Activities::Income::EmployerSearchesController do
       expect(response.body).to include("exit-confirmation-modal")
     end
 
+    it "does not render a back link" do
+      get :show
+      expect(Capybara.string(response.body)).not_to have_link("Back")
+    end
+
     it "tracks an accessed search event with activity_flow_id" do
       allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantAccessedSearchPage", anything, hash_including(
