@@ -48,7 +48,8 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
     track_event(
       TrackEvent::EducationTermCreditHoursViewed,
       education_activity_id: @education_activity.id,
-      term_index: @term_index
+      term_index: @term_index,
+      term_date_range: @current_term.term_date_display
     )
   end
 
@@ -58,7 +59,8 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
     event = @error ? TrackEvent::EducationTermCreditHoursValidationFailed : TrackEvent::EducationTermCreditHoursSubmitted
     attributes = {
       education_activity_id: @education_activity.id,
-      term_index: @term_index
+      term_index: @term_index,
+      term_date_range: @current_term.term_date_display
     }
     attributes[:error_fields] = @current_term.errors.attribute_names.map(&:to_s) if @error
     track_event(event, attributes)

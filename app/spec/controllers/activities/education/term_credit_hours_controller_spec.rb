@@ -34,7 +34,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     let(:perform_tracked_action) { get :edit, params: { education_id: education_activity.id, id: 0 } }
 
     it_behaves_like "tracks an event", TrackEvent::EducationTermCreditHoursViewed,
-      extra_attributes: -> { { education_activity_id: kind_of(Integer), term_index: 0 } }
+      extra_attributes: -> { { education_activity_id: kind_of(Integer), term_index: 0, term_date_range: kind_of(String) } }
 
     it "renders the term credit hours input screen" do
       get :edit, params: { education_id: education_activity.id, id: 0 }
@@ -222,7 +222,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     end
 
     it_behaves_like "tracks an event", TrackEvent::EducationTermCreditHoursSubmitted,
-      extra_attributes: -> { { education_activity_id: kind_of(Integer), term_index: 0 } }
+      extra_attributes: -> { { education_activity_id: kind_of(Integer), term_index: 0, term_date_range: kind_of(String) } }
 
     context "when validation fails" do
       let(:perform_tracked_action) do
@@ -231,7 +231,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
 
       it_behaves_like "tracks an event", TrackEvent::EducationTermCreditHoursValidationFailed,
         extra_attributes: -> {
-          { education_activity_id: kind_of(Integer), term_index: 0, error_fields: [ "credit_hours" ] }
+          { education_activity_id: kind_of(Integer), term_index: 0, term_date_range: kind_of(String), error_fields: [ "credit_hours" ] }
         }
     end
 
