@@ -32,6 +32,28 @@ RSpec.describe Activities::EducationController, type: :controller do
   end
 
   describe "POST #create" do
+    context "self-attested tracking" do
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) do
+        post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EducationInfoSubmitted,
+        extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
+    end
+
+    context "self-attested validation failure tracking" do
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { post :create, params: { education_activity: { school_name: "" } } }
+
+      before do
+        allow_any_instance_of(EducationActivity).to receive(:save).and_return(false)
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EducationInfoValidationFailed,
+        extra_attributes: -> { { education_activity_id: nil, error_fields: kind_of(Array) } }
+    end
+
     it "creates a validated EducationActivity and redirects to #show" do
       expect { post :create }
         .to change(EducationActivity, :count)
@@ -230,6 +252,11 @@ RSpec.describe Activities::EducationController, type: :controller do
   end
 
   describe "GET #new" do
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { get :new }
+
+    it_behaves_like "tracks an event", TrackEvent::EducationInfoViewed, extra_attributes: -> { { education_activity_id: nil } }
+
     it "renders the self-attestation education form" do
       get :new
 
@@ -241,6 +268,49 @@ RSpec.describe Activities::EducationController, type: :controller do
   describe "GET #edit" do
     let(:self_attested_activity) do
       create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "Test University")
+    end
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { get :edit, params: { id: self_attested_activity.id } }
+
+    it_behaves_like "tracks an event", TrackEvent::EducationInfoViewed,
+      extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
+
+    context "when partially self-attested" do
+      let(:partial_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :partially_self_attested, status: :succeeded)
+      end
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :edit, params: { id: partial_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::EducationEnrollmentReviewViewed,
+        extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
+
+      it "does not track EducationInfoViewed" do
+        expect(EventTrackingJob).not_to receive(:perform_later).with(
+          TrackEvent::EducationInfoViewed, anything, anything
+        )
+
+        get :edit, params: { id: partial_activity.id }
+      end
+    end
+
+    context "when validated" do
+      let(:validated_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :validated, status: :succeeded)
+      end
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :edit, params: { id: validated_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::EducationEnrollmentReviewViewed,
+        extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
+
+      it "does not track EducationInfoViewed" do
+        expect(EventTrackingJob).not_to receive(:perform_later).with(
+          TrackEvent::EducationInfoViewed, anything, anything
+        )
+
+        get :edit, params: { id: validated_activity.id }
+      end
     end
 
     it "renders the fully self-attested education info form for fully self-attested activities" do
@@ -345,6 +415,11 @@ RSpec.describe Activities::EducationController, type: :controller do
       let(:education_activity) do
         create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
       end
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :review, params: { id: education_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::EducationReviewViewed,
+        extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
 
       it "renders the review page" do
         get :review, params: { id: education_activity.id }
@@ -564,6 +639,8 @@ RSpec.describe Activities::EducationController, type: :controller do
       let(:education_activity) do
         create(:education_activity, activity_flow: activity_flow)
       end
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :review, params: { id: education_activity.id, from_edit: 1 } }
 
       before do
         create(
@@ -579,6 +656,9 @@ RSpec.describe Activities::EducationController, type: :controller do
           enrollment_status: :full_time
         )
       end
+
+      it_behaves_like "tracks an event", TrackEvent::EducationReviewViewed,
+        extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
 
       it "renders validated enrollment info without edit links to entry pages" do
         get :review, params: { id: education_activity.id, from_edit: 1 }
@@ -606,6 +686,13 @@ RSpec.describe Activities::EducationController, type: :controller do
     let(:education_activity) do
       create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
     end
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) do
+      patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
+    end
+
+    it_behaves_like "tracks an event", TrackEvent::EducationReviewSubmitted,
+      extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
 
     it "saves additional comments and redirects to the hub" do
       patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "Some notes" } }
@@ -870,6 +957,43 @@ RSpec.describe Activities::EducationController, type: :controller do
         }
 
         expect(response).to redirect_to(activities_flow_root_path)
+      end
+    end
+
+    context "fully self-attested tracking" do
+      let(:fully_self_attested_activity) do
+        create(
+          :education_activity,
+          activity_flow: activity_flow,
+          data_source: :fully_self_attested,
+          school_name: "Old School"
+        )
+      end
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) do
+        patch :update, params: {
+          id: fully_self_attested_activity.id,
+          education_activity: {
+            school_name: "New School",
+            city: "New City",
+            state: "CA",
+            zip_code: "90001",
+            street_address: "123 Main St"
+          }
+        }
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EducationInfoSubmitted,
+        extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
+
+      context "when validation fails" do
+        before do
+          allow_any_instance_of(EducationActivity).to receive(:fully_self_attested?).and_return(true)
+          allow_any_instance_of(EducationActivity).to receive(:update).and_return(false)
+        end
+
+        it_behaves_like "tracks an event", TrackEvent::EducationInfoValidationFailed,
+          extra_attributes: -> { { education_activity_id: kind_of(Integer), error_fields: kind_of(Array) } }
       end
     end
 

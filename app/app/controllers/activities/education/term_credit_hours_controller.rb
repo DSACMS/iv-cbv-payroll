@@ -2,6 +2,8 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
   before_action :set_education_activity
   before_action :set_term_credit_hours_vars, only: %i[edit update]
   before_action :set_back_url, only: %i[edit update]
+  after_action :track_term_credit_hours_viewed_event, only: :edit
+  after_action :track_term_credit_hours_submission_event, only: :update
 
   def edit
   end
@@ -39,6 +41,30 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
   end
 
   private
+
+  def track_term_credit_hours_viewed_event
+    return unless response.successful?
+
+    track_event(
+      TrackEvent::EducationTermCreditHoursViewed,
+      education_activity_id: @education_activity.id,
+      term_index: @term_index,
+      term_date_range: @current_term.term_date_display
+    )
+  end
+
+  def track_term_credit_hours_submission_event
+    return unless @current_term.present?
+
+    event = @error ? TrackEvent::EducationTermCreditHoursValidationFailed : TrackEvent::EducationTermCreditHoursSubmitted
+    attributes = {
+      education_activity_id: @education_activity.id,
+      term_index: @term_index,
+      term_date_range: @current_term.term_date_display
+    }
+    attributes[:error_fields] = @current_term.errors.attribute_names.map(&:to_s) if @error
+    track_event(event, attributes)
+  end
 
   def assign_term_credit_hours_submission_values
     if params[:no_hours] == "1"
