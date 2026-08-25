@@ -80,6 +80,8 @@ module TrackEvent
   CaseworkerInvitedApplicantToFlow = "CaseworkerInvitedApplicantToFlow"
   CbvPageView = "CbvPageView"
   EmailSent = "EmailSent"
+  EmploymentAddYourWorkSubmitted = "EmploymentAddYourWorkSubmitted"
+  EmploymentAddYourWorkViewed = "EmploymentAddYourWorkViewed"
   EmploymentBackClicked = "EmploymentBackClicked"
   EmploymentDocumentUploadSubmitted = "EmploymentDocumentUploadSubmitted"
   EmploymentDocumentUploadViewed = "EmploymentDocumentUploadViewed"

@@ -257,6 +257,20 @@ en:
         last_name: Last name
     employment:
       account_id: Account ID
+      add_your_work:
+        show:
+          description: If you held multiple jobs during the reporting period, you'll need to add each job separately.
+          header: Choose how you want to add your work
+          options:
+            automatic:
+              hint: We'll pull your hours and income from your payroll account. Works with ADP, Workday, Uber, Lyft, and most large employers.
+              label: Connect your work automatically
+            paid:
+              hint: Add details for a job where you can't view paystubs online, like a small employer, a job where you were paid in cash, or self-employment.
+              label: Enter paid work manually
+            unpaid:
+              hint: Add work where you received housing, food, or other goods instead of money.
+              label: Enter unpaid or in-kind work
       document_upload_month_detail: "%{gross_income}, %{hours}"
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:

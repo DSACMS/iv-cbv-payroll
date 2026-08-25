@@ -63,9 +63,10 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
     label_text = options.delete(:label)
     label_options = { for: field_id(attribute, tag_value) }.merge(options)
+    input_options = options.except(:hint)
 
     @template.content_tag(:div, class: "usa-radio") do
-      super(attribute, tag_value, options) + us_toggle_label("radio", attribute, label_text, label_options)
+      super(attribute, tag_value, input_options) + us_toggle_label("radio", attribute, label_text, label_options)
     end
   end
 

@@ -156,8 +156,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
   def add_self_attested_employment_activity
     within("[data-activity-type='employment']") { click_button I18n.t("activities.hub.add") }
-    verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
-    visit new_activities_flow_income_employment_path
+    verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+    find("label[for='add_work_method_enter_paid_manually']").click
+    click_button I18n.t("continue")
     verify_page(page, title: I18n.t("activities.employment_info.title"))
     fill_in I18n.t("activities.employment_info.employer_name"), with: "Gainesville Wrecking"
     fill_in I18n.t("activities.employment_info.street_address"), with: "942 W Harlan Ave"
@@ -209,6 +210,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     within("[data-activity-type='employment']") do
       click_button I18n.t("activities.hub.add")
     end
+    verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+    find("label[for='add_work_method_connect_automatically']").click
+    click_button I18n.t("continue")
     verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
     @e2e.replay_modal_callbacks(page.driver.browser) do
       click_button "Paychex"

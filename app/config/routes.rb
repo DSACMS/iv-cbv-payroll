@@ -77,6 +77,7 @@ Rails.application.routes.draw do
       resource :submit, only: %i[show], controller: "submit", format: %i[html pdf]
       resource :success, only: %i[show], controller: "success"
       scope "/income", as: :income do
+        resource :add_your_work, only: %i[show create], controller: "employment/add_your_work"
         resource :employer_search, only: %i[show], controller: "income/employer_searches"
         resource :synchronizations, only: %i[show update], controller: "income/synchronizations"
         resource :synchronization_failures, only: %i[show], controller: "income/synchronization_failures"

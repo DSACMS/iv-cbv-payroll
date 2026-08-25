@@ -221,6 +221,10 @@ RSpec.describe UswdsFormBuilder do
       it 'outputs a hint' do
         expect(result).to have_element(:span, text: 'Select yes', class: 'usa-radio__label-description')
       end
+
+      it 'does not output the hint as an attribute on the input' do
+        expect(result).not_to include('hint=')
+      end
     end
   end
 
