@@ -369,11 +369,10 @@ GEM
     parser (3.3.12.0)
       ast (~> 2.4.1)
       racc
-    pdf-reader (2.15.1)
+    pdf-reader (2.16.0)
       Ascii85 (>= 1.0, < 3.0, != 2.0.0)
       afm (>= 0.2.1, < 2)
       hashery (~> 2.0)
-      ruby-rc4
       ttfunk
     pg (1.6.3-aarch64-linux)
     pg (1.6.3-arm64-darwin)
@@ -540,7 +539,6 @@ GEM
       regexp_parser (>= 2.0)
       rubocop (~> 1.86, >= 1.86.2)
     ruby-progressbar (1.13.0)
-    ruby-rc4 (0.1.5)
     ruby2_keywords (0.0.5)
     rubyzip (3.5.0)
     securerandom (0.4.1)
@@ -682,7 +680,7 @@ DEPENDENCIES
   net-ssh
   newrelic_rpm
   parallel_tests (~> 5.5)
-  pdf-reader (~> 2.15.1)
+  pdf-reader (~> 2.16.0)
   pg (~> 1.6)
   pg-aws_rds_iam (~> 0.8.0)
   premailer-rails
