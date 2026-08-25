@@ -41,6 +41,7 @@
   applicant_attributes:
     case_number:
       required: false
+      redaction_type: string
     date_of_birth:
       required: true
       redaction_type: date
