@@ -1,8 +1,7 @@
 class Activities::DocumentUploadsController < Activities::BaseController
   before_action :set_activity
   before_action :set_back_url, only: %i[new]
-  after_action :track_employment_upload_viewed_event, only: :new
-  after_action :track_education_upload_viewed_event, only: :new
+  after_action :track_viewed_event, only: :new
   after_action :track_submitted_event, only: :create
 
   helper_method :upload_path, :remove_document_upload_path, :track_event_prefix
@@ -197,16 +196,15 @@ class Activities::DocumentUploadsController < Activities::BaseController
     end
   end
 
-  def track_employment_upload_viewed_event
-    return unless params[:employment_id].present? && response.successful?
+  def track_viewed_event
+    return unless response.successful?
 
-    track_event(TrackEvent::EmploymentDocumentUploadViewed, employment_activity_id: @activity.id)
-  end
-
-  def track_education_upload_viewed_event
-    return unless params[:education_id].present? && response.successful?
-
-    track_event(TrackEvent::EducationDocumentUploadViewed, education_activity_id: @activity.id)
+    case
+    when params[:education_id].present?
+      track_event(TrackEvent::EducationDocumentUploadViewed, education_activity_id: @activity.id)
+    when params[:employment_id].present?
+      track_event(TrackEvent::EmploymentDocumentUploadViewed, employment_activity_id: @activity.id)
+    end
   end
 
   def track_submitted_event
