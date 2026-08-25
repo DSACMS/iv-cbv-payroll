@@ -7,7 +7,7 @@ RSpec.describe PagesController do
     it "renders" do
       get :home
       expect(response).to be_successful
-      expect(response.body).to include("Welcome")
+      expect(response.body).to have_text(I18n.t("pages.home.header"))
     end
 
     context "when on an agency subdomain with an active pilot" do
@@ -78,6 +78,31 @@ RSpec.describe PagesController do
 
       it "renders the session timeout flash message" do
         expect(response.body).to include(I18n.t("cbv.error_missing_token_html").gsub("\n", " "))
+      end
+    end
+
+    context "when an activity flow timeout is present" do
+      before do
+        stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
+        stub_client_agency_config_value("sandbox", "pilot_ended", false)
+        request.host = "sandbox.reportmyincome.org"
+        get :home, params: {
+          activity_flow_timeout: true,
+          client_agency_id: "sandbox"
+        }
+      end
+
+      it "renders the Emmy header and community engagement copy" do
+        expect(response.body).to have_text(I18n.t("shared.pilot_name_hr1_full"))
+        expect(response.body).to have_text(I18n.t("pages.home.activity_flow_timeout.header"))
+        expect(response.body).to have_text(I18n.t(
+          "pages.home.activity_flow_timeout.description",
+          agency_name: I18n.t("shared.agency_full_name.sandbox")
+        ))
+      end
+
+      it "renders the activity flow timeout alert" do
+        expect(response.body).to include(I18n.t("pages.home.activity_flow_timeout.alert_html"))
       end
     end
   end

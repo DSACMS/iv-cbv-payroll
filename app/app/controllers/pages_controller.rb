@@ -1,8 +1,13 @@
 class PagesController < ApplicationController
   before_action :redirect_to_client_agency_entries, only: %i[home]
+  helper_method :activity_flow_timeout?
 
   def home
-    flash.now[:slim_alert] = { "type" => "info", "message_html" => t("cbv.error_missing_token_html") } if params[:cbv_flow_timeout].present?
+    return unless flow_timeout?
+
+    # i18n-tasks-use t("pages.home.activity_flow_timeout.alert_html")
+    message_key = activity_flow_timeout? ? "pages.home.activity_flow_timeout.alert_html" : "cbv.error_missing_token_html"
+    flash.now[:slim_alert] = { "type" => "info", "message_html" => t(message_key) }
   end
 
   def error_404
@@ -25,12 +30,24 @@ class PagesController < ApplicationController
 
   private
 
+  def activity_flow?
+    activity_flow_timeout? || super
+  end
+
+  def activity_flow_timeout?
+    params[:activity_flow_timeout].present?
+  end
+
+  def flow_timeout?
+    params[:cbv_flow_timeout].present? || activity_flow_timeout?
+  end
+
   def redirect_to_client_agency_entries
     # Don't redirect to CBV flow if the pilot has ended - let the home page render the pilot end message
     return if pilot_ended?
 
-    # Don't redirect if we just came from a CBV flow timeout
-    return if params[:cbv_flow_timeout].present?
+    # Don't redirect if we just came from a flow timeout
+    return if flow_timeout?
 
     client_agency_id = client_agency_from_domain
     if client_agency_id.present?

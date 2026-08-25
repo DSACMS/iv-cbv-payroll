@@ -1188,6 +1188,10 @@ en:
       header: It looks like something went wrong
       refresh: Refresh page
     home:
+      activity_flow_timeout:
+        alert_html: "<strong>Your session has timed out.</strong> Sessions end after 30 minutes of inactivity. This helps keep your information safe."
+        description: Emmy (Eligibility Made Easy) is a tool designed to help you report paid or unpaid work, education, community service, and work program activities directly to %{agency_name}.
+        header: Welcome to Emmy
       description_1: Report My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
       description_2: Visit your agency's website for more information on how to submit proof of income for your benefits.
       header: Welcome to Report My Income

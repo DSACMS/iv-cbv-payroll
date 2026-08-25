@@ -27,8 +27,10 @@ module E2e
       end
 
       # Infer flow from URL
-      current_path = URI.parse(page.current_url).path
-      if current_path&.start_with?("/activities") || current_path&.start_with?("/households") || current_path&.start_with?("/launcher")
+      current_uri = URI.parse(page.current_url)
+      current_path = current_uri.path
+      query_params = Rack::Utils.parse_query(current_uri.query.to_s)
+      if current_path&.start_with?("/activities") || current_path&.start_with?("/households") || current_path&.start_with?("/launcher") || query_params["activity_flow_timeout"].present?
         pilot_name ||= I18n.t("shared.pilot_name_hr1_full")
       elsif current_path&.include?("/cbv/")
         pilot_name ||= I18n.t("shared.pilot_name")

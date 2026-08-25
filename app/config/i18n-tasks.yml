@@ -141,6 +141,7 @@ ignore_missing:
     # Activity Hub flow pages/models
     - "shared.credit_hours*"
     - "activities.*"
+    - "pages.home.activity_flow_timeout.*"
     - "cbv.*.activity_flow.*" # ActivityFlow copy overrides in controllers/views from CBV flow
     - "activerecord.errors.models.job_training_activity.*"
     - "activerecord.errors.models.education_activity.*"
