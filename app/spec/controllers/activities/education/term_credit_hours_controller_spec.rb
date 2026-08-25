@@ -30,6 +30,12 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
   end
 
   describe "GET #edit" do
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { get :edit, params: { education_id: education_activity.id, id: 0 } }
+
+    it_behaves_like "tracks an event", TrackEvent::EducationTermCreditHoursViewed,
+      extra_attributes: -> { { education_activity_id: kind_of(Integer), term_index: 0, term_date_range: kind_of(String) } }
+
     it "renders the term credit hours input screen" do
       get :edit, params: { education_id: education_activity.id, id: 0 }
 
@@ -99,6 +105,8 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       )
       calculator = instance_double(ActivityFlowProgressCalculator, overall_result: result)
       allow(ActivityFlowProgressCalculator).to receive(:new).and_return(calculator)
+
+      expect(EventTrackingJob).not_to receive(:perform_later)
 
       get :edit, params: { education_id: education_activity.id, id: 0 }
 
@@ -208,6 +216,25 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
   end
 
   describe "PATCH #update" do
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) do
+      patch :update, params: { education_id: education_activity.id, id: 0, nsc_enrollment_term: { credit_hours: 4 } }
+    end
+
+    it_behaves_like "tracks an event", TrackEvent::EducationTermCreditHoursSubmitted,
+      extra_attributes: -> { { education_activity_id: kind_of(Integer), term_index: 0, term_date_range: kind_of(String) } }
+
+    context "when validation fails" do
+      let(:perform_tracked_action) do
+        patch :update, params: { education_id: education_activity.id, id: 0, nsc_enrollment_term: { credit_hours: 0 } }
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EducationTermCreditHoursValidationFailed,
+        extra_attributes: -> {
+          { education_activity_id: kind_of(Integer), term_index: 0, term_date_range: kind_of(String), error_fields: [ "credit_hours" ] }
+        }
+    end
+
     it "saves credit_hours on the NscEnrollmentTerm" do
       patch :update, params: {
         education_id: education_activity.id,

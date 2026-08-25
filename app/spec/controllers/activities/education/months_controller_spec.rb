@@ -14,6 +14,18 @@ RSpec.describe Activities::Education::MonthsController, type: :controller do
   end
 
   describe "GET #edit" do
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { get :edit, params: { education_id: education_activity.id, id: 0 } }
+
+    it_behaves_like "tracks an event", TrackEvent::EducationMonthViewed,
+      extra_attributes: -> { { education_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String) } }
+
+    it "does not track an event for an out-of-range month index" do
+      expect(EventTrackingJob).not_to receive(:perform_later)
+
+      get :edit, params: { education_id: education_activity.id, id: 99 }
+    end
+
     it "redirects to month 0 for an out-of-range month index" do
       get :edit, params: { education_id: education_activity.id, id: 99 }
 
@@ -29,6 +41,31 @@ RSpec.describe Activities::Education::MonthsController, type: :controller do
   end
 
   describe "PATCH #update" do
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) do
+      patch :update, params: { education_id: education_activity.id, id: 0, education_activity_month: { hours: 12 } }
+    end
+
+    it_behaves_like "tracks an event", TrackEvent::EducationMonthSubmitted,
+      extra_attributes: -> { { education_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String) } }
+
+    context "when validation fails" do
+      let(:perform_tracked_action) do
+        patch :update, params: { education_id: education_activity.id, id: 0, no_hours: "1" }
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EducationMonthValidationFailed,
+        extra_attributes: -> {
+          { education_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_fields: [ "hours" ] }
+        }
+    end
+
+    it "does not track an event for an out-of-range month index" do
+      expect(EventTrackingJob).not_to receive(:perform_later)
+
+      patch :update, params: { education_id: education_activity.id, id: 99, education_activity_month: { hours: 12 } }
+    end
+
     it "redirects validated activities away from month screens" do
       education_activity.update!(data_source: :validated)
       patch :update, params: { education_id: education_activity.id, id: 0, education_activity_month: { hours: 5 } }
