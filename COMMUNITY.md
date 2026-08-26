@@ -141,7 +141,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
   - Reviewed 2 PRs
   - Resolved 2 Issues
 - Can commit to reviewing a minimum of 4 PRs per 3 month cycle.
-- Can commit to contributing at least 2 PRs per 3 month cycle, as demonstrated by https://github.com/DSACMS/iv-cbv-payroll/graphs/contributors.
+- Can commit to contributing at least 2 PRs per 3 month cycle, as demonstrated by https://github.com/CMS-Enterprise/emmy-app/graphs/contributors.
 
 #### Additional privileges:
 - Approve PRs to their specific domain of the project.
@@ -150,7 +150,7 @@ A Maintainer must meet the responsibilities and requirements of a contributor, p
 - Other privileges defined by the community in the future.
 
 #### Process of becoming a Maintainer
-1. Any current contributor may become a new Maintainer, by meeting the requirements, and opening a PR against the root of the iv-cbv-payroll adding the themselves as a maintainer in the COMMUNITY.md file and corresponding team in the [CODEOWNERS](.github/CODEOWNERS) file.
+1. Any current contributor may become a new Maintainer, by meeting the requirements, and opening a PR against the root of this repository adding the themselves as a maintainer in the COMMUNITY.md file and corresponding team in the [CODEOWNERS](.github/CODEOWNERS) file.
 2. At least 2 current Maintainers from the Core Team must then approve the PR.
 
 ## Core Team

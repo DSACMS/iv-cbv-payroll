@@ -8,15 +8,15 @@
     "licenses": [
       {
         "name": "CC0-1.0",
-        "URL": "https://github.com/DSACMS/iv-cbv-payroll/blob/main/LICENSE"
+        "URL": "https://github.com/CMS-Enterprise/emmy-app/blob/main/LICENSE"
       }
     ],
     "usageType": ["openSource"],
     "exemptionText": ""
   },
   "organization": "Centers for Medicare & Medicaid Services",
-  "repositoryURL": "https://github.com/DSACMS/iv-cbv-payroll",
-  "repositoryHost": "github.com/DSACMS",
+  "repositoryURL": "https://github.com/CMS-Enterprise/emmy-app",
+  "repositoryHost": "github.com/CMS-Enterprise",
   "repositoryVisibility": "public",
   "homepageURL": "",
   "downloadURL": "",
@@ -48,21 +48,21 @@
   ],
   "maintenance": "contract",
   "contractNumber": ["47QTCA18D008M:75FCMC23F0124:"],
-  "SBOM": "https://github.com/DSACMS/iv-cbv-payroll/network/dependencies",
+  "SBOM": "https://github.com/CMS-Enterprise/emmy-app/network/dependencies",
   "relatedCode": [],
   "reusedCode": [],
   "partners": [],
   "date": {
     "created": "2024-04-22T22:34:18Z",
     "lastModified": "2025-10-09T14:15:20Z",
-    "metadataLastUpdated": "2025-12-02T10:27:00Z"
+    "metadataLastUpdated": "2026-08-25T23:00:15Z"
   },
   "tags": ["Income Verification", "Medicaid", "Community Engagement", "Work Requirement", "HR 1", "One Big Beautiful Bill Act", "Medicaid Expansion", "Eligibility Determination", "Work Program", "Education", "Education Program", "Center for Medicaid and Children Services", "CMS", "Open Source"],
   "contact": {
     "email": "jake.shilling@cms.hhs.gov",
     "name": "Jake Shilling"
   },
-  "feedbackMechanism": "https://github.com/DSACMS/iv-cbv-payroll/issues",
+  "feedbackMechanism": "https://github.com/CMS-Enterprise/emmy-app/issues",
   "AIUseCaseID": "0",
   "localisation": true,
   "repositoryType": "application",
