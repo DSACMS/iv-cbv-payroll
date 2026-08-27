@@ -170,7 +170,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         )
       end
 
-      it "requires at least one month with both income and hours on the last page" do
+      it "requires at least one month with either income or hours on the last page" do
         patch :update, params: {
           employment_id: employment_activity.id,
           id: 2,

@@ -116,10 +116,10 @@ class Activities::Employment::MonthsController < Activities::BaseController
     hours = @activity_month.hours || 0
 
     if @months.length == 1
-      income > 0 && hours > 0
+      income > 0 || hours > 0
     elsif params[:from_review].present? || @month_index == @months.length - 1
       other = hours_input_activity.activity_months.where.not(id: @activity_month.id)
-      other.sum(:gross_income) + income > 0 && other.sum(:hours) + hours > 0
+      other.sum(:gross_income) + income > 0 || other.sum(:hours) + hours > 0
     else
       true
     end
