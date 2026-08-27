@@ -35,6 +35,7 @@ Brewfile.lock.json
 # Ignore local dotenv overrides
 .env*.local
 .env.test
+**/.env
 # Ignore OWASP files
 /zap_report.html
 /zap.yaml
