@@ -2,7 +2,7 @@ class EducationActivity < Activity
   include HasActivityMonths
   include DocumentUploadable
 
-  CREDIT_HOUR_CE_MULTIPLIER = 4
+  CREDIT_HOUR_CE_MULTIPLIER = 13
   FIELDS = %w[
     school_name
     street_address

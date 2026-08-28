@@ -248,7 +248,7 @@ RSpec.describe ActivitiesHelper do
       result = helper.education_activity_draft_cards([ activity ])
 
       expect(result.first[:months]).to eq([
-        { month: first_month, credit_hours: 6, community_engagement_hours: 24 }
+        { month: first_month, credit_hours: 6, community_engagement_hours: 78 }
       ])
     end
 
@@ -638,8 +638,8 @@ RSpec.describe ActivitiesHelper do
         {
           name: "Updated University of Illinois",
           months: [
-            { month: first_month, credit_hours: 4, community_engagement_hours: 16 },
-            { month: second_month, credit_hours: 6, community_engagement_hours: 24 }
+            { month: first_month, credit_hours: 4, community_engagement_hours: 52 },
+            { month: second_month, credit_hours: 6, community_engagement_hours: 78 }
           ],
           edit_path: helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
         }
@@ -659,7 +659,7 @@ RSpec.describe ActivitiesHelper do
       result = helper.education_cards([ activity.reload ], reporting_months)
 
       expect(result.first[:months]).to eq([
-        { month: second_month, credit_hours: 6, community_engagement_hours: 24 }
+        { month: second_month, credit_hours: 6, community_engagement_hours: 78 }
       ])
     end
 

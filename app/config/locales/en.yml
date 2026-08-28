@@ -212,7 +212,7 @@ en:
         additional_comments_description: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         additional_comments_title: Additional comments (optional)
         address: School address
-        ce_explainer_body: If you are enrolled less than half-time, each credit hour counts as 4 hours toward the 80-hour community engagement requirement.
+        ce_explainer_body: If you are enrolled less than half-time, each credit hour counts as 13 hours toward the 80-hour community engagement requirement.
         ce_explainer_title: How credit hours are counted towards community engagement
         community_engagement_hours: Community engagement hours
         contact_email: School contact email

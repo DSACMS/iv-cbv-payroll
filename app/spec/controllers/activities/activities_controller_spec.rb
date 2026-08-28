@@ -656,7 +656,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
         )
       )
       expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
-      expect(response.body).not_to include(I18n.t("activities.hub.cards.hours", count: 16))
+      expect(response.body).not_to include(I18n.t("activities.hub.cards.hours", count: 52))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
 
@@ -924,7 +924,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     it "shows self-attested education card details and hides empty-state copy" do
       expect(response.body).to include("Colorado Springs Community College")
       expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
-      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 16))
+      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 52))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
       expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
     end
@@ -1028,7 +1028,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       expect(education_cards).to have_text("Springfield Community College")
       expect(education_cards).to have_text(I18n.t("activities.hub.cards.credit_hours", amount: 6))
-      expect(education_cards).to have_text(I18n.t("activities.hub.cards.hours", count: 24))
+      expect(education_cards).to have_text(I18n.t("activities.hub.cards.hours", count: 78))
     end
   end
 

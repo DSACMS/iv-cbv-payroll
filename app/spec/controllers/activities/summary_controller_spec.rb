@@ -255,7 +255,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       monthly_details_headers = doc.all("table").last.all("thead th").map { |cell| cell.text.strip }
       expect(monthly_details_headers).to include(I18n.t("activities.summary.education.community_engagement_hours"))
       monthly_detail_rows = doc.all("table").last.all("tbody tr")
-      expect(monthly_detail_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[16 24])
+      expect(monthly_detail_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[52 78])
     end
 
     it "renders partially self-attested education in one table with saved term credit hours and community engagement hours" do
@@ -288,7 +288,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(monthly_detail_rows.size).to eq(1)
       monthly_detail_cells = monthly_detail_rows.first.all("th, td").map { |cell| cell.text.strip }
       expect(monthly_detail_cells).to include("9")
-      expect(monthly_detail_cells.last).to eq("36")
+      expect(monthly_detail_cells.last).to eq("117")
     end
 
     it "renders multiple less-than-half-time enrollments from the same school in one collapsed table" do
@@ -341,7 +341,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       monthly_detail_rows = doc.all("table").last.all("tbody tr")
       expect(monthly_detail_rows.map { |row| row.all("th, td")[-2].text.strip }).to eq(%w[3 6])
-      expect(monthly_detail_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[12 24])
+      expect(monthly_detail_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[39 78])
     end
 
     it "renders multiple less-than-half-time enrollments from different schools in one table" do
@@ -379,7 +379,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       monthly_detail_rows = doc.all("table").last.all("tbody tr")
       expect(monthly_detail_rows.map { |row| row.all("th, td")[-2].text.strip }).to contain_exactly("3", "6")
-      expect(monthly_detail_rows.map { |row| row.all("th, td").last.text.strip }).to contain_exactly("12", "24")
+      expect(monthly_detail_rows.map { |row| row.all("th, td").last.text.strip }).to contain_exactly("39", "78")
     end
 
     it "renders mixed overlapping statuses and includes all enrollments in the summary" do

@@ -61,7 +61,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     expect(page).to have_content "601 E John St, Champaign, IL"
     expect(page).to have_content "Dr. Smith"
     expect(page).to have_content "smith@illinois.edu"
-    expect(page).to have_content "16"
+    expect(page).to have_content "52"
 
     # --- Step 2: Save and return to the hub ---
     click_button I18n.t("activities.education.review.save")
@@ -107,8 +107,8 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     click_button I18n.t("activities.hub.save")
 
     verify_page(page, title: I18n.t("activities.education.review.title", school_name: "Updated University of Illinois"))
-    expect(page).to have_content "24"
-    expect(page).to have_content "16"
+    expect(page).to have_content "78"
+    expect(page).to have_content "52"
 
     # --- Step 4: Save and return to the hub ---
     click_button I18n.t("activities.hub.save")
