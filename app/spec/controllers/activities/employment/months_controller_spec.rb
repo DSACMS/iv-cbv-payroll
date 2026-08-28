@@ -128,6 +128,26 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity))
     end
 
+    it "passes validation when only income is provided" do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 0,
+        employment_activity_month: { gross_income: 100, hours: 0 }
+      }
+
+      expect(response).to redirect_to(new_activities_flow_income_employment_document_upload_path(employment_id: employment_activity))
+    end
+
+    it "passes validation when only hours are provided" do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 0,
+        employment_activity_month: { gross_income: 0, hours: 10 }
+      }
+
+      expect(response).to redirect_to(new_activities_flow_income_employment_document_upload_path(employment_id: employment_activity))
+    end
+
     it "threads from_edit to review when from_review is set" do
       patch :update, params: {
         employment_id: employment_activity.id,
