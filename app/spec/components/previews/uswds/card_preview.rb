@@ -68,9 +68,9 @@ module Uswds
         card.with_header { tag.a("Edit", href: "#", class: "usa-link") }
         card.with_body do
           safe_join([
-            self_attested_education_month_section("January 2026", "12", "48"),
-            self_attested_education_month_section("December 2025", "9", "36"),
-            self_attested_education_month_section("November 2025", "6", "24")
+            self_attested_education_month_section("January 2026", "12", "156"),
+            self_attested_education_month_section("December 2025", "9", "117"),
+            self_attested_education_month_section("November 2025", "6", "78")
           ])
         end
       end

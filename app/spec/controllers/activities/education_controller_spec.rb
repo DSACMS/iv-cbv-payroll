@@ -434,7 +434,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         get :review, params: { id: education_activity.id }
 
         expect(response.body).to include("4")
-        expect(response.body).to include("16")
+        expect(response.body).to include("52")
       end
 
       it "includes an edit link for each month" do

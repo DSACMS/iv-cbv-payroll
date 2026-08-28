@@ -343,7 +343,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
       )
     )
     expect(page).to have_no_content I18n.t("activities.hub.cards.credit_hours", amount: 4)
-    expect(page).to have_no_content I18n.t("activities.hub.cards.hours", count: 16)
+    expect(page).to have_no_content I18n.t("activities.hub.cards.hours", count: 52)
   end
 
   it "supports editing a community service activity through the full flow" do # rubocop:disable RSpec/ExampleLength

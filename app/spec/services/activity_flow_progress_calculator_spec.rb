@@ -582,13 +582,13 @@ RSpec.describe ActivityFlowProgressCalculator do
           :education_activity_month,
           education_activity: education_activity,
           month: flow.reporting_months.first.beginning_of_month,
-          hours: 20
+          hours: 7
         )
       end
 
       it "does not mark the monthly result with sufficient enrollment" do
         expect(result.first).to have_attributes(
-          total_hours: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
+          total_hours: 91,
           meets_requirements: true,
           sufficient_enrollment: false
         )
@@ -942,12 +942,12 @@ RSpec.describe ActivityFlowProgressCalculator do
           :nsc_enrollment_term,
           :less_than_half_time,
           education_activity: education_activity,
-          credit_hours: 20
+          credit_hours: 7
         )
       end
 
       it "converts credit hours to CE hours for total progress" do
-        expect(progress.total_hours).to eq(80)
+        expect(progress.total_hours).to eq(91)
       end
 
       it "meets requirements but does not meet routing requirements" do

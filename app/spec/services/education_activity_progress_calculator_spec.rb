@@ -26,7 +26,7 @@ RSpec.describe EducationActivityProgressCalculator do
           hours: 4
         )
 
-        expect(calculator.progress_hours_for_month(month_start)).to eq(16)
+        expect(calculator.progress_hours_for_month(month_start)).to eq(52)
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe EducationActivityProgressCalculator do
           credit_hours: 6
         )
 
-        expect(calculator.progress_hours_for_month(month_start)).to eq(24)
+        expect(calculator.progress_hours_for_month(month_start)).to eq(78)
       end
 
       it "returns the threshold when an overlapping term is half-time or above" do
@@ -241,8 +241,8 @@ RSpec.describe EducationActivityProgressCalculator do
         :education_activity_month,
         education_activity: education_activity,
         month: month_start.beginning_of_month,
-        # 20 credit hours * CREDIT_HOUR_CE_MULTIPLIER (4) meets the 80-hour threshold.
-        hours: 20
+        # 7 credit hours * CREDIT_HOUR_CE_MULTIPLIER (13) exceeds the 80-hour threshold.
+        hours: 7
       )
 
       expect(calculator).not_to be_sufficient_enrollment_for_month(month_start)
