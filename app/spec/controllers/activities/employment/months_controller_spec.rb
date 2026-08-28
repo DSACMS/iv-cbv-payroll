@@ -198,6 +198,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         }
 
         expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include("Add income or hours for at least one month")
       end
     end
 
