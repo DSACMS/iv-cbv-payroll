@@ -53,7 +53,6 @@ repos:
     name: prettier
     entry: bin/run-linter --cd app -- npm run format:precommit
     language: node
-    additional_dependencies: ["prettier"]
     files: '^app/.*\.(js|ts|json)$'
 
   - id: terraform_fmt

@@ -74,19 +74,7 @@ class FlowController < ApplicationController
       track_invitation_clicked_event(invitation, @flow)
     elsif session[:flow_id]
       begin
-        # For activity-scoped controllers, require the ActivityFlow class be
-        # used so an activities controller cannot accidentally load a
-        # CbvFlow from a session id. For other controllers preserve the
-        # previous behavior of resolving the flow class from the
-        # `session[:flow_type]` when present to avoid changing unrelated
-        # behavior (eg. tests that expect a CBV controller to honor the
-        # session's flow type).
-        if flow_param == :activity
-          @flow = flow_class(flow_param).find(session[:flow_id])
-        else
-          @flow = flow_class.find(session[:flow_id])
-        end
-
+        @flow = flow_class.find(session[:flow_id])
         @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       rescue ActiveRecord::RecordNotFound
         reset_cbv_session!
