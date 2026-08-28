@@ -377,6 +377,7 @@ class LauncherController < ApplicationController
     "lynette" => { first_name: "Lynette", last_name: "Oyola", date_of_birth: "1988-10-24" },
     "rick" => { first_name: "Rick", last_name: "Banas", date_of_birth: "1979-08-18" },
     "dominique" => { first_name: "Dominique", last_name: "Ricardo", date_of_birth: "1978-01-12" },
+    "scott" => { first_name: "Scott", last_name: "Tobin", date_of_birth: "1998-02-03" },
     "linda" => { first_name: "Linda", last_name: "Cooper", date_of_birth: "1999-01-01" }
   }.freeze
 

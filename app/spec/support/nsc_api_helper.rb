@@ -1,4 +1,17 @@
 module NscApiHelper
+  # See this page for various NSC test cases:
+  # https://docs.studentclearinghouse.org/vs/insights-json/integration-testing#test-cases-request
+  #
+  # Each as_of_date is chosen to pin the persona's currentEnrollmentStatus:
+  # a date within the persona's enrollment yields "CC", a later one yields "CN".
+  FIXTURE_PERSONAS = {
+    "lynette" => { first_name: "Lynette", last_name: "Oyola", date_of_birth: "1988-10-24", as_of_date: "2024-11-19" },
+    "rick_banas" => { first_name: "Rick", last_name: "Banas", date_of_birth: "1979-08-18", as_of_date: "2024-11-29" },
+    "dominique_ricardo" => { first_name: "Dominique", last_name: "Ricardo", date_of_birth: "1978-01-12", as_of_date: "2024-05-09" },
+    "linda" => { first_name: "Linda", last_name: "Cooper", date_of_birth: "1999-01-01", as_of_date: "2024-11-19" },
+    "scott_tobin" => { first_name: "Scott", last_name: "Tobin", date_of_birth: "1998-02-03", as_of_date: "2026-07-31" }
+  }.freeze
+
   def nsc_stub_request_education_search_response(user_folder, &block)
     response_data = nsc_load_relative_json_file(user_folder, 'insight.json')
     block.call(response_data) if block_given?
@@ -43,27 +56,21 @@ module NscApiHelper
     JSON.parse(File.read(nsc_fixture_path(user_folder, filename)))
   end
 
-  # See this page for various NSC test cases:
-  # https://docs.studentclearinghouse.org/vs/insights-json/integration-testing#test-cases-request
-  #
-  # To save a test case as a fixture, run these in a Rails console (replacing
-  # the name and DOB with the values for the test case you want to save):
+  # Re-record every fixture against the live NSC sandbox:
   #
   # ```
-  # require_relative './spec/support/nsc_api_helper.rb'
-  # include NscApiHelper
-  # nsc_save_fixture_for_user("Johnson", "White", "1982-04-21")
+  # bin/rails runner 'require "./spec/support/nsc_api_helper"; include NscApiHelper; nsc_save_all_fixtures'
   # ```
-  def nsc_save_fixture_for_user(first_name, last_name, date_of_birth)
-    fixture_file = nsc_fixture_path("#{first_name}_#{last_name}".downcase, "insight.json")
+  def nsc_save_all_fixtures
+    FIXTURE_PERSONAS.each_key { |user_folder| nsc_save_fixture_for_user(user_folder) }
+  end
+
+  def nsc_save_fixture_for_user(user_folder)
+    persona = FIXTURE_PERSONAS.fetch(user_folder)
+    fixture_file = nsc_fixture_path(user_folder, "insight.json")
     FileUtils.mkdir_p(File.dirname(fixture_file))
 
-    nsc_api = Aggregators::Sdk::NscService.new
-    enrollment_data = nsc_api.fetch_enrollment_data(
-      first_name: first_name,
-      last_name: last_name,
-      date_of_birth: date_of_birth
-    )
+    enrollment_data = Aggregators::Sdk::NscService.new.fetch_enrollment_data(**persona)
     File.open(fixture_file, "w") do |f|
       f.puts JSON.pretty_generate(enrollment_data)
     end
