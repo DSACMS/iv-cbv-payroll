@@ -7,6 +7,22 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.4.0
+
+### Emmy Income only user facing changes
+- Redact LALDH `case_number` [(#1998)](https://github.com/DSACMS/iv-cbv-payroll/pull/1998) - Tom Dooner [[FFS-4665]](https://jiraent.cms.gov/browse/FFS-4665)
+
+### Emmy CE only user facing changes
+- Manual employment entry incorrectly requires both income AND hours [(#2010)](https://github.com/DSACMS/iv-cbv-payroll/pull/2010) - krista-skylight [[FFS-4709]](https://jiraent.cms.gov/browse/FFS-4709)
+- Update credit hours conversion to 1:13 [(#2011)](https://github.com/DSACMS/iv-cbv-payroll/pull/2011) - Daphne Gold [[FFS-4706]](https://jiraent.cms.gov/browse/FFS-4706)
+- Add "Choose how you want to add your work" page to Emmy CE Employment flow [(#1997)](https://github.com/DSACMS/iv-cbv-payroll/pull/1997) - Ben Calegari [[FFS-4705]](https://jiraent.cms.gov/browse/FFS-4705)
+- CE timeout screen header and copy incorrectly reference "Report My Income" instead of Emmy [(#1996)](https://github.com/DSACMS/iv-cbv-payroll/pull/1996) - Daphne Gold [[FFS-4643]](https://jiraent.cms.gov/browse/FFS-4643)
+
+### Other/Maintenance (Not user facing)
+- Bump newrelic_rpm, postcss-import, sass, happy-dom, pdf-reader, vite, @uswds/uswds, rack-mini-profiler, solid_queue
+- Investigate and fix undefined method `identity` for an instance of `CbvFlow` [(#2009)](https://github.com/DSACMS/iv-cbv-payroll/pull/2009) - krista-skylight [[FFS-3788]](https://jiraent.cms.gov/browse/FFS-3788)
+- Instrument Mixpanel events for the Education Self-Attested flow in Emmy CE [(#1995)](https://github.com/DSACMS/iv-cbv-payroll/pull/1995) - Tim Miller
+
 ## 0.2.0
 
 ### Emmy Income only user facing changes
