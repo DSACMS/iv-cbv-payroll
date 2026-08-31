@@ -21,6 +21,8 @@ class Cbv::SubmitsController < Cbv::BaseController
     respond_to do |format|
       format.html
       format.pdf do
+        return if redirect_unless_consent!(t("cbv.submits.update.consent_to_authorize_warning"))
+
         event_logger.track(TrackEvent::ApplicantDownloadedIncomePDF, request, {
           time: Time.now.to_i,
           client_agency_id: current_agency&.id,
@@ -50,10 +52,7 @@ class Cbv::SubmitsController < Cbv::BaseController
   end
 
   def update
-    unless has_consent
-      @cbv_flow.errors.add(:consent_to_authorized_use, :blank, message: t(".consent_to_authorize_warning"))
-      return redirect_to(cbv_flow_submit_path, flash: { alert: t(".consent_to_authorize_warning") })
-    end
+    return if redirect_unless_consent!(t(".consent_to_authorize_warning"))
 
     if params[:cbv_flow] && params[:cbv_flow][:consent_to_authorized_use] == "1"
       timestamp = Time.now.to_datetime
@@ -76,6 +75,14 @@ class Cbv::SubmitsController < Cbv::BaseController
       Rails.logger.error "Aggregator report nil for #{@cbv_flow.id}. Investigate, as we didn't think it should be possible to get here because at least one account should be usable."
       redirect_to flow_navigator.income_sync_path(:synchronization_failures)
     end
+  end
+
+  def redirect_unless_consent!(warning_message)
+    return false if has_consent
+
+    @cbv_flow.errors.add(:consent_to_authorized_use, :blank, message: warning_message)
+    redirect_to(cbv_flow_submit_path, flash: { alert: warning_message })
+    true
   end
 
   def has_consent
