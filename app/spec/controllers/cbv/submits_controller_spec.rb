@@ -285,7 +285,7 @@ RSpec.describe Cbv::SubmitsController do
         before do
           cbv_flow.update(consented_to_authorized_use_at: nil)
         end
-        
+
         it "does not allow access to pdf" do
           get :show, format: :pdf
           expect(response).to redirect_to(cbv_flow_submit_path)
