@@ -17,8 +17,8 @@ Then, in a PR merged to `main` before the deploy:
 
 1. Update [`app/version.txt`](../app/version.txt) to the new version.
 2. Update the `"version"` field in [`code.json`](../code.json) to match.
-3. Add a [`CHANGELOG.md`](../CHANGELOG.md) entry with the tier of each
-   user-facing change.
+3. Annotate in [`CHANGELOG.md`](../CHANGELOG.md) breaking changes, if any,
+   which necessitated the major version bump.
 
 ## 2. Generate the release notes
 

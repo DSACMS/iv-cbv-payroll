@@ -36,17 +36,57 @@ def run_command(*command)
   stdout.strip
 end
 
-def fetch_production_ref
+def fetch_production_version
   response = URI.open("https://snap-income-pilot.com/health", &:read)
   JSON.parse(response).fetch("version")
 end
 
-def next_minor_version
-  current_version = JSON.parse(File.read(CODE_JSON_PATH)).fetch("version")
+def current_version
+  current_version = File.read(VERSION_PATH).strip
   match = current_version.match(/\A(\d+)\.(\d+)\.(\d+)\z/)
-  raise "Invalid semantic version in code.json: #{current_version}" unless match
+  raise "Invalid semantic version in version.txt: #{current_version}" unless match
 
-  "#{match[1]}.#{match[2].to_i + 1}.0"
+  current_version
+end
+
+def next_version(current_version, bump)
+  match = current_version.match(/\A(\d+)\.(\d+)\.(\d+)\z/)
+  raise "Invalid semantic version: #{current_version}" unless match
+
+  major, minor, patch = match.captures.map(&:to_i)
+
+  case bump
+  when "major"
+    "#{major + 1}.0.0"
+  when "minor"
+    "#{major}.#{minor + 1}.0"
+  when "patch"
+    "#{major}.#{minor}.#{patch + 1}"
+  else
+    raise "Invalid version bump: #{bump}"
+  end
+end
+
+def default_version_bump(current_version, user_facing_changes)
+  if user_facing_changes.any? && !current_version.start_with?("0.")
+    "major"
+  else
+    "minor"
+  end
+end
+
+def prompt_for_version_bump(current_version, user_facing_changes)
+  default_bump = default_version_bump(current_version, user_facing_changes)
+
+  loop do
+    warn "Which version bump? (Major, Minor, Patch) [#{default_bump.capitalize}]: "
+    bump = $stdin.gets&.strip&.downcase
+
+    return default_bump if bump.nil? || bump.empty?
+    return bump if %w[major minor patch].include?(bump)
+
+    warn "Invalid option. Please enter Major, Minor, or Patch."
+  end
 end
 
 def append_changelog_section(output, heading, changes, empty_message: nil)
@@ -93,7 +133,7 @@ def commit_lines(prod, current_sha)
   run_command(
     "git", "log", "--no-decorate",
     '--pretty=format:%s - %an|%H',
-    "#{prod}..#{current_sha}"
+    "v#{prod}..#{current_sha}"
   ).lines(chomp: true)
 end
 
@@ -156,7 +196,7 @@ if ARGV.first == "--test"
 end
 
 run_command("git", "fetch", "--quiet")
-prod = fetch_production_ref
+prod = fetch_production_version
 current_sha = run_command("git", "rev-parse", "origin/main")
 commits = commit_lines(prod, current_sha)
 
@@ -215,9 +255,14 @@ end
 other_changes.unshift("Bump #{dependabot_bumps.join(', ')}") unless dependabot_bumps.empty?
 
 tags = tags_for_changes(both_changes, income_changes, ce_changes)
+version_bump = prompt_for_version_bump(
+  current_version,
+  both_changes + income_changes + ce_changes
+)
+release_version = next_version(current_version, version_bump)
 
 output = +""
-output << "🚀 Will deploy `#{current_sha[0, 7]}` to production: 🚀 (cc #{tags})\n"
+output << "🚀 Will deploy `#{release_version}` to production: 🚀 (cc #{tags})\n"
 output << "🧪 *Open the launcher →* https://verify-demo.navapbc.cloud/launcher\n\n"
 append_changes(output, "👥 *User facing changes to Emmy Income + Emmy CE*", both_changes)
 append_changes(
@@ -236,9 +281,8 @@ append_changes(output, "⚙️ *Other/Maintenance (Not user facing)*", other_cha
 output << "\n"
 output << "See the full diff: https://github.com/DSACMS/iv-cbv-payroll/compare/#{prod[0, 7]}..#{current_sha[0, 7]}\n"
 
-next_version = next_minor_version
 update_release_files(
-  next_version,
+  release_version,
   both_changes: both_changes,
   income_changes: income_changes,
   ce_changes: ce_changes,
