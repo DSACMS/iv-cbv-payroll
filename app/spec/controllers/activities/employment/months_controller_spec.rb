@@ -128,6 +128,26 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity))
     end
 
+    it "passes validation when only income is provided" do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 0,
+        employment_activity_month: { gross_income: 100, hours: 0 }
+      }
+
+      expect(response).to redirect_to(new_activities_flow_income_employment_document_upload_path(employment_id: employment_activity))
+    end
+
+    it "passes validation when only hours are provided" do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 0,
+        employment_activity_month: { gross_income: 0, hours: 10 }
+      }
+
+      expect(response).to redirect_to(new_activities_flow_income_employment_document_upload_path(employment_id: employment_activity))
+    end
+
     it "threads from_edit to review when from_review is set" do
       patch :update, params: {
         employment_id: employment_activity.id,
@@ -170,7 +190,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         )
       end
 
-      it "requires at least one month with both income and hours on the last page" do
+      it "requires at least one month with either income or hours on the last page" do
         patch :update, params: {
           employment_id: employment_activity.id,
           id: 2,
@@ -178,6 +198,24 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         }
 
         expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include("Add income or hours for at least one month")
+      end
+
+      it "passes validation on the last page if a previous month had income" do
+        # Create a record for the first month with income
+        employment_activity.activity_months.create!(
+          month: reporting_window_months.months.ago.beginning_of_month,
+          gross_income: 100,
+          hours: 0
+        )
+
+        patch :update, params: {
+          employment_id: employment_activity.id,
+          id: 2,
+          employment_activity_month: { gross_income: 0, hours: 0 }
+        }
+
+        expect(response).to redirect_to(new_activities_flow_income_employment_document_upload_path(employment_id: employment_activity))
       end
     end
 
