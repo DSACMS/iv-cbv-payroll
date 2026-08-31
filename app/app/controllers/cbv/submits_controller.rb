@@ -21,7 +21,7 @@ class Cbv::SubmitsController < Cbv::BaseController
     respond_to do |format|
       format.html
       format.pdf do
-        return if redirect_unless_consent!(t("cbv.submits.update.consent_to_authorize_warning"))
+        next if redirect_unless_consent!(t("cbv.submits.update.consent_to_authorize_warning"))
 
         event_logger.track(TrackEvent::ApplicantDownloadedIncomePDF, request, {
           time: Time.now.to_i,
