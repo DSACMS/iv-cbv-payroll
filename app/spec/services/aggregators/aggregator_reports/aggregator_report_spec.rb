@@ -99,6 +99,10 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
 
           argyle_report.fetch
 
+          expect {
+            argyle_report.send(:pick_employment, argyle_report.employments, argyle_report.paystubs, account)
+          }.to raise_error(Aggregators::AggregatorReports::AggregatorReport::NoMatchingEmploymentError, /No employments found that match account_id/)
+
           # income_report should not crash and should return valid data
           expect { argyle_report.income_report }.not_to raise_error
           result = argyle_report.income_report
