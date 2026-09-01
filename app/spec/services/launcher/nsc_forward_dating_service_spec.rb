@@ -54,8 +54,8 @@ RSpec.describe Launcher::NscForwardDatingService do
         service.fetch
 
         expect(WebMock)
-          .to have_requested(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
-          .with(body: hash_including("asOfDate" => "2024-11-19"))
+          .to have_requested(:post, nsc_enrollment_endpoint_pattern)
+          .with(body: hash_including("nscRequest" => hash_including("asOfDate" => "2024-11-19")))
       end
     end
 
@@ -84,8 +84,8 @@ RSpec.describe Launcher::NscForwardDatingService do
         service.fetch
 
         expect(WebMock)
-          .to have_requested(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
-          .with(body: hash_including("asOfDate" => "2024-11-29"))
+          .to have_requested(:post, nsc_enrollment_endpoint_pattern)
+          .with(body: hash_including("nscRequest" => hash_including("asOfDate" => "2024-11-29")))
       end
     end
 

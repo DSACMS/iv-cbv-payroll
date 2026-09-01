@@ -3,7 +3,7 @@ module NscApiHelper
     response_data = nsc_load_relative_json_file(user_folder, 'insight.json')
     block.call(response_data) if block_given?
 
-    stub_request(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
+    stub_request(:post, nsc_enrollment_endpoint_pattern)
       .to_return(
         status: 200,
         body: response_data.to_json,
@@ -14,7 +14,7 @@ module NscApiHelper
   # Stub a response where the OAuth token is expired.
   # Tests should expect that we request a new token and retry the education search.
   def nsc_stub_request_education_search_token_expired_response(user_folder)
-    stub_request(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
+    stub_request(:post, nsc_enrollment_endpoint_pattern)
       .to_return(
         { status: 401, body: "" },
         {
@@ -41,6 +41,10 @@ module NscApiHelper
 
   def nsc_load_relative_json_file(user_folder, filename)
     JSON.parse(File.read(nsc_fixture_path(user_folder, filename)))
+  end
+
+  def nsc_enrollment_endpoint_pattern
+    %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}|#{Aggregators::Sdk::NscFdshService::EDUCATION_ENROLLMENT_URL}}
   end
 
   # See this page for various NSC test cases:

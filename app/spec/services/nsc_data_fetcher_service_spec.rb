@@ -101,8 +101,10 @@ RSpec.describe NscDataFetcherService do
         service.fetch
 
         expect(WebMock)
-          .to have_requested(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
-          .with(body: hash_including("asOfDate" => activity_flow.reporting_window_range.max.strftime("%Y-%m-%d")))
+          .to have_requested(:post, nsc_enrollment_endpoint_pattern)
+          .with(body: hash_including(
+            "nscRequest" => hash_including("asOfDate" => activity_flow.reporting_window_range.max.strftime("%Y-%m-%d"))
+          ))
       end
     end
 
