@@ -126,7 +126,7 @@ module Aggregators::AggregatorReports
         account_id = payroll_account.aggregator_account_id
         account_report = find_account_report(account_id)
 
-        next if account_report.nil? 
+        next if account_report.nil?
 
         has_income_data = payroll_account.job_succeeded?("income")
         has_employment_data = payroll_account.job_succeeded?("employment")
@@ -155,7 +155,7 @@ module Aggregators::AggregatorReports
           account_id = payroll_account.aggregator_account_id
           account_report = find_account_report(account_id)
 
-          next if account_report.nil? 
+          next if account_report.nil?
 
           paystubs = account_report.paystubs
           gigs = account_report.gigs

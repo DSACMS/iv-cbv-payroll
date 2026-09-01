@@ -91,10 +91,12 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
           payroll_account.flow = cbv_flow
 
           # Override all mocks to return empty data
-          allow(argyle_service).to receive(:fetch_employments_api).and_return({ "results" => [] })
-          allow(argyle_service).to receive(:fetch_paystubs_api).and_return({ "results" => [] })
-          allow(argyle_service).to receive(:fetch_identities_api).and_return({ "results" => [] })
-          allow(argyle_service).to receive(:fetch_account_api).and_return({ "results" => [] })
+          allow(argyle_service).to receive_messages(
+            fetch_employments_api: { "results" => [] },
+            fetch_paystubs_api: { "results" => [] },
+            fetch_identities_api: { "results" => [] },
+            fetch_account_api: { "results" => [] }
+          )
           allow(argyle_service).to receive(:fetch_gigs_api).and_return(nil)
 
           argyle_report.fetch
