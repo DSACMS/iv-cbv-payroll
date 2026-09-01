@@ -108,7 +108,7 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
           # income_report should not crash and should return valid data
           expect { argyle_report.income_report }.not_to raise_error
           result = argyle_report.income_report
-          
+
           # When no matching employment, that account is skipped, so employments should be empty
           expect(result[:employments]).to eq([])
           expect(result[:has_other_jobs]).to be_falsy
