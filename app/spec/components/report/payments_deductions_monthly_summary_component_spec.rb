@@ -211,10 +211,10 @@ RSpec.describe Report::PaymentsDeductionsMonthlySummaryComponent, type: :compone
         argyle_report.fetch
       end
 
-      it "raises an error without the paystubs data" do
+      it "renders without error even when paystubs failed to sync" do
         expect {
           render_inline(described_class.new(argyle_report, payroll_account, is_w2_worker: false, pay_frequency_text: "monthly"))
-        }.to raise_error(RuntimeError, "No employments found that match account_id 019571bc-2f60-3955-d972-dbadfe0913a8")
+        }.not_to raise_error
       end
     end
   end

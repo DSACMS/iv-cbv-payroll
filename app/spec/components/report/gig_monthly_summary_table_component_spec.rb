@@ -233,9 +233,9 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
             flow: cbv_flow,
             aggregator_account_id: "wrong-id"
           )
-          
+
           employer_name = described_class.new(argyle_report, invalid_payroll_account).employer_name
-          
+
           expect(employer_name).to be_nil
         end
       end
