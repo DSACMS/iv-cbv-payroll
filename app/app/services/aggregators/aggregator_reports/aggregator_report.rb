@@ -252,7 +252,7 @@ module Aggregators::AggregatorReports
       # data sets to make sure we're only using ones that match the employment ID we chose here.
       relevant_employments = employments.select { |e| e[:account_id] == account_id }
       if relevant_employments.empty?
-        Rails.logger.error("No employments found that match account_id #{account_id}")
+        Rails.logger.error("No employments found that match account_id #{account_id} out of #{employments.count} employments")
         raise NoMatchingEmploymentError, "No employments found that match account_id #{account_id}"
       end
 
