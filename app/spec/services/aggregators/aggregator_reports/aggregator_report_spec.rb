@@ -85,6 +85,30 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
         )
       end
 
+      context 'when employments are not found' do
+        it 'income_report does not crash when no matching employment' do
+          cbv_flow = create(:cbv_flow, has_other_jobs: false)
+          payroll_account.flow = cbv_flow
+
+          # Override all mocks to return empty data
+          allow(argyle_service).to receive(:fetch_employments_api).and_return({ "results" => [] })
+          allow(argyle_service).to receive(:fetch_paystubs_api).and_return({ "results" => [] })
+          allow(argyle_service).to receive(:fetch_identities_api).and_return({ "results" => [] })
+          allow(argyle_service).to receive(:fetch_account_api).and_return({ "results" => [] })
+          allow(argyle_service).to receive(:fetch_gigs_api).and_return(nil)
+
+          argyle_report.fetch
+
+          # income_report should not crash and should return valid data
+          expect { argyle_report.income_report }.not_to raise_error
+          result = argyle_report.income_report
+          
+          # When no matching employment, that account is skipped, so employments should be empty
+          expect(result[:employments]).to eq([])
+          expect(result[:has_other_jobs]).to be_falsy
+        end
+      end
+
       context "busy joe, an employee with multiple employments" do
         before do
           argyle_report.fetch
