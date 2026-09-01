@@ -154,6 +154,9 @@ module Aggregators::AggregatorReports
         .each_with_object({}) do |payroll_account, hash|
           account_id = payroll_account.aggregator_account_id
           account_report = find_account_report(account_id)
+
+          next if account_report.nil? 
+
           paystubs = account_report.paystubs
           gigs = account_report.gigs
           extracted_dates = extract_dates(paystubs, gigs)
