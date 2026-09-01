@@ -56,10 +56,10 @@ module NscApiHelper
     JSON.parse(File.read(nsc_fixture_path(user_folder, filename)))
   end
 
-  # Re-record every fixture against the live NSC sandbox:
+  # Re-record every fixture against the live NSC sandbox, from the repo root:
   #
   # ```
-  # bin/rails runner 'require "./spec/support/nsc_api_helper"; include NscApiHelper; nsc_save_all_fixtures'
+  # cd app && bin/rails runner 'require "./spec/support/nsc_api_helper"; include NscApiHelper; nsc_save_all_fixtures'
   # ```
   def nsc_save_all_fixtures
     FIXTURE_PERSONAS.each_key { |user_folder| nsc_save_fixture_for_user(user_folder) }

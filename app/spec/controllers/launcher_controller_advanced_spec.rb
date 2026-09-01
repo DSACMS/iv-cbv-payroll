@@ -54,6 +54,17 @@ RSpec.describe LauncherController, type: :controller do
       expect(rendered).to include('Ziggy Testuser')
     end
 
+    it "gives every NSC test scenario a reporting window so selecting one does not leave a stale months pill", :aggregate_failures do
+      get :advanced
+      rendered = response.body
+
+      %w[lynette rick dominique scott linda].each do |scenario_key|
+        radio = rendered[/<input[^>]*id="test_scenario_#{scenario_key}"[^>]*>/]
+        expect(radio).to be_present, "expected a radio for #{scenario_key}"
+        expect(radio).to include('data-reporting-window-months'), "expected #{scenario_key} to set reporting window months"
+      end
+    end
+
     it "displays fake test scenario options with single and multi-term" do
       get :advanced
       rendered = response.body
