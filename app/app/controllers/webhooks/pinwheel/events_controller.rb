@@ -1,7 +1,7 @@
 class Webhooks::Pinwheel::EventsController < ApplicationController
   include ApplicationHelper
 
-  before_action :set_pinwheel, :set_cbv_flow, :authorize_webhook
+  before_action :set_cbv_flow, :set_pinwheel, :authorize_webhook
   after_action :process_webhook_event
   skip_before_action :verify_authenticity_token
 
@@ -44,7 +44,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def set_pinwheel
-    @pinwheel = @cbv_flow.present? ? pinwheel_for(@cbv_flow) : Aggregators::Sdk::PinwheelService.new("sandbox")
+    @pinwheel = pinwheel_for(@cbv_flow)
   end
 
   def get_supported_jobs(platform_id)
