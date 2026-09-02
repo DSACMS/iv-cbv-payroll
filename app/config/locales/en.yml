@@ -367,7 +367,7 @@ en:
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit
       save: Save changes
-      verification_info_link: What if I can't meet the requirements?
+      # verification_info_link: What if I can't meet the requirements?
     income:
       employer_searches:
         employer:
