@@ -5,11 +5,6 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   after_action :process_webhook_event
   skip_before_action :verify_authenticity_token
 
-  # To prevent timing attacks, we attempt to verify the webhook signature
-  # using a same-length dummy key even if the `end_user_id` does not match a
-  # valid `cbv_flow`.
-  DUMMY_API_KEY = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-
   def create
     @payroll_account = @cbv_flow.payroll_accounts.find_or_create_by(type: :pinwheel, aggregator_account_id: params["payload"]["account_id"]) do |new_payroll_account|
       new_payroll_account.supported_jobs = get_supported_jobs(params["payload"]["platform_id"])
@@ -49,7 +44,7 @@ class Webhooks::Pinwheel::EventsController < ApplicationController
   end
 
   def set_pinwheel
-    @pinwheel = @cbv_flow.present? ? pinwheel_for(@cbv_flow) : Aggregators::Sdk::PinwheelService.new("sandbox", DUMMY_API_KEY)
+    @pinwheel = pinwheel_for(@cbv_flow)
   end
 
   def get_supported_jobs(platform_id)
