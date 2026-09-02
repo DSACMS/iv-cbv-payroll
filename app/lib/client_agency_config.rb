@@ -99,8 +99,7 @@ class ClientAgencyConfig
       @income_flow_transmission_method = yaml["income_flow_transmission_method"]
       @activity_flow_transmission_method = yaml["activity_flow_transmission_method"]
       @transmission_method_configuration = yaml["transmission_method_configuration"]
-      @activity_transmission_method_configuration =
-        yaml["activity_transmission_method_configuration"] || @transmission_method_configuration
+      @activity_transmission_method_configuration = yaml["activity_transmission_method_configuration"]
       @staff_portal_enabled = yaml["staff_portal_enabled"]
       @sso = yaml["sso"]
       @weekly_report = yaml["weekly_report"]
@@ -120,7 +119,7 @@ class ClientAgencyConfig
       raise ArgumentError.new("Client Agency #{@id} invalid value for renewal_required_months") unless @renewal_required_months.blank? || VALID_RENEWAL_REQUIRED_MONTHS.include?(@renewal_required_months)
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `income_flow_transmission_method`") if @income_flow_transmission_method.blank?
 
-      validate_activity_transmission_url!
+      validate_activity_transmission_configuration!
 
       @applicant_attributes.each do |name, options|
         redaction_type = options.is_a?(Hash) ? options["redaction_type"] : nil
@@ -145,11 +144,24 @@ class ClientAgencyConfig
 
     private
 
-    def validate_activity_transmission_url!
+    def validate_activity_transmission_configuration!
+      has_method = @activity_flow_transmission_method.present?
+      has_configuration = @activity_transmission_method_configuration.present?
+
+      if has_method && !has_configuration
+        raise ArgumentError.new("Client Agency #{@id} sets `activity_flow_transmission_method` but is missing `activity_transmission_method_configuration`")
+      end
+
+      if has_configuration && !has_method
+        raise ArgumentError.new("Client Agency #{@id} sets `activity_transmission_method_configuration` but is missing `activity_flow_transmission_method`")
+      end
+
+      return unless has_method
+
       config_key = ACTIVITY_TRANSMISSION_URL_KEYS[@activity_flow_transmission_method]
       return if config_key.nil?
 
-      url = @activity_transmission_method_configuration.to_h[config_key]
+      url = @activity_transmission_method_configuration[config_key]
       return if absolute_http_url?(url)
 
       raise ArgumentError.new("Client Agency #{@id} `#{config_key}` must be an absolute HTTP(S) URL, got #{url.inspect}")
