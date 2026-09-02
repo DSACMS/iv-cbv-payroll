@@ -337,7 +337,6 @@ en:
     errors:
       invalid_token: The link you used is invalid.
     hub:
-      _verification_info_link: What if I can't meet the requirements?
       add: Add
       cards:
         complete_action: Complete
