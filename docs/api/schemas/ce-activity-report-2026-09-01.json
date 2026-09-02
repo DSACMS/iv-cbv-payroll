@@ -1,0 +1,323 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://reportmyincome.org/schema/ce-activity-report",
+  "title": "EMMY Community Engagement Activity Report API (2026-09-01)",
+  "description": "Activities are grouped by activity type at the top level, then by month within each type. This revision covers the self-attested activity types only: community_service and work_program.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "confirmation_code",
+    "completed_at",
+    "agency",
+    "ce_report"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the CE compliance spec this payload conforms to."
+    },
+    "confirmation_code": {
+      "type": "string",
+      "description": "Unique code assigned when the report was completed. Shared with the user and used to debug errors while processing the report."
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the user completed the report (ISO8601)."
+    },
+    "agency": {
+      "type": "object",
+      "description": "Agency-specific applicant identifiers, established per-integration (e.g., doc_id, case_number, date_of_birth).",
+      "properties": {
+        "extended_attributes": {
+          "type": "object"
+        }
+      }
+    },
+    "ce_report": {
+      "type": "object",
+      "required": [
+        "review_period",
+        "individual",
+        "documents",
+        "activities"
+      ],
+      "properties": {
+        "review_period": {
+          "type": "object",
+          "description": "The full date range this CE compliance determination covers.",
+          "required": [
+            "start_month",
+            "end_month"
+          ],
+          "properties": {
+            "start_month": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}$"
+            },
+            "end_month": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}$"
+            }
+          }
+        },
+        "individual": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "object",
+              "required": [
+                "first",
+                "last"
+              ],
+              "properties": {
+                "first": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "middle": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "last": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "extended_attributes": {
+              "type": "object"
+            }
+          }
+        },
+        "documents": {
+          "type": "array",
+          "description": "All supporting documents the user uploaded for the activities in this report.",
+          "items": {
+            "type": "object",
+            "required": [
+              "document_id",
+              "document_name",
+              "file_type"
+            ],
+            "properties": {
+              "document_id": {
+                "type": "string",
+                "description": "Identifier unique within this report, referenced from each activity's document_ids."
+              },
+              "document_name": {
+                "type": "string"
+              },
+              "file_type": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "activities": {
+          "type": "object",
+          "description": "Activity types at the top level; within each type, months keyed as YYYY-MM.",
+          "properties": {
+            "community_service": {
+              "$ref": "#/definitions/community_service_months"
+            },
+            "work_program": {
+              "$ref": "#/definitions/work_program_months"
+            }
+          }
+        },
+        "extended_attributes": {
+          "type": "object"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "activity_entry_base": {
+      "type": "object",
+      "required": [
+        "type",
+        "month",
+        "hours",
+        "data_source",
+        "document_ids"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "community_service",
+            "work_program"
+          ]
+        },
+        "month": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}$",
+          "description": "Calendar month the reported hours apply to. Matches the key of the enclosing object."
+        },
+        "hours": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Hours reported for this activity in the enclosing month, as a decimal (10,2)."
+        },
+        "data_source": {
+          "type": "string",
+          "enum": [
+            "self_attested",
+            "nsc",
+            "argyle",
+            "pinwheel"
+          ],
+          "description": "How this activity record was obtained. Always self_attested for community_service and work_program."
+        },
+        "document_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "additional_comments": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "street_address": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "street_address_line_2": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "zip_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "extended_attributes": {
+          "type": "object"
+        }
+      }
+    },
+    "community_service_months": {
+      "type": "object",
+      "patternProperties": {
+        "^\\d{4}-\\d{2}$": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/activity_entry_base"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "organization_name"
+                ],
+                "properties": {
+                  "organization_name": {
+                    "type": "string"
+                  },
+                  "coordinator_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "coordinator_email": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "coordinator_phone_number": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "work_program_months": {
+      "type": "object",
+      "patternProperties": {
+        "^\\d{4}-\\d{2}$": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/activity_entry_base"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "organization_name",
+                  "program_name"
+                ],
+                "properties": {
+                  "organization_name": {
+                    "type": "string"
+                  },
+                  "program_name": {
+                    "type": "string"
+                  },
+                  "contact_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "contact_email": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "contact_phone_number": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

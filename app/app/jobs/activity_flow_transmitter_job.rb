@@ -34,6 +34,8 @@ class ActivityFlowTransmitterJob < ApplicationJob
       Transmitters::ActivityS3Transmitter
     when Transmitters::HttpDocumentTransmitter::TRANSMISSION_METHOD
       Transmitters::HttpDocumentTransmitter
+    when Transmitters::ActivityJsonTransmitter::TRANSMISSION_METHOD
+      Transmitters::ActivityJsonTransmitter
     else
       raise "Unsupported activity flow transmission method: #{transmission_method}"
     end

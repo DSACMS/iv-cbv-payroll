@@ -18,7 +18,7 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
   let(:current_agency) do
     instance_double(
       ClientAgencyConfig::ClientAgency,
-      transmission_method_configuration: {
+      activity_transmission_method_configuration: {
         "bucket" => destination_bucket_name,
         "s3_directory" => "outfiles"
       }

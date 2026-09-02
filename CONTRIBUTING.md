@@ -131,9 +131,13 @@ To acceptance test the JSON API, you can run the independent **reference server 
    # For activity supporting documents
    SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=http
    SANDBOX_ACTIVITY_DOCUMENTS_API_URL=http://localhost:4567/documents
+
+   # For the community engagement (CE) activity report JSON
+   SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=json
+   SANDBOX_ACTIVITY_JSON_API_URL=http://localhost:4567/activities
    ```
 
-This starts a standalone test server on port 4567 that logs incoming JSON data, verifies HMAC signatures, and writes activity documents to `app/tmp/transmitted_documents`. The receiver is completely independent and can be used as a reference implementation for agencies building their own JSON API endpoints.
+This starts a standalone test server on port 4567 that logs incoming JSON data, verifies HMAC signatures, writes activity documents to `app/tmp/transmitted_documents`, and writes the CE activity report to `app/tmp/transmitted_activity_report.json`. The receiver is completely independent and can be used as a reference implementation for agencies building their own JSON API endpoints.
 
 ### Branching model
 When beginning work on a feature, create a new branch based off of `main` and make the commits for that feature there.

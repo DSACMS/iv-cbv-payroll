@@ -2,13 +2,14 @@ require "tmpdir"
 
 class Transmitters::ActivityS3Transmitter
   TRANSMISSION_METHOD = "encrypted_s3"
+  include ActivityTransmitter
+
   PDF_MARGIN = { top: 10, bottom: 10, left: 10, right: 10 }.freeze
 
   def initialize(activity_flow, current_agency)
-    @activity_flow = activity_flow
-    @transmission_config = current_agency.transmission_method_configuration
+    super
     @processed_s3_service = ProcessedDownloadService.new
-    @destination_s3_service = S3Service.new("bucket" => @transmission_config.fetch("bucket"))
+    @destination_s3_service = S3Service.new("bucket" => transmission_configuration.fetch("bucket"))
   end
 
   def deliver
@@ -45,7 +46,7 @@ class Transmitters::ActivityS3Transmitter
 
   def destination_prefix
     File.join(
-      @transmission_config.fetch("s3_directory", "outfiles"),
+      transmission_configuration.fetch("s3_directory", "outfiles"),
       @activity_flow.confirmation_code,
       ""
     )

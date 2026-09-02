@@ -8,7 +8,7 @@ class ActivityDocumentsService
     employment_activities
   ].freeze
 
-  Document = Struct.new(:attachment, :file_name)
+  Document = Struct.new(:attachment, :file_name, :activity)
 
   def initialize(activity_flow)
     @activity_flow = activity_flow
@@ -27,7 +27,8 @@ class ActivityDocumentsService
 
           Document.new(
             attachment,
-            [ @activity_flow.confirmation_code, activity_type, document_name, page_number ].join("_") + extension
+            [ @activity_flow.confirmation_code, activity_type, document_name, page_number ].join("_") + extension,
+            activity
           )
         end
       end

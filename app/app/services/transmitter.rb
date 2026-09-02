@@ -13,6 +13,10 @@ module Transmitter
     raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
   end
 
+  def destination_url(config_key)
+    URI.parse(transmission_configuration.fetch(config_key))
+  end
+
   def custom_headers
     transmission_configuration["custom_headers"] || {}
   end
