@@ -1,12 +1,12 @@
 class Transmitters::EncryptedS3Transmitter
   TRANSMISSION_METHOD = "encrypted_s3"
-  include Transmitter
+  include IncomeTransmitter
   include GpgEncryptable
   include TarFileCreatable
   include CsvHelper
 
   def deliver
-    config = @current_agency.transmission_method_configuration
+    config = transmission_configuration
     public_key = config["public_key"]
 
     if public_key.blank?
