@@ -80,7 +80,6 @@ class Cbv::SubmitsController < Cbv::BaseController
   def redirect_unless_consent!(warning_message)
     return false if has_consent
 
-    @cbv_flow.errors.add(:consent_to_authorized_use, :blank, message: warning_message)
     redirect_to(cbv_flow_submit_path, flash: { alert: warning_message })
     true
   end
