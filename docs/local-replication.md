@@ -32,18 +32,14 @@ The team develops primarily on macOS; some steps assume it.
    brew bundle
    ```
    This installs, among other things, `rbenv` and `nodenv` (Ruby/Node version
-   managers), `postgresql@12`, `redis`, `jq`, `graphviz`, `chromedriver`, and
+   managers), `postgresql@12`, `redis`, `jq`, `graphviz`, and
    `ngrok`.
 3. Wire up `rbenv` and `nodenv` in your shell, then restart your terminal:
    ```bash
    echo 'if which nodenv >/dev/null 2>/dev/null; then eval "$(nodenv init -)"; fi' >> ~/.zshrc
    echo 'if which rbenv >/dev/null 2>/dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc
    ```
-4. `chromedriver` (needed for integration tests) must be allowed to run:
-   ```bash
-   xattr -d com.apple.quarantine $(which chromedriver)
-   ```
-5. If you plan to record E2E tests or receive webhooks, set up `ngrok`:
+4. If you plan to record E2E tests or receive webhooks, set up `ngrok`:
    sign up at <https://dashboard.ngrok.com/signup>, then
    `ngrok config add-authtoken <your-token>`.
 
