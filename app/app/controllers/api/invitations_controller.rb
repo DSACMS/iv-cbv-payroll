@@ -76,7 +76,7 @@ class Api::InvitationsController < ApplicationController
     end
 
     filtered = metadata.reject do |key, value|
-      %w[doc_id individual_id].include?(key) && value.nil?
+      %w[individual_id].include?(key)
     end
     # Allow params in the VALID_ATTRIBUTES array for the relevant agency
     # CbvApplicant subclass.

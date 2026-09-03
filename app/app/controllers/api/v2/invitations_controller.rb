@@ -53,6 +53,19 @@ class Api::V2::InvitationsController < Api::InvitationsController
 
   private
 
+  def allowed_metadata_params
+    metadata = CbvApplicant.build_agency_partner_metadata(@current_user.client_agency_id) do |attr|
+      params[:agency_partner_metadata][attr]
+    end
+
+    filtered = metadata.reject do |key, value|
+      %w[doc_id individual_id].include?(key) && value.nil?
+    end
+    # Allow params in the VALID_ATTRIBUTES array for the relevant agency
+    # CbvApplicant subclass.
+    ActionController::Parameters.new(filtered)
+  end
+
   def invitation_type
     params[:type].to_s
   end
