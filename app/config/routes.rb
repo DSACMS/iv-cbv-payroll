@@ -136,6 +136,10 @@ Rails.application.routes.draw do
       post "/invitations", to: "invitations#create"
     end
 
+    scope :v2, module: :v2 do
+      post "/invitations", to: "invitations#create"
+    end
+
     scope :pinwheel do
       post "/tokens" => "pinwheel#create_token"
     end
