@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Api::V2::InvitationsController do
   describe "#create" do
-    subject do
+    subject(:create_invitation) do
       post :create, params: valid_params
     end
 
@@ -42,7 +42,7 @@ RSpec.describe Api::V2::InvitationsController do
     end
 
     it "creates an invitation with an associated cbv_applicant" do
-      expect { subject }
+      expect { create_invitation }
           .to change(CbvFlowInvitation, :count).by(1)
           .and change(CbvApplicant, :count).by(1)
 
@@ -52,7 +52,7 @@ RSpec.describe Api::V2::InvitationsController do
     end
 
     it "creates an invitation using the client_agency_id in the access_token" do
-      expect { subject }
+      expect { create_invitation }
           .to change(CbvFlowInvitation, :count).by(1)
           .and change(CbvApplicant, :count).by(1)
 
@@ -72,7 +72,7 @@ RSpec.describe Api::V2::InvitationsController do
       end
 
       it "creates an invitation" do
-        expect { subject }
+        expect { create_invitation }
           .to change(CbvFlowInvitation, :count).by(1)
           .and change(CbvApplicant, :count).by(1)
 
@@ -85,13 +85,12 @@ RSpec.describe Api::V2::InvitationsController do
       end
 
       it "returns the expected agency_partner_metadata" do
-        subject
+        create_invitation
         parsed_response = JSON.parse(response.body)
         expect(parsed_response["agency_partner_metadata"]).to eq(
           "individual_id" => valid_params[:agency_partner_metadata][:individual_id],
           "case_number" => valid_params[:agency_partner_metadata][:case_number],
           "date_of_birth" => valid_params[:agency_partner_metadata][:date_of_birth],
-          "doc_id" => nil,
         )
       end
 

@@ -111,6 +111,8 @@ es:
             help_text: 'Por ejemplo: 19 de enero de 2000'
             prompt: Su fecha de nacimiento
             super_one_html: Fecha de nacimiento<sup>1</sup>
+          doc_id_or_individual_id:
+            blank: Se requiere doc_id o individual_id
       nh_dhhs:
         fields:
           case_number:
