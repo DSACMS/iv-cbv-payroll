@@ -85,7 +85,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       end
 
       it_behaves_like "tracks an event", TrackEvent::EmploymentInfoValidationFailed,
-        extra_attributes: -> { { employment_activity_id: nil, error_message: kind_of(String) } }
+        extra_attributes: -> { { employment_activity_id: nil, error_fields: kind_of(Array) } }
     end
 
     it "creates an employment activity and redirects to the first month page" do
@@ -147,7 +147,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       end
 
       it_behaves_like "tracks an event", TrackEvent::EmploymentInfoValidationFailed,
-        extra_attributes: -> { { employment_activity_id: kind_of(Integer), error_message: kind_of(String) } }
+        extra_attributes: -> { { employment_activity_id: kind_of(Integer), error_fields: kind_of(Array) } }
     end
 
     it "updates the activity and redirects to the first month page" do
