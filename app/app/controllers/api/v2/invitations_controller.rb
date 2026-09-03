@@ -4,6 +4,27 @@ class Api::V2::InvitationsController < Api::InvitationsController
       return render json: { error: "Invalid invitation type" }, status: :bad_request
     end
 
+    # Validate that the required doc_id or individual_id is present for LA LDH invitations,
+    # Keeping this out of la_ldh.rb for now so that it does not affect v1 invitations_controller.rb
+    # not requiring doc_id. Once v1 is deprecated, this can be moved to la_ldh.rb and the v1 controller can be removed.
+    if @current_user.client_agency_id.to_s == "la_ldh"
+      metadata = allowed_metadata_params
+
+      doc_id = metadata["doc_id"].presence || metadata[:doc_id].presence
+      individual_id = metadata["individual_id"].presence || metadata[:individual_id].presence
+
+      if doc_id.blank? && individual_id.blank?
+        return render json: {
+          errors: [
+            {
+              field: "agency_partner_metadata.doc_id",
+              message: I18n.t("cbv.applicant_informations.la_ldh.fields.doc_id_or_individual_id.blank")
+            }
+          ]
+        }, status: :unprocessable_content
+      end
+    end
+
     cbv_invitation_service = CbvInvitationService.new(event_logger)
     @cbv_flow_invitation = cbv_invitation_service
       .invite(cbv_flow_invitation_params, @current_user, delivery_method: nil)

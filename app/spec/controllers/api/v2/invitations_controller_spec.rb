@@ -94,11 +94,10 @@ RSpec.describe Api::V2::InvitationsController do
         )
       end
 
-      it "returns 422 when both doc_id and individual_id are blank for income" do
+      it "returns 422 when both doc_id and individual_id are nil for income" do
         valid_params[:agency_partner_metadata] = {
           case_number: nil,
           date_of_birth: nil,
-          doc_id: nil,
           individual_id: nil
         }
 
