@@ -58,6 +58,8 @@ class Api::V2::InvitationsController < Api::InvitationsController
       params[:agency_partner_metadata][attr]
     end
 
+    # Filter out nil values for doc_id and individual_id, since they are not required for all agencies 
+    # and should not be included in the response if they are nil.
     filtered = metadata.reject do |key, value|
       %w[doc_id individual_id].include?(key) && value.nil?
     end
