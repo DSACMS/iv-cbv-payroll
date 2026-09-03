@@ -11,13 +11,15 @@ module Aggregators
     # Client for the National Student Clearinghouse service exposed through FDSH.
     #
     # The Hub requires mutual TLS for both the OAuth token request and the NSC
-    # request. In local development, HUB_RESOLVE points the Hub hostname at the
-    # local end of an SSH tunnel while preserving the hostname used for TLS.
+    # request. In local development, HUB_LOCALHOST_OVERRIDE points the Hub
+    # hostname at the local end of an SSH tunnel while preserving the hostname
+    # used for TLS.
     class NscFdshService
       DEFAULT_BASE_URL = "https://impl.hub.cms.gov"
       DEFAULT_TOKEN_URL = "#{DEFAULT_BASE_URL}/auth/oauth/v2/token"
       DEFAULT_EDUCATION_ENROLLMENT_URL = "mesh/imp1/NationalStudentClearinghouseService"
       EDUCATION_ENROLLMENT_URL = DEFAULT_EDUCATION_ENROLLMENT_URL
+      LOCALHOST_PORT = 8443
 
       MAX_TIMEOUT = 10
       TLS_VERSION = OpenSSL::SSL::TLS1_2_VERSION
@@ -37,15 +39,15 @@ module Aggregators
         environment: nil,
         logger: nil,
         base_url: ENV.fetch("HUB_API_URL", DEFAULT_BASE_URL),
-        token_url: ENV.fetch("HUB_TOKEN_URL", DEFAULT_TOKEN_URL),
         client_id: ENV["HUB_CLIENT_ID"] || ENV["OAUTH_CLIENT_KEY"],
         client_secret: ENV["HUB_CLIENT_SECRET"] || ENV["OAUTH_CLIENT_SECRET"],
         client_cert_path: ENV["HUB_CLIENT_CERT_PATH"],
         client_key_path: ENV["HUB_CLIENT_KEY_PATH"],
         client_cert: ENV["HUB_CLIENT_CERT"],
         client_key: ENV["HUB_CLIENT_KEY"],
-        resolve: ENV["HUB_RESOLVE"],
-        education_enrollment_url: ENV.fetch("HUB_EDUCATION_ENROLLMENT_URL", DEFAULT_EDUCATION_ENROLLMENT_URL)
+        localhost_override: ENV["HUB_LOCALHOST_OVERRIDE"],
+        token_url: DEFAULT_TOKEN_URL,
+        education_enrollment_url: DEFAULT_EDUCATION_ENROLLMENT_URL
       )
         # Keep accepting environment for parity with NscService and callers
         # that select an NSC environment, even though FDSH selects its target
@@ -57,7 +59,7 @@ module Aggregators
         @client_secret = client_secret
         @client_cert = load_certificate(client_cert, client_cert_path)
         @client_key = load_key(client_key, client_key_path)
-        @resolve = development? ? parse_resolve(resolve) : nil
+        @localhost_override = development? && parse_boolean(localhost_override)
         @education_enrollment_url = education_enrollment_url
         @token = nil
         @token_expires_at = nil
@@ -97,6 +99,7 @@ module Aggregators
 
       def fetch_token
         uri = URI(@token_url)
+        @logger.info("Requesting FDSH OAuth token from #{@token_url}")
         request = Net::HTTP::Post.new(uri)
         request["Content-Type"] = "application/x-www-form-urlencoded"
         request.body = URI.encode_www_form(
@@ -129,9 +132,9 @@ module Aggregators
       end
 
       def build_http(uri)
-        http = Net::HTTP.new(uri.hostname, uri.port)
-        connect_ip = @resolve.dig(uri.hostname, uri.port) if @resolve
-        http.ipaddr = connect_ip if connect_ip
+        port = @localhost_override ? LOCALHOST_PORT : uri.port
+        http = Net::HTTP.new(uri.hostname, port)
+        http.ipaddr = "127.0.0.1" if @localhost_override
         http.use_ssl = uri.scheme == "https"
         http.cert = @client_cert if @client_cert
         http.key = @client_key if @client_key
@@ -199,15 +202,15 @@ module Aggregators
         URI.join("#{base_url.chomp("/")}/", path.to_s.sub(%r{\A/}, ""))
       end
 
-      def parse_resolve(resolve)
-        return nil if resolve.blank?
-
-        host, port, ip = resolve.split(":", 3)
-        return nil if [ host, port, ip ].any?(&:blank?)
-
-        { host => { Integer(port) => ip } }
-      rescue ArgumentError
-        raise ApiError.new(code: "CONFIGURATION_ERROR", message: "HUB_RESOLVE must be host:port:ip")
+      def parse_boolean(value)
+        case value.to_s.downcase
+        when "true"
+          true
+        when "", "false"
+          false
+        else
+          raise ApiError.new(code: "CONFIGURATION_ERROR", message: "HUB_LOCALHOST_OVERRIDE must be true or false")
+        end
       end
 
       def development?

@@ -76,6 +76,8 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
       stub_request(:post, "#{base_url}/#{education_enrollment_url}")
         .to_return(status: 200, body: fdsh_response.to_json, headers: { "Content-Type" => "application/json" })
 
+      expect(logger).to receive(:info).with("Requesting FDSH OAuth token from #{token_url}")
+
       response = service.fetch_enrollment_data(
         first_name: "Lynnette",
         last_name: "Oyola",
@@ -160,17 +162,17 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
     end
   end
 
-  describe "development hostname resolution" do
-    it "ignores HUB_RESOLVE outside development" do
-      non_development_service = described_class.new(resolve: "impl.hub.cms.gov:8443:127.0.0.1", logger: logger)
+  describe "development localhost override" do
+    it "ignores HUB_LOCALHOST_OVERRIDE outside development" do
+      non_development_service = described_class.new(localhost_override: "true", logger: logger)
 
-      expect(non_development_service.send(:instance_variable_get, :@resolve)).to be_nil
+      expect(non_development_service.send(:instance_variable_get, :@localhost_override)).to be false
     end
 
     it "uses the local tunnel IP while preserving the Hub hostname in development" do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("development"))
       development_service = described_class.new(
-        resolve: "impl.hub.cms.gov:8443:127.0.0.1",
+        localhost_override: "true",
         logger: logger
       )
       http = instance_double(Net::HTTP)

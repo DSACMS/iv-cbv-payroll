@@ -13,11 +13,9 @@ locals {
     # LOG_LEVEL               = "info"
     # DB_CONNECTION_POOL_SIZE = 5
 
-    # FDSH NSC configuration. Local development overrides these values with
-    # the :8443 SSH-tunnel URLs; deployed environments use the Hub hostname.
-    HUB_API_URL                  = "https://impl.hub.cms.gov"
-    HUB_TOKEN_URL                = "https://impl.hub.cms.gov/auth/oauth/v2/token"
-    HUB_EDUCATION_ENROLLMENT_URL = "mesh/imp1/NationalStudentClearinghouseService"
+    # FDSH NSC configuration. Local development can use HUB_LOCALHOST_OVERRIDE
+    # with the SSH tunnel; deployed environments use the Hub hostname directly.
+    HUB_API_URL = "https://impl.hub.cms.gov"
   }
 
   ssm_environment_variables = {
@@ -309,22 +307,11 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/nsc-account-id"
     }
-    # FDSH NSC Credentials
-    HUB_CLIENT_ID = {
+    # FDSH NSC credentials. The entrypoint expands this JSON object into the
+    # HUB_CLIENT_* environment variables consumed by the Rails application.
+    HUB_CREDENTIALS_JSON = {
       manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/hub-client-id"
-    }
-    HUB_CLIENT_SECRET = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/hub-client-secret"
-    }
-    HUB_CLIENT_CERT = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/hub-client-cert"
-    }
-    HUB_CLIENT_KEY = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/hub-client-key"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/hub-credentials-json"
     }
   }
 }
