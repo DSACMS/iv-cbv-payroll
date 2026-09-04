@@ -56,12 +56,7 @@ RSpec.describe Activities::Education::MonthsController, type: :controller do
 
       it_behaves_like "tracks an event", TrackEvent::EducationMonthValidationFailed,
         extra_attributes: -> {
-          {
-            education_activity_id: kind_of(Integer),
-            month_index: 0,
-            month: kind_of(String),
-            error_fields: array_including(a_string_matching(/gross_income|hours/))
-          }
+          { education_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_fields: %w[gross_income hours] }
         }
     end
 
