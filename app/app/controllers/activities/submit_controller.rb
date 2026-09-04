@@ -9,11 +9,10 @@ class Activities::SubmitController < Activities::BaseController
   private
 
   def render_pdf
-    @community_service_activities = @flow.volunteering_activities.published.order(date: :desc, created_at: :desc)
-    @work_programs_activities = @flow.job_training_activities.published.order(created_at: :desc)
-    @education_activities = @flow.education_activities.published.order(created_at: :desc)
-    @submission_timestamp = submission_timestamp
-    @total_hours = progress_calculator.overall_result.total_hours
+    @report = ActivityPdfReport.new(
+      flow: @flow,
+      caseworker: internal_environment? && params[:is_caseworker] == "true"
+    )
 
     render pdf: pdf_filename,
       layout: "pdf",
@@ -22,20 +21,16 @@ class Activities::SubmitController < Activities::BaseController
       disposition: "inline"
   end
 
-  def submission_timestamp
-    @flow.completed_at || Time.zone.now
-  end
-
   def pdf_filename
     "HR1_Report_#{Time.zone.today.strftime("%Y-%m-%d")}"
   end
 
   def pdf_margins
     {
-      top: 10,
-      bottom: 10,
-      left: 10,
-      right: 10
+      top: 8,
+      bottom: 8,
+      left: 0,
+      right: 0
     }
   end
 end

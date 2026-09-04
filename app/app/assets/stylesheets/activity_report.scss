@@ -1,0 +1,22 @@
+@use "uswds" as *;
+
+.activity-report__report-information {
+  th,
+  td {
+    border: 0;
+    border-bottom: units(1px) solid color("ink");
+  }
+
+  th {
+    background-color: color("white");
+  }
+}
+
+.activity-report__activity {
+  page-break-inside: avoid;
+}
+
+.activity-report__table {
+  table-layout: fixed;
+  word-break: break-word;
+}

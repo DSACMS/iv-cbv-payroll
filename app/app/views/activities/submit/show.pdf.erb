@@ -1,155 +1,431 @@
 <% not_provided = t("activities.submit.pdf.not_provided") %>
+<% flow = @report.flow %>
+<% agency_name = @report.agency_name %>
+<% activity_types = @report.included_activity_types.map { |type|
+  t("activities.submit.pdf.activity_types.#{type}")
+}.to_sentence %>
 
 <% content_for :title, t("activities.submit.pdf.title") %>
+<% content_for :pdf_html_class, "bg-white" %>
+<% content_for :pdf_section_class, "padding-x-8" %>
 
-<h1>
-  <%= t("activities.submit.pdf.heading") %>
-</h1>
-<p>
-  <%= t("activities.submit.pdf.description") %>
-</p>
+<div class="font-sans-3xs">
+  <header>
+    <p class="font-heading-sm line-height-sans-2 margin-0 text-bold">
+      <span class="text-primary">
+        <%= t("activities.submit.pdf.product_name") %>
+      </span>
+      <span aria-hidden="true">
+        |
+      </span>
+      <span>
+        <%= agency_name %>
+      </span>
+    </p>
 
-<%= render TableComponent.new do |table| %>
-  <%= table.with_header do %>
+    <h1 class="margin-top-0 margin-bottom-1 padding-top-2">
+      <%= t("activities.submit.pdf.heading") %>
+    </h1>
+
+    <p class="margin-top-1">
+      <%= t(
+        "activities.submit.pdf.description",
+        activity_types: activity_types,
+        agency_name: agency_name
+      ) %>
+    </p>
+  </header>
+
+  <section class="margin-top-4">
     <h2>
-      <%= t("activities.submit.pdf.report_overview") %>
+      <%= t(
+        "activities.submit.pdf.client_and_report_information",
+        client_name: @report.client_name.presence || not_provided
+      ) %>
     </h2>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t("activities.submit.pdf.reporting_window")) %>
-    <% row.with_data_cell.with_content(@flow.reporting_window_display) %>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t("activities.submit.pdf.confirmation_code")) %>
-    <% row.with_data_cell.with_content(@flow.confirmation_code) %>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t("activities.submit.pdf.submitted_at")) %>
-    <% row.with_data_cell.with_content(l(@submission_timestamp, format: :long)) %>
-  <% end %>
-<% end %>
 
-<%= render TableComponent.new do |table| %>
-  <%= table.with_header do %>
-    <h2>
-      <%= t("activities.submit.pdf.summary_heading") %>
-    </h2>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t("activities.submit.pdf.community_service_count")) %>
-    <% row.with_data_cell.with_content(@community_service_activities.size) %>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t("activities.submit.pdf.work_programs_count")) %>
-    <% row.with_data_cell.with_content(@work_programs_activities.size) %>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t("activities.submit.pdf.education_count")) %>
-    <% row.with_data_cell.with_content(@education_activities.size) %>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t("activities.submit.pdf.income_activities")) %>
-    <% row.with_data_cell.with_content(@flow.payroll_accounts.size) %>
-  <% end %>
-  <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t("activities.submit.pdf.total_hours")) %>
-    <% row.with_data_cell.with_content(@total_hours) %>
-  <% end %>
-<% end %>
+    <table class="activity-report__report-information activity-report__table width-full">
+      <tbody>
+        <tr>
+          <th scope="row">
+            <%= t("activities.submit.pdf.date_range") %>
+          </th>
+          <td>
+            <%= t(
+              "activities.submit.pdf.date_range_value",
+              start_date: l(flow.reporting_window_range.begin, format: :long),
+              end_date: l(flow.reporting_window_range.end, format: :long)
+            ) %>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <%= t("activities.submit.pdf.confirmation_code") %>
+          </th>
+          <td>
+            <%= flow.confirmation_code.presence || not_provided %>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <%= t("activities.submit.pdf.report_created_at") %>
+          </th>
+          <td>
+            <%= l(@report.report_created_at.to_date, format: :long) %>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <%= t("activities.submit.pdf.agreement_consent_timestamp") %>
+          </th>
+          <td>
+            <% if flow.completed_at.present? %>
+              <%= l(flow.completed_at.utc, format: "%B %-d, %Y %H:%M:%S UTC") %>
+            <% else %>
+              <%= not_provided %>
+            <% end %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 
-<h2>
-<%= t("activities.education.title") %>
-</h2>
+  <% if @report.employment_entries.any? %>
+    <section class="margin-top-4">
+      <% @report.employment_entries.each_with_index do |entry, index| %>
+        <% if entry.payroll? %>
+          <% employment = @report.employment_summary_for(entry.record) %>
+          <% employer_name = employment[:employer_name].presence || not_provided %>
+          <% employment_type = (employment[:employment_type] || "w2").to_sym %>
+          <% if employment_type == :gig %>
+            <% monthly_summaries = @report.monthly_income_summaries_for(entry.record) %>
+            <% show_mileage = monthly_summaries.any? { |_month, summary| summary[:total_mileage].to_f.positive? } %>
+            <% columns = [
+              t("activities.summary.employment.month"),
+              t("activities.summary.employment.gross_income")
+            ] %>
+            <% columns << t("activities.submit.pdf.mileage_expenses") if show_mileage %>
+            <% columns << t("activities.summary.employment.community_engagement_hours") %>
+            <% rows = monthly_summaries.map do |month, summary|
+              row = [
+                l(month, format: :month_year),
+                format_money(summary[:accrued_gross_earnings])
+              ]
+              if show_mileage
+                cents_per_mile = federal_cents_per_mile(month.year)
+                miles = summary[:total_mileage].to_f.round
+                row << t(
+                  "activities.submit.pdf.mileage_expense_value",
+                  amount: format_money(miles * cents_per_mile),
+                  rate: format_money_with_subcents(cents_per_mile),
+                  miles: miles
+                )
+              end
+              row << format_decimal_amount(summary[:total_gig_hours])
+            end %>
+          <% else %>
+            <% columns = [
+              t("activities.summary.employment.month"),
+              t("activities.summary.employment.gross_income"),
+              t("activities.submit.pdf.number_of_paychecks"),
+              t("activities.submit.pdf.total_hours_worked")
+            ] %>
+            <% rows = @report.monthly_income_summaries_for(entry.record).map do |month, summary|
+              [
+                l(month, format: :month_year),
+                format_money(summary[:accrued_gross_earnings]),
+                summary[:paychecks_count],
+                format_decimal_amount(summary[:total_w2_hours])
+              ]
+            end %>
+          <% end %>
+          <% documents = [] %>
+        <% else %>
+          <% activity = entry.record %>
+          <% employer_name = activity.employer_name %>
+          <% columns = [
+            t("activities.summary.employment.month"),
+            t("activities.summary.employment.gross_income"),
+            t("activities.summary.employment.community_engagement_hours")
+          ] %>
+          <% rows = @report.activity_month_records(activity.employment_activity_months).map do |month, activity_month|
+            [
+              l(month, format: :month_year),
+              activity_month ? number_to_currency(activity_month.gross_income) : not_provided,
+              activity_month ? format_decimal_amount(activity_month.hours) : not_provided
+            ]
+          end %>
+          <% documents = @report.document_names_for(activity) %>
+        <% end %>
 
-<% if @education_activities.any? %>
-  <% @education_activities.each do |education_activity| %>
-    <% education_activity.nsc_enrollment_terms.each do |enrollment_term| %>
-      <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
-    <% end %>
-
-    <% if education_activity.additional_comments.present? %>
-      <h3><%= t("activities.summaries.show.additional_comments") %></h3>
-      <p><%= education_activity.additional_comments %></p>
-    <% end %>
-  <% end %>
-<% else %>
-  <%= t("activities.submit.pdf.no_education") %>
-<% end %>
-
-<h2>
-  <%= t("activities.submit.pdf.community_service_section") %>
-</h2>
-<% if @community_service_activities.any? %>
-  <%= render TableComponent.new(multi_column: true) do |table| %>
-    <%= table.with_header_cell(colspan: 1)
-           .with_content(t("activities.submit.pdf.organization_name")) %>
-    <%= table.with_header_cell(colspan: 1)
-           .with_content(t("activities.submit.pdf.hours")) %>
-    <%= table.with_header_cell(colspan: 1)
-           .with_content(t("activities.submit.pdf.date")) %>
-    <% @community_service_activities.each do |activity| %>
-      <% date_value = activity.date ? l(activity.date) : not_provided %>
-      <%= table.with_row do |row| %>
-        <% row.with_data_cell.with_content(activity.organization_name.presence || not_provided) %>
-        <% row.with_data_cell.with_content(activity.volunteering_activity_months.sum(:hours)) %>
-        <% row.with_data_cell.with_content(date_value) %>
+        <%= render "activities/submit/summary_activity",
+          section_heading: index.zero? ? t("activities.submit.pdf.employment_summary") : nil,
+          title: t("activities.submit.pdf.employer_title", number: index + 1, name: employer_name),
+          columns: columns,
+          rows: rows,
+          documents: documents %>
       <% end %>
-    <% end %>
+    </section>
   <% end %>
-<% else %>
-  <p>
-    <%= t("activities.submit.pdf.no_community_service") %>
-  </p>
-<% end %>
 
-<h2>
-  <%= t("activities.submit.pdf.work_programs_section") %>
-</h2>
-<% if @work_programs_activities.any? %>
-  <%= render TableComponent.new(multi_column: true) do |table| %>
-    <%= table.with_header_cell(colspan: 1)
-           .with_content(t("activities.submit.pdf.program_name")) %>
-    <%= table.with_header_cell(colspan: 1)
-           .with_content(t("activities.submit.pdf.organization_address")) %>
-    <%= table.with_header_cell(colspan: 1)
-           .with_content(t("activities.submit.pdf.hours")) %>
-    <% @work_programs_activities.each do |activity| %>
-      <% total_hours = activity.job_training_activity_months.sum(:hours) %>
-      <%= table.with_row do |row| %>
-        <% row.with_data_cell.with_content(activity.program_name.presence || not_provided) %>
-        <% row.with_data_cell.with_content(activity.organization_address.presence || not_provided) %>
-        <% row.with_data_cell.with_content(total_hours) %>
+  <% if @report.education_entries.any? %>
+    <section class="margin-top-4">
+      <% @report.education_entries.each_with_index do |entry, index| %>
+        <% activity = entry.activity %>
+        <% if activity.fully_self_attested? %>
+          <% columns = [
+            t("activities.summary.education.month"),
+            t("activities.summary.education.credit_hours"),
+            t("activities.summary.education.community_engagement_hours")
+          ] %>
+          <% rows = @report.activity_month_records(activity.education_activity_months).map do |month, activity_month|
+            [
+              l(month, format: :month_year),
+              activity_month ? format_decimal_amount(activity_month.hours) : not_provided,
+              activity_month ? format_decimal_amount(activity.community_engagement_hours(activity_month.hours)) : not_provided
+            ]
+          end %>
+        <% else %>
+          <% enrollment_terms = entry.enrollment_terms %>
+          <% show_credit_hours = enrollment_terms.any?(&:less_than_half_time?) %>
+          <% columns = [
+            t("activities.education.review.term"),
+            t("components.enrollment_term_table_component.enrollment_status")
+          ] %>
+          <% if show_credit_hours %>
+            <% columns += [
+              t("activities.summary.education.credit_hours"),
+              t("activities.summary.education.community_engagement_hours")
+            ] %>
+          <% end %>
+          <% rows = enrollment_terms.map do |term|
+            row = [
+              t(
+                "activities.submit.pdf.term_date_range",
+                start_date: format_date(term.term_begin),
+                end_date: format_date(term.term_end)
+              ),
+              term.enrollment_status_display
+            ]
+            if show_credit_hours
+              if term.less_than_half_time?
+                credit_hours = activity.review_term_credit_hours(term)
+                row += [
+                  format_decimal_amount(credit_hours),
+                  format_decimal_amount(activity.community_engagement_hours(credit_hours))
+                ]
+              else
+                row += [ t("shared.not_applicable"), t("shared.not_applicable") ]
+              end
+            end
+            row
+          end %>
+        <% end %>
+
+        <%= render "activities/submit/summary_activity",
+          section_heading: index.zero? ? t("activities.submit.pdf.education_summary") : nil,
+          title: t(
+            "activities.submit.pdf.institution_title",
+            number: index + 1,
+            name: entry.school_name.presence || not_provided
+          ),
+          columns: columns,
+          rows: rows,
+          documents: entry.documents %>
       <% end %>
-    <% end %>
+    </section>
   <% end %>
-<% else %>
-  <p>
-    <%= t("activities.submit.pdf.no_work_programs") %>
-  </p>
-<% end %>
 
-<h2>
-  <%= t("activities.submit.pdf.income_activities") %>
-</h2>
-<% if @flow.payroll_accounts.any? %>
-  <%= render TableComponent.new do |table| %>
-    <%= table.with_header_cell(colspan: 1)
-           .with_content(t("activities.employment.account_id")) %>
-    <%= table.with_header_cell(colspan: 1)
-           .with_content(t("activities.employment.synchronization_status")) %>
-    <% @flow.payroll_accounts.each do |payroll_account| %>
-      <%= table.with_row do |row| %>
-        <% row.with_data_cell.with_content(payroll_account.aggregator_account_id) %>
-        <% row.with_data_cell.with_content(payroll_account.synchronization_status) %>
+  <% if @report.community_service_activities.any? %>
+    <section class="margin-top-4">
+      <% @report.community_service_activities.each_with_index do |activity, index| %>
+        <% rows = @report.activity_month_records(activity.volunteering_activity_months).map do |month, activity_month|
+          [
+            l(month, format: :month_year),
+            activity_month ? format_decimal_amount(activity_month.hours) : not_provided
+          ]
+        end %>
+        <%= render "activities/submit/summary_activity",
+          section_heading: index.zero? ? t("activities.submit.pdf.community_service_summary") : nil,
+          title: t(
+            "activities.submit.pdf.organization_title",
+            number: index + 1,
+            name: activity.organization_name.presence || not_provided
+          ),
+          columns: [
+            t("activities.summary.community_service.month"),
+            t("activities.summary.community_service.community_engagement_hours")
+          ],
+          rows: rows,
+          documents: @report.document_names_for(activity) %>
       <% end %>
-    <% end %>
+    </section>
   <% end %>
-<% else %>
-  <p>
-    <%= t("activities.submit.pdf.no_income") %>
-  </p>
-<% end %>
 
-<p>
-  <%= t("activities.submit.pdf.disclaimer") %>
-</p>
+  <% if @report.work_program_activities.any? %>
+    <section class="margin-top-4">
+      <% @report.work_program_activities.each_with_index do |activity, index| %>
+        <% rows = @report.activity_month_records(activity.job_training_activity_months).map do |month, activity_month|
+          [
+            l(month, format: :month_year),
+            activity_month ? format_decimal_amount(activity_month.hours) : not_provided
+          ]
+        end %>
+        <%= render "activities/submit/summary_activity",
+          section_heading: index.zero? ? t("activities.submit.pdf.work_program_summary") : nil,
+          title: t(
+            "activities.submit.pdf.organization_title",
+            number: index + 1,
+            name: activity.program_name
+          ),
+          columns: [
+            t("activities.summary.job_training.month"),
+            t("activities.summary.job_training.community_engagement_hours")
+          ],
+          rows: rows,
+          documents: @report.document_names_for(activity) %>
+      <% end %>
+    </section>
+  <% end %>
+
+  <% if @report.employment_entries.any? %>
+    <section class="margin-top-4">
+      <% @report.employment_entries.each_with_index do |entry, index| %>
+        <% if entry.payroll? %>
+          <% employment = @report.employment_summary_for(entry.record) %>
+          <% employment_type = (employment[:employment_type] || "w2").to_sym %>
+          <% payroll_details = @report.payroll_details_for(entry.record) %>
+          <% employer_name = employment[:employer_name].presence || not_provided %>
+          <% details = [
+            [ t("activities.summary.employment.address"), employment[:employer_address] ],
+            [
+              t("activities.summary.employment.contact_phone"),
+              number_to_phone(employment[:employer_phone_number], area_code: true)
+            ]
+          ] %>
+          <% if employment_type == :w2 %>
+            <% income = payroll_details&.income %>
+            <% pay_frequency = translate_aggregator_value("payment_frequencies", income&.pay_frequency) %>
+            <% details += [
+              [ t("activities.submit.pdf.pay_period_frequency"), pay_frequency ],
+              [ t("activities.submit.pdf.employment_status"), employment[:employment_status] ]
+            ] %>
+          <% end %>
+          <% comments = entry.record.additional_information %>
+        <% else %>
+          <% activity = entry.record %>
+          <% employer_name = activity.employer_name %>
+          <% details = [
+            [ t("activities.summary.employment.address"), activity.formatted_address ]
+          ] %>
+          <% unless activity.is_self_employed %>
+            <% details += [
+              [ t("activities.summary.employment.contact_name"), activity.contact_name ],
+              [ t("activities.summary.employment.contact_email"), activity.contact_email ],
+              [
+                t("activities.summary.employment.contact_phone"),
+                number_to_phone(activity.contact_phone_number, area_code: true)
+              ]
+            ] %>
+          <% end %>
+          <% comments = activity.additional_comments %>
+        <% end %>
+
+        <%= render "activities/submit/detail_activity",
+          section_heading: index.zero? ? t("activities.submit.pdf.employment_details") : nil,
+          title: t("activities.submit.pdf.employer_title", number: index + 1, name: employer_name),
+          comments: comments,
+          information_heading: t("shared.table_headers.employer_information"),
+          details: details %>
+
+        <% if entry.payroll? && payroll_details&.paystubs&.any? %>
+          <%= render "activities/submit/payroll_payments",
+            employer_name: employer_name,
+            not_provided: not_provided,
+            payroll_details: payroll_details,
+            w2: employment_type == :w2 %>
+        <% end %>
+      <% end %>
+    </section>
+  <% end %>
+
+  <% if @report.education_entries.any? %>
+    <section class="margin-top-4">
+      <% @report.education_entries.each_with_index do |entry, index| %>
+        <% activity = entry.activity %>
+        <% education_details = [] %>
+        <% if activity.fully_self_attested? %>
+          <% education_details = [
+            [ t("activities.submit.pdf.address"), activity.formatted_address ],
+            [ t("activities.submit.pdf.school_contact_name"), activity.contact_name ],
+            [ t("activities.submit.pdf.school_contact_email"), activity.contact_email ],
+            [
+              t("activities.submit.pdf.school_contact_phone_number"),
+              number_to_phone(activity.contact_phone_number, area_code: true)
+            ]
+          ] %>
+        <% end %>
+        <%= render "activities/submit/detail_activity",
+          section_heading: index.zero? ? t("activities.submit.pdf.education_details") : nil,
+          title: t(
+            "activities.submit.pdf.institution_title",
+            number: index + 1,
+            name: entry.school_name.presence || not_provided
+          ),
+          comments: entry.comments,
+          information_heading: t("activities.submit.pdf.institution_information"),
+          details: education_details %>
+      <% end %>
+    </section>
+  <% end %>
+
+  <% if @report.community_service_activities.any? %>
+    <section class="margin-top-4">
+      <% @report.community_service_activities.each_with_index do |activity, index| %>
+        <%= render "activities/submit/detail_activity",
+          section_heading: index.zero? ? t("activities.submit.pdf.community_service_details") : nil,
+          title: t(
+            "activities.submit.pdf.organization_title",
+            number: index + 1,
+            name: activity.organization_name.presence || not_provided
+          ),
+          comments: activity.additional_comments,
+          information_heading: t("activities.submit.pdf.organization_information"),
+          details: [
+            [ t("activities.submit.pdf.address"), activity.formatted_address ],
+            [ t("activities.submit.pdf.organization_contact_name"), activity.coordinator_name ],
+            [ t("activities.submit.pdf.organization_contact_email"), activity.coordinator_email ],
+            [
+              t("activities.submit.pdf.organization_contact_phone_number"),
+              number_to_phone(activity.coordinator_phone_number, area_code: true)
+            ]
+          ] %>
+      <% end %>
+    </section>
+  <% end %>
+
+  <% if @report.work_program_activities.any? %>
+    <section class="margin-top-4">
+      <% @report.work_program_activities.each_with_index do |activity, index| %>
+        <%= render "activities/submit/detail_activity",
+          section_heading: index.zero? ? t("activities.submit.pdf.work_program_details") : nil,
+          title: t(
+            "activities.submit.pdf.organization_title",
+            number: index + 1,
+            name: activity.program_name
+          ),
+          comments: activity.additional_comments,
+          information_heading: t("activities.submit.pdf.organization_information"),
+          details: [
+            [ t("activities.submit.pdf.address"), activity.formatted_address ],
+            [ t("activities.submit.pdf.organization_contact_name"), activity.contact_name ],
+            [ t("activities.submit.pdf.organization_contact_email"), activity.contact_email ],
+            [
+              t("activities.submit.pdf.organization_contact_phone_number"),
+              number_to_phone(activity.contact_phone_number, area_code: true)
+            ]
+          ] %>
+      <% end %>
+    </section>
+  <% end %>
+</div>

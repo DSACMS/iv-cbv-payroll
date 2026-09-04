@@ -1,0 +1,56 @@
+<section class="margin-top-2">
+  <% if w2 %>
+    <% payroll_details.paystubs.each_with_index do |paystub, index| %>
+      <div class="activity-report__activity">
+        <%= render(TableComponent.new(
+          class_names: "activity-report__table font-sans-3xs margin-0 margin-bottom-2 maxw-none"
+        )) do |table| %>
+          <%= table.with_header_cell(scope: "col").with_content(
+            t("activities.submit.pdf.payment_information", number: index + 1)
+          ) %>
+          <%= table.with_header_cell(scope: "col").with_content(t("shared.table_headers.your_details")) %>
+
+          <%= table.with_data_point(:pay_date, paystub.pay_date) %>
+          <%= table.with_data_point(:pay_gross, paystub.gross_pay_amount) %>
+          <% if paystub.hours.present? %>
+            <%= table.with_data_point(:number_of_hours_worked, paystub.hours) %>
+          <% else %>
+            <%= table.with_row do |row| %>
+              <% row.with_data_cell(is_header: true, scope: "row")
+                .with_content(t("cbv.payment_details.show.number_of_hours_worked")) %>
+              <% row.with_data_cell.with_content(not_provided) %>
+            <% end %>
+          <% end %>
+          <%= table.with_row do |row| %>
+            <% row.with_data_cell(is_header: true, scope: "row")
+              .with_content(t("activities.submit.pdf.hourly_wage_hours_paid")) %>
+            <% row.with_data_cell.with_content(
+              payroll_details.income&.compensation_amount.present? ?
+                format_money(payroll_details.income.compensation_amount) :
+                not_provided
+            ) %>
+          <% end %>
+          <% paystub.deductions.select { |deduction| deduction.amount.to_f.nonzero? }.each do |deduction| %>
+            <%= table.with_data_point(:deduction, deduction.category, deduction.tax || "unknown", deduction.amount) %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="activity-report__activity">
+      <h4 class="margin-bottom-1">
+        <%= t("components.report.monthly_summary_table.payments_from_header", employer_name: employer_name) %>
+      </h4>
+      <p class="margin-y-1">
+        <%= t("activities.submit.pdf.gig_payments_description", employer_name: employer_name) %>
+      </p>
+      <ul class="usa-list margin-top-1">
+        <% payroll_details.paystubs.each do |paystub| %>
+          <li>
+            <%= format_date(paystub.pay_date, "%m/%d/%Y") %> - <%= format_money(paystub.gross_pay_amount) %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</section>

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DocumentUploadsComponent < ViewComponent::Base
-  def initialize(documents:, show_remove_file: false, heading_level: 2, edit_path: nil, edit_label: nil, full_width: false, previously_uploaded: false)
+  def initialize(documents:, show_remove_file: false, heading_level: 2, edit_path: nil, edit_label: nil, full_width: false, previously_uploaded: false, pdf: false)
     @documents = documents
     @show_remove_file = show_remove_file
     @heading_level = heading_level
@@ -9,15 +9,17 @@ class DocumentUploadsComponent < ViewComponent::Base
     @edit_label = edit_label
     @full_width = full_width
     @previously_uploaded = previously_uploaded
+    @pdf = pdf
   end
 
   private
 
-  attr_reader :documents, :heading_level, :edit_path
+  attr_reader :documents, :heading_level, :edit_path, :pdf
 
   def section_class
     classes = [ "document-uploads" ]
     classes << "document-uploads--full-width" if @full_width
+    classes << "margin-bottom-0" if pdf
     classes.join(" ")
   end
 
@@ -46,5 +48,9 @@ class DocumentUploadsComponent < ViewComponent::Base
 
   def icon_path
     helpers.uswds_sprite_icon_href("file_present")
+  end
+
+  def pdf_icon_path
+    helpers.wicked_pdf_asset_base64("@uswds/uswds/dist/img/usa-icons/file_present.svg")
   end
 end

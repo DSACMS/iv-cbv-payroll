@@ -256,7 +256,6 @@ en:
         header: Let's verify your student enrollment
         last_name: Last name
     employment:
-      account_id: Account ID
       add_your_work:
         show:
           description: If you held multiple jobs during the reporting period, you'll need to add each job separately.
@@ -301,7 +300,6 @@ en:
         name: Name
         save: Save and add to my report
         title: Review your employment information for %{employer_name}
-      synchronization_status: Status
       title: Employment
       title_singular: Employment
     employment_info:
@@ -447,32 +445,53 @@ en:
       consent_required: Please check the legal agreement box to share your report.
       description: Your report will be sent to %{agency_name}. You must check the legal agreement box to share your report.
       pdf:
-        community_service_count: Community service activities
-        community_service_section: Community service activities
+        activity_comments: Activity comments
+        activity_types:
+          community_service: community service
+          education: education
+          employment: employment
+          work_programs: work program
+        address: Address
+        agreement_consent_timestamp: Agreement consent timestamp
+        client_and_report_information: 'Client and report information: %{client_name}'
+        community_service_details: Community service
+        community_service_summary: Community service summary
         confirmation_code: Confirmation code
-        date: Date
-        description: The following information was provided by the Medicaid client for verification of the Community Engagement Requirements.
-        disclaimer: This report is based on the activities you entered. Contact your agency if you need to make a correction.
-        education_count: Education activities
-        heading: Your Medicaid Community Engagement Activity report
-        hours: Hours
-        income_activities: Employment activities
-        no_community_service: No community service activities were reported.
-        no_education: No education activities were reported.
-        no_income: No employment activities were reported.
-        no_work_programs: No work program activities were reported.
+        date_range: Date range for report
+        date_range_value: "%{start_date} to %{end_date}"
+        description: We have collected %{activity_types} information with your consent and sent it to %{agency_name}. Any additional income that you weren’t able to add to this report should be shared separately with %{agency_name}.
+        education_details: Education details
+        education_summary: Education summary
+        employer_title: 'Employer %{number}: %{name}'
+        employment_details: Employment details
+        employment_status: Employment status
+        employment_summary: Employment summary
+        gig_payments_description: 'These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount:'
+        heading: Community Engagement Report
+        hourly_wage_hours_paid: 'Hourly wage: Hours paid'
+        institution_information: Institution information
+        institution_title: 'Institution %{number}: %{name}'
+        mileage_expense_value: "%{amount} (%{rate} x %{miles} miles)"
+        mileage_expenses: Mileage expenses
         not_provided: Not provided
-        organization_address: Organization address
-        organization_name: Organization
-        program_name: Program name
-        report_overview: Report overview
-        reporting_window: Reporting window
-        submitted_at: Submitted on
-        summary_heading: Activity summary
-        title: Community Engagement activity report
-        total_hours: Total hours reported
-        work_programs_count: Work program activities
-        work_programs_section: Work program and education
+        number_of_paychecks: Number of paychecks
+        organization_contact_email: Organization contact email
+        organization_contact_name: Organization contact name
+        organization_contact_phone_number: Organization contact phone number
+        organization_information: Organization information
+        organization_title: 'Organization %{number}: %{name}'
+        pay_period_frequency: Pay period frequency
+        payment_information: Payment information (%{number})
+        product_name: Emmy Community Engagement
+        report_created_at: Date report was created
+        school_contact_email: School contact email
+        school_contact_name: School contact name
+        school_contact_phone_number: School contact phone number
+        term_date_range: "%{start_date} to %{end_date}"
+        title: Community Engagement Report
+        total_hours_worked: Total hours worked
+        work_program_details: Work program
+        work_program_summary: Work program summary
       title: Submit your Medicaid community engagement report
     success:
       show:
