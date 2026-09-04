@@ -70,6 +70,7 @@ class JsonApiReceiver < Sinatra::Base
     end
 
     file_path = File.expand_path("../tmp/transmitted_activity_report.json", __dir__)
+    FileUtils.mkdir_p(File.dirname(file_path))
     File.write(file_path, JSON.pretty_generate(report))
     puts "CE activity report written successfully to #{file_path}"
 
@@ -87,6 +88,7 @@ class JsonApiReceiver < Sinatra::Base
 
     begin
       file_path = File.expand_path("../tmp/transmitted_pdf.pdf", __dir__)
+      FileUtils.mkdir_p(File.dirname(file_path))
       File.open(file_path, "wb") do |file|
         file.write(pdf_content)
       end

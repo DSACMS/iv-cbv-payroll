@@ -54,6 +54,15 @@ RSpec.describe ActivityReportSerializer do
     )
   end
 
+  it "reports blank applicant names as null in both the agency and individual objects" do
+    cbv_applicant.update!(middle_name: "", last_name: "")
+
+    expect(report["ce_report"]["individual"]["name"]).to eq(
+      "first" => "Jane", "middle" => nil, "last" => nil
+    )
+    expect(report["agency"]).to include("middle_name" => nil, "last_name" => nil)
+  end
+
   it "groups activities by type at the top level and by month within each type" do
     volunteering = create(:volunteering_activity, activity_flow: activity_flow)
     create(:volunteering_activity_month, volunteering_activity: volunteering, month: first_month, hours: 40)

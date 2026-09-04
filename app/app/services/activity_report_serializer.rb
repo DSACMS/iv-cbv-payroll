@@ -82,9 +82,9 @@ class ActivityReportSerializer
   def individual
     {
       "name" => {
-        "first" => applicant.first_name,
-        "middle" => applicant.middle_name,
-        "last" => applicant.last_name
+        "first" => json_value(applicant.first_name),
+        "middle" => json_value(applicant.middle_name),
+        "last" => json_value(applicant.last_name)
       },
       "extended_attributes" => {}
     }

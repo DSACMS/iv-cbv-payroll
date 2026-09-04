@@ -1,3 +1,5 @@
+require "uri"
+
 module Transmitter
   attr_reader :current_agency
 
