@@ -53,6 +53,14 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(response.body).to include(I18n.t("activities.submit.title"))
     end
 
+    it "prevents the PDF response from being cached" do
+      get :show, format: :pdf
+
+      expect(response.headers["Cache-Control"]).to include("no-store")
+      expect(response.headers["Pragma"]).to eq("no-cache")
+      expect(response.headers["Expires"]).to eq("#{1.year.ago}")
+    end
+
     it "renders the submitted activity summaries and details from the approved design" do
       activity_flow.update!(completed_at: frozen_time, confirmation_code: test_confirmation_code)
       employment = create(

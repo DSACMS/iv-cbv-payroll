@@ -9,6 +9,10 @@ class Activities::SubmitController < Activities::BaseController
   private
 
   def render_pdf
+    response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "#{1.year.ago}"
+
     @report = ActivityPdfReport.new(
       flow: @flow,
       caseworker: internal_environment? && params[:is_caseworker] == "true"
