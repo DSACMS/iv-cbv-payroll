@@ -81,7 +81,11 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       let(:perform_tracked_action) { post :create, params: { employment_activity: { employer_name: "" } } }
 
       before do
-        allow_any_instance_of(EmploymentActivity).to receive(:save).and_return(false)
+        allow_any_instance_of(EmploymentActivity).to receive(:save).and_wrap_original do |original_method, *args, &block|
+          instance = original_method.receiver
+          instance.errors.add(:employer_name, :blank)
+          false
+        end
       end
 
       it_behaves_like "tracks an event", TrackEvent::EmploymentInfoValidationFailed,
@@ -143,7 +147,11 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
     context "when validation fails" do
       before do
-        allow_any_instance_of(EmploymentActivity).to receive(:update).and_return(false)
+        allow_any_instance_of(EmploymentActivity).to receive(:update).and_wrap_original do |original_method, *args, &block|
+          instance = original_method.receiver
+          instance.errors.add(:employer_name, :blank)
+          false
+        end
       end
 
       it_behaves_like "tracks an event", TrackEvent::EmploymentInfoValidationFailed,
