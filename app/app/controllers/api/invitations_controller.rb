@@ -71,11 +71,17 @@ class Api::InvitationsController < ApplicationController
   end
 
   def allowed_metadata_params
+    metadata = CbvApplicant.build_agency_partner_metadata(@current_user.client_agency_id) do |attr|
+      params[:agency_partner_metadata][attr]
+    end
+
+    # Always filter out individual_id since it is not a valid attribute for V1 invitations (It is for V2).
+    filtered = metadata.reject do |key, value|
+      %w[individual_id].include?(key)
+    end
     # Allow params in the VALID_ATTRIBUTES array for the relevant agency
     # CbvApplicant subclass.
-    ActionController::Parameters.new(
-      CbvApplicant.build_agency_partner_metadata(@current_user.client_agency_id) { |attr| params[:agency_partner_metadata][attr] }
-    )
+    ActionController::Parameters.new(filtered)
   end
 
   def authenticate

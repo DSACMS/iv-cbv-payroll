@@ -685,6 +685,8 @@ en:
             help_text: 'For example: January 19 2000'
             prompt: Your date of birth
             super_one_html: Date of birth<sup>1</sup>
+          doc_id_or_individual_id:
+            blank: Either doc_id or individual_id is required
       nh_dhhs:
         fields:
           case_number:
@@ -911,6 +913,7 @@ en:
             doc_id: Doc ID
             how_to: This report includes payment information from the past 90 days. In most cases, you only need to review income from the last 30 days for eligibility purposes. Use data beyond the 30-day period only if necessary. Key fields for income verification are highlighted in yellow.
             how_to_header: 'How to use this report:'
+            individual_id: Individual ID
             pay_period: Pay period (%{pay_frequency})
             snap_agency_id: SNAP Agency ID
             ssn: SSN
