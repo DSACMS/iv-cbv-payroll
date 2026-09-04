@@ -67,8 +67,10 @@
         <% I18n.available_locales.each do |locale| %>
           <% next if locale == I18n.locale %>
           <li class="usa-nav__primary-item">
-          <%# Commented out for now, will be added back in when we have completed translations %>
-            <%#= switch_locale_link(locale) %>
+          <%# Gated to only show on income side, will be added back to CE when translations completed %>
+            <% if !activity_flow? %>
+              <%= switch_locale_link(locale) %>
+            <% end %>
           </li>
         <% end %>
       </ul>

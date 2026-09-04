@@ -5,7 +5,7 @@ RSpec.describe "Locale persistence across pages", :js, type: :feature do
 
   let(:cbv_flow_invitation) { create(:cbv_flow_invitation, :sandbox) }
 
-  it "persists locale and allows switching back", skip: 'Translations not complete - FFS-4642' do
+  it "persists locale and allows switching back" do
     # Visit the entry page via invitation URL (in English by default)
     visit URI(cbv_flow_invitation.to_url).request_uri
     verify_page(page, title: I18n.t("cbv.entries.show.header", locale: :en))
