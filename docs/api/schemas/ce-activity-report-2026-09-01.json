@@ -239,12 +239,13 @@
               },
               {
                 "type": "object",
-                "required": [
-                  "organization_name"
-                ],
                 "properties": {
                   "organization_name": {
-                    "type": "string"
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Soft required. Emmy does not enforce presence, so the key is always sent but the value may be null."
                   },
                   "coordinator_name": {
                     "type": [
