@@ -21,7 +21,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
 
 
 
-  it_behaves_like "Transmitters::BasePdfTransmitter"
+  it_behaves_like "IncomeTransmitter#pdf_output"
   it_behaves_like "Transmitter#signature"
 
   describe "#deliver" do

@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0.0",
+  "confirmation_code": "SANDBOX123",
+  "completed_at": "2026-08-11T14:00:00Z",
+  "agency": {
+    "first_name": "Jane",
+    "middle_name": "A",
+    "last_name": "Doe",
+    "case_number": "CASE-2026-00987",
+    "date_of_birth": "1990-04-15",
+    "extended_attributes": {}
+  },
+  "ce_report": {
+    "review_period": {
+      "start_month": "2026-06",
+      "end_month": "2026-07"
+    },
+    "individual": {
+      "name": {
+        "first": "Jane",
+        "middle": "A",
+        "last": "Doe"
+      },
+      "extended_attributes": {}
+    },
+    "documents": [
+      {
+        "document_id": "DOC-001",
+        "document_name": "SANDBOX123_work_programs_wioa_participation_letter.pdf",
+        "file_type": "pdf"
+      }
+    ],
+    "activities": {
+      "community_service": {
+        "2026-06": [
+          {
+            "type": "community_service",
+            "organization_name": "Local Food Bank",
+            "street_address": "1 Main St",
+            "street_address_line_2": null,
+            "city": "New Orleans",
+            "state": "LA",
+            "zip_code": "70112",
+            "coordinator_name": "Jane Smith",
+            "coordinator_email": "jane@example.org",
+            "coordinator_phone_number": "5045551234",
+            "additional_comments": null,
+            "month": "2026-06",
+            "hours": 40.0,
+            "data_source": "self_attested",
+            "document_ids": [],
+            "extended_attributes": {}
+          }
+        ],
+        "2026-07": [
+          {
+            "type": "community_service",
+            "organization_name": "Local Food Bank",
+            "street_address": "1 Main St",
+            "street_address_line_2": null,
+            "city": "New Orleans",
+            "state": "LA",
+            "zip_code": "70112",
+            "coordinator_name": "Jane Smith",
+            "coordinator_email": "jane@example.org",
+            "coordinator_phone_number": "5045551234",
+            "additional_comments": null,
+            "month": "2026-07",
+            "hours": 40.0,
+            "data_source": "self_attested",
+            "document_ids": [],
+            "extended_attributes": {}
+          }
+        ]
+      },
+      "work_program": {
+        "2026-06": [
+          {
+            "type": "work_program",
+            "organization_name": "Goodwill",
+            "program_name": "WIOA",
+            "street_address": "123 Main St",
+            "street_address_line_2": null,
+            "city": "Baton Rouge",
+            "state": "LA",
+            "zip_code": "70802",
+            "contact_name": "Casey Doe",
+            "contact_email": "casey@example.org",
+            "contact_phone_number": "5045555678",
+            "additional_comments": null,
+            "month": "2026-06",
+            "hours": 20.0,
+            "data_source": "self_attested",
+            "document_ids": [
+              "DOC-001"
+            ],
+            "extended_attributes": {}
+          }
+        ],
+        "2026-07": [
+          {
+            "type": "work_program",
+            "organization_name": "Goodwill",
+            "program_name": "WIOA",
+            "street_address": "123 Main St",
+            "street_address_line_2": null,
+            "city": "Baton Rouge",
+            "state": "LA",
+            "zip_code": "70802",
+            "contact_name": "Casey Doe",
+            "contact_email": "casey@example.org",
+            "contact_phone_number": "5045555678",
+            "additional_comments": null,
+            "month": "2026-07",
+            "hours": 20.0,
+            "data_source": "self_attested",
+            "document_ids": [
+              "DOC-001"
+            ],
+            "extended_attributes": {}
+          }
+        ]
+      }
+    },
+    "extended_attributes": {}
+  }
+}

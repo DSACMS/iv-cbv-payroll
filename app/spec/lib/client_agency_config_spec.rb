@@ -22,6 +22,8 @@ RSpec.describe ClientAgencyConfig do
           environment: foo
         income_flow_transmission_method: foo
         activity_flow_transmission_method: encrypted_s3
+        activity_transmission_method_configuration:
+          bucket: activity-bucket
       - id: bar
         agency_name: Bar Agency Name
         pinwheel:
@@ -167,11 +169,145 @@ RSpec.describe ClientAgencyConfig do
       ) do
         config = described_class.new(Rails.root.join("config/client-agency-config.yml"))
 
-        expect(config["sandbox"].transmission_method_configuration).to include(
+        expect(config["sandbox"].activity_transmission_method_configuration).to include(
           "bucket" => "outbound-bucket",
           "s3_directory" => "outbound-directory"
         )
       end
+    end
+  end
+
+  context "activity flow transmission endpoints" do
+    def config_for(activity_method, activity_configuration)
+      allow(File).to receive(:read).with(sample_config_path).and_return(<<~YAML)
+        - id: foo
+          agency_name: foo
+          pinwheel:
+            environment: foo
+          argyle:
+            environment: foo
+          income_flow_transmission_method: shared_email
+          activity_flow_transmission_method: #{activity_method}
+          activity_transmission_method_configuration:
+        #{activity_configuration}
+      YAML
+
+      described_class.new(sample_config_path)
+    end
+
+    it "accepts an absolute HTTPS endpoint" do
+      config = config_for("json", "    json_api_url: https://api.example.gov/v1/ce-activity-report")
+
+      expect(config["foo"].activity_transmission_method_configuration)
+        .to eq("json_api_url" => "https://api.example.gov/v1/ce-activity-report")
+    end
+
+    it "does not require an endpoint for transmission methods that do not POST" do
+      config = config_for("encrypted_s3", "    bucket: outbound-bucket")
+
+      expect(config["foo"].activity_flow_transmission_method).to eq("encrypted_s3")
+    end
+
+    it "does not require an endpoint when the agency does not transmit activity flows" do
+      allow(File).to receive(:read).with(sample_config_path).and_return(<<~YAML)
+        - id: foo
+          agency_name: foo
+          pinwheel:
+            environment: foo
+          argyle:
+            environment: foo
+          income_flow_transmission_method: shared_email
+      YAML
+
+      config = described_class.new(sample_config_path)
+
+      expect(config["foo"].activity_flow_transmission_method).to be_blank
+      expect(config["foo"].activity_transmission_method_configuration).to be_nil
+    end
+
+    it "raises when an agency sets a transmission method without its configuration" do
+      expect do
+        allow(File).to receive(:read).with(sample_config_path).and_return(<<~YAML)
+          - id: foo
+            agency_name: foo
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+            transmission_method_configuration:
+              bucket: income-bucket
+            activity_flow_transmission_method: encrypted_s3
+        YAML
+
+        described_class.new(sample_config_path)
+      end.to raise_error(
+        ArgumentError,
+        "Client Agency foo sets `activity_flow_transmission_method` but is missing `activity_transmission_method_configuration`"
+      )
+    end
+
+    it "raises when an agency sets a configuration without a transmission method" do
+      expect do
+        allow(File).to receive(:read).with(sample_config_path).and_return(<<~YAML)
+          - id: foo
+            agency_name: foo
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+            activity_transmission_method_configuration:
+              bucket: activity-bucket
+        YAML
+
+        described_class.new(sample_config_path)
+      end.to raise_error(
+        ArgumentError,
+        "Client Agency foo sets `activity_transmission_method_configuration` but is missing `activity_flow_transmission_method`"
+      )
+    end
+
+    it "keeps activity configuration distinct from income configuration" do
+      allow(File).to receive(:read).with(sample_config_path).and_return(<<~YAML)
+        - id: foo
+          agency_name: foo
+          pinwheel:
+            environment: foo
+          argyle:
+            environment: foo
+          income_flow_transmission_method: json
+          transmission_method_configuration:
+            json_api_url: https://income.example.gov/v1/income-report
+          activity_flow_transmission_method: json
+          activity_transmission_method_configuration:
+            json_api_url: https://ce.example.gov/v1/ce-activity-report
+      YAML
+
+      config = described_class.new(sample_config_path)
+
+      expect(config["foo"].transmission_method_configuration)
+        .to eq("json_api_url" => "https://income.example.gov/v1/income-report")
+      expect(config["foo"].activity_transmission_method_configuration)
+        .to eq("json_api_url" => "https://ce.example.gov/v1/ce-activity-report")
+    end
+
+    it "does not inherit income transmission configuration when the activity block is absent" do
+      allow(File).to receive(:read).with(sample_config_path).and_return(<<~YAML)
+        - id: foo
+          agency_name: foo
+          pinwheel:
+            environment: foo
+          argyle:
+            environment: foo
+          income_flow_transmission_method: shared_email
+          transmission_method_configuration:
+            bucket: income-bucket
+      YAML
+
+      config = described_class.new(sample_config_path)
+
+      expect(config["foo"].activity_transmission_method_configuration).to be_nil
     end
   end
 
@@ -208,6 +344,69 @@ RSpec.describe ClientAgencyConfig do
           expect do
             described_class.new(sample_config_path)
           end.to raise_error(ArgumentError, "Client Agency foo missing required attribute `agency_name`")
+        end
+      end
+
+      context "activity flow transmits over HTTP without a documents endpoint" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+            activity_flow_transmission_method: http
+            activity_transmission_method_configuration:
+              documents_api_url:
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo `documents_api_url` must be an absolute HTTP(S) URL, got nil")
+        end
+      end
+
+      context "activity flow transmits JSON to a malformed endpoint" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+            activity_flow_transmission_method: json
+            activity_transmission_method_configuration:
+              json_api_url: not a url
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, 'Client Agency foo `json_api_url` must be an absolute HTTP(S) URL, got "not a url"')
+        end
+      end
+
+      context "activity flow transmits JSON to a relative endpoint" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+            activity_flow_transmission_method: json
+            activity_transmission_method_configuration:
+              json_api_url: /api/v1/ce-activity-report
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, 'Client Agency foo `json_api_url` must be an absolute HTTP(S) URL, got "/api/v1/ce-activity-report"')
         end
       end
 

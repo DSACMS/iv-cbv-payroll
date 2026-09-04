@@ -28,7 +28,7 @@ RSpec.describe Transmitters::SftpTransmitter do
     allow(Transmitters::PdfFilenameFormatter).to receive(:format).and_return(formatted_filename)
   end
 
-  it_behaves_like "Transmitters::BasePdfTransmitter"
+  it_behaves_like "IncomeTransmitter#pdf_output"
 
   describe "#pdf_filename_format" do
     subject(:pdf_filename_format) { transmitter.send(:pdf_filename_format) }

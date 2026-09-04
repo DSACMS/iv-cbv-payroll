@@ -1,6 +1,7 @@
-class Transmitters::JsonAndPdfTransmitter < Transmitters::BasePdfTransmitter
+class Transmitters::JsonAndPdfTransmitter
+  include IncomeTransmitter
+
   TRANSMISSION_METHOD = "json_and_pdf"
-  include Transmitter
 
   def deliver
     begin
