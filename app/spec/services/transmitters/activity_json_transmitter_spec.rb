@@ -90,6 +90,20 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       expect(errors).to eq([])
     end
 
+    it "still matches the schema when an unenforced field is blank" do
+      blank = activity_flow.volunteering_activities.new(organization_name: "", draft: true)
+      blank.save!
+      blank.publish!
+      create(:volunteering_activity_month, volunteering_activity: blank,
+        month: activity_flow.reporting_months.first, hours: 5)
+
+      errors = JSONSchemer.schema(JSON.parse(schema_path.read))
+        .validate(JSON.parse(transmitter.payload))
+        .map { |error| error.slice("data_pointer", "type", "error") }
+
+      expect(errors).to eq([])
+    end
+
     it "matches the published sample report shared with agencies" do
       expect(JSON.parse(transmitter.payload)).to eq(JSON.parse(sample_path.read))
     end

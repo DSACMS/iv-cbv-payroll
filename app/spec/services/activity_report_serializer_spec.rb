@@ -238,12 +238,12 @@ RSpec.describe ActivityReportSerializer do
       expect(report["ce_report"]["documents"]).to eq([
         {
           "document_id" => "DOC-001",
-          "document_name" => "SANDBOX123_community_service_time_sheet_1.pdf",
+          "document_name" => "SANDBOX123_community_service_time_sheet.pdf",
           "file_type" => "pdf"
         },
         {
           "document_id" => "DOC-002",
-          "document_name" => "SANDBOX123_work_programs_wioa_participation_letter_1.pdf",
+          "document_name" => "SANDBOX123_work_programs_wioa_participation_letter.pdf",
           "file_type" => "pdf"
         }
       ])

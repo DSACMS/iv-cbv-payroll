@@ -12,15 +12,74 @@ RSpec.describe ActivityDocumentsService do
     )
   end
 
-  it "names each document after the flow, activity type, document name, and page number" do
+  it "names each document after the flow, activity type, and document name" do
+    volunteering = create(:volunteering_activity, activity_flow: activity_flow)
+    attach_document(volunteering, "Time Sheet.PDF")
+
+    expect(described_class.new(activity_flow).all.map(&:file_name))
+      .to eq([ "SANDBOX123_community_service_time_sheet.pdf" ])
+  end
+
+  it "does not number documents whose names differ only by extension" do
     volunteering = create(:volunteering_activity, activity_flow: activity_flow)
     attach_document(volunteering, "Time Sheet.PDF")
     attach_document(volunteering, "Time Sheet.jpg")
 
     expect(described_class.new(activity_flow).all.map(&:file_name)).to eq([
-      "SANDBOX123_community_service_time_sheet_1.pdf",
-      "SANDBOX123_community_service_time_sheet_2.jpg"
+      "SANDBOX123_community_service_time_sheet.pdf",
+      "SANDBOX123_community_service_time_sheet.jpg"
     ])
+  end
+
+  it "numbers only the documents that would otherwise collide" do
+    volunteering = create(:volunteering_activity, activity_flow: activity_flow)
+    3.times { attach_document(volunteering, "Time Sheet.pdf") }
+
+    expect(described_class.new(activity_flow).all.map(&:file_name)).to eq([
+      "SANDBOX123_community_service_time_sheet.pdf",
+      "SANDBOX123_community_service_time_sheet_2.pdf",
+      "SANDBOX123_community_service_time_sheet_3.pdf"
+    ])
+  end
+
+  it "numbers collisions across separate activities of the same type" do
+    first = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Food Bank")
+    attach_document(first, "Timesheet.pdf")
+    second = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Animal Shelter")
+    attach_document(second, "Timesheet.pdf")
+
+    expect(described_class.new(activity_flow).all.map(&:file_name)).to eq([
+      "SANDBOX123_community_service_timesheet.pdf",
+      "SANDBOX123_community_service_timesheet_2.pdf"
+    ])
+  end
+
+  it "does not number the same document name used by different activity types" do
+    volunteering = create(:volunteering_activity, activity_flow: activity_flow)
+    attach_document(volunteering, "Timesheet.pdf")
+    job_training = create(:job_training_activity, activity_flow: activity_flow)
+    attach_document(job_training, "Timesheet.pdf")
+
+    expect(described_class.new(activity_flow).all.map(&:file_name)).to eq([
+      "SANDBOX123_community_service_timesheet.pdf",
+      "SANDBOX123_work_programs_timesheet.pdf"
+    ])
+  end
+
+  it "does not collide when an uploaded name already ends in a duplicate suffix" do
+    volunteering = create(:volunteering_activity, activity_flow: activity_flow)
+    attach_document(volunteering, "Timesheet.pdf")
+    attach_document(volunteering, "Timesheet 2.pdf")
+    attach_document(volunteering, "Timesheet.pdf")
+
+    file_names = described_class.new(activity_flow).all.map(&:file_name)
+
+    expect(file_names).to eq([
+      "SANDBOX123_community_service_timesheet.pdf",
+      "SANDBOX123_community_service_timesheet_2.pdf",
+      "SANDBOX123_community_service_timesheet_3.pdf"
+    ])
+    expect(file_names.uniq.size).to eq(3)
   end
 
   it "records the activity each document belongs to" do

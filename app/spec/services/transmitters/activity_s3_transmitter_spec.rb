@@ -96,11 +96,11 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
 
     expected_files = [
       report_file_name,
-      "SANDBOX123_community_service_time_sheet_1.pdf",
-      "SANDBOX123_community_service_time_sheet_2.jpg",
-      "SANDBOX123_work_programs_enrollment_letter_1.jpeg",
-      "SANDBOX123_education_transcript_final_1.pdf",
-      "SANDBOX123_employment_pay_stub_1.png"
+      "SANDBOX123_community_service_time_sheet.pdf",
+      "SANDBOX123_community_service_time_sheet.jpg",
+      "SANDBOX123_work_programs_enrollment_letter.jpeg",
+      "SANDBOX123_education_transcript_final.pdf",
+      "SANDBOX123_employment_pay_stub.png"
     ]
     expect(destination_s3_service).to receive(:upload_directory) do |directory, _prefix|
       expect(Dir.children(directory)).to match_array(expected_files)
@@ -140,8 +140,8 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
     expect(destination_s3_service).to receive(:upload_directory) do |directory, _prefix|
       expect(Dir.children(directory)).to contain_exactly(
         report_file_name,
-        "SANDBOX123_community_service_scanned_timesheet_1.pdf",
-        "SANDBOX123_community_service_other_document_1.bin"
+        "SANDBOX123_community_service_scanned_timesheet.pdf",
+        "SANDBOX123_community_service_other_document.bin"
       )
     end
 

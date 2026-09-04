@@ -15,27 +15,34 @@ class ActivityDocumentsService
   end
 
   def all
-    page_numbers = Hash.new(0)
+    taken_file_names = Set.new
 
     ACTIVITY_ASSOCIATIONS.flat_map do |association|
       @activity_flow.public_send(association).published.order(:id).flat_map do |activity|
         activity.document_uploads_attachments.includes(:blob).order(:id).map do |attachment|
-          activity_type = activity.class.activity_type
           document_name, extension = document_name_and_extension(attachment)
-          page_number_key = [ activity_type, document_name ]
-          page_number = page_numbers[page_number_key] += 1
+          prefix = [ @activity_flow.confirmation_code, activity.class.activity_type, document_name ].join("_")
 
-          Document.new(
-            attachment,
-            [ @activity_flow.confirmation_code, activity_type, document_name, page_number ].join("_") + extension,
-            activity
-          )
+          Document.new(attachment, deduplicated_file_name(prefix, extension, taken_file_names), activity)
         end
       end
     end
   end
 
   private
+
+  def deduplicated_file_name(prefix, extension, taken_file_names)
+    file_name = "#{prefix}#{extension}"
+    duplicate_count = 1
+
+    while taken_file_names.include?(file_name)
+      duplicate_count += 1
+      file_name = "#{prefix}_#{duplicate_count}#{extension}"
+    end
+
+    taken_file_names << file_name
+    file_name
+  end
 
   def document_name_and_extension(attachment)
     file_name = attachment.filename.to_s

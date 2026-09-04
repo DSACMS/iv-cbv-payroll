@@ -41,7 +41,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
       body: "pdf content",
       headers: {
         "Content-Type" => "application/pdf",
-        "Content-Disposition" => 'attachment; filename="SANDBOX123_community_service_time_sheet_1.pdf"',
+        "Content-Disposition" => 'attachment; filename="SANDBOX123_community_service_time_sheet.pdf"',
         "X-IVAAS-Confirmation-Code" => "SANDBOX123"
       }
     )
@@ -49,7 +49,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
       body: "image content",
       headers: {
         "Content-Type" => "image/jpeg",
-        "Content-Disposition" => 'attachment; filename="SANDBOX123_community_service_time_sheet_2.jpg"',
+        "Content-Disposition" => 'attachment; filename="SANDBOX123_community_service_time_sheet.jpg"',
         "X-IVAAS-Confirmation-Code" => "SANDBOX123"
       }
     )
