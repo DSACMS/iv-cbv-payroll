@@ -5,15 +5,15 @@
     "message": "Successful"
   },
   "transactionDetails": {
-    "transactionId": "828375862",
-    "orderId": "114695656",
+    "transactionId": "4001783857",
+    "orderId": "2002931142",
     "transactionStatus": "CNF",
     "transactionFee": "0.00",
     "salesTax": "0.00",
     "transactionTotal": "0.00",
     "requestedBy": "CMS Contact",
-    "requestedDate": "2026-01-22 19:43:47.056",
-    "notifiedDate": "2026-01-22 19:43:47.056",
+    "requestedDate": "2026-08-28 14:50:31.474",
+    "notifiedDate": "2026-08-28 14:50:31.474",
     "nscHit": "Y"
   },
   "clientData": {
@@ -29,11 +29,7 @@
       "officialSchoolName": "FLORIDA A&M UNIVERSITY",
       "schoolCode": "001480",
       "branchCode": "00",
-      "nameOnSchoolRecord": {
-        "firstName": "Rick",
-        "lastName": "Banas",
-        "middleName": "Edward"
-      },
+      "schoolType": "4",
       "currentEnrollmentStatus": "CC",
       "enrollmentData": [
         {
@@ -49,25 +45,13 @@
             }
           ]
         }
-      ],
-      "studentAddress": {
-        "address1": "4254 Walkers Ridge Way",
-        "city": "Gardena",
-        "state": "CA",
-        "zipCode": "90248",
-        "country": "US",
-        "empty": false
-      }
+      ]
     },
     {
       "officialSchoolName": "FLORIDA STATE UNIVERSITY",
       "schoolCode": "001489",
       "branchCode": "00",
-      "nameOnSchoolRecord": {
-        "firstName": "Rick",
-        "lastName": "Banas",
-        "middleName": "Edward"
-      },
+      "schoolType": "4",
       "currentEnrollmentStatus": "CC",
       "enrollmentData": [
         {
@@ -83,15 +67,7 @@
             }
           ]
         }
-      ],
-      "studentAddress": {
-        "address1": "4254 Walkers Ridge Way",
-        "city": "Gardena",
-        "state": "CA",
-        "zipCode": "90248",
-        "country": "US",
-        "empty": false
-      }
+      ]
     }
   ]
 }

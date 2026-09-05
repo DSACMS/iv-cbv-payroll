@@ -45,11 +45,24 @@ RSpec.describe LauncherController, type: :controller do
       expect(rendered).to include('Rick Banas')
       expect(rendered).to match(/Enrolled half-time.*2 schools/)
       expect(rendered).to include('Dominique Ricardo')
+      expect(rendered).to match(/Enrolled full time.*1 school/)
+      expect(rendered).to include('Scott Tobin')
       expect(rendered).to include('Not currently enrolled')
       expect(rendered).to include('Linda Cooper')
       expect(rendered).to include('No NSC record found')
       expect(rendered).to include('Sam Testuser')
       expect(rendered).to include('Ziggy Testuser')
+    end
+
+    it "gives every NSC test scenario a reporting window so selecting one does not leave a stale months pill", :aggregate_failures do
+      get :advanced
+      rendered = response.body
+
+      %w[lynette rick dominique scott linda].each do |scenario_key|
+        radio = rendered[/<input[^>]*id="test_scenario_#{scenario_key}"[^>]*>/]
+        expect(radio).to be_present, "expected a radio for #{scenario_key}"
+        expect(radio).to include('data-reporting-window-months'), "expected #{scenario_key} to set reporting window months"
+      end
     end
 
     it "displays fake test scenario options with single and multi-term" do
@@ -649,6 +662,7 @@ RSpec.describe LauncherController, type: :controller do
       it_behaves_like "creates CbvApplicant with correct data", "lynette", "Lynette", "Oyola", "1988-10-24"
       it_behaves_like "creates CbvApplicant with correct data", "rick", "Rick", "Banas", "1979-08-18"
       it_behaves_like "creates CbvApplicant with correct data", "dominique", "Dominique", "Ricardo", "1978-01-12"
+      it_behaves_like "creates CbvApplicant with correct data", "scott", "Scott", "Tobin", "1998-02-03"
       it_behaves_like "creates CbvApplicant with correct data", "linda", "Linda", "Cooper", "1999-01-01"
 
       it "creates an ActivityFlowInvitation and redirects to its URL" do

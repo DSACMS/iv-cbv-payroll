@@ -648,7 +648,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows only enrollment status on the education card" do
+    it "shows enrollment status alongside credit hours on the education card" do
       expect(response.body).to include("Test University")
       expect(response.body).to include(
         I18n.t(
@@ -656,8 +656,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         )
       )
-      expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
-      expect(response.body).not_to include(I18n.t("activities.hub.cards.hours", count: 52))
+      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 4))
+      expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 52))
       expect(response.body).not_to include(I18n.t("activities.hub.empty.education"))
     end
 
@@ -719,8 +719,8 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         )
       ).length).to eq(2)
-      expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 3))
-      expect(response.body).not_to include(I18n.t("activities.hub.cards.credit_hours", amount: 5))
+      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 3))
+      expect(response.body).to include(I18n.t("activities.hub.cards.credit_hours", amount: 5))
     end
   end
 

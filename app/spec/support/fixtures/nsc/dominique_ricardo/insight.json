@@ -5,15 +5,15 @@
     "message": "Successful"
   },
   "transactionDetails": {
-    "transactionId": "828375861",
-    "orderId": "114695655",
+    "transactionId": "4001783858",
+    "orderId": "2002931143",
     "transactionStatus": "CNF",
     "transactionFee": "0.00",
     "salesTax": "0.00",
     "transactionTotal": "0.00",
     "requestedBy": "CMS Contact",
-    "requestedDate": "2026-01-22 19:42:28.608",
-    "notifiedDate": "2026-01-22 19:42:28.608",
+    "requestedDate": "2026-08-28 14:50:32.308",
+    "notifiedDate": "2026-08-28 14:50:32.308",
     "nscHit": "Y"
   },
   "clientData": {
@@ -29,12 +29,8 @@
       "officialSchoolName": "BRIDGEWATER COLLEGE",
       "schoolCode": "003704",
       "branchCode": "00",
-      "nameOnSchoolRecord": {
-        "firstName": "Dominique",
-        "lastName": "Ricardo",
-        "middleName": "Audra"
-      },
-      "currentEnrollmentStatus": "CN",
+      "schoolType": "4",
+      "currentEnrollmentStatus": "CC",
       "enrollmentData": [
         {
           "enrollmentStatus": "F",
@@ -62,15 +58,7 @@
             }
           ]
         }
-      ],
-      "studentAddress": {
-        "address1": "1074 Small Street",
-        "city": "New York",
-        "state": "NY",
-        "zipCode": "10011",
-        "country": "US",
-        "empty": false
-      }
+      ]
     }
   ]
 }

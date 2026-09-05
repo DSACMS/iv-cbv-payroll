@@ -99,5 +99,33 @@ RSpec.describe NscSynchronizationJob do
         described_class.perform_now(education_activity.id)
       end
     end
+
+    context "when the fetcher raises a programming error" do
+      let(:first_name) { "Casey" }
+      let(:last_name) { "Testuser" }
+      let(:date_of_birth) { Date.parse("1991-04-22") }
+      let(:nsc_service) do
+        instance_double(NscDataFetcherService).tap do |service|
+          allow(service).to receive(:fetch).and_raise(NoMethodError, "undefined method '[]' for nil")
+        end
+      end
+
+      before do
+        allow(Rails.application.config).to receive(:is_internal_environment).and_return(false)
+        allow(NscDataFetcherService).to receive(:new).and_return(nsc_service)
+      end
+
+      it "marks the EducationActivity failed on the first attempt" do
+        expect { described_class.perform_now(education_activity.id) }.to raise_error(NoMethodError)
+
+        expect(education_activity.reload.status).to eq("failed")
+      end
+
+      it "does not enqueue a retry" do
+        expect do
+          expect { described_class.perform_now(education_activity.id) }.to raise_error(NoMethodError)
+        end.not_to have_enqueued_job(described_class)
+      end
+    end
   end
 end
