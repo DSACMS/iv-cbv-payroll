@@ -123,15 +123,40 @@ RSpec.describe EducationActivity do
   end
 
   describe "#document_upload_terms_to_verify" do
-    let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
+    let(:flow) { create(:activity_flow, reporting_window_months: 6, education_activities_count: 0) }
+    let(:range) { flow.reporting_window_range }
+    let(:activity) { create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded) }
 
     it "returns only less-than-half-time terms in sorted order" do
-      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded)
-      later_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, term_begin: Date.new(2026, 2, 1))
-      earlier_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, term_begin: Date.new(2026, 1, 1))
-      create(:nsc_enrollment_term, education_activity: activity, enrollment_status: :half_time, term_begin: Date.new(2026, 1, 15))
+      later_term = create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: activity, term_begin: range.begin + 3.months, term_end: range.end)
+      earlier_term = create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: activity, term_begin: range.begin, term_end: range.begin + 2.months)
+      create(:nsc_enrollment_term, education_activity: activity, enrollment_status: :half_time)
 
       expect(activity.document_upload_terms_to_verify).to eq([ earlier_term, later_term ])
+    end
+
+    it "includes terms the user was asked to enter credit hours for but whose status is not literally less_than_half_time" do
+      enrolled_term = create(:nsc_enrollment_term, :enrolled, education_activity: activity)
+
+      expect(activity.document_upload_terms_to_verify).to eq([ enrolled_term ])
+    end
+
+    it "matches the terms the credit hours flow collects hours for" do
+      create(:nsc_enrollment_term, :enrolled, education_activity: activity)
+      create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity)
+      create(:nsc_enrollment_term, :full_time, education_activity: activity)
+
+      expect(activity.document_upload_terms_to_verify).to eq(activity.less_than_half_time_terms_in_reporting_window)
+    end
+
+    it "excludes terms outside the reporting window" do
+      in_window_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity)
+      create(:nsc_enrollment_term, :less_than_half_time,
+        education_activity: activity, term_begin: range.begin - 6.months, term_end: range.begin - 3.months)
+
+      expect(activity.document_upload_terms_to_verify).to eq([ in_window_term ])
     end
   end
 
