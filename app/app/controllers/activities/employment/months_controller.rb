@@ -29,7 +29,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
       month_index: @month_index,
       month: I18n.l(@current_month, format: :month_year)
     }
-    attributes[:error_message] = @activity_month.errors.full_messages.join(", ") if @error
+    attributes[:error_fields] = @activity_month.errors.attribute_names.map(&:to_s) if @error
     track_event(event, attributes)
   end
 

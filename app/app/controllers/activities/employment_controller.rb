@@ -27,7 +27,7 @@ class Activities::EmploymentController < Activities::BaseController
       track_event(
         TrackEvent::EmploymentInfoValidationFailed,
         employment_activity_id: @employment_activity&.id,
-        error_message: @employment_activity.errors.full_messages.join(", ")
+        error_fields: @employment_activity.errors.attribute_names.map(&:to_s)
       )
       render :new, status: :unprocessable_content
     end
@@ -52,7 +52,7 @@ class Activities::EmploymentController < Activities::BaseController
       track_event(
         TrackEvent::EmploymentInfoValidationFailed,
         employment_activity_id: @employment_activity.id,
-        error_message: @employment_activity.errors.full_messages.join(", ")
+        error_fields: @employment_activity.errors.attribute_names.map(&:to_s)
       )
       render :edit, status: :unprocessable_content
     end
