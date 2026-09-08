@@ -24,14 +24,14 @@ RSpec.describe "Help Features", :js, type: :feature do
       click_button I18n.t("cbv.entries.show.continue")
     end
 
-    it "opens help modal when clicking link in help banner", skip: 'Help disabled until feature is finished' do
+    it "opens help modal when clicking link in help banner" do
       visit cbv_flow_employer_search_path
       click_link "Help"
 
       expect(page).to have_selector(".usa-modal__content", visible: true)
     end
 
-    it "displays correct content in the help modal", skip: 'Help disabled until feature is finished' do
+    it "displays correct content in the help modal" do
       visit cbv_flow_employer_search_path
       click_link "Help"
 
@@ -58,7 +58,7 @@ RSpec.describe "Help Features", :js, type: :feature do
       end
     end
 
-    it "can navigate between help topics", skip: 'Help disabled until feature is finished' do
+    it "can navigate between help topics" do
       visit cbv_flow_employer_search_path
       click_link "Help"
 
@@ -73,7 +73,7 @@ RSpec.describe "Help Features", :js, type: :feature do
       end
     end
 
-    it "closes help modal when clicking close button", skip: 'Help disabled until feature is finished' do
+    it "closes help modal when clicking close button" do
       visit cbv_flow_employer_search_path
       click_link "Help"
 
@@ -82,6 +82,18 @@ RSpec.describe "Help Features", :js, type: :feature do
 
       find("button[aria-label='Close this window']").click
       expect(page).not_to have_selector(".usa-modal__content", visible: true)
+    end
+
+    context "When in the activity flow" do
+      let(:activity_flow_invitation) { create(:activity_flow_invitation) }
+
+      before do
+        visit URI(activity_flow_invitation.to_url).request_uri
+      end
+
+      it "does not show the help link" do
+        expect(page).not_to have_link("Help")
+      end
     end
   end
 end
