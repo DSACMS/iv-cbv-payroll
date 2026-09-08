@@ -451,7 +451,7 @@ GEM
     rails-i18n (8.1.0)
       i18n (>= 0.7, < 2)
       railties (>= 8.0.0, < 9)
-    rails_semantic_logger (5.1.0)
+    rails_semantic_logger (5.2.0)
       rack
       railties (>= 7.2)
       semantic_logger (>= 5.1)
