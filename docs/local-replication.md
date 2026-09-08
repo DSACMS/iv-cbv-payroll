@@ -87,6 +87,7 @@ essentials for a working local app are the payroll-provider sandbox keys:
 | `ARGYLE_API_TOKEN_SANDBOX_ID` | Argyle Console |
 | `ARGYLE_API_TOKEN_SANDBOX_SECRET` | Argyle Console |
 | `ARGYLE_SANDBOX_WEBHOOK_SECRET` | Generate one: `openssl rand -hex 64` |
+| `NSC_DISABLED` | (Optional) Set to `true` to disable data-backed NSC education flow and only expose self-attestation |
 
 Some values (`NEWRELIC_KEY`, `MIXPANEL_TOKEN`, `SLACK_TEST_EMAIL`, and others)
 should be obtained from a teammate — they're kept in Nava's 1Password under

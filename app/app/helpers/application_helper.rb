@@ -31,6 +31,10 @@ module ApplicationHelper
     current_agency&.activity_types&.[](type.to_sym)
   end
 
+  def nsc_disabled?
+    ActiveModel::Type::Boolean.new.cast(ENV["NSC_DISABLED"]) || false
+  end
+
   def uswds_sprite_icon_href(icon_name)
     "#{asset_path("@uswds/uswds/dist/img/sprite.svg")}##{icon_name}"
   end

@@ -1,4 +1,5 @@
 class Activities::Education::TermCreditHoursController < Activities::BaseController
+  before_action :redirect_if_nsc_disabled
   before_action :set_education_activity
   before_action :set_term_credit_hours_vars, only: %i[edit update]
   before_action :set_back_url, only: %i[edit update]
@@ -138,5 +139,9 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
     reporting_range = @flow.reporting_window_range
     @education_activity.nsc_enrollment_terms
       .any? { |term| term.within_reporting_window?(reporting_range) && term.half_time_or_above? }
+  end
+
+  def redirect_if_nsc_disabled
+    redirect_to new_activities_flow_education_path if nsc_disabled?
   end
 end

@@ -18,12 +18,16 @@ class Activities::EducationController < Activities::BaseController
   after_action :track_review_viewed_event, only: :review
 
   def verify
+    return redirect_to new_activities_flow_education_path if nsc_disabled?
+
     @identity = current_identity!
   end
 
   def create
     if params[:education_activity]
       create_fully_self_attested_activity
+    elsif nsc_disabled?
+      redirect_to new_activities_flow_education_path
     else
       create_validated_activity
     end
@@ -31,6 +35,7 @@ class Activities::EducationController < Activities::BaseController
 
   def show
     return redirect_to edit_activities_flow_education_path(id: @education_activity.id) if @education_activity.pre_populated_draft?
+    return redirect_to new_activities_flow_education_path if nsc_disabled?
 
     @polling_url = activities_flow_education_sync_path(education_id: @education_activity.id)
 
@@ -87,6 +92,8 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def sync
+    return redirect_to new_activities_flow_education_path if nsc_disabled?
+
     @education_activity = @flow.education_activities.find(params[:education_id])
 
     set_completed_indicators
@@ -122,6 +129,7 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def error
+    redirect_to new_activities_flow_education_path if nsc_disabled?
   end
 
   private
