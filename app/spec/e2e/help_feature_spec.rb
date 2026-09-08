@@ -24,14 +24,14 @@ RSpec.describe "Help Features", :js, type: :feature do
       click_button I18n.t("cbv.entries.show.continue")
     end
 
-    it "opens help modal when clicking link in help banner" do
+    it "opens help modal when clicking link in help banner", skip: 'Help disabled until feature is finished' do
       visit cbv_flow_employer_search_path
       click_link "Help"
 
       expect(page).to have_selector(".usa-modal__content", visible: true)
     end
 
-    it "displays correct content in the help modal" do
+    it "displays correct content in the help modal", skip: 'Help disabled until feature is finished' do
       visit cbv_flow_employer_search_path
       click_link "Help"
 
@@ -58,7 +58,7 @@ RSpec.describe "Help Features", :js, type: :feature do
       end
     end
 
-    it "can navigate between help topics" do
+    it "can navigate between help topics", skip: 'Help disabled until feature is finished' do
       visit cbv_flow_employer_search_path
       click_link "Help"
 
@@ -73,7 +73,7 @@ RSpec.describe "Help Features", :js, type: :feature do
       end
     end
 
-    it "closes help modal when clicking close button" do
+    it "closes help modal when clicking close button", skip: 'Help disabled until feature is finished' do
       visit cbv_flow_employer_search_path
       click_link "Help"
 
