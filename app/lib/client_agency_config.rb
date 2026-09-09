@@ -66,7 +66,7 @@ class ClientAgencyConfig
       sso
       income_flow_transmission_method
       activity_flow_transmission_method
-      transmission_method_configuration
+      income_transmission_method_configuration
       activity_transmission_method_configuration
       weekly_report
       applicant_attributes
@@ -98,7 +98,7 @@ class ClientAgencyConfig
       @argyle_environment = yaml["argyle"]["environment"] || "sandbox"
       @income_flow_transmission_method = yaml["income_flow_transmission_method"]
       @activity_flow_transmission_method = yaml["activity_flow_transmission_method"]
-      @transmission_method_configuration = yaml["transmission_method_configuration"]
+      @income_transmission_method_configuration = yaml["income_transmission_method_configuration"]
       @activity_transmission_method_configuration = yaml["activity_transmission_method_configuration"]
       @staff_portal_enabled = yaml["staff_portal_enabled"]
       @sso = yaml["sso"]

@@ -32,8 +32,8 @@ RSpec.describe ActivityReportSerializer do
     )
   end
 
-  it "builds the agency object from the agency's configured applicant attributes" do
-    expect(report["agency"]).to eq(
+  it "builds the agency partner metadata from configured applicant attributes" do
+    expect(report["agency_partner_metadata"]).to eq(
       "first_name" => "Jane",
       "middle_name" => "A",
       "last_name" => "Doe",
@@ -43,24 +43,17 @@ RSpec.describe ActivityReportSerializer do
     )
   end
 
-  it "reports the individual's name and the review period covered by the flow" do
-    expect(report["ce_report"]["individual"]).to eq(
-      "name" => { "first" => "Jane", "middle" => "A", "last" => "Doe" },
-      "extended_attributes" => {}
-    )
+  it "reports the review period covered by the flow" do
     expect(report["ce_report"]["review_period"]).to eq(
       "start_month" => "2026-06",
       "end_month" => "2026-07"
     )
   end
 
-  it "reports blank applicant names as null in both the agency and individual objects" do
+  it "reports blank applicant names as null in agency partner metadata" do
     cbv_applicant.update!(middle_name: "", last_name: "")
 
-    expect(report["ce_report"]["individual"]["name"]).to eq(
-      "first" => "Jane", "middle" => nil, "last" => nil
-    )
-    expect(report["agency"]).to include("middle_name" => nil, "last_name" => nil)
+    expect(report["agency_partner_metadata"]).to include("middle_name" => nil, "last_name" => nil)
   end
 
   it "groups activities by type at the top level and by month within each type" do
@@ -238,33 +231,39 @@ RSpec.describe ActivityReportSerializer do
     it "lists supporting documents and cross-references them from each activity entry" do
       volunteering = create(:volunteering_activity, activity_flow: activity_flow)
       create(:volunteering_activity_month, volunteering_activity: volunteering, month: first_month, hours: 40)
-      attach_document(volunteering, "Time Sheet.PDF")
+      volunteering_document = attach_document(volunteering, "Time Sheet.PDF")
 
       job_training = create(:job_training_activity, activity_flow: activity_flow)
       create(:job_training_activity_month, job_training_activity: job_training, month: first_month, hours: 8)
-      attach_document(job_training, "WIOA Participation Letter.pdf")
+      job_training_document = attach_document(job_training, "WIOA Participation Letter.pdf")
 
       expect(report["ce_report"]["documents"]).to eq([
         {
-          "document_id" => "DOC-001",
+          "document_id" => "DOC-#{volunteering_document.id}",
           "document_name" => "SANDBOX123_community_service_time_sheet.pdf",
           "file_type" => "pdf"
         },
         {
-          "document_id" => "DOC-002",
+          "document_id" => "DOC-#{job_training_document.id}",
           "document_name" => "SANDBOX123_work_programs_wioa_participation_letter.pdf",
           "file_type" => "pdf"
         }
       ])
-      expect(report["ce_report"]["activities"]["community_service"]["2026-06"].sole["document_ids"]).to eq([ "DOC-001" ])
-      expect(report["ce_report"]["activities"]["work_program"]["2026-06"].sole["document_ids"]).to eq([ "DOC-002" ])
+      expect(report["ce_report"]["activities"]["community_service"]["2026-06"].sole["document_ids"])
+        .to eq([ "DOC-#{volunteering_document.id}" ])
+      expect(report["ce_report"]["activities"]["work_program"]["2026-06"].sole["document_ids"])
+        .to eq([ "DOC-#{job_training_document.id}" ])
     end
 
-    it "excludes documents belonging to out-of-scope activity types" do
+    it "includes documents belonging to out-of-scope activity types" do
       education = create(:education_activity, activity_flow: activity_flow)
-      attach_document(education, "Transcript.pdf")
+      document = attach_document(education, "Transcript.pdf")
 
-      expect(report["ce_report"]["documents"]).to eq([])
+      expect(report["ce_report"]["documents"]).to include(
+        "document_id" => "DOC-#{document.id}",
+        "document_name" => "SANDBOX123_education_transcript.pdf",
+        "file_type" => "pdf"
+      )
     end
   end
 
@@ -274,5 +273,6 @@ RSpec.describe ActivityReportSerializer do
       filename: filename,
       content_type: Marcel::MimeType.for(name: filename)
     )
+    activity.document_uploads_attachments.order(:id).last
   end
 end

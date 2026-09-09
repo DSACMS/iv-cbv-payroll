@@ -235,7 +235,7 @@ RSpec.describe ClientAgencyConfig do
             argyle:
               environment: foo
             income_flow_transmission_method: shared_email
-            transmission_method_configuration:
+            income_transmission_method_configuration:
               bucket: income-bucket
             activity_flow_transmission_method: encrypted_s3
         YAML
@@ -277,7 +277,7 @@ RSpec.describe ClientAgencyConfig do
           argyle:
             environment: foo
           income_flow_transmission_method: json
-          transmission_method_configuration:
+          income_transmission_method_configuration:
             json_api_url: https://income.example.gov/v1/income-report
           activity_flow_transmission_method: json
           activity_transmission_method_configuration:
@@ -286,7 +286,7 @@ RSpec.describe ClientAgencyConfig do
 
       config = described_class.new(sample_config_path)
 
-      expect(config["foo"].transmission_method_configuration)
+      expect(config["foo"].income_transmission_method_configuration)
         .to eq("json_api_url" => "https://income.example.gov/v1/income-report")
       expect(config["foo"].activity_transmission_method_configuration)
         .to eq("json_api_url" => "https://ce.example.gov/v1/ce-activity-report")
@@ -301,7 +301,7 @@ RSpec.describe ClientAgencyConfig do
           argyle:
             environment: foo
           income_flow_transmission_method: shared_email
-          transmission_method_configuration:
+          income_transmission_method_configuration:
             bucket: income-bucket
       YAML
 

@@ -11,7 +11,7 @@
   argyle:
     environment: <%= ENV["LA_LDH_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: <%= ENV.fetch("LA_LDH_TRANSMISSION_METHOD", "json") %>
-  transmission_method_configuration:
+  income_transmission_method_configuration:
     json_api_url: <%= ENV["LA_LDH_INCOME_REPORT_URL"] %>
     pdf_api_url: <%= ENV["LA_LDH_PDF_API_URL"] %>
     silently_retry_error_codes:
@@ -60,7 +60,7 @@
   argyle:
     environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: sftp
-  transmission_method_configuration:
+  income_transmission_method_configuration:
     user: <%= ENV['NH_DHHS_SFTP_USER'] %>
     private_key: <%= ENV['NH_DHHS_SFTP_PRIVATE_KEY'].inspect %>
     url: <%= ENV['NH_DHHS_SFTP_URL'] %>
@@ -114,7 +114,7 @@
     environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: shared_email
   activity_flow_transmission_method: <%= ENV.fetch("SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD", "encrypted_s3") %>
-  transmission_method_configuration:
+  income_transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
   activity_transmission_method_configuration:
     bucket: <%= ENV["OUTBOUND_TRANSMISSION_S3_BUCKET_NAME"] %>
@@ -175,7 +175,7 @@
   argyle:
     environment: <%= ENV["RESEARCH_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: shared_email
-  transmission_method_configuration:
+  income_transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
   staff_portal_enabled: true
   pilot_ended: false
@@ -214,7 +214,7 @@
   argyle:
     environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: json
-  transmission_method_configuration:
+  income_transmission_method_configuration:
     json_api_url: <%= ENV["ACCENTURE_INCOME_REPORT_URL"] %>
   application_reporting_months: 2
   invitation_valid_days: 14

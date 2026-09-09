@@ -10,7 +10,7 @@ class Transmitters::EncryptedS3Transmitter
     public_key = config["public_key"]
 
     if public_key.blank?
-      Rails.logger.error("Public key is missing from transmission_method_configuration")
+      Rails.logger.error("Public key is missing from income_transmission_method_configuration")
       raise "Public key is required for S3 transmission"
     end
 

@@ -8,7 +8,7 @@
     "schema_version",
     "confirmation_code",
     "completed_at",
-    "agency",
+    "agency_partner_metadata",
     "ce_report"
   ],
   "properties": {
@@ -26,7 +26,7 @@
       "format": "date-time",
       "description": "UTC timestamp when the user completed the report (ISO8601)."
     },
-    "agency": {
+    "agency_partner_metadata": {
       "type": "object",
       "description": "Agency-specific applicant identifiers, established per-integration (e.g., doc_id, case_number, date_of_birth).",
       "properties": {
@@ -39,7 +39,6 @@
       "type": "object",
       "required": [
         "review_period",
-        "individual",
         "documents",
         "activities"
       ],
@@ -59,44 +58,6 @@
             "end_month": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}$"
-            }
-          }
-        },
-        "individual": {
-          "type": "object",
-          "required": [
-            "name"
-          ],
-          "properties": {
-            "name": {
-              "type": "object",
-              "required": [
-                "first",
-                "last"
-              ],
-              "properties": {
-                "first": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
-                },
-                "middle": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
-                },
-                "last": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
-                }
-              }
-            },
-            "extended_attributes": {
-              "type": "object"
             }
           }
         },

@@ -7,7 +7,7 @@ RSpec.describe Transmitters::SftpTransmitter do
     instance_double(ClientAgencyConfig::ClientAgency)
   end
 
-  let(:transmission_method_configuration) do
+  let(:income_transmission_method_configuration) do
     {
       "url" => "sftp.example.com",
       "user" => "test-user",
@@ -22,7 +22,7 @@ RSpec.describe Transmitters::SftpTransmitter do
 
   before do
     allow(client_agency).to receive_messages(
-      transmission_method_configuration: transmission_method_configuration
+      income_transmission_method_configuration: income_transmission_method_configuration
     )
     allow(SftpGateway).to receive(:new).and_return(sftp_gateway)
     allow(Transmitters::PdfFilenameFormatter).to receive(:format).and_return(formatted_filename)
@@ -38,7 +38,7 @@ RSpec.describe Transmitters::SftpTransmitter do
     end
 
     context "when a custom pdf filename format is configured" do
-      let(:transmission_method_configuration) do
+      let(:income_transmission_method_configuration) do
         super().merge("pdf_filename_format" => "CBV_%{case_number}_%{consent_timestamp}_%{confirmation_code}.pdf")
       end
 
@@ -68,7 +68,7 @@ RSpec.describe Transmitters::SftpTransmitter do
     end
 
     context "when a custom pdf filename format is configured" do
-      let(:transmission_method_configuration) do
+      let(:income_transmission_method_configuration) do
         super().merge("pdf_filename_format" => "chosen_format")
       end
 
@@ -108,7 +108,7 @@ RSpec.describe Transmitters::SftpTransmitter do
     end
 
     context "when the agency uses SSH key authentication" do
-      let(:transmission_method_configuration) do
+      let(:income_transmission_method_configuration) do
         {
           "url" => "sftp.example.com",
           "user" => "test-user",

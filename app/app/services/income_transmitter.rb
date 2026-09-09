@@ -10,7 +10,7 @@ module IncomeTransmitter
   end
 
   def transmission_configuration
-    @current_agency.transmission_method_configuration || {}
+    @current_agency.income_transmission_method_configuration || {}
   end
 
   def pdf_output

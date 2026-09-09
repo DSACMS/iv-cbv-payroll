@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "confirmation_code": "SANDBOX123",
   "completed_at": "2026-08-11T14:00:00Z",
-  "agency": {
+  "agency_partner_metadata": {
     "first_name": "Jane",
     "middle_name": "A",
     "last_name": "Doe",
@@ -15,17 +15,9 @@
       "start_month": "2026-06",
       "end_month": "2026-07"
     },
-    "individual": {
-      "name": {
-        "first": "Jane",
-        "middle": "A",
-        "last": "Doe"
-      },
-      "extended_attributes": {}
-    },
     "documents": [
       {
-        "document_id": "DOC-001",
+        "document_id": "DOC-123456",
         "document_name": "SANDBOX123_work_programs_wioa_participation_letter.pdf",
         "file_type": "pdf"
       }
@@ -92,7 +84,7 @@
             "hours": 20.0,
             "data_source": "self_attested",
             "document_ids": [
-              "DOC-001"
+              "DOC-123456"
             ],
             "extended_attributes": {}
           }
@@ -115,7 +107,7 @@
             "hours": 20.0,
             "data_source": "self_attested",
             "document_ids": [
-              "DOC-001"
+              "DOC-123456"
             ],
             "extended_attributes": {}
           }

@@ -13,7 +13,7 @@ RSpec.describe Transmitters::JsonTransmitter do
       confirmation_code: "ABC123"
     )
   end
-  let(:transmission_method_configuration) { {
+  let(:income_transmission_method_configuration) { {
     "json_api_url" => "http://fake-state.api.gov/api/v1/income-report" # Should be replaced with real agency sandbox url!
   } }
   let(:mock_client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
@@ -29,7 +29,7 @@ RSpec.describe Transmitters::JsonTransmitter do
   let!(:api_token) { create(:api_access_token, user: service_user) }
 
   before do
-    allow(mock_client_agency).to receive_messages(transmission_method_configuration: transmission_method_configuration, id: "sandbox")
+    allow(mock_client_agency).to receive_messages(income_transmission_method_configuration: income_transmission_method_configuration, id: "sandbox")
     allow(CbvApplicant).to receive(:valid_attributes_for_agency).with("sandbox").and_return([ "case_number" ])
     allow(Rails.logger).to receive(:error)
     allow(Rails.logger).to receive(:info)
@@ -128,12 +128,12 @@ RSpec.describe Transmitters::JsonTransmitter do
   end
 
   context "when the response code is configured to be silenced" do
-    let(:transmission_method_configuration) do
+    let(:income_transmission_method_configuration) do
       super().merge("silently_retry_error_codes" => [ 403, 408, 502 ])
     end
 
     it "raises a silenceable error" do
-      stub_request(:post, transmission_method_configuration["json_api_url"])
+      stub_request(:post, income_transmission_method_configuration["json_api_url"])
         .to_return(status: [ 408, "Request Timeout" ], body: "Request Timeout")
 
       expect { described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver }
@@ -172,7 +172,7 @@ RSpec.describe Transmitters::JsonTransmitter do
   end
 
   context 'custom headers' do
-    let(:transmission_method_configuration) do
+    let(:income_transmission_method_configuration) do
       {
         "json_api_url" => "http://fake-state.api.gov/api/v1/income-report",
         "custom_headers" => {

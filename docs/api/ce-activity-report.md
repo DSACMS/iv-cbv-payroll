@@ -51,12 +51,12 @@ The agency should respond with `200` and a payload containing:
 | schema_version | Yes | String (semver). Version of the CE compliance spec this payload conforms to. |
 | confirmation_code | Yes | String. Unique code assigned when the report was completed. This is shared with the user and used to debug any errors while processing the report. |
 | completed_at | Yes | Date Time (ISO8601). The UTC time when the user completed the report. |
-| agency | Yes | JSON object (See Agency Object below). |
+| agency_partner_metadata | Yes | JSON object (See Agency Partner Metadata Object below). |
 | ce_report | Yes | JSON object (See CE Report Object below). |
 
 ### Request Object Type Definitions
 
-#### Agency Object
+#### Agency Partner Metadata Object
 
 The field structure for this object will differ for each agency based on the integration plan for the agency, exactly as the `agency_partner_metadata` object does in the [Income Report Transmission API](income-report.md). It contains whichever fields the agency needs to index the report back into the proper case, plus `extended_attributes`.
 
@@ -73,7 +73,6 @@ Sample fields:
 | Field Name | Required? | Field Type |
 | :-- | :-- | :-- |
 | review_period | Yes | Object. The full date range this CE compliance determination covers. `start_month` and `end_month` are both `YYYY-MM` strings. |
-| individual | Yes | Object. `name.first`, `name.middle`, `name.last`, plus `extended_attributes`. |
 | documents | Yes | Array of Document objects. All supporting documents uploaded for the activities in this report. |
 | activities | Yes | Object. Activity types at the top level; within each type, months keyed as `YYYY-MM`. |
 
@@ -81,7 +80,7 @@ Sample fields:
 
 | Field Name | Required? | Field Type |
 | :-- | :-- | :-- |
-| document_id | Yes | String. Identifier unique within this report, referenced from each activity's `document_ids`. |
+| document_id | Yes | String. Identifier based on the Emmy Active Storage attachment ID, referenced from each activity's `document_ids`. |
 | document_name | Yes | String. The filename the document is transmitted under. |
 | file_type | Yes | String. The file extension, without the leading dot. |
 

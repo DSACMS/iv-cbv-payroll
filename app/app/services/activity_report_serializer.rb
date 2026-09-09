@@ -45,10 +45,9 @@ class ActivityReportSerializer
       "schema_version" => SCHEMA_VERSION,
       "confirmation_code" => @activity_flow.confirmation_code,
       "completed_at" => @activity_flow.completed_at&.utc&.iso8601,
-      "agency" => agency,
+      "agency_partner_metadata" => agency_partner_metadata,
       "ce_report" => {
         "review_period" => review_period,
-        "individual" => individual,
         "documents" => documents,
         "activities" => activities,
         "extended_attributes" => {}
@@ -62,7 +61,7 @@ class ActivityReportSerializer
     @activity_flow.cbv_applicant
   end
 
-  def agency
+  def agency_partner_metadata
     metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) do |attribute|
       json_value(applicant.public_send(attribute))
     end
@@ -79,19 +78,8 @@ class ActivityReportSerializer
     }
   end
 
-  def individual
-    {
-      "name" => {
-        "first" => json_value(applicant.first_name),
-        "middle" => json_value(applicant.middle_name),
-        "last" => json_value(applicant.last_name)
-      },
-      "extended_attributes" => {}
-    }
-  end
-
   def documents
-    identified_documents.map do |document, document_id|
+    all_documents.map do |document, document_id|
       {
         "document_id" => document_id,
         "document_name" => document.file_name,
@@ -100,20 +88,14 @@ class ActivityReportSerializer
     end
   end
 
-  def identified_documents
-    @identified_documents ||= ActivityDocumentsService.new(@activity_flow)
+  def all_documents
+    @all_documents ||= ActivityDocumentsService.new(@activity_flow)
       .all
-      .select { |document| in_scope_associations.include?(document.activity.class.flow_association) }
-      .each_with_index
-      .map { |document, index| [ document, format("DOC-%03d", index + 1) ] }
-  end
-
-  def in_scope_associations
-    @in_scope_associations ||= SELF_ATTESTED_ACTIVITY_TYPES.values.map { |config| config[:association] }
+      .map { |document| [ document, "DOC-#{document.attachment.id}" ] }
   end
 
   def document_ids_by_activity
-    @document_ids_by_activity ||= identified_documents
+    @document_ids_by_activity ||= all_documents
       .group_by { |document, _| document.activity }
       .transform_values { |pairs| pairs.map(&:last) }
   end

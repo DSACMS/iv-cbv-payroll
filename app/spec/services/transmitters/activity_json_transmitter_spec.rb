@@ -105,7 +105,24 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
     end
 
     it "matches the published sample report shared with agencies" do
-      expect(JSON.parse(transmitter.payload)).to eq(JSON.parse(sample_path.read))
+      payload = JSON.parse(transmitter.payload)
+      sample = JSON.parse(sample_path.read)
+      payload_document_ids = payload.dig("ce_report", "documents").map { |document| document["document_id"] }
+      sample_document_ids = sample.dig("ce_report", "documents").map { |document| document["document_id"] }
+      document_id_mapping = sample_document_ids.zip(payload_document_ids).to_h
+
+      sample["ce_report"]["documents"].each do |document|
+        document["document_id"] = document_id_mapping.fetch(document["document_id"])
+      end
+      sample["ce_report"]["activities"].each_value do |months|
+        months.each_value do |entries|
+          entries.each do |entry|
+            entry["document_ids"].map! { |id| document_id_mapping.fetch(id) }
+          end
+        end
+      end
+
+      expect(payload).to eq(sample)
     end
   end
 

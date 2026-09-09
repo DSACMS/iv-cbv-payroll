@@ -5,7 +5,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     described_class.new(cbv_flow, client_agency, aggregator_report)
   end
 
-  let(:transmission_method_configuration) do
+  let(:income_transmission_method_configuration) do
     {
       "pdf_api_url" => "http://fake-state.api.gov/api/v1/income-report-pdf"
     }
@@ -16,7 +16,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
   let(:client_agency) { instance_double(ClientAgencyConfig::ClientAgency) }
 
   before do
-    allow(client_agency).to receive_messages(id: "sandbox", transmission_method_configuration: transmission_method_configuration)
+    allow(client_agency).to receive_messages(id: "sandbox", income_transmission_method_configuration: income_transmission_method_configuration)
   end
 
 
@@ -48,7 +48,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     it "sends #pdf_output as a POST request" do
       stub = stub_request(
           :post,
-          transmission_method_configuration["pdf_api_url"]
+          income_transmission_method_configuration["pdf_api_url"]
         ).with(
           body: pdf_output.content,
           headers: {
@@ -69,7 +69,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     end
 
     it "logs the request destination and response status with duration" do
-      stub_request(:post, transmission_method_configuration["pdf_api_url"])
+      stub_request(:post, income_transmission_method_configuration["pdf_api_url"])
         .to_return(status: 200, body: "OK")
       expect(Rails.logger).to receive(:info)
         .with("Sending PDF transmission to http://fake-state.api.gov/api/v1/income-report-pdf")
@@ -86,7 +86,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     end
 
     context "with custom headers defined" do
-      let(:transmission_method_configuration) do
+      let(:income_transmission_method_configuration) do
         super().merge(
           "custom_headers" => {
             "X-API-Key" => "Foo_Bar",
@@ -98,7 +98,7 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
       it "adds custom headers to the request" do
         api_request = stub_request(
           :post,
-          transmission_method_configuration["pdf_api_url"]
+          income_transmission_method_configuration["pdf_api_url"]
         ).with(
           body: pdf_output.content,
           headers: {
@@ -119,14 +119,14 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     end
 
     context "when the response code is configured to be silenced" do
-      let(:transmission_method_configuration) do
+      let(:income_transmission_method_configuration) do
         super().merge("silently_retry_error_codes" => [ 403, 408, 502 ])
       end
 
       it "raises a silenceable error" do
         stub_request(
           :post,
-          transmission_method_configuration["pdf_api_url"]
+          income_transmission_method_configuration["pdf_api_url"]
         ).to_return(status: [ 403, "Forbidden" ], body: "Forbidden")
 
         expect { subject.deliver }
@@ -138,14 +138,14 @@ RSpec.describe Transmitters::HttpPdfTransmitter do
     end
 
     context "when the response code is not configured to retry silently" do
-      let(:transmission_method_configuration) do
+      let(:income_transmission_method_configuration) do
         super().merge("silently_retry_error_codes" => [ 403, 408, 502 ])
       end
 
       it "raises the transmitter-specific error" do
         stub_request(
           :post,
-          transmission_method_configuration["pdf_api_url"]
+          income_transmission_method_configuration["pdf_api_url"]
         ).to_return(status: [ 500, "Internal Server Error" ], body: "Internal Server Error")
 
         expect { subject.deliver }
