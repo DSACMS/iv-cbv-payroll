@@ -179,7 +179,7 @@ es:
           other: "%{count} errores"
         error_updating_applicant: Se produjo un error al actualizar la información del solicitante. Vuelva a intentarlo.
     employer_searches:
-      employer: 
+      employer:
         select_employer: Seleccione %{name}
       show:
         alert:
