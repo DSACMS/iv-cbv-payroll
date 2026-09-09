@@ -129,11 +129,11 @@ def update_release_files(version, both_changes:, income_changes:, ce_changes:, o
   File.write(VERSION_PATH, "#{version}\n")
 end
 
-def commit_lines(prod, current_sha)
+def commit_lines(prod_version, current_sha)
   run_command(
     "git", "log", "--no-decorate",
     '--pretty=format:%s - %an|%H',
-    "v#{prod}..#{current_sha}"
+    "v#{prod_version}..#{current_sha}"
   ).lines(chomp: true)
 end
 
@@ -196,9 +196,9 @@ if ARGV.first == "--test"
 end
 
 run_command("git", "fetch", "--quiet")
-prod = fetch_production_version
+prod_version = fetch_production_version
 current_sha = run_command("git", "rev-parse", "origin/main")
-commits = commit_lines(prod, current_sha)
+commits = commit_lines(prod_version, current_sha)
 
 both_changes = []
 income_changes = []
@@ -279,7 +279,7 @@ append_changes(
 )
 append_changes(output, "⚙️ *Other/Maintenance (Not user facing)*", other_changes)
 output << "\n"
-output << "See the full diff: https://github.com/DSACMS/iv-cbv-payroll/compare/#{prod[0, 7]}..#{current_sha[0, 7]}\n"
+output << "See the full diff: https://github.com/DSACMS/iv-cbv-payroll/compare/v#{prod_version}..#{current_sha[0, 7]}\n"
 
 update_release_files(
   release_version,
