@@ -269,7 +269,7 @@ en:
               hint: Add details for a job where you can't view paystubs online, like a small employer, a job where you were paid in cash, or self-employment.
               label: Enter paid work manually
             unpaid:
-              hint: Add work where you received housing, food, or other goods instead of money.
+              hint: Add work where you either received no income or you received housing, food, or other goods instead of money.
               label: Enter unpaid or in-kind work
       document_upload_month_detail: "%{gross_income}, %{hours}"
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
