@@ -81,6 +81,12 @@ RSpec.describe Activities::Income::EmployerSearchesController do
         expect(response.body).not_to include(I18n.t("activities.income.employer_searches.show.popular_providers"))
         expect(response.body).not_to include(I18n.t("cbv.employer_searches.show.employer_not_listed"))
       end
+
+      it "has aria-labels for each employer button" do
+        get :show, params: { query: "results" }
+        expect(response.body).to include('aria-label="Select Walgreens"')
+        expect(response.body).to include('aria-label="Select Greens Group"')
+      end
     end
 
     context "when there are no search results" do

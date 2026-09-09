@@ -108,6 +108,12 @@ RSpec.describe Cbv::EmployerSearchesController do
         expect(response).to be_successful
       end
 
+      it "has aria-labels for each employer button" do
+        get :show, params: { query: "results" }
+        expect(response.body).to include('aria-label="Select Walgreens"')
+        expect(response.body).to include('aria-label="Select Greens Group"')
+      end
+
       it "tracks a Mixpanel event" do
         allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
         expect(EventTrackingJob).to receive(:perform_later).with(
