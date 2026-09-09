@@ -179,6 +179,8 @@ es:
           other: "%{count} errores"
         error_updating_applicant: Se produjo un error al actualizar la información del solicitante. Vuelva a intentarlo.
     employer_searches:
+      employer: 
+        select_employer: Seleccione %{name}
       show:
         alert:
           heading: "¿Necesita ayuda para conectarse a su proveedor de nómina?"
@@ -208,6 +210,7 @@ es:
         search_label: Este puede ser su empleador actual. Si no está trabajando, puede buscar cualquier empleador que haya tenido en los últimos 90 días.
         search_subheader: 'Seleccione su empleador de la lista. Luego, siga las instrucciones en las pantallas para iniciar la sesión y verificar su ingreso. '
         select: Seleccione
+        select_employer: Seleccione %{name}
         to_continue: 'Si aún no ve enumerado a su empleador ni a su proveedor de nómina:'
         to_continue_li_1: Deberá enviar esa información de ingresos por separado.
         to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Visite el sitio web del %{agency_acronym}</a> para informarse de otras formas de notificar sus ingresos.

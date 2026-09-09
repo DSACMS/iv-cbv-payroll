@@ -379,6 +379,7 @@ en:
             other: We found %{count} results
           search_subheader: Select your employer from the list. Then, follow the screens to sign in. Use the login credentials you use to view your pay stubs online.
           select: Select
+          select_employer: Select %{name}
         show:
           add_employment_manually: Add employment manually
           alert:
