@@ -8,6 +8,7 @@
 @forward "advanced-launcher.scss";
 @forward "launcher.scss";
 @forward "document_uploads.scss";
+@forward "activity_report.scss";
 
 /* Import styling from ViewComponents */
 @forward "../../components/activity_flow_progress_indicator/activity_flow_progress_indicator.scss";

@@ -46,6 +46,20 @@ RSpec.describe DocumentUploadsComponent, type: :component do
     expect(result).not_to have_text("Remove file")
   end
 
+  it "renders the icon as an embedded image for PDFs" do
+    component = described_class.new(
+      documents: [ { filename: "verification.pdf" } ],
+      pdf: true
+    )
+    allow(component).to receive(:pdf_icon_path).and_return("data:image/svg+xml;base64,icon")
+
+    result = render_inline(component)
+
+    expect(result).to have_selector('img.document-uploads__icon.text-middle[src^="data:image/svg+xml;base64,"]')
+    expect(result).to have_selector(".document-uploads__filename.text-middle", text: "verification.pdf")
+    expect(result).to have_selector(".document-uploads.margin-bottom-0")
+  end
+
   it "uses the provided edit_label when given" do
     result = render_inline(
       described_class.new(
