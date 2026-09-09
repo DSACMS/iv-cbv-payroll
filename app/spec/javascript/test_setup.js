@@ -7,9 +7,9 @@ import { mockPinwheelAuthToken } from "./fixtures/pinwheel.fixture.js"
 
 const { window } = new JSDOM()
 
-global.window = window
-global.document = window.document
-global.Node = window.Node
+vi.stubGlobal("window", window)
+vi.stubGlobal("document", window.document)
+vi.stubGlobal("Node", window.Node)
 
 // Mock CSRF token
 document.head.innerHTML = `
