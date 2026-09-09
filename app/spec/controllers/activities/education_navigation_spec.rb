@@ -11,7 +11,8 @@ RSpec.describe Activities::EducationController, type: :controller do
       volunteering_activities_count: 0,
       job_training_activities_count: 0,
       education_activities_count: 0,
-      reporting_window_months: 2)
+      reporting_window_months: 2,
+      with_identity: true)
   end
   let(:education_activity) do
     create(:education_activity,
@@ -28,9 +29,16 @@ RSpec.describe Activities::EducationController, type: :controller do
   # ── Creation flow ──
 
   describe "creation flow" do
-    it "school info has no back button" do
+    it "verify back goes to add your education" do
+      get :verify
+      expected = activities_flow_education_add_your_education_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
+    end
+
+    it "school info back goes to add your education" do
       get :new
-      expect(Capybara.string(response.body)).not_to have_link("Back")
+      expected = activities_flow_education_add_your_education_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
     end
 
     it "review back goes to document uploads" do
