@@ -6,6 +6,10 @@ class ActivityFlowInvitation < ApplicationRecord
     "job_training" => JobTrainingActivity
   }.freeze
 
+  INVITATION_VALIDITY_TIME_ZONE = "America/New_York"
+  VALID_LOCALES = Rails.application.config.i18n.available_locales.map(&:to_s).freeze
+
+  belongs_to :user, optional: true
   belongs_to :cbv_applicant, optional: true
   has_many :activity_flows
   has_one :household_member
@@ -14,15 +18,39 @@ class ActivityFlowInvitation < ApplicationRecord
 
   attr_accessor :skip_month_window_validation
 
+  before_create :set_expires_at, if: :new_record?
+  before_validation :normalize_language
+
   validate :pre_populated_activities_shape
   validate :pre_populated_activity_months_in_window, unless: :skip_month_window_validation
 
-  def to_url(host: ENV.fetch("DOMAIN_NAME", "localhost"), **url_params)
-    Rails.application.routes.url_helpers.activities_flow_start_url(token: auth_token, host: host, **url_params)
+  def expires_at_local
+    expires_at&.in_time_zone(INVITATION_VALIDITY_TIME_ZONE)
+  end
+
+  def to_url(host: nil, origin: nil, **url_params)
+    client_agency = Rails.application.config.client_agencies[client_agency_id] if client_agency_id.present?
+    target_host = host || client_agency&.agency_domain || ENV.fetch("DOMAIN_NAME", "localhost")
+    protocol = (target_host.nil? || target_host == "localhost") ? "http" : "https"
+
+    params = {
+      token: auth_token,
+      locale: language,
+      host: target_host,
+      protocol: protocol,
+      **url_params
+    }
+    params[:origin] = origin if origin.present?
+
+    Rails.application.routes.url_helpers.activities_flow_start_url(params.compact)
   end
 
   def expired?
-    false
+    expires_at.present? && Time.current.after?(expires_at)
+  end
+
+  def normalize_language
+    self.language = language.to_s.downcase if language.present?
   end
 
   def supported_pre_populated_types
@@ -92,5 +120,16 @@ class ActivityFlowInvitation < ApplicationRecord
     Date.parse(value.to_s)
   rescue ArgumentError, TypeError
     nil
+  end
+
+  def set_expires_at
+    self.expires_at ||= calculate_expires_at
+  end
+
+  def calculate_expires_at
+    end_of_day_sent = (created_at || Time.current).in_time_zone(INVITATION_VALIDITY_TIME_ZONE).end_of_day
+    days_valid_for = Rails.application.config.client_agencies[client_agency_id]&.invitation_valid_days || 14
+
+    end_of_day_sent + days_valid_for.days
   end
 end
