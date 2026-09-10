@@ -3,13 +3,12 @@
 class Uswds::Alert < ViewComponent::Base
   TYPES = %i[success info warning error]
 
-  def initialize(type: :info, heading: nil, slim: false, autofocus: false,**options)
+  def initialize(type: :info, heading: nil, slim: false, **options)
     raise "Unsupported Alert type: #{type}" unless TYPES.include?(type.to_sym)
 
     @type = type
     @heading = heading
     @slim = slim
-    @autofocus = autofocus
     @options = options
   end
 

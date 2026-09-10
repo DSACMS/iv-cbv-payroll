@@ -12,22 +12,6 @@ RSpec.describe Uswds::Alert, type: :component do
     expect(result).to have_text('Alert message')
   end
 
-  it "adds the autofocus hook when requested" do
-    result = render_inline(
-      described_class.new(autofocus: true)
-    ) { "Error message" }
-
-    expect(result).to have_css(
-      "[role='alert'][data-autofocus][tabindex='-1']"
-    )
-  end
-
-  it "does not add the autofocus hook by default" do
-    result = render_inline(described_class.new) { "Information" }
-
-    expect(result).not_to have_css("[data-autofocus]")
-  end
-
   it "renders an accessible alert" do
     result = render_inline(described_class.new(type: :error)) do
       "Your session has expired"
