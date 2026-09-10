@@ -14,6 +14,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       reporting_window_months: 1
     )
   end
+  let(:reporting_window) { activity_flow.reporting_window_range }
 
   before do
     Rails.application.config.active_storage.service = :local
@@ -159,8 +160,8 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       term = create_partial_term(
         activity: partial_education_activity,
         school_name: "University of Illinois",
-        term_begin: Date.new(2026, 1, 5),
-        term_end: Date.new(2026, 5, 15)
+        term_begin: reporting_window.begin,
+        term_end: reporting_window.end
       )
 
       get :new, params: { education_id: partial_education_activity.id }
@@ -174,14 +175,14 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       create_partial_term(
         activity: partial_education_activity,
         school_name: "University A",
-        term_begin: Date.new(2026, 1, 5),
-        term_end: Date.new(2026, 5, 15)
+        term_begin: reporting_window.begin,
+        term_end: reporting_window.end
       )
       create_partial_term(
         activity: partial_education_activity,
         school_name: "College B",
-        term_begin: Date.new(2026, 1, 10),
-        term_end: Date.new(2026, 5, 20)
+        term_begin: reporting_window.begin,
+        term_end: reporting_window.end
       )
 
       get :new, params: { education_id: partial_education_activity.id }

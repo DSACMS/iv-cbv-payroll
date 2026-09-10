@@ -63,11 +63,21 @@ RSpec.describe LauncherController, type: :controller do
       expect(body).to include("Enrolled full time")
       expect(body).to include("Enrolled half-time")
       expect(body).to include("Enrolled less-than-half-time")
+      expect(body).to include("Enrolled, intensity not reported")
       expect(body).to include("No NSC enrollment found")
-      expect(body).to include('value="lynette"')
+      expect(body).to include('value="dominique"')
       expect(body).to include('value="renewal_half_time_last_4_of_6_avery"')
       expect(body).to include('value="partial_enrollment_maya"')
+      expect(body).to include('value="lynette"')
       expect(body).to include('value="linda"')
+    end
+
+    it "preselects the full-time scenario as the default student status" do
+      get :launcher
+      body = response.body
+      expect(body).to include('data-launcher-status-value="dominique"')
+      expect(body).to match(/launcher__rcard--selected[^>]*data-value="dominique"/)
+      expect(body).to match(/name="test_scenario"[^>]*value="dominique"/)
     end
 
     it "renders the launch buttons posting to /launcher" do

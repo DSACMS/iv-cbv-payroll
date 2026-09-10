@@ -66,8 +66,12 @@ class NscDataFetcherService
   def save_enrollment_terms(enrollment_details)
     activity_flow = @education_activity.activity_flow
 
+    identity = activity_flow.identity
+
     enrollment_details.each do |enrollment_detail|
       next unless enrollment_detail["currentEnrollmentStatus"] == CURRENTLY_ENROLLED
+
+      name_on_school_record = enrollment_detail["nameOnSchoolRecord"] || {}
 
       enrollment_detail["enrollmentData"].each do |enrollment_data|
         term_begin = Date.parse(enrollment_data["termBeginDate"])
@@ -76,9 +80,9 @@ class NscDataFetcherService
 
         @education_activity.nsc_enrollment_terms.create!(
           school_name: enrollment_detail["officialSchoolName"],
-          first_name: enrollment_detail["nameOnSchoolRecord"]["firstName"],
-          middle_name: enrollment_detail["nameOnSchoolRecord"]["middleName"],
-          last_name: enrollment_detail["nameOnSchoolRecord"]["lastName"],
+          first_name: name_on_school_record["firstName"] || identity&.first_name,
+          middle_name: name_on_school_record["middleName"],
+          last_name: name_on_school_record["lastName"] || identity&.last_name,
           enrollment_status: enrollment_status(enrollment_data),
           term_begin: term_begin,
           term_end: term_end,

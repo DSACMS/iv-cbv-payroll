@@ -71,9 +71,12 @@ class EducationActivityCardBuilder
   end
 
   def partial_self_attested_month_data(term:, month_start:)
+    credit_hours = @activity.review_term_credit_hours(term)
     {
       month: month_start,
-      enrollment_status: term.enrollment_status_display
+      enrollment_status: term.enrollment_status_display,
+      credit_hours: credit_hours,
+      community_engagement_hours: @activity.community_engagement_hours(credit_hours)
     }
   end
 

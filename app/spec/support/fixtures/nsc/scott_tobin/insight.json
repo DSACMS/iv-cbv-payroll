@@ -5,15 +5,15 @@
     "message": "Successful"
   },
   "transactionDetails": {
-    "transactionId": "828375864",
-    "orderId": "114695658",
+    "transactionId": "4001783861",
+    "orderId": "2002931146",
     "transactionStatus": "CNF",
     "transactionFee": "0.00",
     "salesTax": "0.00",
     "transactionTotal": "0.00",
     "requestedBy": "CMS Contact",
-    "requestedDate": "2026-01-22 19:46:37.886",
-    "notifiedDate": "2026-01-22 19:46:37.886",
+    "requestedDate": "2026-08-28 14:50:34.694",
+    "notifiedDate": "2026-08-28 14:50:34.694",
     "nscHit": "Y"
   },
   "clientData": {
@@ -29,11 +29,7 @@
       "officialSchoolName": "SPOKANE COMMUNITY COLLEGE",
       "schoolCode": "003793",
       "branchCode": "00",
-      "nameOnSchoolRecord": {
-        "firstName": "SCOTT",
-        "lastName": "TOBIN",
-        "middleName": "M."
-      },
+      "schoolType": "2",
       "currentEnrollmentStatus": "CN",
       "enrollmentData": [
         {
@@ -49,15 +45,7 @@
             }
           ]
         }
-      ],
-      "studentAddress": {
-        "address1": "310 Tasker St. ",
-        "address2": "#6",
-        "city": "Oakland",
-        "state": "WA",
-        "zipCode": "98584",
-        "empty": false
-      }
+      ]
     }
   ]
 }

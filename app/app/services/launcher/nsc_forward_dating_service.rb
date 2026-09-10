@@ -1,9 +1,10 @@
 class Launcher::NscForwardDatingService
-  LAUNCHER_SCENARIO_KEYS = %w[lynette rick dominique linda].freeze
+  LAUNCHER_SCENARIO_KEYS = %w[lynette rick dominique scott linda].freeze
   # These dates match each persona's latest term end so NSC reports them as currently enrolled before forward-dating.
   LAUNCHER_AS_OF_DATES = {
     "lynette" => Date.new(2024, 11, 19),
-    "rick" => Date.new(2024, 11, 29)
+    "rick" => Date.new(2024, 11, 29),
+    "dominique" => Date.new(2024, 5, 9)
   }.freeze
 
   def self.applicable?(education_activity)
@@ -37,13 +38,10 @@ class Launcher::NscForwardDatingService
   end
 
   def forward_dated_response(response)
-    latest_term_end = Array(response["enrollmentDetails"])
-      .flat_map { |detail| Array(detail["enrollmentData"]) }
-      .filter_map { |term| term["termEndDate"].presence && Date.parse(term["termEndDate"]) }
-      .max
-    return response unless latest_term_end
+    anchor_term_end = anchor_term_end_for(response)
+    return response unless anchor_term_end
 
-    delta_days = (@education_activity.activity_flow.reporting_window_range.max - latest_term_end).to_i
+    delta_days = (@education_activity.activity_flow.reporting_window_range.max - anchor_term_end).to_i
     transformed_response = response.deep_dup
 
     Array(transformed_response["enrollmentDetails"]).each do |detail|
@@ -54,6 +52,18 @@ class Launcher::NscForwardDatingService
     end
 
     transformed_response
+  end
+
+  def anchor_term_end_for(response)
+    term_ends = Array(response["enrollmentDetails"])
+      .flat_map { |detail| Array(detail["enrollmentData"]) }
+      .filter_map { |term| term["termEndDate"].presence && Date.parse(term["termEndDate"]) }
+    return if term_ends.empty?
+
+    as_of_date = launcher_as_of_date
+    return term_ends.max if as_of_date.blank?
+
+    term_ends.select { |term_end| term_end <= as_of_date }.max || term_ends.max
   end
 
   def shift_date_string(date_str, delta_days)

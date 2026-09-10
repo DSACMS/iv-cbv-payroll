@@ -507,16 +507,20 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:months]).to eq([
         {
           month: first_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
+          credit_hours: 3,
+          community_engagement_hours: 39
         },
         {
           month: second_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
+          credit_hours: 5,
+          community_engagement_hours: 65
         }
       ])
     end
 
-    it "shows enrollment status only for partially self-attested months" do
+    it "shows enrollment status and credit hours for partially self-attested months" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
       create(
         :nsc_enrollment_term,
@@ -533,11 +537,15 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:months]).to eq([
         {
           month: first_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
+          credit_hours: 6,
+          community_engagement_hours: 78
         },
         {
           month: second_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
+          credit_hours: 6,
+          community_engagement_hours: 78
         }
       ])
     end
@@ -560,7 +568,9 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:months].first).to eq(
         {
           month: first_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
+          credit_hours: 4,
+          community_engagement_hours: 52
         }
       )
     end
@@ -591,12 +601,14 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:months]).to eq([
         {
           month: second_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time"),
+          credit_hours: 5,
+          community_engagement_hours: 65
         }
       ])
     end
 
-    it "shows enrollment status only for enrolled partially self-attested months" do
+    it "shows enrollment status and credit hours for enrolled partially self-attested months" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
       create(
         :nsc_enrollment_term,
@@ -613,11 +625,15 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:months]).to eq([
         {
           month: first_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.enrolled")
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.enrolled"),
+          credit_hours: 5,
+          community_engagement_hours: 65
         },
         {
           month: second_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.enrolled")
+          enrollment_status: I18n.t("components.enrollment_term_table_component.status.enrolled"),
+          credit_hours: 5,
+          community_engagement_hours: 65
         }
       ])
     end

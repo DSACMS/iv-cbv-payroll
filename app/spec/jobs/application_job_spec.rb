@@ -70,6 +70,50 @@ RSpec.describe ApplicationJob do
     end
   end
 
+  describe "non-retryable errors" do
+    class ProgrammingErrorTestJob < ApplicationJob
+      cattr_accessor :discarded_errors, default: []
+
+      after_discard { |_job, error| discarded_errors << error }
+
+      def perform
+        raise NoMethodError, "undefined method '[]' for nil"
+      end
+    end
+
+    before { ProgrammingErrorTestJob.discarded_errors = [] }
+
+    it "re-raises on the first attempt instead of enqueuing a retry" do
+      expect do
+        expect { ProgrammingErrorTestJob.perform_now }.to raise_error(NoMethodError)
+      end.not_to have_enqueued_job(ProgrammingErrorTestJob)
+    end
+
+    it "runs after_discard callbacks on the first attempt" do
+      expect { ProgrammingErrorTestJob.perform_now }.to raise_error(NoMethodError)
+
+      expect(ProgrammingErrorTestJob.discarded_errors.map(&:class)).to eq([ NoMethodError ])
+    end
+
+    class ValidationErrorTestJob < ApplicationJob
+      def perform
+        raise ActiveRecord::RecordInvalid
+      end
+    end
+
+    it "does not retry validation errors" do
+      expect do
+        expect { ValidationErrorTestJob.perform_now }.to raise_error(ActiveRecord::RecordInvalid)
+      end.not_to have_enqueued_job(ValidationErrorTestJob)
+    end
+
+    it "still retries errors that are not programming errors" do
+      expect do
+        TestJob.perform_now
+      end.to have_enqueued_job(TestJob)
+    end
+  end
+
   describe "#with_flow_tags" do
     let(:cbv_applicant) { create(:cbv_applicant, client_agency_id: "sandbox") }
     let(:cbv_flow) { create(:cbv_flow, cbv_applicant: cbv_applicant) }

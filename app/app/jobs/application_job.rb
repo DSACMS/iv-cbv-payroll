@@ -1,9 +1,17 @@
 class ApplicationJob < ActiveJob::Base
   class SilencedError < StandardError; end
 
+  NON_RETRYABLE_ERRORS = [
+    NameError,
+    TypeError,
+    ArgumentError,
+    ActiveRecord::RecordInvalid
+  ].freeze
+
   around_perform :with_error_reporting
 
   retry_on Exception, wait: :polynomially_longer, attempts: 5
+  retry_on(*NON_RETRYABLE_ERRORS, attempts: 1)
 
   class_attribute :max_attempts, default: 5
 
