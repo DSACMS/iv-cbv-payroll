@@ -267,7 +267,12 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     within("[data-activity-type='education']") do
       click_button I18n.t("activities.hub.add")
     end
+    verify_page(page, title: I18n.t("activities.education.add_your_education.show.header"))
+    find("label[for='add_education_method_college_or_university']").click
+    click_button I18n.t("continue")
+
     verify_page(page, title: I18n.t("activities.education.verify.header"))
+
     performing_active_jobs do
       click_button I18n.t("activities.education.verify.continue")
       verify_page(page, title: I18n.t("activities.education.error.header"), wait: 10) # /activities/education/error
