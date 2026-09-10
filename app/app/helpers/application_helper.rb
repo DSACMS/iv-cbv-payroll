@@ -32,7 +32,7 @@ module ApplicationHelper
   end
 
   def nsc_disabled?
-    ActiveModel::Type::Boolean.new.cast(ENV["NSC_DISABLED"]) || false
+    Nsc.disabled?
   end
 
   def uswds_sprite_icon_href(icon_name)

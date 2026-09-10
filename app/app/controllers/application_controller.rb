@@ -132,7 +132,7 @@ class ApplicationController < ActionController::Base
   end
 
   def nsc_disabled?
-    ActiveModel::Type::Boolean.new.cast(ENV["NSC_DISABLED"])
+    Nsc.disabled?
   end
 
   def redirect_unless_activity_hub_enabled
