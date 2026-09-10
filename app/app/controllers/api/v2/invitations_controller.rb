@@ -1,5 +1,4 @@
 class Api::V2::InvitationsController < ApplicationController
-  skip_forgery_protection
   wrap_parameters false
 
   before_action :authenticate
