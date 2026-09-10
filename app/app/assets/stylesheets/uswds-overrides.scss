@@ -27,12 +27,6 @@
   max-width: none;
 }
 
-.usa-alert[data-autofocus][tabindex]:focus,
-.usa-alert[data-autofocus][tabindex]:focus-visible {
-  outline: 0 !important;
-  box-shadow: none !important;
-}
-
 // Responsive heading adjustments for mobile
 @include at-media-max('tablet') {
   h1 {
