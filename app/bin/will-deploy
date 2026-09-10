@@ -159,9 +159,9 @@ def tags_for_changes(both_changes, income_changes, ce_changes)
   if has_income.positive? && has_ce.zero?
     "#{tags} @Jake"
   elsif has_ce.positive? && has_income.zero?
-    "#{tags} @Seth"
+    "#{tags} @Jacob"
   else
-    "#{tags} @Jake @Seth"
+    "#{tags} @Jake @Jacob"
   end
 end
 
