@@ -140,8 +140,4 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
     @education_activity.nsc_enrollment_terms
       .any? { |term| term.within_reporting_window?(reporting_range) && term.half_time_or_above? }
   end
-
-  def redirect_if_nsc_disabled
-    redirect_to new_activities_flow_education_path if nsc_disabled?
-  end
 end

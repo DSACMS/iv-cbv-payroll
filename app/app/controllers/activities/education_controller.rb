@@ -12,14 +12,13 @@ class Activities::EducationController < Activities::BaseController
   ARTIFICIAL_DELAY = 7.seconds
   INDICATOR_COUNT = 3
 
+  before_action :redirect_if_nsc_disabled, only: %i[verify show sync error]
   before_action :set_education_activity, only: %i[show edit update destroy review save_review]
   before_action :set_back_url, only: %i[edit review]
   after_action :track_info_viewed_event, only: %i[new edit]
   after_action :track_review_viewed_event, only: :review
 
   def verify
-    return redirect_to new_activities_flow_education_path if nsc_disabled?
-
     @identity = current_identity!
   end
 
@@ -35,7 +34,6 @@ class Activities::EducationController < Activities::BaseController
 
   def show
     return redirect_to edit_activities_flow_education_path(id: @education_activity.id) if @education_activity.pre_populated_draft?
-    return redirect_to new_activities_flow_education_path if nsc_disabled?
 
     @polling_url = activities_flow_education_sync_path(education_id: @education_activity.id)
 
@@ -92,8 +90,6 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def sync
-    return redirect_to new_activities_flow_education_path if nsc_disabled?
-
     @education_activity = @flow.education_activities.find(params[:education_id])
 
     set_completed_indicators
@@ -129,7 +125,6 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def error
-    redirect_to new_activities_flow_education_path if nsc_disabled?
   end
 
   private
