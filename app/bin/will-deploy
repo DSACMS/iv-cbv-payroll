@@ -37,7 +37,7 @@ def run_command(*command)
 end
 
 def fetch_production_version
-  response = URI.open("https://snap-income-pilot.com/health", &:read)
+  response = URI.open("https://emmy.cms.gov/health", &:read)
   JSON.parse(response).fetch("version")
 end
 
