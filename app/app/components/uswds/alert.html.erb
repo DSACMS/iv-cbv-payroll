@@ -1,4 +1,11 @@
-<div class="<%= alert_classes %>">
+<div 
+  class="<%= alert_classes %>"
+  role="alert"
+  aria-live="assertive"
+  aria-atomic="true"
+  tabindex="-1"
+  <%= "data-autofocus" if @autofocus %>
+>
   <div class="usa-alert__body">
     <% if @heading %>
       <h2 class="usa-alert__heading"><%= @heading %></h2>
