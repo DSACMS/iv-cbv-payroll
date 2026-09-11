@@ -1,4 +1,12 @@
 module ActivitiesHelper
+  def education_add_path
+    if nsc_disabled?
+      new_activities_flow_education_path
+    else
+      verify_activities_flow_education_index_path
+    end
+  end
+
   def show_activity?(type)
     if @flow&.pre_populated_session?
       @flow.pre_populated_activity_types.include?(type.to_sym)

@@ -146,6 +146,16 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe "#nsc_disabled?" do
+    it "delegates to Nsc.disabled?" do
+      allow(Nsc).to receive(:disabled?).and_return(true)
+      expect(helper.nsc_disabled?).to be true
+
+      allow(Nsc).to receive(:disabled?).and_return(false)
+      expect(helper.nsc_disabled?).to be false
+    end
+  end
+
   describe ".format_decimal_amount" do
     it "returns 0 for nil" do
       expect(described_class.format_decimal_amount(nil)).to eq(0)

@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
   helper :view
-  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?
+  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?, :nsc_disabled?
   around_action :switch_locale
   before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :set_device_id_cookie
   after_action :apply_iframe_embedding
@@ -129,6 +129,10 @@ class ApplicationController < ActionController::Base
 
   def activity_hub_enabled?
     Rails.env.development? || ENV["ACTIVITY_HUB_ENABLED"] == "true"
+  end
+
+  def nsc_disabled?
+    Nsc.disabled?
   end
 
   def redirect_unless_activity_hub_enabled
