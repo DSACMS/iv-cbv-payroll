@@ -1277,12 +1277,12 @@ en:
       log_out: Log out
       logo_alt_text:
         nh_dhhs: New Hampshire's logo image for the website
+      menu: Menu
       preheader:
         default: A website in partnership with Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health
         nh_dhhs: A website in partnership with NH DHHS Bureau of Family Assistance
       primary: Primary navigation
-      menu: Menu
     hours:
       one: "%{count} hour"
       other: "%{count} hours"
