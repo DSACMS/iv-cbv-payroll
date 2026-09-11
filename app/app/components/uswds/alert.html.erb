@@ -1,7 +1,12 @@
-<div class="<%= alert_classes %>">
+<div
+  class="<%= alert_classes %>"
+  role="alert"
+  aria-atomic="true"
+>
   <div class="usa-alert__body">
     <% if @heading %>
-      <h2 class="usa-alert__heading"><%= @heading %></h2>
+      <%# Changed h2 to a div because screen readers will read it twice if it's a heading %>
+      <div class="usa-alert__heading"><%= @heading %></div>
     <% end %>
     <div class="usa-alert__text">
       <%= content %>
