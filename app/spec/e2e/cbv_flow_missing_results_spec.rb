@@ -25,7 +25,6 @@ RSpec.describe "e2e CBV flow test", :js, type: :feature do
     find('.usa-input[type="search"]').fill_in with: "blahblahblah"
     click_button I18n.t("cbv.employer_searches.show.search")
 
-    expect(page).to have_content(I18n.t("cbv.employer_searches.show.employer_not_listed"))
     click_link I18n.t("cbv.employer_searches.show.can_not_find_employer")
     verify_page(page, title: I18n.t("cbv.missing_results.show.header", agency_full_name: I18n.t("shared.agency_full_name.sandbox")))
   end

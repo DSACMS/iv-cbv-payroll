@@ -19,11 +19,7 @@ class DateFormatter
       begin
         Date.strptime(value, "%m/%d/%Y")
       rescue ArgumentError
-        begin
-          Date.iso8601(value)
-        rescue ArgumentError, Date::Error
-          nil
-        end
+        nil
       end
     end
   end
