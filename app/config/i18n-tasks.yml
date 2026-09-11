@@ -156,6 +156,7 @@ ignore_missing:
     - "households.*"
     - "cbv.applicant_informations.employer_searches.employer.select_employer"
     - "cbv.employer_searches.employer.select_employer"
+    - "cbv.employer_searches.show.select_employer"
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
 
