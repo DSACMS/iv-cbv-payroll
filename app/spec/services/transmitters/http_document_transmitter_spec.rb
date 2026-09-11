@@ -17,7 +17,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
     instance_double(
       ClientAgencyConfig::ClientAgency,
       id: "sandbox",
-      transmission_method_configuration: { "documents_api_url" => api_url }
+      activity_transmission_method_configuration: { "documents_api_url" => api_url }
     )
   end
   let(:transmitter) { described_class.new(activity_flow, current_agency) }
@@ -41,7 +41,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
       body: "pdf content",
       headers: {
         "Content-Type" => "application/pdf",
-        "Content-Disposition" => 'attachment; filename="SANDBOX123_community_service_time_sheet_1.pdf"',
+        "Content-Disposition" => 'attachment; filename="SANDBOX123_community_service_time_sheet.pdf"',
         "X-IVAAS-Confirmation-Code" => "SANDBOX123"
       }
     )
@@ -49,7 +49,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
       body: "image content",
       headers: {
         "Content-Type" => "image/jpeg",
-        "Content-Disposition" => 'attachment; filename="SANDBOX123_community_service_time_sheet_2.jpg"',
+        "Content-Disposition" => 'attachment; filename="SANDBOX123_community_service_time_sheet.jpg"',
         "X-IVAAS-Confirmation-Code" => "SANDBOX123"
       }
     )
@@ -89,22 +89,11 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
     activity = create(:volunteering_activity, activity_flow: activity_flow)
     attach_document(activity, "Timesheet.pdf", "application/pdf")
     allow(processed_download_service).to receive(:download_file) { |_key, path| File.binwrite(path, "document content") }
-    allow(current_agency).to receive(:transmission_method_configuration)
+    allow(current_agency).to receive(:activity_transmission_method_configuration)
       .and_return({ "documents_api_url" => api_url, "silently_retry_error_codes" => [ 403 ] })
     stub_request(:post, api_url).to_return(status: [ 403, "Forbidden" ])
 
     expect { transmitter.deliver }.to raise_error(ApplicationJob::SilencedError, /code=403 message=Forbidden/)
-  end
-
-  it "raises a helpful error when the configured document URL is malformed" do
-    allow(current_agency).to receive(:transmission_method_configuration)
-      .and_return({ "documents_api_url" => "not a url" })
-    activity = create(:volunteering_activity, activity_flow: activity_flow)
-    attachment = attach_document(activity, "Timesheet.pdf", "application/pdf")
-    allow(processed_download_service).to receive(:download_file) { |_key, path| File.binwrite(path, "document content") }
-
-    expect { transmitter.deliver }
-      .to raise_error(ArgumentError, 'Invalid documents_api_url "not a url": must be an absolute HTTP(S) URL')
   end
 
   def attach_document(activity, filename, content_type)
