@@ -16,6 +16,10 @@ RSpec.describe Api::V2::InvitationsController do
       attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
         params[:type] = "income"
         params[:agency_partner_metadata] = attributes_for(:cbv_applicant, client_agency_id)
+        params[:agency_partner_metadata][:first_name] = "John"
+        params[:agency_partner_metadata][:last_name] = "Doe"
+        params[:agency_partner_metadata][:case_number] = "123456789"
+        params[:agency_partner_metadata][:date_of_birth] = "1990-01-01"
         # ensure that client_agency_id is not considered a valid param. it should be inferred from the api token
         params[:agency_partner_metadata].delete(:client_agency_id)
         params.delete(:client_agency_id)
@@ -66,6 +70,8 @@ RSpec.describe Api::V2::InvitationsController do
         attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
           params[:type] = "income"
           params[:agency_partner_metadata] = {
+            case_number: nil,
+            date_of_birth: nil,
             individual_id: "ABC1234"
           }
         end
@@ -106,7 +112,7 @@ RSpec.describe Api::V2::InvitationsController do
         expect(response).to have_http_status(:unprocessable_content)
         parsed_response = JSON.parse(response.body)
         expect(parsed_response["errors"]).to include(
-          a_hash_including("message" => I18n.t("cbv.applicant_informations.la_ldh.fields.doc_id_or_individual_id.blank"))
+          a_hash_including("message" => I18n.t("cbv.applicant_informations.la_ldh.fields.individual_id.blank"))
         )
       end
     end
