@@ -61,13 +61,18 @@
             <%= button_to t("shared.header.log_out"), destroy_user_session_url(client_agency_id: current_user.client_agency_id), method: :delete, class: "usa-nav__link" %>
           </li>
         <% end %>
-        <li class="usa-nav__primary-item">
-          <%= render partial: "help/help_link", locals: { class_name: "usa-nav__link", text: t("shared.header.help"), source: "nav" } %>
-        </li>
+        <% if !activity_flow? %>
+          <li class="usa-nav__primary-item">
+            <%= render partial: "help/help_link", locals: { class_name: "usa-nav__link", text: t("shared.header.help"), source: "nav" } %>
+          </li>
+        <% end %>
         <% I18n.available_locales.each do |locale| %>
           <% next if locale == I18n.locale %>
           <li class="usa-nav__primary-item">
-            <%= switch_locale_link(locale) %>
+          <%# Gated to only show on income side, will be added back to CE when translations completed %>
+            <% if !activity_flow? %>
+              <%= switch_locale_link(locale) %>
+            <% end %>
           </li>
         <% end %>
       </ul>

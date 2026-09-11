@@ -3,6 +3,8 @@ module Aggregators::AggregatorReports
   class AggregatorReport
     include Cbv::MonthlySummaryHelper
 
+    class NoMatchingEmploymentError < StandardError; end
+
     attr_accessor :payroll_accounts, :identities, :incomes, :employments, :gigs, :paystubs, :has_fetched, :fetched_days, :reporting_date_range
 
     def initialize(payroll_accounts: [], days_to_fetch_for_w2: nil, days_to_fetch_for_gig: nil, reporting_date_range: nil)
@@ -53,7 +55,12 @@ module Aggregators::AggregatorReports
 
     AccountReportStruct = Struct.new(:identity, :income, :employment, :paystubs, :gigs)
     def find_account_report(account_id)
-      account_employment = pick_employment(@employments, @paystubs, account_id)
+      begin
+        account_employment = pick_employment(@employments, @paystubs, account_id)
+      rescue NoMatchingEmploymentError => e
+        Rails.logger.warn("Skipping account #{account_id}: #{e.message}")
+        return
+      end
       employment_filter = employment_filter_for(account_id, account_employment&.employment_matching_id)
 
       # Note that, once we filter by employment match, we do not yet have a good solution for displaying multiple
@@ -118,6 +125,9 @@ module Aggregators::AggregatorReports
       @payroll_accounts.each_with_object({}) do |payroll_account, hash|
         account_id = payroll_account.aggregator_account_id
         account_report = find_account_report(account_id)
+
+        next if account_report.nil?
+
         has_income_data = payroll_account.job_succeeded?("income")
         has_employment_data = payroll_account.job_succeeded?("employment")
         has_identity_data = payroll_account.job_succeeded?("identity")
@@ -144,6 +154,9 @@ module Aggregators::AggregatorReports
         .each_with_object({}) do |payroll_account, hash|
           account_id = payroll_account.aggregator_account_id
           account_report = find_account_report(account_id)
+
+          next if account_report.nil?
+
           paystubs = account_report.paystubs
           gigs = account_report.gigs
           extracted_dates = extract_dates(paystubs, gigs)
@@ -205,7 +218,11 @@ module Aggregators::AggregatorReports
     end
 
     def fetched_days_for_account(account_id)
-      account_employment = pick_employment(@employments, @paystubs, account_id)
+      begin
+        account_employment = pick_employment(@employments, @paystubs, account_id)
+      rescue NoMatchingEmploymentError => e
+        return @fetched_days
+      end
       return @fetched_days unless account_employment
 
       case account_employment.employment_type
@@ -235,8 +252,8 @@ module Aggregators::AggregatorReports
       # data sets to make sure we're only using ones that match the employment ID we chose here.
       relevant_employments = employments.select { |e| e[:account_id] == account_id }
       if relevant_employments.empty?
-        Rails.logger.error("No employments found that match account_id #{account_id}")
-        raise "No employments found that match account_id #{account_id}"
+        Rails.logger.error("No employments found that match account_id #{account_id} out of #{employments.count} employments")
+        raise NoMatchingEmploymentError, "No employments found that match account_id #{account_id}"
       end
 
       # Pick the employment with the latest update when considering the start_date,

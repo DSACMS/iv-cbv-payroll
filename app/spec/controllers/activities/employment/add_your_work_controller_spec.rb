@@ -27,6 +27,22 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.employment.add_your_work.show.description")))
     end
 
+    context "with a three-month reporting period" do
+      let(:activity_flow) { create(:activity_flow, reporting_window_months: 3) }
+
+      it "renders the reporting period beneath the header" do
+        get :show
+
+        rendered = Capybara.string(response.body)
+        reporting_period_label = I18n.t("activities.hub.empty_state_reporting_period_label")
+        expect(rendered).to have_selector(
+          "h1 + p",
+          text: "#{reporting_period_label} #{activity_flow.reporting_window_display}",
+          normalize_ws: true
+        )
+      end
+    end
+
     it "renders all three options with bolded labels and their hints" do
       get :show
 
@@ -35,6 +51,15 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
         expect(response.body).to include("<span class=\"text-bold\">#{label}</span>")
         expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.employment.add_your_work.show.options.#{option}.hint")))
       end
+    end
+
+    it "renders the updated unpaid work description" do
+      get :show
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text(
+        I18n.t("activities.employment.add_your_work.show.options.unpaid.hint")
+      )
     end
 
     it "does not render the hint as an attribute on the radio input" do

@@ -335,10 +335,11 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
     end
 
-    it "shows the verification info link in the in-progress state" do
-      page_text = Capybara.string(response.body).text
-      expect(page_text).to include(I18n.t("activities.hub.verification_info_link"))
-    end
+    # Commenting out until verification info page is implemented, FFS-4642
+    # it "shows the verification info link in the in-progress state" do
+    #   page_text = Capybara.string(response.body).text
+    #   expect(page_text).to include(I18n.t("activities.hub.verification_info_link"))
+    # end
   end
 
   context "when activity requirements are completed" do

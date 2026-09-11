@@ -74,7 +74,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
 
       it_behaves_like "tracks an event", TrackEvent::EmploymentMonthValidationFailed,
         extra_attributes: -> {
-          { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_message: kind_of(String) }
+          { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_fields: [ "gross_income", "hours" ] }
         }
     end
 

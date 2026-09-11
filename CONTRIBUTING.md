@@ -30,10 +30,6 @@ Most developers on the team code using macOS, so we recommend that platform if p
    * [Dockerize](https://github.com/jwilder/dockerize)
    * [ADR Tools](https://github.com/npryce/adr-tools)
    * [Graphviz](https://voormedia.github.io/rails-erd/install.html): brew install graphviz
-   * [Chromedriver](https://sites.google.com/chromium.org/driver/)
-     * Chromedriver must be allowed to run. You can either do that by:
-       * The command line: `xattr -d com.apple.quarantine $(which chromedriver)` (this is the only option if you are on Big Sur)
-       * Manually: clicking "allow" when you run the integration tests for the first time and a dialogue opens up
    * [Ngrok](https://ngrok.com/downloads): brew install ngrok/ngrok/ngrok
      * Sign up for an account: https://dashboard.ngrok.com/signup
      * run `ngrok config add-authtoken {token goes here}`

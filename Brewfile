@@ -17,9 +17,6 @@ brew "dockerize"
 # helper scripts for creating new ADRs
 brew "adr-tools"
 
-# chromedriver for integration tests
-cask "chromedriver"
-
 # used by rails-erd documentation tool
 brew "graphviz"
 

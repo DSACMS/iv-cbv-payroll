@@ -52,6 +52,22 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
     transmitter.deliver
   end
 
+  it "renders the caseworker report with templated document filenames" do
+    employment = create(:employment_activity, activity_flow: activity_flow)
+    attach_document(employment, "Pay Stub.pdf")
+    allow(processed_download_service).to receive(:download_file) do |_key, file_path|
+      File.binwrite(file_path, "cleared document")
+    end
+    allow(transmitter).to receive(:pdf_content).and_call_original
+    expect(destination_s3_service).to receive(:upload_directory) do |directory, _prefix|
+      content = File.binread(File.join(directory, report_file_name))
+      pdf_text = PDF::Reader.new(StringIO.new(content)).pages.map(&:text).join(" ").gsub(/\s+/, " ")
+      expect(pdf_text).to include("SANDBOX123_employment_pay_stub_1.pdf")
+    end
+
+    transmitter.deliver
+  end
+
   it "uploads only the report when the flow has no supporting documents" do
     expect(processed_download_service).not_to receive(:download_file)
     expect(destination_s3_service).to receive(:upload_directory).ordered do |directory, prefix|
