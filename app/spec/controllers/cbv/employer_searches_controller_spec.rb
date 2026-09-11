@@ -114,6 +114,20 @@ RSpec.describe Cbv::EmployerSearchesController do
         expect(response.body).to include('aria-label="Select Greens Group"')
       end
 
+      it "labels popular payroll provider buttons" do
+        get :show, params: { type: "payroll" }
+
+        provider_name = ProviderSearchService::TOP_PROVIDERS.first[:name]
+        expected_label = I18n.t(
+          "cbv.employer_searches.show.select_employer",
+          name: provider_name
+        )
+
+        expect(Capybara.string(response.body)).to have_selector(
+          %(button[data-is-default-option="true"][aria-label="#{expected_label}"])
+        )
+      end
+
       it "tracks a Mixpanel event" do
         allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
         expect(EventTrackingJob).to receive(:perform_later).with(
