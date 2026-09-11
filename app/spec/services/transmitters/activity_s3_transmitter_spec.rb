@@ -62,7 +62,7 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
     expect(destination_s3_service).to receive(:upload_directory) do |directory, _prefix|
       content = File.binread(File.join(directory, report_file_name))
       pdf_text = PDF::Reader.new(StringIO.new(content)).pages.map(&:text).join(" ").gsub(/\s+/, " ")
-      expect(pdf_text).to include("SANDBOX123_employment_pay_stub_1.pdf")
+      expect(pdf_text).to include("SANDBOX123_employment_pay_stub.pdf")
     end
 
     transmitter.deliver

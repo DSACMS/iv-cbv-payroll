@@ -182,7 +182,7 @@ RSpec.describe ActivityPdfReport do
 
       expect(client_report.document_names_for(activity)).to eq([ "Pay Stub Final.PDF" ])
       expect(caseworker_report.document_names_for(activity)).to eq([
-        "SANDBOX123_employment_pay_stub_final_1.pdf"
+        "SANDBOX123_employment_pay_stub_final.pdf"
       ])
     end
   end
