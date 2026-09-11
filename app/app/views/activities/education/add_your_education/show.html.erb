@@ -1,0 +1,23 @@
+<% content_for :title, t(".header") %>
+
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.education.title_singular"),
+    exit_url: activities_flow_root_path
+  ) %>
+<% end %>
+
+<h1><%= t(".header") %></h1>
+<p>
+  <strong><%= t(".reporting_period_label") %></strong>
+  <%= @flow.reporting_window_display %>
+</p>
+<p><%= t(".description") %></p>
+
+<%= form_with(url: activities_flow_education_add_your_education_path, class: "maxw-none", builder: UswdsFormBuilder, id: "add_your_education_form") do |f| %>
+  <%= f.radio_button(:add_education_method, "college_or_university", { label: tag.span(t(".options.college.label"), class: "text-bold"), hint: t(".options.college.hint") }) %>
+  <%= f.radio_button(:add_education_method, "high_school_ged", { label: tag.span(t(".options.high_school_ged.label"), class: "text-bold"), hint: t(".options.high_school_ged.hint") }) %>
+  <%= f.radio_button(:add_education_method, "trade_or_technical", { label: tag.span(t(".options.trade_or_technical.label"), class: "text-bold"), hint: t(".options.trade_or_technical.hint") }) %>
+
+  <%= f.submit t("continue") %>
+<% end %>

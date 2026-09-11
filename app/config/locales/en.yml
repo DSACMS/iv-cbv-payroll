@@ -160,6 +160,21 @@ en:
         title_generic: Upload supporting documents
       remove_file: Remove file
     education:
+      add_your_education:
+        show:
+          description: If you were enrolled at multiple schools during the reporting period, you’ll need to add each school separately.
+          header: Choose how you want to add your education
+          options:
+            college:
+              hint: We’ll pull your hours or credits from classes that count toward a degree, like an associate or bachelor's. Works with many colleges and universities.
+              label: College or university
+            high_school_ged:
+              hint: Add details if you're in high school or working on your GED.
+              label: Enter your high school or GED
+            trade_or_technical:
+              hint: Add education details about your trade school, vocational school, or career and technical education (CTE) programs.
+              label: Enter a trade or technical program
+          reporting_period_label: 'Reporting period:'
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (optional)
