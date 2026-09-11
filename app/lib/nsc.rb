@@ -1,6 +1,6 @@
 module Nsc
   def self.disabled?
-    ActiveModel::Type::Boolean.new.cast(ENV["NSC_DISABLED"]) || false
+    ENV["NSC_DISABLED"] == "true"
   end
 
   def self.enabled?
