@@ -221,7 +221,7 @@ module Aggregators
         return OpenSSL::X509::Certificate.new(value) if value.present?
         return unless path.present?
 
-        OpenSSL::X509::Certificate.new(File.read(path))
+        OpenSSL::X509::Certificate.new(File.read(File.expand_path(path)))
       rescue Errno::ENOENT, OpenSSL::X509::CertificateError => e
         raise ApiError.new(code: "CONFIGURATION_ERROR", message: "Failed to load FDSH client certificate: #{e.message}")
       end
@@ -230,7 +230,7 @@ module Aggregators
         return OpenSSL::PKey.read(value) if value.present?
         return unless path.present?
 
-        OpenSSL::PKey.read(File.read(path))
+        OpenSSL::PKey.read(File.read(File.expand_path(path)))
       rescue Errno::ENOENT, OpenSSL::PKey::PKeyError, OpenSSL::OpenSSLError => e
         raise ApiError.new(code: "CONFIGURATION_ERROR", message: "Failed to load FDSH client key: #{e.message}")
       end
