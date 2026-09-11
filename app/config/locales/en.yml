@@ -377,6 +377,7 @@ en:
             other: We found %{count} results
           search_subheader: Select your employer from the list. Then, follow the screens to sign in. Use the login credentials you use to view your pay stubs online.
           select: Select
+          select_employer: Select %{name}
         show:
           add_employment_manually: Add employment manually
           alert:
@@ -389,6 +390,7 @@ en:
           search: Search
           search_label: Search for the employer or business you want to add. If you can't find it, you can add it manually.
           search_results_header: Select your employer
+          select_employer: Select %{name}
       error_no_access: You don't have permission to access that information
       payment_details:
         show:
@@ -772,6 +774,8 @@ en:
           other: "%{count} errors"
         error_updating_applicant: An error occurred while updating the applicant information. Please try again.
     employer_searches:
+      employer:
+        select_employer: Select %{name}
       show:
         alert:
           heading: Need help connecting to your payroll provider?
@@ -801,6 +805,7 @@ en:
         search_label: This can be your current employer. This can also be any recent employer from the past 90 days if you’re no longer working.
         search_subheader: Select your employer from the list. Then, follow the screens to log in and verify your income.
         select: Select
+        select_employer: Select %{name}
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to %{agency_acronym}'s website</a> to learn about other ways to report your income.
@@ -1291,6 +1296,7 @@ en:
       log_out: Log out
       logo_alt_text:
         nh_dhhs: New Hampshire's logo image for the website
+      menu: Menu
       preheader:
         default: A website in partnership with Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health

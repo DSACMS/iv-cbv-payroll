@@ -81,6 +81,26 @@ RSpec.describe Activities::Income::EmployerSearchesController do
         expect(response.body).not_to include(I18n.t("activities.income.employer_searches.show.popular_providers"))
         expect(response.body).not_to include(I18n.t("cbv.employer_searches.show.employer_not_listed"))
       end
+
+      it "has aria-labels for each employer button" do
+        get :show, params: { query: "results" }
+        expect(response.body).to include('aria-label="Select Walgreens"')
+        expect(response.body).to include('aria-label="Select Greens Group"')
+      end
+
+      it "labels popular payroll provider buttons" do
+        get :show, params: { type: "payroll" }
+
+        provider_name = ProviderSearchService::TOP_PROVIDERS.first[:name]
+        expected_label = I18n.t(
+          "cbv.employer_searches.show.select_employer",
+          name: provider_name
+        )
+
+        expect(Capybara.string(response.body)).to have_selector(
+          %(button[data-is-default-option="true"][aria-label="#{expected_label}"])
+        )
+      end
     end
 
     context "when there are no search results" do
