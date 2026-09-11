@@ -154,6 +154,7 @@ ignore_missing:
     - "activerecord.errors.models.job_training_activity_month.*" # Self attestation hours entry error messages
     - "shared.header.logo_alt_text.nh_dhhs"
     - "households.*"
+    - "cbv.applicant_informations.la_ldh.field.individual_id.blank"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
