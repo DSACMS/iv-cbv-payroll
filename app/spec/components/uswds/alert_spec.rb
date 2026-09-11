@@ -34,7 +34,7 @@ RSpec.describe Uswds::Alert, type: :component do
     let(:result) { render_inline(described_class.new(heading: 'Important Notice')) { 'Alert content' } }
 
     it 'outputs alert with heading' do
-      expect(result).to have_element(:h2, class: 'usa-alert__heading')
+      expect(result).to have_element(:div, class: 'usa-alert__heading')
       expect(result).to have_text('Important Notice')
       expect(result).to have_text('Alert content')
     end

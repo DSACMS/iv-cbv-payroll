@@ -5,6 +5,7 @@
 >
   <div class="usa-alert__body">
     <% if @heading %>
+      <%# Changed h2 to a div because screen readers will read it twice if it's a heading %>
       <div class="usa-alert__heading"><%= @heading %></div>
     <% end %>
     <div class="usa-alert__text">
