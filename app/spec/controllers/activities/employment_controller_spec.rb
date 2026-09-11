@@ -31,6 +31,14 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response.body).to include(I18n.t("activities.employment_info.employer_name"))
     end
 
+    it "renders the self-employed helper texts" do
+      get :new
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text(I18n.t("activities.employment_info.employer_name_hint"))
+      expect(rendered).to have_text(I18n.t("activities.employment_info.street_address_hint"))
+    end
+
     it "renders the combobox for state selection" do
       get :new
 

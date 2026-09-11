@@ -4,10 +4,20 @@
 # hour), at least it's better and safer than triggering these all manually.
 #
 # This script deploys one Git commit through each environment in order.
+#
+# Usage: bin/deploy-to-nava-and-cms [nonprod|dev|prod|all]
+#
+# nonprod deploys the Nava demo and CMS sandbox and demo environments.
+# dev deploys the Nava dev and CMS dev and test environments. These
+# environments are typically deployed via CD, so they are not included in
+# nonprod by default.
+# prod deploys the Nava production and CMS UAT and production environments.
+# all deploys nonprod and dev, then prompts for confirmation before prod.
 
 set -euo pipefail
 
 readonly REPOSITORY="DSACMS/iv-cbv-payroll"
+readonly NAVA_DEV_HEALTH_URL="${NAVA_DEV_HEALTH_URL:-https://verify-demo.navapbc.cloud}"
 readonly NAVA_DEMO_HEALTH_URL="${NAVA_DEMO_HEALTH_URL:-https://demo.reportmyincome.org}"
 readonly NAVA_PROD_HEALTH_URL="${NAVA_PROD_HEALTH_URL:-https://reportmyincome.org}"
 readonly CMS_DEV_BASE_URL="${CMS_DEV_BASE_URL:-https://dev.emmy.cms.gov}"
@@ -26,10 +36,22 @@ require_command() {
   }
 }
 
+usage() {
+  cat <<EOF
+Usage: $0 [nonprod|dev|prod|all]
+
+Deploy a commit to the selected environment group:
+  dev      Nava dev + CMS dev and test
+  nonprod  Nava demo + CMS sandbox and demo
+  prod     Nava production + CMS UAT and production
+  all      nonprod and dev, followed by a confirmation before prod
+EOF
+}
+
 require_expected_host() {
   local url="$1"
 
-  [[ "$url" =~ ^https://([a-z0-9.-]+\.)?(emmy\.cms\.gov|reportmyincome\.org)(/|$) ]] || {
+  [[ "$url" =~ ^https://([a-z0-9.-]+\.)?(emmy\.cms\.gov|reportmyincome\.org|navapbc\.cloud)(/|$) ]] || {
     echo "Refusing to use unexpected health URL: ${url}" >&2
     exit 1
   }
@@ -115,13 +137,50 @@ deploy_cms() {
   verify_health "CMS Cloud ${environment}" "$base_url" "$DEPLOY_SHA"
 }
 
+deploy_nonprod() {
+  echo "Deploying Nonprod environments..."
+  deploy_nava demo "$NAVA_DEMO_HEALTH_URL"
+  deploy_cms sandbox "$CMS_SANDBOX_BASE_URL"
+  deploy_cms demo "$CMS_DEMO_BASE_URL"
+}
+
+deploy_dev() {
+  echo "Deploying dev environments..."
+  deploy_nava dev "$NAVA_DEV_HEALTH_URL"
+  deploy_cms dev "$CMS_DEV_BASE_URL"
+  deploy_cms test "$CMS_TEST_BASE_URL"
+}
+
+deploy_prod() {
+  echo "Deploying production environments..."
+  deploy_nava prod "$NAVA_PROD_HEALTH_URL"
+  deploy_cms uat "$CMS_UAT_BASE_URL"
+  deploy_cms prod "$CMS_PROD_BASE_URL"
+}
+
+[[ $# -eq 1 ]] || {
+  usage >&2
+  exit 1
+}
+
+deployment_target="$1"
+case "$deployment_target" in
+  nonprod|dev|prod|all) ;;
+  *)
+    echo "Unknown deployment target: ${deployment_target}" >&2
+    usage >&2
+    exit 1
+    ;;
+esac
+
 require_command gh
 require_command curl
 require_command jq
 
-for url in "$NAVA_DEMO_HEALTH_URL" "$NAVA_PROD_HEALTH_URL" \
-  "$CMS_DEV_BASE_URL" "$CMS_TEST_BASE_URL" "$CMS_SANDBOX_BASE_URL" \
-  "$CMS_DEMO_BASE_URL" "$CMS_UAT_BASE_URL" "$CMS_PROD_BASE_URL"; do
+for url in "$NAVA_DEV_HEALTH_URL" "$NAVA_DEMO_HEALTH_URL" \
+  "$NAVA_PROD_HEALTH_URL" "$CMS_DEV_BASE_URL" "$CMS_TEST_BASE_URL" \
+  "$CMS_SANDBOX_BASE_URL" "$CMS_DEMO_BASE_URL" "$CMS_UAT_BASE_URL" \
+  "$CMS_PROD_BASE_URL"; do
   [[ -n "$url" ]] && require_expected_host "$url"
 done
 
@@ -139,20 +198,26 @@ compare_status=$(gh api "repos/${REPOSITORY}/compare/main...${DEPLOY_SHA}" --jq 
 }
 echo "Deploying immutable commit: ${DEPLOY_SHA}"
 
-deploy_nava demo "$NAVA_DEMO_HEALTH_URL"
-deploy_cms dev "$CMS_DEV_BASE_URL"
-deploy_cms test "$CMS_TEST_BASE_URL"
-deploy_cms sandbox "$CMS_SANDBOX_BASE_URL"
-deploy_cms demo "$CMS_DEMO_BASE_URL"
+case "$deployment_target" in
+  nonprod)
+    deploy_nonprod
+    ;;
+  dev)
+    deploy_dev
+    ;;
+  prod)
+    deploy_prod
+    ;;
+  all)
+    deploy_nonprod
+    deploy_dev
+    read -r -p "Nonprod deployments succeeded. Type DEPLOY_PRODUCTION to continue: " confirmation
+    [[ "$confirmation" == "DEPLOY_PRODUCTION" ]] || {
+      echo "Production deployments cancelled."
+      exit 0
+    }
+    deploy_prod
+    ;;
+esac
 
-read -r -p "Lower environments succeeded. Type DEPLOY_PRODUCTION to continue: " confirmation
-[[ "$confirmation" == "DEPLOY_PRODUCTION" ]] || {
-  echo "Production deployments cancelled."
-  exit 0
-}
-
-deploy_nava prod "$NAVA_PROD_HEALTH_URL"
-deploy_cms uat "$CMS_UAT_BASE_URL"
-deploy_cms prod "$CMS_PROD_BASE_URL"
-
-echo "All deployments completed; configured health checks passed."
+echo "Selected deployments completed; configured health checks passed."

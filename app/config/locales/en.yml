@@ -283,7 +283,7 @@ en:
               hint: Add details for a job where you can't view paystubs online, like a small employer, a job where you were paid in cash, or self-employment.
               label: Enter paid work manually
             unpaid:
-              hint: Add work where you received housing, food, or other goods instead of money.
+              hint: Add work where you either received no income or you received housing, food, or other goods instead of money.
               label: Enter unpaid or in-kind work
       document_upload_month_detail: "%{gross_income}, %{hours}"
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
@@ -327,12 +327,12 @@ en:
       edit_title: Edit Employment Activity
       employer_name: Employer or business name
       employer_name_error: Add your employer or business name
-      employer_name_hint: If you work for yourself, enter "Self-employed"
+      employer_name_hint: If you're self-employed and don't have a separate business name, enter "Self-employed."
       employer_section_title: Employer or business information
       self_employed: I'm self-employed
       state: State
       street_address: Street address
-      street_address_hint: If you're self-employed, enter your address
+      street_address_hint: If you're self-employed and don't have a separate business address, enter your home address.
       street_address_line_2: Suite, floor, apt number
       title: Tell us about your employer or business
       zip_code: Zip code
