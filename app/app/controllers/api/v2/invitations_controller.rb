@@ -48,16 +48,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
   private
 
   def allowed_metadata_params
-    valid_attributes = CbvApplicant
-      .valid_attributes_for_agency(@current_user.client_agency_id)
-      .map(&:to_s)
-
-    filtered = metadata_params
-      .to_h
-      .stringify_keys
-      .slice(*valid_attributes)
-
-    ActionController::Parameters.new(filtered).permit!
+    metadata_params
   end
 
   def metadata_params
