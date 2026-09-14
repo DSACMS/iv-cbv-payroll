@@ -93,7 +93,7 @@ RSpec.describe Activities::Income::EmployerSearchesController do
 
         provider_name = ProviderSearchService::TOP_PROVIDERS.first[:name]
         expected_label = I18n.t(
-          "cbv.employer_searches.show.select_employer",
+          "activities.income.employer_searches.show.select_employer",
           name: provider_name
         )
 
