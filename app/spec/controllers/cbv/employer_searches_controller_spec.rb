@@ -95,6 +95,29 @@ RSpec.describe Cbv::EmployerSearchesController do
       end
     end
 
+    context "popular payroll providers" do
+      before do
+        pinwheel_stub_request_items_response
+        argyle_stub_request_employer_search_response("bob")
+      end
+
+      render_views
+
+      it "labels popular payroll provider buttons" do
+        get :show, params: { type: "payroll" }
+
+        provider_name = ProviderSearchService::TOP_PROVIDERS.first[:name]
+        expected_label = I18n.t(
+          "cbv.employer_searches.show.select_employer",
+          name: provider_name
+        )
+
+        expect(Capybara.string(response.body)).to have_selector(
+          %(button[data-is-default-option="true"][aria-label="#{expected_label}"])
+        )
+      end
+    end
+
     context "when there are search results" do
       before do
         pinwheel_stub_request_items_response
@@ -112,20 +135,6 @@ RSpec.describe Cbv::EmployerSearchesController do
         get :show, params: { query: "results" }
         expect(response.body).to include('aria-label="Select Walgreens"')
         expect(response.body).to include('aria-label="Select Greens Group"')
-      end
-
-      it "labels popular payroll provider buttons" do
-        get :show, params: { type: "payroll" }
-
-        provider_name = ProviderSearchService::TOP_PROVIDERS.first[:name]
-        expected_label = I18n.t(
-          "cbv.employer_searches.show.select_employer",
-          name: provider_name
-        )
-
-        expect(Capybara.string(response.body)).to have_selector(
-          %(button[data-is-default-option="true"][aria-label="#{expected_label}"])
-        )
       end
 
       it "tracks a Mixpanel event" do
