@@ -8,10 +8,9 @@ class Api::V2::InvitationsController < Api::InvitationsController
     # Keeping this out of la_ldh.rb for now so that it does not affect v1 invitations_controller.rb
     # not requiring doc_id. Once v1 is deprecated, this can be moved to la_ldh.rb and the v1 controller can be removed.
     if @current_user.client_agency_id.to_s == "la_ldh"
-      metadata_params.delete("doc_id") if metadata_params[:doc_id]
-      individual_id = metadata_params[:individual_id].presence
+      identifier = metadata_params[:doc_id].presence || metadata_params[:individual_id].presence
 
-      if individual_id.blank?
+      if identifier.blank?
         return render json: {
           errors: [
             {
@@ -62,9 +61,12 @@ class Api::V2::InvitationsController < Api::InvitationsController
   end
 
   def metadata_params
+    valid_attributes = CbvApplicant
+      .valid_attributes_for_agency(@current_user.client_agency_id)
+
     params
       .fetch(:agency_partner_metadata, {})
-      .permit(:doc_id, :individual_id, :case_number, :date_of_birth)
+      .permit(*valid_attributes)
   end
 
   def invitation_type
