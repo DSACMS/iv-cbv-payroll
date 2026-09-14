@@ -170,7 +170,7 @@ en:
               label: College or university
             high_school_ged:
               hint: Add details if you're in high school or working on your GED.
-              label: Enter your high school or GED
+              label: Enter your high school or GED program
             trade_or_technical:
               hint: Add education details about your trade school, vocational school, or career and technical education (CTE) programs.
               label: Enter a trade or technical program
