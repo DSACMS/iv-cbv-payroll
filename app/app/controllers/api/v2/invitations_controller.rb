@@ -26,8 +26,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
     cbv_invitation_service = CbvInvitationService.new(event_logger)
     @cbv_flow_invitation = cbv_invitation_service
       .invite(cbv_flow_invitation_params, @current_user, delivery_method: nil)
-    require 'pry'
-    binding.pry
+
     errors = @cbv_flow_invitation.errors
     if errors.any?
       return render json: errors_to_json(errors), status: :unprocessable_content
