@@ -41,8 +41,21 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(Capybara.string(response.body)).to have_link("Back", href: expected)
     end
 
+    it "school info edit back goes to add your education" do
+      get :edit, params: { id: education_activity.id }
+      expected = activities_flow_education_add_your_education_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
+    end
+
     it "school info back still shows when create fails validation" do
       post :create, params: { education_activity: { school_name: "" } }
+      expect(response).to have_http_status(:unprocessable_content)
+      expected = activities_flow_education_add_your_education_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
+    end
+
+    it "school info edit back still shows when update fails validation" do
+      patch :update, params: { id: education_activity.id, education_activity: { school_name: "" } }
       expect(response).to have_http_status(:unprocessable_content)
       expected = activities_flow_education_add_your_education_path
       expect(Capybara.string(response.body)).to have_link("Back", href: expected)
@@ -75,11 +88,6 @@ RSpec.describe Activities::EducationController, type: :controller do
   # ── Edit from hub ──
 
   describe "edit from hub" do
-    it "school info edit has no back button" do
-      get :edit, params: { id: education_activity.id }
-      expect(Capybara.string(response.body)).not_to have_link("Back")
-    end
-
     it "review has no back button" do
       get :review, params: { id: education_activity.id, from_edit: 1 }
       expect(Capybara.string(response.body)).not_to have_link("Back")
