@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_31_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_15_145736) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -66,7 +66,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_120000) do
     t.bigint "cbv_applicant_id"
     t.string "client_agency_id"
     t.datetime "created_at", null: false
-    t.jsonb "pre_populated_activities", default: [], null: false
     t.string "reference_id"
     t.datetime "updated_at", null: false
     t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
@@ -132,6 +131,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_120000) do
     t.string "doc_id"
     t.string "first_name"
     t.jsonb "income_changes"
+    t.string "individual_id"
     t.string "last_name"
     t.string "middle_name"
     t.datetime "redacted_at"
