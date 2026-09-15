@@ -13,5 +13,10 @@ locals {
       task_command        = ["bin/rails", "data_deletion:redact_all"]
       schedule_expression = "cron(0 14 ? * * *)" # Every day at 2pm UTC (9am EST / 10am EDT)
     }
+
+    check_nsc_certificate = {
+      task_command        = ["bin/rails", "nsc:check_certificate"]
+      schedule_expression = "cron(0 13 ? * * *)" # Every day at 1pm UTC (8am EST / 9am EDT)
+    }
   }
 }
