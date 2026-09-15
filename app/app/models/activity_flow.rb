@@ -63,9 +63,11 @@ class ActivityFlow < Flow
       next unless activity.persisted?
 
       Array(attrs["months"]).each do |month_entry|
-        activity.activity_months.create(
-          month_entry.stringify_keys.slice(*activity_class.activity_months_class::FIELDS)
-        )
+        month_attributes = month_entry.stringify_keys.slice(*activity_class.activity_months_class::FIELDS)
+        if activity_class == EmploymentActivity
+          month_attributes["month"] = month_attributes["month"].to_date.beginning_of_month
+        end
+        activity.activity_months.create(month_attributes)
       end
 
       if activity_class == EmploymentActivity
