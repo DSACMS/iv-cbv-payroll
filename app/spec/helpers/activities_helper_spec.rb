@@ -6,15 +6,15 @@ RSpec.describe ActivitiesHelper do
   describe "#education_add_path" do
     context "when NSC is not disabled" do
       it "returns verify_activities_flow_education_index_path" do
-        expect(helper.education_add_path).to eq(verify_activities_flow_education_index_path)
+        stub_environment_variable("NSC_DISABLED", "false") do
+          expect(helper.education_add_path).to eq(verify_activities_flow_education_index_path)
+        end
       end
     end
 
     context "when NSC is disabled" do
       it "returns new_activities_flow_education_path" do
-        stub_environment_variable("NSC_DISABLED", "true") do
-          expect(helper.education_add_path).to eq(new_activities_flow_education_path)
-        end
+        expect(helper.education_add_path).to eq(new_activities_flow_education_path)
       end
     end
   end
