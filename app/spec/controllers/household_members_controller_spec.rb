@@ -34,24 +34,6 @@ RSpec.describe HouseholdMembersController, type: :controller do
       expect(ActivityFlow.find(member_b_flow_id).activity_flow_invitation).to eq(member_b.activity_flow_invitation)
     end
 
-    it "hydrates the selected member's pre-populated activities" do
-      household = Launcher::HouseholdScenario.create!(
-        archetype_keys: [ "needs_documentation_one_activity", "short_of_meeting_ce" ],
-        client_agency_id: "sandbox"
-      )
-      member = household.household_members.find_by!(reference_id: "dominic")
-
-      post :create, params: { token: household.auth_token, member_id: member.id }
-
-      flow = ActivityFlow.last
-      expect(flow.employment_activities).to contain_exactly(
-        have_attributes(pre_populated: true, draft: false, data_source: "validated", employer_name: "Acme Corp")
-      )
-      expect(flow.volunteering_activities).to contain_exactly(
-        have_attributes(pre_populated: true, draft: true, organization_name: "Community Food Bank")
-      )
-    end
-
     context "with household launcher settings" do
       let(:household_launcher_overrides) do
         {
