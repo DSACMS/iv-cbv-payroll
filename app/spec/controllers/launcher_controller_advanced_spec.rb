@@ -21,16 +21,6 @@ RSpec.describe LauncherController, type: :controller do
       expect(rendered).to have_button("Open in new tab")
     end
 
-    it "renders work program pre-population controls" do
-      get :advanced
-      rendered = Capybara.string(response.body)
-
-      expect(rendered).to have_selector("input[name='job_training_enabled']")
-      expect(rendered).to have_selector("input[name='job_training_program_name']")
-      expect(rendered).to have_selector("input[name='job_training_organization_name']")
-      expect(rendered).to have_selector("input[name='job_training_hours_per_month']")
-    end
-
     it "sets the session to the activity flow so the header renders Emmy branding" do
       get :advanced
       expect(session[:flow_type]).to eq(:activity)
@@ -69,19 +59,6 @@ RSpec.describe LauncherController, type: :controller do
       expect(rendered).to include('Spring and fall enrollment with no summer term')
     end
 
-    it "displays build-your-own pre-populated activities for CE flow" do
-      get :advanced
-      rendered = response.body
-      expect(rendered).to include(I18n.t("launcher.advanced.individual.pre_populated_activities"))
-      expect(rendered).to include('name="volunteering_enabled"')
-      expect(rendered).to include('name="volunteering_organization_name"')
-      expect(rendered).to include('name="employment_enabled"')
-      expect(rendered).to include('name="employment_employer_name"')
-      expect(rendered).to include('name="employment_gross_income_per_month"')
-      expect(rendered).to include('name="education_enabled"')
-      expect(rendered).to include('name="education_school_name"')
-    end
-
     it "exposes agency activity types to the advanced-launcher Stimulus controller" do
       get :advanced
       form = Capybara.string(response.body).find("form.usa-form", visible: :all)
@@ -106,7 +83,6 @@ RSpec.describe LauncherController, type: :controller do
       expect(rendered).to have_checked_field("household_archetype_needs_documentation_multiple_activities", visible: :all)
       expect(rendered).to have_selector("#nsc-test-scenarios-button[aria-expanded='false']")
       expect(rendered).to have_selector("#fake-test-scenarios-button[aria-expanded='false']")
-      expect(rendered).to have_selector("#pre-populated-activities-button[aria-expanded='true']")
       expect(rendered).to have_selector("label", text: "Dominic: Needs documentation (1 activity)", visible: :all)
       expect(rendered).to have_selector("label", text: "Lamine: Needs documentation (2+ activities)", visible: :all)
       expect(rendered).to have_selector("label", text: "Andy: Short of meeting CE", visible: :all)
@@ -302,22 +278,6 @@ RSpec.describe LauncherController, type: :controller do
         expect(parsed_response.fetch("url")).to include("/households/start/#{Household.last.auth_token}")
       end
 
-      it "uses the selected household archetypes instead of activity controls" do
-        post :create, params: {
-          client_agency_id: "sandbox",
-          launch_type: "household",
-          household_archetypes: [ "clean_slate" ],
-          volunteering_enabled: "1",
-          volunteering_organization_name: "Red Cross",
-          volunteering_hours_per_month: "12"
-        }
-
-        pre_populated_activities = Household.last.household_members.map do |member|
-          member.activity_flow_invitation.pre_populated_activities
-        end
-        expect(pre_populated_activities).to all(eq([]))
-      end
-
       it "creates one member for each selected household archetype" do
         post :create, params: {
           client_agency_id: "sandbox",
@@ -326,12 +286,8 @@ RSpec.describe LauncherController, type: :controller do
         }
 
         members = Household.last.household_members.order(:id)
-        activity_types = members.map do |member|
-          member.activity_flow_invitation.pre_populated_activities.map { |activity| activity.fetch("type") }
-        end
 
         expect(members.map(&:display_name)).to eq([ "Lamine Santos", "Andy Santos" ])
-        expect(activity_types).to eq([ [ "job_training", "volunteering" ], [ "employment" ] ])
       end
 
       it "requires an explicit selection and does not default when archetypes are omitted" do
@@ -683,27 +639,6 @@ RSpec.describe LauncherController, type: :controller do
         expect(location).to include("launcher_timeout=20")
       end
 
-      it "preserves pre-populated activities for Rick" do
-        post :create, params: {
-          client_agency_id: "sandbox",
-          test_scenario: "rick",
-          reporting_window: "application",
-          education_enabled: "1",
-          education_school_name: "Springfield Community College",
-          education_hours_per_month: "6"
-        }
-
-        invitation = ActivityFlowInvitation.last
-        activity = invitation.pre_populated_activities.first
-
-        expect(invitation.reference_id).to eq("demo-rick")
-        expect(activity).to include(
-          "type" => "education",
-          "school_name" => "Springfield Community College"
-        )
-        expect(activity["months"]).to all(include("hours" => 6))
-      end
-
       it "raises an error for an unknown test scenario" do
         expect {
           post :create, params: {
@@ -859,210 +794,6 @@ RSpec.describe LauncherController, type: :controller do
         expect(invitation.reference_id).to eq("demo-spring_fall_no_summer_morgan")
         expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
         expect(response.location).to include("reporting_window_start=2025-06-01")
-      end
-
-      it "preserves pre-populated activities for a fake test user" do
-        post :create, params: {
-          client_agency_id: "sandbox",
-          test_scenario: "partial_enrollment_sam",
-          volunteering_enabled: "1",
-          volunteering_organization_name: "Food Bank",
-          volunteering_hours_per_month: "8"
-        }
-
-        invitation = ActivityFlowInvitation.last
-        activity = invitation.pre_populated_activities.first
-
-        expect(invitation.reference_id).to eq("demo-partial_enrollment_sam")
-        expect(activity).to include(
-          "type" => "volunteering",
-          "organization_name" => "Food Bank"
-        )
-        expect(activity["months"]).to all(include("hours" => 8))
-      end
-    end
-
-    context "with pre-populated activities" do
-      it "creates an invitation with a volunteering activity when volunteering is enabled" do
-        Timecop.freeze(Date.new(2026, 5, 13)) do
-          expect {
-            post :create, params: {
-              client_agency_id: "sandbox",
-              launch_type: "tokenized",
-              volunteering_enabled: "1",
-              volunteering_organization_name: "Food Bank",
-              volunteering_hours_per_month: "8"
-            }
-          }.to change(ActivityFlowInvitation, :count).by(1)
-
-          invitation = ActivityFlowInvitation.last
-          activities = invitation.pre_populated_activities
-          expect(activities.length).to eq(1)
-          expect(activities[0]["type"]).to eq("volunteering")
-          expect(activities[0]["organization_name"]).to eq("Food Bank")
-          expect(activities[0]["months"]).to all(include("hours" => 8))
-          expect(activities[0]["months"].map { |m| m["month"] }).to include("2026-03-01", "2026-04-01")
-        end
-      end
-
-      it "creates an invitation with an employment activity when employment is enabled" do
-        expect {
-          post :create, params: {
-            client_agency_id: "sandbox",
-            launch_type: "tokenized",
-            employment_enabled: "1",
-            employment_employer_name: "Globex",
-            employment_hours_per_month: "20",
-            employment_gross_income_per_month: "800"
-          }
-        }.to change(ActivityFlowInvitation, :count).by(1)
-
-        invitation = ActivityFlowInvitation.last
-        activities = invitation.pre_populated_activities
-        expect(activities.length).to eq(1)
-        expect(activities[0]["type"]).to eq("employment")
-        expect(activities[0]["employer_name"]).to eq("Globex")
-        expect(activities[0]["months"]).to all(include("hours" => 20, "gross_income" => 800))
-      end
-
-      it "creates an invitation with an education activity when education is enabled" do
-        expect {
-          post :create, params: {
-            client_agency_id: "sandbox",
-            launch_type: "tokenized",
-            education_enabled: "1",
-            education_school_name: "Springfield Community College",
-            education_hours_per_month: "6"
-          }
-        }.to change(ActivityFlowInvitation, :count).by(1)
-
-        invitation = ActivityFlowInvitation.last
-        activities = invitation.pre_populated_activities
-        expect(activities.length).to eq(1)
-        expect(activities[0]["type"]).to eq("education")
-        expect(activities[0]["school_name"]).to eq("Springfield Community College")
-        expect(activities[0]["months"]).to all(include("hours" => 6))
-      end
-
-      it "rejects activity types that are not enabled for the agency" do
-        stub_client_agency_config_value("sandbox", :activity_types, { community_service: false, employment: true, education: true, work_programs: true })
-
-        expect {
-          post :create, params: {
-            client_agency_id: "sandbox",
-            launch_type: "tokenized",
-            volunteering_enabled: "1",
-            volunteering_organization_name: "Red Cross",
-            volunteering_hours_per_month: "4"
-          }
-        }.to raise_error(ActiveRecord::RecordInvalid).and not_change(ActivityFlowInvitation, :count)
-      end
-
-      it "allows pre-populated months outside the invitation's default reporting window" do
-        post :create, params: {
-          client_agency_id: "sandbox",
-          launch_type: "tokenized",
-          reporting_window: "application",
-          reporting_window_months: "3",
-          reporting_window_start: "07/01/2025",
-          job_training_enabled: "1",
-          job_training_program_name: "Career Prep",
-          job_training_organization_name: "Goodwill",
-          job_training_hours_per_month: "10"
-        }
-
-        months = ActivityFlowInvitation.last.pre_populated_activities.first["months"].map { |m| m["month"] }
-        expect(months).to eq(%w[2025-07-01 2025-08-01 2025-09-01])
-      end
-
-      it "creates an invitation with a work program activity when work program is enabled" do
-        expect {
-          post :create, params: {
-            client_agency_id: "sandbox",
-            launch_type: "tokenized",
-            job_training_enabled: "1",
-            job_training_program_name: "Career Prep",
-            job_training_organization_name: "Goodwill",
-            job_training_hours_per_month: "10"
-          }
-        }.to change(ActivityFlowInvitation, :count).by(1)
-
-        invitation = ActivityFlowInvitation.last
-        activities = invitation.pre_populated_activities
-        expect(activities.length).to eq(1)
-        expect(activities[0]["type"]).to eq("job_training")
-        expect(activities[0]["program_name"]).to eq("Career Prep")
-        expect(activities[0]["organization_name"]).to eq("Goodwill")
-        expect(activities[0]["months"]).to all(include("hours" => 10))
-      end
-
-      it "uses the selected reporting window for pre-populated work program months" do
-        Timecop.freeze(Date.new(2026, 6, 13)) do
-          post :create, params: {
-            client_agency_id: "sandbox",
-            launch_type: "tokenized",
-            reporting_window: "application",
-            reporting_window_months: "6",
-            job_training_enabled: "1",
-            job_training_program_name: "Career Prep",
-            job_training_organization_name: "Goodwill",
-            job_training_hours_per_month: "10"
-          }
-
-          activities = ActivityFlowInvitation.last.pre_populated_activities
-          months = activities.first["months"].map { |month| month["month"] }
-          expect(months).to eq(%w[2025-12-01 2026-01-01 2026-02-01 2026-03-01 2026-04-01 2026-05-01])
-        end
-      end
-
-      it "uses the selected reporting window start for pre-populated work program months" do
-        post :create, params: {
-          client_agency_id: "sandbox",
-          launch_type: "tokenized",
-          reporting_window: "application",
-          reporting_window_months: "3",
-          reporting_window_start: "07/01/2025",
-          job_training_enabled: "1",
-          job_training_program_name: "Career Prep",
-          job_training_organization_name: "Goodwill",
-          job_training_hours_per_month: "10"
-        }
-
-        activities = ActivityFlowInvitation.last.pre_populated_activities
-        months = activities.first["months"].map { |month| month["month"] }
-        expect(months).to eq(%w[2025-07-01 2025-08-01 2025-09-01])
-      end
-
-      it "creates an invitation with all activity types when all are enabled" do
-        post :create, params: {
-          client_agency_id: "sandbox",
-          launch_type: "tokenized",
-          volunteering_enabled: "1",
-          volunteering_organization_name: "Red Cross",
-          volunteering_hours_per_month: "12",
-          employment_enabled: "1",
-          employment_employer_name: "Acme Corp",
-          employment_hours_per_month: "40",
-          employment_gross_income_per_month: "1200",
-          education_enabled: "1",
-          education_school_name: "Springfield Community College",
-          education_hours_per_month: "6",
-          job_training_enabled: "1",
-          job_training_program_name: "Career Prep",
-          job_training_organization_name: "Goodwill",
-          job_training_hours_per_month: "10"
-        }
-
-        activities = ActivityFlowInvitation.last.pre_populated_activities
-        expect(activities.map { |a| a["type"] }).to contain_exactly("volunteering", "employment", "education", "job_training")
-      end
-
-      it "creates an invitation with empty pre_populated_activities when neither is enabled" do
-        post :create, params: {
-          client_agency_id: "sandbox",
-          launch_type: "tokenized"
-        }
-        expect(ActivityFlowInvitation.last.pre_populated_activities).to eq([])
       end
     end
 

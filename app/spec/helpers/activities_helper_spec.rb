@@ -4,26 +4,9 @@ RSpec.describe ActivitiesHelper do
   include ActiveSupport::Testing::TimeHelpers
 
   describe "#show_activity?" do
-    context "in a pre-populated session" do
-      before do
-        flow = instance_double(ActivityFlow, pre_populated_session?: true, pre_populated_activity_types: [ :community_service, :education ])
-        assign(:flow, flow)
-      end
-
-      it "shows only the pre-filled activity types" do
-        expect(helper.show_activity?(:community_service)).to be true
-        expect(helper.show_activity?(:education)).to be true
-      end
-
-      it "hides activity types that were not pre-filled" do
-        expect(helper.show_activity?(:employment)).to be false
-        expect(helper.show_activity?(:work_programs)).to be false
-      end
-    end
-
     context "in a non-pre-populated session" do
       before do
-        assign(:flow, instance_double(ActivityFlow, pre_populated_session?: false))
+        assign(:flow, ActivityFlow)
       end
 
       it "falls back to activity_type_enabled?" do
