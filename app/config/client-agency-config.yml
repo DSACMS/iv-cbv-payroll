@@ -47,6 +47,8 @@
       redaction_type: date
     doc_id:
       required: false
+    individual_id:
+      required: false
 
 - id: nh_dhhs
   agency_name: Department of Health and Human Services
