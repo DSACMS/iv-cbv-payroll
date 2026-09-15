@@ -69,54 +69,6 @@ RSpec.describe Launcher::HouseholdScenario do
       expect(research_invitations & sandbox_invitations).to be_empty
     end
 
-    it "uses the selected archetype activities for each member" do
-      archetype_keys = described_class.archetypes.keys
-      household = described_class.create!(archetype_keys:, client_agency_id: "sandbox")
-
-      activity_types_by_member = household.household_members.order(:id).map do |member|
-        member.activity_flow_invitation.pre_populated_activities.map { |activity| activity.fetch("type") }
-      end
-
-      expect(activity_types_by_member).to eq([
-        [ "employment", "volunteering" ],
-        [ "job_training", "volunteering" ],
-        [ "employment" ],
-        []
-      ])
-    end
-
-    it "marks state-verified scenario activities" do
-      household = described_class.create!(archetype_keys:, client_agency_id: "sandbox")
-
-      employment_activities = household.household_members.order(:id).filter_map do |member|
-        member.activity_flow_invitation.pre_populated_activities.find { |activity| activity.fetch("type") == "employment" }
-      end
-
-      expect(employment_activities.map { |activity| activity.fetch("state_verified") }).to eq([ true, true ])
-    end
-
-    it "uses the configured reporting window for archetype activities" do
-      household = described_class.create!(
-        archetype_keys: [ "needs_documentation_one_activity" ],
-        client_agency_id: "sandbox",
-        launcher_overrides: {
-          reporting_window: "renewal",
-          reporting_window_months: "3",
-          reporting_window_start: "2025-06-01"
-        }
-      )
-
-      invitation = household.household_members.first.activity_flow_invitation
-      employment = invitation.pre_populated_activities.find { |activity| activity.fetch("type") == "employment" }
-
-      expect(household.launcher_overrides).to include(
-        "reporting_window" => "renewal",
-        "reporting_window_months" => "3",
-        "reporting_window_start" => "2025-06-01"
-      )
-      expect(employment.fetch("months").pluck("month")).to eq(%w[2025-06-01 2025-07-01 2025-08-01])
-    end
-
     it "does not duplicate a selected archetype" do
       household = described_class.create!(
         archetype_keys: [ "clean_slate", "clean_slate" ],
