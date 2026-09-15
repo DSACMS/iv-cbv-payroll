@@ -67,8 +67,7 @@ RSpec.describe "e2e Household activity flow", :js, type: :feature do
     activity = create(
       :volunteering_activity,
       activity_flow: flow,
-      organization_name: organization_name,
-      draft: false
+      organization_name: organization_name
     )
 
     flow.reporting_months.each do |month|

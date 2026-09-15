@@ -1193,8 +1193,6 @@ en:
         selection_hint: Select at least one member to generate a household link. The first member you select is the primary applicant.
         title: Household members
         unavailable: Household setup isn't available for this agency because it doesn't support community engagement activities. Select a different agency to build a household.
-      individual:
-        pre_populated_activities: Build your own (pre-populated)
       launch_configuration:
         title: Launch configuration
       launch_mode:
