@@ -687,7 +687,7 @@ en:
             prompt: Your date of birth
             super_one_html: Date of birth<sup>1</sup>
           individual_id:
-            blank: individual_id is required
+            blank: individual_id or doc_id is required
       nh_dhhs:
         fields:
           case_number:
