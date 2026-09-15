@@ -48,6 +48,50 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
 
       expect(response.body).to include("usa-input-prefix")
     end
+
+    context "with a tokenized flow" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_months: 3
+        )
+      end
+
+      it "shows only selected months in chronological order" do
+        first_month, second_month, third_month = activity_flow.reporting_months
+        employment_activity.update!(selected_months: [ third_month, first_month ])
+
+        get :edit, params: { employment_id: employment_activity.id, id: 1 }
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_text(
+          I18n.t(
+            "activities.employment.hours_input.heading",
+            month: I18n.l(third_month, format: :month_year),
+            organization: employment_activity.employer_name
+          )
+        )
+        expect(rendered).to have_no_text(I18n.l(second_month, format: :month_year))
+      end
+
+      it "redirects to month selection when no months have been selected, even with saved month data" do
+        create(
+          :employment_activity_month,
+          employment_activity: employment_activity,
+          month: activity_flow.reporting_months.first
+        )
+
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        expect(response).to redirect_to(
+          edit_activities_flow_income_employment_month_selection_path(employment_id: employment_activity)
+        )
+      end
+    end
   end
 
   describe "PATCH #update" do
@@ -216,6 +260,48 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         }
 
         expect(response).to redirect_to(new_activities_flow_income_employment_document_upload_path(employment_id: employment_activity))
+      end
+    end
+
+    context "with selected months in a tokenized flow" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_months: 3
+        )
+      end
+
+      before do
+        first_month, _second_month, third_month = activity_flow.reporting_months
+        employment_activity.update!(selected_months: [ third_month, first_month ])
+      end
+
+      it "advances directly to the next selected month" do
+        patch :update, params: {
+          employment_id: employment_activity.id,
+          id: 0,
+          employment_activity_month: { gross_income: 100, hours: 10 }
+        }
+
+        expect(response).to redirect_to(
+          edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 1)
+        )
+      end
+
+      it "saves the month represented by the selected-month index" do
+        third_month = activity_flow.reporting_months.third
+
+        patch :update, params: {
+          employment_id: employment_activity.id,
+          id: 1,
+          employment_activity_month: { gross_income: 100, hours: 10 }
+        }
+
+        expect(employment_activity.employment_activity_months.last.month).to eq(third_month)
       end
     end
 

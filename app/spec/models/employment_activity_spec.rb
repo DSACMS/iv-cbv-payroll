@@ -75,6 +75,39 @@ RSpec.describe EmploymentActivity, type: :model do
     end
   end
 
+  describe "#months_to_report" do
+    let(:activity_flow) do
+      create(
+        :activity_flow,
+        activity_flow_invitation: create(:activity_flow_invitation),
+        reporting_window_months: 3
+      )
+    end
+    let(:activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "returns selected months in chronological order for a tokenized flow" do
+      first_month, _second_month, third_month = activity_flow.reporting_months
+      activity.update!(selected_months: [ third_month, first_month ])
+
+      expect(activity.months_to_report).to eq([ first_month, third_month ])
+    end
+
+    it "requires an explicit selection for a tokenized activity" do
+      first_month, _second_month, third_month = activity_flow.reporting_months
+      create(:employment_activity_month, employment_activity: activity, month: third_month)
+      create(:employment_activity_month, employment_activity: activity, month: first_month)
+
+      expect(activity.months_to_report).to be_empty
+    end
+
+    it "returns every reporting month for a generic flow" do
+      generic_flow = create(:activity_flow, activity_flow_invitation: nil, reporting_window_months: 3)
+      generic_activity = create(:employment_activity, activity_flow: generic_flow)
+
+      expect(generic_activity.months_to_report).to eq(generic_flow.reporting_months)
+    end
+  end
+
   describe "#document_upload_details_for_month" do
     let(:activity_flow) { create(:activity_flow, reporting_window_months: 1) }
     let(:activity) { create(:employment_activity, activity_flow: activity_flow) }

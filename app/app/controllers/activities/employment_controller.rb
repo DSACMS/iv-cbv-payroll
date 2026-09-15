@@ -22,7 +22,7 @@ class Activities::EmploymentController < Activities::BaseController
     @employment_activity = @flow.employment_activities.new(employment_activity_params.merge(draft: true))
     if @employment_activity.save
       track_event(TrackEvent::EmploymentInfoSubmitted, employment_activity_id: @employment_activity.id)
-      redirect_to edit_activities_flow_income_employment_month_path(employment_id: @employment_activity, id: 0)
+      redirect_to employment_month_entry_path
     else
       track_event(
         TrackEvent::EmploymentInfoValidationFailed,
@@ -42,11 +42,7 @@ class Activities::EmploymentController < Activities::BaseController
       if params[:from_review].present?
         redirect_to review_activities_flow_income_employment_path(id: @employment_activity, from_edit: params[:from_edit].presence)
       else
-        redirect_to edit_activities_flow_income_employment_month_path(
-        employment_id: @employment_activity,
-        id: 0,
-        from_edit: params[:from_edit].presence
-      )
+        redirect_to employment_month_entry_path
       end
     else
       track_event(
@@ -76,11 +72,21 @@ class Activities::EmploymentController < Activities::BaseController
       return
     end
 
-    reporting_months = @flow.reporting_months
-    reporting_months.each_with_index do |month, index|
+    months_to_report = @employment_activity.months_to_report
+    if months_to_report.empty?
+      redirect_to edit_activities_flow_income_employment_month_selection_path(
+        employment_id: @employment_activity,
+        from_edit: params[:from_edit].presence
+      )
+      return
+    end
+
+    months_to_report.each_with_index do |month, index|
       unless @employment_activity.employment_activity_months.exists?(month: month.beginning_of_month)
         redirect_to edit_activities_flow_income_employment_month_path(
-          employment_id: @employment_activity, id: index
+          employment_id: @employment_activity,
+          id: index,
+          from_edit: params[:from_edit].presence
         )
         return
       end
@@ -112,6 +118,21 @@ class Activities::EmploymentController < Activities::BaseController
 
   def employment_activity_params
     params.require(:employment_activity).permit(*EmploymentActivity::FIELDS)
+  end
+
+  def employment_month_entry_path
+    if @flow.tokenized?
+      edit_activities_flow_income_employment_month_selection_path(
+        employment_id: @employment_activity,
+        from_edit: params[:from_edit].presence
+      )
+    else
+      edit_activities_flow_income_employment_month_path(
+        employment_id: @employment_activity,
+        id: 0,
+        from_edit: params[:from_edit].presence
+      )
+    end
   end
 
   def track_info_viewed_event
