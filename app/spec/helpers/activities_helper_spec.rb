@@ -4,7 +4,7 @@ RSpec.describe ActivitiesHelper do
   include ActiveSupport::Testing::TimeHelpers
 
   describe "#show_activity?" do
-    context "in a non-pre-populated session" do
+    context "in a new session" do
       before do
         assign(:flow, ActivityFlow)
       end

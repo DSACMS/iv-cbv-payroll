@@ -12,12 +12,6 @@ FactoryBot.define do
     credit_hours { Faker::Number.within(range: 0..6).to_i }
     additional_comments { Faker::Lorem.paragraph }
 
-    trait :pre_populated_draft do
-      draft { true }
-      pre_populated { true }
-      data_source { "fully_self_attested" }
-    end
-
     trait :partially_self_attested do
       data_source { "partially_self_attested" }
       status { "succeeded" }

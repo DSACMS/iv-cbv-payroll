@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_15_145736) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_16_115317) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -187,7 +187,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_15_145736) do
     t.integer "credit_hours"
     t.string "data_source", default: "validated", null: false
     t.boolean "draft", default: false, null: false
-    t.boolean "pre_populated", default: false, null: false
     t.string "school_name"
     t.string "state"
     t.string "status", default: "unknown"
@@ -219,7 +218,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_15_145736) do
     t.boolean "draft", default: false, null: false
     t.string "employer_name"
     t.boolean "is_self_employed", default: false
-    t.boolean "pre_populated", default: false, null: false
     t.string "state"
     t.string "street_address"
     t.string "street_address_line_2"
@@ -283,7 +281,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_15_145736) do
     t.boolean "draft", default: false, null: false
     t.string "organization_address"
     t.string "organization_name"
-    t.boolean "pre_populated", default: false, null: false
     t.string "program_name"
     t.string "state"
     t.string "street_address"
@@ -489,7 +486,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_15_145736) do
     t.boolean "draft", default: false, null: false
     t.integer "hours"
     t.string "organization_name"
-    t.boolean "pre_populated", default: false, null: false
     t.string "state"
     t.string "street_address"
     t.string "street_address_line_2"

@@ -133,12 +133,9 @@
         <% education_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
-              <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
             <% end %>
             <% card.with_body do %>
-              <% if card_data[:pre_populated] %>
-                <p class="margin-y-0"><%= t("activities.hub.cards.pre_populated_notice") %></p>
-              <% end %>
               <% card_data[:months].each do |month_data| %>
                 <div class="activity-month-details">
                   <div class="activity-month-details__month">
@@ -171,12 +168,9 @@
         <% community_service_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
-              <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
             <% end %>
             <% card.with_body do %>
-              <% if card_data[:pre_populated] %>
-                <p class="margin-y-0"><%= t("activities.hub.cards.pre_populated_notice") %></p>
-              <% end %>
               <% card_data[:months].each do |month_data| %>
                 <div class="activity-month-details">
                   <div class="activity-month-details__month">
@@ -204,12 +198,9 @@
         <% work_programs_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
-              <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
+              t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
             <% end %>
             <% card.with_body do %>
-              <% if card_data[:pre_populated] %>
-                <p class="margin-y-0"><%= t("activities.hub.cards.pre_populated_notice") %></p>
-              <% end %>
               <% card_data[:months].each do |month_data| %>
                 <div class="activity-month-details">
                   <div class="activity-month-details__month">

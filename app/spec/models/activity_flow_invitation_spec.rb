@@ -34,13 +34,5 @@ RSpec.describe ActivityFlowInvitation, type: :model do
 
       expect(invitation).to be_valid
     end
-
-    context "when skip_month_window_validation is set" do
-      it "allows months outside the expected reporting window" do
-        invitation = build(:activity_flow_invitation, skip_month_window_validation: true)
-
-        expect(invitation).to be_valid
-      end
-    end
   end
 end

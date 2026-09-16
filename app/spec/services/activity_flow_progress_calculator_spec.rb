@@ -55,18 +55,6 @@ RSpec.describe ActivityFlowProgressCalculator do
         expect(result.meets_routing_requirements).to be(false)
       end
 
-      it "meets routing requirements when threshold is met via a pre-populated work program" do
-        create(:job_training_activity, activity_flow: flow, pre_populated: true, hours: 80)
-
-        expect(result.meets_routing_requirements).to be(true)
-      end
-
-      it "does not meet routing requirements from a pre-populated draft work program" do
-        create(:job_training_activity, :pre_populated_draft, activity_flow: flow, hours: 80)
-
-        expect(result.meets_routing_requirements).to be(false)
-      end
-
       context "when threshold is met via validated data" do
         let(:flow) { create(:activity_flow, reporting_window_months: 1, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
 
@@ -143,21 +131,6 @@ RSpec.describe ActivityFlowProgressCalculator do
         create(:volunteering_activity_month, volunteering_activity: activity, month: reporting_months.first.beginning_of_month, hours: 80)
 
         expect(result.meets_requirements).to be(false)
-      end
-
-      it "applies the required-month threshold to routing requirements" do
-        pre_populated_activity = create(:volunteering_activity, activity_flow: flow, pre_populated: true)
-        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
-        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.second.beginning_of_month, hours: 80)
-
-        expect(result.meets_routing_requirements).to be(true)
-      end
-
-      it "does not meet routing requirements when validated months are below the required count" do
-        pre_populated_activity = create(:volunteering_activity, activity_flow: flow, pre_populated: true)
-        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
-
-        expect(result.meets_routing_requirements).to be(false)
       end
     end
 

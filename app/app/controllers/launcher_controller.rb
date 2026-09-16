@@ -138,11 +138,7 @@ class LauncherController < ApplicationController
   end
 
   def create_launcher_activity_flow_invitation!(attributes)
-    ActivityFlowInvitation.create!(
-      attributes.merge(
-        skip_month_window_validation: true
-      )
-    )
+    ActivityFlowInvitation.create!(attributes)
   end
 
   def launch_overrides(flow_type)

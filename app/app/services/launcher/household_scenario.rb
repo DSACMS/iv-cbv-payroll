@@ -91,8 +91,7 @@ class Launcher::HouseholdScenario
     ActivityFlowInvitation.create!(
       reference_id: "#{household_reference_id}-#{member_data.fetch(:reference_id)}",
       client_agency_id: client_agency_id,
-      cbv_applicant: create_applicant(member_data),
-      skip_month_window_validation: true
+      cbv_applicant: create_applicant(member_data)
     )
   end
 

@@ -859,7 +859,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
   end
 
-  context "when the session is not pre-populated" do
+  context "new session" do
     let(:current_flow) do
       create(
         :activity_flow,
