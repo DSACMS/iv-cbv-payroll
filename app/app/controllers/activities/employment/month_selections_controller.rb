@@ -16,10 +16,7 @@ class Activities::Employment::MonthSelectionsController < Activities::BaseContro
       return
     end
 
-    @employment_activity.transaction do
-      @employment_activity.update!(selected_months: @selected_months)
-      @employment_activity.employment_activity_months.where.not(month: @selected_months).destroy_all
-    end
+    @employment_activity.update_selected_months!(@selected_months)
 
     redirect_to edit_activities_flow_income_employment_month_path(
       employment_id: @employment_activity,

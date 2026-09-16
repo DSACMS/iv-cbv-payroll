@@ -61,6 +61,13 @@ class EmploymentActivity < Activity
     selected_months.sort
   end
 
+  def update_selected_months!(months)
+    transaction do
+      update!(selected_months: months)
+      employment_activity_months.where.not(month: months).destroy_all
+    end
+  end
+
   def document_upload_details_for_month(month)
     activity_month = employment_activity_months
       .find { |employment_activity_month| employment_activity_month.month == month }
