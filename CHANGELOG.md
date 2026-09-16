@@ -7,10 +7,28 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.6.0
+
+### Emmy Income only user facing changes
+- No changes!
+
+### Emmy CE only user facing changes
+- Add month selection page to Emmy CE Employment flow [(#2071)](https://github.com/DSACMS/iv-cbv-payroll/pull/2071) - Daphne Gold [[FFS-4804]](https://jiraent.cms.gov/browse/FFS-4804)
+- Implement Education type selection screen [(#2057)](https://github.com/DSACMS/iv-cbv-payroll/pull/2057) - krista-skylight [[FFS-4791]](https://jiraent.cms.gov/browse/FFS-4791)
+- Create ActivityJsonTransmitter (with the 2 self-attested activity types) [(#2031)](https://github.com/DSACMS/iv-cbv-payroll/pull/2031) - Ben Calegari [[FFS-4768]](https://jiraent.cms.gov/browse/FFS-4768)
+- FFS-4803: Update content on "Choose how you want to add your work" page on Emmy CE Employment flow, Update helper text on employment information page for paid work in Emmy CE manual reporting flow [(#2052)](https://github.com/DSACMS/iv-cbv-payroll/pull/2052) - Daphne Gold [[FFS-4802]](https://jiraent.cms.gov/browse/FFS-4802)
+
+### Other/Maintenance (Not user facing)
+- Create v2 invitations api [(#2033)](https://github.com/DSACMS/iv-cbv-payroll/pull/2033) - Chris [[FFS-4796]](https://jiraent.cms.gov/browse/FFS-4796)
+- Bump aws-sdk-s3, vite, happy-dom, autoprefixer, postcss, sass, net-imap, selenium-webdriver, mission_control-jobs, css_parser
+- fix: app/analytics/requirements.txt to reduce vulnerabilities [(#2072)](https://github.com/DSACMS/iv-cbv-payroll/pull/2072) - Tim Miller
+- Remove bencalegari from reviewer lottery [(#2056)](https://github.com/DSACMS/iv-cbv-payroll/pull/2056) - krista-skylight
+- Add environment selection to deploy script [(#2049)](https://github.com/DSACMS/iv-cbv-payroll/pull/2049) - Tom Dooner [[FFS-4794]](https://jiraent.cms.gov/browse/FFS-4794)
+
 ## 0.5.0
 
 ### Emmy Income only user facing changes
-- No changes, nothing to review!
+- No changes!
 
 ### Emmy CE only user facing changes
 - CE PDF Implementation [(#2035)](https://github.com/DSACMS/iv-cbv-payroll/pull/2035) - Daphne Gold [[FFS-4718]](https://jiraent.cms.gov/browse/FFS-4718)
@@ -44,7 +62,7 @@ integrations, and are accompanied by a notification.
 ## 0.2.0
 
 ### Emmy Income only user facing changes
-- No changes, nothing to review!
+- No changes!
 
 ### Emmy CE only user facing changes
 - Add two more URLs for accenture iframe [(#1961)](https://github.com/DSACMS/iv-cbv-payroll/pull/1961) - Tom Dooner
