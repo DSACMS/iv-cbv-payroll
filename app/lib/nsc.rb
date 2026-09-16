@@ -1,6 +1,6 @@
 module Nsc
   def self.disabled?
-    ActiveModel::Type::Boolean.new.cast(ENV.fetch("NSC_DISABLED", "true"))
+    ENV.fetch("NSC_DISABLED", "true") == "true"
   end
 
   def self.enabled?
