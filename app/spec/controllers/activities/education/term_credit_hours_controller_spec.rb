@@ -33,6 +33,16 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { education_id: education_activity.id, id: 0 } }
 
+    context "when NSC is disabled" do
+      it "redirects to the self-attestation new path" do
+        stub_environment_variable("NSC_DISABLED", "true") do
+          get :edit, params: { education_id: education_activity.id, id: 0 }
+
+          expect(response).to redirect_to(new_activities_flow_education_path)
+        end
+      end
+    end
+
     it_behaves_like "tracks an event", TrackEvent::EducationTermCreditHoursViewed,
       extra_attributes: -> { { education_activity_id: kind_of(Integer), term_index: 0, term_date_range: kind_of(String) } }
 
@@ -219,6 +229,16 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) do
       patch :update, params: { education_id: education_activity.id, id: 0, nsc_enrollment_term: { credit_hours: 4 } }
+    end
+
+    context "when NSC is disabled" do
+      it "redirects to the self-attestation new path" do
+        stub_environment_variable("NSC_DISABLED", "true") do
+          patch :update, params: { education_id: education_activity.id, id: 0, nsc_enrollment_term: { credit_hours: 4 } }
+
+          expect(response).to redirect_to(new_activities_flow_education_path)
+        end
+      end
     end
 
     it_behaves_like "tracks an event", TrackEvent::EducationTermCreditHoursSubmitted,

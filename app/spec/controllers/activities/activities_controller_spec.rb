@@ -38,6 +38,21 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       )
     end
 
+    it "points the education add button at the verify page by default" do
+      expect(Capybara.string(response.body)).to have_css(
+        "[data-activity-type='education'] form[action='#{verify_activities_flow_education_index_path}']"
+      )
+    end
+
+    it "points the education add button at the self-attestation new page when NSC is disabled" do
+      stub_environment_variable("NSC_DISABLED", "true") do
+        get :index
+        expect(Capybara.string(response.body)).to have_css(
+          "[data-activity-type='education'] form[action='#{new_activities_flow_education_path}']"
+        )
+      end
+    end
+
     it "shows current flow community service activities" do
       expect(
         assigns(:community_service_activities)
