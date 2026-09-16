@@ -20,7 +20,7 @@ RSpec.describe "e2e Household activity flow", :js, type: :feature do
     verify_page(page, title: I18n.t("households.show.title"))
 
     # Complete the primary member and return to the household list
-    submit_household_member_report(primary_member_name, I18n.t("activities.hub.in_progress_state_title"))
+    submit_household_member_report(primary_member_name, I18n.t("activities.hub.empty_state_title"))
 
     expect(page).to have_current_path(household_path)
     verify_page(page, title: I18n.t("households.show.title"))
@@ -67,8 +67,7 @@ RSpec.describe "e2e Household activity flow", :js, type: :feature do
     activity = create(
       :volunteering_activity,
       activity_flow: flow,
-      organization_name: organization_name,
-      draft: false
+      organization_name: organization_name
     )
 
     flow.reporting_months.each do |month|

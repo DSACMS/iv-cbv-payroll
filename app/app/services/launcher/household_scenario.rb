@@ -91,19 +91,8 @@ class Launcher::HouseholdScenario
     ActivityFlowInvitation.create!(
       reference_id: "#{household_reference_id}-#{member_data.fetch(:reference_id)}",
       client_agency_id: client_agency_id,
-      cbv_applicant: create_applicant(member_data),
-      pre_populated_activities: pre_populated_activities(member_data),
-      skip_month_window_validation: true
+      cbv_applicant: create_applicant(member_data)
     )
-  end
-
-  def pre_populated_activities(member_data)
-    member_data.fetch(:activities).map do |activity|
-      activity.slice(:type, :employer_name, :organization_name, :school_name, :program_name, :state_verified)
-        .compact
-        .stringify_keys
-        .merge("months" => reporting_months.map { |month| activity_month(activity, month) })
-    end
   end
 
   def reporting_months

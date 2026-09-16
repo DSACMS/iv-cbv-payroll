@@ -1,4 +1,6 @@
 class Activity < ApplicationRecord
+  # Remove after pre_populated column is removed from the database
+  self.ignored_columns += %w[pre_populated]
   self.abstract_class = true
 
   belongs_to :activity_flow
@@ -6,7 +8,6 @@ class Activity < ApplicationRecord
   enum :data_source, { self_attested: "self_attested", validated: "validated" }, default: :self_attested
 
   scope :published, -> { where(draft: false) }
-  scope :pre_populated_drafts, -> { where(draft: true, pre_populated: true) }
 
   def self.activity_type
     raise NotImplementedError, "#{name} must define .#{__method__}"
@@ -16,16 +17,8 @@ class Activity < ApplicationRecord
     model_name.plural.to_sym
   end
 
-  def self.pre_populated_defaults
-    {}
-  end
-
   def publish!
     update!(draft: false)
-  end
-
-  def pre_populated_draft?
-    draft? && pre_populated?
   end
 
   validate :date_within_reporting_window

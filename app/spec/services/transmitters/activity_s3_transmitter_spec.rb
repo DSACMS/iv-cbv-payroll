@@ -101,7 +101,7 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
     employment = create(:employment_activity, activity_flow: activity_flow)
     pay_stub = attach_document(employment, "Pay Stub.png")
 
-    draft = create(:volunteering_activity, :pre_populated_draft, activity_flow: activity_flow)
+    draft = create(:volunteering_activity, activity_flow: activity_flow)
     attach_document(draft, "Draft Document.pdf")
 
     downloaded_keys = []

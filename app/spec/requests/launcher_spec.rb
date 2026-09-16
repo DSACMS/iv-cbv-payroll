@@ -22,8 +22,6 @@ RSpec.describe "Launcher routes", type: :request do
       end
 
       expect(response.body).to include("data-advanced-launcher-agency-activity-types-value=\"#{ERB::Util.html_escape(expected.to_json)}\"")
-      expect(response.body).to include('data-activity-type="community_service"')
-      expect(response.body).to include('data-activity-type="work_programs"')
     end
   end
 

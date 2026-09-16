@@ -24,24 +24,6 @@
           </div>
           <p class="usa-hint" hidden data-advanced-launcher-target="householdUnavailableHint"><%= t(".household.unavailable") %></p>
 
-          <div data-advanced-launcher-target="individualConfiguration">
-            <div data-advanced-launcher-target="ceOnly">
-              <div class="usa-accordion usa-accordion--bordered advanced-launcher__pre-populated-activities">
-                <h3 class="usa-accordion__heading">
-                  <button type="button" class="usa-accordion__button"
-                          id="pre-populated-activities-button"
-                          aria-expanded="true"
-                          aria-controls="pre-populated-activities-content">
-                    <%= t(".individual.pre_populated_activities") %>
-                  </button>
-                </h3>
-                <div id="pre-populated-activities-content" class="usa-accordion__content" aria-labelledby="pre-populated-activities-button">
-                  <%= render "pre_populated_activities" %>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div hidden data-advanced-launcher-target="householdConfiguration">
             <h3><%= t(".household.title") %></h3>
             <p class="usa-hint"><%= t(".household.description") %></p>

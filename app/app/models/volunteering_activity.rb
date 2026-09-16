@@ -2,19 +2,6 @@ class VolunteeringActivity < Activity
   include HasActivityMonths
   include DocumentUploadable
 
-  FIELDS = %w[
-    organization_name
-    street_address
-    street_address_line_2
-    city
-    state
-    zip_code
-    coordinator_name
-    coordinator_email
-    coordinator_phone_number
-  ].freeze
-  PRE_POPULATED_REQUIRED_FIELDS = %w[organization_name].freeze
-
   has_many :volunteering_activity_months, dependent: :destroy
   has_activity_months :volunteering_activity_months
 
