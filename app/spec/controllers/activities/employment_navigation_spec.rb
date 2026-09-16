@@ -216,6 +216,29 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         )
       end
     end
+
+    context "with a one-month tokenized application" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_type: "application",
+          reporting_window_months: 1
+        )
+      end
+
+      it "first month back goes to employer information" do
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        expect(Capybara.string(response.body)).to have_link(
+          I18n.t("activities.activity_header_component.back"),
+          href: edit_activities_flow_income_employment_path(id: employment_activity)
+        )
+      end
+    end
   end
 
   # ── Edit from review ──

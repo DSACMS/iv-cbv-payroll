@@ -87,6 +87,23 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
         edit_activities_flow_income_employment_month_path(employment_id: generic_activity, id: 0)
       )
     end
+
+    it "redirects one-month tokenized applications to the first-month page" do
+      one_month_flow = create(
+        :activity_flow,
+        activity_flow_invitation: create(:activity_flow_invitation),
+        reporting_window_type: "application",
+        reporting_window_months: 1
+      )
+      one_month_activity = create(:employment_activity, activity_flow: one_month_flow)
+      session[:flow_id] = one_month_flow.id
+
+      get :edit, params: { employment_id: one_month_activity.id }
+
+      expect(response).to redirect_to(
+        edit_activities_flow_income_employment_month_path(employment_id: one_month_activity, id: 0)
+      )
+    end
   end
 
   describe "PATCH #update" do

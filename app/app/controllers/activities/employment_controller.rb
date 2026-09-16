@@ -121,7 +121,7 @@ class Activities::EmploymentController < Activities::BaseController
   end
 
   def employment_month_entry_path
-    if @flow.tokenized?
+    if @employment_activity.requires_month_selection?
       edit_activities_flow_income_employment_month_selection_path(
         employment_id: @employment_activity,
         from_edit: params[:from_edit].presence

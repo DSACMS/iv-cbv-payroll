@@ -1,6 +1,6 @@
 class Activities::Employment::MonthSelectionsController < Activities::BaseController
   before_action :set_employment_activity
-  before_action :redirect_unless_tokenized_flow
+  before_action :redirect_unless_month_selection_required
   before_action :set_reporting_months
 
   def edit
@@ -31,8 +31,8 @@ class Activities::Employment::MonthSelectionsController < Activities::BaseContro
     @employment_activity = @flow.employment_activities.find(params[:employment_id])
   end
 
-  def redirect_unless_tokenized_flow
-    return if @flow.tokenized?
+  def redirect_unless_month_selection_required
+    return if @employment_activity.requires_month_selection?
 
     redirect_to edit_activities_flow_income_employment_month_path(
       employment_id: @employment_activity,

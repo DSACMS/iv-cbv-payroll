@@ -55,8 +55,13 @@ class EmploymentActivity < Activity
       .pluck(:month)
   end
 
+  def requires_month_selection?
+    activity_flow.tokenized? &&
+      !(activity_flow.reporting_window_type == "application" && activity_flow.required_month_count == 1)
+  end
+
   def months_to_report
-    return activity_flow.reporting_months unless activity_flow.tokenized?
+    return activity_flow.reporting_months unless requires_month_selection?
 
     selected_months.sort
   end

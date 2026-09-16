@@ -131,6 +131,29 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       end
     end
 
+    context "with a one-month tokenized application" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_type: "application",
+          reporting_window_months: 1
+        )
+      end
+
+      it "redirects directly to the first month page" do
+        post :create, params: employment_params
+
+        activity = activity_flow.employment_activities.last
+        expect(response).to redirect_to(
+          edit_activities_flow_income_employment_month_path(employment_id: activity, id: 0)
+        )
+      end
+    end
+
     it "stores submitted fields on the activity" do
       post :create, params: employment_params
 
@@ -235,6 +258,36 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         expect(response).to redirect_to(
           edit_activities_flow_income_employment_month_selection_path(
             employment_id: employment_activity,
+            from_edit: 1
+          )
+        )
+      end
+    end
+
+    context "with a one-month tokenized application" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_type: "application",
+          reporting_window_months: 1
+        )
+      end
+
+      it "redirects directly to the first month page and preserves from_edit" do
+        patch :update, params: {
+          id: employment_activity.id,
+          from_edit: 1,
+          employment_activity: { employer_name: "Updated Corp" }
+        }
+
+        expect(response).to redirect_to(
+          edit_activities_flow_income_employment_month_path(
+            employment_id: employment_activity,
+            id: 0,
             from_edit: 1
           )
         )

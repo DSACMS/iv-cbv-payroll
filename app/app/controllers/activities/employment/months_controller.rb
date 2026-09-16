@@ -106,7 +106,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
                   )
                 elsif @month_index > 0
                   hours_input_path(@month_index - 1, from_edit: params[:from_edit].presence)
-                elsif @flow.tokenized?
+                elsif @employment_activity.requires_month_selection?
                   edit_activities_flow_income_employment_month_selection_path(
                     employment_id: @employment_activity,
                     from_edit: params[:from_edit].presence
