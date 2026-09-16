@@ -18,9 +18,9 @@ if [ -n "${HUB_CREDENTIALS_JSON:-}" ]; then
     ruby -rjson -rshellwords -e '
       credentials = JSON.parse(ENV.fetch("HUB_CREDENTIALS_JSON"))
       {
-        "cert" => "HUB_CLIENT_CERT",
-        "certKey" => "HUB_CLIENT_KEY",
-        "clientKey" => "HUB_CLIENT_ID",
+        "cert" => "HUB_CERT",
+        "certKey" => "HUB_CERT_KEY",
+        "clientKey" => "HUB_CLIENT_KEY",
         "clientSecret" => "HUB_CLIENT_SECRET"
       }.each do |source, target|
         puts "export #{target}=#{Shellwords.escape(credentials.fetch(source))}"

@@ -8,8 +8,8 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
       education_enrollment_url: education_enrollment_url,
       client_id: "client-id",
       client_secret: "client-secret",
-      client_cert: certificate.to_pem,
-      client_key: private_key.to_pem,
+      client_cert: certificate,
+      client_key: private_key,
       logger: logger
     )
   end
@@ -156,9 +156,40 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
 
   describe "certificate configuration" do
     it "raises a configuration error when a certificate file is missing" do
-      expect do
-        described_class.new(client_cert_path: "/tmp/does-not-exist/client.crt")
-      end.to raise_error(described_class::ApiError, /client certificate/)
+      ClimateControl.modify(HUB_CERT: nil, HUB_CERT_PATH: "/tmp/does-not-exist/client.crt") do
+        expect do
+          described_class.new(logger: logger)
+        end.to raise_error(described_class::ApiError, /client certificate/)
+      end
+    end
+
+    it "raises a configuration error when a private key file is missing" do
+      ClimateControl.modify(
+        HUB_CERT: certificate.to_pem,
+        HUB_CERT_PATH: nil,
+        HUB_CERT_KEY: nil,
+        HUB_CERT_KEY_PATH: "/tmp/does-not-exist/client.key"
+      ) do
+        expect do
+          described_class.new(logger: logger)
+        end.to raise_error(described_class::ApiError, /client key/)
+      end
+    end
+
+    it "loads credentials from the Hub environment variables" do
+      ClimateControl.modify(
+        HUB_CLIENT_KEY: "hub-client-id",
+        HUB_CLIENT_SECRET: "hub-client-secret",
+        HUB_CERT: certificate.to_pem,
+        HUB_CERT_KEY: private_key.to_pem
+      ) do
+        configured_service = described_class.new(logger: logger)
+
+        expect(configured_service.instance_variable_get(:@client_id)).to eq("hub-client-id")
+        expect(configured_service.instance_variable_get(:@client_secret)).to eq("hub-client-secret")
+        expect(configured_service.instance_variable_get(:@client_cert).to_pem).to eq(certificate.to_pem)
+        expect(configured_service.instance_variable_get(:@client_key).to_pem).to eq(private_key.to_pem)
+      end
     end
   end
 

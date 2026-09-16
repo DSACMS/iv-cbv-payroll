@@ -39,12 +39,12 @@ module Aggregators
         environment: nil,
         logger: nil,
         base_url: ENV.fetch("HUB_API_URL", DEFAULT_BASE_URL),
-        client_id: ENV["HUB_CLIENT_ID"],
+        client_id: ENV["HUB_CLIENT_KEY"],
         client_secret: ENV["HUB_CLIENT_SECRET"],
-        client_cert_path: ENV["HUB_CLIENT_CERT_PATH"],
-        client_key_path: ENV["HUB_CLIENT_KEY_PATH"],
-        client_cert: ENV["HUB_CLIENT_CERT"],
-        client_key: ENV["HUB_CLIENT_KEY"],
+        client_cert_path: ENV["HUB_CERT_PATH"],
+        client_key_path: ENV["HUB_CERT_KEY_PATH"],
+        client_cert: load_certificate(ENV["HUB_CERT"], client_cert_path),
+        client_key: load_key(ENV["HUB_CERT_KEY"], client_key_path),
         localhost_override: ENV["HUB_LOCALHOST_OVERRIDE"],
         token_url: DEFAULT_TOKEN_URL,
         education_enrollment_url: DEFAULT_EDUCATION_ENROLLMENT_URL
@@ -57,8 +57,8 @@ module Aggregators
         @token_url = token_url
         @client_id = client_id
         @client_secret = client_secret
-        @client_cert = load_certificate(client_cert, client_cert_path)
-        @client_key = load_key(client_key, client_key_path)
+        @client_cert = client_cert
+        @client_key = client_key
         @localhost_override = development? && parse_boolean(localhost_override)
         @education_enrollment_url = education_enrollment_url
         @token = nil
