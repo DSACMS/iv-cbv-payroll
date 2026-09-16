@@ -1,5 +1,6 @@
 class Activities::Employment::MonthsController < Activities::BaseController
   before_action :set_employment_activity
+  before_action :ensure_months_selected, only: %i[edit update]
 
   include MonthlyHoursInput
 
@@ -37,6 +38,15 @@ class Activities::Employment::MonthsController < Activities::BaseController
     @employment_activity = @flow.employment_activities.find(params[:employment_id])
   end
 
+  def ensure_months_selected
+    return if @employment_activity.months_to_report.any?
+
+    redirect_to edit_activities_flow_income_employment_month_selection_path(
+      employment_id: @employment_activity,
+      from_edit: params[:from_edit].presence
+    )
+  end
+
   def set_hours_input_vars
     super
     @activity_month&.tap { |m| m.gross_income = nil if m.new_record? }
@@ -66,6 +76,10 @@ class Activities::Employment::MonthsController < Activities::BaseController
     @employment_activity
   end
 
+  def hours_input_months
+    @employment_activity.months_to_report
+  end
+
   def activity_month_param_key
     :employment_activity_month
   end
@@ -92,6 +106,11 @@ class Activities::Employment::MonthsController < Activities::BaseController
                   )
                 elsif @month_index > 0
                   hours_input_path(@month_index - 1, from_edit: params[:from_edit].presence)
+                elsif @employment_activity.requires_month_selection?
+                  edit_activities_flow_income_employment_month_selection_path(
+                    employment_id: @employment_activity,
+                    from_edit: params[:from_edit].presence
+                  )
                 else
                   edit_activities_flow_income_employment_path(id: @employment_activity)
                 end

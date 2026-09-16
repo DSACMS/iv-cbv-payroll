@@ -63,9 +63,15 @@ class ActivityFlow < Flow
       next unless activity.persisted?
 
       Array(attrs["months"]).each do |month_entry|
-        activity.activity_months.create(
-          month_entry.stringify_keys.slice(*activity_class.activity_months_class::FIELDS)
-        )
+        month_attributes = month_entry.stringify_keys.slice(*activity_class.activity_months_class::FIELDS)
+        if activity_class == EmploymentActivity
+          month_attributes["month"] = month_attributes["month"].to_date.beginning_of_month
+        end
+        activity.activity_months.create(month_attributes)
+      end
+
+      if activity_class == EmploymentActivity
+        activity.update!(selected_months: activity.activity_months.order(:month).pluck(:month))
       end
     end
   end
@@ -138,6 +144,10 @@ class ActivityFlow < Flow
 
   def invitation_id
     activity_flow_invitation_id
+  end
+
+  def tokenized?
+    activity_flow_invitation_id.present?
   end
 
   def pre_populated_session?

@@ -301,6 +301,14 @@ en:
         month_indicator: Month %{current} / %{total}
         no_hours_checkbox: No %{month} income from %{organization}
         title: Employment hours and income
+      month_selections:
+        edit:
+          continue: Continue
+          description: For each month, you will need to report how much you made and how many hours you worked.
+          error_body: Select at least one month to continue
+          error_heading: No months selected
+          legend: Months worked
+          title: Select which months you worked for %{employer_name}
       review:
         additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
         additional_comments_title: Additional comments (optional)

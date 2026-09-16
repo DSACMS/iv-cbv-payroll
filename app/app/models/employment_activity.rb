@@ -49,7 +49,28 @@ class EmploymentActivity < Activity
   end
 
   def document_upload_months_to_verify
-    employment_activity_months.map(&:month)
+    employment_activity_months
+      .where(month: months_to_report)
+      .order(:month)
+      .pluck(:month)
+  end
+
+  def requires_month_selection?
+    activity_flow.tokenized? &&
+      !(activity_flow.reporting_window_type == "application" && activity_flow.required_month_count == 1)
+  end
+
+  def months_to_report
+    return activity_flow.reporting_months unless requires_month_selection?
+
+    selected_months.sort
+  end
+
+  def update_selected_months!(months)
+    transaction do
+      update!(selected_months: months)
+      employment_activity_months.where.not(month: months).destroy_all
+    end
   end
 
   def document_upload_details_for_month(month)

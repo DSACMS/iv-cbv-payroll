@@ -51,7 +51,7 @@ module MonthlyHoursInput
   end
 
   def set_hours_input_vars
-    @months = progress_calculator.reporting_months
+    @months = hours_input_months
     @month_index = (params[:id] || 0).to_i
 
     if @month_index < 0 || @month_index >= @months.length
@@ -83,6 +83,10 @@ module MonthlyHoursInput
     after_activity_path
   end
 
+  def hours_input_months
+    progress_calculator.reporting_months
+  end
+
   # Including controllers must implement:
   # - hours_input_activity              → parent activity record
   # - activity_month_param_key           → e.g. :volunteering_activity_month
@@ -90,6 +94,7 @@ module MonthlyHoursInput
   # - activity_display_name              → name shown in heading (org name, program name, etc.)
   # - hours_input_t_scope                → translation scope string
   # - hours_input_completed_path         → (optional) override to redirect elsewhere after completion
+  # - hours_input_months                 → (optional) override to limit the months shown
   #
   # Optional overrides for activity types that need more than hours (e.g. gross_income):
   # - assign_hours_submission_values     → set @activity_month from params (default: hours only)
