@@ -16,7 +16,7 @@ module Aggregators
     # used for TLS.
     class NscFdshService
       DEFAULT_BASE_URL = "https://impl.hub.cms.gov"
-      DEFAULT_TOKEN_URL = "#{DEFAULT_BASE_URL}/auth/oauth/v2/token"
+      DEFAULT_TOKEN_URL = "#{ENV.fetch("HUB_API_URL", DEFAULT_BASE_URL).chomp("/")}/auth/oauth/v2/token"
       DEFAULT_EDUCATION_ENROLLMENT_URL = "mesh/imp1/NationalStudentClearinghouseService"
       EDUCATION_ENROLLMENT_URL = DEFAULT_EDUCATION_ENROLLMENT_URL
       LOCALHOST_PORT = 8443
