@@ -36,8 +36,6 @@ A list of core team members responsible for the code and documentation in this r
 
 See [AGENTS.md](/app/AGENTS.md) for some more information on repo structure.
 
-Note that [Emmy API](https://github.com/CMSgov/emmy-api), an API-only implementation of Emmy’s features, is in a separate repository.
-
 ### Documentation
 
 Public documentation is in the [/docs](/docs) subfolder.

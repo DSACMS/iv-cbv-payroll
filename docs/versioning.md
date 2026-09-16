@@ -85,10 +85,8 @@ three-slot rubric then.
 
 ## Scope of this version line
 
-`0.1.0` describes **Emmy App** — the Rails application in this repository. Two
-adjacent interfaces are versioned separately and are not covered by this number:
+`0.1.0` describes **Emmy App** — the Rails application in this repository. 
 
-- **Emmy API**, which lives in [CMSgov/emmy-api](https://github.com/CMSgov/emmy-api).
 - The HTTP endpoints under `/api` in this repository, which are partly versioned
   by path today: `config/routes.rb` scopes `/invitations` under `v1`, while the
   `pinwheel`, `argyle`, and `events` endpoints sit outside any version scope.
