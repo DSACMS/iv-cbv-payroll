@@ -30,7 +30,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
       month_index: @month_index,
       month: I18n.l(@current_month, format: :month_year)
     }
-    attributes[:error_fields] = @activity_month.errors.attribute_names.map(&:to_s) if @error
+    attributes[:error_fields] = %w[gross_income hours] if @error
     track_event(event, attributes)
   end
 
@@ -53,14 +53,10 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def assign_hours_submission_values
-    if params[:no_hours] == "1"
-      @activity_month.hours = 0
-      @activity_month.gross_income = 0
-    else
-      month_params = hours_submission_params
-      @activity_month.hours = month_params[:hours].presence || 0
-      @activity_month.gross_income = month_params[:gross_income].presence || 0
-    end
+    month_params = hours_submission_params
+    default_value = month_params.values.all?(&:blank?) ? nil : 0
+    @activity_month.hours = month_params[:hours].presence || default_value
+    @activity_month.gross_income = month_params[:gross_income].presence || default_value
   end
 
   def hours_submission_params
@@ -68,8 +64,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def add_hours_submission_errors
-    @activity_month.errors.add(:gross_income, I18n.t("#{hours_input_t_scope}.field_error_income"))
-    @activity_month.errors.add(:hours, I18n.t("#{hours_input_t_scope}.field_error_hours"))
+    # MonthlyHoursInput adds inline field errors by default; this screen uses only the alert.
   end
 
   def hours_input_activity
@@ -131,16 +126,6 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def valid_hours_submission?
-    income = @activity_month.gross_income || 0
-    hours = @activity_month.hours || 0
-
-    if @months.length == 1
-      income > 0 || hours > 0
-    elsif params[:from_review].present? || @month_index == @months.length - 1
-      other = hours_input_activity.activity_months.where.not(id: @activity_month.id)
-      other.sum(:gross_income) + income > 0 || other.sum(:hours) + hours > 0
-    else
-      true
-    end
+    @activity_month.gross_income.present? || @activity_month.hours.present?
   end
 end
