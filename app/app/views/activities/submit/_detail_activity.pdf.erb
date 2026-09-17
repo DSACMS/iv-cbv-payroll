@@ -1,0 +1,40 @@
+<section class="activity-report__activity">
+  <% if section_heading.present? %>
+    <h2>
+      <%= section_heading %>
+    </h2>
+  <% end %>
+
+  <h3 class="bg-base-lighter border-1px border-ink font-heading-sm margin-top-3 margin-bottom-0 padding-2">
+    <%= title %>
+  </h3>
+
+  <% if comments.present? %>
+    <div class="usa-summary-box font-sans-3xs margin-y-2">
+      <div class="usa-summary-box__body">
+        <h4 class="usa-summary-box__heading font-sans-3xs line-height-sans-5">
+          <%= t("activities.submit.pdf.activity_comments") %>
+        </h4>
+        <p class="usa-summary-box__text">
+          <%= comments %>
+        </p>
+      </div>
+    </div>
+  <% end %>
+
+  <% if details.any? %>
+    <%= render(TableComponent.new(
+      class_names: "activity-report__table font-sans-3xs margin-0 margin-top-2 maxw-none"
+    )) do |table| %>
+      <%= table.with_header_cell(scope: "col").with_content(information_heading) %>
+      <%= table.with_header_cell(scope: "col").with_content(t("shared.table_headers.your_details")) %>
+
+      <% details.each do |label, value| %>
+        <%= table.with_row do |row| %>
+          <%= row.with_data_cell(is_header: true, scope: "row").with_content(label) %>
+          <%= row.with_data_cell.with_content(value.presence || t("activities.submit.pdf.not_provided")) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</section>

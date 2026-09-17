@@ -1,10 +1,10 @@
 class Transmitters::SharedEmailTransmitter
   TRANSMISSION_METHOD = "shared_email"
-  include Transmitter
+  include IncomeTransmitter
 
   def deliver
     CaseworkerMailer.with(
-      email_address: @current_agency.transmission_method_configuration.dig("email"),
+      email_address: transmission_configuration.dig("email"),
       cbv_flow: @cbv_flow,
       aggregator_report: @aggregator_report,
     ).summary_email.deliver_now

@@ -7,6 +7,24 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.5.0
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- CE PDF Implementation [(#2035)](https://github.com/DSACMS/iv-cbv-payroll/pull/2035) - Daphne Gold [[FFS-4718]](https://jiraent.cms.gov/browse/FFS-4718)
+- Remove help link [(#2043)](https://github.com/DSACMS/iv-cbv-payroll/pull/2043) - Chris [[FFS-4642]](https://jiraent.cms.gov/browse/FFS-4642)
+- Hide language selector [(#2029)](https://github.com/DSACMS/iv-cbv-payroll/pull/2029) - Chris [[FFS-4642]](https://jiraent.cms.gov/browse/FFS-4642)
+
+### Other/Maintenance (Not user facing)
+- Bump rubocop, google.golang.org/grpc, vitest, sass, tornado, google.golang.org/grpc, postcss-selector-parser, postcss-cli, lookbook, webpack, rails_semantic_logger, bootsnap, mixpanel-ruby
+- Stop logging full validation error messages (PII risk) in Employment Self-Attested Mixpanel events [(#2034)](https://github.com/DSACMS/iv-cbv-payroll/pull/2034) - krista-skylight [[FFS-4717]](https://jiraent.cms.gov/browse/FFS-4717)
+- Remove chromedriver dependency [(#2030)](https://github.com/DSACMS/iv-cbv-payroll/pull/2030) - Chris [[FFS-4289]](https://jiraent.cms.gov/browse/FFS-4289)
+- Security audit: remove api token to streamline what the behavior actually would be [(#2016)](https://github.com/DSACMS/iv-cbv-payroll/pull/2016) - iannorriswork
+- No consent pdf showing [(#2013)](https://github.com/DSACMS/iv-cbv-payroll/pull/2013) - Chris [[FFS-4596]](https://jiraent.cms.gov/browse/FFS-4596)
+- No matching employments error should not crash pdf [(#2015)](https://github.com/DSACMS/iv-cbv-payroll/pull/2015) - Chris [[FFS-4525]](https://jiraent.cms.gov/browse/FFS-4525)
+
 ## 0.4.0
 
 ### Emmy Income only user facing changes

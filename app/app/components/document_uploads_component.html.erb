@@ -12,10 +12,14 @@
     <% documents.each do |document| %>
       <li class="document-uploads__item">
         <div class="document-uploads__file">
-          <svg class="usa-icon document-uploads__icon" aria-hidden="true" focusable="false" role="img">
-            <use href="<%= icon_path %>"></use>
-          </svg>
-          <span class="document-uploads__filename">
+          <% if pdf %>
+            <%= image_tag pdf_icon_path, class: "usa-icon document-uploads__icon text-middle", alt: "" %>
+          <% else %>
+            <svg class="usa-icon document-uploads__icon" aria-hidden="true" focusable="false" role="img">
+              <use href="<%= icon_path %>"></use>
+            </svg>
+          <% end %>
+          <span class="<%= class_names("document-uploads__filename", "text-middle": pdf) %>">
             <%= filename_for(document) %>
           </span>
         </div>

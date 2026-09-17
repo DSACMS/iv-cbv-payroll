@@ -2,13 +2,14 @@ require "tmpdir"
 
 class Transmitters::ActivityS3Transmitter
   TRANSMISSION_METHOD = "encrypted_s3"
-  PDF_MARGIN = { top: 10, bottom: 10, left: 10, right: 10 }.freeze
+  include ActivityTransmitter
+
+  PDF_MARGIN = { top: 8, bottom: 8, left: 0, right: 0 }.freeze
 
   def initialize(activity_flow, current_agency)
-    @activity_flow = activity_flow
-    @transmission_config = current_agency.transmission_method_configuration
+    super
     @processed_s3_service = ProcessedDownloadService.new
-    @destination_s3_service = S3Service.new("bucket" => @transmission_config.fetch("bucket"))
+    @destination_s3_service = S3Service.new("bucket" => transmission_configuration.fetch("bucket"))
   end
 
   def deliver
@@ -45,28 +46,21 @@ class Transmitters::ActivityS3Transmitter
 
   def destination_prefix
     File.join(
-      @transmission_config.fetch("s3_directory", "outfiles"),
+      transmission_configuration.fetch("s3_directory", "outfiles"),
       @activity_flow.confirmation_code,
       ""
     )
   end
 
   def pdf_content
-    assigns = {
-      flow: @activity_flow,
-      community_service_activities: @activity_flow.volunteering_activities.published.order(date: :desc, created_at: :desc),
-      work_programs_activities: @activity_flow.job_training_activities.published.order(created_at: :desc),
-      education_activities: @activity_flow.education_activities.published.order(created_at: :desc),
-      submission_timestamp: @activity_flow.completed_at,
-      total_hours: ActivityFlowProgressCalculator.new(@activity_flow).overall_result.total_hours
-    }
-
     html = I18n.with_locale(:en) do
       Activities::SubmitController.new.render_to_string(
         template: "activities/submit/show",
         formats: [ :pdf ],
         layout: "layouts/pdf",
-        assigns: assigns
+        assigns: {
+          report: ActivityPdfReport.new(flow: @activity_flow, caseworker: true)
+        }
       )
     end
 

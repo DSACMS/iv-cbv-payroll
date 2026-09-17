@@ -98,6 +98,36 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
     end
   end
 
+  context "when the agency uses JSON activity transmission" do
+    let(:transmission_method) { Transmitters::ActivityJsonTransmitter::TRANSMISSION_METHOD }
+    let(:json_transmitter) { instance_double(Transmitters::ActivityJsonTransmitter) }
+
+    before do
+      allow(Transmitters::ActivityJsonTransmitter).to receive(:new)
+        .with(activity_flow, current_agency)
+        .and_return(json_transmitter)
+    end
+
+    it "marks the flow transmitted after the report is accepted" do
+      allow(json_transmitter).to receive(:deliver)
+
+      expect {
+        described_class.new.perform(activity_flow.id)
+      }.to change { activity_flow.reload.transmitted_at }.from(nil)
+    end
+
+    it "leaves the flow untransmitted when the report is rejected" do
+      allow(json_transmitter).to receive(:deliver)
+        .and_raise(Transmitters::ActivityJsonTransmitter::ActivityJsonTransmitterError, "rejected")
+
+      expect {
+        described_class.new.perform(activity_flow.id)
+      }.to raise_error(Transmitters::ActivityJsonTransmitter::ActivityJsonTransmitterError)
+
+      expect(activity_flow.reload.transmitted_at).to be_nil
+    end
+  end
+
   describe "retry behavior" do
     let(:retry_test_time) { Time.zone.parse("2026-08-06 10:00:00") }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<%= I18n.locale %>">
+<html lang="<%= I18n.locale %>" class="<%= content_for(:pdf_html_class) %>">
   <head>
     <meta charset="utf-8" >
     <title><%= content_for?(:title) ? yield(:title) : t("cbv.submits.show.pdf.client.header") %></title>
@@ -13,7 +13,7 @@
   <body class="wkhtmltopdf">
     <div id="root">
       <main id="main-content">
-        <section class="grid-container usa-section">
+        <section class="<%= content_for?(:pdf_section_class) ? yield(:pdf_section_class) : "grid-container usa-section" %>">
           <%= yield %>
         </section>
       </main>

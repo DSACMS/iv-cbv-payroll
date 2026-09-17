@@ -8,6 +8,10 @@
 <% end %>
 
 <h1><%= t(".header") %></h1>
+<p>
+  <strong><%= t("activities.hub.empty_state_reporting_period_label") %></strong>
+  <%= @flow.reporting_window_display %>
+</p>
 <p><%= t(".description") %></p>
 
 <%= form_with(url: activities_flow_income_add_your_work_path, class: "maxw-none", builder: UswdsFormBuilder, id: "add_your_work_form") do |f| %>

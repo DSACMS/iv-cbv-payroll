@@ -6,7 +6,7 @@ exports[`ArgyleModalAdapter > event:other > logs { name: 'login - form submitted
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'auth_required' } } UI event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', …(1) } UI event 1`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -15,7 +15,7 @@ exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', prope
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'connection_unavailable' } } UI event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', …(1) } UI event 2`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -24,7 +24,7 @@ exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', prope
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'expired_credentials' } } UI event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', …(1) } UI event 3`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -33,7 +33,7 @@ exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', prope
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'invalid_auth' } } UI event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', …(1) } UI event 4`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -42,7 +42,7 @@ exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', prope
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'invalid_credentials' } } UI event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', …(1) } UI event 5`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -51,7 +51,7 @@ exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', prope
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'mfa_cancelled_by_the_user' } } UI event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', …(1) } UI event 6`] = `
 {
   "name": "login - opened",
   "properties": {
@@ -60,20 +60,20 @@ exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', prope
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: 'something_else' } } UI event 1`] = `
-{
-  "name": "login - opened",
-  "properties": {
-    "errorCode": "something_else",
-  },
-}
-`;
-
-exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', properties: { errorCode: null } } UI event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', …(1) } UI event 7`] = `
 {
   "name": "login - opened",
   "properties": {
     "errorCode": null,
+  },
+}
+`;
+
+exports[`ArgyleModalAdapter > event:other > logs { name: 'login - opened', …(1) } UI event 8`] = `
+{
+  "name": "login - opened",
+  "properties": {
+    "errorCode": "something_else",
   },
 }
 `;
@@ -96,7 +96,7 @@ exports[`ArgyleModalAdapter > event:other > logs { name: 'search - opened' } UI 
 }
 `;
 
-exports[`ArgyleModalAdapter > event:other > logs { name: 'search - term updated', term: 'search term', tab: 'tab', properties: { term: 'search term', tab: 'tab' } } UI event 1`] = `
+exports[`ArgyleModalAdapter > event:other > logs { name: 'search - term updated', …(3) } UI event 1`] = `
 {
   "payload": {
     "name": "search - term updated",

@@ -31,6 +31,14 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response.body).to include(I18n.t("activities.employment_info.employer_name"))
     end
 
+    it "renders the self-employed helper texts" do
+      get :new
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text(I18n.t("activities.employment_info.employer_name_hint"))
+      expect(rendered).to have_text(I18n.t("activities.employment_info.street_address_hint"))
+    end
+
     it "renders the combobox for state selection" do
       get :new
 
@@ -92,13 +100,58 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         extra_attributes: -> { { employment_activity_id: nil, error_fields: [ "employer_name" ] } }
     end
 
-    it "creates an employment activity and redirects to the first month page" do
+    it "creates an employment activity and redirects a generic flow to the first month page" do
       expect do
         post :create, params: employment_params
       end.to change(activity_flow.employment_activities, :count).by(1)
 
       activity = activity_flow.employment_activities.last
       expect(response).to redirect_to(edit_activities_flow_income_employment_month_path(employment_id: activity, id: 0))
+    end
+
+    context "with a tokenized flow" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_months: 2
+        )
+      end
+
+      it "redirects to month selection" do
+        post :create, params: employment_params
+
+        activity = activity_flow.employment_activities.last
+        expect(response).to redirect_to(
+          edit_activities_flow_income_employment_month_selection_path(employment_id: activity)
+        )
+      end
+    end
+
+    context "with a one-month tokenized application" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_type: "application",
+          reporting_window_months: 1
+        )
+      end
+
+      it "redirects directly to the first month page" do
+        post :create, params: employment_params
+
+        activity = activity_flow.employment_activities.last
+        expect(response).to redirect_to(
+          edit_activities_flow_income_employment_month_path(employment_id: activity, id: 0)
+        )
+      end
     end
 
     it "stores submitted fields on the activity" do
@@ -158,7 +211,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         extra_attributes: -> { { employment_activity_id: kind_of(Integer), error_fields: [ "employer_name" ] } }
     end
 
-    it "updates the activity and redirects to the first month page" do
+    it "updates the activity and redirects a generic flow to the first month page" do
       patch :update, params: { id: employment_activity.id, employment_activity: { employer_name: "Updated Corp" } }
 
       expect(employment_activity.reload.employer_name).to eq("Updated Corp")
@@ -181,6 +234,64 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       patch :update, params: { id: employment_activity.id, from_review: 1, from_edit: 1, employment_activity: { employer_name: "Updated Corp" } }
 
       expect(response).to redirect_to(review_activities_flow_income_employment_path(id: employment_activity, from_edit: 1))
+    end
+
+    context "with a tokenized flow" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_months: 2
+        )
+      end
+
+      it "redirects to month selection and preserves from_edit" do
+        patch :update, params: {
+          id: employment_activity.id,
+          from_edit: 1,
+          employment_activity: { employer_name: "Updated Corp" }
+        }
+
+        expect(response).to redirect_to(
+          edit_activities_flow_income_employment_month_selection_path(
+            employment_id: employment_activity,
+            from_edit: 1
+          )
+        )
+      end
+    end
+
+    context "with a one-month tokenized application" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_type: "application",
+          reporting_window_months: 1
+        )
+      end
+
+      it "redirects directly to the first month page and preserves from_edit" do
+        patch :update, params: {
+          id: employment_activity.id,
+          from_edit: 1,
+          employment_activity: { employer_name: "Updated Corp" }
+        }
+
+        expect(response).to redirect_to(
+          edit_activities_flow_income_employment_month_path(
+            employment_id: employment_activity,
+            id: 0,
+            from_edit: 1
+          )
+        )
+      end
     end
 
     it "clears contact fields when self-employed is checked" do
@@ -218,6 +329,36 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
         expect(response).to redirect_to(
           edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 0)
+        )
+      end
+    end
+
+    context "when a tokenized activity has no selected months" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_months: 2
+        )
+      end
+      let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+      it "redirects to month selection even when a monthly record already exists" do
+        create(
+          :employment_activity_month,
+          employment_activity: employment_activity,
+          month: activity_flow.reporting_months.first,
+          hours: 10,
+          gross_income: 100
+        )
+
+        get :review, params: { id: employment_activity.id }
+
+        expect(response).to redirect_to(
+          edit_activities_flow_income_employment_month_selection_path(employment_id: employment_activity)
         )
       end
     end
@@ -275,6 +416,45 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response.body).to include(
         edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 0, from_review: 1)
       )
+    end
+
+    context "with selected months" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_months: 3
+        )
+      end
+
+      it "displays only selected months in chronological order" do
+        first_month, second_month, third_month = activity_flow.reporting_months
+        employment_activity.update!(selected_months: [ third_month, first_month ])
+        employment_activity.employment_activity_months.delete_all
+        [ third_month, second_month, first_month ].each do |month|
+          create(
+            :employment_activity_month,
+            employment_activity: employment_activity,
+            month: month,
+            hours: 25,
+            gross_income: 500
+          )
+        end
+
+        get :review, params: { id: employment_activity.id }
+
+        rendered = Capybara.string(response.body)
+        first_month_label = I18n.l(first_month, format: :month_year)
+        second_month_label = I18n.l(second_month, format: :month_year)
+        third_month_label = I18n.l(third_month, format: :month_year)
+        expect(rendered).to have_text(first_month_label)
+        expect(rendered).to have_text(third_month_label)
+        expect(response.body.index(first_month_label)).to be < response.body.index(third_month_label)
+        expect(rendered).to have_no_text(second_month_label)
+      end
     end
 
     context "with previously uploaded documents" do

@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Help Features", :js, type: :feature do
+  include_context "activity_hub"
+
   include E2e::TestHelpers
   include PinwheelApiHelper
   include ApplicationHelper
@@ -82,6 +84,17 @@ RSpec.describe "Help Features", :js, type: :feature do
 
       find("button[aria-label='Close this window']").click
       expect(page).not_to have_selector(".usa-modal__content", visible: true)
+    end
+  end
+
+  context "When in the activity flow" do
+    before do
+      visit activities_flow_entry_path(client_agency_id: "sandbox")
+      verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
+    end
+
+    it "does not show the help link" do
+      expect(page).not_to have_link("Help")
     end
   end
 end

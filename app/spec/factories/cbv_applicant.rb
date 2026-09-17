@@ -24,6 +24,7 @@ FactoryBot.define do
 
       date_of_birth { Date.new(2000, 1, 1) }
       doc_id { "%08d" % rand(100_000_000) }
+      individual_id { "%08d" % rand(100_000_000) }
     end
 
     trait :accenture do

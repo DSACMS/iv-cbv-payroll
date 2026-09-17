@@ -1,0 +1,56 @@
+<% title = t(".title", employer_name: @employment_activity.employer_name) %>
+<% content_for :title, title %>
+
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.employment.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: edit_activities_flow_income_employment_path(
+      id: @employment_activity,
+      from_edit: params[:from_edit].presence
+    ),
+    track_event_prefix: "Employment"
+  ) %>
+<% end %>
+
+<h1><%= title %></h1>
+<p>
+  <strong><%= t("activities.hub.empty_state_reporting_period_label") %></strong>
+  <%= @flow.reporting_window_display %>
+</p>
+<p><%= t(".description") %></p>
+
+<% if @error %>
+  <%= render Uswds::Alert.new(type: :error, heading: t(".error_heading"), class: "margin-bottom-4") do %>
+    <%= t(".error_body") %>
+  <% end %>
+<% end %>
+
+<%= uswds_form_with(
+      model: @employment_activity,
+      url: activities_flow_income_employment_month_selection_path(
+        employment_id: @employment_activity,
+        from_edit: params[:from_edit].presence
+      ),
+      method: :patch
+    ) do |f| %>
+  <%= hidden_field_tag "employment_activity[selected_months][]", "" %>
+  <fieldset class="usa-fieldset">
+    <legend class="usa-sr-only"><%= t(".legend") %></legend>
+    <% @reporting_months.each do |month| %>
+      <% field_id = "employment_activity_selected_months_#{month.strftime('%Y_%m')}" %>
+      <div class="usa-checkbox">
+        <%= check_box_tag "employment_activity[selected_months][]",
+              month.iso8601,
+              @selected_months.include?(month),
+              id: field_id,
+              class: "usa-checkbox__input usa-checkbox__input--tile" %>
+        <%= label_tag field_id,
+              l(month, format: :month_year),
+              class: "usa-checkbox__label" %>
+      </div>
+    <% end %>
+  </fieldset>
+
+  <%= f.submit t(".continue"), class: "width-full margin-top-4" %>
+<% end %>
