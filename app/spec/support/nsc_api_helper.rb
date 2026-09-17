@@ -21,6 +21,8 @@ module NscApiHelper
     allow(ENV).to receive(:[]).and_call_original
     allow(ENV).to receive(:[]).with("HUB_CERT").and_return(certificate.to_pem)
     allow(ENV).to receive(:[]).with("HUB_CERT_KEY").and_return(key.to_pem)
+    allow(ENV).to receive(:[]).with("HUB_CLIENT_KEY").and_return("fake-hub-client-key")
+    allow(ENV).to receive(:[]).with("HUB_CLIENT_SECRET").and_return("fake-hub-client-secret")
   end
 
   def nsc_stub_request_education_search_response(user_folder, &block)
@@ -51,8 +53,6 @@ module NscApiHelper
 
   def nsc_stub_token_request
     nsc_stub_fdsh_client_credentials
-    allow(ENV).to receive(:[]).with("HUB_CLIENT_KEY").and_return("fake-hub-client-key")
-    allow(ENV).to receive(:[]).with("HUB_CLIENT_SECRET").and_return("fake-hub-client-secret")
 
     stub_request(:post, %r{/token})
       .to_return(
