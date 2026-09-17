@@ -204,7 +204,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     month_edit_links.last.click
 
     verify_page(page, title: updated_monthly_details_title)
-    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: second_selected_month_name), with: "0"
+    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: second_selected_month_name), with: "300"
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: second_selected_month_name), with: ""
     click_button I18n.t("activities.hub.save")
 

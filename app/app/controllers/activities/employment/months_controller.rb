@@ -126,6 +126,8 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def valid_hours_submission?
-    @activity_month.gross_income.present? || @activity_month.hours.present?
+    income = @activity_month.gross_income || 0
+    hours = @activity_month.hours || 0
+    income >= 0 && hours >= 0 && (income.positive? || hours.positive?)
   end
 end

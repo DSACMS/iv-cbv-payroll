@@ -232,6 +232,26 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       expect(response).to redirect_to(new_activities_flow_income_employment_document_upload_path(employment_id: employment_activity))
     end
 
+    it "rejects zero as the only entered value" do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 0,
+        employment_activity_month: { gross_income: 0, hours: "" }
+      }
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
+    it "rejects negative income when hours are positive" do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        id: 0,
+        employment_activity_month: { gross_income: -1, hours: 10 }
+      }
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
     it "threads from_edit to review when from_review is set" do
       patch :update, params: {
         employment_id: employment_activity.id,
