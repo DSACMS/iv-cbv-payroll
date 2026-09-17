@@ -6,7 +6,7 @@ RSpec.describe ActivitiesHelper do
   describe "#show_activity?" do
     context "in a pre-populated session" do
       before do
-        flow = instance_double(ActivityFlow, pre_populated_session?: true, pre_populated_activity_types: [ :community_service, :education ])
+        flow = instance_double(ActivityFlow, pre_populated_activity_types: [ :community_service, :education ])
         assign(:flow, flow)
       end
 
@@ -23,7 +23,7 @@ RSpec.describe ActivitiesHelper do
 
     context "in a non-pre-populated session" do
       before do
-        assign(:flow, instance_double(ActivityFlow, pre_populated_session?: false))
+        assign(:flow, instance_double(ActivityFlow))
       end
 
       it "falls back to activity_type_enabled?" do

@@ -1,7 +1,7 @@
 class LauncherController < ApplicationController
   helper_method :session_timeout_enabled?, :agency_activity_types
   before_action :set_launcher_flow, only: [ :advanced, :launcher ]
-  before_action :validate_household_launch, only: :create
+  # before_action :validate_household_launch, only: :create
 
   def advanced; end
 
@@ -14,9 +14,7 @@ class LauncherController < ApplicationController
     test_scenario = launcher_params[:test_scenario]
     overrides = launch_overrides(flow_type)
 
-    url = if launch_type == "household"
-            build_household_url(client_agency_id, overrides)
-          elsif flow_type == "cbv"
+    url = if flow_type == "cbv"
             if launch_type == "generic"
               build_cbv_generic_url(client_agency_id, overrides)
             else
@@ -137,97 +135,8 @@ class LauncherController < ApplicationController
     end
   end
 
-  def build_pre_populated_activities
-    activities = []
-    month_strings = reporting_window_months_for_activities(launcher_params[:client_agency_id])
-
-    if launcher_params[:volunteering_enabled] == "1"
-      hours = launcher_params[:volunteering_hours_per_month].to_i
-      activities << {
-        "type" => "volunteering",
-        "organization_name" => launcher_params[:volunteering_organization_name].presence || "Red Cross",
-        "months" => month_strings.map { |m| { "month" => m, "hours" => hours } }
-      }
-    end
-
-    if launcher_params[:employment_enabled] == "1"
-      hours = launcher_params[:employment_hours_per_month].to_i
-      gross_income = launcher_params[:employment_gross_income_per_month].to_i
-      activities << {
-        "type" => "employment",
-        "employer_name" => launcher_params[:employment_employer_name].presence || "Acme Corp",
-        "months" => month_strings.map { |m| { "month" => m, "hours" => hours, "gross_income" => gross_income } }
-      }
-    end
-
-    if launcher_params[:education_enabled] == "1"
-      hours = launcher_params[:education_hours_per_month].to_i
-      activities << {
-        "type" => "education",
-        "school_name" => launcher_params[:education_school_name].presence || "Springfield Community College",
-        "months" => month_strings.map { |m| { "month" => m, "hours" => hours } }
-      }
-    end
-
-    if launcher_params[:job_training_enabled] == "1"
-      hours = launcher_params[:job_training_hours_per_month].to_i
-      activities << {
-        "type" => "job_training",
-        "program_name" => launcher_params[:job_training_program_name].presence || "Career Prep",
-        "organization_name" => launcher_params[:job_training_organization_name].presence || "Goodwill",
-        "months" => month_strings.map { |m| { "month" => m, "hours" => hours } }
-      }
-    end
-
-    activities
-  end
-
-  def reporting_window_months_for_activities(client_agency_id)
-    range = ActivityFlow.expected_reporting_window_range(
-      client_agency_id,
-      **pre_populated_reporting_window_options(client_agency_id)
-    )
-    months = []
-    current = range.begin.beginning_of_month
-    while current <= range.end
-      months << current.strftime("%Y-%m-%d")
-      current = current.next_month
-    end
-    months
-  end
-
-  def pre_populated_reporting_window_options(client_agency_id)
-    reporting_window_type = launcher_params[:reporting_window] == "renewal" ? "renewal" : "application"
-    month_count = pre_populated_reporting_window_month_count(client_agency_id)
-    reference_date = Date.current
-
-    if launcher_params[:reporting_window_start].present?
-      start_date = Date.parse(normalize_date_param(launcher_params[:reporting_window_start])).beginning_of_month
-      reference_date = start_date + month_count.months
-    end
-
-    {
-      reporting_window_type: reporting_window_type,
-      reference_date: reference_date,
-      months_override: month_count
-    }
-  end
-
-  def pre_populated_reporting_window_month_count(client_agency_id)
-    return launcher_params[:reporting_window_months].to_i if launcher_params[:reporting_window_months].present?
-    return ActivityFlow::DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS if launcher_params[:reporting_window] == "renewal"
-
-    Rails.application.config.client_agencies[client_agency_id]&.application_reporting_months ||
-      ActivityFlow::DEFAULT_APPLICATION_REPORTING_WINDOW_MONTHS
-  end
-
   def create_launcher_activity_flow_invitation!(attributes)
-    ActivityFlowInvitation.create!(
-      attributes.merge(
-        pre_populated_activities: build_pre_populated_activities,
-        skip_month_window_validation: true
-      )
-    )
+    ActivityFlowInvitation.create!(attributes)
   end
 
   def launch_overrides(flow_type)
@@ -266,12 +175,7 @@ class LauncherController < ApplicationController
       :employment_gross_income_per_month,
       :education_enabled,
       :education_school_name,
-      :education_hours_per_month,
-      :job_training_enabled,
-      :job_training_program_name,
-      :job_training_organization_name,
-      :job_training_hours_per_month,
-      household_archetypes: []
+      :education_hours_per_month
     )
   end
 

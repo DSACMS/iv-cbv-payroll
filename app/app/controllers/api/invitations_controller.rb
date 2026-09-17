@@ -14,16 +14,6 @@ class Api::InvitationsController < ApplicationController
       return render json: errors_to_json(errors), status: :unprocessable_content
     end
 
-    if prefilled_activities_enabled? && pre_populated_activities_param.any?
-      @activity_flow_invitation = cbv_invitation_service
-        .invite_to_activity_flow(@cbv_flow_invitation, pre_populated_activities_param)
-
-      activity_errors = @activity_flow_invitation.errors
-      if activity_errors.any?
-        return render json: errors_to_json(activity_errors), status: :unprocessable_content
-      end
-    end
-
     response_body = {
       tokenized_url: @cbv_flow_invitation.to_url,
       expiration_date: @cbv_flow_invitation.expires_at_local,
@@ -58,16 +48,6 @@ class Api::InvitationsController < ApplicationController
 
   def prefilled_activities_enabled?
     Rails.application.config.client_agencies[@current_user.client_agency_id]&.prefilled_activities_enabled
-  end
-
-  def pre_populated_activities_param
-    activity_classes = ActivityFlowInvitation::ACTIVITY_TYPES.values
-    activity_fields = activity_classes.flat_map { |k| k::FIELDS }.uniq
-    month_fields = activity_classes.flat_map { |k| k.activity_months_class::FIELDS }.uniq.map(&:to_sym)
-
-    params.fetch(:activities, []).map do |entry|
-      entry.permit(:type, *activity_fields, months: month_fields).to_h
-    end
   end
 
   def allowed_metadata_params

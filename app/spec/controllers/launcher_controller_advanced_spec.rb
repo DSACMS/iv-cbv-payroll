@@ -21,16 +21,6 @@ RSpec.describe LauncherController, type: :controller do
       expect(rendered).to have_button("Open in new tab")
     end
 
-    it "renders work program pre-population controls" do
-      get :advanced
-      rendered = Capybara.string(response.body)
-
-      expect(rendered).to have_selector("input[name='job_training_enabled']")
-      expect(rendered).to have_selector("input[name='job_training_program_name']")
-      expect(rendered).to have_selector("input[name='job_training_organization_name']")
-      expect(rendered).to have_selector("input[name='job_training_hours_per_month']")
-    end
-
     it "sets the session to the activity flow so the header renders Emmy branding" do
       get :advanced
       expect(session[:flow_type]).to eq(:activity)
@@ -69,19 +59,6 @@ RSpec.describe LauncherController, type: :controller do
       expect(rendered).to include('Spring and fall enrollment with no summer term')
     end
 
-    it "displays build-your-own pre-populated activities for CE flow" do
-      get :advanced
-      rendered = response.body
-      expect(rendered).to include(I18n.t("launcher.advanced.individual.pre_populated_activities"))
-      expect(rendered).to include('name="volunteering_enabled"')
-      expect(rendered).to include('name="volunteering_organization_name"')
-      expect(rendered).to include('name="employment_enabled"')
-      expect(rendered).to include('name="employment_employer_name"')
-      expect(rendered).to include('name="employment_gross_income_per_month"')
-      expect(rendered).to include('name="education_enabled"')
-      expect(rendered).to include('name="education_school_name"')
-    end
-
     it "exposes agency activity types to the advanced-launcher Stimulus controller" do
       get :advanced
       form = Capybara.string(response.body).find("form.usa-form", visible: :all)
@@ -90,41 +67,7 @@ RSpec.describe LauncherController, type: :controller do
       expect(raw).to be_present
 
       activity_types = JSON.parse(raw)
-      expect(activity_types.fetch("sandbox")).to include("community_service", "employment", "education", "work_programs")
       expect(activity_types.fetch("la_ldh")).to eq([])
-    end
-
-    it "renders mutually exclusive launch modes and composable household archetypes" do
-      get :advanced
-      rendered = Capybara.string(response.body)
-
-      expect(rendered).to have_checked_field("launch_mode_individual")
-      expect(rendered).to have_selector("input[name='launch_mode']", count: 2)
-      expect(rendered).to have_selector("[data-advanced-launcher-target='householdConfiguration'][hidden]", visible: :all)
-      expect(rendered).to have_selector("input[name='household_archetypes[]']", count: 4, visible: :all)
-      expect(rendered).to have_checked_field("household_archetype_needs_documentation_one_activity", visible: :all)
-      expect(rendered).to have_checked_field("household_archetype_needs_documentation_multiple_activities", visible: :all)
-      expect(rendered).to have_selector("#nsc-test-scenarios-button[aria-expanded='false']")
-      expect(rendered).to have_selector("#fake-test-scenarios-button[aria-expanded='false']")
-      expect(rendered).to have_selector("#pre-populated-activities-button[aria-expanded='true']")
-      expect(rendered).to have_selector("label", text: "Dominic: Needs documentation (1 activity)", visible: :all)
-      expect(rendered).to have_selector("label", text: "Lamine: Needs documentation (2+ activities)", visible: :all)
-      expect(rendered).to have_selector("label", text: "Andy: Short of meeting CE", visible: :all)
-      expect(rendered).to have_selector("label", text: "Carlos: Clean slate", visible: :all)
-    end
-
-    it "renders shared CE settings that household members can use" do
-      get :advanced
-      rendered = Capybara.string(response.body)
-
-      expect(rendered).to have_field("flow_type_activity", checked: true, visible: :all)
-      expect(rendered).to have_field("flow_type_cbv", visible: :all)
-      expect(rendered).to have_field("reporting_window_application", checked: true, visible: :all)
-      expect(rendered).to have_button("1 month")
-      expect(rendered).to have_button("2 months")
-      expect(rendered).to have_button("3 months")
-      expect(rendered).to have_field("reporting_window_start", visible: :all)
-      expect(rendered).to have_field("launcher_timeout", with: "30", visible: :all)
     end
   end
 
