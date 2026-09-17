@@ -1,4 +1,28 @@
 module NscApiHelper
+  def self.fdsh_test_credentials
+    @fdsh_test_credentials ||= begin
+      key = OpenSSL::PKey::RSA.new(2048)
+      certificate = OpenSSL::X509::Certificate.new
+      certificate.version = 2
+      certificate.serial = 1
+      certificate.subject = OpenSSL::X509::Name.parse("/CN=fdsh-test-client")
+      certificate.issuer = certificate.subject
+      certificate.public_key = key.public_key
+      certificate.not_before = Time.now
+      certificate.not_after = 1.day.from_now
+      certificate.sign(key, OpenSSL::Digest::SHA256.new)
+
+      [ certificate, key ]
+    end
+  end
+
+  def nsc_stub_fdsh_client_credentials
+    certificate, key = NscApiHelper.fdsh_test_credentials
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("HUB_CERT").and_return(certificate.to_pem)
+    allow(ENV).to receive(:[]).with("HUB_CERT_KEY").and_return(key.to_pem)
+  end
+
   def nsc_stub_request_education_search_response(user_folder, &block)
     response_data = nsc_load_relative_json_file(user_folder, 'insight.json')
     block.call(response_data) if block_given?
@@ -26,6 +50,10 @@ module NscApiHelper
   end
 
   def nsc_stub_token_request
+    nsc_stub_fdsh_client_credentials
+    allow(ENV).to receive(:[]).with("HUB_CLIENT_KEY").and_return("fake-hub-client-key")
+    allow(ENV).to receive(:[]).with("HUB_CLIENT_SECRET").and_return("fake-hub-client-secret")
+
     stub_request(:post, %r{/token})
       .to_return(
         status: 200,

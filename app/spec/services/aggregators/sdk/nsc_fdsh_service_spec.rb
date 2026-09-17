@@ -76,7 +76,20 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
       stub_request(:post, "#{base_url}/#{education_enrollment_url}")
         .to_return(status: 200, body: fdsh_response.to_json, headers: { "Content-Type" => "application/json" })
 
-      expect(logger).to receive(:info).with("Requesting FDSH OAuth token from #{token_url}")
+      allow(logger).to receive(:info).and_call_original
+      expect(logger).to receive(:info).with("Requesting FDSH OAuth token from impl.hub.cms.gov:8443/auth/oauth/v2/token")
+        .and_call_original
+      expect(logger).to receive(:info).with(
+        "FDSH POST request to impl.hub.cms.gov:8443/auth/oauth/v2/token returned HTTP 200"
+      ).and_call_original
+      expect(logger).to receive(:info).with("Received FDSH OAuth access token (expires_in=3600 seconds)")
+        .and_call_original
+      expect(logger).to receive(:info).with(
+        "Requesting FDSH NSC enrollment data from impl.hub.cms.gov:8443/mesh/imp1/NationalStudentClearinghouseService"
+      ).and_call_original
+      expect(logger).to receive(:info).with(
+        "FDSH POST request to impl.hub.cms.gov:8443/mesh/imp1/NationalStudentClearinghouseService returned HTTP 200"
+      ).and_call_original
 
       response = service.fetch_enrollment_data(
         first_name: "Lynnette",
@@ -152,18 +165,83 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
 
       expect(service.send(:instance_variable_get, :@token)).to be_nil
     end
+
+    it "does not request an access token when OAuth client credentials are missing" do
+      [
+        { client_id: nil, client_secret: "client-secret", missing: "HUB_CLIENT_KEY" },
+        { client_id: "client-id", client_secret: nil, missing: "HUB_CLIENT_SECRET" }
+      ].each do |credentials|
+        service_without_credentials = described_class.new(
+          client_id: credentials[:client_id],
+          client_secret: credentials[:client_secret],
+          client_cert: certificate,
+          client_key: private_key,
+          logger: logger
+        )
+        message = "Cannot request FDSH OAuth access token: missing #{credentials[:missing]}"
+
+        expect(logger).to receive(:error).with(message)
+        expect do
+          service_without_credentials.send(:access_token)
+        end.to raise_error(described_class::ApiError, message)
+      end
+
+      expect(a_request(:post, token_url)).not_to have_been_requested
+    end
   end
 
   describe "certificate configuration" do
-    it "raises a configuration error when a certificate file is missing" do
-      ClimateControl.modify(HUB_CERT: nil, HUB_CERT_PATH: "/tmp/does-not-exist/client.crt") do
+    it "raises a configuration error when the certificate and certificate path are empty" do
+      ClimateControl.modify(HUB_CERT: "", HUB_CERT_PATH: "") do
         expect do
           described_class.new(logger: logger)
-        end.to raise_error(described_class::ApiError, /client certificate/)
+        end.to raise_error(described_class::ApiError, /HUB_CERT or HUB_CERT_PATH/)
       end
     end
 
-    it "raises a configuration error when a private key file is missing" do
+    it "raises a configuration error when the certificate is invalid" do
+      ClimateControl.modify(HUB_CERT: "invalid certificate", HUB_CERT_PATH: nil) do
+        expect do
+          described_class.new(logger: logger)
+        end.to raise_error(described_class::ApiError, /Could not load HUB_CERT/)
+      end
+    end
+
+    it "raises a configuration error when a configured certificate file is missing" do
+      ClimateControl.modify(HUB_CERT: nil, HUB_CERT_PATH: "/tmp/does-not-exist/client.crt") do
+        expect do
+          described_class.new(logger: logger)
+        end.to raise_error(described_class::ApiError, /Could not load HUB_CERT/)
+      end
+    end
+
+    it "raises a configuration error when the private key and key path are empty" do
+      ClimateControl.modify(
+        HUB_CERT: certificate.to_pem,
+        HUB_CERT_PATH: nil,
+        HUB_CERT_KEY: "",
+        HUB_CERT_KEY_PATH: ""
+      ) do
+        expect do
+          described_class.new(logger: logger)
+        end.to raise_error(described_class::ApiError, /HUB_CERT_KEY or HUB_CERT_KEY_PATH/)
+      end
+    end
+
+    it "raises a configuration error when the private key is invalid" do
+      ClimateControl.modify(
+        HUB_CERT: certificate.to_pem,
+        HUB_CERT_PATH: nil,
+        HUB_CERT_KEY: "invalid private key",
+        HUB_CERT_KEY_PATH: nil
+      ) do
+        expect do
+          described_class.new(logger: logger)
+        end.to raise_error(described_class::ApiError, /Could not load HUB_CERT_KEY/)
+      end
+    end
+
+    it "raises a configuration error when a configured private key file is missing" do
       ClimateControl.modify(
         HUB_CERT: certificate.to_pem,
         HUB_CERT_PATH: nil,
@@ -172,7 +250,21 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
       ) do
         expect do
           described_class.new(logger: logger)
-        end.to raise_error(described_class::ApiError, /client key/)
+        end.to raise_error(described_class::ApiError, /Could not load HUB_CERT_KEY/)
+      end
+    end
+
+    it "raises a configuration error when the certificate and key do not match" do
+      other_key = OpenSSL::PKey::RSA.new(2048)
+      ClimateControl.modify(
+        HUB_CERT: certificate.to_pem,
+        HUB_CERT_PATH: nil,
+        HUB_CERT_KEY: other_key.to_pem,
+        HUB_CERT_KEY_PATH: nil
+      ) do
+        expect do
+          described_class.new(logger: logger)
+        end.to raise_error(described_class::ApiError, /HUB_CERT and HUB_CERT_KEY must contain a matching/)
       end
     end
 
@@ -195,7 +287,12 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
 
   describe "development localhost override" do
     it "ignores HUB_LOCALHOST_OVERRIDE outside development" do
-      non_development_service = described_class.new(localhost_override: "true", logger: logger)
+      non_development_service = described_class.new(
+        localhost_override: "true",
+        client_cert: certificate,
+        client_key: private_key,
+        logger: logger
+      )
 
       expect(non_development_service.send(:instance_variable_get, :@localhost_override)).to be false
     end
@@ -204,6 +301,8 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("development"))
       development_service = described_class.new(
         localhost_override: "true",
+        client_cert: certificate,
+        client_key: private_key,
         logger: logger
       )
       http = instance_double(Net::HTTP)

@@ -1,4 +1,6 @@
 RSpec.shared_context "activity_hub" do
+  include NscApiHelper
+
   before do
     stub_const("Aggregators::Sdk::NscService::ENVIRONMENTS", {
       test: {
@@ -14,6 +16,8 @@ RSpec.shared_context "activity_hub" do
   end
 
   def stub_fdsh_no_enrollment_response
+    nsc_stub_fdsh_client_credentials
+
     # The E2E VCR recording predates the FDSH integration. Stub the Hub token
     # and an empty NSC result so tests never call the live Hub.
     stub_request(:post, %r{/auth/oauth/v2/token\z})

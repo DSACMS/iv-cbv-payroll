@@ -59,6 +59,7 @@ module Aggregators
         @client_secret = client_secret
         @client_cert = client_cert
         @client_key = client_key
+        validate_client_credentials
         @localhost_override = development? && parse_boolean(localhost_override)
         @education_enrollment_url = education_enrollment_url
         @token = nil
@@ -88,6 +89,7 @@ module Aggregators
 
       def post(path, body)
         uri = build_uri(@base_url, path)
+        @logger.info("Requesting FDSH NSC enrollment data from #{log_endpoint(uri)}")
         request = Net::HTTP::Post.new(uri)
         request["Content-Type"] = "application/json"
         request["Authorization"] = "Bearer #{access_token}"
@@ -98,8 +100,17 @@ module Aggregators
       end
 
       def fetch_token
+        missing_credentials = []
+        missing_credentials << "HUB_CLIENT_KEY" if @client_id.blank?
+        missing_credentials << "HUB_CLIENT_SECRET" if @client_secret.blank?
+        if missing_credentials.any?
+          message = "Cannot request FDSH OAuth access token: missing #{missing_credentials.join(" and ")}"
+          @logger.error(message)
+          raise ApiError.new(code: "CONFIGURATION_ERROR", message: message)
+        end
+
         uri = URI(@token_url)
-        @logger.info("Requesting FDSH OAuth token from #{@token_url}")
+        @logger.info("Requesting FDSH OAuth token from #{log_endpoint(uri)}")
         request = Net::HTTP::Post.new(uri)
         request["Content-Type"] = "application/x-www-form-urlencoded"
         request.body = URI.encode_www_form(
@@ -112,22 +123,32 @@ module Aggregators
       end
 
       def access_token
-        return @token if @token.present? && (@token_expires_at.nil? || Time.current < @token_expires_at)
+        if @token.present? && (@token_expires_at.nil? || Time.current < @token_expires_at)
+          @logger.debug("Using cached FDSH OAuth access token")
+          return @token
+        end
 
         response = fetch_token
         @token = response.fetch("access_token")
         expires_in = response["expires_in"].to_i
         @token_expires_at = expires_in.positive? ? Time.current + expires_in.seconds - 30.seconds : nil
+        @logger.info("Received FDSH OAuth access token (expires_in=#{expires_in} seconds)")
         @token
       rescue KeyError
-        raise AuthenticationError.new(code: "OAUTH_ERROR", message: "OAuth token not found in response")
+        message = "OAuth token not found in FDSH response"
+        @logger.error(message)
+        raise AuthenticationError.new(code: "OAUTH_ERROR", message: message)
       end
 
       def execute(uri, request)
         http = build_http(uri)
         response = http.start { http.request(request) }
+        status = response.code.to_i
+        message = "FDSH #{request.method} request to #{log_endpoint(uri)} returned HTTP #{response.code}"
+        @logger.public_send(status.between?(200, 299) ? :info : :error, message)
         handle_response(response)
       rescue Timeout::Error, SocketError, SystemCallError, OpenSSL::SSL::SSLError => e
+        @logger.error("FDSH request to #{log_endpoint(uri)} failed (#{e.class}): #{e.message}")
         raise ApiError.new(code: "CONNECTION_ERROR", message: "FDSH connection failed: #{e.message}")
       end
 
@@ -202,6 +223,10 @@ module Aggregators
         URI.join("#{base_url.chomp("/")}/", path.to_s.sub(%r{\A/}, ""))
       end
 
+      def log_endpoint(uri)
+        "#{uri.host}:#{uri.port}#{uri.path}"
+      end
+
       def parse_boolean(value)
         case value.to_s.downcase
         when "true"
@@ -218,21 +243,57 @@ module Aggregators
       end
 
       def load_certificate(value, path)
-        return OpenSSL::X509::Certificate.new(value) if value.present?
-        return unless path.present?
+        return if value.blank? && path.blank?
 
-        OpenSSL::X509::Certificate.new(File.read(File.expand_path(path)))
-      rescue Errno::ENOENT, OpenSSL::X509::CertificateError => e
-        raise ApiError.new(code: "CONFIGURATION_ERROR", message: "Failed to load FDSH client certificate: #{e.message}")
+        certificate = value.presence || File.read(File.expand_path(path))
+        OpenSSL::X509::Certificate.new(certificate)
+      rescue SystemCallError, OpenSSL::X509::CertificateError => e
+        raise ApiError.new(
+          code: "CONFIGURATION_ERROR",
+          message: "Could not load HUB_CERT or HUB_CERT_PATH: #{e.message}"
+        )
       end
 
       def load_key(value, path)
-        return OpenSSL::PKey.read(value) if value.present?
-        return unless path.present?
+        return if value.blank? && path.blank?
 
-        OpenSSL::PKey.read(File.read(File.expand_path(path)))
-      rescue Errno::ENOENT, OpenSSL::PKey::PKeyError, OpenSSL::OpenSSLError => e
-        raise ApiError.new(code: "CONFIGURATION_ERROR", message: "Failed to load FDSH client key: #{e.message}")
+        key = value.presence || File.read(File.expand_path(path))
+        OpenSSL::PKey.read(key)
+      rescue SystemCallError, OpenSSL::OpenSSLError => e
+        raise ApiError.new(
+          code: "CONFIGURATION_ERROR",
+          message: "Could not load HUB_CERT_KEY or HUB_CERT_KEY_PATH: #{e.message}"
+        )
+      end
+
+      def validate_client_credentials
+        unless @client_cert
+          raise ApiError.new(
+            code: "CONFIGURATION_ERROR",
+            message: "HUB_CERT or HUB_CERT_PATH must be configured for FDSH mutual TLS"
+          )
+        end
+
+        unless @client_key
+          raise ApiError.new(
+            code: "CONFIGURATION_ERROR",
+            message: "HUB_CERT_KEY or HUB_CERT_KEY_PATH must be configured for FDSH mutual TLS"
+          )
+        end
+
+        unless @client_key.private?
+          raise ApiError.new(
+            code: "CONFIGURATION_ERROR",
+            message: "HUB_CERT_KEY must contain a valid private key"
+          )
+        end
+
+        return if @client_cert.check_private_key(@client_key)
+
+        raise ApiError.new(
+          code: "CONFIGURATION_ERROR",
+          message: "HUB_CERT and HUB_CERT_KEY must contain a matching certificate and private key"
+        )
       end
     end
   end
