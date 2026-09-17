@@ -171,6 +171,8 @@ en:
             high_school_ged:
               hint: Add details if you're in high school or working on your GED.
               label: Enter your high school or GED program
+            other:
+              label: Other or I’m not sure
             trade_or_technical:
               hint: Add education details about your trade school, vocational school, or career and technical education (CTE) programs.
               label: Enter a trade or technical program
@@ -223,6 +225,23 @@ en:
         street_address_line_2: Street address line 2
         title: Tell us about your school or program
         zip_code: Zip code
+      other:
+        show:
+          accordion:
+            internship:
+              body: This counts toward your community engagement hours as employment. You can report the hours you worked whether you were paid or not.
+              link: Report as employment
+              title: I had an internship, apprenticeship, or did employer-provided training
+            job_training:
+              body: This counts toward your community engagement hours as a work program.
+              link: Report as work program
+              title: I was enrolled in a job training program
+            not_listed:
+              body: If you were enrolled in a different type of education program, report what you have and a caseworker will follow up with more information if needed.
+              link: Report education manually
+              title: The type of education program I was in is not listed
+          exit_to_home: Exit to home page
+          header: Reporting other types of education
       review:
         additional_comments_description: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         additional_comments_title: Additional comments (optional)
