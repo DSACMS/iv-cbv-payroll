@@ -147,13 +147,13 @@ Every API request from Emmy will be verified with a pair of HTTP headers which c
 
 | HTTP Header Name | Description | HTTP Header Name | Description |
 | :-- | :-- | :-- | :-- |
-| X-Emmy-Timestamp | Seconds since Unix Epoch |  |  |
-| X-Emmy-Signature | Calculated signature based on the algorithm below. |  |  |
+| X-IVAAS-Timestamp | Seconds since Unix Epoch |  |  |
+| X-IVAAS-Signature | Calculated signature based on the algorithm below. |  |  |
 
  The signature for a request can be verified with the following Python pseudocode:
 
 ```
-Turn on wrapCopy as textdef compute_signature(api_key: str, timestamp: str, request_body: bytes) -> str: signature_payload = "v1:#{timestamp}:#{request_body}" return HMAC("SHA512", api_key, signature_payload) def verify_signature(request, api_key: str) -> bool: signature = request.headers.get("X-Emmy-Signature", "") timestamp = request.headers.get("X-Emmy-Timestamp", "") request_body = request.get_data() if abs(time.time() - int(timestamp)) > 300: print("System clocks out of sync, or possible replay attack.") return false return hmac.compare_digest(signature, compute_signature(request, timestamp))
+Turn on wrapCopy as textdef compute_signature(api_key: str, timestamp: str, request_body: bytes) -> str: signature_payload = "v1:#{timestamp}:#{request_body}" return HMAC("SHA512", api_key, signature_payload) def verify_signature(request, api_key: str) -> bool: signature = request.headers.get("X-IVAAS-Signature", "") timestamp = request.headers.get("X-IVAAS-Timestamp", "") request_body = request.get_data() if abs(time.time() - int(timestamp)) > 300: print("System clocks out of sync, or possible replay attack.") return false return hmac.compare_digest(signature, compute_signature(request, timestamp))
 ```
 
 # **Error Handling**
@@ -165,7 +165,7 @@ Agencies must implement semantic HTTP statuses representing the success of the w
 | HTTP Status Code | Definition | Action | HTTP Status Code | Definition | Action |
 | :-- | :-- | :-- | :-- | :-- | :-- |
 | 200 OK | The income report was successfully received by the agency's system. | Mark successful. |  |  |  |
-| 401 Unauthorized | The X-Emmy-Signature header verification failed. | Attempt retry. |  |  |  |
+| 401 Unauthorized | The X-IVAAS-Signature header verification failed. | Attempt retry. |  |  |  |
 | 500 Internal Server Error | There was a system error while processing the request. | Attempt retry. |  |  |  |
 
 In addition to these statuses, we encourage agency web servers to reply with semantic HTTP statuses such as 400 Bad Request, 404 Not Found, 408 Timeout, 413 Payload Too Large, 429 Too Many Requests, and 502 Gateway Timeout according to their built-in web server logic. This will greatly help triaging errors should they arise. Regardless of the error status code, Emmy will retry according to the logic below.
