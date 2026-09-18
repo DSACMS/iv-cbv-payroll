@@ -22,7 +22,7 @@ module Aggregators::Sdk
     }
 
     # See: https://console.argyle.com/flows
-    FLOW_ID = "BXSHLUUJ"
+    FLOW_ID = "Z7QULLHV"
 
     EMPLOYER_SEARCH_ENDPOINT = "employer-search"
     PAYSTUBS_ENDPOINT = "paystubs"
