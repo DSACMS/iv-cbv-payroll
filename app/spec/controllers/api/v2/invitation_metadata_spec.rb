@@ -108,7 +108,7 @@ RSpec.describe Api::V2::InvitationMetadata do
         }
       end
 
-      it "returns the agency-specific indentifier error" do
+      it "returns the agency-specific identifier error" do
         expect(contract.errors).to include(
           field: :doc_id_or_individual_id,
           message_key: "cbv.applicant_informations.la_ldh.fields.doc_id_or_individual_id.blank"
