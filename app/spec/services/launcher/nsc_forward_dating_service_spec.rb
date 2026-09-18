@@ -57,6 +57,21 @@ RSpec.describe Launcher::NscForwardDatingService do
           .to have_requested(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
           .with(body: hash_including("asOfDate" => "2024-11-19"))
       end
+
+      it "anchors on the term she was enrolled in, not a term beginning after the as-of date" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms.count).to eq(1)
+        expect(education_activity.nsc_enrollment_terms.first.term_begin)
+          .to be < education_activity.nsc_enrollment_terms.first.term_end
+      end
+
+      it "shifts terms forward rather than backward" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms.first.term_begin)
+          .to be > Date.parse("2024-05-31")
+      end
     end
 
     context "for Rick" do
@@ -89,6 +104,31 @@ RSpec.describe Launcher::NscForwardDatingService do
       end
     end
 
+    context "for Scott" do
+      let(:scenario_key) { "scott" }
+      let(:identity) { create(:identity, :nsc_scott) }
+
+      before do
+        nsc_stub_request_education_search_response("scott_tobin")
+      end
+
+      it "queries NSC with the reporting window end date rather than a launcher as-of date" do
+        service.fetch
+
+        expect(WebMock)
+          .to have_requested(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
+          .with(body: hash_including("asOfDate" => activity_flow.reporting_window_range.max.strftime("%Y-%m-%d")))
+      end
+
+      it "preserves the not-currently-enrolled result" do
+        expect { service.fetch }
+          .to change { education_activity.reload.status }
+          .from("unknown").to("no_enrollments")
+
+        expect(education_activity.nsc_enrollment_terms).to be_empty
+      end
+    end
+
     context "for a test user with no current enrollments" do
       let(:scenario_key) { "linda" }
       let(:identity) { create(:identity, :nsc_linda) }
@@ -114,12 +154,25 @@ RSpec.describe Launcher::NscForwardDatingService do
         nsc_stub_request_education_search_response("dominique_ricardo")
       end
 
-      it "preserves the no-enrollments result for CN enrollments" do
+      it "queries NSC with Dominique's stable launcher as-of date" do
+        service.fetch
+
+        expect(WebMock)
+          .to have_requested(:post, %r{#{Aggregators::Sdk::NscService::ENROLLMENT_ENDPOINT}})
+          .with(body: hash_including("asOfDate" => "2024-05-09"))
+      end
+
+      it "forward-dates her most recent term into the reporting window" do
         expect { service.fetch }
           .to change { education_activity.reload.status }
-          .from("unknown").to("no_enrollments")
+          .from("unknown").to("succeeded")
 
-        expect(education_activity.nsc_enrollment_terms).to be_empty
+        terms = education_activity.nsc_enrollment_terms
+        delta_days = (activity_flow.reporting_window_range.max - Date.parse("2024-05-09")).to_i
+
+        expect(terms.count).to eq(1)
+        expect(terms.first.term_begin).to eq(Date.parse("2023-09-30") + delta_days)
+        expect(terms.first.term_end).to eq(activity_flow.reporting_window_range.max)
       end
     end
   end

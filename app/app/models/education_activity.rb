@@ -131,9 +131,7 @@ class EducationActivity < Activity
   def document_upload_terms_to_verify
     return [] unless partially_self_attested?
 
-    nsc_enrollment_terms
-      .select(&:enrollment_less_than_half_time?)
-      .sort_by { |term| [ term.term_begin || Date.new(1900, 1, 1), term.term_end || Date.new(1900, 1, 1), term.school_name.to_s ] }
+    less_than_half_time_terms_in_reporting_window
   end
 
   def document_upload_term_credit_hours(term)

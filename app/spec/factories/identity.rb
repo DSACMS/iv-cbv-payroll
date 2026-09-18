@@ -34,5 +34,11 @@ FactoryBot.define do
       last_name { "Ricardo" }
       date_of_birth { "1978-01-12" }
     end
+
+    trait :nsc_scott do
+      first_name { "Scott" }
+      last_name { "Tobin" }
+      date_of_birth { "1998-02-03" }
+    end
   end
 end
