@@ -20,7 +20,7 @@ class NscDataFetcherService
   )
     @education_activity = education_activity
     @logger = logger
-    @service = Aggregators::Sdk::NscService.new(environment: environment, logger: logger)
+    @service = Aggregators::Sdk::NscFdshService.new(environment: environment, logger: logger)
     @response_transformer = response_transformer
     @as_of_date = as_of_date
   end
