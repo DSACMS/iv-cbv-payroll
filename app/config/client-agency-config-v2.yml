@@ -47,6 +47,28 @@
       redaction_type: date
     doc_id:
       required: false
+    individual_id:
+      required: false
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - date_of_birth
+      income:
+        metadata:
+          - case_number
+          - date_of_birth
+          - doc_id
+          - individual_id
+        required:
+          - date_of_birth
 
 - id: nh_dhhs
   agency_name: Department of Health and Human Services
@@ -101,6 +123,30 @@
     community_service: true
     work_programs: true
     employment: true
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - date_of_birth
+      income:
+        metadata:
+          - first_name
+          - middle_name
+          - last_name
+          - case_number
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - case_number
+          - date_of_birth
 
 - id: sandbox
   agency_name: Test Agency
@@ -160,6 +206,30 @@
     - https://dsacms.github.io
     - https://statehub.hawaii.gov
     - https://*.statehub.hawaii.gov
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - date_of_birth
+      income:
+        metadata:
+          - first_name
+          - middle_name
+          - last_name
+          - case_number
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - case_number
+          - date_of_birth
 # Uncomment for local testing:
 #    - http://localhost:8000
 #    - https://*.ngrok-free.app
@@ -203,6 +273,25 @@
     community_service: true
     work_programs: true
     employment: true
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - date_of_birth
+      income:
+        metadata:
+          - case_number
+          - date_of_birth
+        required:
+          - case_number
+          - date_of_birth
 
 - id: accenture
   agency_name: Accenture
@@ -227,6 +316,23 @@
     community_service: true
     work_programs: true
     employment: true
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - date_of_birth
+      income:
+        metadata:
+          - case_number
+        required:
+          - case_number
   allowed_iframe_ancestors:
     - https://ac1752691868225.lightning.force.com
     - https://ac1752691868225.my.salesforce-sites.com

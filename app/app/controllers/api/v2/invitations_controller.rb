@@ -1,41 +1,60 @@
 class Api::V2::InvitationsController < Api::InvitationsController
   def create
-    unless invitation_type == "income"
-      return render json: { error: "Invalid invitation type" }, status: :bad_request
+    contract = metadata_contract
+
+    if contract.errors.any?
+      return render json: { errors: contract.errors }, status: :unprocessable_content
     end
 
-    # Validate that the required doc_id or individual_id is present for LA LDH invitations,
-    # Keeping this out of la_ldh.rb for now so that it does not affect v1 invitations_controller.rb
-    # not requiring doc_id. Once v1 is deprecated, this can be moved to la_ldh.rb and the v1 controller can be removed.
-    if @current_user.client_agency_id.to_s == "la_ldh"
-      identifier = metadata_params[:doc_id].presence || metadata_params[:individual_id].presence
+    @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(
+      cbv_flow_invitation_params(contract),
+      @current_user,
+      delivery_method: nil
+    )
 
-      if identifier.blank?
-        return render json: {
-          errors: [
-            {
-              field: "agency_partner_metadata.individual_id",
-              message: I18n.t("cbv.applicant_informations.la_ldh.fields.individual_id.blank")
-            }
-          ]
-        }, status: :unprocessable_content
-      end
+    return render_validation_errors unless @cbv_flow_invitation.errors.empty?
+
+    if community_engagement?
+      @activity_flow_invitation = CbvInvitationService.new(event_logger)
+        .invite_to_activity_flow(@cbv_flow_invitation)
     end
 
-    cbv_invitation_service = CbvInvitationService.new(event_logger)
-    @cbv_flow_invitation = cbv_invitation_service
-      .invite(cbv_flow_invitation_params, @current_user, delivery_method: nil)
+    render_created_response
+  end
 
-    errors = @cbv_flow_invitation.errors
-    if errors.any?
-      return render json: errors_to_json(errors), status: :unprocessable_content
-    end
+  private
 
+  def metadata_contract
+    @metadata_contract ||= Api::V2::InvitationMetadata.new(
+      params: params,
+      client_agency_id: @current_user.client_agency_id,
+      flow_type: params[:invitation_type]
+    )
+  end
+
+  def cbv_flow_invitation_params(contract)
+    permitted = params.permit(:language)
+
+    permitted.deep_merge(
+      client_agency_id: @current_user.client_agency_id,
+      email_address: @current_user.email,
+      cbv_applicant_attributes:  {
+        client_agency_id: @current_user.client_agency_id,
+        **contract.permitted.to_h
+      }
+    )
+  end
+
+  def community_engagement?
+    params[:invitation_type] == "community_engagement"
+  end
+
+  def render_created_response
     response_body = {
       tokenized_url: @cbv_flow_invitation.to_url,
       expiration_date: @cbv_flow_invitation.expires_at_local,
       language: @cbv_flow_invitation.language,
-      agency_partner_metadata: allowed_metadata_params
+      agency_partner_metadata: metadata_contract.permitted
     }
 
     if @activity_flow_invitation
@@ -45,22 +64,8 @@ class Api::V2::InvitationsController < Api::InvitationsController
     render json: response_body, status: :created
   end
 
-  private
-
-  def allowed_metadata_params
-    metadata_params
-  end
-
-  def metadata_params
-    valid_attributes = CbvApplicant
-      .valid_attributes_for_agency(@current_user.client_agency_id)
-
-    params
-      .fetch(:agency_partner_metadata, {})
-      .permit(*valid_attributes)
-  end
-
-  def invitation_type
-    params[:type].to_s
+  def render_validation_errors
+    render json: errors_to_json(@cbv_flow_invitation.errors),
+      status: :unprocessable_content
   end
 end

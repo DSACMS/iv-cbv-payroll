@@ -2,6 +2,8 @@ require "yaml"
 require "uri"
 
 class ClientAgencyConfig
+  attr_reader :api
+
   # These are the only supported number of days we allow an agency to define in
   # the `pay_income_days` configuration option.
   #
@@ -84,6 +86,7 @@ class ClientAgencyConfig
       # that pilot config is removed:
       @agency_missing_employers_website = yaml["agency_missing_employers_website"]
       @agency_domain = yaml["agency_domain"]
+      @api = yaml["api"] || {}
       @authorized_emails = yaml["authorized_emails"] || ""
       @caseworker_feedback_form = yaml["caseworker_feedback_form"]
       @default_origin = yaml["default_origin"]
@@ -140,6 +143,20 @@ class ClientAgencyConfig
         next unless options.is_a?(Hash) && options["redaction_type"]
         fields[name.to_sym] = options["redaction_type"].to_sym
       end
+    end
+
+    def api_metadata(flow_type)
+      @api
+        .dig("v2", flow_type.to_s, "metadata")
+        .to_a
+        .map(&:to_sym)
+    end
+
+    def api_required_metadata(flow_type)
+      @api
+        .dig("v2", flow_type.to_s, "required")
+        .to_a
+        .map(&:to_sym)
     end
 
     private

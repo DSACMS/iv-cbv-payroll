@@ -727,7 +727,7 @@ en:
             help_text: 'For example: January 19 2000'
             prompt: Your date of birth
             super_one_html: Date of birth<sup>1</sup>
-          individual_id:
+          doc_id_or_individual_id:
             blank: individual_id or doc_id is required
       nh_dhhs:
         fields:
