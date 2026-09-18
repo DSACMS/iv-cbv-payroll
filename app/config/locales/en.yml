@@ -676,6 +676,21 @@ en:
       post_tax: post-tax
       pre_tax: pre-tax
       unknown: tax status unknown
+  api:
+    v2:
+      fields:
+        case_number:
+          blank: case_number is required
+        date_of_birth:
+          blank: date_of_birth is required
+        first_name:
+          blank: first_name is required
+        last_name:
+          blank: last_name is required
+      la_ldh:
+        fields:
+          doc_id_or_individual_id:
+            blank: individual_id or doc_id is required
   applicant_mailer:
     invitation_email:
       body_1:
@@ -729,8 +744,6 @@ en:
             help_text: 'For example: January 19 2000'
             prompt: Your date of birth
             super_one_html: Date of birth<sup>1</sup>
-          individual_id:
-            blank: individual_id or doc_id is required
       nh_dhhs:
         fields:
           case_number:

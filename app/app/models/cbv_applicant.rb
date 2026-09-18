@@ -25,8 +25,12 @@ class CbvApplicant < ApplicationRecord
     CbvApplicant.const_get(type_name.camelize)
   end
 
-  def self.valid_attributes_for_agency(client_agency_id)
-    Rails.application.config.client_agencies[client_agency_id].applicant_attribute_names
+  def self.valid_attributes_for_agency(client_agency_id, version: :v1)
+    config = version == :v2 ?
+      Rails.application.config.x.client_agencies_v2 :
+      Rails.application.config.client_agencies
+
+    config[client_agency_id].applicant_attribute_names
   end
 
   def self.build_agency_partner_metadata(client_agency_id, &value_provider)
@@ -34,6 +38,11 @@ class CbvApplicant < ApplicationRecord
       hash[attr.to_s] = value_provider.call(attr)
     end
   end
+
+  def self.api_v2_metadata_errors(_flow_type, _metadata)
+    []
+  end
+
 
   has_many :cbv_flows
   has_many :cbv_flow_invitations
