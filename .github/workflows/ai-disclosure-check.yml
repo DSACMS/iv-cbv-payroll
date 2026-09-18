@@ -2,7 +2,7 @@ name: AI Disclosure Check
 
 on:
   pull_request:
-    types: [opened, edited, synchronize, reopened]
+    types: [opened, edited, ready_for_review, synchronize, reopened]
 
 permissions:
   contents: read
