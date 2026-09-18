@@ -283,11 +283,11 @@ RSpec.describe Report::GigMonthlySummaryTableComponent, type: :component do
       it "renders info alert when no data found" do
         output = render_inline(described_class.new(argyle_report, payroll_account))
         expect(output.css("div.usa-alert.usa-alert--info")).to be_present
-        expect(output.css("h2.usa-alert__heading").to_html).to include "We didn't find any payments from this employer in the past 6 months"
+        expect(output.css("div.usa-alert__heading").to_html).to include "We didn't find any payments from this employer in the past 6 months"
       end
 
       it "renders alert heading with none found message" do
-        expect(subject.css("h2.usa-alert__heading").to_html).to include "We didn't find any payments from this employer in the past 6 months"
+        expect(subject.css("div.usa-alert__heading").to_html).to include "We didn't find any payments from this employer in the past 6 months"
       end
 
       it "renders alert content with explanation" do
