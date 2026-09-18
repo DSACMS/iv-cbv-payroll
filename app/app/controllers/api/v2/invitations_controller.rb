@@ -3,7 +3,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
     contract = metadata_contract
 
     if contract.errors.any?
-      return render json: { 
+      return render json: {
         errors: contract.errors.map do |error|
           {
             field: error[:field],

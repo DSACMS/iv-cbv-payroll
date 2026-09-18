@@ -101,8 +101,8 @@ RSpec.describe Api::V2::InvitationsController do
 
         expect(parsed_response["errors"]).to include(
           "field" => "doc_id_or_individual_id",
-          "message_key" =>
-            "api.v2.la_ldh.fields.doc_id_or_individual_id.blank"
+          "message" =>
+            I18n.t("api.v2.la_ldh.fields.doc_id_or_individual_id.blank")
         )
       end
     end
@@ -164,8 +164,8 @@ RSpec.describe Api::V2::InvitationsController do
           expect(JSON.parse(response.body)["errors"]).to include(
             a_hash_including(
               "field" => field.to_s,
-              "message_key" =>
-                "api.v2.fields.#{field}.blank"
+              "message" =>
+                I18n.t("api.v2.fields.#{field}.blank")
             )
           )
         end
