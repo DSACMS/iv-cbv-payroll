@@ -3,7 +3,14 @@ class Api::V2::InvitationsController < Api::InvitationsController
     contract = metadata_contract
 
     if contract.errors.any?
-      return render json: { errors: contract.errors }, status: :unprocessable_content
+      return render json: { 
+        errors: contract.errors.map do |error|
+          {
+            field: error[:field],
+            message: I18n.t(error[:message_key])
+          }
+        end
+      }, status: :unprocessable_content
     end
 
     @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(

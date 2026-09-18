@@ -10,7 +10,7 @@ class CbvApplicant::LaLdh < CbvApplicant
     [
       {
         field: :doc_id_or_individual_id,
-        message_key: "cbv.applicant_informations.la_ldh.fields.doc_id_or_individual_id.blank"
+        message_key: "api.v2.la_ldh.fields.doc_id_or_individual_id.blank"
       }
     ]
   end

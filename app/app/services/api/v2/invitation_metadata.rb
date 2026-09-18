@@ -15,7 +15,7 @@ class Api::V2::InvitationMetadata
     missing_required_fields.map do |field|
       {
         field: field,
-        message_key: "cbv.applicant_informations.#{client_agency_id}.fields.#{field}.blank"
+        message_key: "api.v2.fields.#{field}.blank"
       }
     end + agency_metadata_errors
   end
