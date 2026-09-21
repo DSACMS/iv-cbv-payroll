@@ -1,6 +1,16 @@
 require "rails_helper"
 
 RSpec.describe EmploymentActivity, type: :model do
+  describe "compensation type" do
+    it "defaults to paid work" do
+      expect(build(:employment_activity)).to be_paid
+    end
+
+    it "supports unpaid or in-kind work" do
+      expect(build(:employment_activity, compensation_type: :unpaid_or_in_kind)).to be_unpaid_or_in_kind
+    end
+  end
+
   it "has fields for employer information" do
     activity = create(:employment_activity, employer_name: "Acme Corp")
 

@@ -2,6 +2,8 @@ class EmploymentActivity < Activity
   include HasActivityMonths
   include DocumentUploadable
 
+  enum :compensation_type, { paid: "paid", unpaid_or_in_kind: "unpaid_or_in_kind" }, default: :paid
+
   FIELDS = %w[
     employer_name
     is_self_employed
