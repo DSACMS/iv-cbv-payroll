@@ -41,6 +41,20 @@ RSpec.describe ActivityFlow, type: :model do
     end
   end
 
+  describe "#tokenized?" do
+    it "is true when the flow has an invitation" do
+      flow = create(:activity_flow, activity_flow_invitation: create(:activity_flow_invitation))
+
+      expect(flow.tokenized?).to be true
+    end
+
+    it "is false when the flow has no invitation" do
+      flow = create(:activity_flow, activity_flow_invitation: nil)
+
+      expect(flow.tokenized?).to be false
+    end
+  end
+
   describe "#pre_populated_activity_types" do
     it "maps pre-populated model types to hub types, deduped" do
       invitation = create(:activity_flow_invitation, pre_populated_activities: [
@@ -192,27 +206,28 @@ RSpec.describe ActivityFlow, type: :model do
     end
 
     context "with pre_populated_activities including employment monthly hours and income" do
-      let(:in_window_date) { described_class.expected_reporting_window_range("sandbox").end.beginning_of_month.iso8601 }
+      let(:in_window_date) { described_class.expected_reporting_window_range("sandbox").end.beginning_of_month + 14.days }
       let(:invitation) do
         create(:activity_flow_invitation, pre_populated_activities: [
           {
             "type" => "employment",
             "employer_name" => "Acme Corp",
             "months" => [
-              { "month" => in_window_date, "hours" => 40, "gross_income" => 3000 }
+              { "month" => in_window_date.iso8601, "hours" => 40, "gross_income" => 3000 }
             ]
           }
         ])
       end
 
-      it "hydrates EmploymentActivityMonth records from the months array" do
+      it "hydrates EmploymentActivityMonth records at the beginning of the month" do
         flow = described_class.create_from_invitation(invitation, device_id)
 
         activity = flow.employment_activities.first
         months = activity.employment_activity_months.order(:month)
         expect(months.map(&:hours)).to eq([ 40 ])
         expect(months.map(&:gross_income)).to eq([ 3000 ])
-        expect(months.map { |m| m.month.iso8601 }).to eq([ in_window_date ])
+        expect(months.map(&:month)).to eq([ in_window_date.beginning_of_month ])
+        expect(activity.selected_months).to eq([ in_window_date.beginning_of_month ])
       end
     end
 
@@ -237,7 +252,8 @@ RSpec.describe ActivityFlow, type: :model do
         expect(flow.employment_activities.first).to have_attributes(
           draft: false,
           pre_populated: true,
-          data_source: "validated"
+          data_source: "validated",
+          selected_months: [ Date.iso8601(in_window_date) ]
         )
         monthly_results = ActivityFlowProgressCalculator.new(flow).monthly_results
         result = monthly_results.find { |monthly_result| monthly_result.month.iso8601 == in_window_date }

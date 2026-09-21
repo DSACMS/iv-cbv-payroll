@@ -14,7 +14,7 @@ class Activities::EducationController < Activities::BaseController
 
   before_action :redirect_if_nsc_disabled, only: %i[verify show sync error]
   before_action :set_education_activity, only: %i[show edit update destroy review save_review]
-  before_action :set_back_url, only: %i[edit review]
+  before_action :set_back_url, only: %i[new create verify edit update review]
   after_action :track_info_viewed_event, only: %i[new edit]
   after_action :track_review_viewed_event, only: :review
 
@@ -135,12 +135,16 @@ class Activities::EducationController < Activities::BaseController
 
   def set_back_url
     case action_name
-    when "edit"
+    when "verify", "new", "create"
+      @back_url = activities_flow_education_add_your_education_path
+    when "edit", "update"
       if params[:from_review].present?
         @back_url = review_activities_flow_education_path(
           id: @education_activity,
           from_edit: params[:from_edit].presence
         )
+      else
+        @back_url = activities_flow_education_add_your_education_path
       end
     when "review"
       unless params[:from_edit].present?

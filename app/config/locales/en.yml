@@ -160,6 +160,23 @@ en:
         title_generic: Upload supporting documents
       remove_file: Remove file
     education:
+      add_your_education:
+        show:
+          description: If you were enrolled at multiple schools during the reporting period, you’ll need to add each school separately.
+          header: Choose how you want to add your education
+          options:
+            college:
+              hint: We’ll pull your hours or credits from classes that count toward a degree, like an associate or bachelor's. Works with many colleges and universities.
+              label: College or university
+            high_school_ged:
+              hint: Add details if you're in high school or working on your GED.
+              label: Enter your high school or GED program
+            other:
+              label: Other or I’m not sure
+            trade_or_technical:
+              hint: Add education details about your trade school, vocational school, or career and technical education (CTE) programs.
+              label: Enter a trade or technical program
+          reporting_period_label: 'Reporting period:'
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (optional)
@@ -208,6 +225,23 @@ en:
         street_address_line_2: Street address line 2
         title: Tell us about your school or program
         zip_code: Zip code
+      other:
+        show:
+          accordion:
+            internship:
+              body: This counts toward your community engagement hours as employment. You can report the hours you worked whether you were paid or not.
+              link: Report as employment
+              title: I had an internship, apprenticeship, or did employer-provided training
+            job_training:
+              body: This counts toward your community engagement hours as a work program.
+              link: Report as work program
+              title: I was enrolled in a job training program
+            not_listed:
+              body: If you were enrolled in a different type of education program, report what you have and a caseworker will follow up with more information if needed.
+              link: Report education manually
+              title: The type of education program I was in is not listed
+          exit_to_home: Exit to home page
+          header: Reporting other types of education
       review:
         additional_comments_description: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         additional_comments_title: Additional comments (optional)
@@ -274,18 +308,21 @@ en:
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:
         continue: Continue
-        error_body: You need to add income or hours for at least one month to continue
-        error_body_multi_month: You need to add income or hours for at least one month to continue
+        error_body: Add income or hours to continue.
         error_heading: No employment information added
-        field_error_hours: Add income or hours for at least one month
-        field_error_income: Add income or hours for at least one month
         gross_income_hint: How much you made before taxes
         gross_income_label: "%{month} gross income"
-        heading: Add your %{month} hours and income for %{organization}
+        heading: Add your income and hours for %{organization}
         hours_label: "%{month} hours worked"
-        month_indicator: Month %{current} / %{total}
-        no_hours_checkbox: No %{month} income from %{organization}
-        title: Employment hours and income
+        month_indicator: 'Month %{current} of %{total}:'
+      month_selections:
+        edit:
+          continue: Continue
+          description: For each month, you will need to report how much you made and how many hours you worked.
+          error_body: Select at least one month to continue
+          error_heading: No months selected
+          legend: Months worked
+          title: Select which months you worked for %{employer_name}
       review:
         additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
         additional_comments_title: Additional comments (optional)
@@ -377,6 +414,7 @@ en:
             other: We found %{count} results
           search_subheader: Select your employer from the list. Then, follow the screens to sign in. Use the login credentials you use to view your pay stubs online.
           select: Select
+          select_employer: Select %{name}
         show:
           add_employment_manually: Add employment manually
           alert:
@@ -389,6 +427,7 @@ en:
           search: Search
           search_label: Search for the employer or business you want to add. If you can't find it, you can add it manually.
           search_results_header: Select your employer
+          select_employer: Select %{name}
       error_no_access: You don't have permission to access that information
       payment_details:
         show:
@@ -774,6 +813,8 @@ en:
           other: "%{count} errors"
         error_updating_applicant: An error occurred while updating the applicant information. Please try again.
     employer_searches:
+      employer:
+        select_employer: Select %{name}
       show:
         alert:
           heading: Need help connecting to your payroll provider?
@@ -803,6 +844,7 @@ en:
         search_label: This can be your current employer. This can also be any recent employer from the past 90 days if you’re no longer working.
         search_subheader: Select your employer from the list. Then, follow the screens to log in and verify your income.
         select: Select
+        select_employer: Select %{name}
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to %{agency_acronym}'s website</a> to learn about other ways to report your income.
@@ -1294,6 +1336,7 @@ en:
       log_out: Log out
       logo_alt_text:
         nh_dhhs: New Hampshire's logo image for the website
+      menu: Menu
       preheader:
         default: A website in partnership with Test Agency.
         la_ldh: A website in partnership with the Louisiana Department of Health

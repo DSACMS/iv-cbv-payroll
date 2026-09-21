@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_03_121720) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_11_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -221,6 +221,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_03_121720) do
     t.string "employer_name"
     t.boolean "is_self_employed", default: false
     t.boolean "pre_populated", default: false, null: false
+    t.date "selected_months", default: [], null: false, array: true
     t.string "state"
     t.string "street_address"
     t.string "street_address_line_2"

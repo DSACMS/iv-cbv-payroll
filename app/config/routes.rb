@@ -84,12 +84,18 @@ Rails.application.routes.draw do
         resource :payment_details, only: %i[show update], controller: "income/payment_details"
         resources :employment, only: %i[new create edit update], controller: "/activities/employment" do
           resources :document_uploads, only: %i[new create destroy], controller: "/activities/document_uploads"
+          resource :month_selection, only: %i[edit update], controller: "employment/month_selections"
           resources :months, only: %i[edit update], controller: "employment/months"
           member do
             get :review
             patch :save_review
           end
         end
+      end
+
+      scope "/education", as: :education do
+        resource :add_your_education, only: %i[show create], controller: "education/add_your_education"
+        resource :other, only: %i[show], controller: "education/other"
       end
 
       get "/education/error", to: "education#error", as: :education_error

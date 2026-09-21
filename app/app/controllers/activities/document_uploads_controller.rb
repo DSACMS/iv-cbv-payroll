@@ -38,7 +38,11 @@ class Activities::DocumentUploadsController < Activities::BaseController
   end
 
   def set_back_url
-    last_month_index = progress_calculator.reporting_months.length - 1
+    last_month_index = if params[:employment_id]
+                         @activity.months_to_report.length - 1
+                       else
+                         progress_calculator.reporting_months.length - 1
+                       end
     if params[:community_service_id]
       @back_url = edit_activities_flow_community_service_month_path(
         community_service_id: @activity,

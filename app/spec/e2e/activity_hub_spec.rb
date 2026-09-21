@@ -174,11 +174,13 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     flow = ActivityFlow.last
     employer_name = "Gainesville Wrecking"
     flow.reporting_months.each do |month|
-      verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
-        month: I18n.l(month, format: :month_year),
-        organization: employer_name))
-      fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: I18n.l(month, format: :month_year)), with: "500"
-      fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(month, format: :month_year)), with: "40"
+      month_name = I18n.l(month, format: :month)
+      verify_page(page, title: I18n.t(
+        "activities.employment.hours_input.heading",
+        organization: employer_name
+      ))
+      fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: month_name), with: "500"
+      fill_in I18n.t("activities.employment.hours_input.hours_label", month: month_name), with: "40"
       click_button I18n.t("activities.employment.hours_input.continue")
     end
 
@@ -267,7 +269,12 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     within("[data-activity-type='education']") do
       click_button I18n.t("activities.hub.add")
     end
+    verify_page(page, title: I18n.t("activities.education.add_your_education.show.header"))
+    find("label[for='add_education_method_college_or_university']").click
+    click_button I18n.t("continue")
+
     verify_page(page, title: I18n.t("activities.education.verify.header"))
+
     performing_active_jobs do
       click_button I18n.t("activities.education.verify.continue")
       verify_page(page, title: I18n.t("activities.education.error.header"), wait: 10) # /activities/education/error

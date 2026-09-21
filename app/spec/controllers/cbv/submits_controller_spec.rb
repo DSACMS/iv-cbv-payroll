@@ -10,7 +10,7 @@ RSpec.describe Cbv::SubmitsController do
   let(:sandbox_user) { create(:user, email: "test@test.com", client_agency_id: 'sandbox') }
 
   before do
-    allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
+    allow(mock_client_agency).to receive(:income_transmission_method_configuration).and_return({
       "bucket" => "test-bucket",
       "region" => "us-west-2",
       "access_key_id" => "SOME_ACCESS_KEY",

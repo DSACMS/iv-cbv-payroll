@@ -155,6 +155,31 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("activities.employment.document_upload_suggestion_text_html"))
     end
 
+    it "renders only selected employment months in chronological order" do
+      tokenized_flow = create(
+        :activity_flow,
+        activity_flow_invitation: create(:activity_flow_invitation),
+        reporting_window_months: 3
+      )
+      session[:flow_id] = tokenized_flow.id
+      employment_activity = create(:employment_activity, activity_flow: tokenized_flow)
+      first_month, second_month, third_month = tokenized_flow.reporting_months
+      employment_activity.update!(selected_months: [ third_month, first_month ])
+      [ third_month, second_month, first_month ].each do |month|
+        create(:employment_activity_month, employment_activity: employment_activity, month: month)
+      end
+
+      get :new, params: { employment_id: employment_activity.id }
+
+      rendered = Capybara.string(response.body)
+      displayed_months = rendered.all("main li strong").map(&:text)
+      expect(displayed_months).to eq([
+        I18n.l(first_month, format: :month),
+        I18n.l(third_month, format: :month)
+      ])
+      expect(rendered).to have_no_text(I18n.l(second_month, format: :month))
+    end
+
     it "renders the upload form for a partially self-attested education activity" do
       term = create_partial_term(
         activity: partial_education_activity,

@@ -1,16 +1,16 @@
 class Transmitters::EncryptedS3Transmitter
   TRANSMISSION_METHOD = "encrypted_s3"
-  include Transmitter
+  include IncomeTransmitter
   include GpgEncryptable
   include TarFileCreatable
   include CsvHelper
 
   def deliver
-    config = @current_agency.transmission_method_configuration
+    config = transmission_configuration
     public_key = config["public_key"]
 
     if public_key.blank?
-      Rails.logger.error("Public key is missing from transmission_method_configuration")
+      Rails.logger.error("Public key is missing from income_transmission_method_configuration")
       raise "Public key is required for S3 transmission"
     end
 

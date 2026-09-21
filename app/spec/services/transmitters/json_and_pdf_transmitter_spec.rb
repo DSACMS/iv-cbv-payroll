@@ -13,7 +13,7 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
     days_to_fetch_for_w2: 90,
     days_to_fetch_for_gig: 90
   ) }
-  let(:transmission_method_configuration) { {
+  let(:income_transmission_method_configuration) { {
     "json_api_url" => "http://fake-state.api.gov/api/v1/income-report-pdf",
     "pdf_api_url" => "http://fake-state.api.gov/api/v1/income-report-pdf"
   } }
@@ -21,7 +21,7 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
 
 
   before do
-    allow(client_agency).to receive_messages(id: "sandbox", transmission_method_configuration: transmission_method_configuration)
+    allow(client_agency).to receive_messages(id: "sandbox", income_transmission_method_configuration: income_transmission_method_configuration)
   end
 
   context 'success responses from agency' do
@@ -55,7 +55,7 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
     end
 
     it 'delivers successfully' do
-      json_request = stub_request(:post, transmission_method_configuration["json_api_url"])
+      json_request = stub_request(:post, income_transmission_method_configuration["json_api_url"])
         .with(
           body: hash_including(
             "confirmation_code" => cbv_flow.confirmation_code,
@@ -68,7 +68,7 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
           }
         ).to_return(status: 200, body: "", headers: {})
 
-      pdf_request = stub_request(:post, transmission_method_configuration["pdf_api_url"])
+      pdf_request = stub_request(:post, income_transmission_method_configuration["pdf_api_url"])
         .with(
           body: pdf_output.content,
           headers: {
@@ -89,11 +89,11 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
 
     context 'json delivers unsuccessfully' do
       it 'raises an error and does not deliver pdf' do
-        failing_json_request = stub_request(:post, transmission_method_configuration["json_api_url"])
+        failing_json_request = stub_request(:post, income_transmission_method_configuration["json_api_url"])
           .with(headers: { 'Content-Type' => 'application/json' })
           .to_return(status: 500)
 
-        pdf_request = stub_request(:post, transmission_method_configuration["pdf_api_url"])
+        pdf_request = stub_request(:post, income_transmission_method_configuration["pdf_api_url"])
           .with(headers: { 'Content-Type' => 'application/pdf' })
           .with(body: pdf_output.content)
           .to_return(status: 200)
@@ -107,11 +107,11 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
 
     context 'pdf delivers unsuccessfully' do
       it 'raises an error' do
-        json_request = stub_request(:post, transmission_method_configuration["json_api_url"])
+        json_request = stub_request(:post, income_transmission_method_configuration["json_api_url"])
           .with(headers: { 'Content-Type' => 'application/json' })
           .to_return(status: 200)
 
-        failing_pdf_request = stub_request(:post, transmission_method_configuration["pdf_api_url"])
+        failing_pdf_request = stub_request(:post, income_transmission_method_configuration["pdf_api_url"])
           .with(headers: { 'Content-Type' => 'application/pdf' })
           .with(body: pdf_output.content)
           .to_return(status: 500)
@@ -123,16 +123,16 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
       end
 
       context "when the PDF status code is configured to be silenced" do
-        let(:transmission_method_configuration) do
+        let(:income_transmission_method_configuration) do
           super().merge("silently_retry_error_codes" => [ 403, 408, 502 ])
         end
 
         it "re-raises a silenceable error" do
-          json_request = stub_request(:post, transmission_method_configuration["json_api_url"])
+          json_request = stub_request(:post, income_transmission_method_configuration["json_api_url"])
             .with(headers: { 'Content-Type' => 'application/json' })
             .to_return(status: 200)
 
-          failing_pdf_request = stub_request(:post, transmission_method_configuration["pdf_api_url"])
+          failing_pdf_request = stub_request(:post, income_transmission_method_configuration["pdf_api_url"])
             .with(headers: { 'Content-Type' => 'application/pdf' })
             .with(body: pdf_output.content)
             .to_return(status: [ 502, "Bad Gateway" ], body: "Bad Gateway")
@@ -149,11 +149,11 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
       end
 
       it 'does not retry JSON transmission when job retries after PDF failure' do
-        json_request = stub_request(:post, transmission_method_configuration["json_api_url"])
+        json_request = stub_request(:post, income_transmission_method_configuration["json_api_url"])
           .with(headers: { 'Content-Type' => 'application/json' })
           .to_return(status: 200)
 
-        pdf_request = stub_request(:post, transmission_method_configuration["pdf_api_url"])
+        pdf_request = stub_request(:post, income_transmission_method_configuration["pdf_api_url"])
           .with(headers: { 'Content-Type' => 'application/pdf' })
           .with(body: pdf_output.content)
           .to_return({ status: 500 }, { status: 200 })
@@ -173,11 +173,11 @@ RSpec.describe Transmitters::JsonAndPdfTransmitter do
         # Simulate a retry scenario where JSON already succeeded in a previous attempt
         cbv_flow.update!(json_transmitted_at: Time.current)
 
-        json_request = stub_request(:post, transmission_method_configuration["json_api_url"])
+        json_request = stub_request(:post, income_transmission_method_configuration["json_api_url"])
           .with(headers: { 'Content-Type' => 'application/json' })
           .to_return(status: 200)
 
-        pdf_request = stub_request(:post, transmission_method_configuration["pdf_api_url"])
+        pdf_request = stub_request(:post, income_transmission_method_configuration["pdf_api_url"])
           .with(headers: { 'Content-Type' => 'application/pdf' })
           .with(body: pdf_output.content)
           .to_return(status: 200)
