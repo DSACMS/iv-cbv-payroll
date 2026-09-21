@@ -154,13 +154,13 @@ ignore_missing:
     - "activerecord.errors.models.job_training_activity_month.*" # Self attestation hours entry error messages
     - "shared.header.logo_alt_text.nh_dhhs"
     - "households.*"
-    - "api.v2.la_ldh.fields.*"
-    - "api.v2.fields.*"
-    - "cbv.employer_searches.employer.select_employer"
-    - "cbv.employer_searches.show.select_employer"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
+    - "api.v2.la_ldh.fields.*" # FFS-4797 
+    - "api.v2.fields.*" # FFS-4797
+    - "cbv.employer_searches.employer.select_employer"
+    - "cbv.employer_searches.show.select_employer"
 
 ## Consider these keys used:
 ignore_unused:
