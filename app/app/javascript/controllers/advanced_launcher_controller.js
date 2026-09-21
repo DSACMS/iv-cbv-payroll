@@ -121,7 +121,6 @@ export default class extends Controller {
 
     try {
       const formData = new FormData(this.element)
-      formData.set("launch_type", this.selectedLaunchType())
       const payload = Object.fromEntries(formData.entries())
       const { url } = await fetchInternal(this.element.action, {
         method: this.element.method.toUpperCase(),
@@ -141,10 +140,6 @@ export default class extends Controller {
 
   // private
 
-  selectedLaunchType() {
-    return this.element.querySelector("input[name=launch_type]:checked").value
-  }
-
   applyFlowType(value) {
     if (value === "cbv") {
       this.ceOnlyTargets.forEach((el) => (el.hidden = true))
@@ -162,10 +157,12 @@ export default class extends Controller {
 
   applyAgency() {
     const select = this.element.querySelector("#client_agency_id")
+    const enabled = (select && this.agencyActivityTypesValue[select.value])
 
     if (!this.hasActivityRowTarget) return
 
     this.activityRowTargets.forEach((row) => {
+      const allowed = enabled.includes(row.dataset.activityType)
       const checkbox = row.querySelector("input[type=checkbox]")
 
       row.classList.toggle("advanced-launcher__activity-row--disabled", !allowed)
