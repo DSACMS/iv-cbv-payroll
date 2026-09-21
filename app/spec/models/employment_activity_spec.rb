@@ -11,6 +11,28 @@ RSpec.describe EmploymentActivity, type: :model do
     end
   end
 
+  describe "employer name validation" do
+    it "uses the employer or business error for paid work" do
+      activity = build(:employment_activity, employer_name: "")
+
+      activity.validate
+
+      expect(activity.errors[:employer_name]).to contain_exactly(
+        I18n.t("activities.employment_info.employer_name_error")
+      )
+    end
+
+    it "uses the work-focused error for unpaid or in-kind work" do
+      activity = build(:employment_activity, compensation_type: :unpaid_or_in_kind, employer_name: "")
+
+      activity.validate
+
+      expect(activity.errors[:employer_name]).to contain_exactly(
+        I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name_error")
+      )
+    end
+  end
+
   it "has fields for employer information" do
     activity = create(:employment_activity, employer_name: "Acme Corp")
 

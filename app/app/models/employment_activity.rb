@@ -25,7 +25,12 @@ class EmploymentActivity < Activity
     :employment
   end
 
-  validates :employer_name, presence: { message: I18n.t("activities.employment_info.employer_name_error") }
+  validates :employer_name,
+    presence: { message: I18n.t("activities.employment_info.employer_name_error") },
+    if: :paid?
+  validates :employer_name,
+    presence: { message: I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name_error") },
+    if: :unpaid_or_in_kind?
 
   before_save :clear_contact_fields_if_self_employed
 

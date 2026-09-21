@@ -29,6 +29,7 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
 
     click_button I18n.t("activities.employment_info.continue")
     verify_page(page, title: title)
+    expect(page).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name_error"))
     fill_in I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name"), with: "Example work"
     fill_in I18n.t("activities.employment_info.unpaid_or_in_kind.contact_name"), with: "Example contact"
     click_button I18n.t("activities.employment_info.continue")
