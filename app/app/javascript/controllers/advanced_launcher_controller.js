@@ -17,9 +17,6 @@ export default class extends Controller {
   static values = { agencyActivityTypes: Object }
 
   connect() {
-    const selectedLaunchMode = this.element.querySelector("input[name=launch_mode]:checked")
-    if (selectedLaunchMode) this.applyLaunchMode(selectedLaunchMode.value)
-
     const selectedFlow = this.element.querySelector("input[name=flow_type]:checked")
     if (selectedFlow) this.applyFlowType(selectedFlow.value)
 
@@ -28,16 +25,10 @@ export default class extends Controller {
 
     const selectedScenario = this.element.querySelector("input[name=test_scenario]:checked")
     if (selectedScenario) this.applyScenario(selectedScenario)
-
-    this.applyAgency()
   }
 
   selectFlowType(event) {
     this.applyFlowType(event.currentTarget.value)
-  }
-
-  selectAgency() {
-    this.applyAgency()
   }
 
   selectWindow(event) {
@@ -45,26 +36,7 @@ export default class extends Controller {
   }
 
   selectScenario(event) {
-    this.clearHouseholdArchetypes()
-    this.element.querySelector("#launch_mode_individual").checked = true
-    this.applyLaunchMode("individual")
     this.applyScenario(event.currentTarget)
-  }
-
-  selectLaunchMode(event) {
-    const mode = event.currentTarget.value
-    if (mode === "household") {
-      this.ensureHouseholdArchetypes()
-      this.clearIndividualScenarioSelection()
-      const activityFlow = this.element.querySelector("#flow_type_activity")
-      if (activityFlow) {
-        activityFlow.checked = true
-        this.applyFlowType(activityFlow.value)
-      }
-    } else {
-      this.clearHouseholdArchetypes()
-    }
-    this.applyLaunchMode(mode)
   }
 
   toggleHint(event) {
@@ -155,26 +127,9 @@ export default class extends Controller {
     }
   }
 
-  applyAgency() {
-    const select = this.element.querySelector("#client_agency_id")
-    const enabled = (select && this.agencyActivityTypesValue[select.value])
-
-    if (!this.hasActivityRowTarget) return
-
-    this.activityRowTargets.forEach((row) => {
-      const allowed = enabled.includes(row.dataset.activityType)
-      const checkbox = row.querySelector("input[type=checkbox]")
-
-      row.classList.toggle("advanced-launcher__activity-row--disabled", !allowed)
-      if (checkbox) checkbox.disabled = !allowed
-      if (allowed) return
-
-      if (checkbox && checkbox.checked) {
-        checkbox.checked = false
-        const fields = row.querySelector(".advanced-launcher__activity-fields")
-        if (fields) fields.classList.add("advanced-launcher__activity-fields--hidden")
-      }
-    })
+  clearIndividualScenarios() {
+    this.clearIndividualScenarioSelection()
+    this.clearDatePicker()
   }
 
   clearIndividualScenarioSelection() {

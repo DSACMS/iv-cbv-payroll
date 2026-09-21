@@ -106,7 +106,6 @@ RSpec.describe LauncherController, type: :controller do
       expect(rendered).to have_checked_field("household_archetype_needs_documentation_multiple_activities", visible: :all)
       expect(rendered).to have_selector("#nsc-test-scenarios-button[aria-expanded='false']")
       expect(rendered).to have_selector("#fake-test-scenarios-button[aria-expanded='false']")
-      expect(rendered).to have_selector("#pre-populated-activities-button[aria-expanded='true']")
       expect(rendered).to have_selector("label", text: "Dominic: Needs documentation (1 activity)", visible: :all)
       expect(rendered).to have_selector("label", text: "Lamine: Needs documentation (2+ activities)", visible: :all)
       expect(rendered).to have_selector("label", text: "Andy: Short of meeting CE", visible: :all)
