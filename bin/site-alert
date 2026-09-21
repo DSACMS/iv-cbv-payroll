@@ -1,0 +1,229 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_NAME
+readonly DEFAULT_REGION="us-east-1"
+
+usage() {
+  cat <<EOF
+Usage:
+  ${SCRIPT_NAME} enable --platform PLATFORM --environment ENV [message options]
+  ${SCRIPT_NAME} disable --platform PLATFORM --environment ENV
+  ${SCRIPT_NAME} status --platform PLATFORM --environment ENV
+
+Platforms and environments:
+  nava  dev, demo, prod
+  cms   dev, test, sandbox, demo, uat, prod
+
+Message options for enable:
+  --preset PRESET       argyle-outage, aws-outage, or report-transmission
+  --title-en TEXT       Custom English title
+  --body-en TEXT        Custom English body
+  --title-es TEXT       Custom Spanish title
+  --body-es TEXT        Custom Spanish body
+  --type TYPE           info, success, warning, or error (default: warning)
+
+Other options:
+  --region REGION       AWS region (default: ${DEFAULT_REGION})
+  --no-wait             Do not wait for the ECS service to stabilize
+  --help                Show this help
+
+Examples:
+  ${SCRIPT_NAME} enable --platform cms --environment prod --preset argyle-outage
+  ${SCRIPT_NAME} enable --platform nava --environment demo \\
+    --title-en "Service update" --body-en "Please try again later." \\
+    --title-es "Actualización del servicio" --body-es "Inténtelo de nuevo más tarde."
+  ${SCRIPT_NAME} disable --platform cms --environment prod
+EOF
+}
+
+die() {
+  echo "${SCRIPT_NAME}: $*" >&2
+  exit 2
+}
+
+require_value() {
+  (($# >= 2)) || die "${1} requires a value"
+  [[ -n "$2" && "$2" != --* ]] || die "${1} requires a non-empty value"
+}
+
+validate_target() {
+  case "${platform}:${environment}" in
+    nava:dev|nava:demo|nava:prod|cms:dev|cms:test|cms:sandbox|cms:demo|cms:uat|cms:prod)
+      ;;
+    nava:*)
+      die "unsupported Nava environment '${environment}'; use dev, demo, or prod"
+      ;;
+    cms:*)
+      die "unsupported CMS Cloud environment '${environment}'; use dev, test, sandbox, demo, uat, or prod"
+      ;;
+    *)
+      die "unsupported platform '${platform}'; use nava or cms"
+      ;;
+  esac
+}
+
+validate_type() {
+  case "$1" in
+    info|success|warning|error) ;;
+    *) die "unsupported alert type '${1}'; use info, success, warning, or error" ;;
+  esac
+}
+
+preset_value() {
+  local preset="$1" language="$2" field="$3"
+  case "${preset}:${language}:${field}" in
+    argyle-outage:en:title) echo "Income information may be temporarily unavailable" ;;
+    argyle-outage:en:body) echo "We're experiencing an issue with our income data provider. You may see errors while searching for an employer or connecting an account. Please try again later." ;;
+    argyle-outage:es:title) echo "Es posible que la información de ingresos no esté disponible temporalmente" ;;
+    argyle-outage:es:body) echo "Estamos teniendo un problema con nuestro proveedor de datos de ingresos. Es posible que vea errores al buscar un empleador o conectar una cuenta. Inténtelo de nuevo más tarde." ;;
+    aws-outage:en:title) echo "Emmy may be temporarily unavailable" ;;
+    aws-outage:en:body) echo "We're experiencing an issue that may affect Emmy. You may see errors or be unable to load pages. Please try again later." ;;
+    aws-outage:es:title) echo "Es posible que Emmy no esté disponible temporalmente" ;;
+    aws-outage:es:body) echo "Estamos teniendo un problema que puede afectar a Emmy. Es posible que vea errores o no pueda cargar algunas páginas. Inténtelo de nuevo más tarde." ;;
+    report-transmission:en:title) echo "Your report may be delayed" ;;
+    report-transmission:en:body) echo "We're experiencing an issue transmitting reports to state agencies. Your report may not be received immediately. Please do not submit it again." ;;
+    report-transmission:es:title) echo "Su informe puede demorarse" ;;
+    report-transmission:es:body) echo "Estamos teniendo un problema para transmitir informes a las agencias estatales. Es posible que su informe no se reciba de inmediato. No lo envíe de nuevo." ;;
+    *) die "unsupported preset '${preset}'; use argyle-outage, aws-outage, or report-transmission" ;;
+  esac
+}
+
+parameter_prefix() {
+  if [[ "${platform}" == "cms" ]]; then
+    echo "/service/emmy-${environment}"
+  else
+    echo "/service/app-${environment}"
+  fi
+}
+
+parameter_name() {
+  local variable_name="$1" parameter_suffix
+  parameter_suffix="$(printf '%s' "${variable_name}" | tr '[:upper:]' '[:lower:]')"
+  parameter_suffix="${parameter_suffix//_/-}"
+  echo "$(parameter_prefix)/${parameter_suffix}"
+}
+
+service_name() {
+  if [[ "${platform}" == "cms" ]]; then
+    echo "emmy-${environment}"
+  else
+    echo "app-${environment}"
+  fi
+}
+
+put_parameter() {
+  local variable_name="$1" value="$2"
+  aws ssm put-parameter --no-cli-pager --region "${region}" \
+    --name "$(parameter_name "${variable_name}")" --type String \
+    --value "${value}" --overwrite >/dev/null
+}
+
+update_service() {
+  local cluster
+  cluster="$(service_name)"
+  aws ecs update-service --no-cli-pager --region "${region}" \
+    --cluster "${cluster}" --service "${cluster}" --force-new-deployment >/dev/null
+  if [[ "${wait_for_stability}" == "true" ]]; then
+    aws ecs wait services-stable --no-cli-pager --region "${region}" \
+      --cluster "${cluster}" --services "${cluster}"
+  fi
+}
+
+enable_alert() {
+  if [[ -n "${preset}" ]]; then
+    [[ -z "${title_en}${body_en}${title_es}${body_es}" ]] ||
+      die "do not combine --preset with custom message options"
+    title_en="$(preset_value "${preset}" en title)"
+    body_en="$(preset_value "${preset}" en body)"
+    title_es="$(preset_value "${preset}" es title)"
+    body_es="$(preset_value "${preset}" es body)"
+  elif [[ -z "${title_en}${body_en}${title_es}${body_es}" ]]; then
+    die "enable requires --preset or all four custom message options"
+  elif [[ -z "${title_en}" || -z "${body_en}" || -z "${title_es}" || -z "${body_es}" ]]; then
+    die "custom messages require --title-en, --body-en, --title-es, and --body-es"
+  fi
+
+  aws sts get-caller-identity --no-cli-pager --region "${region}" >/dev/null
+  # Disable first so a partial update cannot display mixed copy.
+  put_parameter SITE_ALERT_ENABLED false
+  put_parameter SITE_ALERT_TITLE_EN "${title_en}"
+  put_parameter SITE_ALERT_BODY_EN "${body_en}"
+  put_parameter SITE_ALERT_TITLE_ES "${title_es}"
+  put_parameter SITE_ALERT_BODY_ES "${body_es}"
+  put_parameter SITE_ALERT_TYPE "${alert_type}"
+  put_parameter SITE_ALERT_ENABLED true
+  update_service
+  echo "Enabled ${preset:-custom} site alert on ${platform}/${environment}."
+}
+
+disable_alert() {
+  aws sts get-caller-identity --no-cli-pager --region "${region}" >/dev/null
+  put_parameter SITE_ALERT_ENABLED false
+  update_service
+  echo "Disabled site alert on ${platform}/${environment}."
+}
+
+show_status() {
+  local enabled type
+  aws sts get-caller-identity --no-cli-pager --region "${region}" >/dev/null
+  enabled="$(aws ssm get-parameter --no-cli-pager --region "${region}" \
+    --name "$(parameter_name SITE_ALERT_ENABLED)" --query 'Parameter.Value' --output text)"
+  type="$(aws ssm get-parameter --no-cli-pager --region "${region}" \
+    --name "$(parameter_name SITE_ALERT_TYPE)" --query 'Parameter.Value' \
+    --output text 2>/dev/null || echo "unset")"
+  echo "platform=${platform} environment=${environment} enabled=${enabled} type=${type}"
+}
+
+command="${1:-}"
+if [[ -n "${command}" ]]; then shift; fi
+
+platform="" environment="" preset="" title_en="" body_en="" title_es="" body_es=""
+alert_type="warning"
+region="${AWS_REGION:-${DEFAULT_REGION}}"
+wait_for_stability="true"
+
+while (($#)); do
+  case "$1" in
+    --platform) require_value "$@"; platform="$2"; shift 2 ;;
+    --environment) require_value "$@"; environment="$2"; shift 2 ;;
+    --preset) require_value "$@"; preset="$2"; shift 2 ;;
+    --title-en) require_value "$@"; title_en="$2"; shift 2 ;;
+    --body-en) require_value "$@"; body_en="$2"; shift 2 ;;
+    --title-es) require_value "$@"; title_es="$2"; shift 2 ;;
+    --body-es) require_value "$@"; body_es="$2"; shift 2 ;;
+    --type) require_value "$@"; alert_type="$2"; shift 2 ;;
+    --region) require_value "$@"; region="$2"; shift 2 ;;
+    --no-wait) wait_for_stability="false"; shift ;;
+    --help|-h) usage; exit 0 ;;
+    *) die "unknown option '${1}'; see --help" ;;
+  esac
+done
+
+case "${command}" in
+  enable|disable|status) ;;
+  help|--help|-h) usage; exit 0 ;;
+  "") usage >&2; exit 2 ;;
+  *) die "unknown command '${command}'; use enable, disable, or status" ;;
+esac
+
+[[ -n "${platform}" ]] || die "--platform is required"
+[[ -n "${environment}" ]] || die "--environment is required"
+validate_target
+validate_type "${alert_type}"
+
+case "${command}" in
+  enable) enable_alert ;;
+  disable)
+    [[ -z "${preset}${title_en}${body_en}${title_es}${body_es}" ]] ||
+      die "message options are only valid with enable"
+    disable_alert
+    ;;
+  status)
+    [[ -z "${preset}${title_en}${body_en}${title_es}${body_es}" ]] ||
+      die "message options are only valid with enable"
+    show_status
+    ;;
+esac
