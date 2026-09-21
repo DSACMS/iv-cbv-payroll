@@ -26,11 +26,11 @@ class CbvApplicant < ApplicationRecord
   end
 
   def self.valid_attributes_for_agency(client_agency_id, version: :v1)
-    Rails.application.config.client_agencies[client_agency_id].applicant_attribute_names
+    Rails.application.config.client_agencies[client_agency_id].applicant_attribute_names(version: version)
   end
 
   def self.build_agency_partner_metadata(client_agency_id, &value_provider)
-    valid_attributes_for_agency(client_agency_id).each_with_object({}) do |attr, hash|
+    valid_attributes_for_agency(client_agency_id, version: :v1).each_with_object({}) do |attr, hash|
       hash[attr.to_s] = value_provider.call(attr)
     end
   end
@@ -102,8 +102,8 @@ class CbvApplicant < ApplicationRecord
     self.snap_application_date ||= Date.current
   end
 
-  def set_applicant_attributes
-    @applicant_attributes = agency_config&.applicant_attribute_names || []
+  def set_applicant_attributes(version: :v1)
+    @applicant_attributes = agency_config&.applicant_attribute_names(version: version) || []
 
     @required_applicant_attributes = get_required_applicant_attributes
   end
@@ -115,8 +115,8 @@ class CbvApplicant < ApplicationRecord
 
   private
 
-  def get_required_applicant_attributes
-    agency_config&.applicant_attributes&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
+  def get_required_applicant_attributes(version: :v1)
+    agency_config&.applicant_attributes(version: version)&.select { |key, attributes| attributes["required"] }&.keys&.map(&:to_sym) || []
   end
 
   def agency_config

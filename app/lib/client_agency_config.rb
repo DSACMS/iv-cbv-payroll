@@ -146,7 +146,8 @@ class ClientAgencyConfig
     end
 
     def applicant_attributes(version: :v1)
-      @applicant_attributes[version.to_s] || @applicant_attributes["v1"] || {}
+      # Silently fallback to v1 if the requested version is not available
+      @applicant_attributes.fetch(version.to_s) { @applicant_attributes.fetch("v1", {}) }
     end
 
     def applicant_attribute_names(version: :v1)
