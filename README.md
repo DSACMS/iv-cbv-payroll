@@ -64,7 +64,7 @@ For more information on how the Emmy team works with our community, see [COMMUNI
 
 ## Feedback
 
-If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know by sending an email to: ffs at nava pbc dot com. If you would like to comment on the tool itself, please let us know by [filing an issue on our GitHub repository](https://github.com/DSACMS/iv-cbv-payroll/issues/new/choose).
+If you would like to comment on the tool itself, please let us know by [filing an issue on our GitHub repository](https://github.com/DSACMS/iv-cbv-payroll/issues/new/choose).
 
 ## Policies
 
