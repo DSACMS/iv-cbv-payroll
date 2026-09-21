@@ -95,6 +95,7 @@ Rails.application.routes.draw do
 
       scope "/education", as: :education do
         resource :add_your_education, only: %i[show create], controller: "education/add_your_education"
+        resource :other, only: %i[show], controller: "education/other"
       end
 
       get "/education/error", to: "education#error", as: :education_error
