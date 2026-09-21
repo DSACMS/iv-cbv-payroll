@@ -127,9 +127,28 @@ export default class extends Controller {
     }
   }
 
-  clearIndividualScenarios() {
-    this.clearIndividualScenarioSelection()
-    this.clearDatePicker()
+  applyAgency() {
+    const select = this.element.querySelector("#client_agency_id")
+    const enabled = (select && this.agencyActivityTypesValue[select.value])
+    
+    this.activityRowTargets.forEach((row) => {
+      const allowed = enabled.includes(row.dataset.activityType)
+      const checkbox = row.querySelector("input[type=checkbox]")
+
+      row.classList.toggle("advanced-launcher__activity-row--disabled", !allowed)
+      if (checkbox) checkbox.disabled = !allowed
+      if (allowed) return
+
+      row.classList.toggle("advanced-launcher__activity-row--disabled", !allowed)
+      if (checkbox) checkbox.disabled = !allowed
+      if (allowed) return
+
+      if (checkbox && checkbox.checked) {
+        checkbox.checked = false
+        const fields = row.querySelector(".advanced-launcher__activity-fields")
+        if (fields) fields.classList.add("advanced-launcher__activity-fields--hidden")
+      }
+    })
   }
 
   clearIndividualScenarioSelection() {

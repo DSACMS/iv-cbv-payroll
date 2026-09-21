@@ -1,7 +1,6 @@
 class LauncherController < ApplicationController
   helper_method :session_timeout_enabled?, :agency_activity_types
   before_action :set_launcher_flow, only: [ :advanced, :launcher ]
-  before_action :validate_household_launch, only: :create
 
   def advanced; end
 
@@ -14,9 +13,7 @@ class LauncherController < ApplicationController
     test_scenario = launcher_params[:test_scenario]
     overrides = launch_overrides(flow_type)
 
-    url = if launch_type == "household"
-            build_household_url(client_agency_id, overrides)
-          elsif flow_type == "cbv"
+    url = if flow_type == "cbv"
             if launch_type == "generic"
               build_cbv_generic_url(client_agency_id, overrides)
             else
@@ -255,23 +252,7 @@ class LauncherController < ApplicationController
       :reporting_window_months,
       :renewal_required_months,
       :reporting_window_start,
-      :launcher_timeout,
-      :launch_type,
-      :volunteering_enabled,
-      :volunteering_organization_name,
-      :volunteering_hours_per_month,
-      :employment_enabled,
-      :employment_employer_name,
-      :employment_hours_per_month,
-      :employment_gross_income_per_month,
-      :education_enabled,
-      :education_school_name,
-      :education_hours_per_month,
-      :job_training_enabled,
-      :job_training_program_name,
-      :job_training_organization_name,
-      :job_training_hours_per_month,
-      household_archetypes: []
+      :launcher_timeout
     )
   end
 
@@ -332,38 +313,6 @@ class LauncherController < ApplicationController
       **launcher_url_options,
       **overrides
     )
-  end
-
-  def build_household_url(client_agency_id, launcher_overrides)
-    household = Launcher::HouseholdScenario.create!(
-      archetype_keys: @household_archetype_keys,
-      client_agency_id: client_agency_id,
-      launcher_overrides: launcher_overrides
-    )
-    household.to_url(**launcher_url_options)
-  end
-
-  def validate_household_launch
-    return unless launcher_params[:launch_type] == "household"
-
-    @household_archetype_keys = resolved_household_archetype_keys
-
-    if @household_archetype_keys.empty?
-      return render_launcher_error(t("launcher.advanced.household.errors.no_archetypes_selected"))
-    end
-
-    unless household_available_for?(launcher_params[:client_agency_id])
-      render_launcher_error(t("launcher.advanced.household.errors.unsupported_agency"))
-    end
-  end
-
-  def resolved_household_archetype_keys
-    Array(launcher_params[:household_archetypes]).filter_map(&:presence) &
-      Launcher::HouseholdScenario.archetypes.keys
-  end
-
-  def household_available_for?(client_agency_id)
-    agency_activity_types[client_agency_id].present?
   end
 
   def render_launcher_error(message)
