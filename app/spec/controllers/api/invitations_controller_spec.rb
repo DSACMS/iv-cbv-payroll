@@ -40,7 +40,7 @@ RSpec.describe Api::InvitationsController do
       subject
       parsed_response = JSON.parse(response.body)
       expect(parsed_response["agency_partner_metadata"].keys.map(&:to_sym)).to match_array(
-        CbvApplicant.valid_attributes_for_agency(client_agency_id.to_s)
+        CbvApplicant.valid_attributes_for_agency(client_agency_id.to_s, version: :v1)
       )
     end
 

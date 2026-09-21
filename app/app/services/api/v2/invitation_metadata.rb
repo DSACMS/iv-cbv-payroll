@@ -25,9 +25,8 @@ class Api::V2::InvitationMetadata
   attr_reader :client_agency_id, :flow_type
 
   def agency
-    agency_id = client_agency_id.to_s
-    Rails.application.config.x.client_agencies_v2[agency_id] ||
-      raise(KeyError, "No V2 configuration for client agency #{agency_id.inspect}")
+    Rails.application.config.client_agencies[client_agency_id.to_s] ||
+      raise(KeyError, "No client agency config for #{client_agency_id.inspect}")
   end
 
   def agency_metadata_errors

@@ -26,11 +26,7 @@ class CbvApplicant < ApplicationRecord
   end
 
   def self.valid_attributes_for_agency(client_agency_id, version: :v1)
-    config = version == :v2 ?
-      Rails.application.config.x.client_agencies_v2 :
-      Rails.application.config.client_agencies
-
-    config[client_agency_id].applicant_attribute_names
+    Rails.application.config.client_agencies[client_agency_id].applicant_attribute_names
   end
 
   def self.build_agency_partner_metadata(client_agency_id, &value_provider)
