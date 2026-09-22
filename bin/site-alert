@@ -18,7 +18,7 @@ Platforms and environments:
   cms   dev, test, sandbox, demo, uat, prod
 
 Message options for enable:
-  --preset PRESET       argyle-outage, aws-outage, or report-transmission
+  --preset PRESET       scheduled-maintenance
   --title-en TEXT       Custom English title
   --body-en TEXT        Custom English body
   --title-es TEXT       Custom Spanish title
@@ -31,7 +31,7 @@ Other options:
   --help                Show this help
 
 Examples:
-  ${SCRIPT_NAME} enable --platform cms --environment prod --preset argyle-outage
+  ${SCRIPT_NAME} enable --platform cms --environment prod --preset scheduled-maintenance
   ${SCRIPT_NAME} enable --platform nava --environment demo \\
     --title-en "Service update" --body-en "Please try again later." \\
     --title-es "Actualización del servicio" --body-es "Inténtelo de nuevo más tarde."
@@ -75,19 +75,11 @@ validate_type() {
 preset_value() {
   local preset="$1" language="$2" field="$3"
   case "${preset}:${language}:${field}" in
-    argyle-outage:en:title) echo "Income information may be temporarily unavailable" ;;
-    argyle-outage:en:body) echo "We're experiencing an issue with our income data provider. You may see errors while searching for an employer or connecting an account. Please try again later." ;;
-    argyle-outage:es:title) echo "Es posible que la información de ingresos no esté disponible temporalmente" ;;
-    argyle-outage:es:body) echo "Estamos teniendo un problema con nuestro proveedor de datos de ingresos. Es posible que vea errores al buscar un empleador o conectar una cuenta. Inténtelo de nuevo más tarde." ;;
-    aws-outage:en:title) echo "Emmy may be temporarily unavailable" ;;
-    aws-outage:en:body) echo "We're experiencing an issue that may affect Emmy. You may see errors or be unable to load pages. Please try again later." ;;
-    aws-outage:es:title) echo "Es posible que Emmy no esté disponible temporalmente" ;;
-    aws-outage:es:body) echo "Estamos teniendo un problema que puede afectar a Emmy. Es posible que vea errores o no pueda cargar algunas páginas. Inténtelo de nuevo más tarde." ;;
-    report-transmission:en:title) echo "Your report may be delayed" ;;
-    report-transmission:en:body) echo "We're experiencing an issue transmitting reports to state agencies. Your report may not be received immediately. Please do not submit it again." ;;
-    report-transmission:es:title) echo "Su informe puede demorarse" ;;
-    report-transmission:es:body) echo "Estamos teniendo un problema para transmitir informes a las agencias estatales. Es posible que su informe no se reciba de inmediato. No lo envíe de nuevo." ;;
-    *) die "unsupported preset '${preset}'; use argyle-outage, aws-outage, or report-transmission" ;;
+    scheduled-maintenance:en:title) echo "Scheduled Maintenance" ;;
+    scheduled-maintenance:en:body) echo "ReportMyIncome will be unavailable from 10:00 p.m. Eastern Time (9:00 p.m. Central Time) for 30 minutes for scheduled maintenance. If you aren't able to complete ReportMyIncome before that time, try again later using the same link." ;;
+    scheduled-maintenance:es:title) echo "Mantenimiento programado" ;;
+    scheduled-maintenance:es:body) echo "ReportMyIncome no estará disponible durante 30 minutos a partir de las 10:00 p. m., hora del Este (9:00 p. m., hora del Centro), debido a tareas de mantenimiento programadas. Si no puede completar ReportMyIncome antes de esa hora, inténtelo de nuevo más tarde utilizando el mismo enlace." ;;
+    *) die "unsupported preset '${preset}'; use scheduled-maintenance" ;;
   esac
 }
 

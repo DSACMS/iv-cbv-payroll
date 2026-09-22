@@ -20,26 +20,23 @@ before enabling or disabling an alert. The AWS CLI region defaults to
 
 ## Enable a predefined alert
 
-The predefined messages cover the scenarios from FFS-4838:
+The predefined message is for scheduled maintenance:
 
-- `argyle-outage` — income-provider errors during employer search or account
-  connection.
-- `aws-outage` — broader Emmy errors or pages that cannot load.
-- `report-transmission` — a report may not reach the state system immediately;
-  users should not submit it again.
+- `scheduled-maintenance` — ReportMyIncome will be unavailable for 30 minutes
+  at the scheduled start time.
 
 For Nava environments:
 
 ```
 bin/site-alert enable --platform nava --environment prod \
-  --preset argyle-outage
+  --preset scheduled-maintenance
 ```
 
 For CMS Cloud environments:
 
 ```
 bin/site-alert enable --platform cms --environment prod \
-  --preset argyle-outage
+  --preset scheduled-maintenance
 ```
 
 The supported Nava environments are `dev`, `demo`, and `prod`. The supported
