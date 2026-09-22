@@ -1,0 +1,23 @@
+<h2><%= t("activities.employment_info.employer_section_title") %></h2>
+<%= f.text_field :employer_name,
+      label: t("activities.employment_info.employer_name"),
+      hint: t("activities.employment_info.employer_name_hint") %>
+<%= render "address_fields", f: f %>
+
+<hr class="margin-y-5 border-base border-top-0">
+
+<div data-controller="self-employed">
+  <h2><%= t("activities.employment_info.contact_section_title") %></h2>
+  <%= f.check_box :is_self_employed,
+        label: t("activities.employment_info.self_employed"),
+        data: { "self-employed-target": "checkbox", action: "self-employed#toggle" } %>
+  <%= f.text_field :contact_name,
+        label: t("activities.employment_info.contact_name"),
+        data: { "self-employed-target": "contactName" } %>
+  <%= f.email_field :contact_email,
+        label: t("activities.employment_info.contact_email"),
+        data: { "self-employed-target": "contactEmail" } %>
+  <%= f.phone_field :contact_phone_number,
+        label: t("activities.employment_info.contact_phone_number"),
+        data: { "self-employed-target": "contactPhone" } %>
+</div>
