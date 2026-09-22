@@ -89,7 +89,7 @@ preset_value() {
 
 parameter_prefix() {
   if [[ "${platform}" == "cms" ]]; then
-    echo "/service/emmy-${environment}"
+    echo "/emmy/${environment}/app"
   else
     echo "/service/app-${environment}"
   fi
