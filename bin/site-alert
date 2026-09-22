@@ -118,11 +118,21 @@ service_name() {
   fi
 }
 
+check_aws_credentials() {
+  log "Checking AWS credentials"
+  aws_account_id="$(aws sts get-caller-identity --no-cli-pager --region "${region}" \
+    --query Account --output text)"
+  [[ -n "${aws_account_id}" && "${aws_account_id}" != "None" ]] ||
+    die "could not determine the AWS account"
+  log "Using AWS account ${aws_account_id}"
+}
+
 put_parameter() {
-  local variable_name="$1" value="$2"
-  log "Updating ${variable_name}"
+  local variable_name="$1" value="$2" parameter
+  parameter="$(parameter_name "${variable_name}")"
+  log "Updating SSM parameter ${parameter}"
   aws ssm put-parameter --no-cli-pager --region "${region}" \
-    --name "$(parameter_name "${variable_name}")" --type String \
+    --name "${parameter}" --type String \
     --value "${value}" --overwrite >/dev/null
 }
 
@@ -180,8 +190,7 @@ enable_alert() {
     die "custom messages require --title-en, --body-en, --title-es, and --body-es"
   fi
 
-  log "Checking AWS credentials"
-  aws sts get-caller-identity --no-cli-pager --region "${region}" >/dev/null
+  check_aws_credentials
   # Disable first so a partial update cannot display mixed copy.
   put_parameter SITE_ALERT_ENABLED false
   put_parameter SITE_ALERT_TITLE_EN "${title_en}"
@@ -195,8 +204,7 @@ enable_alert() {
 }
 
 disable_alert() {
-  log "Checking AWS credentials"
-  aws sts get-caller-identity --no-cli-pager --region "${region}" >/dev/null
+  check_aws_credentials
   put_parameter SITE_ALERT_ENABLED false
   update_service
   echo "Disabled site alert on ${platform}/${environment}."
@@ -204,8 +212,7 @@ disable_alert() {
 
 show_status() {
   local enabled type
-  log "Checking AWS credentials"
-  aws sts get-caller-identity --no-cli-pager --region "${region}" >/dev/null
+  check_aws_credentials
   enabled="$(aws ssm get-parameter --no-cli-pager --region "${region}" \
     --name "$(parameter_name SITE_ALERT_ENABLED)" --query 'Parameter.Value' --output text)"
   type="$(aws ssm get-parameter --no-cli-pager --region "${region}" \
@@ -224,6 +231,7 @@ fi
 platform="" environment="" preset="" title_en="" body_en="" title_es="" body_es=""
 alert_type="warning"
 region="${AWS_REGION:-${DEFAULT_REGION}}"
+aws_account_id=""
 wait_for_stability="true"
 
 while (($#)); do
