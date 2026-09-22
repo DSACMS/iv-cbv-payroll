@@ -138,6 +138,7 @@ put_parameter() {
 
 terraform_checkpoint() {
   log "Terraform configuration must be applied before deploying containers"
+  echo "Note: the Terraform plan may not show changes to environment variables."
   if [[ "${platform}" == "nava" ]]; then
     echo "From the top level of this repository, run:"
     echo "  make infra-update-app-service APP_NAME=app ENVIRONMENT=${environment}"

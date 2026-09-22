@@ -50,6 +50,9 @@ tasks receive the values.
 After updating the SSM parameters, the script prints the appropriate command
 and waits for the operator to type `complete`.
 
+The Terraform plan may not show changes to environment variables. Continue
+with the apply command after reviewing the plan.
+
 For Nava, from the top level of this repository, run:
 
 ```
