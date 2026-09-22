@@ -359,7 +359,6 @@ en:
         employer_name: Who you worked for
         employer_name_error: Add who you worked for
         title: Tell us about the work you’ve done
-        work_information_description: If you are self-employed, enter your business name and address if they are separate from your legal name and home address. If you don’t have a separate business name, enter “Self-employed”.
         work_information_title: Work information
       zip_code: Zip code
     entries:

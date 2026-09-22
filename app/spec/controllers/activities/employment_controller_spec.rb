@@ -61,7 +61,6 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.title"))
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.description"))
-        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.work_information_description"))
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_information_description"))
       end
 
@@ -80,14 +79,17 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.accordion.item_4"))
       end
 
-      it "uses work-focused labels without the self-employed checkbox" do
+      it "uses work-focused labels and helper text without the self-employed checkbox" do
         rendered = Capybara.string(response.body)
 
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name"))
+        expect(rendered).to have_selector(
+          "#employer_name_hint.usa-hint",
+          text: I18n.t("activities.employment_info.employer_name_hint")
+        )
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_name"))
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_email"))
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_phone_number"))
-        expect(rendered).to have_no_text(I18n.t("activities.employment_info.employer_name_hint"))
         expect(rendered).to have_no_text(I18n.t("activities.employment_info.self_employed"))
       end
     end

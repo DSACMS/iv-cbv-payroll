@@ -14,9 +14,9 @@
 <% end %>
 
 <h2><%= t("activities.employment_info.unpaid_or_in_kind.work_information_title") %></h2>
-<p><%= t("activities.employment_info.unpaid_or_in_kind.work_information_description") %></p>
 <%= f.text_field :employer_name,
-      label: t("activities.employment_info.unpaid_or_in_kind.employer_name") %>
+      label: t("activities.employment_info.unpaid_or_in_kind.employer_name"),
+      hint: t("activities.employment_info.employer_name_hint") %>
 <%= render "address_fields", f: f %>
 <hr class="margin-y-5 border-base border-top-0">
 <h2><%= t("activities.employment_info.unpaid_or_in_kind.contact_information_title") %></h2>
