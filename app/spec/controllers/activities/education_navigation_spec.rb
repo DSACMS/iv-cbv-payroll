@@ -211,3 +211,30 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
     end
   end
 end
+
+RSpec.describe Activities::Education::OtherController, type: :controller do
+  include_context "activity_hub"
+
+  render_views
+
+  let(:activity_flow) do
+    create(:activity_flow,
+      volunteering_activities_count: 0,
+      job_training_activities_count: 0,
+      education_activities_count: 0,
+      reporting_window_months: 2)
+  end
+
+  before do
+    session[:flow_id] = activity_flow.id
+    session[:flow_type] = :activity
+  end
+
+  describe "navigation" do
+    it "other back goes to add your education" do
+      get :show
+      expected = activities_flow_education_add_your_education_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
+    end
+  end
+end

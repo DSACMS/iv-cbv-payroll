@@ -171,6 +171,8 @@ en:
             high_school_ged:
               hint: Add details if you're in high school or working on your GED.
               label: Enter your high school or GED program
+            other:
+              label: Other or I’m not sure
             trade_or_technical:
               hint: Add education details about your trade school, vocational school, or career and technical education (CTE) programs.
               label: Enter a trade or technical program
@@ -223,6 +225,23 @@ en:
         street_address_line_2: Street address line 2
         title: Tell us about your school or program
         zip_code: Zip code
+      other:
+        show:
+          accordion:
+            internship:
+              body: This counts toward your community engagement hours as employment. You can report the hours you worked whether you were paid or not.
+              link: Report as employment
+              title: I had an internship, apprenticeship, or did employer-provided training
+            job_training:
+              body: This counts toward your community engagement hours as a work program.
+              link: Report as work program
+              title: I was enrolled in a job training program
+            not_listed:
+              body: If you were enrolled in a different type of education program, report what you have and a caseworker will follow up with more information if needed.
+              link: Report education manually
+              title: The type of education program I was in is not listed
+          exit_to_home: Exit to home page
+          header: Reporting other types of education
       review:
         additional_comments_description: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         additional_comments_title: Additional comments (optional)
@@ -289,18 +308,13 @@ en:
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:
         continue: Continue
-        error_body: You need to add income or hours for at least one month to continue
-        error_body_multi_month: You need to add income or hours for at least one month to continue
+        error_body: Add income or hours to continue.
         error_heading: No employment information added
-        field_error_hours: Add income or hours for at least one month
-        field_error_income: Add income or hours for at least one month
         gross_income_hint: How much you made before taxes
         gross_income_label: "%{month} gross income"
-        heading: Add your %{month} hours and income for %{organization}
+        heading: Add your income and hours for %{organization}
         hours_label: "%{month} hours worked"
-        month_indicator: Month %{current} / %{total}
-        no_hours_checkbox: No %{month} income from %{organization}
-        title: Employment hours and income
+        month_indicator: 'Month %{current} of %{total}:'
       month_selections:
         edit:
           continue: Continue

@@ -26,7 +26,7 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
       expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.education.add_your_education.show.description")))
     end
 
-    it "renders all three options with bolded labels and their hints" do
+    it "renders all four options with bolded labels and hints for relevant options" do
       get :show
 
       %w[college high_school_ged trade_or_technical].each do |option|
@@ -34,6 +34,9 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
         expect(response.body).to include("<span class=\"text-bold\">#{label}</span>")
         expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.education.add_your_education.show.options.#{option}.hint")))
       end
+
+      other_label = CGI.escapeHTML(I18n.t("activities.education.add_your_education.show.options.other.label"))
+      expect(response.body).to include("<span class=\"text-bold\">#{other_label}</span>")
     end
 
     it "does not render the hint as an attribute on the radio input" do
@@ -63,6 +66,11 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
     it "redirects to self-attested education when trade or technical program is selected" do
       post :create, params: { add_education_method: "trade_or_technical" }
       expect(response).to redirect_to(new_activities_flow_education_path)
+    end
+
+    it "redirects to other education routing page when other is selected" do
+      post :create, params: { add_education_method: "other" }
+      expect(response).to redirect_to(activities_flow_education_other_path)
     end
 
     it "redirects back with an alert when nothing is selected" do
