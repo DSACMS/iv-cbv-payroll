@@ -41,14 +41,14 @@ bin/site-alert enable --platform cms --environment prod \
 
 The supported Nava environments are `dev`, `demo`, and `prod`. The supported
 CMS Cloud environments are `dev`, `test`, `sandbox`, `demo`, `uat`, and `prod`.
-The script updates the English and Spanish title/body parameters, then pauses
-for Terraform configuration before forcing an ECS rolling deployment so new
-tasks receive the values.
+The script updates the English and Spanish title/body parameters, then forces
+an ECS rolling deployment so new tasks receive the values. Nava environments
+pause for a Terraform checkpoint; CMS Cloud environments do not require one.
 
-## Apply Terraform before deployment
+## Apply Terraform before Nava deployment
 
-After updating the SSM parameters, the script prints the appropriate command
-and waits for the operator to type `complete`.
+After updating the SSM parameters for Nava, the script prints the command and
+waits for the operator to type the completion confirmation.
 
 The Terraform plan may not show changes to environment variables. Continue
 with the apply command after reviewing the plan.
@@ -59,15 +59,10 @@ For Nava, from the top level of this repository, run:
 make infra-update-app-service APP_NAME=app ENVIRONMENT=prod
 ```
 
-For CMS Cloud, from the `emmy-infra` repository, run:
-
-```
-EMMY_ENV=prod make reconfigure plan
-EMMY_ENV=prod make reconfigure apply
-```
-
-Do not type `complete` until the Terraform commands finish successfully. If
-the confirmation is not received, the script will not start an ECS deployment.
+Do not type the completion confirmation until the Terraform command finishes
+successfully. If the confirmation is not received, the script will not start
+an ECS deployment. CMS Cloud skips this Terraform checkpoint and proceeds
+directly to deployment.
 
 ## Enable a custom alert
 

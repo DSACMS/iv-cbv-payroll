@@ -142,10 +142,6 @@ terraform_checkpoint() {
   if [[ "${platform}" == "nava" ]]; then
     echo "From the top level of this repository, run:"
     echo "  make infra-update-app-service APP_NAME=app ENVIRONMENT=${environment}"
-  else
-    echo "From the emmy-infra repository, run:"
-    echo "  EMMY_ENV=${environment} make reconfigure plan"
-    echo "  EMMY_ENV=${environment} make reconfigure apply"
   fi
 
   while true; do
@@ -164,7 +160,9 @@ update_service() {
   local cluster service
   cluster="$(cluster_name)"
   service="$(service_name)"
-  terraform_checkpoint
+  if [[ "${platform}" == "nava" ]]; then
+    terraform_checkpoint
+  fi
   log "Starting ECS deployment for ${service}"
   aws ecs update-service --no-cli-pager --region "${region}" \
     --cluster "${cluster}" --service "${service}" --force-new-deployment >/dev/null
