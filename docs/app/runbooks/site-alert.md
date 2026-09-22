@@ -41,8 +41,30 @@ bin/site-alert enable --platform cms --environment prod \
 
 The supported Nava environments are `dev`, `demo`, and `prod`. The supported
 CMS Cloud environments are `dev`, `test`, `sandbox`, `demo`, `uat`, and `prod`.
-The script updates the English and Spanish title/body parameters, enables the
-banner, and forces an ECS rolling deployment so new tasks receive the values.
+The script updates the English and Spanish title/body parameters, then pauses
+for Terraform configuration before forcing an ECS rolling deployment so new
+tasks receive the values.
+
+## Apply Terraform before deployment
+
+After updating the SSM parameters, the script prints the appropriate command
+and waits for the operator to type `complete`.
+
+For Nava, from the top level of this repository, run:
+
+```
+make infra-update-app-service APP_NAME=app ENVIRONMENT=prod
+```
+
+For CMS Cloud, from the `emmy-infra` repository, run:
+
+```
+make reconfigure plan
+make reconfigure apply
+```
+
+Do not type `complete` until the Terraform commands finish successfully. If
+the confirmation is not received, the script will not start an ECS deployment.
 
 ## Enable a custom alert
 
@@ -68,8 +90,9 @@ bin/site-alert status --platform cms --environment prod
 bin/site-alert disable --platform cms --environment prod
 ```
 
-Disabling only changes `SITE_ALERT_ENABLED` and forces another rolling
-deployment; it leaves the current copy in place for the next incident.
+Disabling only changes `SITE_ALERT_ENABLED`, prompts for the same Terraform
+checkpoint, and forces another rolling deployment; it leaves the current copy
+in place for the next incident.
 
 By default, enable and disable wait for the ECS service to stabilize. Add
 `--no-wait` to return after the deployment starts when the incident requires

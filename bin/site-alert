@@ -126,10 +126,35 @@ put_parameter() {
     --value "${value}" --overwrite >/dev/null
 }
 
+terraform_checkpoint() {
+  log "Terraform configuration must be applied before deploying containers"
+  if [[ "${platform}" == "nava" ]]; then
+    echo "From the top level of this repository, run:"
+    echo "  make infra-update-app-service APP_NAME=app ENVIRONMENT=${environment}"
+  else
+    echo "From the emmy-infra repository, run:"
+    echo "  make reconfigure plan"
+    echo "  make reconfigure apply"
+  fi
+
+  while true; do
+    printf "[site-alert] Type 'complete' after Terraform finishes: "
+    if ! IFS= read -r confirmation; then
+      die "Terraform completion was not confirmed; no ECS deployment was started"
+    fi
+    if [[ "${confirmation}" == "complete" ]]; then
+      break
+    fi
+    echo "[site-alert] Waiting for the exact confirmation: complete"
+  done
+}
+
 update_service() {
   local cluster service
   cluster="$(cluster_name)"
   service="$(service_name)"
+  terraform_checkpoint
+  log "Starting ECS deployment for ${service}"
   aws ecs update-service --no-cli-pager --region "${region}" \
     --cluster "${cluster}" --service "${service}" --force-new-deployment >/dev/null
   log "ECS deployment started for ${service}"
