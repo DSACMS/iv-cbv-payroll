@@ -35,11 +35,11 @@ class Api::V2::InvitationMetadata
   end
 
   def metadata_fields
-    agency.api_metadata(flow_type)
+    agency.api_metadata(flow_type, :v2)
   end
 
   def required_fields
-    agency.api_required_metadata(flow_type)
+    agency.api_required_metadata(flow_type, :v2)
   end
 
   def missing_required_fields

@@ -161,16 +161,16 @@ class ClientAgencyConfig
       end
     end
 
-    def api_metadata(flow_type)
+    def api_metadata(flow_type, version: :v2)
       @api
-        .dig("v2", flow_type.to_s, "metadata")
+        .dig(version.to_s, flow_type.to_s, "metadata")
         .to_a
         .map(&:to_sym)
     end
 
-    def api_required_metadata(flow_type)
+    def api_required_metadata(flow_type, version: :v2)
       @api
-        .dig("v2", flow_type.to_s, "required")
+        .dig(version.to_s, flow_type.to_s, "required")
         .to_a
         .map(&:to_sym)
     end
