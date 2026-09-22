@@ -7,6 +7,23 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.7.0
+
+### User facing changes to Emmy Income + Emmy CE
+- Alternate text for images [(#2050)](https://github.com/DSACMS/iv-cbv-payroll/pull/2050) - Chris [[FFS-4819]](https://jiraent.cms.gov/browse/FFS-4819)
+- Make alerts accessible [(#2055)](https://github.com/DSACMS/iv-cbv-payroll/pull/2055) - Chris [[FFS-4818]](https://jiraent.cms.gov/browse/FFS-4818)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Update monthly details pages for paid work in Emmy CE manual reporting flow [(#2077)](https://github.com/DSACMS/iv-cbv-payroll/pull/2077) - Daphne Gold [[FFS-4822]](https://jiraent.cms.gov/browse/FFS-4822)
+- Implement Education "Other" page (and its radio button) [(#2076)](https://github.com/DSACMS/iv-cbv-payroll/pull/2076) - krista-skylight [[FFS-4792]](https://jiraent.cms.gov/browse/FFS-4792)
+
+### Other/Maintenance (Not user facing)
+- Trigger AI workflows when draft PRs are ready for review [(#2080)](https://github.com/DSACMS/iv-cbv-payroll/pull/2080) - Daphne Gold
+- No ticket: v0.6.0 version bump [(#2074)](https://github.com/DSACMS/iv-cbv-payroll/pull/2074) - Tim Miller
+
 ## 0.6.0
 
 ### Emmy Income only user facing changes
