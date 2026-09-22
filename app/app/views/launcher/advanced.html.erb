@@ -179,7 +179,7 @@
           </div>
         <% end %>
         <%= render AdvancedLauncher::SettingComponent.new(title: "Agency", hint: "Select the agency the flow will use.") do %>
-          <select class="usa-select" name="client_agency_id" id="client_agency_id" data-action="change->advanced-launcher#selectAgency">
+          <select class="usa-select" name="client_agency_id" id="client_agency_id">
             <% Rails.application.config.client_agencies.client_agency_ids.each do |agency_id| %>
               <option value="<%= agency_id %>" <%= "selected" if agency_id == "sandbox" %>><%= agency_id %></option>
             <% end %>

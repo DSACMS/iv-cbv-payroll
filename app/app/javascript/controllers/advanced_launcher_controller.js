@@ -127,6 +127,11 @@ export default class extends Controller {
     }
   }
 
+  clearIndividualScenarios() {
+    this.clearIndividualScenarioSelection()
+    this.clearDatePicker()
+  }
+
   clearIndividualScenarioSelection() {
     this.element
       .querySelectorAll("input[name=test_scenario]")
