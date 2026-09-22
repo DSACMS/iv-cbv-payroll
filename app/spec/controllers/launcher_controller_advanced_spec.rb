@@ -68,7 +68,9 @@ RSpec.describe LauncherController, type: :controller do
           launch_type: "generic",
           reporting_window: "application"
         }
-        expect(response).to redirect_to(%r{/activities/links/sandbox\?reporting_window=application})
+
+        invitation = ActivityFlowInvitation.last
+        expect(response).to redirect_to("/activities/start/#{invitation.auth_token}?reporting_window=application")
       end
 
       it "includes override params in the URL" do
@@ -133,7 +135,7 @@ RSpec.describe LauncherController, type: :controller do
         parsed_response = JSON.parse(response.body)
 
         expect(response).to have_http_status(:success)
-        expect(parsed_response.fetch("url")).to include("/activities/links/sandbox")
+        expect(parsed_response.fetch("url")).to include("/activities/start")
       end
     end
 
@@ -193,7 +195,10 @@ RSpec.describe LauncherController, type: :controller do
             client_agency_id: "sandbox",
             launch_type: "generic"
           }
-          expect(response).to redirect_to(%r{/cbv/links/sandbox})
+
+          invitation = CbvFlowInvitation.last
+
+          expect(response).to redirect_to("/en/start/#{invitation.auth_token}?client_agency_id=sandbox")
         end
 
         it "includes override params in the URL" do
@@ -236,8 +241,9 @@ RSpec.describe LauncherController, type: :controller do
 
           parsed_response = JSON.parse(response.body)
 
+          invitation = CbvFlowInvitation.last
           expect(response).to have_http_status(:success)
-          expect(parsed_response.fetch("url")).to include("/cbv/links/sandbox")
+          expect(parsed_response.fetch("url")).to include("/start/#{invitation.auth_token}?client_agency_id=sandbox")
           expect(parsed_response.fetch("url")).to include("launcher_timeout=10")
         end
       end
