@@ -6,9 +6,9 @@ const CHECKSUM = "n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg="
 
 vi.mock("@js/utilities/file_checksum", () => ({ default: vi.fn() }))
 
-const MAX_FILE_SIZE = 25 * 1024 * 1024
-const TOO_LARGE = "Each file must be smaller than 25 MB."
-const UNSUPPORTED = "Select a PDF, PNG, JPG, or HEIC file."
+const MAX_FILE_SIZE = 40 * 1024 * 1024
+const TOO_LARGE = "Each file must be smaller than 40 MB."
+const UNSUPPORTED = "Select a PDF, PNG, JPEG, BMP, or TIFF file."
 const FAILED = "We could not upload that file."
 
 const setFiles = (input, files) =>
@@ -23,6 +23,7 @@ const buildFile = (name, type, size) => {
 const jsonResponse = (body, status = 200) => ({
   ok: status >= 200 && status < 300,
   status,
+  headers: new Headers({ "Content-Type": "application/json" }),
   json: () => Promise.resolve(body),
   text: () => Promise.resolve(JSON.stringify(body)),
 })
@@ -30,6 +31,7 @@ const jsonResponse = (body, status = 200) => ({
 const s3Response = (status, code) => ({
   ok: status >= 200 && status < 300,
   status,
+  headers: new Headers({ "Content-Type": "application/xml" }),
   json: () => Promise.reject(new Error("not json")),
   text: () => Promise.resolve(`<?xml version="1.0"?><Error><Code>${code}</Code></Error>`),
 })
@@ -52,7 +54,7 @@ describe("DocumentUploadController", () => {
         data-controller="document-upload"
         data-document-upload-presign-url-value="/activities/presigned_uploads"
         data-document-upload-max-file-size-value="${MAX_FILE_SIZE}"
-        data-document-upload-allowed-types-value="image/*,application/pdf"
+        data-document-upload-allowed-types-value="application/pdf,image/png,image/jpeg,image/bmp,image/tiff"
         data-document-upload-heading-template-value="Uploaded documents (%{count})"
         data-document-upload-remove-label-value="Remove file"
         data-document-upload-icon-href-value="/assets/sprite.svg#file_present"
@@ -230,17 +232,24 @@ describe("DocumentUploadController", () => {
     expect(errorText()).toBe(UNSUPPORTED)
   })
 
-  it("accepts any image type the allowlist wildcard covers", async () => {
+  it("accepts an image type in the agency allowlist", async () => {
     fetch
       .mockResolvedValueOnce(
-        jsonResponse({ uploads: [presignedUploadFor("photo.heic", "signed-id-1")] })
+        jsonResponse({ uploads: [presignedUploadFor("scan.tiff", "signed-id-1")] })
       )
       .mockResolvedValueOnce({ ok: true, status: 204 })
 
-    await selectFiles(buildFile("photo.heic", "image/heic", 1024))
+    await selectFiles(buildFile("scan.tiff", "image/tiff", 1024))
 
     expect(errorText()).toBe("")
     expect(signedIdValues()).toEqual(["signed-id-1"])
+  })
+
+  it("rejects an image type outside the agency allowlist", async () => {
+    await selectFiles(buildFile("photo.heic", "image/heic", 1024))
+
+    expect(fetch).not.toHaveBeenCalled()
+    expect(errorText()).toBe(UNSUPPORTED)
   })
 
   it("surfaces the server's message when the policy request is refused", async () => {
@@ -258,6 +267,19 @@ describe("DocumentUploadController", () => {
         jsonResponse({ uploads: [presignedUploadFor("verification.pdf", "signed-id-1")] })
       )
       .mockResolvedValueOnce(s3Response(400, "EntityTooLarge"))
+
+    await selectFiles(buildFile("verification.pdf", "application/pdf", 1024))
+
+    expect(errorText()).toBe(TOO_LARGE)
+    expect(signedIdValues()).toEqual([])
+  })
+
+  it("surfaces the local upload endpoint's validation message", async () => {
+    fetch
+      .mockResolvedValueOnce(
+        jsonResponse({ uploads: [presignedUploadFor("verification.pdf", "signed-id-1")] })
+      )
+      .mockResolvedValueOnce(jsonResponse({ error: TOO_LARGE }, 422))
 
     await selectFiles(buildFile("verification.pdf", "application/pdf", 1024))
 

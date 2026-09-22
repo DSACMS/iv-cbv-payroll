@@ -1,4 +1,22 @@
 module ActivitiesHelper
+  # i18n-tasks-use t('activities.document_uploads.new.errors.empty')
+  # i18n-tasks-use t('activities.document_uploads.new.errors.too_large')
+  # i18n-tasks-use t('activities.document_uploads.new.errors.unsupported_type')
+  # i18n-tasks-use t('activities.document_uploads.new.errors.upload_failed')
+  def document_upload_error_message(client_agency, reason)
+    t(
+      "activities.document_uploads.new.errors.#{reason}",
+      limit: number_to_human_size(client_agency.max_document_upload_size_bytes),
+      types: document_upload_allowed_types_sentence(client_agency)
+    )
+  end
+
+  def document_upload_allowed_types_sentence(client_agency)
+    client_agency.allowed_document_types
+      .map(&:upcase)
+      .to_sentence(two_words_connector: " or ", last_word_connector: ", or ")
+  end
+
   def show_activity?(type)
     if @flow&.pre_populated_session?
       @flow.pre_populated_activity_types.include?(type.to_sym)

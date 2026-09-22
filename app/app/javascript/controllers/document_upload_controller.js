@@ -77,10 +77,9 @@ export default class extends Controller {
   #validate(file) {
     if (file.size > this.maxFileSizeValue) return this.errorTooLargeValue
 
-    const allowed = this.allowedTypesValue.split(",").some((pattern) => {
-      const type = pattern.trim()
-      return type.endsWith("/*") ? file.type.startsWith(type.slice(0, -1)) : file.type === type
-    })
+    const allowed = this.allowedTypesValue
+      .split(",")
+      .some((contentType) => file.type === contentType.trim())
 
     return allowed ? null : this.errorUnsupportedTypeValue
   }
@@ -125,6 +124,11 @@ export default class extends Controller {
     const response = await fetch(upload.url, { method: "POST", body: form })
 
     if (!response.ok) {
+      if (response.headers.get("content-type")?.includes("application/json")) {
+        const body = await this.#json(response)
+        throw new Error(body?.error || this.errorUploadFailedValue)
+      }
+
       const code = await this.#s3ErrorCode(response)
 
       throw new Error(
