@@ -157,7 +157,6 @@
     community_service: true
     work_programs: true
     employment: true
-  prefilled_activities_enabled: true
   allowed_iframe_ancestors:
     - https://dsacms.github.io
     - https://statehub.hawaii.gov

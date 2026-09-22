@@ -72,7 +72,6 @@ class ClientAgencyConfig
       applicant_attributes
       generic_links_disabled
       activity_types
-      prefilled_activities_enabled
       allowed_iframe_ancestors
     ])
 
@@ -106,7 +105,6 @@ class ClientAgencyConfig
       @applicant_attributes = yaml["applicant_attributes"] || {}
       @generic_links_disabled = yaml["generic_links_disabled"]
       @activity_types = yaml["activity_types"]&.symbolize_keys || {}
-      @prefilled_activities_enabled = yaml["prefilled_activities_enabled"] || false
       @caseworker_fallback_email = yaml["caseworker_fallback_email"]
       @allowed_iframe_ancestors = yaml["allowed_iframe_ancestors"] || []
 
