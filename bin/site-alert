@@ -133,8 +133,8 @@ terraform_checkpoint() {
     echo "  make infra-update-app-service APP_NAME=app ENVIRONMENT=${environment}"
   else
     echo "From the emmy-infra repository, run:"
-    echo "  make reconfigure plan"
-    echo "  make reconfigure apply"
+    echo "  EMMY_ENV=${environment} make reconfigure plan"
+    echo "  EMMY_ENV=${environment} make reconfigure apply"
   fi
 
   while true; do

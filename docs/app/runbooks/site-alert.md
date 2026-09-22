@@ -59,8 +59,8 @@ make infra-update-app-service APP_NAME=app ENVIRONMENT=prod
 For CMS Cloud, from the `emmy-infra` repository, run:
 
 ```
-make reconfigure plan
-make reconfigure apply
+EMMY_ENV=prod make reconfigure plan
+EMMY_ENV=prod make reconfigure apply
 ```
 
 Do not type `complete` until the Terraform commands finish successfully. If
