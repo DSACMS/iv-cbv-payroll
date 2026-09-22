@@ -82,7 +82,7 @@ preset_value() {
     scheduled-maintenance:en:title) echo "Scheduled Maintenance" ;;
     scheduled-maintenance:en:body) echo "ReportMyIncome will be unavailable from 10:00 p.m. Eastern Time (9:00 p.m. Central Time) for 30 minutes for scheduled maintenance. If you aren't able to complete ReportMyIncome before that time, try again later using the same link." ;;
     scheduled-maintenance:es:title) echo "Mantenimiento programado" ;;
-    scheduled-maintenance:es:body) echo "ReportMyIncome no estará disponible durante 30 minutos a partir de las 10:00 p. m., hora del Este (9:00 p. m., hora del Centro), debido a tareas de mantenimiento programadas. Si no puede completar ReportMyIncome antes de esa hora, inténtelo de nuevo más tarde utilizando el mismo enlace." ;;
+    scheduled-maintenance:es:body) echo "ReportMyIncome no estará disponible durante 30 minutos a partir de las 10:00 p. m., hora del Este (9:00 p. m., hora del Centro), debido a un mantenimiento programado. Si no puede completar todo el proceso en ReportMyIncome antes de esa hora, inténtelo más tarde utilizando el mismo enlace." ;;
     *) die "unsupported preset '${preset}'; use scheduled-maintenance" ;;
   esac
 }
