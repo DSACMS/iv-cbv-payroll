@@ -211,6 +211,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_21_190718) do
     t.bigint "activity_flow_id", null: false
     t.text "additional_comments"
     t.string "city"
+    t.string "compensation_type", default: "paid", null: false
     t.string "contact_email"
     t.string "contact_name"
     t.string "contact_phone_number"
