@@ -44,6 +44,10 @@ die() {
   exit 2
 }
 
+log() {
+  echo "[site-alert] $*"
+}
+
 require_value() {
   (($# >= 2)) || die "${1} requires a value"
   [[ -n "$2" && "$2" != --* ]] || die "${1} requires a non-empty value"
@@ -98,7 +102,7 @@ parameter_name() {
   echo "$(parameter_prefix)/${parameter_suffix}"
 }
 
-service_name() {
+cluster_name() {
   if [[ "${platform}" == "cms" ]]; then
     echo "emmy-${environment}"
   else
@@ -106,21 +110,34 @@ service_name() {
   fi
 }
 
+service_name() {
+  if [[ "${platform}" == "cms" ]]; then
+    echo "emmy-${environment}-app"
+  else
+    echo "app-${environment}"
+  fi
+}
+
 put_parameter() {
   local variable_name="$1" value="$2"
+  log "Updating ${variable_name}"
   aws ssm put-parameter --no-cli-pager --region "${region}" \
     --name "$(parameter_name "${variable_name}")" --type String \
     --value "${value}" --overwrite >/dev/null
 }
 
 update_service() {
-  local cluster
-  cluster="$(service_name)"
+  local cluster service
+  cluster="$(cluster_name)"
+  service="$(service_name)"
   aws ecs update-service --no-cli-pager --region "${region}" \
-    --cluster "${cluster}" --service "${cluster}" --force-new-deployment >/dev/null
+    --cluster "${cluster}" --service "${service}" --force-new-deployment >/dev/null
+  log "ECS deployment started for ${service}"
   if [[ "${wait_for_stability}" == "true" ]]; then
+    log "Waiting for ${service} to stabilize"
     aws ecs wait services-stable --no-cli-pager --region "${region}" \
-      --cluster "${cluster}" --services "${cluster}"
+      --cluster "${cluster}" --services "${service}"
+    log "${service} is stable"
   fi
 }
 
@@ -138,6 +155,7 @@ enable_alert() {
     die "custom messages require --title-en, --body-en, --title-es, and --body-es"
   fi
 
+  log "Checking AWS credentials"
   aws sts get-caller-identity --no-cli-pager --region "${region}" >/dev/null
   # Disable first so a partial update cannot display mixed copy.
   put_parameter SITE_ALERT_ENABLED false
@@ -152,6 +170,7 @@ enable_alert() {
 }
 
 disable_alert() {
+  log "Checking AWS credentials"
   aws sts get-caller-identity --no-cli-pager --region "${region}" >/dev/null
   put_parameter SITE_ALERT_ENABLED false
   update_service
@@ -160,6 +179,7 @@ disable_alert() {
 
 show_status() {
   local enabled type
+  log "Checking AWS credentials"
   aws sts get-caller-identity --no-cli-pager --region "${region}" >/dev/null
   enabled="$(aws ssm get-parameter --no-cli-pager --region "${region}" \
     --name "$(parameter_name SITE_ALERT_ENABLED)" --query 'Parameter.Value' --output text)"
@@ -170,7 +190,11 @@ show_status() {
 }
 
 command="${1:-}"
-if [[ -n "${command}" ]]; then shift; fi
+if [[ "${command}" == --* ]]; then
+  die "missing command: add 'enable' before options (for example: ${SCRIPT_NAME} enable $*)"
+elif [[ -n "${command}" ]]; then
+  shift
+fi
 
 platform="" environment="" preset="" title_en="" body_en="" title_es="" body_es=""
 alert_type="warning"
