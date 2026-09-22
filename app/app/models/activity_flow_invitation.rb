@@ -7,6 +7,7 @@ class ActivityFlowInvitation < ApplicationRecord
   }.freeze
   belongs_to :cbv_applicant, optional: true
   has_many :activity_flows
+  has_one :household_member
 
   has_secure_token :auth_token, length: 10
 
