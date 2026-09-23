@@ -841,6 +841,7 @@ en:
         can_not_find_employer: I can’t find my employer or payroll provider
         common_questions_header: Common questions
         employer_not_listed: Employer not listed?
+        error_search_timeout: Search timed out. Please try again.
         exit_button_text: Exit and go to %{agency_acronym}'s website
         header: Search for your employer or payroll provider
         lost_job_body_html: 'If you lost your job within the last 90 days, you can use this tool to report your job loss. You must be able to: <ul><li>Log in to your previous employer or payroll provider account, and</li><li>View your payment information online</li></ul>'

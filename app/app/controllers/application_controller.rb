@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
     # TODO: this needs a shared (or duplicate) string + a translation
     flash[:slim_alert] = {
       type: "error",
-      message: t("activities.income.employer_searches.show.error_search_timeout")
+      message: activity_flow? ? t("activities.income.employer_searches.show.error_search_timeout") : t("cbv.employer_searches.show.error_search_timeout")
     }
 
     redirect_path =
