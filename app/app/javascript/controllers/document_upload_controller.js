@@ -15,6 +15,7 @@ export default class extends Controller {
     errorTooLarge: String,
     errorUnsupportedType: String,
     errorUploadFailed: String,
+    errorMultipleFiles: String,
   }
 
   connect() {
@@ -30,7 +31,7 @@ export default class extends Controller {
     for (const file of files) {
       const message = this.#validate(file)
       if (message) {
-        this.#showError(message)
+        this.#showError(files.length > 1 ? this.errorMultipleFilesValue : message)
         this.#clearInput()
         return
       }
@@ -47,7 +48,8 @@ export default class extends Controller {
       uploads.forEach((upload) => this.#record(upload))
       this.#refreshList()
     } catch (error) {
-      this.#showError(error.message || this.errorUploadFailedValue)
+      const message = error.message || this.errorUploadFailedValue
+      this.#showError(files.length > 1 ? this.errorMultipleFilesValue : message)
     } finally {
       this.#clearInput()
       this.#blockSubmit(false)

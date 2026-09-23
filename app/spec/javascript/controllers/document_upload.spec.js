@@ -10,6 +10,7 @@ const MAX_FILE_SIZE = 40 * 1024 * 1024
 const TOO_LARGE = "Each file must be smaller than 40 MB."
 const UNSUPPORTED = "Select a PDF, PNG, JPEG, BMP, or TIFF file."
 const FAILED = "We could not upload that file."
+const MULTIPLE_FAILED = "We could not upload one or more files. Check the files and try again."
 
 const setFiles = (input, files) =>
   Object.defineProperty(input, "files", { value: files, configurable: true })
@@ -61,6 +62,7 @@ describe("DocumentUploadController", () => {
         data-document-upload-error-too-large-value="${TOO_LARGE}"
         data-document-upload-error-unsupported-type-value="${UNSUPPORTED}"
         data-document-upload-error-upload-failed-value="${FAILED}"
+        data-document-upload-error-multiple-files-value="${MULTIPLE_FAILED}"
       >
         <div hidden data-document-upload-target="signedIds"></div>
         <div class="document-uploads" hidden data-document-upload-target="listSection">
@@ -225,6 +227,17 @@ describe("DocumentUploadController", () => {
     expect(signedIdValues()).toEqual([])
   })
 
+  it("reports a generic error when a multi-file selection contains an invalid file", async () => {
+    await selectFiles(
+      buildFile("verification.pdf", "application/pdf", 1024),
+      buildFile("huge.pdf", "application/pdf", MAX_FILE_SIZE + 1)
+    )
+
+    expect(fetch).not.toHaveBeenCalled()
+    expect(errorText()).toBe(MULTIPLE_FAILED)
+    expect(signedIdValues()).toEqual([])
+  })
+
   it("rejects a disallowed file type without contacting the server", async () => {
     await selectFiles(buildFile("installer.exe", "application/x-msdownload", 1024))
 
@@ -297,6 +310,28 @@ describe("DocumentUploadController", () => {
     await selectFiles(buildFile("verification.pdf", "application/pdf", 1024))
 
     expect(errorText()).toBe(FAILED)
+  })
+
+  it("reports a generic error when a multi-file upload fails", async () => {
+    fetch
+      .mockResolvedValueOnce(
+        jsonResponse({
+          uploads: [
+            presignedUploadFor("first.pdf", "signed-id-1"),
+            presignedUploadFor("second.pdf", "signed-id-2"),
+          ],
+        })
+      )
+      .mockResolvedValueOnce(s3Response(403, "AccessDenied"))
+      .mockResolvedValueOnce({ ok: true, status: 204 })
+
+    await selectFiles(
+      buildFile("first.pdf", "application/pdf", 1024),
+      buildFile("second.pdf", "application/pdf", 1024)
+    )
+
+    expect(errorText()).toBe(MULTIPLE_FAILED)
+    expect(signedIdValues()).toEqual([])
   })
 
   it("accumulates files across separate selections", async () => {

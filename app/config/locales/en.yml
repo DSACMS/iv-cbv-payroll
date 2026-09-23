@@ -149,6 +149,7 @@ en:
         description: 'Upload documents that verify the information you entered for:'
         errors:
           empty: That file is empty. Choose a different file.
+          multiple_files: We could not upload one or more files. Check the files and try again.
           too_large: Each file must be smaller than %{limit}.
           unsupported_type: Select a %{types} file.
           upload_failed: We could not upload that file. Check your connection and try again.
