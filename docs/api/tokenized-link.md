@@ -201,14 +201,18 @@ the `app/` directory with PostgreSQL available:
 
 ```bash
 bundle install
+npm ci
 RAILS_ENV=test bundle exec rake api_docs:build
 ```
 
 This command executes the rswag request specs against the test database,
 validates the OpenAPI document, updates [openapi.json](openapi.json), and builds
-a static Swagger UI site in `app/tmp/api-docs/`. Open `index.html` directly in a
+a static Scalar site in `app/tmp/api-docs/`. Open `index.html` directly in a
 browser. The directory includes its own assets and can be shared or hosted on
 a static site without Rails or a CDN. The viewer does not submit API requests.
+Scalar uses its modern layout with a light theme and a light/dark toggle.
+Its browser bundle is installed through the npm lockfile; the build copies it
+into the site, and fonts use the system defaults so the reference works offline.
 
 The RSpec CI workflow repeats this build, rejects changes that leave the
 checked-in OpenAPI contract stale, and uploads an `api-reference` artifact.

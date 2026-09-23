@@ -1,10 +1,15 @@
 namespace :api_docs do
-  desc "Run API contract specs and build OpenAPI JSON plus a portable Swagger UI site"
+  desc "Run API contract specs and build OpenAPI JSON plus a portable Scalar site"
   task :build do
     require "json"
     require "json_schemer"
     require "fileutils"
     require "cgi"
+
+    assets = Rails.root.join("node_modules/@scalar/api-reference")
+    unless assets.join("dist/browser/standalone.js").file?
+      abort "Scalar assets are missing. Run npm ci in app/ before building the API reference."
+    end
 
     # Always execute the specs, even if rswag's dry-run option is set elsewhere.
     # Generate in tmp so a failed test cannot overwrite the published contract.
@@ -45,10 +50,11 @@ namespace :api_docs do
     output.join("openapi.json").write(json)
     FileUtils.cp(output.join("openapi.json"), Rails.root.join("../docs/api/openapi.json"))
 
-    assets = Gem::Specification.find_by_name("rswag-ui").full_gem_path
     %w[swagger-ui.css swagger-ui-bundle.js LICENSE NOTICE].each do |file|
-      FileUtils.cp(File.join(assets, "node_modules/swagger-ui-dist", file), output.join(file))
+      FileUtils.rm_f(output.join(file))
     end
+    FileUtils.cp(assets.join("dist/browser/standalone.js"), output.join("scalar.js"))
+    FileUtils.cp(Rails.root.join("../docs/api/licenses/scalar.txt"), output.join("scalar-LICENSE"))
 
     # Embed the spec so index.html also works directly from disk, without fetch,
     # a running Rails app, a CDN, or a separate static web server.
@@ -60,19 +66,25 @@ namespace :api_docs do
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
           <title>#{CGI.escapeHTML(document.fetch("info").fetch("title"))}</title>
-          <link rel="stylesheet" href="swagger-ui.css">
+          <style>
+            body { margin: 0; }
+          </style>
         </head>
         <body>
-          <div id="swagger-ui"></div>
-          <script src="swagger-ui-bundle.js"></script>
+          <div id="emmy-api-reference"></div>
+          <script src="scalar.js"></script>
           <script>
-            SwaggerUIBundle({
-              spec: #{embedded_json},
-              dom_id: "#swagger-ui",
-              deepLinking: true,
-              validatorUrl: null,
-              supportedSubmitMethods: [],
-              defaultModelsExpandDepth: 1
+            Scalar.createApiReference("#emmy-api-reference", {
+              content: #{embedded_json},
+              layout: "modern",
+              theme: "default",
+              darkMode: false,
+              withDefaultFonts: false,
+              hideTestRequestButton: true,
+              hideClientButton: true,
+              showDeveloperTools: "never",
+              agent: { disabled: true },
+              telemetry: false
             });
           </script>
         </body>
