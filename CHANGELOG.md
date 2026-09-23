@@ -7,6 +7,21 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.8.0
+
+### User facing changes to Emmy Income + Emmy CE
+- Update Argyle FLOW_ID to new account's flow [(#2079)](https://github.com/DSACMS/iv-cbv-payroll/pull/2079) - Tom Dooner [[FFS-4843]](https://jiraent.cms.gov/browse/FFS-4843)
+- Set the default CBV invitation link expiration to 75 days for the Louisiana (LA) agency [(#2082)](https://github.com/DSACMS/iv-cbv-payroll/pull/2082) - Jake Wheeler [[FFS-4830]](https://jiraent.cms.gov/browse/FFS-4830)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Change content on employment information page for unpaid/in-kind work in Emmy CE manual reporting flow [(#2081)](https://github.com/DSACMS/iv-cbv-payroll/pull/2081) - Daphne Gold [[FFS-4805]](https://jiraent.cms.gov/browse/FFS-4805)
+
+### Other/Maintenance (Not user facing)
+- Bump aws-sdk-s3
+
 ## 0.7.0
 
 ### User facing changes to Emmy Income + Emmy CE
