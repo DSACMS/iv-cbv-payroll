@@ -117,6 +117,33 @@ RSpec.describe PayrollAccount::Argyle, type: :model do
         .from("foo").to("REDACTED")
     end
 
+    context "when Argyle rejects deletion of an account linked before migration" do
+      let(:forbidden_error) { Faraday::ForbiddenError.new("Forbidden") }
+
+      before do
+        allow(fake_argyle).to receive(:delete_account_api)
+          .with(account: payroll_account.aggregator_account_id)
+          .and_raise(forbidden_error)
+        allow(payroll_account).to receive(:created_at)
+          .and_return(PayrollAccount::Argyle::ARGYLE_MIGRATION_DATE - 1.day)
+      end
+
+      it "logs a warning and continues redaction" do
+        expect(Rails.logger).to receive(:warn)
+          .with("Skipping Argyle account deletion for #{payroll_account.aggregator_account_id} - Forbidden")
+
+        expect { payroll_account.redact! }
+          .to change { payroll_account.reload.redacted_at }.from(nil)
+      end
+
+      it "raises the error for accounts linked after the migration" do
+        allow(payroll_account).to receive(:created_at)
+          .and_return(PayrollAccount::Argyle::ARGYLE_MIGRATION_DATE + 1.day)
+
+        expect { payroll_account.redact! }.to raise_error(forbidden_error)
+      end
+    end
+
     context "when something goes wrong with the redaction process in production" do
       before do
         allow(fake_argyle).to receive(:delete_account_api)
