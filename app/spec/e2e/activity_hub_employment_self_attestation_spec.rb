@@ -25,6 +25,8 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     first_selected_month_label = I18n.l(first_selected_month, format: :month_year)
     unselected_month_label = I18n.l(unselected_month, format: :month_year)
     second_selected_month_label = I18n.l(second_selected_month, format: :month_year)
+    first_selected_month_name = I18n.l(first_selected_month, format: :month)
+    second_selected_month_name = I18n.l(second_selected_month, format: :month)
 
     # --- Step 1: Create a new employment activity ---
     within("[data-activity-type='employment']") do
@@ -74,8 +76,23 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     click_button I18n.t("activities.employment.month_selections.edit.continue")
 
     # Hours input for the first selected month
-    verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
-      month: first_selected_month_label, organization: "Gainesville Wrecking"))
+    monthly_details_title = I18n.t(
+      "activities.employment.hours_input.heading",
+      organization: "Gainesville Wrecking"
+    )
+    verify_page(page, title: monthly_details_title)
+    expect(page).to have_content(
+      [
+        I18n.t(
+          "activities.employment.hours_input.month_indicator",
+          current: 1,
+          total: 2
+        ),
+        first_selected_month_name
+      ].join(" "),
+      normalize_ws: true
+    )
+    expect(page).to have_no_selector('input[name="no_hours"]', visible: :all)
 
     click_link I18n.t("activities.activity_header_component.back")
     verify_page(page, title: month_selection_title)
@@ -85,17 +102,26 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     expect(page).to have_field(unselected_month_label, checked: false, visible: :all)
     click_button I18n.t("activities.employment.month_selections.edit.continue")
 
-    verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
-      month: first_selected_month_label, organization: "Gainesville Wrecking"))
-    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_label), with: "500"
-    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_label), with: "40"
+    verify_page(page, title: monthly_details_title)
+    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: "500"
+    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: "40"
     click_button I18n.t("activities.employment.hours_input.continue")
 
     # Hours input for the second selected month
-    verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
-      month: second_selected_month_label, organization: "Gainesville Wrecking"))
-    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: second_selected_month_label), with: "300"
-    fill_in I18n.t("activities.employment.hours_input.hours_label", month: second_selected_month_label), with: "20"
+    verify_page(page, title: monthly_details_title)
+    expect(page).to have_content(
+      [
+        I18n.t(
+          "activities.employment.hours_input.month_indicator",
+          current: 2,
+          total: 2
+        ),
+        second_selected_month_name
+      ].join(" "),
+      normalize_ws: true
+    )
+    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: second_selected_month_name), with: "300"
+    fill_in I18n.t("activities.employment.hours_input.hours_label", month: second_selected_month_name), with: "20"
     click_button I18n.t("activities.employment.hours_input.continue")
 
     # Document upload page
@@ -158,10 +184,13 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     month_edit_links = all("table a", text: I18n.t("activities.community_service.review.edit"))
     month_edit_links.first.click
 
-    verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
-      month: first_selected_month_label, organization: "Updated Employer"))
-    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_label), with: "600"
-    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_label), with: "45"
+    updated_monthly_details_title = I18n.t(
+      "activities.employment.hours_input.heading",
+      organization: "Updated Employer"
+    )
+    verify_page(page, title: updated_monthly_details_title)
+    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: "600"
+    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: "45"
     click_button I18n.t("activities.hub.save")
 
     # Should go directly back to review, not to the next selected month
@@ -169,36 +198,36 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     expect(page).to have_content "$600"
     expect(page).to have_content "45"
 
-    # --- Step 4: Validation guard — cannot zero out all months from review ---
-    # Set the second selected month to 0 via edit from review
+    # --- Step 4: Each selected month requires income or hours ---
+    # Enter only income for the second selected month
     month_edit_links = all("table a", text: I18n.t("activities.community_service.review.edit"))
     month_edit_links.last.click
 
-    verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
-      month: second_selected_month_label, organization: "Updated Employer"))
-    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: second_selected_month_label), with: "0"
-    fill_in I18n.t("activities.employment.hours_input.hours_label", month: second_selected_month_label), with: "0"
+    verify_page(page, title: updated_monthly_details_title)
+    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: second_selected_month_name), with: "300"
+    fill_in I18n.t("activities.employment.hours_input.hours_label", month: second_selected_month_name), with: ""
     click_button I18n.t("activities.hub.save")
 
-    # Should succeed — the first selected month still has valid values
+    # Should succeed because one field was filled in
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Updated Employer"))
 
-    # Now try to set the first selected month to 0 — should fail validation
+    # Clear both fields for the first selected month
     month_edit_links = all("table a", text: I18n.t("activities.community_service.review.edit"))
     month_edit_links.first.click
 
-    verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
-      month: first_selected_month_label, organization: "Updated Employer"))
-    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_label), with: "0"
-    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_label), with: "0"
+    verify_page(page, title: updated_monthly_details_title)
+    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: ""
+    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: ""
     click_button I18n.t("activities.hub.save")
 
     # Should stay on hours input with an error
     expect(page).to have_content I18n.t("activities.employment.hours_input.error_heading")
+    expect(page).to have_content I18n.t("activities.employment.hours_input.error_body")
+    expect(page).to have_no_selector(".usa-error-message")
 
     # Fix it — set to valid values and save
-    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_label), with: "200"
-    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_label), with: "10"
+    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: "200"
+    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: "10"
     click_button I18n.t("activities.hub.save")
 
     # Back to review, then save to hub

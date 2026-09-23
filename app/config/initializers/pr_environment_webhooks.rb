@@ -16,25 +16,33 @@ Rails.application.config.to_prepare do
   pr_number = InternalEnvironment.review_app_pr_number(domain)
 
   if Rails.env.production? && pr_number && defined?(::Rails::Server)
-    begin
-      receiver_base_url = "https://#{domain}"
-      subscription_name = "pr-#{pr_number}"
+    receiver_base_url = "https://#{domain}"
+    subscription_name = "pr-#{pr_number}"
 
-      Rails.logger.info "Registering webhooks for PR environment ##{pr_number} at #{receiver_base_url}"
+    Rails.logger.info "Registering webhooks for PR environment ##{pr_number} at #{receiver_base_url}"
 
-      if Rails.application.config.supported_providers.include?(:pinwheel)
-        PinwheelWebhookManager.new
+    if Rails.application.config.supported_providers.include?(:pinwheel)
+      begin
+        PinwheelWebhookManager
+          .new
           .create_subscription_if_necessary(receiver_base_url, subscription_name)
+      rescue => ex
+        Rails.application.config.webhooks_initialization_error = ex.message
+        Rails.logger.error "🟥 Unable to configure Pinwheel webhooks for PR environment: #{ex}"
+        Rails.logger.error "🟥   in #{ex.backtrace.first}"
       end
+    end
 
-      if Rails.application.config.supported_providers.include?(:argyle)
-        ArgyleWebhooksManager.new(logger: Rails.logger)
+    if Rails.application.config.supported_providers.include?(:argyle)
+      begin
+        ArgyleWebhooksManager
+          .new(logger: Rails.logger)
           .create_subscriptions_if_necessary(receiver_base_url, subscription_name)
+      rescue => ex
+        Rails.application.config.webhooks_initialization_error = ex.message
+        Rails.logger.error "🟥 Unable to configure Argyle webhooks for PR environment: #{ex}"
+        Rails.logger.error "🟥   in #{ex.backtrace.first}"
       end
-    rescue => ex
-      Rails.application.config.webhooks_initialization_error = ex.message
-      Rails.logger.error "🟥 Unable to configure webhooks for PR environment: #{ex}"
-      Rails.logger.error "🟥   in #{ex.backtrace.first}"
     end
   end
 end

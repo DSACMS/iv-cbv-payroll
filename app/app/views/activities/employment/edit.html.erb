@@ -1,4 +1,5 @@
-<% content_for :title, t("activities.employment_info.edit_title") %>
+<% title = @employment_activity.unpaid_or_in_kind? ? t("activities.employment_info.unpaid_or_in_kind.title") : t("activities.employment_info.edit_title") %>
+<% content_for :title, title %>
 
 <% content_for :activity_flow_header do %>
   <%= render ActivityFlowHeaderComponent.new(
@@ -10,7 +11,11 @@
 <% end %>
 
 <h1>
-  <%= t("activities.employment_info.edit_title") %>
+  <%= title %>
 </h1>
+
+<% if @employment_activity.unpaid_or_in_kind? %>
+  <p><%= t("activities.employment_info.unpaid_or_in_kind.description") %></p>
+<% end %>
 
 <%= render "form", employment_activity: @employment_activity %>

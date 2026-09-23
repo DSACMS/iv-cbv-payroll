@@ -35,4 +35,16 @@ RSpec.describe AccordionComponent, type: :component do
     button = page.find(:css, "button.usa-accordion__button")
     expect(button["aria-expanded"]).to eq("false")
   end
+
+  it "renders accordion items as a list when requested" do
+    rendered = render_inline(described_class.new(id: "accordion3", items_as_list: true)) do |component|
+      component.with_title { "Accordion Title" }
+      component.with_accordion_item { "First item" }
+      component.with_accordion_item { "Second item" }
+    end
+
+    expect(rendered).to have_selector("ul.usa-list > li", count: 2)
+    expect(rendered).to have_selector("li", text: "First item")
+    expect(rendered).to have_selector("li", text: "Second item")
+  end
 end
