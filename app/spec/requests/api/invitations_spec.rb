@@ -15,13 +15,13 @@ RSpec.describe "Tokenized Link API", type: :request do
   end
 
   around do |example|
-    ClimateControl.modify(DOMAIN_NAME: "agency.example.org") do
+    ClimateControl.modify(DOMAIN_NAME: "verify-demo.navapbc.cloud") do
       Timecop.freeze(Time.utc(2026, 9, 23, 12)) { example.run }
     end
   end
 
   before do
-    stub_client_agency_config_value(agency_id, :agency_domain, "agency.example.org")
+    stub_client_agency_config_value(agency_id, :agency_domain, "verify-demo.navapbc.cloud")
     # Match production's HTTPS URL defaults without depending on local settings.
     allow(Rails.application.routes).to receive(:default_url_options).and_return(
       Rails.application.routes.default_url_options.merge(protocol: "https")
@@ -35,15 +35,7 @@ RSpec.describe "Tokenized Link API", type: :request do
     post "Create tokenized reporting links" do
       tags "Invitations"
       operationId "createInvitation"
-      description <<~TEXT
-        Creates an income reporting invitation without sending email or SMS.
-        The API key selects the agency and its metadata, expiration, and activity settings.
-        A nonempty activities list also creates a community engagement invitation when enabled.
-        Repeated requests create new invitations; this operation is not idempotent.
-        If activity validation fails, the income invitation has already been saved.
-        Supply a JSON object with language and agency_partner_metadata; malformed containers
-        are not covered by the structured 422 validation response.
-      TEXT
+      description InvitationSchemas.guide_section("Create an invitation")
       consumes "application/json"
       produces "application/json"
       security [ bearerAuth: [] ]
@@ -62,9 +54,9 @@ RSpec.describe "Tokenized Link API", type: :request do
         end
 
         context "with Spanish language" do
-          let(:invitation) { super().merge(language: "ES") }
+          let(:invitation) { super().merge(language: "es") }
 
-          run_test! "normalizes the language", example_summary: "Spanish invitation", openapi_example: :spanish do
+          run_test! "creates a Spanish link", example_summary: "Spanish invitation", openapi_example: :spanish do
             expect(response.parsed_body["language"]).to eq("es")
             expect(response.parsed_body["tokenized_url"]).to include("/es/start/")
           end
@@ -89,7 +81,7 @@ RSpec.describe "Tokenized Link API", type: :request do
           context "with #{type} activities" do
             let(:invitation) { super().merge(activities: [ attributes.merge(type: type.to_s) ]) }
 
-            run_test! "creates both links", example_summary: "Prefilled #{type.to_s.humanize.downcase}", openapi_example: type do
+            run_test! "creates both links" do
               expect(response.parsed_body["activity_tokenized_url"]).to include("/activities/start/")
               expect(ActivityFlowInvitation.last.pre_populated_activities).to eq(invitation[:activities].map(&:deep_stringify_keys))
             end
@@ -101,7 +93,7 @@ RSpec.describe "Tokenized Link API", type: :request do
 
           before { stub_client_agency_config_value(agency_id, :prefilled_activities_enabled, false) }
 
-          run_test! "ignores activities", example_summary: "Activities ignored when disabled for the agency", openapi_example: :activities_disabled do
+          run_test! "ignores activities" do
             expect(response.parsed_body).not_to have_key("activity_tokenized_url")
             expect(ActivityFlowInvitation.count).to eq(0)
           end
@@ -174,7 +166,7 @@ RSpec.describe "Tokenized Link API", type: :request do
         context "without a required activity field" do
           let(:invitation) { super().merge(activities: [ { type: "volunteering" } ]) }
 
-          run_test! "returns an indexed activity error", example_summary: "Missing activity organization", openapi_example: :missing_activity_field do
+          run_test! "returns an indexed activity error" do
             expect(response.parsed_body["errors"].pluck("field")).to include("activities[0].organization_name")
             expect(CbvFlowInvitation.count).to eq(1)
             expect(ActivityFlowInvitation.count).to eq(0)
@@ -184,7 +176,7 @@ RSpec.describe "Tokenized Link API", type: :request do
         context "with an unsupported activity type" do
           let(:invitation) { super().merge(activities: [ { type: "unsupported" } ]) }
 
-          run_test! "rejects the type", example_summary: "Unsupported activity type", openapi_example: :unsupported_activity do
+          run_test! "rejects the type" do
             expect(response.parsed_body["errors"].pluck("field")).to include("activities[0].type")
           end
         end
@@ -192,7 +184,7 @@ RSpec.describe "Tokenized Link API", type: :request do
         context "with a month outside the reporting window" do
           let(:invitation) { super().merge(activities: [ { type: "volunteering", organization_name: "Example Food Bank", months: [ { month: "2026-10-01", hours: 10 } ] } ]) }
 
-          run_test! "rejects the month", example_summary: "Month outside the reporting window", openapi_example: :invalid_month do
+          run_test! "rejects the month" do
             expect(response.parsed_body["errors"].pluck("field")).to include("activities[0].months[0].month")
           end
         end

@@ -10,12 +10,27 @@ separate interfaces; see the [API documentation index](README.md).
 
 ![Tokenized link flow diagram](tokenized-link-flow.png)
 
+## API environments
+
+| Environment | Base URL | Purpose |
+| :-- | :-- | :-- |
+| Dev | https://verify-demo.navapbc.cloud | Develop and test integrations against the latest changes. |
+| Demo | https://demo.reportmyincome.org | Demonstrate and evaluate the platform. |
+
+Use HTTPS for every API request. Use the API key issued for the selected
+environment. Your production hostname and credentials are provided during
+agency onboarding.
+
 ## Access and authentication
 
-Follow [Requesting API Access](request-api-access.md) to obtain an API key and
-the hostname for your agency's environment. Use HTTPS and keep credentials on
-your server. Each key identifies an agency; `client_agency_id` in the request
-cannot select another agency.
+Contact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) to request an agency API key
+for each environment. The Tokenized Link API uses a 32-character secret API key.
+Keep it on your server, do not put it in browser code or public repositories,
+and send it with each request using the `Authorization` header below.
+
+Each key identifies an agency and its configured indexing fields and invitation
+settings. `client_agency_id` in the request cannot select another agency.
+Send JSON request bodies with `Content-Type: application/json`.
 
 ```http
 Authorization: Bearer API_KEY
@@ -65,11 +80,11 @@ values. Metadata values are echoed as supplied, including date strings.
 
 ### Example request
 
-This synthetic example uses sandbox metadata. Substitute the hostname and API
-key provided during onboarding.
+This synthetic example uses sandbox metadata in the Dev environment. Substitute
+the API key provided during onboarding; select the Demo hostname when using Demo.
 
 ```bash
-curl --request POST "https://agency.example.org/api/v1/invitations" \
+curl --request POST "https://verify-demo.navapbc.cloud/api/v1/invitations" \
   --header "Authorization: Bearer $EMMY_API_KEY" \
   --header "Content-Type: application/json" \
   --data '{
@@ -89,7 +104,7 @@ curl --request POST "https://agency.example.org/api/v1/invitations" \
 
 ```json
 {
-  "tokenized_url": "https://agency.example.org/en/start/IncomeExampleToken",
+  "tokenized_url": "https://verify-demo.navapbc.cloud/en/start/IncomeExampleToken",
   "expiration_date": "2026-10-07T23:59:59.999-04:00",
   "language": "en",
   "agency_partner_metadata": {
@@ -101,6 +116,8 @@ curl --request POST "https://agency.example.org/api/v1/invitations" \
   }
 }
 ```
+
+### Link lifetime
 
 Direct the applicant to `tokenized_url` to report income. Treat the token as
 opaque. The `expiration_date` applies to this income link: the end of the day in
@@ -120,24 +137,7 @@ types, provided the activity type is also enabled for the agency:
 | `education` | `school_name` |
 | `job_training` | `program_name`, `organization_name` |
 
-The OpenAPI reference describes each type's address, contact, and monthly fields
-and provides a complete request example for each. For example, add this field to
-the request above for an invitation created in September 2026:
-
-```json
-{
-  "activities": [
-    {
-      "type": "employment",
-      "employer_name": "Example Employer",
-      "is_self_employed": false,
-      "months": [
-        { "month": "2026-08-01", "hours": 80, "gross_income": 1250.50 }
-      ]
-    }
-  ]
-}
-```
+The OpenAPI reference describes each type's address, contact, and monthly fields.
 
 Monthly entries are optional. Use `YYYY-MM-DD` for `month`, preferably the first
 day of the month. Dates must fall within the agency's application reporting
@@ -163,8 +163,8 @@ for each validation error. For example:
 {
   "errors": [
     {
-      "field": "activities[0].organization_name",
-      "message": "can't be blank"
+      "field": "language",
+      "message": "Language must be either English (en) or Spanish (es)."
     }
   ]
 }
@@ -173,7 +173,8 @@ for each validation error. For example:
 Field paths can include `language`, `cbv_applicant.first_name`,
 `agency_partner_metadata.*`, or indexed activity paths such as
 `activities[0].months[0].month`. Do not depend on exact message wording.
-The OpenAPI reference includes tested examples for each error category.
+The OpenAPI reference includes tested examples for authentication, language,
+and applicant validation errors.
 
 An activity validation failure occurs **after the income invitation has been
 saved**. A retry creates another income invitation. The error response does
@@ -190,7 +191,7 @@ using a value agreed during onboarding (for example, `email` or `dashboard`).
 Use `?` if the URL has no query string and `&` if it already has one:
 
 ```text
-https://agency.example.org/en/start/IncomeExampleToken?origin=email
+https://verify-demo.navapbc.cloud/en/start/IncomeExampleToken?origin=email
 ```
 
 ## Building the API reference
@@ -221,6 +222,9 @@ Commit the regenerated `docs/api/openapi.json` whenever the contract changes.
 - Keep shared document settings in
   [swagger_helper.rb](../../app/spec/swagger_helper.rb) and reusable invitation
   schemas in [invitation_schemas.rb](../../app/spec/openapi/invitation_schemas.rb).
+- This guide supplies the generated page's environment and API-key guidance,
+  operation description, and schema descriptions. Rebuild after editing those
+  sections so the rendered reference stays in sync.
 - The specs validate response schemas and successful example requests. The build
   captures actual response bodies and successful requests; it never records
   authorization headers. Dates, hostnames, and example tokens are fixed for

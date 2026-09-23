@@ -1,8 +1,17 @@
 module InvitationSchemas
+  GUIDE_URL = "https://github.com/DSACMS/iv-cbv-payroll/blob/main/docs/api/tokenized-link.md".freeze
+
+  def self.guide_section(heading)
+    guide = Rails.root.join("../docs/api/tokenized-link.md").read
+    section = guide.split(/^#+ #{Regexp.escape(heading)}\n/, 2).fetch(1).split(/^#+ /, 2).first.strip
+    # Keep guide links usable in the portable HTML and other OpenAPI viewers.
+    section.gsub(/\]\(([^)]+)\)/) { "](#{URI.join(GUIDE_URL, Regexp.last_match(1))})" }
+  end
+
   def self.schemas
     metadata = {
       type: :object,
-      description: "Indexing fields agreed during agency onboarding. Accepted fields depend on the agency associated with the API key. Unknown fields and individual_id are ignored. Responses include every configured V1 field, with null for omitted values.",
+      description: guide_section("Agency metadata"),
       properties: {
         first_name: { type: :string, nullable: true, example: "Jane" },
         middle_name: { type: :string, nullable: true, example: "Alex" },
@@ -17,6 +26,7 @@ module InvitationSchemas
       AgencyPartnerMetadata: metadata,
       InvitationRequest: {
         type: :object,
+        description: guide_section("Create an invitation"),
         required: %w[language agency_partner_metadata],
         properties: {
           language: {
@@ -33,6 +43,7 @@ module InvitationSchemas
       },
       InvitationResponse: {
         type: :object,
+        description: guide_section("Link lifetime"),
         required: %w[tokenized_url expiration_date language agency_partner_metadata],
         additionalProperties: false,
         properties: {

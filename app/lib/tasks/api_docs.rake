@@ -4,6 +4,7 @@ namespace :api_docs do
     require "json"
     require "json_schemer"
     require "fileutils"
+    require "cgi"
 
     # Always execute the specs, even if rswag's dry-run option is set elsewhere.
     # Generate in tmp so a failed test cannot overwrite the published contract.
@@ -58,7 +59,7 @@ namespace :api_docs do
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
-          <title>Emmy Tokenized Link API</title>
+          <title>#{CGI.escapeHTML(document.fetch("info").fetch("title"))}</title>
           <link rel="stylesheet" href="swagger-ui.css">
         </head>
         <body>
