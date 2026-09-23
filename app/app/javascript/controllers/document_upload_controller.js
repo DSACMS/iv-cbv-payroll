@@ -12,6 +12,7 @@ export default class extends Controller {
     headingTemplate: String,
     removeLabel: String,
     iconHref: String,
+    errorEmpty: String,
     errorTooLarge: String,
     errorUnsupportedType: String,
     errorUploadFailed: String,
@@ -28,25 +29,43 @@ export default class extends Controller {
     const files = Array.from(this.inputTarget.files)
     if (files.length === 0) return
 
+    const validFiles = []
+    let validationMessage = null
+
     for (const file of files) {
       const message = this.#validate(file)
       if (message) {
-        this.#showError(files.length > 1 ? this.errorMultipleFilesValue : message)
-        this.#clearInput()
-        return
+        if (!validationMessage) validationMessage = message
+      } else {
+        validFiles.push(file)
       }
     }
 
-    this.#showError(null)
+    const errorMessage =
+      validationMessage && files.length > 1 ? this.errorMultipleFilesValue : validationMessage
+    this.#showError(errorMessage)
+
+    if (validFiles.length === 0) {
+      this.#clearInput()
+      return
+    }
+
     this.#blockSubmit(true)
 
     try {
-      const uploads = await this.#requestPresignedUploads(files)
+      const uploads = await this.#requestPresignedUploads(validFiles)
+      const results = await Promise.allSettled(
+        uploads.map((upload, index) => this.#upload(validFiles[index], upload))
+      )
 
-      await Promise.all(uploads.map((upload, index) => this.#upload(files[index], upload)))
+      results.forEach((result, index) => {
+        if (result.status === "fulfilled") this.#record(uploads[index])
+      })
 
-      uploads.forEach((upload) => this.#record(upload))
       this.#refreshList()
+
+      const failedUpload = results.find((result) => result.status === "rejected")
+      if (failedUpload) throw failedUpload.reason
     } catch (error) {
       const message = error.message || this.errorUploadFailedValue
       this.#showError(files.length > 1 ? this.errorMultipleFilesValue : message)
@@ -83,7 +102,10 @@ export default class extends Controller {
       .split(",")
       .some((contentType) => file.type === contentType.trim())
 
-    return allowed ? null : this.errorUnsupportedTypeValue
+    if (!allowed) return this.errorUnsupportedTypeValue
+    if (file.size === 0) return this.errorEmptyValue
+
+    return null
   }
 
   async #requestPresignedUploads(files) {

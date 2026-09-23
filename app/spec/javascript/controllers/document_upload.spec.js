@@ -7,6 +7,7 @@ const CHECKSUM = "n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg="
 vi.mock("@js/utilities/file_checksum", () => ({ default: vi.fn() }))
 
 const MAX_FILE_SIZE = 40 * 1024 * 1024
+const EMPTY = "That file is empty. Choose a different file."
 const TOO_LARGE = "Each file must be smaller than 40 MB."
 const UNSUPPORTED = "Select a PDF, PNG, JPEG, BMP, or TIFF file."
 const FAILED = "We could not upload that file."
@@ -59,6 +60,7 @@ describe("DocumentUploadController", () => {
         data-document-upload-heading-template-value="Uploaded documents (%{count})"
         data-document-upload-remove-label-value="Remove file"
         data-document-upload-icon-href-value="/assets/sprite.svg#file_present"
+        data-document-upload-error-empty-value="${EMPTY}"
         data-document-upload-error-too-large-value="${TOO_LARGE}"
         data-document-upload-error-unsupported-type-value="${UNSUPPORTED}"
         data-document-upload-error-upload-failed-value="${FAILED}"
@@ -227,15 +229,40 @@ describe("DocumentUploadController", () => {
     expect(signedIdValues()).toEqual([])
   })
 
-  it("reports a generic error when a multi-file selection contains an invalid file", async () => {
+  it("uploads valid files from a mixed selection and reports a generic error", async () => {
+    fetch
+      .mockResolvedValueOnce(
+        jsonResponse({ uploads: [presignedUploadFor("verification.pdf", "signed-id-1")] })
+      )
+      .mockResolvedValueOnce({ ok: true, status: 204 })
+
     await selectFiles(
       buildFile("verification.pdf", "application/pdf", 1024),
       buildFile("huge.pdf", "application/pdf", MAX_FILE_SIZE + 1)
     )
 
+    const payload = JSON.parse(fetch.mock.calls[0][1].body)
+
+    expect(payload.files.map((file) => file.filename)).toEqual(["verification.pdf"])
+    expect(errorText()).toBe(MULTIPLE_FAILED)
+    expect(signedIdValues()).toEqual(["signed-id-1"])
+  })
+
+  it("rejects a multi-file selection when every file is invalid", async () => {
+    await selectFiles(
+      buildFile("huge.pdf", "application/pdf", MAX_FILE_SIZE + 1),
+      buildFile("installer.exe", "application/x-msdownload", 1024)
+    )
+
     expect(fetch).not.toHaveBeenCalled()
     expect(errorText()).toBe(MULTIPLE_FAILED)
-    expect(signedIdValues()).toEqual([])
+  })
+
+  it("rejects an empty file without contacting the server", async () => {
+    await selectFiles(buildFile("empty.pdf", "application/pdf", 0))
+
+    expect(fetch).not.toHaveBeenCalled()
+    expect(errorText()).toBe(EMPTY)
   })
 
   it("rejects a disallowed file type without contacting the server", async () => {
@@ -331,7 +358,7 @@ describe("DocumentUploadController", () => {
     )
 
     expect(errorText()).toBe(MULTIPLE_FAILED)
-    expect(signedIdValues()).toEqual([])
+    expect(signedIdValues()).toEqual(["signed-id-2"])
   })
 
   it("accumulates files across separate selections", async () => {

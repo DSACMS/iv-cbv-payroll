@@ -69,6 +69,8 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       )
       expect(ordered_elements.map { |element| element[:"data-document-upload-target"] })
         .to eq([ "listSection", "input" ])
+      expect(upload_form[:"data-document-upload-error-empty-value"])
+        .to eq(I18n.t("activities.document_uploads.new.errors.empty"))
       expect(upload_form[:"data-document-upload-error-multiple-files-value"])
         .to eq(I18n.t("activities.document_uploads.new.errors.multiple_files"))
     end
