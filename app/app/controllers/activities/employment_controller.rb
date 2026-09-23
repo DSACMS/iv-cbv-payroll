@@ -15,11 +15,13 @@ class Activities::EmploymentController < Activities::BaseController
   after_action :track_review_viewed_event, only: :review
 
   def new
-    @employment_activity = @flow.employment_activities.new
+    @employment_activity = @flow.employment_activities.new(compensation_type: compensation_type)
   end
 
   def create
-    @employment_activity = @flow.employment_activities.new(employment_activity_params.merge(draft: true))
+    @employment_activity = @flow.employment_activities.new(
+      employment_activity_params.merge(draft: true, compensation_type: compensation_type)
+    )
     if @employment_activity.save
       track_event(TrackEvent::EmploymentInfoSubmitted, employment_activity_id: @employment_activity.id)
       redirect_to employment_month_entry_path
@@ -118,6 +120,12 @@ class Activities::EmploymentController < Activities::BaseController
 
   def employment_activity_params
     params.require(:employment_activity).permit(*EmploymentActivity::FIELDS)
+  end
+
+  def compensation_type
+    return params[:compensation_type] if EmploymentActivity.compensation_types.key?(params[:compensation_type])
+
+    "paid"
   end
 
   def employment_month_entry_path

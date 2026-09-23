@@ -1,5 +1,5 @@
 class Activities::Education::AddYourEducationController < Activities::BaseController
-  ADD_EDUCATION_METHODS = %w[college_or_university high_school_ged trade_or_technical].freeze
+  ADD_EDUCATION_METHODS = %w[college_or_university high_school_ged trade_or_technical other].freeze
 
   def show
   end
@@ -18,8 +18,11 @@ class Activities::Education::AddYourEducationController < Activities::BaseContro
   private
 
   def next_step_path(add_education_method)
-    if add_education_method == "college_or_university"
+    case add_education_method
+    when "college_or_university"
       verify_activities_flow_education_index_path
+    when "other"
+      activities_flow_education_other_path
     else
       new_activities_flow_education_path
     end

@@ -50,6 +50,49 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
       expect(response.body).to include("usa-input-group")
     end
+
+    context "when entering unpaid or in-kind work" do
+      before do
+        get :new, params: { compensation_type: "unpaid_or_in_kind" }
+      end
+
+      it "renders the unpaid or in-kind work content" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.title"))
+        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.description"))
+        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_information_description"))
+      end
+
+      it "renders a collapsed accordion that tracks help-text views" do
+        rendered = Capybara.string(response.body)
+        accordion = rendered.find("#unpaid-or-in-kind-work-button")
+
+        expect(accordion["aria-expanded"]).to eq("false")
+        expect(accordion["data-action"]).to eq("click->common-questions#view")
+        expect(accordion["data-section-identifier"]).to eq("unpaid_or_in_kind_work")
+        expect(accordion["data-page"]).to eq("employment_information")
+        expect(rendered).to have_selector("#unpaid-or-in-kind-work-content ul > li", count: 4)
+        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.accordion.item_1"))
+        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.accordion.item_2"))
+        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.accordion.item_3"))
+        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.accordion.item_4"))
+      end
+
+      it "uses work-focused labels and helper text without the self-employed checkbox" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name"))
+        expect(rendered).to have_selector(
+          "#employer_name_hint.usa-hint",
+          text: I18n.t("activities.employment_info.employer_name_hint")
+        )
+        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_name"))
+        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_email"))
+        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_phone_number"))
+        expect(rendered).to have_no_text(I18n.t("activities.employment_info.self_employed"))
+      end
+    end
   end
 
   describe "GET #edit" do
@@ -185,6 +228,12 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
       activity = activity_flow.employment_activities.last
       expect(activity.draft).to be(true)
+    end
+
+    it "stores unpaid or in-kind work as unpaid or in-kind" do
+      post :create, params: employment_params.merge(compensation_type: "unpaid_or_in_kind")
+
+      expect(activity_flow.employment_activities.last).to be_unpaid_or_in_kind
     end
   end
 

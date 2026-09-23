@@ -85,12 +85,12 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
 
     it "redirects to self-attested employment when entering paid work manually" do
       post :create, params: { add_work_method: "enter_paid_manually" }
-      expect(response).to redirect_to(new_activities_flow_income_employment_path)
+      expect(response).to redirect_to(new_activities_flow_income_employment_path(compensation_type: "paid"))
     end
 
     it "redirects to self-attested employment when entering unpaid work manually" do
       post :create, params: { add_work_method: "enter_unpaid_manually" }
-      expect(response).to redirect_to(new_activities_flow_income_employment_path)
+      expect(response).to redirect_to(new_activities_flow_income_employment_path(compensation_type: "unpaid_or_in_kind"))
     end
 
     it "redirects back with an alert when nothing is selected" do

@@ -1,0 +1,277 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_NAME
+readonly DEFAULT_REGION="us-east-1"
+
+usage() {
+  cat <<EOF
+Usage:
+  ${SCRIPT_NAME} enable --platform PLATFORM --environment ENV [message options]
+  ${SCRIPT_NAME} disable --platform PLATFORM --environment ENV
+  ${SCRIPT_NAME} status --platform PLATFORM --environment ENV
+
+Platforms and environments:
+  nava  dev, demo, prod
+  cms   dev, test, sandbox, demo, uat, prod
+
+Message options for enable:
+  --preset PRESET       scheduled-maintenance
+  --title-en TEXT       Custom English title
+  --body-en TEXT        Custom English body
+  --title-es TEXT       Custom Spanish title
+  --body-es TEXT        Custom Spanish body
+  --type TYPE           info, success, warning, or error (default: warning)
+
+Other options:
+  --region REGION       AWS region (default: ${DEFAULT_REGION})
+  --no-wait             Do not wait for the ECS service to stabilize
+  --help                Show this help
+
+Examples:
+  ${SCRIPT_NAME} enable --platform cms --environment prod --preset scheduled-maintenance
+  ${SCRIPT_NAME} enable --platform nava --environment demo \\
+    --title-en "Service update" --body-en "Please try again later." \\
+    --title-es "Actualización del servicio" --body-es "Inténtelo de nuevo más tarde."
+  ${SCRIPT_NAME} disable --platform cms --environment prod
+EOF
+}
+
+die() {
+  echo "${SCRIPT_NAME}: $*" >&2
+  exit 2
+}
+
+log() {
+  echo "[site-alert] $*"
+}
+
+require_value() {
+  (($# >= 2)) || die "${1} requires a value"
+  [[ -n "$2" && "$2" != --* ]] || die "${1} requires a non-empty value"
+}
+
+validate_target() {
+  case "${platform}:${environment}" in
+    nava:dev|nava:demo|nava:prod|cms:dev|cms:test|cms:sandbox|cms:demo|cms:uat|cms:prod)
+      ;;
+    nava:*)
+      die "unsupported Nava environment '${environment}'; use dev, demo, or prod"
+      ;;
+    cms:*)
+      die "unsupported CMS Cloud environment '${environment}'; use dev, test, sandbox, demo, uat, or prod"
+      ;;
+    *)
+      die "unsupported platform '${platform}'; use nava or cms"
+      ;;
+  esac
+}
+
+validate_type() {
+  case "$1" in
+    info|success|warning|error) ;;
+    *) die "unsupported alert type '${1}'; use info, success, warning, or error" ;;
+  esac
+}
+
+preset_value() {
+  local preset="$1" language="$2" field="$3"
+  case "${preset}:${language}:${field}" in
+    scheduled-maintenance:en:title) echo "Scheduled Maintenance" ;;
+    scheduled-maintenance:en:body) echo "ReportMyIncome will be unavailable from 10:00 p.m. Eastern Time (9:00 p.m. Central Time) for 30 minutes for scheduled maintenance. If you aren't able to complete ReportMyIncome before that time, try again later using the same link." ;;
+    scheduled-maintenance:es:title) echo "Mantenimiento programado" ;;
+    scheduled-maintenance:es:body) echo "ReportMyIncome no estará disponible durante 30 minutos a partir de las 10:00 p. m., hora del Este (9:00 p. m., hora del Centro), debido a un mantenimiento programado. Si no puede completar todo el proceso en ReportMyIncome antes de esa hora, inténtelo más tarde utilizando el mismo enlace." ;;
+    *) die "unsupported preset '${preset}'; use scheduled-maintenance" ;;
+  esac
+}
+
+parameter_prefix() {
+  if [[ "${platform}" == "cms" ]]; then
+    echo "/emmy/${environment}/app"
+  else
+    echo "/service/app-${environment}"
+  fi
+}
+
+parameter_name() {
+  local variable_name="$1" parameter_suffix
+  parameter_suffix="$(printf '%s' "${variable_name}" | tr '[:upper:]' '[:lower:]')"
+  parameter_suffix="${parameter_suffix//_/-}"
+  echo "$(parameter_prefix)/${parameter_suffix}"
+}
+
+cluster_name() {
+  if [[ "${platform}" == "cms" ]]; then
+    echo "emmy-${environment}"
+  else
+    echo "app-${environment}"
+  fi
+}
+
+service_name() {
+  if [[ "${platform}" == "cms" ]]; then
+    echo "emmy-${environment}-app"
+  else
+    echo "app-${environment}"
+  fi
+}
+
+check_aws_credentials() {
+  log "Checking AWS credentials"
+  aws_account_id="$(aws sts get-caller-identity --no-cli-pager --region "${region}" \
+    --query Account --output text)"
+  [[ -n "${aws_account_id}" && "${aws_account_id}" != "None" ]] ||
+    die "could not determine the AWS account"
+  log "Using AWS account ${aws_account_id}"
+}
+
+put_parameter() {
+  local variable_name="$1" value="$2" parameter
+  parameter="$(parameter_name "${variable_name}")"
+  log "Updating SSM parameter ${parameter}"
+  aws ssm put-parameter --no-cli-pager --region "${region}" \
+    --name "${parameter}" --type String \
+    --value "${value}" --overwrite >/dev/null
+}
+
+terraform_checkpoint() {
+  log "Terraform configuration must be applied before deploying containers"
+  echo "Note: the Terraform plan may not show changes to environment variables."
+  if [[ "${platform}" == "nava" ]]; then
+    echo "From the top level of this repository, run:"
+    echo "  make infra-update-app-service APP_NAME=app ENVIRONMENT=${environment}"
+  fi
+
+  while true; do
+    printf "[site-alert] Type 'complete' after Terraform finishes: "
+    if ! IFS= read -r confirmation; then
+      die "Terraform completion was not confirmed; no ECS deployment was started"
+    fi
+    if [[ "${confirmation}" == "complete" ]]; then
+      break
+    fi
+    echo "[site-alert] Waiting for the exact confirmation: complete"
+  done
+}
+
+update_service() {
+  local cluster service
+  cluster="$(cluster_name)"
+  service="$(service_name)"
+  if [[ "${platform}" == "nava" ]]; then
+    terraform_checkpoint
+  fi
+  log "Starting ECS deployment for ${service}"
+  aws ecs update-service --no-cli-pager --region "${region}" \
+    --cluster "${cluster}" --service "${service}" --force-new-deployment >/dev/null
+  log "ECS deployment started for ${service}"
+  if [[ "${wait_for_stability}" == "true" ]]; then
+    log "Waiting for ${service} to stabilize"
+    aws ecs wait services-stable --no-cli-pager --region "${region}" \
+      --cluster "${cluster}" --services "${service}"
+    log "${service} is stable"
+  fi
+}
+
+enable_alert() {
+  if [[ -n "${preset}" ]]; then
+    [[ -z "${title_en}${body_en}${title_es}${body_es}" ]] ||
+      die "do not combine --preset with custom message options"
+    title_en="$(preset_value "${preset}" en title)"
+    body_en="$(preset_value "${preset}" en body)"
+    title_es="$(preset_value "${preset}" es title)"
+    body_es="$(preset_value "${preset}" es body)"
+  elif [[ -z "${title_en}${body_en}${title_es}${body_es}" ]]; then
+    die "enable requires --preset or all four custom message options"
+  elif [[ -z "${title_en}" || -z "${body_en}" || -z "${title_es}" || -z "${body_es}" ]]; then
+    die "custom messages require --title-en, --body-en, --title-es, and --body-es"
+  fi
+
+  check_aws_credentials
+  # Disable first so a partial update cannot display mixed copy.
+  put_parameter SITE_ALERT_ENABLED false
+  put_parameter SITE_ALERT_TITLE_EN "${title_en}"
+  put_parameter SITE_ALERT_BODY_EN "${body_en}"
+  put_parameter SITE_ALERT_TITLE_ES "${title_es}"
+  put_parameter SITE_ALERT_BODY_ES "${body_es}"
+  put_parameter SITE_ALERT_TYPE "${alert_type}"
+  put_parameter SITE_ALERT_ENABLED true
+  update_service
+  echo "Enabled ${preset:-custom} site alert on ${platform}/${environment}."
+}
+
+disable_alert() {
+  check_aws_credentials
+  put_parameter SITE_ALERT_ENABLED false
+  update_service
+  echo "Disabled site alert on ${platform}/${environment}."
+}
+
+show_status() {
+  local enabled type
+  check_aws_credentials
+  enabled="$(aws ssm get-parameter --no-cli-pager --region "${region}" \
+    --name "$(parameter_name SITE_ALERT_ENABLED)" --query 'Parameter.Value' --output text)"
+  type="$(aws ssm get-parameter --no-cli-pager --region "${region}" \
+    --name "$(parameter_name SITE_ALERT_TYPE)" --query 'Parameter.Value' \
+    --output text 2>/dev/null || echo "unset")"
+  echo "platform=${platform} environment=${environment} enabled=${enabled} type=${type}"
+}
+
+command="${1:-}"
+if [[ "${command}" == --* ]]; then
+  die "missing command: add 'enable' before options (for example: ${SCRIPT_NAME} enable $*)"
+elif [[ -n "${command}" ]]; then
+  shift
+fi
+
+platform="" environment="" preset="" title_en="" body_en="" title_es="" body_es=""
+alert_type="warning"
+region="${AWS_REGION:-${DEFAULT_REGION}}"
+aws_account_id=""
+wait_for_stability="true"
+
+while (($#)); do
+  case "$1" in
+    --platform) require_value "$@"; platform="$2"; shift 2 ;;
+    --environment) require_value "$@"; environment="$2"; shift 2 ;;
+    --preset) require_value "$@"; preset="$2"; shift 2 ;;
+    --title-en) require_value "$@"; title_en="$2"; shift 2 ;;
+    --body-en) require_value "$@"; body_en="$2"; shift 2 ;;
+    --title-es) require_value "$@"; title_es="$2"; shift 2 ;;
+    --body-es) require_value "$@"; body_es="$2"; shift 2 ;;
+    --type) require_value "$@"; alert_type="$2"; shift 2 ;;
+    --region) require_value "$@"; region="$2"; shift 2 ;;
+    --no-wait) wait_for_stability="false"; shift ;;
+    --help|-h) usage; exit 0 ;;
+    *) die "unknown option '${1}'; see --help" ;;
+  esac
+done
+
+case "${command}" in
+  enable|disable|status) ;;
+  help|--help|-h) usage; exit 0 ;;
+  "") usage >&2; exit 2 ;;
+  *) die "unknown command '${command}'; use enable, disable, or status" ;;
+esac
+
+[[ -n "${platform}" ]] || die "--platform is required"
+[[ -n "${environment}" ]] || die "--environment is required"
+validate_target
+validate_type "${alert_type}"
+
+case "${command}" in
+  enable) enable_alert ;;
+  disable)
+    [[ -z "${preset}${title_en}${body_en}${title_es}${body_es}" ]] ||
+      die "message options are only valid with enable"
+    disable_alert
+    ;;
+  status)
+    [[ -z "${preset}${title_en}${body_en}${title_es}${body_es}" ]] ||
+      die "message options are only valid with enable"
+    show_status
+    ;;
+esac
