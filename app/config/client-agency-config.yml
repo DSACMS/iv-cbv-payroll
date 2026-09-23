@@ -41,7 +41,7 @@
     - bmp
     - tiff
   max_document_upload_size_mb: 40
-  invitation_valid_days: 14
+  invitation_valid_days: 75
   weekly_report:
     recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
     report_variant: flows

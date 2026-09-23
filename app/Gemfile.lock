@@ -108,7 +108,7 @@ GEM
     aws-sdk-rds (1.310.0)
       aws-sdk-core (~> 3, >= 3.244.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.232.0)
+    aws-sdk-s3 (1.232.1)
       aws-sdk-core (~> 3, >= 3.256.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -170,10 +170,10 @@ GEM
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
     csv (3.3.6)
-    datadog (2.41.0)
+    datadog (2.42.0)
       cgi
-      datadog-ruby_core_source (~> 3.5, >= 3.5.4)
-      libdatadog (~> 40.0.0.1.0)
+      datadog-ruby_core_source (~> 3.5, >= 3.5.5)
+      libdatadog (~> 40.0.0.2.0)
       libddwaf (~> 1.30.0.0.0)
       logger
       msgpack
@@ -215,7 +215,7 @@ GEM
       activesupport (>= 6.1.0)
     faker (3.8.0)
       i18n (>= 1.8.11, < 2)
-    faraday (2.14.3)
+    faraday (2.14.4)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -277,10 +277,10 @@ GEM
       regexp_parser (~> 2.0)
       simpleidn (~> 0.2)
     language_server-protocol (3.17.0.6)
-    libdatadog (40.0.0.1.0)
-    libdatadog (40.0.0.1.0-aarch64-linux)
-    libdatadog (40.0.0.1.0-arm64-darwin)
-    libdatadog (40.0.0.1.0-x86_64-linux)
+    libdatadog (40.0.0.2.0)
+    libdatadog (40.0.0.2.0-aarch64-linux)
+    libdatadog (40.0.0.2.0-arm64-darwin)
+    libdatadog (40.0.0.2.0-x86_64-linux)
     libddwaf (1.30.0.0.2-aarch64-linux)
       ffi (~> 1.0)
     libddwaf (1.30.0.0.2-arm64-darwin)
@@ -334,7 +334,7 @@ GEM
       base64
       json-logic-rb (~> 0.2)
       mutex_m
-    msgpack (1.8.4)
+    msgpack (1.8.5)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     mutex_m (0.3.0)
@@ -657,7 +657,7 @@ DEPENDENCIES
   css_parser (~> 3.1.0)
   cssbundling-rails
   csv
-  datadog (~> 2.41)
+  datadog (~> 2.42)
   debase (~> 0.2.9)
   debase-ruby_core_source (~> 4.0)
   debug
@@ -668,7 +668,7 @@ DEPENDENCIES
   erb_lint
   factory_bot (~> 6.6)
   faker (~> 3.8)
-  faraday (~> 2.14.2)
+  faraday (~> 2.14.4)
   gpgme (~> 2.0)
   i18n-tasks (~> 1.1)
   jbuilder
