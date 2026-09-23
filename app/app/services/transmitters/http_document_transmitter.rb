@@ -36,6 +36,7 @@ class Transmitters::HttpDocumentTransmitter
     request.content_length = content.bytesize
     request.body = content
     request["Content-Disposition"] = %(attachment; filename="#{document.file_name}")
+    request["X-IVAAS-Document-Id"] = document.document_id
     request["X-IVAAS-Timestamp"] = timestamp
     request["X-IVAAS-Signature"] = signature(content)
     request["X-IVAAS-Confirmation-Code"] = @activity_flow.confirmation_code

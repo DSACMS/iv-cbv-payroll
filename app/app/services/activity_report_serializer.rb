@@ -91,7 +91,7 @@ class ActivityReportSerializer
   def all_documents
     @all_documents ||= ActivityDocumentsService.new(@activity_flow)
       .all
-      .map { |document| [ document, "DOC-#{document.attachment.id}" ] }
+      .map { |document| [ document, document.document_id ] }
   end
 
   def document_ids_by_activity
