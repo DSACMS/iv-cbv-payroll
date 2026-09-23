@@ -1,147 +1,236 @@
-# Tokenized Link API Integration Guide [General]
+# Tokenized Link API Integration Guide
 
-# **Introduction**
+Create personalized links that applicants use to begin reporting income and,
+when enabled for an agency, community engagement activities in Emmy.
 
-This guide provides high-level technical documentation necessary for a **state agency** to integrate with the Emmy API Version 1.0.
+This guide covers `POST /api/v1/invitations` (`Api::InvitationsController`).
+The [OpenAPI contract](openapi.json) contains the field schemas and tested
+request/response examples. V2 invitations and outbound report payloads are
+separate interfaces; see the [API documentation index](README.md).
 
-This flowchart shows the connection between a state's system, the Emmy platform, and the ultimate end-user experience for an agency's **clients** (those receiving or applying for benefits from an agency):
+![Tokenized link flow diagram](tokenized-link-flow.png)
 
-![tokenized link flow diagram](tokenized-link-flow.png)
+## Access and authentication
 
-# **API Environments**
+Follow [Requesting API Access](request-api-access.md) to obtain an API key and
+the hostname for your agency's environment. Use HTTPS and keep credentials on
+your server. Each key identifies an agency; `client_agency_id` in the request
+cannot select another agency.
 
-The Emmy platform currently has three hosted environments where the Tokenized Link API is accessible:
-
-| Environment Name | Base URL | Description |
-| :-- | :-- | :-- |
-| Production | https://[agency_subdomain].reportmyincome.org/ | Production website with live agencies |
-| Demo | https://demo.reportmyincome.org/ | Used for demoing Emmy to states and matches our production site. |
-| Dev | https://verify-demo.navapbc.cloud/ | Our only lower environment and can be used for development and testing latest changes. |
-
-The Emmy Tokenized Link API is only accessible over HTTPS.
-
-# **Authentication**
-
-Authentication to API endpoints is provided with a header:
-
-```
+```http
 Authorization: Bearer API_KEY
+Content-Type: application/json
 ```
 
-The API\_KEY is a 32 character secret that should not be disclosed publicly. Partner agencies will receive a unique API\_KEY for each environment.
+A missing or invalid key returns `401 Unauthorized` with a plain-text body,
+`HTTP Token: Access denied.`, and a `WWW-Authenticate` header. If a key is
+compromised, contact emmy@cms.hhs.gov to have it replaced.
 
-If a request is not authenticated with a valid API\_KEY, the server will respond with a **401 Unauthorized** response.
+## Create an invitation
 
-If the API\_KEY is compromised, email us immediately (emmy@cms.hhs.gov) and we can disable the old API\_KEY and generate a new one.
+Send a JSON object to `POST /api/v1/invitations`:
 
-# **Endpoints**
-
-The API currently contains only one endpoint.
-
-## **POST /api/v1/invitations** (Create an Emmy Tokenized Session Link)
-
-This API endpoint creates a new "invitation" to use Emmy, which associates an applicant's *indexing metadata* with a *tokenized link* for that user to initiate the session. Invitation links may be sent by the agency to the applicant by any method defined as part of the pilot, including when:
-
-* The client clicks a button to go to Emmy,
-* A request for verifications is processed by the agency's systems, or
-* Sending a notice to a user by SMS/Email
-
-After the applicant follows the link, the payroll data they link during the session will be transmitted back to the partner agency with the indexing information provided to this endpoint.
-
-### **API Fields**
-
-| Field Name | Required? | Description |
+| Field | Required? | Description |
 | :-- | :-- | :-- |
-| **Request Fields** |  |  |
-| language | No | Applicant's preferred written language, if known. When provided, the Emmy session will automatically begin in this language if we support this language. When omitted, will default to "en". Formatted as ISO 639-1 (2-character) code. |
-| agency_partner_metadata | Yes | Agency-specific metadata fields that will be used for indexing the income report in the document imaging system after it is sent back to the state agency. The specific indexing fields sent by an agency will be identified during an implementation call. Sample fields sent by some state agencies include `case_number` (String), `date_of_birth` (Date String), `doc_id` (String) |
+| `language` | Yes | `en` or `es`, case insensitive. Returned in lowercase. Missing or unsupported values return `422`; there is no default or fallback. |
+| `agency_partner_metadata` | Yes | An object containing the indexing fields agreed during agency onboarding. See below. |
+| `activities` | No | An array of prefilled activities. Ignored unless prefilled activities are enabled for the agency. A nonempty, valid array creates an additional activity invitation. |
 
-| Field Name | Required? | Description |
-| :-- | :-- | :-- |
-| **Response Fields** |  |  |
-| url | Yes | A unique URL containing a token that represents the session corresponding to the metadata submitted in the request.The URL is valid until 11:59:59 p.m. Eastern Time of the 14th day after its creation. |
-| expiration_date | Yes | Expiration date of the URL, formatted as an ISO8601 datetime. After this date, the user would need to use a new tokenized URL to access Emmy. |
-| language | Yes | Language code that the user will begin Emmy in. This will match the requested language if Emmy supports the language. Otherwise, it will fall back to "en" (English). |
-| agency_partner_metadata | Yes | Object including all agency-specific metadata fields used for indexing the income report. Values will match whatever is provided in the request's `agency_partner_metadata` field. |
+The endpoint creates invitations without sending email or SMS. The agency
+delivers the returned link or redirects the applicant to it. Each request
+creates a new invitation; there is no idempotency key or deduplication.
 
-### **Sample Request Payload:**
+### Agency metadata
 
-This sample demonstrates a request to the API for a client reporting a loss of their job at Target and starting a new job at Walmart.
+Metadata links a submitted report back to the agency's records. Send the fields
+agreed during onboarding. Current V1 field sets are:
 
+| Agency | Accepted fields |
+| :-- | :-- |
+| Sandbox, New Hampshire | `first_name`, `middle_name`, `last_name`, `case_number`, `date_of_birth` |
+| Louisiana | `case_number`, `date_of_birth`, `doc_id` |
+| Research | `case_number`, `date_of_birth` |
+| Accenture | `case_number` |
+
+The agency's [configuration](../../app/config/client-agency-config.yml) defines
+its indexing requirements. The shared OpenAPI metadata schema describes the
+union of these fields, so schema validation alone cannot check agency-specific
+requirements. Sandbox and New Hampshire invitations require first and last
+names. Supply dates of birth as `MM/DD/YYYY`; Louisiana case numbers are limited
+to 13 characters.
+
+Unrecognized fields and `individual_id` are ignored by this V1 endpoint. The
+response contains all accepted fields for the agency, with `null` for omitted
+values. Metadata values are echoed as supplied, including date strings.
+
+### Example request
+
+This synthetic example uses sandbox metadata. Substitute the hostname and API
+key provided during onboarding.
+
+```bash
+curl --request POST "https://agency.example.org/api/v1/invitations" \
+  --header "Authorization: Bearer $EMMY_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "language": "en",
+    "agency_partner_metadata": {
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "case_number": "EXAMPLE-123",
+      "date_of_birth": "01/15/1990"
+    }
+  }'
 ```
+
+### Successful response
+
+`201 Created` returns JSON:
+
+```json
 {
-  "language": "en", // optional - Valid values: "en" or "es". Default: "en" (english)
-  "agency_partner_metadata": {
-    "case_number": "432432" // required, depending on agency indexing data configuration
-  }
-}
-```
-
-### **Sample Response:**
-
-```
-201 Created
-{
-  "url": "https://verify-demo.navapbc.cloud/en/cbv/entry?token=ABC123456",
-  "expiration_date": "2025-01-01T23:59:59.999-05:00",
+  "tokenized_url": "https://agency.example.org/en/start/IncomeExampleToken",
+  "expiration_date": "2026-10-07T23:59:59.999-04:00",
   "language": "en",
   "agency_partner_metadata": {
-    "case_number": "432432"
+    "first_name": "Jane",
+    "middle_name": null,
+    "last_name": "Doe",
+    "case_number": "EXAMPLE-123",
+    "date_of_birth": "01/15/1990"
   }
 }
 ```
 
-After receiving the response, the agency should direct the applicant to the **url** value in the response to begin the Emmy session. If the URL is stored by the agency's system, it should not be given to an applicant after the **expiration\_date** (14 days by default) – rather, a new Tokenized Session Link should be requested for that applicant.
+Direct the applicant to `tokenized_url` to report income. Treat the token as
+opaque. The `expiration_date` applies to this income link: the end of the day in
+`America/New_York` after the agency's configured validity period. For example,
+the sandbox uses 14 days; other agencies may differ. Request a new invitation
+when a link expires.
 
-### **Example curl command:**
+### Prefilled activities
 
-```
-curl \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer [api_token]" \
-  -d '{ "language": "en", "agency_partner_metadata": { "case_number": "34243" } }' \
-  https://verify-demo.navapbc.cloud/api/v1/invitations
-```
+When enabled for an agency, include an `activities` array. The API accepts these
+types, provided the activity type is also enabled for the agency:
 
-### **Sample curl command for sandbox on Demo:**
-
-Note: If you encounter issues, please check [the current client agency config](https://github.com/DSACMS/iv-cbv-payroll/blob/main/app/config/client-agency-config.yml) to ensure the required `agency_partner_metadata`  is up to date for the agency corresponding to your `api_token` .
-
-```
-curl \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer [api_token]" \
-  -d '{ "language": "en", "agency_partner_metadata": { "first_name": "Jane", "last_name": "Doe", "case_number": "123", "date_of_birth": "01/01/1990" } }' \
-  https://demo.reportmyincome.org/api/v1/invitations
-```
-
-# **Response Statuses**
-
-* **201 Created** – The API call successfully created a tokenized link.
-* **401 Unauthorized** - An incorrect API token was given.
-* **422 Unprocessable Entity** - Some required fields were missing, or had an incorrect format. Check the response body's values for attribute-specific error messages.
-
-# **Tokenized Link Origin Tracking**
-
-In general, Emmy Tokenized Links should not be modified, except for the purposes of origin tracking. Emmy supports an additional query parameter, `origin`, that allows the Emmy team to calculate click-through-rate for a specific place that the link will appear. This is useful when the link will be shown to the user in multiple locations.
-
-The agency must add the origin parameter when displaying the link to a client. To add it, the agency will concatenate the string "&origin=\[value\]" onto the end of the Tokenized URL, with "\[value\]" replaced with a valid value as listed below.
-
-For example, an Emmy link may be modified like this before directing the user to it:
-
-| Example of adding an origin tracking parameter: |
-| :-- |
-| https://verify-demo.navapbc.cloud/en/cbv/entry?token=sWr3DfLhfMuSGvN6x7htZWcWFjAcFLqu2ggf |
-| https://verify-demo.navapbc.cloud/en/cbv/entry?token=sWr3DfLhfMuSGvN6x7htZWcWFjAcFLqu2ggf&origin=email |
-
-Note
-
-The specific origin values supported will be determined in an implementation call with your agency.
-
-For example, here are origin values used in the past with other agencies:
-
-| Origin Value | Description |
+| Type | Required fields in each entry, in addition to `type` |
 | :-- | :-- |
-| email | Added to the Emmy link that gets sent via email. |
-| documents | Added to the Emmy link when the client clicks on the link in the "Documents" page of the state portal. |
-| dashboard | Added to the Emmy link when the client clicks on the link on the state portal's dashboard. |
+| `volunteering` | `organization_name` |
+| `employment` | `employer_name` |
+| `education` | `school_name` |
+| `job_training` | `program_name`, `organization_name` |
+
+The OpenAPI reference describes each type's address, contact, and monthly fields
+and provides a complete request example for each. For example, add this field to
+the request above for an invitation created in September 2026:
+
+```json
+{
+  "activities": [
+    {
+      "type": "employment",
+      "employer_name": "Example Employer",
+      "is_self_employed": false,
+      "months": [
+        { "month": "2026-08-01", "hours": 80, "gross_income": 1250.50 }
+      ]
+    }
+  ]
+}
+```
+
+Monthly entries are optional. Use `YYYY-MM-DD` for `month`, preferably the first
+day of the month. Dates must fall within the agency's application reporting
+window when the invitation is created. For the sandbox in September 2026, that
+window is July 1 through August 31. Adjust example dates for live requests.
+Hours represent activity hours, except for education, where they represent
+credit hours. Employment gross income is in dollars. This endpoint checks month
+dates; numeric validation happens later in the reporting flow.
+
+A successful response adds `activity_tokenized_url`, the link to start community
+engagement reporting. It still includes the income `tokenized_url`. The activity
+link currently has no time-based expiration; `expiration_date` describes only
+the income link. An omitted or empty activities array produces only an income
+invitation. When prefilled activities are disabled, the array is ignored and
+`activity_tokenized_url` is omitted.
+
+## Validation errors
+
+`422 Unprocessable Content` returns an `errors` array with `field` and `message`
+for each validation error. For example:
+
+```json
+{
+  "errors": [
+    {
+      "field": "activities[0].organization_name",
+      "message": "can't be blank"
+    }
+  ]
+}
+```
+
+Field paths can include `language`, `cbv_applicant.first_name`,
+`agency_partner_metadata.*`, or indexed activity paths such as
+`activities[0].months[0].month`. Do not depend on exact message wording.
+The OpenAPI reference includes tested examples for each error category.
+
+An activity validation failure occurs **after the income invitation has been
+saved**. A retry creates another income invitation. The error response does
+not include the earlier invitation's link.
+
+Always supply a JSON object for `agency_partner_metadata` and an array of objects
+for `activities`. Missing metadata or malformed containers are not covered by
+the structured `422` response; the current endpoint may raise a server error.
+
+## Origin tracking
+
+To track where an applicant received a link, add an `origin` query parameter
+using a value agreed during onboarding (for example, `email` or `dashboard`).
+Use `?` if the URL has no query string and `&` if it already has one:
+
+```text
+https://agency.example.org/en/start/IncomeExampleToken?origin=email
+```
+
+## Building the API reference
+
+After [setting up the Rails application](../../CONTRIBUTING.md#setup), run from
+the `app/` directory with PostgreSQL available:
+
+```bash
+bundle install
+RAILS_ENV=test bundle exec rake api_docs:build
+```
+
+This command executes the rswag request specs against the test database,
+validates the OpenAPI document, updates [openapi.json](openapi.json), and builds
+a static Swagger UI site in `app/tmp/api-docs/`. Open `index.html` directly in a
+browser. The directory includes its own assets and can be shared or hosted on
+a static site without Rails or a CDN. The viewer does not submit API requests.
+
+The RSpec CI workflow repeats this build, rejects changes that leave the
+checked-in OpenAPI contract stale, and uploads an `api-reference` artifact.
+Download and extract that artifact to review the rendered documentation.
+Commit the regenerated `docs/api/openapi.json` whenever the contract changes.
+
+### Maintaining the contract
+
+- Define operations and executable examples in
+  [the invitation request specs](../../app/spec/requests/api/invitations_spec.rb).
+- Keep shared document settings in
+  [swagger_helper.rb](../../app/spec/swagger_helper.rb) and reusable invitation
+  schemas in [invitation_schemas.rb](../../app/spec/openapi/invitation_schemas.rb).
+- The specs validate response schemas and successful example requests. The build
+  captures actual response bodies and successful requests; it never records
+  authorization headers. Dates, hostnames, and example tokens are fixed for
+  repeatable output using synthetic data.
+- Keep existing controller tests for implementation edge cases. The rswag request
+  specs exercise the HTTP contract and run in the normal test suite too.
+- Run `bundle exec rspec spec/requests/api/invitations_spec.rb` for a focused
+  contract check, then rebuild the reference. Edit source specs and schemas,
+  rather than the generated JSON.
+
+See [rswag's documentation](https://github.com/rswag/rswag) for its specification
+DSL. Additional API objects can add reusable component schemas and request specs
+to the same build.

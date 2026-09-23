@@ -1,0 +1,868 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Emmy Tokenized Link API",
+    "version": "v1",
+    "description": "Create personalized links for applicants to report income and community engagement activities. Authenticate using an agency API key. All examples use synthetic data. This reference covers POST /api/v1/invitations; V2 invitations and report transmission payloads are documented separately."
+  },
+  "servers": [
+    {
+      "url": "https://{agencyHost}",
+      "description": "Use the environment hostname provided during onboarding.",
+      "variables": {
+        "agencyHost": {
+          "default": "agency.example.org"
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "Invitations",
+      "description": "Generate links for an applicant to begin reporting."
+    }
+  ],
+  "paths": {
+    "/api/v1/invitations": {
+      "post": {
+        "summary": "Create tokenized reporting links",
+        "tags": [
+          "Invitations"
+        ],
+        "operationId": "createInvitation",
+        "description": "Creates an income reporting invitation without sending email or SMS.\nThe API key selects the agency and its metadata, expiration, and activity settings.\nA nonempty activities list also creates a community engagement invitation when enabled.\nRepeated requests create new invitations; this operation is not idempotent.\nIf activity validation fails, the income invitation has already been saved.\nSupply a JSON object with language and agency_partner_metadata; malformed containers\nare not covered by the structured 422 validation response.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Invitations created",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "income": {
+                    "summary": "Income invitation (sandbox agency)",
+                    "value": {
+                      "tokenized_url": "https://agency.example.org/en/start/IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "first_name": "Jane",
+                        "middle_name": null,
+                        "last_name": "Doe",
+                        "case_number": "EXAMPLE-123",
+                        "date_of_birth": "01/15/1990"
+                      }
+                    }
+                  },
+                  "spanish": {
+                    "summary": "Spanish invitation",
+                    "value": {
+                      "tokenized_url": "https://agency.example.org/es/start/IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "es",
+                      "agency_partner_metadata": {
+                        "first_name": "Jane",
+                        "middle_name": null,
+                        "last_name": "Doe",
+                        "case_number": "EXAMPLE-123",
+                        "date_of_birth": "01/15/1990"
+                      }
+                    }
+                  },
+                  "louisiana": {
+                    "summary": "Louisiana indexing metadata",
+                    "value": {
+                      "tokenized_url": "https://agency.example.org/en/start/IncomeExampleToken",
+                      "expiration_date": "2026-12-07T23:59:59.999-05:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "case_number": null,
+                        "date_of_birth": "01/15/1990",
+                        "doc_id": "EXAMPLE-DOC-123"
+                      }
+                    }
+                  },
+                  "volunteering": {
+                    "summary": "Prefilled volunteering",
+                    "value": {
+                      "tokenized_url": "https://agency.example.org/en/start/IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "first_name": "Jane",
+                        "middle_name": null,
+                        "last_name": "Doe",
+                        "case_number": "EXAMPLE-123",
+                        "date_of_birth": "01/15/1990"
+                      },
+                      "activity_tokenized_url": "https://agency.example.org/activities/start/ActivityExampleToken"
+                    }
+                  },
+                  "employment": {
+                    "summary": "Prefilled employment",
+                    "value": {
+                      "tokenized_url": "https://agency.example.org/en/start/IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "first_name": "Jane",
+                        "middle_name": null,
+                        "last_name": "Doe",
+                        "case_number": "EXAMPLE-123",
+                        "date_of_birth": "01/15/1990"
+                      },
+                      "activity_tokenized_url": "https://agency.example.org/activities/start/ActivityExampleToken"
+                    }
+                  },
+                  "education": {
+                    "summary": "Prefilled education",
+                    "value": {
+                      "tokenized_url": "https://agency.example.org/en/start/IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "first_name": "Jane",
+                        "middle_name": null,
+                        "last_name": "Doe",
+                        "case_number": "EXAMPLE-123",
+                        "date_of_birth": "01/15/1990"
+                      },
+                      "activity_tokenized_url": "https://agency.example.org/activities/start/ActivityExampleToken"
+                    }
+                  },
+                  "job_training": {
+                    "summary": "Prefilled job training",
+                    "value": {
+                      "tokenized_url": "https://agency.example.org/en/start/IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "first_name": "Jane",
+                        "middle_name": null,
+                        "last_name": "Doe",
+                        "case_number": "EXAMPLE-123",
+                        "date_of_birth": "01/15/1990"
+                      },
+                      "activity_tokenized_url": "https://agency.example.org/activities/start/ActivityExampleToken"
+                    }
+                  },
+                  "activities_disabled": {
+                    "summary": "Activities ignored when disabled for the agency",
+                    "value": {
+                      "tokenized_url": "https://agency.example.org/en/start/IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "first_name": "Jane",
+                        "middle_name": null,
+                        "last_name": "Doe",
+                        "case_number": "EXAMPLE-123",
+                        "date_of_birth": "01/15/1990"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key (plain text, not JSON)",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "summary": "Authentication failure",
+                    "value": "HTTP Token: Access denied.\n"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "invalid_language": {
+                    "summary": "Unsupported language",
+                    "value": {
+                      "errors": [
+                        {
+                          "field": "language",
+                          "message": "Language must be either English (en) or Spanish (es)."
+                        }
+                      ]
+                    }
+                  },
+                  "missing_name": {
+                    "summary": "Missing applicant name",
+                    "value": {
+                      "errors": [
+                        {
+                          "field": "cbv_applicant.first_name",
+                          "message": "Enter the client's first name."
+                        }
+                      ]
+                    }
+                  },
+                  "missing_activity_field": {
+                    "summary": "Missing activity organization",
+                    "value": {
+                      "errors": [
+                        {
+                          "field": "activities[0].organization_name",
+                          "message": "can't be blank"
+                        }
+                      ]
+                    }
+                  },
+                  "unsupported_activity": {
+                    "summary": "Unsupported activity type",
+                    "value": {
+                      "errors": [
+                        {
+                          "field": "activities[0].type",
+                          "message": "must be one of volunteering, employment, education, job_training"
+                        }
+                      ]
+                    }
+                  },
+                  "invalid_month": {
+                    "summary": "Month outside the reporting window",
+                    "value": {
+                      "errors": [
+                        {
+                          "field": "activities[0].months[0].month",
+                          "message": "must fall within reporting window 2026-07-01..2026-08-31"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationErrors"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvitationRequest"
+              },
+              "examples": {
+                "income": {
+                  "summary": "Income invitation (sandbox agency)",
+                  "value": {
+                    "language": "en",
+                    "agency_partner_metadata": {
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "case_number": "EXAMPLE-123",
+                      "date_of_birth": "01/15/1990"
+                    }
+                  }
+                },
+                "spanish": {
+                  "summary": "Spanish invitation",
+                  "value": {
+                    "language": "ES",
+                    "agency_partner_metadata": {
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "case_number": "EXAMPLE-123",
+                      "date_of_birth": "01/15/1990"
+                    }
+                  }
+                },
+                "louisiana": {
+                  "summary": "Louisiana indexing metadata",
+                  "value": {
+                    "language": "en",
+                    "agency_partner_metadata": {
+                      "doc_id": "EXAMPLE-DOC-123",
+                      "date_of_birth": "01/15/1990"
+                    }
+                  }
+                },
+                "volunteering": {
+                  "summary": "Prefilled volunteering",
+                  "value": {
+                    "language": "en",
+                    "agency_partner_metadata": {
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "case_number": "EXAMPLE-123",
+                      "date_of_birth": "01/15/1990"
+                    },
+                    "activities": [
+                      {
+                        "organization_name": "Example Food Bank",
+                        "coordinator_email": "coordinator@example.org",
+                        "months": [
+                          {
+                            "month": "2026-08-01",
+                            "hours": 12.5
+                          }
+                        ],
+                        "type": "volunteering"
+                      }
+                    ]
+                  }
+                },
+                "employment": {
+                  "summary": "Prefilled employment",
+                  "value": {
+                    "language": "en",
+                    "agency_partner_metadata": {
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "case_number": "EXAMPLE-123",
+                      "date_of_birth": "01/15/1990"
+                    },
+                    "activities": [
+                      {
+                        "employer_name": "Example Employer",
+                        "is_self_employed": false,
+                        "months": [
+                          {
+                            "month": "2026-08-01",
+                            "hours": 80,
+                            "gross_income": 1250.5
+                          }
+                        ],
+                        "type": "employment"
+                      }
+                    ]
+                  }
+                },
+                "education": {
+                  "summary": "Prefilled education",
+                  "value": {
+                    "language": "en",
+                    "agency_partner_metadata": {
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "case_number": "EXAMPLE-123",
+                      "date_of_birth": "01/15/1990"
+                    },
+                    "activities": [
+                      {
+                        "school_name": "Example Community College",
+                        "months": [
+                          {
+                            "month": "2026-08-01",
+                            "hours": 6
+                          }
+                        ],
+                        "type": "education"
+                      }
+                    ]
+                  }
+                },
+                "job_training": {
+                  "summary": "Prefilled job training",
+                  "value": {
+                    "language": "en",
+                    "agency_partner_metadata": {
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "case_number": "EXAMPLE-123",
+                      "date_of_birth": "01/15/1990"
+                    },
+                    "activities": [
+                      {
+                        "program_name": "Example Training Program",
+                        "organization_name": "Example Training Center",
+                        "months": [
+                          {
+                            "month": "2026-08-01",
+                            "hours": 20
+                          }
+                        ],
+                        "type": "job_training"
+                      }
+                    ]
+                  }
+                },
+                "activities_disabled": {
+                  "summary": "Activities ignored when disabled for the agency",
+                  "value": {
+                    "language": "en",
+                    "agency_partner_metadata": {
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "case_number": "EXAMPLE-123",
+                      "date_of_birth": "01/15/1990"
+                    },
+                    "activities": [
+                      {
+                        "type": "volunteering",
+                        "organization_name": "Example Food Bank"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Agency API key. Send Authorization: Bearer API_KEY. The key determines the agency; do not send a client_agency_id."
+      }
+    },
+    "schemas": {
+      "AgencyPartnerMetadata": {
+        "type": "object",
+        "description": "Indexing fields agreed during agency onboarding. Accepted fields depend on the agency associated with the API key. Unknown fields and individual_id are ignored. Responses include every configured V1 field, with null for omitted values.",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Jane"
+          },
+          "middle_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Alex"
+          },
+          "last_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Doe"
+          },
+          "case_number": {
+            "type": "string",
+            "nullable": true,
+            "example": "EXAMPLE-123",
+            "description": "Agency case identifier. Louisiana limits this to 13 characters."
+          },
+          "date_of_birth": {
+            "type": "string",
+            "nullable": true,
+            "example": "01/15/1990",
+            "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
+          },
+          "doc_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "EXAMPLE-DOC-123"
+          }
+        }
+      },
+      "InvitationRequest": {
+        "type": "object",
+        "required": [
+          "language",
+          "agency_partner_metadata"
+        ],
+        "properties": {
+          "language": {
+            "type": "string",
+            "pattern": "^([eE][nN]|[eE][sS])$",
+            "example": "en",
+            "description": "Preferred language: en (English) or es (Spanish), case insensitive. Required; omitted or unsupported values return 422. Returned in lowercase."
+          },
+          "agency_partner_metadata": {
+            "$ref": "#/components/schemas/AgencyPartnerMetadata"
+          },
+          "activities": {
+            "type": "array",
+            "description": "Optional prefilled activities. Ignored unless prefilled activities are enabled for the agency. A nonempty valid list creates an activity invitation in addition to the income invitation. Each type must also be enabled for the agency.",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/VolunteeringInvitationActivity"
+                },
+                {
+                  "$ref": "#/components/schemas/EmploymentInvitationActivity"
+                },
+                {
+                  "$ref": "#/components/schemas/EducationInvitationActivity"
+                },
+                {
+                  "$ref": "#/components/schemas/JobTrainingInvitationActivity"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "InvitationResponse": {
+        "type": "object",
+        "required": [
+          "tokenized_url",
+          "expiration_date",
+          "language",
+          "agency_partner_metadata"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "tokenized_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Income reporting link. Treat the token as opaque and direct the applicant to this URL unchanged."
+          },
+          "expiration_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Expiration of tokenized_url, at the end of the day in America/New_York after the agency's configured validity period. Does not describe the activity link's lifetime."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          },
+          "agency_partner_metadata": {
+            "$ref": "#/components/schemas/AgencyPartnerMetadata"
+          },
+          "activity_tokenized_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Community engagement reporting link. Present only when a nonempty activities list is accepted. Activity invitations currently have no time-based expiration."
+          }
+        }
+      },
+      "InvitationErrors": {
+        "type": "object",
+        "required": [
+          "errors"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "errors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "field",
+                "message"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "description": "Invalid field, including language, cbv_applicant.first_name, or activities[0].organization_name. Applicant errors may use cbv_applicant or agency_partner_metadata prefixes."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable validation message. Do not depend on the exact wording."
+                }
+              }
+            }
+          }
+        }
+      },
+      "VolunteeringInvitationActivity": {
+        "type": "object",
+        "required": [
+          "type",
+          "organization_name"
+        ],
+        "properties": {
+          "street_address": {
+            "type": "string"
+          },
+          "street_address_line_2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "zip_code": {
+            "type": "string"
+          },
+          "coordinator_name": {
+            "type": "string"
+          },
+          "coordinator_email": {
+            "type": "string"
+          },
+          "coordinator_phone_number": {
+            "type": "string"
+          },
+          "organization_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "volunteering"
+            ]
+          },
+          "months": {
+            "type": "array",
+            "description": "Optional monthly values to prefill. This endpoint validates the month against the reporting window; hours and income are validated later in the reporting flow.",
+            "items": {
+              "type": "object",
+              "required": [
+                "month"
+              ],
+              "properties": {
+                "month": {
+                  "type": "string",
+                  "format": "date",
+                  "example": "2026-08-01",
+                  "description": "A date in the agency's application reporting window, calculated when the invitation is created. Use the first day of the month. Example assumes an invitation created in September 2026."
+                },
+                "hours": {
+                  "type": "number",
+                  "example": 12.5,
+                  "description": "Monthly activity hours."
+                }
+              }
+            }
+          }
+        }
+      },
+      "EmploymentInvitationActivity": {
+        "type": "object",
+        "required": [
+          "type",
+          "employer_name"
+        ],
+        "properties": {
+          "street_address": {
+            "type": "string"
+          },
+          "street_address_line_2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "zip_code": {
+            "type": "string"
+          },
+          "contact_name": {
+            "type": "string"
+          },
+          "contact_email": {
+            "type": "string"
+          },
+          "contact_phone_number": {
+            "type": "string"
+          },
+          "is_self_employed": {
+            "type": "boolean"
+          },
+          "employer_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "employment"
+            ]
+          },
+          "months": {
+            "type": "array",
+            "description": "Optional monthly values to prefill. This endpoint validates the month against the reporting window; hours and income are validated later in the reporting flow.",
+            "items": {
+              "type": "object",
+              "required": [
+                "month"
+              ],
+              "properties": {
+                "month": {
+                  "type": "string",
+                  "format": "date",
+                  "example": "2026-08-01",
+                  "description": "A date in the agency's application reporting window, calculated when the invitation is created. Use the first day of the month. Example assumes an invitation created in September 2026."
+                },
+                "hours": {
+                  "type": "number",
+                  "example": 12.5,
+                  "description": "Monthly activity hours."
+                },
+                "gross_income": {
+                  "type": "number",
+                  "example": 1250.5,
+                  "description": "Monthly gross income in dollars."
+                }
+              }
+            }
+          }
+        }
+      },
+      "EducationInvitationActivity": {
+        "type": "object",
+        "required": [
+          "type",
+          "school_name"
+        ],
+        "properties": {
+          "street_address": {
+            "type": "string"
+          },
+          "street_address_line_2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "zip_code": {
+            "type": "string"
+          },
+          "contact_name": {
+            "type": "string"
+          },
+          "contact_email": {
+            "type": "string"
+          },
+          "contact_phone_number": {
+            "type": "string"
+          },
+          "school_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "education"
+            ]
+          },
+          "months": {
+            "type": "array",
+            "description": "Optional monthly values to prefill. This endpoint validates the month against the reporting window; hours and income are validated later in the reporting flow.",
+            "items": {
+              "type": "object",
+              "required": [
+                "month"
+              ],
+              "properties": {
+                "month": {
+                  "type": "string",
+                  "format": "date",
+                  "example": "2026-08-01",
+                  "description": "A date in the agency's application reporting window, calculated when the invitation is created. Use the first day of the month. Example assumes an invitation created in September 2026."
+                },
+                "hours": {
+                  "type": "number",
+                  "example": 12.5,
+                  "description": "Monthly credit hours."
+                }
+              }
+            }
+          }
+        }
+      },
+      "JobTrainingInvitationActivity": {
+        "type": "object",
+        "required": [
+          "type",
+          "program_name",
+          "organization_name"
+        ],
+        "properties": {
+          "street_address": {
+            "type": "string"
+          },
+          "street_address_line_2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "zip_code": {
+            "type": "string"
+          },
+          "contact_name": {
+            "type": "string"
+          },
+          "contact_email": {
+            "type": "string"
+          },
+          "contact_phone_number": {
+            "type": "string"
+          },
+          "organization_address": {
+            "type": "string"
+          },
+          "program_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "organization_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "job_training"
+            ]
+          },
+          "months": {
+            "type": "array",
+            "description": "Optional monthly values to prefill. This endpoint validates the month against the reporting window; hours and income are validated later in the reporting flow.",
+            "items": {
+              "type": "object",
+              "required": [
+                "month"
+              ],
+              "properties": {
+                "month": {
+                  "type": "string",
+                  "format": "date",
+                  "example": "2026-08-01",
+                  "description": "A date in the agency's application reporting window, calculated when the invitation is created. Use the first day of the month. Example assumes an invitation created in September 2026."
+                },
+                "hours": {
+                  "type": "number",
+                  "example": 12.5,
+                  "description": "Monthly activity hours."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

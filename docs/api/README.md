@@ -4,6 +4,7 @@ Docs for integrating with the Eligibility Made Easy (Emmy) platform.
 
 - [Requesting API Access](request-api-access.md) — Get sandbox/production credentials and an access token.
 - [Tokenized Link API](tokenized-link.md) — Generate tokenized links for users to start a report.
+- [Tokenized Link OpenAPI contract](openapi.json) — Generated schemas and tested request/response examples. [Build the browsable reference](tokenized-link.md#building-the-api-reference).
 - [Income Report Transmission API](income-report.md) — Endpoint spec for receiving income report data (JSON).
 - [PDF Document Transmission API](pdf-transmission.md) — Endpoint spec for receiving the income report as a PDF.
 - [CE Activity Report Transmission API](ce-activity-report.md) — Endpoint spec for receiving community engagement activity data (JSON).
