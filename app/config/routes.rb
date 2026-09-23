@@ -143,7 +143,13 @@ Rails.application.routes.draw do
     end
 
     scope :v2, module: :v2 do
-      post "/invitations", to: "invitations#create"
+      post "/income/invitations",
+        to: "invitations#create",
+        defaults: { invitation_type: "income" }
+
+      post "/community-engagement/invitations",
+        to: "invitations#create",
+        defaults: { invitation_type: "community_engagement" }
     end
 
     scope :pinwheel do

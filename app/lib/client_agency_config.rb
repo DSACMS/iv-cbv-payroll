@@ -2,6 +2,8 @@ require "yaml"
 require "uri"
 
 class ClientAgencyConfig
+  attr_reader :api
+
   # These are the only supported number of days we allow an agency to define in
   # the `pay_income_days` configuration option.
   #
@@ -24,7 +26,7 @@ class ClientAgencyConfig
   def initialize(config_path)
     template = ERB.new File.read(config_path)
     @client_agencies = YAML
-      .safe_load(template.result(binding))
+      .safe_load(template.result(binding), aliases: true)
       .map { |s| [ s["id"], ClientAgency.new(s) ] }
       .to_h
   end
@@ -84,6 +86,7 @@ class ClientAgencyConfig
       # that pilot config is removed:
       @agency_missing_employers_website = yaml["agency_missing_employers_website"]
       @agency_domain = yaml["agency_domain"]
+      @api = yaml["api"] || {}
       @authorized_emails = yaml["authorized_emails"] || ""
       @caseworker_feedback_form = yaml["caseworker_feedback_form"]
       @default_origin = yaml["default_origin"]
@@ -103,12 +106,21 @@ class ClientAgencyConfig
       @staff_portal_enabled = yaml["staff_portal_enabled"]
       @sso = yaml["sso"]
       @weekly_report = yaml["weekly_report"]
-      @applicant_attributes = yaml["applicant_attributes"] || {}
       @generic_links_disabled = yaml["generic_links_disabled"]
       @activity_types = yaml["activity_types"]&.symbolize_keys || {}
       @prefilled_activities_enabled = yaml["prefilled_activities_enabled"] || false
       @caseworker_fallback_email = yaml["caseworker_fallback_email"]
       @allowed_iframe_ancestors = yaml["allowed_iframe_ancestors"] || []
+
+      # Normalize applicant attributes to ensure both v1 and v2 keys exist
+      # and that both versions have the same set of attributes
+      raw_applicant_attributes = yaml["applicant_attributes"] || {}
+      @applicant_attributes =
+        if raw_applicant_attributes.key?("v1") || raw_applicant_attributes.key?("v2")
+          raw_applicant_attributes
+        else
+          { "v1" => raw_applicant_attributes, "v2" => raw_applicant_attributes }
+        end
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} `allowed_iframe_ancestors` must be a list") unless @allowed_iframe_ancestors.is_a?(Array)
@@ -121,25 +133,46 @@ class ClientAgencyConfig
 
       validate_activity_transmission_configuration!
 
-      @applicant_attributes.each do |name, options|
-        redaction_type = options.is_a?(Hash) ? options["redaction_type"] : nil
-        next if redaction_type.nil?
-        unless VALID_REDACTION_TYPES.include?(redaction_type)
-          raise ArgumentError.new("Client Agency #{@id} applicant attribute `#{name}` has an invalid `redaction_type`: "\
-            "#{redaction_type.inspect}. Valid types: #{VALID_REDACTION_TYPES}")
+      @applicant_attributes.each_value do |attrs|
+        attrs.each do |name, options|
+          redaction_type = options.is_a?(Hash) ? options["redaction_type"] : nil
+          next if redaction_type.nil?
+          unless VALID_REDACTION_TYPES.include?(redaction_type)
+            raise ArgumentError.new("Client Agency #{@id} applicant attribute `#{name}` has an invalid `redaction_type`: "\
+              "#{redaction_type.inspect}. Valid types: #{VALID_REDACTION_TYPES}")
+          end
         end
       end
     end
 
-    def applicant_attribute_names
-      @applicant_attributes.compact.keys.map(&:to_sym)
+    def applicant_attributes(version: :v1)
+      # Silently fallback to v1 if the requested version is not available
+      @applicant_attributes.fetch(version.to_s) { @applicant_attributes.fetch("v1", {}) }
     end
 
-    def redactable_applicant_fields
-      @applicant_attributes.each_with_object({}) do |(name, options), fields|
+    def applicant_attribute_names(version: :v1)
+      applicant_attributes(version: version).compact.keys.map(&:to_sym)
+    end
+
+    def redactable_applicant_fields(version: :v1)
+      applicant_attributes(version: version).each_with_object({}) do |(name, options), fields|
         next unless options.is_a?(Hash) && options["redaction_type"]
         fields[name.to_sym] = options["redaction_type"].to_sym
       end
+    end
+
+    def api_metadata(flow_type, version: :v2)
+      @api
+        .dig(version.to_s, flow_type.to_s, "metadata")
+        .to_a
+        .map(&:to_sym)
+    end
+
+    def api_required_metadata(flow_type, version: :v2)
+      @api
+        .dig(version.to_s, flow_type.to_s, "required")
+        .to_a
+        .map(&:to_sym)
     end
 
     private
