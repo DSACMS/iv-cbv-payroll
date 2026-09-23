@@ -182,6 +182,57 @@ RSpec.describe NscDataFetcherService do
       end
     end
 
+    context "when the response includes nameOnSchoolRecord" do
+      let(:identity) { create(:identity, :nsc_lynette) }
+
+      before do
+        education_activity.activity_flow.update!(created_at: Date.new(2024, 12, 1), reporting_window_months: 6)
+        nsc_stub_request_education_search_response("lynette") do |response_data|
+          response_data["enrollmentDetails"].first["nameOnSchoolRecord"] = {
+            "firstName" => "Lyn",
+            "middleName" => "Stephanie",
+            "lastName" => "Oyola-Marks"
+          }
+        end
+      end
+
+      it "prefers the school's name on record over the identity's name" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms.first)
+          .to have_attributes(first_name: "Lyn", middle_name: "Stephanie", last_name: "Oyola-Marks")
+      end
+    end
+
+    context "when the response omits nameOnSchoolRecord" do
+      let(:identity) { create(:identity, :nsc_lynette) }
+
+      before do
+        education_activity.activity_flow.update!(created_at: Date.new(2024, 12, 1), reporting_window_months: 6)
+        nsc_stub_request_education_search_response("lynette") do |response_data|
+          response_data["enrollmentDetails"].first.delete("nameOnSchoolRecord")
+        end
+      end
+
+      it "saves the enrollment term rather than raising" do
+        expect { service.fetch }.to change { education_activity.nsc_enrollment_terms.count }.by(1)
+      end
+
+      it "falls back to the identity's name" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms.first)
+          .to have_attributes(first_name: "Lynette", middle_name: nil, last_name: "Oyola")
+      end
+
+      it "still records the school name from the enrollment detail" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms.first.school_name)
+          .to eq("Trident University International")
+      end
+    end
+
     context "when the reporting window is shifted to overlap with fixture data" do
       context "for Lynette (one CC enrollment, term May 31 – Nov 19, 2024)" do
         let(:identity) { create(:identity, :nsc_lynette) }
@@ -244,11 +295,13 @@ RSpec.describe NscDataFetcherService do
         end
       end
 
-      context "for Dominique (CN enrollment, not currently enrolled)" do
-        let(:identity) { create(:identity, first_name: "Dominique", last_name: "Ricardo", date_of_birth: "1978-01-12") }
+      context "for Scott (CN enrollment, not currently enrolled)" do
+        let(:identity) { create(:identity, :nsc_scott) }
 
         before do
-          nsc_stub_request_education_search_response("dominique_ricardo")
+          # Window: 2019-07-01..2019-12-31 — overlaps with Scott's term
+          education_activity.activity_flow.update!(created_at: Date.new(2020, 1, 1), reporting_window_months: 6)
+          nsc_stub_request_education_search_response("scott_tobin")
         end
 
         it "does not save CN enrollments even when window overlaps" do

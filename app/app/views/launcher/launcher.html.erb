@@ -4,7 +4,7 @@
      data-launcher-flow-value="activity"
      data-launcher-window-value="application"
      data-launcher-months-value="2"
-     data-launcher-status-value="lynette">
+     data-launcher-status-value="dominique">
   <%= form_with(url: "/launcher", method: :post, html: { class: "launcher__main", autocomplete: "off" }, data: { turbo: false, launcher_target: "form" }) do |f| %>
     <div class="launcher__title">
       <h1>Emmy launcher</h1>
@@ -17,7 +17,7 @@
     <%= hidden_field_tag :flow_type, "activity", data: { launcher_target: "flowInput" } %>
     <%= hidden_field_tag :reporting_window, "application", data: { launcher_target: "windowInput" } %>
     <%= hidden_field_tag :reporting_window_months, "2", data: { launcher_target: "monthsInput" } %>
-    <%= hidden_field_tag :test_scenario, "lynette", data: { launcher_target: "statusInput" } %>
+    <%= hidden_field_tag :test_scenario, "dominique", data: { launcher_target: "statusInput" } %>
 
     <div class="launcher__step">
       <div class="launcher__step-header">
@@ -162,15 +162,16 @@
       </div>
       <div class="launcher__radio-col">
         <% [
-             [ "lynette",                             "Enrolled full time",           "Full-time enrollment verified automatically via the National Student Clearinghouse." ],
-             [ "renewal_half_time_last_4_of_6_avery", "Enrolled half-time",           "Half-time enrollment covering 4 of 6 months (good for renewal required-month testing)." ],
-             [ "partial_enrollment_maya",             "Enrolled less-than-half-time", "Less-than-half-time enrollment (sends user through partially self-attested flow)." ],
-             [ "linda",                               "No NSC enrollment found",      "Enrollment unable to be verified via NSC (sends user through self-attestation flow)." ]
+             [ "dominique",                           "Enrolled full time",              "Full-time enrollment verified automatically via the National Student Clearinghouse." ],
+             [ "renewal_half_time_last_4_of_6_avery", "Enrolled half-time",              "Half-time enrollment covering 4 of 6 months (good for renewal required-month testing)." ],
+             [ "partial_enrollment_maya",             "Enrolled less-than-half-time",    "Less-than-half-time enrollment (sends user through partially self-attested flow)." ],
+             [ "lynette",                             "Enrolled, intensity not reported", "NSC confirms enrollment but reports no intensity (asks the user for credit hours)." ],
+             [ "linda",                               "No NSC enrollment found",         "Enrollment unable to be verified via NSC (sends user through self-attestation flow)." ]
            ].each do |value, title, desc| %>
-          <div class="launcher__rcard <%= "launcher__rcard--selected" if value == "lynette" %>"
+          <div class="launcher__rcard <%= "launcher__rcard--selected" if value == "dominique" %>"
                role="radio"
                tabindex="0"
-               aria-checked="<%= value == "lynette" %>"
+               aria-checked="<%= value == "dominique" %>"
                data-launcher-target="statusCard"
                data-value="<%= value %>"
                data-action="click->launcher#selectStatus keydown.enter->launcher#selectStatus keydown.space->launcher#selectStatus">
