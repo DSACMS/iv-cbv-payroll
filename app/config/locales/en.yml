@@ -437,6 +437,7 @@ en:
           alert:
             heading: Can't connect to your payroll provider?
           app_based_providers: App-based providers
+          error_search_timeout: Search timed out. Please try again.
           header: Search for your employer
           payroll_providers: Payroll providers
           popular_providers: Popular providers

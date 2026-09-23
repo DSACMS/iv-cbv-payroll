@@ -13,6 +13,19 @@ class ApplicationController < ActionController::Base
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
   end
 
+  rescue_from Net::ReadTimeout, Faraday::TimeoutError, Faraday::ConnectionFailed do
+    # TODO: this needs a shared (or duplicate) string + a translation
+    flash[:slim_alert] = {
+      type: "error",
+      message: t("activities.income.employer_searches.show.error_search_timeout")
+    }
+
+    redirect_path =
+      activity_flow? ? activities_flow_income_employer_search_path : cbv_flow_employer_search_path
+
+    render turbo_stream: turbo_stream.action(:redirect, redirect_path)
+  end
+
   def after_sign_out_path_for
     new_user_session_path(client_agency_id: params[:client_agency_id])
   end
