@@ -35,7 +35,7 @@ RSpec.describe "Tokenized Link API", type: :request do
     post "Create tokenized reporting links" do
       tags "Invitations"
       operationId "createInvitation"
-      description InvitationSchemas.guide_section("Create an invitation")
+      description InvitationDocumentation::CREATE_INVITATION
       consumes "application/json"
       produces "application/json"
       security [ bearerAuth: [] ]

@@ -45,16 +45,16 @@ namespace :api_docs do
       end
     end
 
-    # rswag omits the final newline; keep the checked-in artifact lint-clean.
+    # JSON and HTML are build artifacts, never manually maintained source files.
     json = JSON.pretty_generate(document) + "\n"
     output.join("openapi.json").write(json)
-    FileUtils.cp(output.join("openapi.json"), Rails.root.join("../docs/api/openapi.json"))
+    output.join(".nojekyll").write("")
 
     %w[swagger-ui.css swagger-ui-bundle.js LICENSE NOTICE].each do |file|
       FileUtils.rm_f(output.join(file))
     end
     FileUtils.cp(assets.join("dist/browser/standalone.js"), output.join("scalar.js"))
-    FileUtils.cp(Rails.root.join("../docs/api/licenses/scalar.txt"), output.join("scalar-LICENSE"))
+    FileUtils.cp(Rails.root.join("vendor/licenses/scalar.txt"), output.join("scalar-LICENSE"))
 
     # Embed the spec so index.html also works directly from disk, without fetch,
     # a running Rails app, a CDN, or a separate static web server.

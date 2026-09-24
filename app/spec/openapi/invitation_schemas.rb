@@ -1,32 +1,24 @@
+require_relative "invitation_documentation"
+
 module InvitationSchemas
-  GUIDE_URL = "https://github.com/DSACMS/iv-cbv-payroll/blob/main/docs/api/tokenized-link.md".freeze
-
-  def self.guide_section(heading)
-    guide = Rails.root.join("../docs/api/tokenized-link.md").read
-    section = guide.split(/^#+ #{Regexp.escape(heading)}\n/, 2).fetch(1).split(/^#+ /, 2).first.strip
-    # Keep guide links usable in the portable HTML and other OpenAPI viewers.
-    section.gsub(/\]\(([^)]+)\)/) { "](#{URI.join(GUIDE_URL, Regexp.last_match(1))})" }
-  end
-
   def self.schemas
-    metadata = {
-      type: :object,
-      description: guide_section("Agency metadata"),
-      properties: {
-        first_name: { type: :string, nullable: true, example: "Jane" },
-        middle_name: { type: :string, nullable: true, example: "Alex" },
-        last_name: { type: :string, nullable: true, example: "Doe" },
-        case_number: { type: :string, nullable: true, example: "EXAMPLE-123", description: "Agency case identifier. Louisiana limits this to 13 characters." },
-        date_of_birth: { type: :string, nullable: true, example: "01/15/1990", description: "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response." },
-        doc_id: { type: :string, nullable: true, example: "EXAMPLE-DOC-123" }
-      }
+    metadata_fields = {
+      first_name: { type: :string, minLength: 1, example: "Jane" },
+      middle_name: { type: :string, nullable: true, example: "Alex" },
+      last_name: { type: :string, minLength: 1, example: "Doe" },
+      case_number: { type: :string, nullable: true, example: "EXAMPLE-123", description: "Agency case identifier." },
+      date_of_birth: { type: :string, nullable: true, example: "01/15/1990", description: "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response." },
+      doc_id: { type: :string, nullable: true, example: "EXAMPLE-DOC-123" }
     }
 
     schemas = {
-      AgencyPartnerMetadata: metadata,
+      AgencyPartnerMetadata: {
+        description: InvitationDocumentation::METADATA,
+        anyOf: %w[Sandbox NewHampshire Louisiana Research Accenture].map { |agency| { "$ref" => "#/components/schemas/#{agency}PartnerMetadata" } }
+      },
       InvitationRequest: {
         type: :object,
-        description: guide_section("Create an invitation"),
+        description: "Invitation settings and metadata for the agency identified by the API key.",
         required: %w[language agency_partner_metadata],
         properties: {
           language: {
@@ -43,7 +35,7 @@ module InvitationSchemas
       },
       InvitationResponse: {
         type: :object,
-        description: guide_section("Link lifetime"),
+        description: InvitationDocumentation::LINK_LIFETIME,
         required: %w[tokenized_url expiration_date language agency_partner_metadata],
         additionalProperties: false,
         properties: {
@@ -72,6 +64,27 @@ module InvitationSchemas
         }
       }
     }
+
+    {
+      "Sandbox" => [ "Sandbox", %i[first_name middle_name last_name case_number date_of_birth] ],
+      "NewHampshire" => [ "New Hampshire", %i[first_name middle_name last_name case_number date_of_birth] ],
+      "Louisiana" => [ "Louisiana", %i[case_number date_of_birth doc_id] ],
+      "Research" => [ "Research", %i[case_number date_of_birth] ],
+      "Accenture" => [ "Accenture", %i[case_number] ]
+    }.each do |agency, (title, fields)|
+      schema = {
+        title: title,
+        type: :object,
+        description: "Accepted metadata for #{title}. The API ignores fields outside this schema.",
+        additionalProperties: false,
+        properties: metadata_fields.slice(*fields)
+      }
+      schema[:required] = %w[first_name last_name] if fields.include?(:first_name)
+      if agency == "Louisiana"
+        schema[:properties][:case_number] = metadata_fields[:case_number].merge(maxLength: 13)
+      end
+      schemas["#{agency}PartnerMetadata"] = schema
+    end
 
     address = %w[street_address street_address_line_2 city state zip_code].index_with { { type: :string } }
     contact = %w[contact_name contact_email contact_phone_number].index_with { { type: :string } }

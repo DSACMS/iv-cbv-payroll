@@ -10,25 +10,13 @@ RSpec.configure do |config|
       info: {
         title: "Emmy Platform API Documentation",
         version: "v1",
-        description: <<~MARKDOWN
-          Integrate your agency's systems with the Emmy platform. This reference
-          currently covers the Tokenized Link API for creating personalized reporting
-          links. All examples use synthetic applicant data and nonfunctional tokens.
-
-          ## API environments
-
-          #{InvitationSchemas.guide_section("API environments")}
-
-          ## API keys and authentication
-
-          #{InvitationSchemas.guide_section("Access and authentication")}
-        MARKDOWN
+        description: InvitationDocumentation::OVERVIEW
       },
       servers: [
         { url: "https://verify-demo.navapbc.cloud", description: "Dev environment" },
         { url: "https://demo.reportmyincome.org", description: "Demo environment" }
       ],
-      externalDocs: { description: "Tokenized Link API integration guide", url: InvitationSchemas::GUIDE_URL },
+      externalDocs: { description: "Emmy Platform API Documentation", url: InvitationDocumentation::SITE_URL },
       tags: [ { name: "Invitations", description: "Generate links for an applicant to begin reporting." } ],
       paths: {},
       components: {
