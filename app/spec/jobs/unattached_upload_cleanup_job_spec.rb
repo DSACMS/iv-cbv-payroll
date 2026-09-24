@@ -2,10 +2,11 @@ require "rails_helper"
 
 RSpec.describe UnattachedUploadCleanupJob do
   let(:activity_flow) { create(:activity_flow) }
+  let(:client_agency) { Rails.application.config.client_agencies[activity_flow.cbv_applicant.client_agency_id] }
   let(:checksum) { Digest::SHA256.base64digest("%PDF-1.4") }
 
   def upload_blob(created_at:)
-    signed_id = PresignedUploadService.new.call([
+    signed_id = PresignedUploadService.new(client_agency: client_agency).call([
       { filename: "verification.pdf", content_type: "application/pdf", byte_size: 8, checksum: checksum }
     ]).first[:signed_id]
 
