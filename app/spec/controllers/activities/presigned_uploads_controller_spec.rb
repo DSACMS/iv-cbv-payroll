@@ -4,8 +4,11 @@ RSpec.describe Activities::PresignedUploadsController, type: :controller do
   include_context "activity_hub"
 
   let(:activity_flow) { create(:activity_flow) }
+  let(:client_agency) { Rails.application.config.client_agencies[activity_flow.cbv_applicant.client_agency_id] }
   let(:json) { response.parsed_body }
   let(:checksum) { Digest::SHA256.base64digest("%PDF-1.4") }
+  let(:max_upload_bytes) { client_agency.max_document_upload_size_bytes }
+  let(:allowed_types) { controller.helpers.document_upload_allowed_types_sentence(client_agency) }
 
   before do
     session[:flow_id] = activity_flow.id
@@ -43,8 +46,10 @@ RSpec.describe Activities::PresignedUploadsController, type: :controller do
         files: [ { filename: "installer.exe", content_type: "application/x-msdownload", byte_size: 1_024, checksum: checksum } ]
       }, format: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
-      expect(json["error"]).to eq(I18n.t("activities.document_uploads.new.errors.unsupported_type"))
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json["error"]).to eq(
+        I18n.t("activities.document_uploads.new.errors.unsupported_type", types: allowed_types)
+      )
     end
 
     it "refuses a file over the upload limit" do
@@ -53,16 +58,16 @@ RSpec.describe Activities::PresignedUploadsController, type: :controller do
           {
             filename: "verification.pdf",
             content_type: "application/pdf",
-            byte_size: PresignedUploadService::MAX_UPLOAD_BYTES + 1
+            byte_size: max_upload_bytes + 1
           }
         ]
       }, format: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json["error"]).to eq(
         I18n.t(
           "activities.document_uploads.new.errors.too_large",
-          limit: ActiveSupport::NumberHelper.number_to_human_size(PresignedUploadService::MAX_UPLOAD_BYTES)
+          limit: ActiveSupport::NumberHelper.number_to_human_size(max_upload_bytes)
         )
       )
     end
@@ -77,7 +82,7 @@ RSpec.describe Activities::PresignedUploadsController, type: :controller do
         }, format: :json
       }.not_to change(ActiveStorage::Blob, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it "mints nothing without a flow session" do

@@ -34,21 +34,51 @@
   pay_income_days:
     w2: 90
     gig: 90
+  allowed_document_types:
+    - pdf
+    - png
+    - jpeg
+    - bmp
+    - tiff
+  max_document_upload_size_mb: 40
   invitation_valid_days: 75
   weekly_report:
     recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
     report_variant: flows
   applicant_attributes:
-    case_number:
-      required: false
-      redaction_type: string
-    date_of_birth:
-      required: true
-      redaction_type: date
-    doc_id:
-      required: false
-    individual_id:
-      required: false
+    v1: &la_ldh_applicant_attributes_v1
+      case_number:
+        required: false
+        redaction_type: string
+      date_of_birth:
+        required: true
+        redaction_type: date
+      doc_id:
+        required: false
+    v2:
+      <<: *la_ldh_applicant_attributes_v1
+      individual_id:
+        required: false
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - date_of_birth
+      income:
+        metadata:
+          - case_number
+          - date_of_birth
+          - doc_id
+          - individual_id
+        required:
+          - date_of_birth
 
 - id: nh_dhhs
   agency_name: Department of Health and Human Services
@@ -80,29 +110,63 @@
   pay_income_days:
     w2: 90
     gig: 90
+  allowed_document_types:
+    - pdf
+    - png
+    - jpeg
+    - bmp
+    - tiff
+  max_document_upload_size_mb: 40
   application_reporting_months: 2
   invitation_valid_days: 30
   weekly_report:
     recipient: ffs-eng@navapbc.com
   applicant_attributes:
-    first_name:
-      required: true
-      redaction_type: string
-    middle_name:
-      redaction_type: string
-    last_name:
-      required: true
-      redaction_type: string
-    case_number:
-      required: true
-    date_of_birth:
-      required: true
-      redaction_type: date
+    v1: &nh_dhhs_applicant_attributes_v1
+      first_name:
+        required: true
+        redaction_type: string
+      middle_name:
+        redaction_type: string
+      last_name:
+        required: true
+        redaction_type: string
+      case_number:
+        required: true
+      date_of_birth:
+        required: true
+        redaction_type: date
+    v2:
+      <<: *nh_dhhs_applicant_attributes_v1
   activity_types:
     education: true
     community_service: true
     work_programs: true
     employment: true
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - date_of_birth
+      income:
+        metadata:
+          - first_name
+          - middle_name
+          - last_name
+          - case_number
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - case_number
+          - date_of_birth
 
 - id: sandbox
   agency_name: Test Agency
@@ -134,24 +198,34 @@
   pay_income_days:
     w2: 90
     gig: 90
+  allowed_document_types:
+    - pdf
+    - png
+    - jpeg
+    - bmp
+    - tiff
+  max_document_upload_size_mb: 40
   application_reporting_months: 2
   invitation_valid_days: 14
   weekly_report:
     recipient: ffs-eng@navapbc.com
   applicant_attributes:
-    first_name:
-      required: true
-      redaction_type: string
-    middle_name:
-      redaction_type: string
-    last_name:
-      required: true
-      redaction_type: string
-    case_number:
-      required: true
-    date_of_birth:
-      required: true
-      redaction_type: date
+    v1: &sandbox_applicant_attributes_v1
+      first_name:
+        required: true
+        redaction_type: string
+      middle_name:
+        redaction_type: string
+      last_name:
+        required: true
+        redaction_type: string
+      case_number:
+        required: true
+      date_of_birth:
+        required: true
+        redaction_type: date
+    v2:
+      <<: *sandbox_applicant_attributes_v1
   activity_types:
     education: true
     community_service: true
@@ -162,6 +236,30 @@
     - https://dsacms.github.io
     - https://statehub.hawaii.gov
     - https://*.statehub.hawaii.gov
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - date_of_birth
+      income:
+        metadata:
+          - first_name
+          - middle_name
+          - last_name
+          - case_number
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - case_number
+          - date_of_birth
 # Uncomment for local testing:
 #    - http://localhost:8000
 #    - https://*.ngrok-free.app
@@ -190,21 +288,50 @@
   pay_income_days:
     w2: 90
     gig: 90
+  allowed_document_types:
+    - pdf
+    - png
+    - jpeg
+    - bmp
+    - tiff
+  max_document_upload_size_mb: 40
   application_reporting_months: 2
   invitation_valid_days: 14
   weekly_report:
     recipient: ffs-eng@navapbc.com
   applicant_attributes:
-    case_number:
-      required: true
-    date_of_birth:
-      required: true
-      redaction_type: date
+    v1: &research_applicant_attributes_v1
+      case_number:
+        required: true
+      date_of_birth:
+        required: true
+        redaction_type: date
+    v2:
+      <<: *research_applicant_attributes_v1
   activity_types:
     education: true
     community_service: true
     work_programs: true
     employment: true
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - date_of_birth
+      income:
+        metadata:
+          - case_number
+          - date_of_birth
+        required:
+          - case_number
+          - date_of_birth
 
 - id: accenture
   agency_name: Accenture
@@ -218,17 +345,44 @@
   income_flow_transmission_method: json
   income_transmission_method_configuration:
     json_api_url: <%= ENV["ACCENTURE_INCOME_REPORT_URL"] %>
+  allowed_document_types:
+    - pdf
+    - png
+    - jpeg
+    - bmp
+    - tiff
+  max_document_upload_size_mb: 40
   application_reporting_months: 2
   invitation_valid_days: 14
   applicant_attributes:
-    case_number:
-      required: true
-      redaction_type: string
+    v1: &accenture_applicant_attributes_v1
+      case_number:
+        required: true
+        redaction_type: string
+    v2:
+      <<: *accenture_applicant_attributes_v1
   activity_types:
     education: true
     community_service: true
     work_programs: true
     employment: true
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - date_of_birth
+      income:
+        metadata:
+          - case_number
+        required:
+          - case_number
   allowed_iframe_ancestors:
     - https://ac1752691868225.lightning.force.com
     - https://ac1752691868225.my.salesforce-sites.com

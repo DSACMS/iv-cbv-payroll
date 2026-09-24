@@ -2,3 +2,4 @@
 //= link_tree ../builds
 //= link application.postcss.css
 //= link @uswds/uswds/dist/img/usa-icons/edit.svg
+//= link @uswds/uswds/dist/img/usa-icons/file_present.svg
