@@ -16,14 +16,15 @@ class Api::V2::InvitationsController < Api::InvitationsController
     @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(
       cbv_flow_invitation_params(contract),
       @current_user,
-      delivery_method: nil
+      delivery_method: nil,
+      context: :v2
     )
 
     return render_validation_errors unless @cbv_flow_invitation.errors.empty?
 
     if community_engagement?
       @activity_flow_invitation = CbvInvitationService.new(event_logger)
-        .invite_to_activity_flow(@cbv_flow_invitation, [])
+        .invite_to_activity_flow(@cbv_flow_invitation, [], verification_range: params[:verification_range], context: :v2)
     end
 
     render_created_response
@@ -40,7 +41,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
   end
 
   def cbv_flow_invitation_params(contract)
-    permitted = params.permit(:language)
+    permitted = params.permit(:language, :verification_range)
 
     permitted.deep_merge(
       client_agency_id: @current_user.client_agency_id,
@@ -59,6 +60,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
   def render_created_response
     response_body = {
       tokenized_url: @cbv_flow_invitation.to_url,
+      token: @cbv_flow_invitation.auth_token,
       expiration_date: @cbv_flow_invitation.expires_at_local,
       language: @cbv_flow_invitation.language,
       agency_partner_metadata: metadata_contract.permitted

@@ -17,6 +17,12 @@ class ActivityFlowInvitation < ApplicationRecord
   validate :pre_populated_activities_shape
   validate :pre_populated_activity_months_in_window, unless: :skip_month_window_validation
 
+  validates :verification_range, inclusion: {
+    in: CbvFlowInvitation::VALID_VERIFICATION_RANGES,
+    message: :invalid_format,
+    case_sensitive: false
+  }, on: :v2
+
   def to_url(host: ENV.fetch("DOMAIN_NAME", "localhost"), **url_params)
     Rails.application.routes.url_helpers.activities_flow_start_url(token: auth_token, host: host, **url_params)
   end
