@@ -14,7 +14,7 @@ RSpec.describe Api::V2::InvitationsController do
 
     let(:valid_params) do
       attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
-        params[:invitation_type] = "community_engagement"
+        params[:invitation_type] = "community-engagement"
         params[:verification_range] = "last_complete_month"
         params[:agency_partner_metadata] = attributes_for(:cbv_applicant, client_agency_id)
         params[:agency_partner_metadata][:individual_id] = "ABC1234"
@@ -53,7 +53,7 @@ RSpec.describe Api::V2::InvitationsController do
       let(:client_agency_id) { "la_ldh".to_sym }
       let(:valid_params) do
         attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
-          params[:invitation_type] = "community_engagement"
+          params[:invitation_type] = "community-engagement"
           params[:verification_range] = "last_complete_month"
           params[:agency_partner_metadata] = {
             individual_id: "ABC1234",
