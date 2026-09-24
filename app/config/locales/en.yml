@@ -3,6 +3,10 @@ en:
   activerecord:
     errors:
       models:
+        activity_flow_invitation:
+          attributes:
+            verification_range:
+              invalid_format: Verification range must be either last_complete_month or last_12_complete_months.
         cbv_applicant:
           attributes:
             date_of_birth:
@@ -64,8 +68,6 @@ en:
               invalid_format: Enter an email address in the correct format, like name@example.com
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
-            verification_range:
-              invalid_format: Verification range must be either last_complete_month or last_12_complete_months.
         education_activity:
           attributes:
             school_name:

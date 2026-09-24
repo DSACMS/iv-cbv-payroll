@@ -26,6 +26,8 @@ class Api::V2::InvitationsController < Api::InvitationsController
         .invite_to_activity_flow(
           @cbv_flow_invitation, [], verification_range: params[:verification_range], context: :v2
         )
+
+      return render_validation_errors(@activity_flow_invitation) unless @activity_flow_invitation.errors.empty?
     end
 
     render_created_response
@@ -74,8 +76,8 @@ class Api::V2::InvitationsController < Api::InvitationsController
     render json: response_body, status: :created
   end
 
-  def render_validation_errors
-    render json: errors_to_json(@cbv_flow_invitation.errors),
+  def render_validation_errors(record = @cbv_flow_invitation)
+    render json: errors_to_json(record.errors),
       status: :unprocessable_content
   end
 end
