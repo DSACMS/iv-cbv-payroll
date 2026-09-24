@@ -50,7 +50,7 @@ class ProviderSearchService
     end
 
     # TODO: Remove this when finished testing
-    raise Net::ReadTimeout, "test timeout"
+    # raise Net::ReadTimeout, "test timeout"
     results
   end
 
