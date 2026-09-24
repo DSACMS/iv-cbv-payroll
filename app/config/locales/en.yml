@@ -64,6 +64,8 @@ en:
               invalid_format: Enter an email address in the correct format, like name@example.com
             language:
               invalid_format: Language must be either English (en) or Spanish (es).
+            verification_range:
+              invalid_format: Verification range must be either last_complete_month or last_12_complete_months.
         education_activity:
           attributes:
             school_name:
@@ -720,8 +722,8 @@ en:
           blank: last_name is required
       la_ldh:
         fields:
-          doc_id_or_individual_id:
-            blank: individual_id or doc_id is required
+          individual_id:
+            blank: individual_id is required
   applicant_mailer:
     invitation_email:
       body_1:

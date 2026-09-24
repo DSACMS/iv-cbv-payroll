@@ -12,6 +12,8 @@ class CbvFlowInvitation < ApplicationRecord
 
   VALID_LOCALES = Rails.application.config.i18n.available_locales.map(&:to_s).freeze
 
+  VALID_VERIFICATION_RANGES = %w[last_complete_month last_12_complete_months].freeze
+
   belongs_to :user
   belongs_to :cbv_applicant, optional: true
   has_many :cbv_flows
@@ -31,6 +33,11 @@ class CbvFlowInvitation < ApplicationRecord
     message: :invalid_format,
     case_sensitive: false
   }
+  validates :verification_range, inclusion: {
+    in: VALID_VERIFICATION_RANGES,
+    message: :invalid_format,
+    case_sensitive: false
+  }, on: :v2
   validate :applicant_information
 
   include Redactable

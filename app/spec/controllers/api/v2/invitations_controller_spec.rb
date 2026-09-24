@@ -14,11 +14,12 @@ RSpec.describe Api::V2::InvitationsController do
 
     let(:valid_params) do
       attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
-        params[:invitation_type] = "income"
+        params[:invitation_type] = "employment"
+        params[:verification_range] = "last_complete_month"
         params[:agency_partner_metadata] = attributes_for(:cbv_applicant, client_agency_id)
         params[:agency_partner_metadata][:first_name] = "John"
         params[:agency_partner_metadata][:last_name] = "Doe"
-        params[:agency_partner_metadata][:case_number] = "123456789"
+        params[:agency_partner_metadata][:individual_id] = "123456789"
         params[:agency_partner_metadata][:date_of_birth] = "1990-01-01"
         # ensure that client_agency_id is not considered a valid param. it should be inferred from the api token
         params[:agency_partner_metadata].delete(:client_agency_id)
@@ -53,11 +54,12 @@ RSpec.describe Api::V2::InvitationsController do
       let(:client_agency_id) { "la_ldh".to_sym }
       let(:valid_params) do
         attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
-          params[:invitation_type] = "income"
+          params[:invitation_type] = "employment"
+          params[:verification_range] = "last_12_complete_months"
           params[:agency_partner_metadata] = {
-            case_number: nil,
-            date_of_birth: "1977-09-13",
-            individual_id: "ABC1234"
+            individual_id: "ABC1234",
+            first_name: "Jane",
+            last_name: "Doe"
           }
         end
       end
@@ -80,17 +82,16 @@ RSpec.describe Api::V2::InvitationsController do
         parsed_response = JSON.parse(response.body)
         expect(parsed_response["agency_partner_metadata"]).to eq(
           "individual_id" => valid_params[:agency_partner_metadata][:individual_id],
-          "case_number" => valid_params[:agency_partner_metadata][:case_number],
-          "date_of_birth" => valid_params[:agency_partner_metadata][:date_of_birth],
+          "first_name" => valid_params[:agency_partner_metadata][:first_name],
+          "last_name" => valid_params[:agency_partner_metadata][:last_name],
         )
       end
 
-      it "returns 422 when both doc_id and individual_id are nil for income" do
+      it "returns 422 when individual_id is nil for employment" do
         valid_params[:agency_partner_metadata] = {
-          case_number: nil,
-          date_of_birth: "1977-09-13",
-          doc_id: nil,
-          individual_id: nil
+          individual_id: nil,
+          first_name: "Jane",
+          last_name: "Doe"
         }
 
         post :create, params: valid_params
@@ -100,9 +101,9 @@ RSpec.describe Api::V2::InvitationsController do
         parsed_response = JSON.parse(response.body)
 
         expect(parsed_response["errors"]).to include(
-          "field" => "doc_id_or_individual_id",
+          "field" => "individual_id",
           "message" =>
-            I18n.t("api.v2.la_ldh.fields.doc_id_or_individual_id.blank")
+            I18n.t("api.v2.la_ldh.fields.individual_id.blank")
         )
       end
     end
@@ -113,6 +114,7 @@ RSpec.describe Api::V2::InvitationsController do
       let(:valid_params) do
         {
           invitation_type: "community_engagement",
+          verification_range: "last_complete_month",
           language: "en",
           agency_partner_metadata: {
             individual_id: "IND123",
@@ -123,7 +125,25 @@ RSpec.describe Api::V2::InvitationsController do
         }
       end
 
-      it "creates income and activity invitations for the same applicant" do
+      it "sets verification_range on the activity flow invitation" do
+        create_invitation
+
+        activity_invitation = ActivityFlowInvitation.last
+        expect(activity_invitation.verification_range).to eq("last_complete_month")
+      end
+
+      it "returns 422 when verification_range is invalid" do
+        invalid_params = valid_params.merge(verification_range: "not_a_real_range")
+
+        post :create, params: invalid_params
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["errors"]).to include(
+          a_hash_including("field" => "verification_range")
+        )
+      end
+
+      it "creates employment and community engagement invitations for the same applicant" do
         expect do
           create_invitation
         end.to change(CbvFlowInvitation, :count).by(1)
@@ -152,7 +172,7 @@ RSpec.describe Api::V2::InvitationsController do
         expect(ActivityFlowInvitation.last.cbv_applicant).to eq(applicant)
       end
 
-      %i[first_name last_name date_of_birth].each do |field|
+      %i[individual_id first_name last_name].each do |field|
         it "returns 422 when #{field} is missing" do
           invalid_params = valid_params.deep_dup
           invalid_params[:agency_partner_metadata].delete(field)

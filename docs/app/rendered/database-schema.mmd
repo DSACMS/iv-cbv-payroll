@@ -49,8 +49,10 @@ erDiagram
 		string auth_token
 		string client_agency_id
 		datetime created_at
+		jsonb pre_populated_activities
 		string reference_id
 		datetime updated_at
+		string verification_range
 	}
 	ActivityFlowMonthlySummary {
 		integer accrued_gross_earnings_cents
@@ -111,6 +113,7 @@ erDiagram
 		string language
 		datetime redacted_at
 		datetime updated_at
+		string verification_range
 	}
 	EducationActivity {
 		text additional_comments

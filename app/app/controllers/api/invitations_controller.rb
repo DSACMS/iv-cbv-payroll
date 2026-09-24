@@ -38,6 +38,15 @@ class Api::InvitationsController < ApplicationController
     render json: response_body, status: :created
   end
 
+  def destroy
+    invitation = CbvFlowInvitation.find_by(auth_token: params[:token])
+
+    return head :not_found unless invitation
+
+    invitation.destroy!
+    head :no_content
+  end
+
   private
 
   def cbv_flow_invitation_params

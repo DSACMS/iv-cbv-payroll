@@ -456,4 +456,39 @@ RSpec.describe Api::InvitationsController do
       end
     end
   end
+
+  describe "#destroy" do
+    subject do
+      delete :destroy, params: { token: cbv_flow_invitation.auth_token }
+    end
+
+    let(:client_agency_id) { "sandbox".to_sym }
+    let(:api_access_token_instance) do
+      user = create(:user, :with_access_token, email: "test@test.com", client_agency_id: client_agency_id, is_service_account: true)
+      user.api_access_tokens.first
+    end
+    let(:cbv_flow_invitation) { create(:cbv_flow_invitation, client_agency_id, client_agency_id: client_agency_id.to_s) }
+
+    before do
+      request.headers["Authorization"] = "Bearer #{api_access_token_instance.access_token}"
+      cbv_flow_invitation
+    end
+
+    it "destroys the invitation" do
+      expect { subject }.to change(CbvFlowInvitation, :count).by(-1)
+      expect(response).to have_http_status(:no_content)
+      expect(CbvFlowInvitation.find_by(id: cbv_flow_invitation.id)).to be_nil
+    end
+
+    context "when the token does not match any invitation" do
+      subject do
+        delete :destroy, params: { token: "nonexistent-token" }
+      end
+
+      it "returns not_found and does not destroy any invitation" do
+        expect { subject }.not_to change(CbvFlowInvitation, :count)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
 end
