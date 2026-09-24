@@ -149,7 +149,7 @@ RSpec.describe Api::V2::InvitationsController do
           individual_id: "IND123"
         )
 
-        expect(ActivityFlowInvitation.last.cbv_applicant).to eq(applicant)
+        expect(ActivityFlowInvitation.last).to have_attributes(cbv_applicant: applicant, verification_range: "last_complete_month")
       end
 
       %i[individual_id first_name last_name].each do |field|

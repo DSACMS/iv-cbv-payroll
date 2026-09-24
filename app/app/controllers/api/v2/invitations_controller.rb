@@ -13,21 +13,31 @@ class Api::V2::InvitationsController < Api::InvitationsController
       }, status: :unprocessable_content
     end
 
-    @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(
-      cbv_flow_invitation_params(contract),
-      @current_user,
-      delivery_method: nil
-    )
+    ActiveRecord::Base.transaction do
+      @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(
+        cbv_flow_invitation_params(contract),
+        @current_user,
+        delivery_method: nil
+      )
 
-    return render_validation_errors unless @cbv_flow_invitation.errors.empty?
+      if @cbv_flow_invitation.errors.any?
+        raise ActiveRecord::Rollback
+      end
 
-    if community_engagement?
-      @activity_flow_invitation = CbvInvitationService.new(event_logger)
-        .invite_to_activity_flow(
-          @cbv_flow_invitation, [], verification_range: params[:verification_range], context: :v2
-        )
+      if community_engagement?
+        @activity_flow_invitation = CbvInvitationService.new(event_logger)
+          .invite_to_activity_flow(
+            @cbv_flow_invitation, [], verification_range: params[:verification_range], context: :v2
+          )
 
-      return render_validation_errors(@activity_flow_invitation) unless @activity_flow_invitation.errors.empty?
+        raise ActiveRecord::Rollback if @activity_flow_invitation.errors.any?
+      end
+    end
+
+    if @cbv_flow_invitation.errors.any?
+      return render_validation_errors(@cbv_flow_invitation)
+    elsif @activity_flow_invitation&.errors&.any?
+      return render_validation_errors(@activity_flow_invitation)
     end
 
     render_created_response
@@ -35,11 +45,15 @@ class Api::V2::InvitationsController < Api::InvitationsController
 
   private
 
+  def invitation_type
+    @invitation_type ||= params[:invitation_type].tr("-", "_")
+  end
+
   def metadata_contract
     @metadata_contract ||= Api::V2::InvitationMetadata.new(
       params: params,
       client_agency_id: @current_user.client_agency_id,
-      flow_type: params[:invitation_type]
+      flow_type: invitation_type
     )
   end
 
@@ -57,7 +71,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
   end
 
   def community_engagement?
-    params[:invitation_type] == "community_engagement"
+    invitation_type == "community_engagement"
   end
 
   def render_created_response
@@ -76,7 +90,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
     render json: response_body, status: :created
   end
 
-  def render_validation_errors(record = @cbv_flow_invitation)
+  def render_validation_errors(record)
     render json: errors_to_json(record.errors),
       status: :unprocessable_content
   end

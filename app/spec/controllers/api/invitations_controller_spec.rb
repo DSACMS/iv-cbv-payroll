@@ -481,7 +481,7 @@ RSpec.describe Api::InvitationsController do
     end
 
     context "when the token does not match any invitation" do
-      subject do
+      subject(:expire_invitation) do
         delete :expire, params: { token: "nonexistent-token" }
       end
 
