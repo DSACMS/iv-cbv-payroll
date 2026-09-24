@@ -23,7 +23,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
 
     if community_engagement?
       @activity_flow_invitation = CbvInvitationService.new(event_logger)
-        .invite_to_activity_flow(@cbv_flow_invitation, [])
+        .invite_to_activity_flow(@cbv_flow_invitation)
     end
 
     render_created_response
