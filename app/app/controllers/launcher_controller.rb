@@ -163,7 +163,8 @@ class LauncherController < ApplicationController
       :reporting_window_months,
       :renewal_required_months,
       :reporting_window_start,
-      :launcher_timeout
+:launcher_timeout,
+      :launch_type
     )
   end
 
