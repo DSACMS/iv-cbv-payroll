@@ -45,10 +45,6 @@ Which AI Tool(s) did you use:
 - [ ] Google Search AI assist
 - [ ] Other ______________________________
 
-
-Optional — for learning, not audited:
-- Prompt artifacts: <link a prompt/chat if worth keeping; otherwise skip>
-
 ## Infrastructure Changes
 <!-- If this PR includes Terraform changes, please provide relevant info. -->
   - [ ] Plan reviewed
