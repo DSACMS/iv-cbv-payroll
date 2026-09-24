@@ -59,11 +59,10 @@
           - individual_id
           - first_name
           - last_name
-          - date_of_birth
         required:
+          - individual_id
           - first_name
           - last_name
-          - date_of_birth
       income:
         metadata:
           - case_number
@@ -136,11 +135,10 @@
           - individual_id
           - first_name
           - last_name
-          - date_of_birth
         required:
+          - individual_id
           - first_name
           - last_name
-          - date_of_birth
       income:
         metadata:
           - first_name
@@ -222,11 +220,10 @@
           - individual_id
           - first_name
           - last_name
-          - date_of_birth
         required:
+          - individual_id
           - first_name
           - last_name
-          - date_of_birth
       income:
         metadata:
           - first_name
@@ -288,15 +285,14 @@
   api:
     v2:
       community_engagement:
-        metadata:
+        mmetadata:
           - individual_id
           - first_name
           - last_name
-          - date_of_birth
         required:
+          - individual_id
           - first_name
           - last_name
-          - date_of_birth
       income:
         metadata:
           - case_number
@@ -338,11 +334,10 @@
           - individual_id
           - first_name
           - last_name
-          - date_of_birth
         required:
+          - individual_id
           - first_name
           - last_name
-          - date_of_birth
       income:
         metadata:
           - case_number

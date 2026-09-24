@@ -113,6 +113,7 @@ RSpec.describe Api::V2::InvitationsController do
       let(:valid_params) do
         {
           invitation_type: "community_engagement",
+          verification_range: "last_complete_month",
           language: "en",
           agency_partner_metadata: {
             individual_id: "IND123",
@@ -145,14 +146,13 @@ RSpec.describe Api::V2::InvitationsController do
           client_agency_id: "sandbox",
           first_name: "Jane",
           last_name: "Doe",
-          individual_id: "IND123",
-          date_of_birth: Date.new(1977, 9, 13)
+          individual_id: "IND123"
         )
 
         expect(ActivityFlowInvitation.last.cbv_applicant).to eq(applicant)
       end
 
-      %i[first_name last_name date_of_birth].each do |field|
+      %i[individual_id first_name last_name].each do |field|
         it "returns 422 when #{field} is missing" do
           invalid_params = valid_params.deep_dup
           invalid_params[:agency_partner_metadata].delete(field)

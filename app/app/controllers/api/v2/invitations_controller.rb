@@ -23,7 +23,9 @@ class Api::V2::InvitationsController < Api::InvitationsController
 
     if community_engagement?
       @activity_flow_invitation = CbvInvitationService.new(event_logger)
-        .invite_to_activity_flow(@cbv_flow_invitation, [])
+        .invite_to_activity_flow(
+          @cbv_flow_invitation, [], verification_range: params[:verification_range], context: :v2
+        )
     end
 
     render_created_response
@@ -59,6 +61,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
   def render_created_response
     response_body = {
       tokenized_url: @cbv_flow_invitation.to_url,
+      token: @cbv_flow_invitation.auth_token,
       expiration_date: @cbv_flow_invitation.expires_at_local,
       language: @cbv_flow_invitation.language,
       agency_partner_metadata: metadata_contract.permitted

@@ -140,13 +140,10 @@ Rails.application.routes.draw do
   namespace :api do
     scope :v1 do
       post "/invitations", to: "invitations#create"
+      delete "/invitations/:token", to: "invitations#expire"
     end
 
     scope :v2, module: :v2 do
-      post "/income/invitations",
-        to: "invitations#create",
-        defaults: { invitation_type: "income" }
-
       post "/community-engagement/invitations",
         to: "invitations#create",
         defaults: { invitation_type: "community_engagement" }

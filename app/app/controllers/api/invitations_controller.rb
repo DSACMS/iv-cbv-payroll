@@ -38,6 +38,16 @@ class Api::InvitationsController < ApplicationController
     render json: response_body, status: :created
   end
 
+  def expire
+    invitation = CbvFlowInvitation.find_by(auth_token: params[:token],
+      client_agency_id: @current_user.client_agency_id.to_s)
+
+    return head :not_found unless invitation
+
+    invitation.update!(expires_at: Time.current)
+    head :no_content
+  end
+
   private
 
   def cbv_flow_invitation_params

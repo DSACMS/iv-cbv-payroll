@@ -27,12 +27,15 @@ class CbvInvitationService
     cbv_flow_invitation
   end
 
-  def invite_to_activity_flow(cbv_flow_invitation, pre_populated_activities)
-    ActivityFlowInvitation.create(
+  def invite_to_activity_flow(cbv_flow_invitation, pre_populated_activities, verification_range: nil, context: nil)
+    activity_flow_invitation = ActivityFlowInvitation.new(
       client_agency_id: cbv_flow_invitation.client_agency_id,
       cbv_applicant: cbv_flow_invitation.cbv_applicant,
-      pre_populated_activities: pre_populated_activities
+      pre_populated_activities: pre_populated_activities,
+      verification_range: verification_range
     )
+    activity_flow_invitation.save(context: context)
+    activity_flow_invitation
   end
 
   private
