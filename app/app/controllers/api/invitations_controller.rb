@@ -45,6 +45,9 @@ class Api::InvitationsController < ApplicationController
     return head :not_found unless invitation
 
     invitation.update!(expires_at: Time.current)
+
+    Rails.logger.info "Expired invitation ID: #{invitation.id} by user ID: #{@current_user.id}"
+
     head :no_content
   end
 

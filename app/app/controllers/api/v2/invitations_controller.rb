@@ -40,6 +40,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
       return render_validation_errors(@activity_flow_invitation)
     end
 
+    CbvInvitationService.new(event_logger).track_invitation_event(@cbv_flow_invitation, @current_user)
     render_created_response
   end
 
