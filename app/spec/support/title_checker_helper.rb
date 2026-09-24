@@ -27,6 +27,6 @@ RSpec.configure do |config|
       !%w[new create].include?(request.params[:action]) &&
       response.body.present? &&
       response.status == 200 &&
-      response.content_type =~ /html/
+      response.media_type == "text/html"
   end
 end
