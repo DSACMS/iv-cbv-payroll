@@ -17,6 +17,17 @@ class ClientAgencyConfig
   VALID_APPLICATION_REPORTING_MONTHS = [ 1, 2, 3 ]
   VALID_RENEWAL_REQUIRED_MONTHS = 1..6
   VALID_REDACTION_TYPES = %w[string date email object uuid]
+  DOCUMENT_CONTENT_TYPES = {
+    "pdf" => "application/pdf",
+    "png" => "image/png",
+    "jpeg" => "image/jpeg",
+    "bmp" => "image/bmp",
+    "tiff" => "image/tiff"
+  }.freeze
+  DEFAULT_ALLOWED_DOCUMENT_TYPES = DOCUMENT_CONTENT_TYPES.keys.freeze
+  DEFAULT_MAX_DOCUMENT_UPLOAD_SIZE_MB = 40
+  # Keep this at or below the upload-processing Lambda ceiling in emmy-infra.
+  MAX_DOCUMENT_UPLOAD_SIZE_MB = 40
 
   ACTIVITY_TRANSMISSION_URL_KEYS = {
     "http" => "documents_api_url",
@@ -76,6 +87,8 @@ class ClientAgencyConfig
       activity_types
       prefilled_activities_enabled
       allowed_iframe_ancestors
+      allowed_document_types
+      max_document_upload_size_mb
     ])
 
     def initialize(yaml)
@@ -111,6 +124,18 @@ class ClientAgencyConfig
       @prefilled_activities_enabled = yaml["prefilled_activities_enabled"] || false
       @caseworker_fallback_email = yaml["caseworker_fallback_email"]
       @allowed_iframe_ancestors = yaml["allowed_iframe_ancestors"] || []
+      @allowed_document_types = yaml.fetch("allowed_document_types", DEFAULT_ALLOWED_DOCUMENT_TYPES)
+      @max_document_upload_size_mb = yaml.fetch("max_document_upload_size_mb", DEFAULT_MAX_DOCUMENT_UPLOAD_SIZE_MB)
+
+      # Normalize applicant attributes to ensure both v1 and v2 keys exist
+      # and that both versions have the same set of attributes
+      raw_applicant_attributes = yaml["applicant_attributes"] || {}
+      @applicant_attributes =
+        if raw_applicant_attributes.key?("v1") || raw_applicant_attributes.key?("v2")
+          raw_applicant_attributes
+        else
+          { "v1" => raw_applicant_attributes, "v2" => raw_applicant_attributes }
+        end
 
       # Normalize applicant attributes to ensure both v1 and v2 keys exist
       # and that both versions have the same set of attributes
@@ -125,6 +150,13 @@ class ClientAgencyConfig
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} `allowed_iframe_ancestors` must be a list") unless @allowed_iframe_ancestors.is_a?(Array)
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?
+      unsupported_document_types = @allowed_document_types - DOCUMENT_CONTENT_TYPES.keys
+      if @allowed_document_types.empty? || unsupported_document_types.any?
+        raise ArgumentError.new("Client Agency #{@id} invalid value for allowed_document_types")
+      end
+      unless @max_document_upload_size_mb.between?(1, MAX_DOCUMENT_UPLOAD_SIZE_MB)
+        raise ArgumentError.new("Client Agency #{@id} invalid value for max_document_upload_size_mb")
+      end
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.w2") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:w2])
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.gig") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:gig])
       raise ArgumentError.new("Client Agency #{@id} invalid value for application_reporting_months") unless VALID_APPLICATION_REPORTING_MONTHS.include?(@application_reporting_months)
@@ -159,6 +191,14 @@ class ClientAgencyConfig
         next unless options.is_a?(Hash) && options["redaction_type"]
         fields[name.to_sym] = options["redaction_type"].to_sym
       end
+    end
+
+    def allowed_document_content_types
+      @allowed_document_types.map { |type| DOCUMENT_CONTENT_TYPES.fetch(type) }
+    end
+
+    def max_document_upload_size_bytes
+      @max_document_upload_size_mb.megabytes
     end
 
     def api_metadata(flow_type, version: :v2)

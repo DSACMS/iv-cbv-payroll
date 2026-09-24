@@ -3,6 +3,18 @@ require "rails_helper"
 RSpec.describe ActivitiesHelper do
   include ActiveSupport::Testing::TimeHelpers
 
+  describe "#document_upload_allowed_types_sentence" do
+    it "formats the agency's configured types for user-facing copy" do
+      client_agency = instance_double(
+        ClientAgencyConfig::ClientAgency,
+        allowed_document_types: %w[pdf png jpeg bmp tiff]
+      )
+
+      expect(helper.document_upload_allowed_types_sentence(client_agency))
+        .to eq("PDF, PNG, JPEG, BMP, or TIFF")
+    end
+  end
+
   describe "#show_activity?" do
     context "in a pre-populated session" do
       before do
