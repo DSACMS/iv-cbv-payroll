@@ -69,8 +69,7 @@ RSpec.describe LauncherController, type: :controller do
           reporting_window: "application"
         }
 
-        invitation = ActivityFlowInvitation.last
-        expect(response).to redirect_to("/activities/start/#{invitation.auth_token}?reporting_window=application")
+        expect(response).to redirect_to("/activities/links/sandbox?reporting_window=application")
       end
 
       it "includes override params in the URL" do
@@ -135,7 +134,7 @@ RSpec.describe LauncherController, type: :controller do
         parsed_response = JSON.parse(response.body)
 
         expect(response).to have_http_status(:success)
-        expect(parsed_response.fetch("url")).to include("/activities/start")
+        expect(parsed_response.fetch("url")).to include("/activities/links/sandbox")
       end
     end
 
@@ -183,7 +182,7 @@ RSpec.describe LauncherController, type: :controller do
 
         expect(response).to have_http_status(:success)
         expect(parsed_response).to include("url")
-        expect(parsed_response.fetch("url")).to include("/activities/start/#{invitation.auth_token}")
+        expect(parsed_response.fetch("url")).to include("/activities/start/#{invitation.auth_token}?reporting_window=application")
       end
     end
 
@@ -196,9 +195,7 @@ RSpec.describe LauncherController, type: :controller do
             launch_type: "generic"
           }
 
-          invitation = CbvFlowInvitation.last
-
-          expect(response).to redirect_to("/en/start/#{invitation.auth_token}?client_agency_id=sandbox")
+          expect(response).to redirect_to("/cbv/links/sandbox")
         end
 
         it "includes override params in the URL" do
@@ -240,10 +237,8 @@ RSpec.describe LauncherController, type: :controller do
           }, format: :json
 
           parsed_response = JSON.parse(response.body)
-
-          invitation = CbvFlowInvitation.last
           expect(response).to have_http_status(:success)
-          expect(parsed_response.fetch("url")).to include("/start/#{invitation.auth_token}?client_agency_id=sandbox")
+          expect(parsed_response.fetch("url")).to include("/cbv/links/sandbox")
           expect(parsed_response.fetch("url")).to include("launcher_timeout=10")
         end
       end
