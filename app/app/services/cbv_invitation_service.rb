@@ -5,7 +5,7 @@ class CbvInvitationService
 
   def invite(cbv_flow_invitation_params, current_user, delivery_method: :email, context: nil)
     cbv_flow_invitation_params[:user] = current_user
-    cbv_flow_invitation = CbvFlowInvitation.create(cbv_flow_invitation_params)
+    cbv_flow_invitation = CbvFlowInvitation.new(cbv_flow_invitation_params)
     cbv_flow_invitation.save(context: context)
 
     if cbv_flow_invitation.errors.any?
@@ -29,7 +29,7 @@ class CbvInvitationService
   end
 
   def invite_to_activity_flow(cbv_flow_invitation, pre_populated_activities, verification_range: nil, context: nil)
-    activity_flow_invitation = ActivityFlowInvitation.create(
+    activity_flow_invitation = ActivityFlowInvitation.new(
       client_agency_id: cbv_flow_invitation.client_agency_id,
       cbv_applicant: cbv_flow_invitation.cbv_applicant,
       pre_populated_activities: pre_populated_activities,

@@ -457,9 +457,9 @@ RSpec.describe Api::InvitationsController do
     end
   end
 
-  describe "#destroy" do
+  describe "#expire" do
     subject do
-      delete :destroy, params: { token: cbv_flow_invitation.auth_token }
+      delete :expire, params: { token: cbv_flow_invitation.auth_token }
     end
 
     let(:client_agency_id) { "sandbox".to_sym }
@@ -474,18 +474,18 @@ RSpec.describe Api::InvitationsController do
       cbv_flow_invitation
     end
 
-    it "destroys the invitation" do
-      expect { subject }.to change(CbvFlowInvitation, :count).by(-1)
+    it "expires the invitation" do
+      subject
       expect(response).to have_http_status(:no_content)
-      expect(CbvFlowInvitation.find_by(id: cbv_flow_invitation.id)).to be_nil
+      expect(CbvFlowInvitation.find_by(id: cbv_flow_invitation.id).expires_at).to be_within(1.second).of(Time.current)
     end
 
     context "when the token does not match any invitation" do
       subject do
-        delete :destroy, params: { token: "nonexistent-token" }
+        delete :expire, params: { token: "nonexistent-token" }
       end
 
-      it "returns not_found and does not destroy any invitation" do
+      it "returns not_found and does not expire any invitation" do
         expect { subject }.not_to change(CbvFlowInvitation, :count)
         expect(response).to have_http_status(:not_found)
       end
