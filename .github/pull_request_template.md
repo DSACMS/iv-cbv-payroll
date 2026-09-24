@@ -24,7 +24,7 @@ Tag product and design in Slack for acceptance: @emmy-acceptance-testers
 - [ ] USED_AI: I attest that I have read, understood, and take ownership of all AI-generated code in this PR.
 - [ ] NO_AI: I did not use AI.
 
-If you used_AI:
+If you used AI:
 
 Purpose for AI usage:
 - [ ] Code generation
