@@ -59,6 +59,12 @@ RUN apt-get update -qq && \
       libcurl4-openssl-dev \
       libcurl4t64 \
       libde265-0 \
+      libevent-2.1-7t64 \
+      libevent-core-2.1-7t64 \
+      libevent-dev \
+      libevent-extra-2.1-7t64 \
+      libevent-openssl-2.1-7t64 \
+      libevent-pthreads-2.1-7t64 \
       libexif-dev \
       libexif12 \
       libexpat1 \
