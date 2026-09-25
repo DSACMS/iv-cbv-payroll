@@ -176,7 +176,7 @@ RSpec.describe Api::InvitationsController do
 
     it "expires the invitation" do
       expire_invitation
-      expect(response).to have_http_status(:no_content)
+      expect(response).to have_http_status(:ok)
       expect(CbvFlowInvitation.find_by(id: cbv_flow_invitation.id).expires_at).to be_within(1.second).of(Time.current)
     end
 

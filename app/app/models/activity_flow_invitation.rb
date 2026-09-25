@@ -14,11 +14,6 @@ class ActivityFlowInvitation < ApplicationRecord
 
   has_secure_token :auth_token, length: 10
 
-  attr_accessor :skip_month_window_validation
-
-  validate :pre_populated_activities_shape
-  validate :pre_populated_activity_months_in_window, unless: :skip_month_window_validation
-
   validates :verification_range, inclusion: {
     in: VALID_VERIFICATION_RANGES,
     message: :invalid_format,
