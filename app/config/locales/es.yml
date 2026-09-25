@@ -7,11 +7,6 @@ es:
           attributes:
             case_number:
               too_long: Su número de caso no puede ser más largo de 13 digitos.
-  activities:
-    income:
-      employer_searches:
-        show:
-          error_search_timeout: Se agotó el tiempo de espera de la búsqueda. Por favor, inténtelo de nuevo.
   aggregator_strings:
     deductions:
       401k: 401k
