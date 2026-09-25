@@ -156,4 +156,39 @@ RSpec.describe Api::InvitationsController do
       end
     end
   end
+
+  describe "#expire" do
+    subject(:expire_invitation) do
+      delete :expire, params: { token: cbv_flow_invitation.auth_token }
+    end
+
+    let(:client_agency_id) { "sandbox".to_sym }
+    let(:api_access_token_instance) do
+      user = create(:user, :with_access_token, email: "test@test.com", client_agency_id: client_agency_id, is_service_account: true)
+      user.api_access_tokens.first
+    end
+    let(:cbv_flow_invitation) { create(:cbv_flow_invitation, client_agency_id, client_agency_id: client_agency_id.to_s) }
+
+    before do
+      request.headers["Authorization"] = "Bearer #{api_access_token_instance.access_token}"
+      cbv_flow_invitation
+    end
+
+    it "expires the invitation" do
+      expire_invitation
+      expect(response).to have_http_status(:ok)
+      expect(CbvFlowInvitation.find_by(id: cbv_flow_invitation.id).expires_at).to be_within(1.second).of(Time.current)
+    end
+
+    context "when the token does not match any invitation" do
+      subject(:expire_invitation) do
+        delete :expire, params: { token: "nonexistent-token" }
+      end
+
+      it "returns not_found and does not expire any invitation" do
+        expect { expire_invitation }.not_to change(CbvFlowInvitation, :count)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
 end

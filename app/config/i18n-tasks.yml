@@ -161,6 +161,7 @@ ignore_missing:
     - "api.v2.fields.*" # FFS-4797
     - "cbv.employer_searches.employer.select_employer"
     - "cbv.employer_searches.show.select_employer"
+    - "activerecord.errors.models.activity_flow_invitation.*" # FFS-4853
 
 ## Consider these keys used:
 ignore_unused:

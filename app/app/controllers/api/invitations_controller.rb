@@ -24,6 +24,19 @@ class Api::InvitationsController < ApplicationController
     render json: response_body, status: :created
   end
 
+  def expire
+    invitation = CbvFlowInvitation.find_by(auth_token: params[:token],
+      client_agency_id: @current_user.client_agency_id)
+
+    return head :not_found unless invitation && !invitation.expired?
+
+    invitation.update!(expires_at: Time.current)
+
+    Rails.logger.info "Expired invitation ID: #{invitation.id} by user ID: #{@current_user.id}"
+
+    render json: { tokenized_url: invitation.to_url }, status: :ok
+  end
+
   private
 
   def cbv_flow_invitation_params

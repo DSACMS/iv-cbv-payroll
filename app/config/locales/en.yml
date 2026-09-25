@@ -3,6 +3,10 @@ en:
   activerecord:
     errors:
       models:
+        activity_flow_invitation:
+          attributes:
+            verification_range:
+              invalid_format: Verification range must be either last_complete_month or last_12_complete_months.
         cbv_applicant:
           attributes:
             date_of_birth:
