@@ -10,6 +10,10 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
 
+    def test_timeout
+      raise Faraday::TimeoutError
+    end
+
     def show
       @agency = current_agency
       render plain: @agency.id
@@ -146,6 +150,56 @@ RSpec.describe ApplicationController, type: :controller do
       it "ignores launcher_timeout and returns the default" do
         expect(controller.send(:session_timeout_duration)).to eq(default_timeout)
       end
+    end
+  end
+
+  describe "when an employer search times out" do
+    before do
+      routes.draw do
+        get "test_timeout", to: "anonymous#test_timeout"
+      end
+    end
+
+    it "redirects to the CBV employer search with a timeout alert" do
+      get :test_timeout
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include(cbv_flow_employer_search_path)
+
+      expect(flash[:slim_alert]).to eq(
+        type: "error",
+        message: I18n.t("cbv.employer_searches.show.error_search_timeout")
+      )
+    end
+
+    it "uses the Spanish timeout message in the CBV flow" do
+      get :test_timeout, session: { locale: :es }
+
+      expect(flash[:slim_alert]).to eq(
+        type: "error",
+        message: I18n.t(
+          "cbv.employer_searches.show.error_search_timeout",
+          locale: :es
+        )
+      )
+    end
+
+    it "redirects to the activity employer search when in the activity flow" do
+      allow(controller).to receive(:activity_flow?).and_return(true)
+
+      get :test_timeout
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include(
+        activities_flow_income_employer_search_path
+      )
+
+      expect(flash[:slim_alert]).to eq(
+        type: "error",
+        message: I18n.t("activities.income.employer_searches.show.error_search_timeout")
+      )
     end
   end
 end
