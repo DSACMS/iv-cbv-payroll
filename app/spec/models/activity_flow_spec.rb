@@ -26,19 +26,19 @@ RSpec.describe ActivityFlow, type: :model do
     it "sets employment_focused to true when params[:employment_focused] is truthy" do
       attrs = described_class.flow_attributes_from_params(employment_focused: "true")
 
-      expect(attrs[:employment_focused]).to eq(true)
+      expect(attrs[:employment_focused]).to be(true)
     end
 
     it "sets employment_focused to false when params[:employment_focused] is falsy" do
       attrs = described_class.flow_attributes_from_params(employment_focused: "false")
 
-      expect(attrs[:employment_focused]).to eq(false)
+      expect(attrs[:employment_focused]).to befalse)
     end
 
     it "defaults employment_focused to false when absent from params" do
       attrs = described_class.flow_attributes_from_params({})
 
-      expect(attrs[:employment_focused]).to eq(false)
+      expect(attrs[:employment_focused]).to be(false)
     end
   end
 
@@ -70,7 +70,7 @@ RSpec.describe ActivityFlow, type: :model do
 
     flow = described_class.create_from_invitation(invitation, device_id, employment_focused: "true")
 
-    expect(flow.employment_focused).to eq(true)
+    expect(flow.employment_focused).to be(true)
   end
 
     it "defaults employment_focused to false when absent from params" do
@@ -79,7 +79,7 @@ RSpec.describe ActivityFlow, type: :model do
       flow = described_class.create_from_invitation(invitation, device_id)
 
       expect(flow).to be_persisted
-      expect(flow.employment_focused).to eq(false)
+      expect(flow.employment_focused).to be(false)
     end
   end
 

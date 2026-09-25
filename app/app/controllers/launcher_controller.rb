@@ -205,6 +205,7 @@ class LauncherController < ApplicationController
     existing_params = URI.decode_www_form(uri.query || "")
     existing_params << [ "client_agency_id", client_agency_id ]
     overrides.to_h.each { |k, v| existing_params << [ k, v ] }
+    overrides << :employment_focused
     uri.query = URI.encode_www_form(existing_params)
     uri.to_s
   end

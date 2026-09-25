@@ -42,7 +42,7 @@ class ActivityFlow < Flow
   def self.flow_attributes_from_params(params)
     reporting_window_type = params[:reporting_window] == "renewal" ? "renewal" : "application"
     {
-      reporting_window_type: reporting_window_type, 
+      reporting_window_type: reporting_window_type,
       employment_focused: ActiveModel::Type::Boolean.new.cast(params[:employment_focused]) || false
     }
   end
