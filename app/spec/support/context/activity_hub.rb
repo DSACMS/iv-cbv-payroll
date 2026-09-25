@@ -39,7 +39,8 @@ RSpec.shared_context "activity_hub" do
   around do |example|
     stub_environment_variables({
       "ACTIVITY_HUB_ENABLED" => "true",
-      "NSC_ENVIRONMENT" => "test"
+      "NSC_ENVIRONMENT" => "test",
+      "NSC_DISABLED" => "false"
     }, &example)
   end
 end
