@@ -13,34 +13,21 @@ class Api::V2::InvitationsController < Api::InvitationsController
       }, status: :unprocessable_content
     end
 
-    ActiveRecord::Base.transaction do
-      @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(
-        cbv_flow_invitation_params(contract),
-        @current_user,
-        delivery_method: nil
-      )
+    @cbv_flow_invitation = CbvInvitationService.new(event_logger).invite(
+      cbv_flow_invitation_params(contract),
+      @current_user,
+      delivery_method: nil
+    )
 
-      if @cbv_flow_invitation.errors.any?
-        raise ActiveRecord::Rollback
-      end
-
-      if community_engagement?
-        @activity_flow_invitation = CbvInvitationService.new(event_logger)
-          .invite_to_activity_flow(
-            @cbv_flow_invitation, [], verification_range: params[:verification_range], context: :v2
-          )
-
-        raise ActiveRecord::Rollback if @activity_flow_invitation.errors.any?
-      end
+    if community_engagement?
+      @activity_flow_invitation = CbvInvitationService.new(event_logger)
+        .invite_to_activity_flow(
+          @cbv_flow_invitation, verification_range: params[:verification_range], context: :v2
+        )
     end
 
-    if @cbv_flow_invitation.errors.any?
-      return render_validation_errors(@cbv_flow_invitation)
-    elsif @activity_flow_invitation&.errors&.any?
-      return render_validation_errors(@activity_flow_invitation)
-    end
+    return render_validation_errors if @cbv_flow_invitation.errors.any?
 
-    CbvInvitationService.new(event_logger).track_invitation_event(@cbv_flow_invitation, @current_user)
     render_created_response
   end
 
@@ -91,8 +78,8 @@ class Api::V2::InvitationsController < Api::InvitationsController
     render json: response_body, status: :created
   end
 
-  def render_validation_errors(record)
-    render json: errors_to_json(record.errors),
+  def render_validation_errors
+    render json: errors_to_json(@cbv_flow_invitation.errors),
       status: :unprocessable_content
   end
 end
