@@ -240,6 +240,11 @@
               >
             </div>
           <% end %>
+          <%= render AdvancedLauncher::SettingComponent.new(title: "Employment focused", hint: "Requests the Employment focused ActivityFlow variant.") do %>
+            <div class="usa-checkbox">
+              <input class="usa-checkbox__input" type="checkbox" name="employment_focused" id="employment_focused" value="true">
+              
+          <% end %>
         </div>
         <%= render AdvancedLauncher::SettingComponent.new(title: "Session timeout", hint: "Specify the number of minutes it should take for the session to time out. Note: the warning modal appears 5 min before timeout, so use 6 or higher to avoid an immediate warning.") do %>
           <div class="advanced-launcher__inline-field">

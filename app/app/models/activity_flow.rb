@@ -41,7 +41,7 @@ class ActivityFlow < Flow
 
   def self.flow_attributes_from_params(params)
     reporting_window_type = params[:reporting_window] == "renewal" ? "renewal" : "application"
-    { reporting_window_type: reporting_window_type }
+    { reporting_window_type: reporting_window_type, employment_focused: Boolean.new.cast(params[:employment_focused]) }
   end
 
   # Reporting window an ActivityFlow would have if created on `reference_date`

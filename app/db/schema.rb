@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_21_190718) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_25_134850) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -68,6 +68,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_21_190718) do
     t.datetime "created_at", null: false
     t.string "reference_id"
     t.datetime "updated_at", null: false
+    t.string "verification_range"
     t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
     t.index ["cbv_applicant_id"], name: "index_activity_flow_invitations_on_cbv_applicant_id"
   end
@@ -100,6 +101,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_21_190718) do
     t.datetime "created_at", null: false
     t.string "device_id"
     t.datetime "documents_deleted_at"
+    t.boolean "employment_focused", default: false, null: false
     t.uuid "end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.bigint "identity_id"
     t.integer "renewal_required_months"
