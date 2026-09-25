@@ -163,22 +163,24 @@ RSpec.describe ApplicationController, type: :controller do
     it "redirects to the CBV employer search with a timeout alert" do
       get :test_timeout
 
-      expect(response).to have_http_status(:ok)
-      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-      expect(response.body).to include(cbv_flow_employer_search_path)
+      expect(response).to have_http_status(:found)
+      expect(response).to redirect_to(cbv_flow_employer_search_path)
 
       expect(flash[:slim_alert]).to eq(
         type: "error",
-        message: I18n.t("cbv.employer_searches.show.error_search_timeout")
+        message_html: I18n.t("cbv.employer_searches.show.error_search_timeout")
       )
     end
 
     it "uses the Spanish timeout message in the CBV flow" do
       get :test_timeout, session: { locale: :es }
 
+      expect(response).to have_http_status(:found)
+      expect(response).to redirect_to(cbv_flow_employer_search_path)
+
       expect(flash[:slim_alert]).to eq(
         type: "error",
-        message: I18n.t(
+        message_html: I18n.t(
           "cbv.employer_searches.show.error_search_timeout",
           locale: :es
         )
@@ -190,15 +192,12 @@ RSpec.describe ApplicationController, type: :controller do
 
       get :test_timeout
 
-      expect(response).to have_http_status(:ok)
-      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-      expect(response.body).to include(
-        activities_flow_income_employer_search_path
-      )
+      expect(response).to have_http_status(:found)
+      expect(response).to redirect_to(activities_flow_income_employer_search_path)
 
       expect(flash[:slim_alert]).to eq(
         type: "error",
-        message: I18n.t("activities.income.employer_searches.show.error_search_timeout")
+        message_html: I18n.t("activities.income.employer_searches.show.error_search_timeout")
       )
     end
   end

@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
     I18n.with_locale(session[:locale] || I18n.default_locale) do
       flash[:slim_alert] = {
         type: "error",
-        message: activity_flow? ?
+        message_html: activity_flow? ?
           t("activities.income.employer_searches.show.error_search_timeout") :
           t("cbv.employer_searches.show.error_search_timeout")
       }
@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
     redirect_path =
       activity_flow? ? activities_flow_income_employer_search_path : cbv_flow_employer_search_path
 
-    render turbo_stream: turbo_stream.action(:redirect, redirect_path)
+    redirect_to redirect_path
   end
 
   def after_sign_out_path_for
