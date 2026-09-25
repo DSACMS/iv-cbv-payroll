@@ -19,3 +19,9 @@ variable "service_name" {
   type        = string
   description = "Name of the service running within ECS cluster"
 }
+
+variable "log_group_name" {
+  type        = string
+  default     = null
+  description = "Name of the CloudWatch log group for application logs"
+}
