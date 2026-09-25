@@ -153,7 +153,7 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
-  describe "#search_timeouts" do
+  describe "when an employer search times out" do
     before do
       routes.draw do
         get "test_timeout", to: "anonymous#test_timeout"
@@ -170,6 +170,18 @@ RSpec.describe ApplicationController, type: :controller do
       expect(flash[:slim_alert]).to eq(
         type: "error",
         message: I18n.t("cbv.employer_searches.show.error_search_timeout")
+      )
+    end
+
+    it "uses the Spanish timeout message in the CBV flow" do
+      get :test_timeout, session: { locale: :es }
+
+      expect(flash[:slim_alert]).to eq(
+        type: "error",
+        message: I18n.t(
+          "cbv.employer_searches.show.error_search_timeout",
+          locale: :es
+        )
       )
     end
 
