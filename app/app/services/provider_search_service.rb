@@ -49,8 +49,6 @@ class ProviderSearchService
       results = filter_results(results, BLOCKED_PINWHEEL_EMPLOYERS)
     end
 
-    # TODO: Remove this when finished testing
-    # raise Net::ReadTimeout, "test timeout"
     results
   end
 
