@@ -24,9 +24,26 @@ Tag product and design in Slack for acceptance: @emmy-acceptance-testers
 - [ ] USED_AI: I attest that I have read, understood, and take ownership of all AI-generated code in this PR.
 - [ ] NO_AI: I did not use AI.
 
-Optional — for learning, not audited:
-- AI tools used: <e.g. GitHub Copilot, Claude Code — shows what's in use>
-- Prompt artifacts: <link a prompt/chat if worth keeping; otherwise skip>
+If you used AI:
+
+Purpose for AI usage:
+- [ ] Code generation
+- [ ] Error explanation/research
+- [ ] Architecture explanation/research
+- [ ] AWS feature research
+- [ ] Documentation search
+- [ ] Writing assistance
+- [ ] Code validation
+- [ ] Generating PR summary
+- [ ] Other ______________________________
+
+Which AI Tool(s) did you use:
+- [ ] Github Copilot
+- [ ] Claude Code
+- [ ] Claude
+- [ ] Gemini
+- [ ] Google Search AI assist
+- [ ] Other ______________________________
 
 ## Infrastructure Changes
 <!-- If this PR includes Terraform changes, please provide relevant info. -->

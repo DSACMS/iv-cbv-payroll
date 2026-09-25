@@ -18,11 +18,7 @@ module ActivitiesHelper
   end
 
   def show_activity?(type)
-    if @flow&.pre_populated_session?
-      @flow.pre_populated_activity_types.include?(type.to_sym)
-    else
-      activity_type_enabled?(type)
-    end
+    activity_type_enabled?(type)
   end
 
   def activity_hub_state(any_activities_added:, monthly_results:, required_month_count: monthly_results.length)

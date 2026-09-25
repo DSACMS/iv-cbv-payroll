@@ -31,49 +31,12 @@ class ActivityFlow < Flow
       **flow_attributes_from_params(params)
     )
 
-    hydrate_pre_populated_activities!(flow, invitation) if flow.persisted?
-
     flow
   end
 
   def self.resume_or_create_from_invitation(invitation, device_id, params = {})
     invitation.activity_flows.incomplete.order(created_at: :desc).first ||
       create_from_invitation(invitation, device_id, params)
-  end
-
-  def self.hydrate_pre_populated_activities!(flow, invitation)
-    entries = invitation.pre_populated_activities
-    return if entries.empty?
-
-    entries.each do |entry|
-      attrs = entry.stringify_keys
-      activity_class = ActivityFlowInvitation::ACTIVITY_TYPES[attrs["type"].to_s]
-      next unless activity_class
-
-      association = flow.public_send(activity_class.flow_association)
-      next if association.exists?
-
-      activity_attributes = attrs.slice(*activity_class::FIELDS)
-        .merge("draft" => true, "pre_populated" => true)
-        .merge(activity_class.pre_populated_defaults)
-      # State-verified activities start published and use validated data.
-      activity_attributes.merge!("draft" => false, "data_source" => "validated") if attrs["state_verified"]
-
-      activity = association.create(activity_attributes)
-      next unless activity.persisted?
-
-      Array(attrs["months"]).each do |month_entry|
-        month_attributes = month_entry.stringify_keys.slice(*activity_class.activity_months_class::FIELDS)
-        if activity_class == EmploymentActivity
-          month_attributes["month"] = month_attributes["month"].to_date.beginning_of_month
-        end
-        activity.activity_months.create(month_attributes)
-      end
-
-      if activity_class == EmploymentActivity
-        activity.update!(selected_months: activity.activity_months.order(:month).pluck(:month))
-      end
-    end
   end
 
   def self.flow_attributes_from_params(params)
@@ -148,14 +111,6 @@ class ActivityFlow < Flow
 
   def tokenized?
     activity_flow_invitation_id.present?
-  end
-
-  def pre_populated_session?
-    activity_flow_invitation&.pre_populated_activities.present?
-  end
-
-  def pre_populated_activity_types
-    activity_flow_invitation&.pre_populated_hub_activity_types || []
   end
 
   def after_payroll_sync_succeeded(payroll_account, report)
