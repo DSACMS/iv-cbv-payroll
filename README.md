@@ -36,8 +36,6 @@ A list of core team members responsible for the code and documentation in this r
 
 See [AGENTS.md](/app/AGENTS.md) for some more information on repo structure.
 
-Note that [Emmy API](https://github.com/CMSgov/emmy-api), an API-only implementation of Emmy’s features, is in a separate repository.
-
 ### Documentation
 
 Public documentation is in the [/docs](/docs) subfolder.
@@ -66,7 +64,7 @@ For more information on how the Emmy team works with our community, see [COMMUNI
 
 ## Feedback
 
-If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know by sending an email to: ffs at nava pbc dot com. If you would like to comment on the tool itself, please let us know by [filing an issue on our GitHub repository](https://github.com/DSACMS/iv-cbv-payroll/issues/new/choose).
+If you would like to comment on the tool itself, please let us know by [filing an issue on our GitHub repository](https://github.com/DSACMS/iv-cbv-payroll/issues/new/choose).
 
 ## Policies
 
