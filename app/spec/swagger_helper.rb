@@ -10,7 +10,7 @@ RSpec.configure do |config|
       info: {
         title: "Emmy Platform API Documentation",
         version: "v1",
-        description: InvitationDocumentation::OVERVIEW
+        description: InvitationDocumentation.read("overview")
       },
       servers: [
         { url: "https://verify-demo.navapbc.cloud", description: "Dev environment" },

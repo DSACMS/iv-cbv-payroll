@@ -13,7 +13,7 @@ module InvitationSchemas
 
     schemas = {
       AgencyPartnerMetadata: {
-        description: InvitationDocumentation::METADATA,
+        description: InvitationDocumentation.read("agency-partner-metadata"),
         anyOf: %w[Sandbox NewHampshire Louisiana Research Accenture].map { |agency| { "$ref" => "#/components/schemas/#{agency}PartnerMetadata" } }
       },
       InvitationRequest: {
@@ -35,7 +35,7 @@ module InvitationSchemas
       },
       InvitationResponse: {
         type: :object,
-        description: InvitationDocumentation::LINK_LIFETIME,
+        description: InvitationDocumentation.read("invitation-response"),
         required: %w[tokenized_url expiration_date language agency_partner_metadata],
         additionalProperties: false,
         properties: {

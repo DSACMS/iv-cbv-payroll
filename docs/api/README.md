@@ -22,6 +22,8 @@ is `https://demo.reportmyincome.org`. Production access is arranged during onboa
 
 The generated reference currently covers `POST /api/v1/invitations`.
 Outbound report and document transmission interfaces will be added separately.
+For those APIs, see the [CE activity report transmission guide](ce-activity-report.md)
+and [PDF document transmission guide](pdf-transmission.md).
 Existing versioned [income-report](schemas/income-report-2026-06-18.json) and
 [community engagement report](schemas/ce-activity-report-2026-09-01.json) schemas
 remain available for those integrations.
@@ -45,8 +47,12 @@ included with its redistributed bundle.
 
 Edit [request specs](../../app/spec/requests/api/invitations_spec.rb),
 [schemas](../../app/spec/openapi/invitation_schemas.rb),
-[reference descriptions](../../app/spec/openapi/invitation_documentation.rb), and
+[overview](overview.md), [invitation operation description](post-v1-invitations.md),
+[agency metadata description](agency-partner-metadata.md),
+[invitation response description](invitation-response.md), and
 [document settings](../../app/spec/swagger_helper.rb), not generated files.
+The build reads these Markdown descriptions directly from `docs/api/`; Markdown
+changes also trigger the publication workflow after merge.
 Examples come from real test requests using synthetic data and fixed tokens;
 authorization headers are never captured.
 
