@@ -10,10 +10,6 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
 
-    def test_timeout
-      raise Faraday::TimeoutError
-    end
-
     def show
       @agency = current_agency
       render plain: @agency.id
