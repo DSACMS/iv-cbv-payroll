@@ -3,9 +3,10 @@ class CbvInvitationService
     @event_logger = event_logger
   end
 
-  def invite(cbv_flow_invitation_params, current_user, delivery_method: :email)
+  def invite(cbv_flow_invitation_params, current_user, delivery_method: :email, context: :nil)
     cbv_flow_invitation_params[:user] = current_user
-    cbv_flow_invitation = CbvFlowInvitation.create(cbv_flow_invitation_params)
+    cbv_flow_invitation = CbvFlowInvitation.new(cbv_flow_invitation_params)
+    cbv_flow_invitation.save(context: context)
 
     if cbv_flow_invitation.errors.any?
       e = cbv_flow_invitation.errors.full_messages.join(", ")

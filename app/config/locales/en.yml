@@ -714,18 +714,14 @@ en:
   api:
     v2:
       fields:
-        case_number:
-          blank: case_number is required
+        individual_id:
+          blank: individual_id is required
         date_of_birth:
           blank: date_of_birth is required
         first_name:
           blank: first_name is required
         last_name:
           blank: last_name is required
-      la_ldh:
-        fields:
-          doc_id_or_individual_id:
-            blank: individual_id or doc_id is required
   applicant_mailer:
     invitation_email:
       body_1:

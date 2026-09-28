@@ -146,7 +146,7 @@ Rails.application.routes.draw do
     scope :v2, module: :v2 do
       post "/:invitation_type/invitations",
         to: "invitations#create",
-        constraints: { invitation_type: /community-engagement/ }
+        constraints: { invitation_type: /community-engagement|employment/ }
     end
 
     scope :pinwheel do

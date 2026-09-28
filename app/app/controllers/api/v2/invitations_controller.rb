@@ -46,7 +46,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
   end
 
   def cbv_flow_invitation_params(contract)
-    permitted = params.permit(:language)
+    permitted = params.permit(:language, :verification_range)
 
     permitted.deep_merge(
       client_agency_id: @current_user.client_agency_id,

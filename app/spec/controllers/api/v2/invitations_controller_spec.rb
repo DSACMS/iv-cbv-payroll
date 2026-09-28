@@ -58,7 +58,8 @@ RSpec.describe Api::V2::InvitationsController do
           params[:agency_partner_metadata] = {
             individual_id: "ABC1234",
             first_name: "John",
-            last_name: "Doe"
+            last_name: "Doe",
+            date_of_birth: "1977-09-13"
           }
         end
       end
@@ -82,7 +83,8 @@ RSpec.describe Api::V2::InvitationsController do
         expect(parsed_response["agency_partner_metadata"]).to eq(
           "individual_id" => valid_params[:agency_partner_metadata][:individual_id],
           "first_name" => valid_params[:agency_partner_metadata][:first_name],
-          "last_name" => valid_params[:agency_partner_metadata][:last_name]
+          "last_name" => valid_params[:agency_partner_metadata][:last_name],
+          "date_of_birth" => valid_params[:agency_partner_metadata][:date_of_birth]
         )
       end
 
