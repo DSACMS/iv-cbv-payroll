@@ -1,4 +1,7 @@
 {
+    "retryOn429": true,
+    "retryCount": 3,
+    "fallbackRetryDelay": "5000ms",
     "ignorePatterns" : [
         {
             "pattern": "0005-example.md"
