@@ -205,7 +205,6 @@ class LauncherController < ApplicationController
     existing_params = URI.decode_www_form(uri.query || "")
     existing_params << [ "client_agency_id", client_agency_id ]
     overrides.to_h.each { |k, v| existing_params << [ k, v ] }
-    overrides << :employment_focused
     uri.query = URI.encode_www_form(existing_params)
     uri.to_s
   end
@@ -223,6 +222,7 @@ class LauncherController < ApplicationController
       client_agency_id: client_agency_id,
       reference_id: "demo-#{SecureRandom.hex(4)}"
     )
+    overrides[:employment_focused] = true
     invitation.to_url(
       **launcher_url_options,
       **overrides
@@ -309,7 +309,6 @@ class LauncherController < ApplicationController
 
     allowed_overrides = [ :reporting_window, :reporting_window_months ]
     allowed_overrides << :renewal_required_months if simple_launcher_params[:reporting_window] == "renewal"
-    allowed_overrides << :employment_focused if launcher_params[:launch_type] == "tokenized"
     simple_launcher_params.slice(*allowed_overrides).select { |_, v| v.present? }
   end
 end
