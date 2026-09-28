@@ -1,3 +1,5 @@
+## Description
+
 Create a personalized income reporting link. Supply `language` (`en` or `es`)
 and an `agency_partner_metadata` object using your agency's schema.
 The API key determines which agency schema applies; it is not selected by the payload.
@@ -21,3 +23,11 @@ array of objects.
 **Origin tracking:** To track where an applicant received a link, append an
 `origin` query parameter with a value agreed during onboarding, such as `email`.
 Use `?` when the URL has no query string and `&` otherwise.
+
+## Response
+
+Direct the applicant to `tokenized_url` to report income. Its `expiration_date`
+is the end of the day in `America/New_York` after the agency's configured
+validity period (14 days for the sandbox). Request a new invitation when a
+link expires. The optional `activity_tokenized_url` has no time-based
+expiration; `expiration_date` describes only the income link.

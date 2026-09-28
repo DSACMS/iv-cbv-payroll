@@ -13,7 +13,22 @@ RSpec.describe InvitationDocumentation do
   it "uses Markdown for the metadata and response schema descriptions" do
     schemas = InvitationSchemas.schemas
     expect(schemas[:AgencyPartnerMetadata][:description]).to eq(described_class.read("agency-partner-metadata"))
-    expect(schemas[:InvitationResponse][:description]).to eq(described_class.read("invitation-response"))
+    expect(schemas[:InvitationResponse][:description]).to eq(described_class.read("post-v1-invitations", section: "Response"))
+  end
+
+  it "reads an endpoint section without including its heading or neighboring sections" do
+    description = described_class.read("post-v1-invitations", section: "Description")
+    response = described_class.read("post-v1-invitations", section: "Response")
+
+    expect(description).to start_with("Create a personalized income reporting link.")
+    expect(description).not_to include("## Response", "14 days for the sandbox")
+    expect(response).to start_with("Direct the applicant to `tokenized_url`")
+    expect(response).not_to include("## Response", "idempotency")
+  end
+
+  it "fails clearly when a requested section is missing" do
+    expect { described_class.read("post-v1-invitations", section: "Missing") }
+      .to raise_error(ArgumentError, 'Missing section "Missing" in docs/api/post-v1-invitations.md')
   end
 
   it "rereads the file rather than caching its content" do

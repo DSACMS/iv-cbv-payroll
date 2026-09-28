@@ -14,7 +14,7 @@ module InvitationSchemas
     schemas = {
       AgencyPartnerMetadata: {
         description: InvitationDocumentation.read("agency-partner-metadata"),
-        anyOf: %w[Sandbox NewHampshire Louisiana Research Accenture].map { |agency| { "$ref" => "#/components/schemas/#{agency}PartnerMetadata" } }
+        anyOf: %w[Sandbox NewHampshire Louisiana Research Accenture].map { |agency| { "$ref" => "#/components/schemas/AgencyMetadata#{agency}" } }
       },
       InvitationRequest: {
         type: :object,
@@ -35,7 +35,7 @@ module InvitationSchemas
       },
       InvitationResponse: {
         type: :object,
-        description: InvitationDocumentation.read("invitation-response"),
+        description: InvitationDocumentation.read("post-v1-invitations", section: "Response"),
         required: %w[tokenized_url expiration_date language agency_partner_metadata],
         additionalProperties: false,
         properties: {
@@ -72,8 +72,9 @@ module InvitationSchemas
       "Research" => [ "Research", %i[case_number date_of_birth] ],
       "Accenture" => [ "Accenture", %i[case_number] ]
     }.each do |agency, (title, fields)|
+      schema_name = "AgencyMetadata#{agency}"
       schema = {
-        title: title,
+        title: schema_name,
         type: :object,
         description: "Accepted metadata for #{title}. The API ignores fields outside this schema.",
         additionalProperties: false,
@@ -83,7 +84,7 @@ module InvitationSchemas
       if agency == "Louisiana"
         schema[:properties][:case_number] = metadata_fields[:case_number].merge(maxLength: 13)
       end
-      schemas["#{agency}PartnerMetadata"] = schema
+      schemas[schema_name] = schema
     end
 
     address = %w[street_address street_address_line_2 city state zip_code].index_with { { type: :string } }

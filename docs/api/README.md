@@ -47,12 +47,14 @@ included with its redistributed bundle.
 
 Edit [request specs](../../app/spec/requests/api/invitations_spec.rb),
 [schemas](../../app/spec/openapi/invitation_schemas.rb),
-[overview](overview.md), [invitation operation description](post-v1-invitations.md),
+[overview](overview.md), [invitation operation description](post-v1-invitations.md#description),
 [agency metadata description](agency-partner-metadata.md),
-[invitation response description](invitation-response.md), and
+[invitation response description](post-v1-invitations.md#response), and
 [document settings](../../app/spec/swagger_helper.rb), not generated files.
 The build reads these Markdown descriptions directly from `docs/api/`; Markdown
 changes also trigger the publication workflow after merge.
+Keep endpoint descriptions and responses together, using level-two headings
+to identify the sections included in the generated reference.
 Examples come from real test requests using synthetic data and fixed tokens;
 authorization headers are never captured.
 
