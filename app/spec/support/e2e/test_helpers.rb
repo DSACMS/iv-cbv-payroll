@@ -59,23 +59,10 @@ module E2e
       when "off"
         nil
       when "full"
-        wait_for_turbo_visit_to_settle(page)
         expect(page).to be_axe_clean.skipping(skip_axe_rules)
       else
-        if AXED_PATHS.add?(current_path)
-          wait_for_turbo_visit_to_settle(page)
-          expect(page).to be_axe_clean.skipping(skip_axe_rules)
-        end
+        expect(page).to be_axe_clean.skipping(skip_axe_rules) if AXED_PATHS.add?(current_path)
       end
-    end
-
-    # Turbo sets aria-busy="true" (and a data-turbo-visit-direction attribute)
-    # on <html> while a visit is in progress, and only clears them once the
-    # visit fully completes. have_content(title) can match before Turbo
-    # clears these, so without this wait the axe check can run mid-visit and
-    # flag the stray aria-busy on <html> (aria-allowed-attr).
-    def wait_for_turbo_visit_to_settle(page, wait: Capybara.default_max_wait_time)
-      expect(page).to have_no_selector(:xpath, "/html[@aria-busy]", wait: wait)
     end
 
     # This method needs to be included in E2E tests using Pinwheel to make sure
@@ -92,7 +79,11 @@ module E2e
       CbvFlow.last.update(end_user_id: Random.new(cassette_name_as_integer).uuid)
     end
 
-    def wait_for_idle(page)
+    def wait_for_idle(page, wait: Capybara.default_max_wait_time)
+      # Wait for Turbo to clear aria-busy from <html> before waiting for the
+      # browser to finish any remaining work after the visit completes.
+      expect(page).to have_no_selector(:xpath, "/html[@aria-busy]", wait: wait)
+
       page.driver.browser.execute_async_script(<<~JS)
         const callback = arguments[arguments.length - 1];
         window.requestIdleCallback(callback, { timeout: 2000 });
