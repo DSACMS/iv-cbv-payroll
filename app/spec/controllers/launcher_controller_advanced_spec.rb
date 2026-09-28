@@ -182,7 +182,7 @@ RSpec.describe LauncherController, type: :controller do
 
         expect(response).to have_http_status(:success)
         expect(parsed_response).to include("url")
-        expect(parsed_response.fetch("url")).to include("/activities/start/#{invitation.auth_token}?employment_focused=true&reporting_window=application")
+        expect(parsed_response.fetch("url")).to include("/activities/start/#{invitation.auth_token}?reporting_window=application")
       end
     end
 
