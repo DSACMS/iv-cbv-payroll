@@ -17,8 +17,7 @@
   <%= form_with url: @search_path,
                 method: :get,
                 class: "usa-search usa-search--big margin-y-4",
-                html: { role: "search" },
-                data: { turbo_frame: "employers", turbo_action: "advance" } do |f| %>
+                html: { role: "search" } do |f| %>
 
     <%= f.label :query, "Search for your employer", class: "usa-sr-only" %>
     <%= f.text_field :query, value: @query, class: "usa-input", type: "search" %>

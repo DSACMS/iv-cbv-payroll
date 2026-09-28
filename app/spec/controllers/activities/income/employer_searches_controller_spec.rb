@@ -172,4 +172,32 @@ RSpec.describe Activities::Income::EmployerSearchesController do
       get :show, params: { type: "employer" }
     end
   end
+
+  describe "when an employer search times out" do
+    let(:activity_flow) { create(:activity_flow) }
+
+    before do
+      session[:flow_id] = activity_flow.id
+      session[:flow_type] = :activity
+
+      allow(controller).to receive(:provider_search)
+        .and_raise(Faraday::TimeoutError)
+    end
+
+    it "redirects to the activity employer search with a timeout alert" do
+      get :show, params: { query: "test-business" }
+
+      expect(response).to have_http_status(:found)
+      expect(response).to redirect_to(
+        activities_flow_income_employer_search_path
+      )
+
+      expect(flash[:slim_alert]).to eq(
+        type: "error",
+        message_html: I18n.t(
+          "activities.income.employer_searches.show.error_search_timeout"
+        )
+      )
+    end
+  end
 end
