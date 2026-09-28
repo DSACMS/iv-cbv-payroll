@@ -32,7 +32,7 @@ RSpec.describe ActivityFlow, type: :model do
     it "sets employment_focused to false when params[:employment_focused] is falsy" do
       attrs = described_class.flow_attributes_from_params(employment_focused: "false")
 
-      expect(attrs[:employment_focused]).to befalse)
+      expect(attrs[:employment_focused]).to be(false)
     end
 
     it "defaults employment_focused to false when absent from params" do
