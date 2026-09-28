@@ -117,5 +117,21 @@ RSpec.describe Api::V2::InvitationsController do
         expect(ActivityFlowInvitation.last.cbv_applicant.case_number).to be_nil
       end
     end
+
+    context "employment_focused propagation" do
+      let(:base_params) do
+        attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
+          params[:verification_range] = "last_complete_month"
+          params.delet(:client_agency_id)
+        end
+      end
+
+      it "creates an ActivityFlowInvitation with employment_focused: false for invitation_type: community-engagement" do
+        post :create, params: base_params.merge(invitation_type: "community-engagement")
+
+        expect(response).to have_http_status(:created)
+        expect(ActivityFlowInvitation.last.employment_focused).to be(false)
+      end
+    end
   end
 end

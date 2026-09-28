@@ -19,10 +19,13 @@ class Api::V2::InvitationsController < Api::InvitationsController
       delivery_method: nil
     )
 
-    if community_engagement?
+    if community_engagement? || employment?
       @activity_flow_invitation = CbvInvitationService.new(event_logger)
         .invite_to_activity_flow(
-          @cbv_flow_invitation, verification_range: params[:verification_range], context: :v2
+          @cbv_flow_invitation, 
+          verification_range: params[:verification_range],
+          employment_focused: employment?,
+          context: :v2
         )
     end
 
@@ -32,6 +35,10 @@ class Api::V2::InvitationsController < Api::InvitationsController
   end
 
   private
+
+  def employment?
+    invitation_type == "employment"
+  end
 
   def invitation_type
     @invitation_type ||= params[:invitation_type].tr("-", "_")
