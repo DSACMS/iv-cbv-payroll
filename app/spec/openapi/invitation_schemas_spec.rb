@@ -61,6 +61,14 @@ RSpec.describe InvitationSchemas do
     check.call(described_class.schemas)
   end
 
+  it "does not advertise removed activity invitation fields or models" do
+    schemas = described_class.schemas
+
+    expect(schemas[:InvitationRequest][:properties]).not_to have_key(:activities)
+    expect(schemas[:InvitationResponse][:properties]).not_to have_key(:activity_tokenized_url)
+    expect(schemas.keys.grep(/InvitationActivity$/)).to be_empty
+  end
+
   it "accepts future fields in requests, responses, metadata, and errors" do
     metadata = sandbox.merge("future_metadata" => { "value" => true })
     request = { "language" => "en", "agency_partner_metadata" => metadata, "future_request" => true }

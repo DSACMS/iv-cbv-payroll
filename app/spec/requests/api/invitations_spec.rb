@@ -28,7 +28,6 @@ RSpec.describe "Tokenized Link API", type: :request do
     )
     # Only replace random tokens: the requests still create and validate records.
     allow(CbvFlowInvitation).to receive(:generate_unique_secure_token).and_return("IncomeExampleToken")
-    allow(ActivityFlowInvitation).to receive(:generate_unique_secure_token).and_return("ActivityExampleToken")
   end
 
   path "/api/v1/invitations" do
@@ -73,37 +72,19 @@ RSpec.describe "Tokenized Link API", type: :request do
         end
 
         {
-          volunteering: { organization_name: "Example Food Bank", coordinator_email: "coordinator@example.org", months: [ { month: "2026-08-01", hours: 12.5 } ] },
-          employment: { employer_name: "Example Employer", is_self_employed: false, months: [ { month: "2026-08-01", hours: 80, gross_income: 1250.50 } ] },
-          education: { school_name: "Example Community College", months: [ { month: "2026-08-01", hours: 6 } ] },
-          job_training: { program_name: "Example Training Program", organization_name: "Example Training Center", months: [ { month: "2026-08-01", hours: 20 } ] }
-        }.each do |type, attributes|
-          context "with #{type} activities" do
-            let(:invitation) { super().merge(activities: [ attributes.merge(type: type.to_s) ]) }
+          "legacy activities" => [ { type: "volunteering", organization_name: "Example Food Bank" } ],
+          "invalid legacy activities" => [ { type: "unsupported", months: [ { month: "2026-10-01" } ] } ],
+          "an empty activities list" => [],
+          "malformed activities" => "ignored"
+        }.each do |description, activities|
+          context "with #{description}" do
+            let(:invitation) { super().merge(activities: activities) }
 
-            run_test! "creates both links" do
-              expect(response.parsed_body["activity_tokenized_url"]).to include("/activities/start/")
-              expect(ActivityFlowInvitation.last.pre_populated_activities).to eq(invitation[:activities].map(&:deep_stringify_keys))
+            run_test! "ignores activities and creates only an income invitation" do
+              expect(response.parsed_body).not_to have_key("activity_tokenized_url")
+              expect(CbvFlowInvitation.count).to eq(1)
+              expect(ActivityFlowInvitation.count).to eq(0)
             end
-          end
-        end
-
-        context "with activities disabled" do
-          let(:invitation) { super().merge(activities: [ { type: "volunteering", organization_name: "Example Food Bank" } ]) }
-
-          before { stub_client_agency_config_value(agency_id, :prefilled_activities_enabled, false) }
-
-          run_test! "ignores activities" do
-            expect(response.parsed_body).not_to have_key("activity_tokenized_url")
-            expect(ActivityFlowInvitation.count).to eq(0)
-          end
-        end
-
-        context "with an empty activities list" do
-          let(:invitation) { super().merge(activities: []) }
-
-          run_test! do
-            expect(response.parsed_body).not_to have_key("activity_tokenized_url")
           end
         end
 
@@ -160,32 +141,6 @@ RSpec.describe "Tokenized Link API", type: :request do
 
           run_test! "returns applicant errors", example_summary: "Missing applicant name", openapi_example: :missing_name do
             expect(response.parsed_body["errors"].pluck("field")).to include("cbv_applicant.first_name")
-          end
-        end
-
-        context "without a required activity field" do
-          let(:invitation) { super().merge(activities: [ { type: "volunteering" } ]) }
-
-          run_test! "returns an indexed activity error" do
-            expect(response.parsed_body["errors"].pluck("field")).to include("activities[0].organization_name")
-            expect(CbvFlowInvitation.count).to eq(1)
-            expect(ActivityFlowInvitation.count).to eq(0)
-          end
-        end
-
-        context "with an unsupported activity type" do
-          let(:invitation) { super().merge(activities: [ { type: "unsupported" } ]) }
-
-          run_test! "rejects the type" do
-            expect(response.parsed_body["errors"].pluck("field")).to include("activities[0].type")
-          end
-        end
-
-        context "with a month outside the reporting window" do
-          let(:invitation) { super().merge(activities: [ { type: "volunteering", organization_name: "Example Food Bank", months: [ { month: "2026-10-01", hours: 10 } ] } ]) }
-
-          run_test! "rejects the month" do
-            expect(response.parsed_body["errors"].pluck("field")).to include("activities[0].months[0].month")
           end
         end
       end
