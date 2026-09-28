@@ -6,10 +6,12 @@ const CHECKSUM = "n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg="
 
 vi.mock("@js/utilities/file_checksum", () => ({ default: vi.fn() }))
 
-const MAX_FILE_SIZE = 25 * 1024 * 1024
-const TOO_LARGE = "Each file must be smaller than 25 MB."
-const UNSUPPORTED = "Select a PDF, PNG, JPG, or HEIC file."
+const MAX_FILE_SIZE = 40 * 1024 * 1024
+const EMPTY = "That file is empty. Choose a different file."
+const TOO_LARGE = "Each file must be smaller than 40 MB."
+const UNSUPPORTED = "Select a PDF, PNG, JPEG, BMP, or TIFF file."
 const FAILED = "We could not upload that file."
+const MULTIPLE_FAILED = "We could not upload one or more files. Check the files and try again."
 
 const setFiles = (input, files) =>
   Object.defineProperty(input, "files", { value: files, configurable: true })
@@ -23,6 +25,7 @@ const buildFile = (name, type, size) => {
 const jsonResponse = (body, status = 200) => ({
   ok: status >= 200 && status < 300,
   status,
+  headers: new Headers({ "Content-Type": "application/json" }),
   json: () => Promise.resolve(body),
   text: () => Promise.resolve(JSON.stringify(body)),
 })
@@ -30,6 +33,7 @@ const jsonResponse = (body, status = 200) => ({
 const s3Response = (status, code) => ({
   ok: status >= 200 && status < 300,
   status,
+  headers: new Headers({ "Content-Type": "application/xml" }),
   json: () => Promise.reject(new Error("not json")),
   text: () => Promise.resolve(`<?xml version="1.0"?><Error><Code>${code}</Code></Error>`),
 })
@@ -52,13 +56,15 @@ describe("DocumentUploadController", () => {
         data-controller="document-upload"
         data-document-upload-presign-url-value="/activities/presigned_uploads"
         data-document-upload-max-file-size-value="${MAX_FILE_SIZE}"
-        data-document-upload-allowed-types-value="image/*,application/pdf"
+        data-document-upload-allowed-types-value="application/pdf,image/png,image/jpeg,image/bmp,image/tiff"
         data-document-upload-heading-template-value="Uploaded documents (%{count})"
         data-document-upload-remove-label-value="Remove file"
         data-document-upload-icon-href-value="/assets/sprite.svg#file_present"
+        data-document-upload-error-empty-value="${EMPTY}"
         data-document-upload-error-too-large-value="${TOO_LARGE}"
         data-document-upload-error-unsupported-type-value="${UNSUPPORTED}"
         data-document-upload-error-upload-failed-value="${FAILED}"
+        data-document-upload-error-multiple-files-value="${MULTIPLE_FAILED}"
       >
         <div hidden data-document-upload-target="signedIds"></div>
         <div class="document-uploads" hidden data-document-upload-target="listSection">
@@ -223,6 +229,42 @@ describe("DocumentUploadController", () => {
     expect(signedIdValues()).toEqual([])
   })
 
+  it("uploads valid files from a mixed selection and reports a generic error", async () => {
+    fetch
+      .mockResolvedValueOnce(
+        jsonResponse({ uploads: [presignedUploadFor("verification.pdf", "signed-id-1")] })
+      )
+      .mockResolvedValueOnce({ ok: true, status: 204 })
+
+    await selectFiles(
+      buildFile("verification.pdf", "application/pdf", 1024),
+      buildFile("huge.pdf", "application/pdf", MAX_FILE_SIZE + 1)
+    )
+
+    const payload = JSON.parse(fetch.mock.calls[0][1].body)
+
+    expect(payload.files.map((file) => file.filename)).toEqual(["verification.pdf"])
+    expect(errorText()).toBe(MULTIPLE_FAILED)
+    expect(signedIdValues()).toEqual(["signed-id-1"])
+  })
+
+  it("rejects a multi-file selection when every file is invalid", async () => {
+    await selectFiles(
+      buildFile("huge.pdf", "application/pdf", MAX_FILE_SIZE + 1),
+      buildFile("installer.exe", "application/x-msdownload", 1024)
+    )
+
+    expect(fetch).not.toHaveBeenCalled()
+    expect(errorText()).toBe(MULTIPLE_FAILED)
+  })
+
+  it("rejects an empty file without contacting the server", async () => {
+    await selectFiles(buildFile("empty.pdf", "application/pdf", 0))
+
+    expect(fetch).not.toHaveBeenCalled()
+    expect(errorText()).toBe(EMPTY)
+  })
+
   it("rejects a disallowed file type without contacting the server", async () => {
     await selectFiles(buildFile("installer.exe", "application/x-msdownload", 1024))
 
@@ -230,17 +272,24 @@ describe("DocumentUploadController", () => {
     expect(errorText()).toBe(UNSUPPORTED)
   })
 
-  it("accepts any image type the allowlist wildcard covers", async () => {
+  it("accepts an image type in the agency allowlist", async () => {
     fetch
       .mockResolvedValueOnce(
-        jsonResponse({ uploads: [presignedUploadFor("photo.heic", "signed-id-1")] })
+        jsonResponse({ uploads: [presignedUploadFor("scan.tiff", "signed-id-1")] })
       )
       .mockResolvedValueOnce({ ok: true, status: 204 })
 
-    await selectFiles(buildFile("photo.heic", "image/heic", 1024))
+    await selectFiles(buildFile("scan.tiff", "image/tiff", 1024))
 
     expect(errorText()).toBe("")
     expect(signedIdValues()).toEqual(["signed-id-1"])
+  })
+
+  it("rejects an image type outside the agency allowlist", async () => {
+    await selectFiles(buildFile("photo.heic", "image/heic", 1024))
+
+    expect(fetch).not.toHaveBeenCalled()
+    expect(errorText()).toBe(UNSUPPORTED)
   })
 
   it("surfaces the server's message when the policy request is refused", async () => {
@@ -265,6 +314,19 @@ describe("DocumentUploadController", () => {
     expect(signedIdValues()).toEqual([])
   })
 
+  it("surfaces the local upload endpoint's validation message", async () => {
+    fetch
+      .mockResolvedValueOnce(
+        jsonResponse({ uploads: [presignedUploadFor("verification.pdf", "signed-id-1")] })
+      )
+      .mockResolvedValueOnce(jsonResponse({ error: TOO_LARGE }, 422))
+
+    await selectFiles(buildFile("verification.pdf", "application/pdf", 1024))
+
+    expect(errorText()).toBe(TOO_LARGE)
+    expect(signedIdValues()).toEqual([])
+  })
+
   it("reports other S3 failures generically", async () => {
     fetch
       .mockResolvedValueOnce(
@@ -275,6 +337,28 @@ describe("DocumentUploadController", () => {
     await selectFiles(buildFile("verification.pdf", "application/pdf", 1024))
 
     expect(errorText()).toBe(FAILED)
+  })
+
+  it("reports a generic error when a multi-file upload fails", async () => {
+    fetch
+      .mockResolvedValueOnce(
+        jsonResponse({
+          uploads: [
+            presignedUploadFor("first.pdf", "signed-id-1"),
+            presignedUploadFor("second.pdf", "signed-id-2"),
+          ],
+        })
+      )
+      .mockResolvedValueOnce(s3Response(403, "AccessDenied"))
+      .mockResolvedValueOnce({ ok: true, status: 204 })
+
+    await selectFiles(
+      buildFile("first.pdf", "application/pdf", 1024),
+      buildFile("second.pdf", "application/pdf", 1024)
+    )
+
+    expect(errorText()).toBe(MULTIPLE_FAILED)
+    expect(signedIdValues()).toEqual(["signed-id-2"])
   })
 
   it("accumulates files across separate selections", async () => {

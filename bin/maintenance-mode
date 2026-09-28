@@ -1,0 +1,175 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_NAME
+readonly DEFAULT_REGION="us-east-1"
+
+usage() {
+  cat <<EOF
+Usage:
+  ${SCRIPT_NAME} enable --platform PLATFORM --environment ENV
+  ${SCRIPT_NAME} disable --platform PLATFORM --environment ENV
+  ${SCRIPT_NAME} status --platform PLATFORM --environment ENV
+
+Platforms and environments:
+  nava  dev, demo, prod
+  cms   dev, test, sandbox, demo, uat, prod
+
+Other options:
+  --region REGION       AWS region (default: ${DEFAULT_REGION})
+  --no-wait             Do not wait for the ECS service to stabilize
+  --help                Show this help
+EOF
+}
+
+die() {
+  echo "${SCRIPT_NAME}: $*" >&2
+  exit 2
+}
+
+log() {
+  echo "[maintenance-mode] $*"
+}
+
+require_value() {
+  (($# >= 2)) || die "${1} requires a value"
+  [[ -n "$2" && "$2" != --* ]] || die "${1} requires a non-empty value"
+}
+
+validate_target() {
+  case "${platform}:${environment}" in
+    nava:dev|nava:demo|nava:prod|cms:dev|cms:test|cms:sandbox|cms:demo|cms:uat|cms:prod)
+      ;;
+    nava:*)
+      die "unsupported Nava environment '${environment}'; use dev, demo, or prod"
+      ;;
+    cms:*)
+      die "unsupported CMS Cloud environment '${environment}'; use dev, test, sandbox, demo, uat, or prod"
+      ;;
+    *)
+      die "unsupported platform '${platform}'; use nava or cms"
+      ;;
+  esac
+}
+
+parameter_prefix() {
+  if [[ "${platform}" == "cms" ]]; then
+    echo "/emmy/${environment}/app"
+  else
+    echo "/service/app-${environment}"
+  fi
+}
+
+parameter_name() {
+  echo "$(parameter_prefix)/maintenance-mode"
+}
+
+cluster_name() {
+  if [[ "${platform}" == "cms" ]]; then
+    echo "emmy-${environment}"
+  else
+    echo "app-${environment}"
+  fi
+}
+
+service_name() {
+  if [[ "${platform}" == "cms" ]]; then
+    echo "emmy-${environment}-app"
+  else
+    echo "app-${environment}"
+  fi
+}
+
+check_aws_credentials() {
+  log "Checking AWS credentials"
+  aws_account_id="$(aws sts get-caller-identity --no-cli-pager --region "${region}" \
+    --query Account --output text)"
+  [[ -n "${aws_account_id}" && "${aws_account_id}" != "None" ]] ||
+    die "could not determine the AWS account"
+  log "Using AWS account ${aws_account_id}"
+}
+
+put_parameter() {
+  local value="$1" parameter
+  parameter="$(parameter_name)"
+  log "Updating SSM parameter ${parameter}"
+  aws ssm put-parameter --no-cli-pager --region "${region}" \
+    --name "${parameter}" --type SecureString \
+    --value "${value}" --overwrite >/dev/null
+}
+
+update_service() {
+  local cluster service
+  cluster="$(cluster_name)"
+  service="$(service_name)"
+  log "Starting ECS deployment for ${service}"
+  aws ecs update-service --no-cli-pager --region "${region}" \
+    --cluster "${cluster}" --service "${service}" --force-new-deployment >/dev/null
+  log "ECS deployment started for ${service}"
+  if [[ "${wait_for_stability}" == "true" ]]; then
+    log "Waiting for ${service} to stabilize"
+    aws ecs wait services-stable --no-cli-pager --region "${region}" \
+      --cluster "${cluster}" --services "${service}"
+    log "${service} is stable"
+  fi
+}
+
+set_mode() {
+  local value="$1"
+  check_aws_credentials
+  put_parameter "${value}"
+  update_service
+  echo "Maintenance mode ${value} on ${platform}/${environment}."
+}
+
+show_status() {
+  local value parameter
+  check_aws_credentials
+  parameter="$(parameter_name)"
+  log "Reading SSM parameter ${parameter}"
+  value="$(aws ssm get-parameter --no-cli-pager --region "${region}" \
+    --name "${parameter}" --with-decryption --query 'Parameter.Value' --output text)"
+  echo "platform=${platform} environment=${environment} maintenance_mode=${value}"
+}
+
+command="${1:-}"
+if [[ "${command}" == --* ]]; then
+  die "missing command: add 'enable' or 'disable' before options (for example: ${SCRIPT_NAME} enable $*)"
+elif [[ -n "${command}" ]]; then
+  shift
+fi
+
+platform="" environment=""
+region="${AWS_REGION:-${DEFAULT_REGION}}"
+aws_account_id=""
+wait_for_stability="true"
+
+while (($#)); do
+  case "$1" in
+    --platform) require_value "$@"; platform="$2"; shift 2 ;;
+    --environment) require_value "$@"; environment="$2"; shift 2 ;;
+    --region) require_value "$@"; region="$2"; shift 2 ;;
+    --no-wait) wait_for_stability="false"; shift ;;
+    --help|-h) usage; exit 0 ;;
+    *) die "unknown option '${1}'; see --help" ;;
+  esac
+done
+
+case "${command}" in
+  enable|disable|status) ;;
+  help|--help|-h) usage; exit 0 ;;
+  "") usage >&2; exit 2 ;;
+  *) die "unknown command '${command}'; use enable, disable, or status" ;;
+esac
+
+[[ -n "${platform}" ]] || die "--platform is required"
+[[ -n "${environment}" ]] || die "--environment is required"
+validate_target
+
+case "${command}" in
+  enable) set_mode true ;;
+  disable) set_mode false ;;
+  status) show_status ;;
+esac

@@ -24,6 +24,10 @@ RSpec.describe ClientAgencyConfig do
         activity_flow_transmission_method: encrypted_s3
         activity_transmission_method_configuration:
           bucket: activity-bucket
+        allowed_document_types:
+          - pdf
+          - png
+        max_document_upload_size_mb: 12
       - id: bar
         agency_name: Bar Agency Name
         pinwheel:
@@ -62,6 +66,24 @@ RSpec.describe ClientAgencyConfig do
       it "defaults allowed_iframe_ancestors to an empty array" do
         config = described_class.new(sample_config_path)
         expect(config["foo"].allowed_iframe_ancestors).to eq([])
+      end
+
+      it "returns the configured document upload settings" do
+        config = described_class.new(sample_config_path)
+
+        expect(config["foo"].allowed_document_types).to eq(%w[pdf png])
+        expect(config["foo"].allowed_document_content_types).to eq(%w[application/pdf image/png])
+        expect(config["foo"].max_document_upload_size_mb).to eq(12)
+        expect(config["foo"].max_document_upload_size_bytes).to eq(12.megabytes)
+      end
+
+      it "defaults document upload settings when they are omitted" do
+        config = described_class.new(sample_config_path)
+
+        expect(config["bar"].allowed_document_types).to eq(%w[pdf png jpeg bmp tiff])
+        expect(config["bar"].allowed_document_content_types)
+          .to eq(%w[application/pdf image/png image/jpeg image/bmp image/tiff])
+        expect(config["bar"].max_document_upload_size_mb).to eq(40)
       end
 
       it "supports a separate ActivityFlow transmission method" do
@@ -344,6 +366,46 @@ RSpec.describe ClientAgencyConfig do
           expect do
             described_class.new(sample_config_path)
           end.to raise_error(ArgumentError, "Client Agency foo missing required attribute `agency_name`")
+        end
+      end
+
+      context "document types include an unsupported type" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: Foo Agency Name
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+            allowed_document_types:
+              - pdf
+              - heic
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo invalid value for allowed_document_types")
+        end
+      end
+
+      context "document upload size exceeds the processing ceiling" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: Foo Agency Name
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+            max_document_upload_size_mb: 41
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo invalid value for max_document_upload_size_mb")
         end
       end
 

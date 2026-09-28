@@ -7,6 +7,38 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.8.0
+
+### User facing changes to Emmy Income + Emmy CE
+- Update Argyle FLOW_ID to new account's flow [(#2079)](https://github.com/DSACMS/iv-cbv-payroll/pull/2079) - Tom Dooner [[FFS-4843]](https://jiraent.cms.gov/browse/FFS-4843)
+- Set the default CBV invitation link expiration to 75 days for the Louisiana (LA) agency [(#2082)](https://github.com/DSACMS/iv-cbv-payroll/pull/2082) - Jake Wheeler [[FFS-4830]](https://jiraent.cms.gov/browse/FFS-4830)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Change content on employment information page for unpaid/in-kind work in Emmy CE manual reporting flow [(#2081)](https://github.com/DSACMS/iv-cbv-payroll/pull/2081) - Daphne Gold [[FFS-4805]](https://jiraent.cms.gov/browse/FFS-4805)
+
+### Other/Maintenance (Not user facing)
+- Bump aws-sdk-s3
+
+## 0.7.0
+
+### User facing changes to Emmy Income + Emmy CE
+- Alternate text for images [(#2050)](https://github.com/DSACMS/iv-cbv-payroll/pull/2050) - Chris [[FFS-4819]](https://jiraent.cms.gov/browse/FFS-4819)
+- Make alerts accessible [(#2055)](https://github.com/DSACMS/iv-cbv-payroll/pull/2055) - Chris [[FFS-4818]](https://jiraent.cms.gov/browse/FFS-4818)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Update monthly details pages for paid work in Emmy CE manual reporting flow [(#2077)](https://github.com/DSACMS/iv-cbv-payroll/pull/2077) - Daphne Gold [[FFS-4822]](https://jiraent.cms.gov/browse/FFS-4822)
+- Implement Education "Other" page (and its radio button) [(#2076)](https://github.com/DSACMS/iv-cbv-payroll/pull/2076) - krista-skylight [[FFS-4792]](https://jiraent.cms.gov/browse/FFS-4792)
+
+### Other/Maintenance (Not user facing)
+- Trigger AI workflows when draft PRs are ready for review [(#2080)](https://github.com/DSACMS/iv-cbv-payroll/pull/2080) - Daphne Gold
+- No ticket: v0.6.0 version bump [(#2074)](https://github.com/DSACMS/iv-cbv-payroll/pull/2074) - Tim Miller
+
 ## 0.6.0
 
 ### Emmy Income only user facing changes

@@ -15,10 +15,18 @@
     </button>
   <% end %>
   <div id="<%= content_id %>" class="usa-accordion__content accordion-body">
-    <% accordion_items.each do |item| %>
-      <p>
-        <%= item %>
-      </p>
+    <% if @items_as_list %>
+      <ul class="usa-list margin-y-0">
+        <% accordion_items.each do |item| %>
+          <li><%= item %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <% accordion_items.each do |item| %>
+        <p>
+          <%= item %>
+        </p>
+      <% end %>
     <% end %>
   </div>
 </div>

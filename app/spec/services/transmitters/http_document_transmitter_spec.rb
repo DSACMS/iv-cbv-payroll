@@ -28,7 +28,7 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
     allow(Rails.logger).to receive(:info)
   end
 
-  it "posts each cleared document with its normalized filename and content type" do
+  it "posts each cleared document with its normalized filename, content type, and document ID" do
     volunteering = create(:volunteering_activity, activity_flow: activity_flow)
     pdf = attach_document(volunteering, "Time Sheet.PDF", "application/pdf")
     image = attach_document(volunteering, "Time Sheet.jpg", "image/jpeg")
@@ -42,7 +42,8 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
       headers: {
         "Content-Type" => "application/pdf",
         "Content-Disposition" => 'attachment; filename="SANDBOX123_community_service_time_sheet.pdf"',
-        "X-IVAAS-Confirmation-Code" => "SANDBOX123"
+        "X-IVAAS-Confirmation-Code" => "SANDBOX123",
+        "X-IVAAS-Document-Id" => "DOC-#{pdf.id}"
       }
     )
     image_request = stub_request(:post, api_url).with(
@@ -50,7 +51,8 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
       headers: {
         "Content-Type" => "image/jpeg",
         "Content-Disposition" => 'attachment; filename="SANDBOX123_community_service_time_sheet.jpg"',
-        "X-IVAAS-Confirmation-Code" => "SANDBOX123"
+        "X-IVAAS-Confirmation-Code" => "SANDBOX123",
+        "X-IVAAS-Document-Id" => "DOC-#{image.id}"
       }
     )
 

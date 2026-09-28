@@ -49,9 +49,9 @@ erDiagram
 		string auth_token
 		string client_agency_id
 		datetime created_at
-		jsonb pre_populated_activities
 		string reference_id
 		datetime updated_at
+		string verification_range
 	}
 	ActivityFlowMonthlySummary {
 		integer accrued_gross_earnings_cents
@@ -141,6 +141,7 @@ erDiagram
 	EmploymentActivity {
 		text additional_comments
 		string city
+		string compensation_type
 		string contact_email
 		string contact_name
 		string contact_phone_number

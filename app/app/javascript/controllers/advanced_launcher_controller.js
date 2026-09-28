@@ -6,26 +6,17 @@ export default class extends Controller {
     "monthButtons",
     "monthsInput",
     "ceOnly",
-    "activityRow",
     "datePickerWrapper",
     "renewalRequiredField",
     "genericLinkType",
     "copyLaunchButton",
     "openLaunchButton",
-    "individualConfiguration",
-    "householdConfiguration",
-    "householdModeRadio",
-    "householdUnavailableHint",
-    "householdSelectionHint",
     "incomeFlowRadio",
   ]
 
   static values = { agencyActivityTypes: Object }
 
   connect() {
-    const selectedLaunchMode = this.element.querySelector("input[name=launch_mode]:checked")
-    if (selectedLaunchMode) this.applyLaunchMode(selectedLaunchMode.value)
-
     const selectedFlow = this.element.querySelector("input[name=flow_type]:checked")
     if (selectedFlow) this.applyFlowType(selectedFlow.value)
 
@@ -34,16 +25,10 @@ export default class extends Controller {
 
     const selectedScenario = this.element.querySelector("input[name=test_scenario]:checked")
     if (selectedScenario) this.applyScenario(selectedScenario)
-
-    this.applyAgency()
   }
 
   selectFlowType(event) {
     this.applyFlowType(event.currentTarget.value)
-  }
-
-  selectAgency() {
-    this.applyAgency()
   }
 
   selectWindow(event) {
@@ -51,32 +36,7 @@ export default class extends Controller {
   }
 
   selectScenario(event) {
-    this.clearHouseholdArchetypes()
-    this.element.querySelector("#launch_mode_individual").checked = true
-    this.applyLaunchMode("individual")
     this.applyScenario(event.currentTarget)
-  }
-
-  selectLaunchMode(event) {
-    const mode = event.currentTarget.value
-    if (mode === "household") {
-      this.ensureHouseholdArchetypes()
-      this.clearIndividualScenarioSelection()
-      const activityFlow = this.element.querySelector("#flow_type_activity")
-      if (activityFlow) {
-        activityFlow.checked = true
-        this.applyFlowType(activityFlow.value)
-      }
-    } else {
-      this.clearHouseholdArchetypes()
-    }
-    this.applyLaunchMode(mode)
-  }
-
-  selectHouseholdArchetype() {
-    this.clearIndividualScenarioSelection()
-    this.element.querySelector("#launch_mode_household").checked = true
-    this.applyLaunchMode("household")
   }
 
   toggleHint(event) {
@@ -94,16 +54,6 @@ export default class extends Controller {
     const months = event.currentTarget.dataset.months
     this.monthsInputTarget.value = months
     this.highlightButton(months)
-  }
-
-  toggleActivity(event) {
-    const checkbox = event.currentTarget
-    const fields = checkbox
-      .closest(".advanced-launcher__activity-row")
-      .querySelector(".advanced-launcher__activity-fields")
-    if (fields) {
-      fields.classList.toggle("advanced-launcher__activity-fields--hidden", !checkbox.checked)
-    }
   }
 
   invalidateShareLink() {
@@ -143,9 +93,7 @@ export default class extends Controller {
 
     try {
       const formData = new FormData(this.element)
-      formData.set("launch_type", this.selectedLaunchType())
       const payload = Object.fromEntries(formData.entries())
-      payload.household_archetypes = formData.getAll("household_archetypes[]")
       const { url } = await fetchInternal(this.element.action, {
         method: this.element.method.toUpperCase(),
         headers: {
@@ -159,17 +107,10 @@ export default class extends Controller {
       return null
     } finally {
       button.disabled = false
-      this.updateHouseholdLaunchControls()
     }
   }
 
   // private
-
-  selectedLaunchType() {
-    if (this.element.querySelector("#launch_mode_household").checked) return "household"
-
-    return this.element.querySelector("input[name=launch_type]:checked").value
-  }
 
   applyFlowType(value) {
     if (value === "cbv") {
@@ -184,81 +125,6 @@ export default class extends Controller {
       const selectedScenario = this.element.querySelector("input[name=test_scenario]:checked")
       if (selectedScenario) this.applyScenario(selectedScenario)
     }
-  }
-
-  applyAgency() {
-    const select = this.element.querySelector("#client_agency_id")
-    const enabled = (select && this.agencyActivityTypesValue[select.value]) || []
-
-    this.applyHouseholdAvailability(enabled.length > 0)
-
-    if (!this.hasActivityRowTarget) return
-
-    this.activityRowTargets.forEach((row) => {
-      const allowed = enabled.includes(row.dataset.activityType)
-      const checkbox = row.querySelector("input[type=checkbox]")
-
-      row.classList.toggle("advanced-launcher__activity-row--disabled", !allowed)
-      if (checkbox) checkbox.disabled = !allowed
-      if (allowed) return
-
-      if (checkbox && checkbox.checked) {
-        checkbox.checked = false
-        const fields = row.querySelector(".advanced-launcher__activity-fields")
-        if (fields) fields.classList.add("advanced-launcher__activity-fields--hidden")
-      }
-    })
-  }
-
-  applyHouseholdAvailability(supported) {
-    this.householdModeRadioTarget.disabled = !supported
-    this.householdUnavailableHintTarget.hidden = supported
-
-    if (supported || !this.householdModeRadioTarget.checked) return
-
-    const individual = this.element.querySelector("#launch_mode_individual")
-    if (individual) individual.checked = true
-    this.clearHouseholdArchetypes()
-    this.applyLaunchMode("individual")
-  }
-
-  applyLaunchMode(mode) {
-    const household = mode === "household"
-
-    this.individualConfigurationTargets.forEach((element) => (element.hidden = household))
-    this.householdConfigurationTarget.hidden = !household
-    this.incomeFlowRadioTarget.disabled = household
-    this.updateGenericLinkType(household)
-    this.updateHouseholdLaunchControls()
-  }
-
-  updateHouseholdLaunchControls() {
-    const household = this.element.querySelector("#launch_mode_household").checked
-    const selectedCount = this.element.querySelectorAll(
-      "input[name='household_archetypes[]']:checked"
-    ).length
-    const disabled = household && selectedCount === 0
-
-    this.copyLaunchButtonTarget.disabled = disabled
-    this.openLaunchButtonTarget.disabled = disabled
-    this.householdSelectionHintTarget.hidden = !disabled
-  }
-
-  ensureHouseholdArchetypes() {
-    const selectedArchetypes = this.element.querySelectorAll(
-      "input[name='household_archetypes[]']:checked"
-    )
-    if (selectedArchetypes.length > 0) return
-
-    this.element
-      .querySelectorAll("input[name='household_archetypes[]']")
-      .forEach((input) => (input.checked = input.defaultChecked))
-  }
-
-  clearHouseholdArchetypes() {
-    this.element
-      .querySelectorAll("input[name='household_archetypes[]']")
-      .forEach((input) => (input.checked = false))
   }
 
   clearIndividualScenarios() {

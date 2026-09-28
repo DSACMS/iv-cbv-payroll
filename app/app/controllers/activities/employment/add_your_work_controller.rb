@@ -1,5 +1,9 @@
 class Activities::Employment::AddYourWorkController < Activities::BaseController
   ADD_WORK_METHODS = %w[connect_automatically enter_paid_manually enter_unpaid_manually].freeze
+  MANUAL_ENTRY_COMPENSATION_TYPES = {
+    "enter_paid_manually" => "paid",
+    "enter_unpaid_manually" => "unpaid_or_in_kind"
+  }.freeze
 
   after_action :track_viewed_event, only: :show
 
@@ -25,7 +29,9 @@ class Activities::Employment::AddYourWorkController < Activities::BaseController
     if add_work_method == "connect_automatically"
       activities_flow_income_employer_search_path
     else
-      new_activities_flow_income_employment_path
+      new_activities_flow_income_employment_path(
+        compensation_type: MANUAL_ENTRY_COMPENSATION_TYPES.fetch(add_work_method)
+      )
     end
   end
 
