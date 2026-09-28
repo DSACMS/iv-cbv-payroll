@@ -37,10 +37,21 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
       )
       expect(rendered).to have_text(I18n.t("activities.hub.empty_state_reporting_period_label"))
       expect(rendered).to have_text(activity_flow.reporting_window_display)
-      expect(rendered).to have_text(I18n.t("activities.employment.month_selections.edit.description"))
+      expect(rendered).to have_text(I18n.t("activities.employment.month_selections.edit.paid_description"))
       reporting_months.each do |month|
         expect(rendered).to have_field(I18n.l(month, format: :month_year), type: "checkbox", visible: :all)
       end
+    end
+
+    it "asks for hours for unpaid or in-kind work" do
+      employment_activity.update!(compensation_type: :unpaid_or_in_kind)
+
+      get :edit, params: { employment_id: employment_activity.id }
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text(
+        I18n.t("activities.employment.month_selections.edit.unpaid_or_in_kind_description")
+      )
     end
 
     it "checks previously selected months" do
