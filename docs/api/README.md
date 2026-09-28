@@ -42,8 +42,11 @@ RAILS_ENV=test bundle exec rake api_docs:build
 The build runs the rswag request specs, validates the OpenAPI document and all
 published examples, then writes `index.html`, `openapi.json`, and local Scalar
 assets to `app/tmp/api-docs/`. Open `index.html` directly in a browser; the site
-works offline and does not submit API requests. The Scalar license notice is
-included with its redistributed bundle.
+works offline and does not submit API requests. The build downloads Scalar's
+license notice from a pinned upstream revision into `app/tmp/api-docs/scalar-LICENSE`,
+so building requires access to `raw.githubusercontent.com`. The notice is included
+with the redistributed bundle in CI artifacts and on `gh-pages`, not tracked in
+the source branch. A failed download stops the build.
 
 Edit [request specs](../../app/spec/requests/api/invitations_spec.rb),
 [schemas](../../app/spec/openapi/invitation_schemas.rb),

@@ -1,6 +1,19 @@
 namespace :api_docs do
+  desc "Fetch Scalar's license notice into the generated site"
+  task :scalar_license do
+    require "open-uri"
+
+    # The npm package omits the notice. Pin the upstream license revision so
+    # builds are repeatable without keeping a copy in the source repository.
+    url = "https://raw.githubusercontent.com/scalar/scalar/20151e227922fb9423f71ff8e6f8b6b04c668917/LICENSE"
+    license = URI.open(url, open_timeout: 10, read_timeout: 10, &:read)
+    output = Rails.root.join("tmp/api-docs")
+    output.mkpath
+    output.join("scalar-LICENSE").write(license)
+  end
+
   desc "Run API contract specs and build OpenAPI JSON plus a portable Scalar site"
-  task :build do
+  task build: :scalar_license do
     require "json"
     require "json_schemer"
     require "fileutils"
@@ -54,7 +67,6 @@ namespace :api_docs do
       FileUtils.rm_f(output.join(file))
     end
     FileUtils.cp(assets.join("dist/browser/standalone.js"), output.join("scalar.js"))
-    FileUtils.cp(Rails.root.join("vendor/licenses/scalar.txt"), output.join("scalar-LICENSE"))
 
     # Embed the spec so index.html also works directly from disk, without fetch,
     # a running Rails app, a CDN, or a separate static web server.
