@@ -13,9 +13,9 @@ RSpec.describe InvitationSchemas do
 
   it "defines separate sandbox and Louisiana field sets" do
     expect(document.schema("AgencyMetadataSandbox").valid?(sandbox)).to be(true)
-    expect(document.schema("AgencyMetadataSandbox").valid?(louisiana)).to be(false)
     expect(document.schema("AgencyMetadataLouisiana").valid?(louisiana)).to be(true)
-    expect(document.schema("AgencyMetadataLouisiana").valid?(sandbox)).to be(false)
+    expect(described_class.schemas["AgencyMetadataSandbox"][:properties].keys).to contain_exactly(:first_name, :middle_name, :last_name, :case_number, :date_of_birth)
+    expect(described_class.schemas["AgencyMetadataLouisiana"][:properties].keys).to contain_exactly(:case_number, :date_of_birth, :doc_id)
   end
 
   it "requires sandbox applicant names" do
@@ -44,6 +44,32 @@ RSpec.describe InvitationSchemas do
     expect(schema.valid?(sandbox)).to be(true)
     expect(schema.valid?(louisiana)).to be(true)
     expect(schema.valid?({ "case_number" => "EXAMPLE-123" })).to be(true)
-    expect(schema.valid?(sandbox.merge("doc_id" => "EXAMPLE-DOC-123"))).to be(false)
+    expect(schema.valid?(sandbox.merge("doc_id" => "EXAMPLE-DOC-123"))).to be(true)
+  end
+
+  it "explicitly allows additional properties on every object, including nested schemas" do
+    check = lambda do |value|
+      case value
+      when Hash
+        expect(value[:additionalProperties]).to be(true), "Object schema must allow future fields: #{value.inspect}" if value[:type] == :object
+        value.each_value { |child| check.call(child) }
+      when Array
+        value.each { |child| check.call(child) }
+      end
+    end
+
+    check.call(described_class.schemas)
+  end
+
+  it "accepts future fields in requests, responses, metadata, and errors" do
+    metadata = sandbox.merge("future_metadata" => { "value" => true })
+    request = { "language" => "en", "agency_partner_metadata" => metadata, "future_request" => true }
+    response = request.merge("tokenized_url" => "https://example.org/start/token", "expiration_date" => "2026-10-07T23:59:59-04:00", "future_response" => true)
+    errors = { "errors" => [ { "field" => "language", "message" => "Invalid", "future_detail" => true } ], "future_error" => true }
+
+    expect(document.schema("InvitationRequest").valid?(request)).to be(true)
+    expect(document.schema("InvitationResponse").valid?(response)).to be(true)
+    expect(document.schema("AgencyMetadataLouisiana").valid?(louisiana.merge("future_metadata" => true))).to be(true)
+    expect(document.schema("InvitationErrors").valid?(errors)).to be(true)
   end
 end

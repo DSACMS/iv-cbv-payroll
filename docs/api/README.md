@@ -55,6 +55,8 @@ The build reads these Markdown descriptions directly from `docs/api/`; Markdown
 changes also trigger the publication workflow after merge.
 Keep endpoint descriptions and responses together, using level-two headings
 to identify the sections included in the generated reference.
+Set `additionalProperties: true` on every OpenAPI object schema, including nested
+objects, so integrations can tolerate additive schema changes.
 Examples come from real test requests using synthetic data and fixed tokens;
 authorization headers are never captured.
 

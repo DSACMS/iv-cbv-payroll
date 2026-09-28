@@ -3,6 +3,10 @@ covers the Tokenized Link API for creating personalized reporting links.
 V2 invitations and outbound report payloads are separate interfaces and are not
 yet covered here. Examples use synthetic applicant data and nonfunctional tokens.
 
+Object schemas allow additional properties for forward compatibility. Integrations
+should tolerate unknown response fields so new fields can be added without breaking
+existing clients. Required fields and documented field types still apply.
+
 <!-- Remove this link-check exception after the first reviewed deployment. -->
 <!-- markdown-link-check-disable-next-line -->
 [Download the official OpenAPI JSON](https://CMS-Enterprise.github.io/emmy-app/openapi.json).
