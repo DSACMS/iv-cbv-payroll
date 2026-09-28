@@ -20,6 +20,14 @@ RSpec.describe ActivityDocumentsService do
       .to eq([ "SANDBOX123_community_service_time_sheet.pdf" ])
   end
 
+  it "identifies each document by its attachment" do
+    volunteering = create(:volunteering_activity, activity_flow: activity_flow)
+    attachment = attach_document(volunteering, "Time Sheet.PDF")
+
+    expect(described_class.new(activity_flow).all.map(&:document_id))
+      .to eq([ "DOC-#{attachment.id}" ])
+  end
+
   it "does not number documents whose names differ only by extension" do
     volunteering = create(:volunteering_activity, activity_flow: activity_flow)
     attach_document(volunteering, "Time Sheet.PDF")
@@ -104,5 +112,6 @@ RSpec.describe ActivityDocumentsService do
       filename: filename,
       content_type: Marcel::MimeType.for(name: filename)
     )
+    activity.document_uploads_attachments.order(:id).last
   end
 end

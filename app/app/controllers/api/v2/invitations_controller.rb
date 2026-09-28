@@ -19,23 +19,29 @@ class Api::V2::InvitationsController < Api::InvitationsController
       delivery_method: nil
     )
 
-    return render_validation_errors unless @cbv_flow_invitation.errors.empty?
-
     if community_engagement?
       @activity_flow_invitation = CbvInvitationService.new(event_logger)
-        .invite_to_activity_flow(@cbv_flow_invitation)
+        .invite_to_activity_flow(
+          @cbv_flow_invitation, verification_range: params[:verification_range], context: :v2
+        )
     end
+
+    return render_validation_errors if @cbv_flow_invitation.errors.any?
 
     render_created_response
   end
 
   private
 
+  def invitation_type
+    @invitation_type ||= params[:invitation_type].tr("-", "_")
+  end
+
   def metadata_contract
     @metadata_contract ||= Api::V2::InvitationMetadata.new(
       params: params,
       client_agency_id: @current_user.client_agency_id,
-      flow_type: params[:invitation_type]
+      flow_type: invitation_type
     )
   end
 
@@ -53,12 +59,13 @@ class Api::V2::InvitationsController < Api::InvitationsController
   end
 
   def community_engagement?
-    params[:invitation_type] == "community_engagement"
+    invitation_type == "community_engagement"
   end
 
   def render_created_response
     response_body = {
       tokenized_url: @cbv_flow_invitation.to_url,
+      token: @cbv_flow_invitation.auth_token,
       expiration_date: @cbv_flow_invitation.expires_at_local,
       language: @cbv_flow_invitation.language,
       agency_partner_metadata: metadata_contract.permitted

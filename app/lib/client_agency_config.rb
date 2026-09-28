@@ -135,6 +135,16 @@ class ClientAgencyConfig
           { "v1" => raw_applicant_attributes, "v2" => raw_applicant_attributes }
         end
 
+      # Normalize applicant attributes to ensure both v1 and v2 keys exist
+      # and that both versions have the same set of attributes
+      raw_applicant_attributes = yaml["applicant_attributes"] || {}
+      @applicant_attributes =
+        if raw_applicant_attributes.key?("v1") || raw_applicant_attributes.key?("v2")
+          raw_applicant_attributes
+        else
+          { "v1" => raw_applicant_attributes, "v2" => raw_applicant_attributes }
+        end
+
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
       raise ArgumentError.new("Client Agency #{@id} `allowed_iframe_ancestors` must be a list") unless @allowed_iframe_ancestors.is_a?(Array)
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?

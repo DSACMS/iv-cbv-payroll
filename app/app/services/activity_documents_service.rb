@@ -8,7 +8,11 @@ class ActivityDocumentsService
     employment_activities
   ].freeze
 
-  Document = Struct.new(:attachment, :file_name, :activity)
+  Document = Struct.new(:attachment, :file_name, :activity) do
+    def document_id
+      "DOC-#{attachment.id}"
+    end
+  end
 
   def initialize(activity_flow)
     @activity_flow = activity_flow
