@@ -26,15 +26,15 @@ RSpec.describe Nsc do
       end
     end
 
-    it "returns true when NSC_DISABLED is '1'" do
+    it "returns false when NSC_DISABLED is '1'" do
       stub_environment_variable("NSC_DISABLED", "1") do
-        expect(described_class.disabled?).to be true
+        expect(described_class.disabled?).to be false
       end
     end
 
-    it "returns true when NSC_DISABLED is 't'" do
+    it "returns false when NSC_DISABLED is 't'" do
       stub_environment_variable("NSC_DISABLED", "t") do
-        expect(described_class.disabled?).to be true
+        expect(described_class.disabled?).to be false
       end
     end
   end
