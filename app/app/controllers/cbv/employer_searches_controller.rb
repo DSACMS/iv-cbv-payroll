@@ -27,8 +27,8 @@ class Cbv::EmployerSearchesController < Cbv::BaseController
 
   private
 
-  def employer_search_timeout_translation_key
-    "cbv.employer_searches.show.error_search_timeout"
+  def employer_search_timeout_translation
+    t("cbv.employer_searches.show.error_search_timeout")
   end
 
   def employer_search_timeout_redirect_path

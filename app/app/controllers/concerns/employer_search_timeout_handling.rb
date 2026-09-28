@@ -18,14 +18,14 @@ module EmployerSearchTimeoutHandling
     I18n.with_locale(session[:locale] || I18n.default_locale) do
       flash[:slim_alert] = {
         type: "error",
-        message_html: t(employer_search_timeout_translation_key)
+        message_html: employer_search_timeout_translation
       }
     end
 
     redirect_to employer_search_timeout_redirect_path
   end
 
-  def employer_search_timeout_translation_key
+  def employer_search_timeout_translation
     raise NotImplementedError
   end
 

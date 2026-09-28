@@ -10,8 +10,8 @@ RSpec.describe "EmployerSearchTimeoutHandling", type: :controller do
 
     private
 
-    def employer_search_timeout_translation_key
-      "test.timeout"
+    def employer_search_timeout_translation
+      "Test timeout message"
     end
 
     def employer_search_timeout_redirect_path
@@ -27,7 +27,6 @@ RSpec.describe "EmployerSearchTimeoutHandling", type: :controller do
 
   describe "when an employer search times out" do
     it "redirects with a timeout alert" do
-      allow(controller).to receive(:t).with("test.timeout").and_return("Test timeout message")
       get :test_timeout
 
       expect(response).to have_http_status(:found)

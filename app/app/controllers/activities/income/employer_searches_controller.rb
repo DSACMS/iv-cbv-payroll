@@ -24,8 +24,8 @@ class Activities::Income::EmployerSearchesController < Activities::BaseControlle
 
   private
 
-  def employer_search_timeout_translation_key
-    "activities.income.employer_searches.show.error_search_timeout"
+  def employer_search_timeout_translation
+    t("activities.income.employer_searches.show.error_search_timeout")
   end
 
   def employer_search_timeout_redirect_path
