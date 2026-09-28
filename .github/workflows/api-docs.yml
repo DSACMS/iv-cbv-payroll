@@ -63,10 +63,10 @@ jobs:
       - name: Update generated files on gh-pages
         working-directory: published-api-docs
         run: |
-          cp ../app/tmp/api-docs/{index.html,openapi.json,scalar.js,scalar-LICENSE,.nojekyll} .
+          cp ../app/tmp/api-docs/{index.html,openapi.json,scalar.js,.nojekyll} .
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html openapi.json scalar.js scalar-LICENSE .nojekyll
+          git add index.html openapi.json scalar.js .nojekyll
           if ! git diff --cached --quiet; then
             git commit -m "Publish API documentation for ${GITHUB_SHA}"
             git push origin HEAD:gh-pages
