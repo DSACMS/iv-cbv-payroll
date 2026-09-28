@@ -77,7 +77,7 @@ module InvitationSchemas
         additionalProperties: true,
         properties: metadata_fields.slice(*fields)
       }
-      schema[:required] = %w[first_name last_name] if fields.include?(:first_name)
+      schema[:required] = %w[first_name last_name] if agency == "NewHampshire"
       if agency == "Louisiana"
         schema[:properties][:case_number] = metadata_fields[:case_number].merge(maxLength: 13)
       end

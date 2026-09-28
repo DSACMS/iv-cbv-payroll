@@ -18,10 +18,21 @@ RSpec.describe InvitationSchemas do
     expect(described_class.schemas["AgencyMetadataLouisiana"][:properties].keys).to contain_exactly(:case_number, :date_of_birth, :doc_id)
   end
 
-  it "requires sandbox applicant names" do
-    schema = document.schema("AgencyMetadataSandbox")
+  it "requires first and last names specifically for New Hampshire" do
+    schema = document.schema("AgencyMetadataNewHampshire")
+    expect(schema.valid?(sandbox)).to be(true)
     expect(schema.valid?(sandbox.except("first_name"))).to be(false)
+    expect(schema.valid?(sandbox.except("last_name"))).to be(false)
     expect(schema.valid?(sandbox.merge("last_name" => nil))).to be(false)
+  end
+
+  it "does not infer required fields for other agencies from their supported fields" do
+    %w[Sandbox Louisiana Research Accenture].each do |agency|
+      name = "AgencyMetadata#{agency}"
+      expect(described_class.schemas[name]).not_to have_key(:required)
+      expect(document.schema(name).valid?({})).to be(true)
+    end
+    expect(document.schema("AgencyMetadataSandbox").valid?(sandbox.except("first_name", "last_name"))).to be(true)
   end
 
   it "limits Louisiana case numbers without limiting sandbox case numbers" do
