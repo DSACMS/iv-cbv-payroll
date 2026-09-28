@@ -1,4 +1,5 @@
 {
+    "fallbackRetryDelay": "5000ms",
     "ignorePatterns" : [
         {
             "pattern": "0005-example.md"
@@ -33,5 +34,7 @@
             "pattern": "^/",
             "replacement": "{{BASEURL}}/"
         }
-  ]
+    ],
+    "retryCount": 3,
+    "retryOn429": true
 }
