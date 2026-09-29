@@ -69,6 +69,9 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
   before do
     stub_request(:post, token_url)
       .to_return(status: 200, body: token_response.to_json, headers: { "Content-Type" => "application/json" })
+    allow(NewRelic::Agent).to receive(:record_metric)
+    allow(NewRelic::Agent).to receive(:record_custom_event)
+    allow(NewRelic::Agent).to receive(:notice_error)
   end
 
   describe "#fetch_enrollment_data" do
@@ -187,6 +190,44 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
       end
 
       expect(a_request(:post, token_url)).not_to have_been_requested
+    end
+  end
+
+  describe "failure monitoring" do
+    it "classifies a Hub server error and sends telemetry" do
+      stub_request(:post, "#{base_url}/#{education_enrollment_url}")
+        .to_return(status: 503, body: "unavailable")
+
+      expect do
+        service.fetch_enrollment_data(
+          first_name: "Lynnette",
+          last_name: "Oyola",
+          date_of_birth: Date.new(1988, 10, 24),
+          as_of_date: Date.new(2024, 11, 30)
+        )
+      end.to raise_error(described_class::ServerError)
+
+      expect(NewRelic::Agent).to have_received(:record_custom_event).with(
+        "NscApiFailure",
+        hash_including(failure_origin: "hub", error_type: "server_error", endpoint: "enrollment", status_code: 503)
+      )
+      expect(NewRelic::Agent).to have_received(:notice_error).with(
+        instance_of(described_class::ServerError),
+        hash_including(custom_params: hash_including(failure_origin: :hub, error_type: :server_error))
+      )
+    end
+
+    it "classifies TLS failures separately from Hub and application failures" do
+      allow(Net::HTTP).to receive(:new).and_raise(OpenSSL::SSL::SSLError, "certificate verify failed")
+
+      expect do
+        service.send(:execute, URI(base_url), Net::HTTP::Post.new(URI(base_url)), endpoint: "enrollment")
+      end.to raise_error(described_class::TlsCertError)
+
+      expect(NewRelic::Agent).to have_received(:record_custom_event).with(
+        "NscApiFailure",
+        hash_including(failure_origin: "tls", error_type: "tls_cert_error", endpoint: "enrollment")
+      )
     end
   end
 

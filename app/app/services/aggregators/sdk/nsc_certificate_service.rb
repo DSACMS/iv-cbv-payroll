@@ -149,21 +149,14 @@ module Aggregators
           return File.read(@cert_path)
         end
 
-        env_cert = if @environment == :production
-                     ENV["NSC_CLIENT_CERT"]
-                   else
-                     ENV["NSC_CLIENT_CERT_SANDBOX"] || ENV["NSC_CLIENT_CERT"]
-                   end
+        env_cert = ENV["HUB_CERT"]
         return env_cert if env_cert.present?
 
-        env_cert_path = if @environment == :production
-                          ENV["NSC_CLIENT_CERT_PATH"]
-                        else
-                          ENV["NSC_CLIENT_CERT_PATH_SANDBOX"] || ENV["NSC_CLIENT_CERT_PATH"]
-                        end
+        env_cert_path = ENV["HUB_CERT_PATH"]
 
-        if env_cert_path.present? && File.exist?(env_cert_path)
-          File.read(env_cert_path)
+        expanded_path = File.expand_path(env_cert_path) if env_cert_path.present?
+        if expanded_path && File.exist?(expanded_path)
+          File.read(expanded_path)
         end
       end
 

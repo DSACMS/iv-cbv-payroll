@@ -25,15 +25,66 @@ module Aggregators
       TLS_VERSION = OpenSSL::SSL::TLS1_2_VERSION
 
       class ApiError < StandardError
-        attr_reader :code
+        attr_reader :code, :status, :failure_origin, :error_type, :endpoint, :details
 
-        def initialize(code:, message:)
+        def initialize(code:, message:, status: nil, failure_origin: :application, error_type: :api_error, endpoint: nil, details: {})
           @code = code
+          @status = status
+          @failure_origin = failure_origin.to_sym
+          @error_type = error_type.to_sym
+          @endpoint = endpoint
+          @details = details
           super(message)
         end
       end
 
-      class AuthenticationError < ApiError; end
+      class ConnectionError < ApiError
+        def initialize(**attributes)
+          super(failure_origin: :hub, error_type: :connection_error, **attributes)
+        end
+      end
+
+      class TimeoutError < ApiError
+        def initialize(**attributes)
+          super(failure_origin: :hub, error_type: :timeout, **attributes)
+        end
+      end
+
+      class TlsCertError < ApiError
+        def initialize(**attributes)
+          super(failure_origin: :tls, error_type: :tls_cert_error, **attributes)
+        end
+      end
+
+      class ServerError < ApiError
+        def initialize(**attributes)
+          super(failure_origin: :hub, error_type: :server_error, **attributes)
+        end
+      end
+
+      class RateLimitError < ApiError
+        def initialize(**attributes)
+          super(failure_origin: :hub, error_type: :rate_limit, **attributes)
+        end
+      end
+
+      class AuthenticationError < ApiError
+        def initialize(**attributes)
+          super(failure_origin: :application, error_type: :auth_error, **attributes)
+        end
+      end
+
+      class ClientError < ApiError
+        def initialize(**attributes)
+          super(failure_origin: :application, error_type: :client_error, **attributes)
+        end
+      end
+
+      class ConfigurationError < ApiError
+        def initialize(**attributes)
+          super(failure_origin: :application, error_type: :configuration_error, **attributes)
+        end
+      end
 
       def initialize(
         environment: nil,
@@ -53,6 +104,7 @@ module Aggregators
         # that select an NSC environment, even though FDSH selects its target
         # through Hub configuration instead.
         @environment = environment
+        @logger = logger || Rails.logger.tagged("NscFdshService")
         @base_url = base_url
         @token_url = token_url
         @client_id = client_id
@@ -64,7 +116,6 @@ module Aggregators
         @education_enrollment_url = education_enrollment_url
         @token = nil
         @token_expires_at = nil
-        @logger = logger || Rails.logger.tagged("NscFdshService")
       end
 
       # Returns the same response shape as NscService so the education flow
@@ -96,7 +147,7 @@ module Aggregators
         request["messageID"] = SecureRandom.uuid
         request.body = body.to_json
 
-        execute(uri, request)
+        execute(uri, request, endpoint: "enrollment")
       end
 
       def fetch_token
@@ -106,7 +157,11 @@ module Aggregators
         if missing_credentials.any?
           message = "Cannot request FDSH OAuth access token: missing #{missing_credentials.join(" and ")}"
           @logger.error(message)
-          raise ApiError.new(code: "CONFIGURATION_ERROR", message: message)
+          fail_request(
+            ConfigurationError.new(code: "CONFIGURATION_ERROR", message: message, endpoint: "oauth_token"),
+            endpoint: "oauth_token",
+            log: false
+          )
         end
 
         uri = URI(@token_url)
@@ -119,7 +174,7 @@ module Aggregators
           client_secret: @client_secret
         )
 
-        execute(uri, request)
+        execute(uri, request, endpoint: "oauth_token")
       end
 
       def access_token
@@ -136,20 +191,65 @@ module Aggregators
         @token
       rescue KeyError
         message = "OAuth token not found in FDSH response"
-        @logger.error(message)
-        raise AuthenticationError.new(code: "OAUTH_ERROR", message: message)
+        fail_request(AuthenticationError.new(code: "OAUTH_ERROR", message: message, endpoint: "oauth_token"), endpoint: "oauth_token")
       end
 
-      def execute(uri, request)
+      def execute(uri, request, endpoint:)
+        started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         http = build_http(uri)
         response = http.start { http.request(request) }
         status = response.code.to_i
         message = "FDSH #{request.method} request to #{log_endpoint(uri)} returned HTTP #{response.code}"
         @logger.public_send(status.between?(200, 299) ? :info : :error, message)
-        handle_response(response)
-      rescue Timeout::Error, SocketError, SystemCallError, OpenSSL::SSL::SSLError => e
-        @logger.error("FDSH request to #{log_endpoint(uri)} failed (#{e.class}): #{e.message}")
-        raise ApiError.new(code: "CONNECTION_ERROR", message: "FDSH connection failed: #{e.message}")
+        result = handle_response(response, endpoint: endpoint, duration_ms: elapsed_ms(started_at))
+        report_success(endpoint: endpoint, duration_ms: elapsed_ms(started_at))
+        result
+      rescue Net::OpenTimeout, Net::ReadTimeout, Timeout::Error, Errno::ETIMEDOUT => e
+        fail_request(
+          TimeoutError.new(
+            code: "TIMEOUT",
+            message: "Timeout communicating with FDSH/NSC at #{log_endpoint(uri)}: #{e.message}",
+            endpoint: endpoint,
+            details: { exception: e.class.name }
+          ),
+          endpoint: endpoint,
+          duration_ms: elapsed_ms(started_at)
+        )
+      rescue OpenSSL::SSL::SSLError, OpenSSL::X509::CertificateError => e
+        fail_request(
+          TlsCertError.new(
+            code: "TLS_CERT_ERROR",
+            message: "TLS/certificate error communicating with FDSH/NSC at #{log_endpoint(uri)}: #{e.message}",
+            endpoint: endpoint,
+            details: { exception: e.class.name }
+          ),
+          endpoint: endpoint,
+          duration_ms: elapsed_ms(started_at)
+        )
+      rescue SocketError, SystemCallError => e
+        fail_request(
+          ConnectionError.new(
+            code: "CONNECTION_FAILED",
+            message: "Connection failed to FDSH/NSC at #{log_endpoint(uri)}: #{e.message}",
+            endpoint: endpoint,
+            details: { exception: e.class.name }
+          ),
+          endpoint: endpoint,
+          duration_ms: elapsed_ms(started_at)
+        )
+      rescue ApiError
+        raise
+      rescue => e
+        fail_request(
+          ApiError.new(
+            code: "UNEXPECTED_ERROR",
+            message: "Application error during FDSH/NSC request to #{log_endpoint(uri)}: #{e.message}",
+            endpoint: endpoint,
+            details: { exception: e.class.name }
+          ),
+          endpoint: endpoint,
+          duration_ms: elapsed_ms(started_at)
+        )
       end
 
       def build_http(uri)
@@ -166,26 +266,127 @@ module Aggregators
         http
       end
 
-      def handle_response(response)
+      def handle_response(response, endpoint:, duration_ms:)
         case response.code.to_i
         when 200..299
-          parse_response(response.body)
+          parse_response(response.body, endpoint: endpoint, duration_ms: duration_ms)
         when 401
           @token = nil
           @token_expires_at = nil
-          raise AuthenticationError.new(code: "UNAUTHORIZED", message: "Unauthorized: #{response.body}")
+          fail_request(
+            AuthenticationError.new(code: "UNAUTHORIZED", message: "FDSH OAuth credentials were rejected", status: 401, endpoint: endpoint),
+            endpoint: endpoint,
+            status: 401,
+            duration_ms: duration_ms
+          )
+        when 429
+          fail_request(
+            RateLimitError.new(code: "RATE_LIMITED", message: "FDSH/NSC rate limit exceeded", status: 429, endpoint: endpoint),
+            endpoint: endpoint,
+            status: 429,
+            duration_ms: duration_ms
+          )
+        when 500..599
+          fail_request(
+            ServerError.new(code: "SERVER_ERROR_#{response.code}", message: "FDSH/NSC returned HTTP #{response.code}", status: response.code.to_i, endpoint: endpoint),
+            endpoint: endpoint,
+            status: response.code.to_i,
+            duration_ms: duration_ms
+          )
         else
-          raise ApiError.new(
-            code: response.code.to_i,
-            message: "FDSH request failed with status #{response.code}: #{response.body}"
+          fail_request(
+            ClientError.new(code: "HTTP_#{response.code}", message: "FDSH/NSC request returned HTTP #{response.code}", status: response.code.to_i, endpoint: endpoint),
+            endpoint: endpoint,
+            status: response.code.to_i,
+            duration_ms: duration_ms
           )
         end
       end
 
-      def parse_response(body)
+      def parse_response(body, endpoint:, duration_ms:)
         JSON.parse(body)
       rescue JSON::ParserError => e
-        raise ApiError.new(code: "INVALID_RESPONSE", message: "FDSH returned invalid JSON: #{e.message}")
+        fail_request(
+          ServerError.new(
+            code: "INVALID_RESPONSE",
+            message: "FDSH/NSC returned an invalid JSON response",
+            endpoint: endpoint,
+            details: { exception: e.class.name }
+          ),
+          endpoint: endpoint,
+          duration_ms: duration_ms
+        )
+      end
+
+      def fail_request(error, endpoint:, status: nil, duration_ms: nil, log: true)
+        report_failure(
+          error,
+          endpoint: endpoint,
+          failure_origin: error.failure_origin,
+          error_type: error.error_type,
+          status: status || error.status,
+          duration_ms: duration_ms,
+          log: log
+        )
+        raise error
+      end
+
+      def report_failure(error, endpoint:, failure_origin:, error_type:, status: nil, duration_ms: nil, log: true)
+        origin_label = case failure_origin
+                       when :hub then "Hub-side"
+                       when :tls then "TLS/Cert"
+                       else "Application-side"
+                       end
+        if log
+          @logger.error(
+            "[NSC/Hub Failure] origin=#{failure_origin} type=#{error_type} endpoint=#{endpoint} " \
+            "status=#{status || 'N/A'} env=#{environment_name} classification=\"#{origin_label}\" message=#{error.message}"
+          )
+        end
+
+        return unless defined?(NewRelic::Agent)
+
+        NewRelic::Agent.record_metric("Custom/NSC/Calls", 1)
+        NewRelic::Agent.record_metric("Custom/NSC/Failure", 1)
+        NewRelic::Agent.record_metric("Custom/NSC/Failure/#{failure_origin}", 1)
+        NewRelic::Agent.record_metric("Custom/NSC/Failure/#{error_type}", 1)
+        NewRelic::Agent.record_custom_event("NscApiFailure", {
+          failure_origin: failure_origin.to_s,
+          error_type: error_type.to_s,
+          endpoint: endpoint.to_s,
+          status_code: status,
+          environment: environment_name,
+          error_message: error.message.to_s.truncate(255),
+          duration_ms: duration_ms
+        })
+        NewRelic::Agent.notice_error(error, custom_params: {
+          endpoint: endpoint,
+          failure_origin: failure_origin,
+          error_type: error_type,
+          status_code: status,
+          environment: environment_name
+        })
+      end
+
+      def report_success(endpoint:, duration_ms:)
+        return unless defined?(NewRelic::Agent)
+
+        NewRelic::Agent.record_metric("Custom/NSC/Calls", 1)
+        NewRelic::Agent.record_metric("Custom/NSC/Success", 1)
+        NewRelic::Agent.record_custom_event("NscApiCall", {
+          status: "success",
+          endpoint: endpoint,
+          environment: environment_name,
+          duration_ms: duration_ms
+        })
+      end
+
+      def environment_name
+        (@environment || ENV.fetch("NSC_ENVIRONMENT", "sandbox")).to_s
+      end
+
+      def elapsed_ms(started_at)
+        ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - started_at) * 1000).round(2)
       end
 
       def normalize_response(response)

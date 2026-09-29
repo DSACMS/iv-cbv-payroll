@@ -85,16 +85,26 @@ RSpec.describe Aggregators::Sdk::NscCertificateService, type: :service do
 
       before do
         allow(ENV).to receive(:[]).and_call_original
-        allow(ENV).to receive(:[]).with("NSC_CLIENT_CERT").and_return(nil)
-        allow(ENV).to receive(:[]).with("NSC_CLIENT_CERT_SANDBOX").and_return(nil)
-        allow(ENV).to receive(:[]).with("NSC_CLIENT_CERT_PATH").and_return(nil)
-        allow(ENV).to receive(:[]).with("NSC_CLIENT_CERT_PATH_SANDBOX").and_return(nil)
+        allow(ENV).to receive(:[]).with("HUB_CERT").and_return(nil)
+        allow(ENV).to receive(:[]).with("HUB_CERT_PATH").and_return(nil)
       end
 
       it "returns status :not_configured" do
         result = service.check_expiration
         expect(result.status).to eq(:not_configured)
         expect(result.alert_needed?).to be false
+      end
+    end
+
+    context "when the deployed FDSH certificate is configured in the environment" do
+      let(:cert_pem) { generate_cert(not_before: 10.days.ago, not_after: 60.days.from_now) }
+
+      it "reads HUB_CERT" do
+        ClimateControl.modify(HUB_CERT: cert_pem, HUB_CERT_PATH: nil) do
+          result = described_class.new(environment: :production, logger: test_logger).check_expiration
+
+          expect(result).to be_ok
+        end
       end
     end
   end
