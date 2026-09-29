@@ -20,7 +20,7 @@ The machine-readable JSON Schema for the request body is available at [schemas/c
 
 ### Request Headers
 
-The same signing scheme used by the [Income Report Transmission API](income-report.md) applies.
+The same signing scheme used by the Income Report Transmission API applies.
 
 | Header | Description |
 | :-- | :-- |
@@ -58,7 +58,7 @@ The agency should respond with `200` and a payload containing:
 
 #### Agency Partner Metadata Object
 
-The field structure for this object will differ for each agency based on the integration plan for the agency, exactly as the `agency_partner_metadata` object does in the [Income Report Transmission API](income-report.md). It contains whichever fields the agency needs to index the report back into the proper case, plus `extended_attributes`.
+The field structure for this object will differ for each agency based on the integration plan for the agency, exactly as the `agency_partner_metadata` object does in the Income Report Transmission API. It contains whichever fields the agency needs to index the report back into the proper case, plus `extended_attributes`.
 
 Sample fields:
 

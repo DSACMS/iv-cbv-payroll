@@ -141,8 +141,11 @@ Once the server is running, you can exercise the full flow with sandbox data
 
 ## Optional: test the outbound JSON API
 
-To exercise the income-report transmission API (see
-[`docs/api/income-report.md`](/docs/api/income-report.md)) against a local
+<!-- Remove this link-check exception after the first reviewed deployment. -->
+<!-- markdown-link-check-disable-next-line -->
+See the [public Emmy Platform API documentation](https://CMS-Enterprise.github.io/emmy-app/index.html)
+for platform API integration guidance. Outbound report transmission is documented
+separately. To exercise the income-report transmission API against a local
 reference receiver:
 
 ```bash
@@ -163,7 +166,7 @@ Then point the Emmy App at the receiver (running on port 4567) by adding the
 `SANDBOX_ACTIVITY_DOCUMENTS_API_URL=http://localhost:4567/documents`.
 
 To transmit the community engagement activity report (see
-[`docs/api/ce-activity-report.md`](/docs/api/ce-activity-report.md)) instead, set
+[the CE activity report API documentation](/docs/api/ce-activity-report.md)) instead, set
 `SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=json` and
 `SANDBOX_ACTIVITY_JSON_API_URL=http://localhost:4567/activities`. The receiver
 writes the report to `app/tmp/transmitted_activity_report.json`.
