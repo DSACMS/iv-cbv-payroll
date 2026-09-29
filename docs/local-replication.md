@@ -143,7 +143,7 @@ Once the server is running, you can exercise the full flow with sandbox data
 
 <!-- Remove this link-check exception after the first reviewed deployment. -->
 <!-- markdown-link-check-disable-next-line -->
-See the [public Emmy Platform API documentation](https://CMS-Enterprise.github.io/emmy-app/index.html)
+See the [public Emmy Platform API documentation](https://DSACMS.github.io/iv-cbv-payroll/index.html)
 for platform API integration guidance. Outbound report transmission is documented
 separately. To exercise the income-report transmission API against a local
 reference receiver:

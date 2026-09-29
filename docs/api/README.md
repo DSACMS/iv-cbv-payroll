@@ -7,12 +7,12 @@ an agency can deliver through its own website, email, or SMS workflow.
 <!-- These generated URLs are unavailable until the first reviewed deployment.
 Remove the two link-check exceptions below after that deployment. -->
 <!-- markdown-link-check-disable-next-line -->
-The official [Emmy Platform API Documentation](https://CMS-Enterprise.github.io/emmy-app/index.html)
+The official [Emmy Platform API Documentation](https://DSACMS.github.io/iv-cbv-payroll/index.html)
 contains authentication guidance, environment URLs, agency-specific schemas,
 and tested request and response examples.
 
 <!-- markdown-link-check-disable-next-line -->
-The accompanying [OpenAPI JSON](https://CMS-Enterprise.github.io/emmy-app/openapi.json) is generated
+The accompanying [OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json) is generated
 by the same build; do not maintain or commit a separate copy.
 
 Contact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) for onboarding and an API key
@@ -60,7 +60,7 @@ Examples come from real test requests using synthetic data and fixed tokens;
 authorization headers are never captured.
 
 Pull request CI builds an `api-reference` artifact for review. After this change
-is merged into `CMS-Enterprise/emmy-app`, the
+is merged into `DSACMS/iv-cbv-payroll`, the
 [publication workflow](../../.github/workflows/api-docs.yml) rebuilds on `main`
 updates (or manual dispatch from `main`), commits the generated files to
 `gh-pages` (creating the branch on its first run), and requests a Pages build.

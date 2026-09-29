@@ -1,5 +1,5 @@
 module InvitationDocumentation
-  SITE_URL = "https://CMS-Enterprise.github.io/emmy-app/index.html".freeze
+  SITE_URL = "https://DSACMS.github.io/iv-cbv-payroll/index.html".freeze
 
   def self.read(name, section: nil)
     markdown = Rails.root.join("../docs/api", "#{name}.md").read

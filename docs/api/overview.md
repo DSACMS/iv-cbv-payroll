@@ -9,7 +9,7 @@ existing clients. Required fields and documented field types still apply.
 
 <!-- Remove this link-check exception after the first reviewed deployment. -->
 <!-- markdown-link-check-disable-next-line -->
-[Download the official OpenAPI JSON](https://CMS-Enterprise.github.io/emmy-app/openapi.json).
+[Download the official OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json).
 The JSON and this reference are generated together from executable API tests.
 
 ## API environments
