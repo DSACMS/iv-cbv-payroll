@@ -65,6 +65,14 @@ RSpec.describe ActivityFlow, type: :model do
       expect(flow.cbv_applicant).to eq(cbv_applicant)
     end
 
+    it "persists employment_focused: true when passed in params" do
+    invitation = create(:activity_flow_invitation)
+
+    flow = described_class.create_from_invitation(invitation, device_id, employment_focused: "true")
+
+    expect(flow.employment_focused).to be(true)
+  end
+
     it "defaults employment_focused to false when absent from params" do
       invitation = create(:activity_flow_invitation)
 

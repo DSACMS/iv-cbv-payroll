@@ -200,4 +200,44 @@ RSpec.describe Cbv::EmployerSearchesController do
       end
     end
   end
+
+  describe "when an employer search times out" do
+    let(:cbv_flow) { create(:cbv_flow, :invited) }
+
+    before do
+      session[:flow_id] = cbv_flow.id
+
+      allow(controller).to receive(:provider_search)
+        .and_raise(Faraday::TimeoutError)
+    end
+
+    it "redirects to the employer search with a timeout alert" do
+      get :show, params: { query: "test-business" }
+
+      expect(response).to have_http_status(:found)
+      expect(response).to redirect_to(cbv_flow_employer_search_path)
+
+      expect(flash[:slim_alert]).to eq(
+        type: "error",
+        message_html: I18n.t(
+          "cbv.employer_searches.show.error_search_timeout"
+        )
+      )
+    end
+
+    it "uses the Spanish timeout message when the locale is Spanish" do
+      get :show,
+          params: { query: "test-business" },
+          session: { locale: "es" }
+
+
+      expect(flash[:slim_alert]).to eq(
+        type: "error",
+        message_html: I18n.t(
+          "cbv.employer_searches.show.error_search_timeout",
+          locale: :es
+        )
+      )
+    end
+  end
 end
