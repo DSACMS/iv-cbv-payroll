@@ -88,9 +88,9 @@ class Api::V2::InvitationsController < Api::InvitationsController
 
   def render_validation_errors
     errors = []
-    errors += errors_to_json(@cbv_flow_invitation.errors) if @cbv_flow_invitation&.errors&.any?
-    errors += errors_to_json(@activity_flow_invitation.errors) if @activity_flow_invitation&.errors&.any?
+    errors += errors_to_json(@cbv_flow_invitation.errors)[:errors] if @cbv_flow_invitation&.errors&.any?
+    errors += errors_to_json(@activity_flow_invitation.errors)[:errors] if @activity_flow_invitation&.errors&.any?
 
-    render json: errors, status: :unprocessable_content
+    render json: { errors: errors }, status: :unprocessable_content
   end
 end
