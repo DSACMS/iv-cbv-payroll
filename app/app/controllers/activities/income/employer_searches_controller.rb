@@ -1,4 +1,6 @@
 class Activities::Income::EmployerSearchesController < Activities::BaseController
+  include EmployerSearchTimeoutHandling
+
   before_action :check_webhooks_initialization_in_development
   after_action :track_accessed_search_event, only: :show
   after_action :track_applicant_searched_event, only: :show
@@ -21,6 +23,14 @@ class Activities::Income::EmployerSearchesController < Activities::BaseControlle
   end
 
   private
+
+  def employer_search_timeout_translation
+    t("activities.income.employer_searches.show.error_search_timeout")
+  end
+
+  def employer_search_timeout_redirect_path
+    activities_flow_income_employer_search_path
+  end
 
   def check_webhooks_initialization_in_development
     return unless Rails.env.development?

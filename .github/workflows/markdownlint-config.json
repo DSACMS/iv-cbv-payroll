@@ -1,6 +1,4 @@
 {
-    "retryOn429": true,
-    "retryCount": 3,
     "fallbackRetryDelay": "5000ms",
     "ignorePatterns" : [
         {
@@ -36,5 +34,7 @@
             "pattern": "^/",
             "replacement": "{{BASEURL}}/"
         }
-  ]
+    ],
+    "retryCount": 3,
+    "retryOn429": true
 }

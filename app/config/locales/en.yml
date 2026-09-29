@@ -320,14 +320,21 @@ en:
         heading: Add your income and hours for %{organization}
         hours_label: "%{month} hours worked"
         month_indicator: 'Month %{current} of %{total}:'
+        unpaid_or_in_kind:
+          error_body: Add hours to continue.
+          error_heading: No hours entered
+          field_error: Add hours to continue.
+          heading: Add your hours for %{organization}
+          hours_hint: If you performed in-kind work, provide an estimate
       month_selections:
         edit:
           continue: Continue
-          description: For each month, you will need to report how much you made and how many hours you worked.
           error_body: Select at least one month to continue
           error_heading: No months selected
           legend: Months worked
+          paid_description: For each month, you will need to report how much you made and how many hours you worked.
           title: Select which months you worked for %{employer_name}
+          unpaid_or_in_kind_description: For each month, you will need to report how many hours you worked.
       review:
         additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
         additional_comments_title: Additional comments (optional)
@@ -441,6 +448,7 @@ en:
           alert:
             heading: Can't connect to your payroll provider?
           app_based_providers: App-based providers
+          error_search_timeout: Search timed out. Please try again.
           header: Search for your employer
           payroll_providers: Payroll providers
           popular_providers: Popular providers
@@ -857,6 +865,7 @@ en:
         can_not_find_employer: I can’t find my employer or payroll provider
         common_questions_header: Common questions
         employer_not_listed: Employer not listed?
+        error_search_timeout: Search timed out. Please try again.
         exit_button_text: Exit and go to %{agency_acronym}'s website
         header: Search for your employer or payroll provider
         lost_job_body_html: 'If you lost your job within the last 90 days, you can use this tool to report your job loss. You must be able to: <ul><li>Log in to your previous employer or payroll provider account, and</li><li>View your payment information online</li></ul>'

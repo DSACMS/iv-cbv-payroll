@@ -142,7 +142,7 @@ class LauncherController < ApplicationController
     overrides = if flow_type == "cbv"
                   launcher_params.slice(:launcher_timeout).select { |_, v| v.present? }
                 else
-                  allowed_overrides = [ :reporting_window, :reporting_window_months, :reporting_window_start, :launcher_timeout ]
+                  allowed_overrides = [ :reporting_window, :reporting_window_months, :reporting_window_start, :launcher_timeout, :employment_focused ]
                   allowed_overrides << :renewal_required_months if launcher_params[:reporting_window] == "renewal"
                   launcher_params.slice(*allowed_overrides).select { |_, v| v.present? }
                 end
@@ -163,7 +163,8 @@ class LauncherController < ApplicationController
       :reporting_window_months,
       :renewal_required_months,
       :reporting_window_start,
-:launcher_timeout,
+      :employment_focused,
+      :launcher_timeout,
       :launch_type
     )
   end
@@ -221,6 +222,7 @@ class LauncherController < ApplicationController
       client_agency_id: client_agency_id,
       reference_id: "demo-#{SecureRandom.hex(4)}"
     )
+
     invitation.to_url(
       **launcher_url_options,
       **overrides

@@ -58,6 +58,13 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
       expect(response).to redirect_to(verify_activities_flow_education_index_path)
     end
 
+    it "redirects to self-attested education when college or university is selected and NSC is disabled" do
+      stub_environment_variable("NSC_DISABLED", "true") do
+        post :create, params: { add_education_method: "college_or_university" }
+        expect(response).to redirect_to(new_activities_flow_education_path)
+      end
+    end
+
     it "redirects to self-attested education when high school or GED is selected" do
       post :create, params: { add_education_method: "high_school_ged" }
       expect(response).to redirect_to(new_activities_flow_education_path)

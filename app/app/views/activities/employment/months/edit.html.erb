@@ -10,17 +10,19 @@
 <% from_review = params[:from_review].present? %>
 <% from_edit = params[:from_edit].present? %>
 <% month_label = l(@current_month, format: :month) %>
-<% heading = t("activities.employment.hours_input.heading",
+<% unpaid = @employment_activity.unpaid_or_in_kind? %>
+<% input_scope = unpaid ? "activities.employment.hours_input.unpaid_or_in_kind" : "activities.employment.hours_input" %>
+<% heading = t("#{input_scope}.heading",
   organization: @employment_activity.employer_name) %>
 <% content_for :title, heading %>
 
 <% if @error %>
   <%= render Uswds::Alert.new(
         type: :error,
-        heading: t("activities.employment.hours_input.error_heading"),
+        heading: t("#{input_scope}.error_heading"),
         class: "margin-bottom-4"
       ) do %>
-    <%= t("activities.employment.hours_input.error_body") %>
+    <%= t("#{input_scope}.error_body") %>
   <% end %>
 <% end %>
 
@@ -45,17 +47,20 @@
       ),
       method: :patch
     ) do |f| %>
-  <%= f.currency_field :gross_income,
-        label: t("activities.employment.hours_input.gross_income_label", month: month_label),
-        label_class: "text-bold",
-        hint: t("activities.employment.hours_input.gross_income_hint") %>
+  <% unless unpaid %>
+    <%= f.currency_field :gross_income,
+          label: t("activities.employment.hours_input.gross_income_label", month: month_label),
+          label_class: "text-bold",
+          hint: t("activities.employment.hours_input.gross_income_hint") %>
+  <% end %>
 
   <%= f.text_field :hours,
         type: :number,
         step: "any",
         value: decimal_input_value(@activity_month.hours),
         label: t("activities.employment.hours_input.hours_label", month: month_label),
-        label_class: "text-bold" %>
+        label_class: "text-bold",
+        hint: unpaid ? t("#{input_scope}.hours_hint") : nil %>
 
   <%= f.submit(from_review ? t("activities.hub.save") : t("activities.employment.hours_input.continue")) %>
 <% end %>

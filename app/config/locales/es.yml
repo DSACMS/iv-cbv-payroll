@@ -187,6 +187,7 @@ es:
         can_not_find_employer: No puedo encontrar a mi empleador o proveedor de nómina
         common_questions_header: Preguntas frecuentes
         employer_not_listed: "¿Su empleador no está en la lista?"
+        error_search_timeout: Se agotó el tiempo de espera de la búsqueda. Por favor, inténtelo de nuevo.
         exit_button_text: Salir y acceder al sitio web de %{agency_acronym}
         header: Busque su empleador o proveedor de nómina
         lost_job_body_html: 'Si usted perdió su trabajo en los últimos 90 días, usted puede usar esta herramienta para reportar que lo perdió. Usted debe poder: <ul><li>conectarse a la cuenta de su empleador o proveedor de nómina anterior y</li><li>ver su información de pago en línea</li></ul>'
