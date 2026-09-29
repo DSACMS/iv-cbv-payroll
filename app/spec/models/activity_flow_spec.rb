@@ -65,21 +65,28 @@ RSpec.describe ActivityFlow, type: :model do
       expect(flow.cbv_applicant).to eq(cbv_applicant)
     end
 
-    it "persists employment_focused: true when passed in params" do
-    invitation = create(:activity_flow_invitation)
-
-    flow = described_class.create_from_invitation(invitation, device_id, employment_focused: "true")
-
-    expect(flow).to be_persisted
-    expect(flow.employment_focused).to be(true)
-  end
-
     it "defaults employment_focused to false when absent from params" do
       invitation = create(:activity_flow_invitation)
 
       flow = described_class.create_from_invitation(invitation, device_id)
 
       expect(flow).to be_persisted
+      expect(flow.employment_focused).to be(false)
+    end
+
+    it "uses invitation.employment_focused over a conflicting params[:employment_focused]" do
+      invitation = create(:activity_flow_invitation, employment_focused: true)
+
+      flow = described_class.create_from_invitation(invitation, device_id, employment_focused: "false")
+
+      expect(flow.employment_focused).to be(true)
+    end
+
+    it "does not let params[:employment_focused] override a false invitation flag" do
+      invitation = create(:activity_flow_invitation, employment_focused: false)
+
+      flow = described_class.create_from_invitation(invitation, device_id, employment_focused: "true")
+
       expect(flow.employment_focused).to be(false)
     end
   end
