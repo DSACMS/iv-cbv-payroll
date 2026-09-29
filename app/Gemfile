@@ -103,7 +103,7 @@ group :development, :test do
   gem "erb_lint", require: false
   gem "i18n-tasks", "~> 1.1", require: false
   gem "json_schemer", "~> 2.5"
-  gem "parallel_tests", "~> 5.5"
+  gem "parallel_tests", "~> 5.8"
   gem "rspec-rails", "~> 8.0"
   gem "rubocop"
   gem "rubocop-rspec"
