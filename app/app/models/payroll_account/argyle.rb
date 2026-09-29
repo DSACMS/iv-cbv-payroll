@@ -1,6 +1,12 @@
 class PayrollAccount::Argyle < PayrollAccount
   before_destroy :safely_delete_aggregator_account
 
+  # Temporary: Skip redaction for pre-migration Argyle accounts, since the
+  # Argyle account will be deleted soon anyway
+  #
+  # Remove this after 90 days (after 12/22/2026)
+  ARGYLE_MIGRATION_DATE = Date.new(2026, 9, 23)
+
   scope :awaiting_fully_synced_webhook, -> do
     joins(<<~SQL).where(webhook_events: { id: nil })
       LEFT OUTER JOIN webhook_events
@@ -73,6 +79,15 @@ class PayrollAccount::Argyle < PayrollAccount
     argyle.delete_account_api(account: aggregator_account_id)
   rescue Faraday::ResourceNotFound
     # Account already deleted on Argyle's side
+  rescue Faraday::ForbiddenError => ex
+    # Argyle accounts linked in the old Argyle account will fail to delete with
+    # a 403 since the API key is a mismatch. Let's keep redaction succeeding by
+    # only raising these errors if the account should be in the new account (it
+    # was created after the migration).
+    #
+    # Remove this whole rescue block after 90 days (after 12/22/2026).
+    raise if created_at.to_date > ARGYLE_MIGRATION_DATE
+    Rails.logger.warn "Skipping Argyle account deletion for #{aggregator_account_id} - #{ex.message}"
   end
 
   def redact!
