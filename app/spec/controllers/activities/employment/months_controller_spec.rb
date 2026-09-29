@@ -131,6 +131,43 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
           edit_activities_flow_income_employment_month_selection_path(employment_id: employment_activity)
         )
       end
+
+      context "when work is unpaid or in-kind" do
+        let(:employment_activity) do
+          create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
+        end
+
+        it "renders the hours-only details for the selected month" do
+          first_month, _second_month, third_month = activity_flow.reporting_months
+          employment_activity.update!(selected_months: [ third_month, first_month ])
+
+          get :edit, params: { employment_id: employment_activity.id, id: 1 }
+
+          rendered = Capybara.string(response.body)
+          expect(rendered).to have_selector(
+            "h1",
+            text: I18n.t(
+              "activities.employment.hours_input.unpaid_or_in_kind.heading",
+              organization: employment_activity.employer_name
+            ),
+            exact_text: true,
+            normalize_ws: true
+          )
+          expect(rendered).to have_text(
+            [
+              I18n.t("activities.employment.hours_input.month_indicator", current: 2, total: 2),
+              I18n.l(third_month, format: :month)
+            ].join(" "),
+            normalize_ws: true
+          )
+          expect(rendered).to have_field(
+            I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(third_month, format: :month))
+          )
+          expect(rendered).to have_text(I18n.t("activities.employment.hours_input.unpaid_or_in_kind.hours_hint"))
+          expect(rendered).to have_no_selector('input[name="employment_activity_month[gross_income]"]')
+          expect(rendered).to have_no_selector('input[type="checkbox"]')
+        end
+      end
     end
   end
 
@@ -372,6 +409,57 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         }
 
         expect(employment_activity.employment_activity_months.last.month).to eq(third_month)
+      end
+
+      context "when work is unpaid or in-kind" do
+        let(:employment_activity) do
+          create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
+        end
+
+        it "shows the hours error in the alert and next to the field" do
+          patch :update, params: {
+            employment_id: employment_activity.id,
+            id: 0,
+            employment_activity_month: { hours: "", gross_income: 100 }
+          }
+
+          rendered = Capybara.string(response.body)
+          error = I18n.t("activities.employment.hours_input.unpaid_or_in_kind.error_body")
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(rendered).to have_selector(".usa-alert--error", text: error)
+          expect(rendered).to have_selector(".usa-error-message", text: error)
+          expect(employment_activity.employment_activity_months).to be_empty
+        end
+
+        context "when validation fails" do
+          let(:perform_tracked_action) do
+            patch :update, params: {
+              employment_id: employment_activity.id,
+              id: 0,
+              employment_activity_month: { hours: "" }
+            }
+          end
+
+          it_behaves_like "tracks an event", TrackEvent::EmploymentMonthValidationFailed,
+            extra_attributes: -> {
+              { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_fields: [ "hours" ] }
+            }
+        end
+
+        it "saves hours without income and advances to the next selected month" do
+          patch :update, params: {
+            employment_id: employment_activity.id,
+            id: 0,
+            employment_activity_month: { hours: "2.5", gross_income: 100 }
+          }
+
+          expect(response).to redirect_to(
+            edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 1)
+          )
+          month = employment_activity.employment_activity_months.last
+          expect(month.hours).to eq(BigDecimal("2.5"))
+          expect(month.gross_income).to be_zero
+        end
       end
     end
 

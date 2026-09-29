@@ -30,7 +30,9 @@ class Activities::Employment::MonthsController < Activities::BaseController
       month_index: @month_index,
       month: I18n.l(@current_month, format: :month_year)
     }
-    attributes[:error_fields] = %w[gross_income hours] if @error
+    if @error
+      attributes[:error_fields] = @employment_activity.unpaid_or_in_kind? ? %w[hours] : %w[gross_income hours]
+    end
     track_event(event, attributes)
   end
 
@@ -54,6 +56,12 @@ class Activities::Employment::MonthsController < Activities::BaseController
 
   def assign_hours_submission_values
     month_params = hours_submission_params
+    if @employment_activity.unpaid_or_in_kind?
+      @activity_month.hours = month_params[:hours].presence
+      @activity_month.gross_income = 0
+      return
+    end
+
     default_value = month_params.values.all?(&:blank?) ? nil : 0
     @activity_month.hours = month_params[:hours].presence || default_value
     @activity_month.gross_income = month_params[:gross_income].presence || default_value
@@ -64,7 +72,9 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def add_hours_submission_errors
-    # MonthlyHoursInput adds inline field errors by default; this screen uses only the alert.
+    if @employment_activity.unpaid_or_in_kind?
+      @activity_month.errors.add(:hours, I18n.t("#{hours_input_t_scope}.unpaid_or_in_kind.field_error"))
+    end
   end
 
   def hours_input_activity
@@ -126,6 +136,10 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def valid_hours_submission?
+    if @employment_activity.unpaid_or_in_kind?
+      return (@activity_month.hours || 0).positive?
+    end
+
     income = @activity_month.gross_income || 0
     hours = @activity_month.hours || 0
     income >= 0 && hours >= 0 && (income.positive? || hours.positive?)
