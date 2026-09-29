@@ -2,6 +2,8 @@ class EmploymentActivity < Activity
   include HasActivityMonths
   include DocumentUploadable
 
+  enum :compensation_type, { paid: "paid", unpaid_or_in_kind: "unpaid_or_in_kind" }, default: :paid
+
   FIELDS = %w[
     employer_name
     is_self_employed
@@ -23,7 +25,12 @@ class EmploymentActivity < Activity
     :employment
   end
 
-  validates :employer_name, presence: { message: I18n.t("activities.employment_info.employer_name_error") }
+  validates :employer_name,
+    presence: { message: I18n.t("activities.employment_info.employer_name_error") },
+    if: :paid?
+  validates :employer_name,
+    presence: { message: I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name_error") },
+    if: :unpaid_or_in_kind?
 
   before_save :clear_contact_fields_if_self_employed
 
@@ -49,7 +56,28 @@ class EmploymentActivity < Activity
   end
 
   def document_upload_months_to_verify
-    employment_activity_months.map(&:month)
+    employment_activity_months
+      .where(month: months_to_report)
+      .order(:month)
+      .pluck(:month)
+  end
+
+  def requires_month_selection?
+    activity_flow.tokenized? &&
+      !(activity_flow.reporting_window_type == "application" && activity_flow.required_month_count == 1)
+  end
+
+  def months_to_report
+    return activity_flow.reporting_months unless requires_month_selection?
+
+    selected_months.sort
+  end
+
+  def update_selected_months!(months)
+    transaction do
+      update!(selected_months: months)
+      employment_activity_months.where.not(month: months).destroy_all
+    end
   end
 
   def document_upload_details_for_month(month)

@@ -1,0 +1,26 @@
+<%= render AccordionComponent.new(
+      id: "unpaid-or-in-kind-work",
+      heading_level: 2,
+      data_action: "click->common-questions#view",
+      data_section_identifier: "unpaid_or_in_kind_work",
+      data_page: "employment_information",
+      items_as_list: true
+    ) do |accordion| %>
+  <% accordion.with_title { t("activities.employment_info.unpaid_or_in_kind.accordion.title") } %>
+  <% accordion.with_accordion_item { t("activities.employment_info.unpaid_or_in_kind.accordion.item_1") } %>
+  <% accordion.with_accordion_item { t("activities.employment_info.unpaid_or_in_kind.accordion.item_2") } %>
+  <% accordion.with_accordion_item { t("activities.employment_info.unpaid_or_in_kind.accordion.item_3") } %>
+  <% accordion.with_accordion_item { t("activities.employment_info.unpaid_or_in_kind.accordion.item_4") } %>
+<% end %>
+
+<h2><%= t("activities.employment_info.unpaid_or_in_kind.work_information_title") %></h2>
+<%= f.text_field :employer_name,
+      label: t("activities.employment_info.unpaid_or_in_kind.employer_name"),
+      hint: t("activities.employment_info.employer_name_hint") %>
+<%= render "address_fields", f: f %>
+<hr class="margin-y-5 border-base border-top-0">
+<h2><%= t("activities.employment_info.unpaid_or_in_kind.contact_information_title") %></h2>
+<p><%= t("activities.employment_info.unpaid_or_in_kind.contact_information_description") %></p>
+<%= f.text_field :contact_name, label: t("activities.employment_info.unpaid_or_in_kind.contact_name") %>
+<%= f.email_field :contact_email, label: t("activities.employment_info.unpaid_or_in_kind.contact_email") %>
+<%= f.phone_field :contact_phone_number, label: t("activities.employment_info.unpaid_or_in_kind.contact_phone_number") %>

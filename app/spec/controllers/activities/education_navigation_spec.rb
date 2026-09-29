@@ -11,7 +11,8 @@ RSpec.describe Activities::EducationController, type: :controller do
       volunteering_activities_count: 0,
       job_training_activities_count: 0,
       education_activities_count: 0,
-      reporting_window_months: 2)
+      reporting_window_months: 2,
+      with_identity: true)
   end
   let(:education_activity) do
     create(:education_activity,
@@ -28,9 +29,36 @@ RSpec.describe Activities::EducationController, type: :controller do
   # ── Creation flow ──
 
   describe "creation flow" do
-    it "school info has no back button" do
+    it "verify back goes to add your education" do
+      get :verify
+      expected = activities_flow_education_add_your_education_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
+    end
+
+    it "school info back goes to add your education" do
       get :new
-      expect(Capybara.string(response.body)).not_to have_link("Back")
+      expected = activities_flow_education_add_your_education_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
+    end
+
+    it "school info edit back goes to add your education" do
+      get :edit, params: { id: education_activity.id }
+      expected = activities_flow_education_add_your_education_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
+    end
+
+    it "school info back still shows when create fails validation" do
+      post :create, params: { education_activity: { school_name: "" } }
+      expect(response).to have_http_status(:unprocessable_content)
+      expected = activities_flow_education_add_your_education_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
+    end
+
+    it "school info edit back still shows when update fails validation" do
+      patch :update, params: { id: education_activity.id, education_activity: { school_name: "" } }
+      expect(response).to have_http_status(:unprocessable_content)
+      expected = activities_flow_education_add_your_education_path
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
     end
 
     it "review back goes to document uploads" do
@@ -60,11 +88,6 @@ RSpec.describe Activities::EducationController, type: :controller do
   # ── Edit from hub ──
 
   describe "edit from hub" do
-    it "school info edit has no back button" do
-      get :edit, params: { id: education_activity.id }
-      expect(Capybara.string(response.body)).not_to have_link("Back")
-    end
-
     it "review has no back button" do
       get :review, params: { id: education_activity.id, from_edit: 1 }
       expect(Capybara.string(response.body)).not_to have_link("Back")
@@ -184,6 +207,33 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       get :new, params: { education_id: education_activity.id }
       expected = edit_activities_flow_education_month_path(
         education_id: education_activity, id: 1)
+      expect(Capybara.string(response.body)).to have_link("Back", href: expected)
+    end
+  end
+end
+
+RSpec.describe Activities::Education::OtherController, type: :controller do
+  include_context "activity_hub"
+
+  render_views
+
+  let(:activity_flow) do
+    create(:activity_flow,
+      volunteering_activities_count: 0,
+      job_training_activities_count: 0,
+      education_activities_count: 0,
+      reporting_window_months: 2)
+  end
+
+  before do
+    session[:flow_id] = activity_flow.id
+    session[:flow_type] = :activity
+  end
+
+  describe "navigation" do
+    it "other back goes to add your education" do
+      get :show
+      expected = activities_flow_education_add_your_education_path
       expect(Capybara.string(response.body)).to have_link("Back", href: expected)
     end
   end

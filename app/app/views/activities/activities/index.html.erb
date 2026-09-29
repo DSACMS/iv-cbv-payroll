@@ -16,13 +16,6 @@
 
 <% content_for :title, t(title_key) %>
 
-<% household_member = @flow.household_member %>
-<% if household_member %>
-  <div class="bg-base-lightest padding-1 font-heading-2xs">
-    <%= t("activities.hub.reporting_for_html", name: tag.strong(household_member.display_name)) %>
-  </div>
-<% end %>
-
 <div class="activity-hub-columns">
   <div class="activity-hub-columns__progress">
     <h1>
@@ -136,7 +129,7 @@
       <%= render "activities/activities/activity_section",
             activity_type: "education",
             section_title: t("activities.education.title"),
-            add_path: verify_activities_flow_education_index_path,
+            add_path: activities_flow_education_add_your_education_path,
             empty_message: t("activities.hub.empty.education"),
             cards: education_card_data do %>
         <% education_card_data.each do |card_data| %>

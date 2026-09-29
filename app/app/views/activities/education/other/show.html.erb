@@ -1,0 +1,46 @@
+<% content_for :title, t(".header") %>
+
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.education.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: activities_flow_education_add_your_education_path,
+    track_event_prefix: "Education"
+  ) %>
+<% end %>
+
+<h1><%= t(".header") %></h1>
+
+<%= render AccordionComponent.new(id: "not-listed-accordion", heading_level: 2) do |accordion| %>
+  <% accordion.with_title { t(".accordion.not_listed.title") } %>
+  <% accordion.with_accordion_item do %>
+    <%= t(".accordion.not_listed.body") %>
+  <% end %>
+  <% accordion.with_accordion_item do %>
+    <%= link_to t(".accordion.not_listed.link"), new_activities_flow_education_path, class: "usa-link" %>
+  <% end %>
+<% end %>
+
+<%= render AccordionComponent.new(id: "job-training-accordion", heading_level: 2) do |accordion| %>
+  <% accordion.with_title { t(".accordion.job_training.title") } %>
+  <% accordion.with_accordion_item do %>
+    <%= t(".accordion.job_training.body") %>
+  <% end %>
+  <% accordion.with_accordion_item do %>
+    <%= link_to t(".accordion.job_training.link"), new_activities_flow_job_training_path, class: "usa-link" %>
+  <% end %>
+<% end %>
+
+<%= render AccordionComponent.new(id: "internship-accordion", heading_level: 2) do |accordion| %>
+  <% accordion.with_title { t(".accordion.internship.title") } %>
+  <% accordion.with_accordion_item do %>
+    <%= t(".accordion.internship.body") %>
+  <% end %>
+  <% accordion.with_accordion_item do %>
+    <%= link_to t(".accordion.internship.link"), activities_flow_income_add_your_work_path, class: "usa-link" %>
+  <% end %>
+<% end %>
+
+<div class="margin-top-4">
+  <%= link_to t(".exit_to_home"), activities_flow_root_path, class: "usa-link" %>
+</div>

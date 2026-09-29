@@ -1,6 +1,26 @@
 require 'rails_helper'
 
 RSpec.describe Api::UserEventsController, type: :controller do
+  describe "POST #user_action with an activity flow" do
+    it "tracks unpaid work help text" do
+      flow = create(:activity_flow, activity_flow_invitation: create(:activity_flow_invitation))
+      session[:flow_id] = flow.id
+      session[:flow_type] = :activity
+
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::ApplicantViewedHelpText,
+        anything,
+        hash_including(cbv_flow_id: flow.id, invitation_id: flow.invitation_id,
+          page: "employment_information", section: "unpaid_or_in_kind_work")
+      )
+      post :user_action, params: { events: {
+        event_name: TrackEvent::ApplicantViewedHelpText,
+        attributes: { page: "employment_information", section: "unpaid_or_in_kind_work" }
+      } }
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "POST #user_action" do
     let(:cbv_flow) { create :cbv_flow }
     let(:valid_params) do

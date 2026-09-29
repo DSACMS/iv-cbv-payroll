@@ -27,7 +27,7 @@ RSpec.describe Cbv::SummariesController do
   before do
     allow(MixpanelEventTracker).to receive(:new).and_return(mixpanel_event_stub)
     allow(mixpanel_event_stub).to receive(:track)
-    allow(mock_client_agency).to receive(:transmission_method_configuration).and_return({
+    allow(mock_client_agency).to receive(:income_transmission_method_configuration).and_return({
       "bucket"            => "test-bucket",
       "region"            => "us-west-2",
       "access_key_id"     => "SOME_ACCESS_KEY",

@@ -51,7 +51,6 @@ RSpec.describe DocumentUploadsComponent, type: :component do
       documents: [ { filename: "verification.pdf" } ],
       pdf: true
     )
-    allow(component).to receive(:pdf_icon_path).and_return("data:image/svg+xml;base64,icon")
 
     result = render_inline(component)
 

@@ -1,9 +1,11 @@
-class Transmitters::SftpTransmitter < Transmitters::BasePdfTransmitter
+class Transmitters::SftpTransmitter
+  include IncomeTransmitter
+
   TRANSMISSION_METHOD = "sftp"
   DEFAULT_PDF_FILENAME_FORMAT = "CBVPilot_%{consent_date}_Conf%{confirmation_code}"
 
   def deliver
-    config = current_agency.transmission_method_configuration.with_indifferent_access
+    config = transmission_configuration.with_indifferent_access
     sftp_gateway = SftpGateway.new(config)
     filename = pdf_filename(cbv_flow)
     sftp_gateway.upload_data(StringIO.new(pdf_output.content), "#{config["sftp_directory"]}/#{filename}.pdf")
@@ -16,7 +18,7 @@ class Transmitters::SftpTransmitter < Transmitters::BasePdfTransmitter
   end
 
   def pdf_filename_format
-    current_agency.transmission_method_configuration.with_indifferent_access[:pdf_filename_format].presence ||
+    transmission_configuration.with_indifferent_access[:pdf_filename_format].presence ||
       DEFAULT_PDF_FILENAME_FORMAT
   end
 end

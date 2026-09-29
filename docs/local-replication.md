@@ -87,6 +87,7 @@ essentials for a working local app are the payroll-provider sandbox keys:
 | `ARGYLE_API_TOKEN_SANDBOX_ID` | Argyle Console |
 | `ARGYLE_API_TOKEN_SANDBOX_SECRET` | Argyle Console |
 | `ARGYLE_SANDBOX_WEBHOOK_SECRET` | Generate one: `openssl rand -hex 64` |
+| `NSC_DISABLED` | (Optional) Defaults to `true` (self-attestation only). Set to `false` to enable the data-backed NSC education flow. |
 
 Some values (`NEWRELIC_KEY`, `MIXPANEL_TOKEN`, `SLACK_TEST_EMAIL`, and others)
 should be obtained from a teammate — they're kept in Nava's 1Password under
@@ -160,6 +161,12 @@ Then point the Emmy App at the receiver (running on port 4567) by adding the
 `.env.local`. To transmit activity supporting documents, also set
 `SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=http` and
 `SANDBOX_ACTIVITY_DOCUMENTS_API_URL=http://localhost:4567/documents`.
+
+To transmit the community engagement activity report (see
+[`docs/api/ce-activity-report.md`](/docs/api/ce-activity-report.md)) instead, set
+`SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=json` and
+`SANDBOX_ACTIVITY_JSON_API_URL=http://localhost:4567/activities`. The receiver
+writes the report to `app/tmp/transmitted_activity_report.json`.
 
 ## Running tests
 

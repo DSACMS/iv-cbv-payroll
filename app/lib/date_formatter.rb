@@ -14,13 +14,10 @@ class DateFormatter
 
   def self.datify(value)
     return value if value.is_a?(Date)
+    return unless value.is_a?(String) && value.present?
 
-    if value.is_a?(String) && value.present?
-      begin
-        Date.strptime(value, "%m/%d/%Y")
-      rescue ArgumentError
-        nil
-      end
-    end
+    Date.strptime(value, "%m/%d/%Y")
+  rescue ArgumentError
+    Date.iso8601(value) rescue nil
   end
 end

@@ -10,7 +10,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
   let(:income_flow_transmission_method) {
     raise "define this income flow transmission method in your spec"
   }
-  let(:transmission_method_configuration) {
+  let(:income_transmission_method_configuration) {
     {}
   }
   let(:mocked_client_id) {
@@ -51,7 +51,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       id: mocked_client_agency_id,
       logo_path: mocked_client_logo_path,
       income_flow_transmission_method: income_flow_transmission_method,
-      transmission_method_configuration: transmission_method_configuration
+      income_transmission_method_configuration: income_transmission_method_configuration
     )
 
     allow_any_instance_of(described_class)
@@ -112,7 +112,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
     context "when the applicant has been redacted" do
       let(:income_flow_transmission_method) { "shared_email" }
-      let(:transmission_method_configuration) { { "email" => "caseworker@example.com" } }
+      let(:income_transmission_method_configuration) { { "email" => "caseworker@example.com" } }
 
       before do
         cbv_flow.cbv_applicant.redact!
@@ -133,7 +133,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
     context "when income flow transmission method is shared_email" do
       let(:income_flow_transmission_method) { "shared_email" }
-      let(:transmission_method_configuration) { {
+      let(:income_transmission_method_configuration) { {
         "email" => 'test@example.com'
       } }
 
@@ -182,7 +182,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       let(:sftp_double) { instance_double(SftpGateway) }
       let(:income_flow_transmission_method) { "sftp" }
       let(:mocked_client_id) { "sandbox" }
-      let(:transmission_method_configuration) { {
+      let(:income_transmission_method_configuration) { {
         "user" => "user",
         "password" => "password",
         "url" => "sftp.com",
@@ -219,7 +219,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
       let(:s3_service_double) { instance_double(S3Service) }
       let(:income_flow_transmission_method) { "encrypted_s3" }
       let(:mocked_client_id) { "sandbox" }
-      let(:transmission_method_configuration) { {
+      let(:income_transmission_method_configuration) { {
         "bucket" => "test-bucket",
         "public_key" => @public_key
       } }
@@ -272,7 +272,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
     context "when income flow transmission method is json" do
       let(:income_flow_transmission_method) { "json" }
       let(:agency_api_url) { "http://fake-state.api.gov/api/v1/income-report" }
-      let(:transmission_method_configuration) { { "url" => agency_api_url } }
+      let(:income_transmission_method_configuration) { { "url" => agency_api_url } }
 
       before do
         expect_any_instance_of(Transmitters::JsonTransmitter).to receive(:deliver).and_return("ok")
@@ -287,7 +287,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
     context "when income flow transmission method is #{Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD}" do
       let(:income_flow_transmission_method) { Transmitters::HttpPdfTransmitter::TRANSMISSION_METHOD }
-      let(:transmission_method_configuration) do
+      let(:income_transmission_method_configuration) do
         {
           "url" => "http://fake-state.api.gov/api/v1/income-report-pdf"
         }
@@ -306,7 +306,7 @@ RSpec.describe CaseWorkerTransmitterJob, type: :job do
 
     context "when income flow transmission method is json_and_pdf" do
       let(:income_flow_transmission_method) { Transmitters::JsonAndPdfTransmitter::TRANSMISSION_METHOD }
-      let(:transmission_method_configuration) do
+      let(:income_transmission_method_configuration) do
         {
           "url" => "http://fake-state.api.gov/api/v1/income-report-pdf"
         }

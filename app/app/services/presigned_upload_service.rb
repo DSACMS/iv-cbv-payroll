@@ -2,8 +2,6 @@ require "aws-sdk-s3"
 
 class PresignedUploadService
   SERVICE_NAME = ENV["UNSCANNED_BUCKET_NAME"].present? ? :unscanned : :unscanned_local
-  MAX_UPLOAD_BYTES = 25.megabytes
-  ALLOWED_CONTENT_TYPE = %r{\A(?:image/[a-z0-9.+-]+|application/pdf)\z}
   CHECKSUM_FORMAT = %r{\A[A-Za-z0-9+/]{43}=\z}
   POLICY_TTL = 15.minutes
 
@@ -18,7 +16,8 @@ class PresignedUploadService
 
   include Rails.application.routes.url_helpers
 
-  def initialize(service: ActiveStorage::Blob.services.fetch(SERVICE_NAME), authenticity_token: nil)
+  def initialize(client_agency:, service: ActiveStorage::Blob.services.fetch(SERVICE_NAME), authenticity_token: nil)
+    @client_agency = client_agency
     @service = service
     @authenticity_token = authenticity_token
   end
@@ -31,7 +30,7 @@ class PresignedUploadService
 
   private
 
-  attr_reader :service, :authenticity_token
+  attr_reader :client_agency, :service, :authenticity_token
 
   def normalize(file)
     {
@@ -66,8 +65,8 @@ class PresignedUploadService
   end
 
   def validate!(file)
-    raise UnacceptableUpload, :unsupported_type unless ALLOWED_CONTENT_TYPE.match?(file[:content_type])
-    raise UnacceptableUpload, :too_large if file[:byte_size] > MAX_UPLOAD_BYTES
+    raise UnacceptableUpload, :unsupported_type unless client_agency.allowed_document_content_types.include?(file[:content_type])
+    raise UnacceptableUpload, :too_large if file[:byte_size] > client_agency.max_document_upload_size_bytes
     raise UnacceptableUpload, :empty unless file[:byte_size].positive?
     raise UnacceptableUpload, :upload_failed unless CHECKSUM_FORMAT.match?(file[:checksum])
   end

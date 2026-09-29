@@ -107,6 +107,35 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       )
       expect(Capybara.string(response.body)).to have_link("Back", href: expected)
     end
+
+    context "with a tokenized flow" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_months: 3
+        )
+      end
+
+      it "goes back to the last selected month" do
+        first_month, _second_month, third_month = activity_flow.reporting_months
+        employment_activity.update!(selected_months: [ first_month, third_month ])
+
+        get :new, params: { employment_id: employment_activity.id }
+
+        expected = edit_activities_flow_income_employment_month_path(
+          employment_id: employment_activity,
+          id: 1
+        )
+        expect(Capybara.string(response.body)).to have_link(
+          I18n.t("activities.activity_header_component.back"),
+          href: expected
+        )
+      end
+    end
   end
 end
 
@@ -143,6 +172,72 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       expected = edit_activities_flow_income_employment_month_path(
         employment_id: employment_activity, id: 0)
       expect(Capybara.string(response.body)).to have_link("Back", href: expected)
+    end
+
+    context "with a tokenized flow" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_months: 3
+        )
+      end
+
+      before do
+        first_month, _second_month, third_month = activity_flow.reporting_months
+        employment_activity.update!(selected_months: [ first_month, third_month ])
+      end
+
+      it "first selected month back goes to month selection" do
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        expected = edit_activities_flow_income_employment_month_selection_path(
+          employment_id: employment_activity
+        )
+        expect(Capybara.string(response.body)).to have_link(
+          I18n.t("activities.activity_header_component.back"),
+          href: expected
+        )
+      end
+
+      it "later selected month back goes to the previous selected month" do
+        get :edit, params: { employment_id: employment_activity.id, id: 1 }
+
+        expected = edit_activities_flow_income_employment_month_path(
+          employment_id: employment_activity,
+          id: 0
+        )
+        expect(Capybara.string(response.body)).to have_link(
+          I18n.t("activities.activity_header_component.back"),
+          href: expected
+        )
+      end
+    end
+
+    context "with a one-month tokenized application" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0,
+          reporting_window_type: "application",
+          reporting_window_months: 1
+        )
+      end
+
+      it "first month back goes to employer information" do
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        expect(Capybara.string(response.body)).to have_link(
+          I18n.t("activities.activity_header_component.back"),
+          href: edit_activities_flow_income_employment_path(id: employment_activity)
+        )
+      end
     end
   end
 

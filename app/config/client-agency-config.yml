@@ -11,7 +11,7 @@
   argyle:
     environment: <%= ENV["LA_LDH_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: <%= ENV.fetch("LA_LDH_TRANSMISSION_METHOD", "json") %>
-  transmission_method_configuration:
+  income_transmission_method_configuration:
     json_api_url: <%= ENV["LA_LDH_INCOME_REPORT_URL"] %>
     pdf_api_url: <%= ENV["LA_LDH_PDF_API_URL"] %>
     silently_retry_error_codes:
@@ -34,19 +34,50 @@
   pay_income_days:
     w2: 90
     gig: 90
-  invitation_valid_days: 14
+  allowed_document_types:
+    - pdf
+    - png
+    - jpeg
+    - bmp
+    - tiff
+  max_document_upload_size_mb: 40
+  invitation_valid_days: 75
   weekly_report:
     recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
     report_variant: flows
   applicant_attributes:
-    case_number:
-      required: false
-      redaction_type: string
-    date_of_birth:
-      required: true
-      redaction_type: date
-    doc_id:
-      required: false
+    v1: &la_ldh_applicant_attributes_v1
+      case_number:
+        required: false
+        redaction_type: string
+      date_of_birth:
+        required: true
+        redaction_type: date
+      doc_id:
+        required: false
+    v2:
+      <<: *la_ldh_applicant_attributes_v1
+      individual_id:
+        required: false
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+        required:
+          - individual_id
+          - first_name
+          - last_name
+      income:
+        metadata:
+          - case_number
+          - date_of_birth
+          - doc_id
+          - individual_id
+        required:
+          - date_of_birth
 
 - id: nh_dhhs
   agency_name: Department of Health and Human Services
@@ -60,7 +91,7 @@
   argyle:
     environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: sftp
-  transmission_method_configuration:
+  income_transmission_method_configuration:
     user: <%= ENV['NH_DHHS_SFTP_USER'] %>
     private_key: <%= ENV['NH_DHHS_SFTP_PRIVATE_KEY'].inspect %>
     url: <%= ENV['NH_DHHS_SFTP_URL'] %>
@@ -78,29 +109,62 @@
   pay_income_days:
     w2: 90
     gig: 90
+  allowed_document_types:
+    - pdf
+    - png
+    - jpeg
+    - bmp
+    - tiff
+  max_document_upload_size_mb: 40
   application_reporting_months: 2
   invitation_valid_days: 30
   weekly_report:
     recipient: ffs-eng@navapbc.com
   applicant_attributes:
-    first_name:
-      required: true
-      redaction_type: string
-    middle_name:
-      redaction_type: string
-    last_name:
-      required: true
-      redaction_type: string
-    case_number:
-      required: true
-    date_of_birth:
-      required: true
-      redaction_type: date
+    v1: &nh_dhhs_applicant_attributes_v1
+      first_name:
+        required: true
+        redaction_type: string
+      middle_name:
+        redaction_type: string
+      last_name:
+        required: true
+        redaction_type: string
+      case_number:
+        required: true
+      date_of_birth:
+        required: true
+        redaction_type: date
+    v2:
+      <<: *nh_dhhs_applicant_attributes_v1
   activity_types:
     education: true
     community_service: true
     work_programs: true
     employment: true
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+        required:
+          - individual_id
+          - first_name
+          - last_name
+      income:
+        metadata:
+          - first_name
+          - middle_name
+          - last_name
+          - case_number
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - case_number
+          - date_of_birth
 
 - id: sandbox
   agency_name: Test Agency
@@ -114,11 +178,13 @@
     environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: shared_email
   activity_flow_transmission_method: <%= ENV.fetch("SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD", "encrypted_s3") %>
-  transmission_method_configuration:
+  income_transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
+  activity_transmission_method_configuration:
     bucket: <%= ENV["OUTBOUND_TRANSMISSION_S3_BUCKET_NAME"] %>
     s3_directory: <%= ENV.fetch("OUTBOUND_TRANSMISSION_S3_DIRECTORY", "outfiles") %>
     documents_api_url: <%= ENV["SANDBOX_ACTIVITY_DOCUMENTS_API_URL"] %>
+    json_api_url: <%= ENV["SANDBOX_ACTIVITY_JSON_API_URL"] %>
   staff_portal_enabled: true
   pilot_ended: false
   sso:
@@ -130,34 +196,66 @@
   pay_income_days:
     w2: 90
     gig: 90
+  allowed_document_types:
+    - pdf
+    - png
+    - jpeg
+    - bmp
+    - tiff
+  max_document_upload_size_mb: 40
   application_reporting_months: 2
   invitation_valid_days: 14
   weekly_report:
     recipient: ffs-eng@navapbc.com
   applicant_attributes:
-    first_name:
-      required: true
-      redaction_type: string
-    middle_name:
-      redaction_type: string
-    last_name:
-      required: true
-      redaction_type: string
-    case_number:
-      required: true
-    date_of_birth:
-      required: true
-      redaction_type: date
+    v1: &sandbox_applicant_attributes_v1
+      first_name:
+        required: true
+        redaction_type: string
+      middle_name:
+        redaction_type: string
+      last_name:
+        required: true
+        redaction_type: string
+      case_number:
+        required: true
+      date_of_birth:
+        required: true
+        redaction_type: date
+    v2:
+      <<: *sandbox_applicant_attributes_v1
   activity_types:
     education: true
     community_service: true
     work_programs: true
     employment: true
-  prefilled_activities_enabled: true
   allowed_iframe_ancestors:
     - https://dsacms.github.io
     - https://statehub.hawaii.gov
     - https://*.statehub.hawaii.gov
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+        required:
+          - individual_id
+          - first_name
+          - last_name
+      income:
+        metadata:
+          - first_name
+          - middle_name
+          - last_name
+          - case_number
+          - date_of_birth
+        required:
+          - first_name
+          - last_name
+          - case_number
+          - date_of_birth
 # Uncomment for local testing:
 #    - http://localhost:8000
 #    - https://*.ngrok-free.app
@@ -173,7 +271,7 @@
   argyle:
     environment: <%= ENV["RESEARCH_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: shared_email
-  transmission_method_configuration:
+  income_transmission_method_configuration:
     email: <%= ENV['SLACK_TEST_EMAIL'] %>
   staff_portal_enabled: true
   pilot_ended: false
@@ -186,21 +284,49 @@
   pay_income_days:
     w2: 90
     gig: 90
+  allowed_document_types:
+    - pdf
+    - png
+    - jpeg
+    - bmp
+    - tiff
+  max_document_upload_size_mb: 40
   application_reporting_months: 2
   invitation_valid_days: 14
   weekly_report:
     recipient: ffs-eng@navapbc.com
   applicant_attributes:
-    case_number:
-      required: true
-    date_of_birth:
-      required: true
-      redaction_type: date
+    v1: &research_applicant_attributes_v1
+      case_number:
+        required: true
+      date_of_birth:
+        required: true
+        redaction_type: date
+    v2:
+      <<: *research_applicant_attributes_v1
   activity_types:
     education: true
     community_service: true
     work_programs: true
     employment: true
+  api:
+    v2:
+      community_engagement:
+        mmetadata:
+          - individual_id
+          - first_name
+          - last_name
+        required:
+          - individual_id
+          - first_name
+          - last_name
+      income:
+        metadata:
+          - case_number
+          - date_of_birth
+        required:
+          - case_number
+          - date_of_birth
 
 - id: accenture
   agency_name: Accenture
@@ -212,19 +338,45 @@
   argyle:
     environment: <%= ENV["SANDBOX_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: json
-  transmission_method_configuration:
+  income_transmission_method_configuration:
     json_api_url: <%= ENV["ACCENTURE_INCOME_REPORT_URL"] %>
+  allowed_document_types:
+    - pdf
+    - png
+    - jpeg
+    - bmp
+    - tiff
+  max_document_upload_size_mb: 40
   application_reporting_months: 2
   invitation_valid_days: 14
   applicant_attributes:
-    case_number:
-      required: true
-      redaction_type: string
+    v1: &accenture_applicant_attributes_v1
+      case_number:
+        required: true
+        redaction_type: string
+    v2:
+      <<: *accenture_applicant_attributes_v1
   activity_types:
     education: true
     community_service: true
     work_programs: true
     employment: true
+  api:
+    v2:
+      community_engagement:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+        required:
+          - individual_id
+          - first_name
+          - last_name
+      income:
+        metadata:
+          - case_number
+        required:
+          - case_number
   allowed_iframe_ancestors:
     - https://ac1752691868225.lightning.force.com
     - https://ac1752691868225.my.salesforce-sites.com

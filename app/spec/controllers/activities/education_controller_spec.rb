@@ -29,6 +29,16 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response.body).to have_content(activity_flow.identity.last_name)
       expect(response.body).to have_content(activity_flow.identity.date_of_birth.strftime("%B %-d, %Y"))
     end
+
+    context "when NSC is disabled" do
+      it "redirects to the self-attestation new path" do
+        stub_environment_variable("NSC_DISABLED", "true") do
+          get :verify
+
+          expect(response).to redirect_to(new_activities_flow_education_path)
+        end
+      end
+    end
   end
 
   describe "POST #create" do
@@ -61,6 +71,27 @@ RSpec.describe Activities::EducationController, type: :controller do
 
       expect(EducationActivity.last.data_source).to eq("validated")
       expect(response).to redirect_to(activities_flow_education_path(id: EducationActivity.last.id))
+    end
+
+    context "when NSC is disabled" do
+      it "redirects to the self-attestation new path and does not create an activity" do
+        stub_environment_variable("NSC_DISABLED", "true") do
+          expect { post :create }.not_to change(EducationActivity, :count)
+          expect(response).to redirect_to(new_activities_flow_education_path)
+        end
+      end
+
+      it "allows creating a self-attested EducationActivity" do
+        stub_environment_variable("NSC_DISABLED", "true") do
+          expect {
+            post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
+          }.to change(EducationActivity, :count).by(1)
+
+          activity = EducationActivity.last
+          expect(activity.data_source).to eq("fully_self_attested")
+          expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: activity.id, id: 0))
+        end
+      end
     end
 
     it "creates the validated activity as a draft" do
@@ -97,6 +128,16 @@ RSpec.describe Activities::EducationController, type: :controller do
 
   describe "GET #show" do
     let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
+
+    context "when NSC is disabled" do
+      it "redirects to the self-attestation new path" do
+        stub_environment_variable("NSC_DISABLED", "true") do
+          get :show, params: { id: education_activity.id }
+
+          expect(response).to redirect_to(new_activities_flow_education_path)
+        end
+      end
+    end
 
     it "renders the synchronization page" do
       get :show, params: { id: education_activity.id }
@@ -211,6 +252,16 @@ RSpec.describe Activities::EducationController, type: :controller do
   describe "PATCH #sync" do
     let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
 
+    context "when NSC is disabled" do
+      it "redirects to the self-attestation new path" do
+        stub_environment_variable("NSC_DISABLED", "true") do
+          patch :sync, params: { education_id: education_activity.id }
+
+          expect(response).to redirect_to(new_activities_flow_education_path)
+        end
+      end
+    end
+
     context "when the EducationActivity is validated and succeeded" do
       before do
         education_activity.update(status: :succeeded, draft: true)
@@ -248,6 +299,16 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response.body).to have_content(I18n.t("activities.education.error.enter_manually_button"))
       expect(response.body).to have_content(I18n.t("activities.education.error.retry_button"))
       expect(response.body).to have_link(I18n.t("activities.education.error.enter_manually_button"), href: new_activities_flow_education_path)
+    end
+
+    context "when NSC is disabled" do
+      it "redirects to the self-attestation new path" do
+        stub_environment_variable("NSC_DISABLED", "true") do
+          get :error
+
+          expect(response).to redirect_to(new_activities_flow_education_path)
+        end
+      end
     end
   end
 

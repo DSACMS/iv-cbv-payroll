@@ -1,5 +1,6 @@
 class Activities::Employment::MonthsController < Activities::BaseController
   before_action :set_employment_activity
+  before_action :ensure_months_selected, only: %i[edit update]
 
   include MonthlyHoursInput
 
@@ -29,12 +30,23 @@ class Activities::Employment::MonthsController < Activities::BaseController
       month_index: @month_index,
       month: I18n.l(@current_month, format: :month_year)
     }
-    attributes[:error_fields] = @activity_month.errors.attribute_names.map(&:to_s) if @error
+    if @error
+      attributes[:error_fields] = @employment_activity.unpaid_or_in_kind? ? %w[hours] : %w[gross_income hours]
+    end
     track_event(event, attributes)
   end
 
   def set_employment_activity
     @employment_activity = @flow.employment_activities.find(params[:employment_id])
+  end
+
+  def ensure_months_selected
+    return if @employment_activity.months_to_report.any?
+
+    redirect_to edit_activities_flow_income_employment_month_selection_path(
+      employment_id: @employment_activity,
+      from_edit: params[:from_edit].presence
+    )
   end
 
   def set_hours_input_vars
@@ -43,14 +55,16 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def assign_hours_submission_values
-    if params[:no_hours] == "1"
-      @activity_month.hours = 0
+    month_params = hours_submission_params
+    if @employment_activity.unpaid_or_in_kind?
+      @activity_month.hours = month_params[:hours].presence
       @activity_month.gross_income = 0
-    else
-      month_params = hours_submission_params
-      @activity_month.hours = month_params[:hours].presence || 0
-      @activity_month.gross_income = month_params[:gross_income].presence || 0
+      return
     end
+
+    default_value = month_params.values.all?(&:blank?) ? nil : 0
+    @activity_month.hours = month_params[:hours].presence || default_value
+    @activity_month.gross_income = month_params[:gross_income].presence || default_value
   end
 
   def hours_submission_params
@@ -58,12 +72,17 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def add_hours_submission_errors
-    @activity_month.errors.add(:gross_income, I18n.t("#{hours_input_t_scope}.field_error_income"))
-    @activity_month.errors.add(:hours, I18n.t("#{hours_input_t_scope}.field_error_hours"))
+    if @employment_activity.unpaid_or_in_kind?
+      @activity_month.errors.add(:hours, I18n.t("#{hours_input_t_scope}.unpaid_or_in_kind.field_error"))
+    end
   end
 
   def hours_input_activity
     @employment_activity
+  end
+
+  def hours_input_months
+    @employment_activity.months_to_report
   end
 
   def activity_month_param_key
@@ -92,6 +111,11 @@ class Activities::Employment::MonthsController < Activities::BaseController
                   )
                 elsif @month_index > 0
                   hours_input_path(@month_index - 1, from_edit: params[:from_edit].presence)
+                elsif @employment_activity.requires_month_selection?
+                  edit_activities_flow_income_employment_month_selection_path(
+                    employment_id: @employment_activity,
+                    from_edit: params[:from_edit].presence
+                  )
                 else
                   edit_activities_flow_income_employment_path(id: @employment_activity)
                 end
@@ -112,16 +136,12 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def valid_hours_submission?
+    if @employment_activity.unpaid_or_in_kind?
+      return (@activity_month.hours || 0).positive?
+    end
+
     income = @activity_month.gross_income || 0
     hours = @activity_month.hours || 0
-
-    if @months.length == 1
-      income > 0 || hours > 0
-    elsif params[:from_review].present? || @month_index == @months.length - 1
-      other = hours_input_activity.activity_months.where.not(id: @activity_month.id)
-      other.sum(:gross_income) + income > 0 || other.sum(:hours) + hours > 0
-    else
-      true
-    end
+    income >= 0 && hours >= 0 && (income.positive? || hours.positive?)
   end
 end

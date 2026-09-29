@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_31_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_25_134850) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -66,9 +66,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_120000) do
     t.bigint "cbv_applicant_id"
     t.string "client_agency_id"
     t.datetime "created_at", null: false
-    t.jsonb "pre_populated_activities", default: [], null: false
     t.string "reference_id"
     t.datetime "updated_at", null: false
+    t.string "verification_range"
     t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
     t.index ["cbv_applicant_id"], name: "index_activity_flow_invitations_on_cbv_applicant_id"
   end
@@ -101,6 +101,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_120000) do
     t.datetime "created_at", null: false
     t.string "device_id"
     t.datetime "documents_deleted_at"
+    t.boolean "employment_focused", default: false, null: false
     t.uuid "end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.bigint "identity_id"
     t.integer "renewal_required_months"
@@ -132,6 +133,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_120000) do
     t.string "doc_id"
     t.string "first_name"
     t.jsonb "income_changes"
+    t.string "individual_id"
     t.string "last_name"
     t.string "middle_name"
     t.datetime "redacted_at"
@@ -211,6 +213,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_120000) do
     t.bigint "activity_flow_id", null: false
     t.text "additional_comments"
     t.string "city"
+    t.string "compensation_type", default: "paid", null: false
     t.string "contact_email"
     t.string "contact_name"
     t.string "contact_phone_number"
@@ -220,6 +223,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_120000) do
     t.string "employer_name"
     t.boolean "is_self_employed", default: false
     t.boolean "pre_populated", default: false, null: false
+    t.date "selected_months", default: [], null: false, array: true
     t.string "state"
     t.string "street_address"
     t.string "street_address_line_2"

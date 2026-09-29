@@ -12,6 +12,15 @@ RSpec.describe Uswds::Alert, type: :component do
     expect(result).to have_text('Alert message')
   end
 
+  it "renders an accessible alert" do
+    result = render_inline(described_class.new(type: :error)) do
+      "Your session has expired"
+    end
+
+    expect(result).to have_css(".usa-alert[role='alert'][aria-atomic='true']")
+    expect(result).to have_text("Your session has expired")
+  end
+
   context 'with type option' do
     let(:result) { render_inline(described_class.new(type: :warning)) { 'Warning message' } }
 
@@ -25,7 +34,7 @@ RSpec.describe Uswds::Alert, type: :component do
     let(:result) { render_inline(described_class.new(heading: 'Important Notice')) { 'Alert content' } }
 
     it 'outputs alert with heading' do
-      expect(result).to have_element(:h2, class: 'usa-alert__heading')
+      expect(result).to have_element(:div, class: 'usa-alert__heading')
       expect(result).to have_text('Important Notice')
       expect(result).to have_text('Alert content')
     end

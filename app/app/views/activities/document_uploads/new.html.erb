@@ -1,4 +1,7 @@
 <% title = t(@activity.document_upload_title_i18n_key, name: @activity.document_upload_object_title) %>
+<% upload_max_file_size = current_agency.max_document_upload_size_bytes %>
+<% upload_allowed_content_types = current_agency.allowed_document_content_types.join(",") %>
+<% upload_allowed_types_sentence = document_upload_allowed_types_sentence(current_agency) %>
 <% content_for :title, title %>
 <%# i18n-tasks-use t('activities.document_uploads.new.title', name: 'name') %>
 <%# i18n-tasks-use t('activities.document_uploads.new.title_generic') %>
@@ -46,14 +49,16 @@
 <%= form_with(builder: UswdsFormBuilder, scope: :activity, model: @activity, url: upload_path, method: :post, data: {
       controller: "document-upload",
       document_upload_presign_url_value: activities_flow_presigned_uploads_path,
-      document_upload_max_file_size_value: PresignedUploadService::MAX_UPLOAD_BYTES,
-      document_upload_allowed_types_value: "image/*,application/pdf",
+      document_upload_max_file_size_value: upload_max_file_size,
+      document_upload_allowed_types_value: upload_allowed_content_types,
       document_upload_heading_template_value: t("activities.document_uploads.heading", document_count: "%{count}"),
       document_upload_remove_label_value: t("activities.document_uploads.remove_file"),
       document_upload_icon_href_value: uswds_sprite_icon_href("file_present"),
-      document_upload_error_too_large_value: t(".errors.too_large", limit: number_to_human_size(PresignedUploadService::MAX_UPLOAD_BYTES)),
-      document_upload_error_unsupported_type_value: t(".errors.unsupported_type"),
-      document_upload_error_upload_failed_value: t(".errors.upload_failed")
+      document_upload_error_empty_value: t(".errors.empty"),
+      document_upload_error_too_large_value: t(".errors.too_large", limit: number_to_human_size(upload_max_file_size)),
+      document_upload_error_unsupported_type_value: t(".errors.unsupported_type", types: upload_allowed_types_sentence),
+      document_upload_error_upload_failed_value: t(".errors.upload_failed"),
+      document_upload_error_multiple_files_value: t(".errors.multiple_files")
     }) do |f| %>
   <% if @activity.document_uploads.any? %>
     <% @activity.document_uploads.each do |attachment| %>
@@ -73,12 +78,12 @@
       multiple: true,
       label: t(".input_label"),
       label_class: "font-heading-lg text-bold",
-      hint: t(".input_hint"),
-      accept: "image/*,.pdf",
+      hint: t(".input_hint", types: upload_allowed_types_sentence),
+      accept: upload_allowed_content_types,
       data: {
         document_upload_target: "input",
         action: "change->document-upload#select",
-        errormessage: t(".errors.unsupported_type")
+        errormessage: t(".errors.unsupported_type", types: upload_allowed_types_sentence)
       } %>
 
   <div class="usa-error-message" hidden data-document-upload-target="error" role="alert"></div>

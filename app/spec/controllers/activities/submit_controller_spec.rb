@@ -146,7 +146,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
         get :show, format: :pdf, params: { is_caseworker: "true" }
 
         expect(extract_pdf_text(response)).to include(
-          "#{test_confirmation_code}_employment_shift_log_1.pdf"
+          "#{test_confirmation_code}_employment_shift_log.pdf"
         )
       end
 

@@ -2,7 +2,7 @@
 #
 # This API receiver logs JSON POST requests on port 4567 and verifies HMAC-sha512 signatures.
 #
-# To run the server, see the instructions in README.md ("JSON API Testing").
+# To run the server, see the instructions in CONTRIBUTING.md ("JSON API Testing").
 #
 
 require "sinatra"
@@ -42,10 +42,46 @@ class JsonApiReceiver < Sinatra::Base
     file_path = File.join(directory, filename)
     File.binwrite(file_path, content)
     puts "Document written successfully to #{file_path}"
+    puts "X-IVAAS-Document-Id: #{request.env["HTTP_X_IVAAS_DOCUMENT_ID"]}"
     status 200
   rescue => e
     puts "Error writing document: #{e.message}"
     status 500
+  end
+
+  post "/activities" do
+    content_type :json
+
+    request.body.rewind
+    body = request.body.read
+
+    puts "Received CE activity JSON: #{body}"
+
+    unless valid_signature?(body)
+      puts "❌ Invalid signature"
+      halt 401, { error: "Unauthorized" }.to_json
+    end
+    puts "✅ Verified signature"
+
+    begin
+      report = JSON.parse(body)
+    rescue JSON::ParserError
+      status 400
+      return { error: "Invalid JSON" }.to_json
+    end
+
+    file_path = File.expand_path("../tmp/transmitted_activity_report.json", __dir__)
+    FileUtils.mkdir_p(File.dirname(file_path))
+    File.write(file_path, JSON.pretty_generate(report))
+    puts "CE activity report written successfully to #{file_path}"
+
+    {
+      status: "received",
+      confirmation_code: report["confirmation_code"],
+      received_at: Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
+      schema_version_received: report["schema_version"],
+      unrecognized_fields_detected: false
+    }.to_json
   end
 
   post "/pdf" do
@@ -53,6 +89,7 @@ class JsonApiReceiver < Sinatra::Base
 
     begin
       file_path = File.expand_path("../tmp/transmitted_pdf.pdf", __dir__)
+      FileUtils.mkdir_p(File.dirname(file_path))
       File.open(file_path, "wb") do |file|
         file.write(pdf_content)
       end

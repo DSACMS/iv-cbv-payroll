@@ -16,7 +16,7 @@ docker run -p 2222:22 -d --name sftp_test_server -v $(pwd)/tmp/test-sftp-keys/te
 
 ```yaml
 income_flow_transmission_method: sftp
-transmission_method_configuration:
+income_transmission_method_configuration:
   url: 127.0.0.1
   user: testuser
   private_key: "-----BEGIN OPENSSH PRIVATE KEY-----...\n...\n...\n...\n-----END OPENSSH PRIVATE KEY-----"
@@ -31,7 +31,7 @@ cat tmp/test-sftp-keys/test-sftp | ruby -e "puts STDIN.readlines.map(&:strip).jo
 ### 3. Test uploading a file in the Rails Console
 Open a `bin/rails console` and then within it pretend you are an SftpTransmitter:
 ```ruby
-config = Rails.application.config.client_agencies["sandbox"].transmission_method_configuration.with_indifferent_access
+config = Rails.application.config.client_agencies["sandbox"].income_transmission_method_configuration.with_indifferent_access
 sftp = SftpGateway.new(config)
 sftp.upload_data(StringIO.new("foo"), "test.txt")
 ```
