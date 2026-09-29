@@ -91,7 +91,7 @@ RSpec.describe Api::V2::InvitationMetadata do
       expect(contract.errors).to be_empty
     end
 
-    context "when both indentifiers are missing" do
+    context "when both identifiers are missing" do
       let(:metadata) do
         {
           date_of_birth: "1977-09-13"
