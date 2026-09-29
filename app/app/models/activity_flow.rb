@@ -25,7 +25,6 @@ class ActivityFlow < Flow
 
   def self.create_from_invitation(invitation, device_id, params = {})
     attrs = flow_attributes_from_params(params)
-    attrs[:employment_focused] = invitation.employment_focused if invitation.respond_to?(:employment_focused)
 
     create(
       activity_flow_invitation: invitation,

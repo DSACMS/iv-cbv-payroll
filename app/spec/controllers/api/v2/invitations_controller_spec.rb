@@ -122,6 +122,12 @@ RSpec.describe Api::V2::InvitationsController do
       let(:base_params) do
         attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
           params[:verification_range] = "last_complete_month"
+          params[:agency_partner_metadata] = {
+            individual_id: "ABC1234",
+            first_name: "John",
+            last_name: "Doe",
+            date_of_birth: "1977-09-13"
+          }
           params.delete(:client_agency_id)
         end
       end
@@ -131,6 +137,27 @@ RSpec.describe Api::V2::InvitationsController do
 
         expect(response).to have_http_status(:created)
         expect(ActivityFlowInvitation.last.employment_focused).to be(false)
+      end
+
+      it "does not create an ActivityFlowInvitation with employment_focused: true for invitation_type: community-engagement" do
+        post :create, params: base_params.merge(invitation_type: "community-engagement", employment_focused: "true")
+
+        expect(response).to have_http_status(:created)
+        expect(ActivityFlowInvitation.last.employment_focused).to be(false)
+      end
+
+      it "creates an ActivityFlowInvitation with employment_focused: true for invitation_type: employment" do
+        post :create, params: base_params.merge(invitation_type: "employment")
+
+        expect(response).to have_http_status(:created)
+        expect(ActivityFlowInvitation.last.employment_focused).to be(true)
+      end
+
+      it "does not create an ActivityFlowInvitation with employment_focused: false for invitation_type: employment" do
+        post :create, params: base_params.merge(invitation_type: "employment", employment_focused: "false")
+
+        expect(response).to have_http_status(:created)
+        expect(ActivityFlowInvitation.last.employment_focused).to be(true)
       end
     end
   end
