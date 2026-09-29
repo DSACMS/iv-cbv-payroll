@@ -88,7 +88,7 @@ RSpec.describe Api::V2::InvitationsController do
         )
       end
 
-      %i[individual_id first_name last_name].each do |field|
+      %i[individual_id first_name last_name date_of_birth].each do |field|
         it "returns 422 when #{field} is missing" do
           invalid_params = valid_params.deep_dup
           invalid_params[:agency_partner_metadata].delete(field)
@@ -122,7 +122,7 @@ RSpec.describe Api::V2::InvitationsController do
       let(:base_params) do
         attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
           params[:verification_range] = "last_complete_month"
-          params.delet(:client_agency_id)
+          params.delete(:client_agency_id)
         end
       end
 

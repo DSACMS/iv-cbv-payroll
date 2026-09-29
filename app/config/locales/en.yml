@@ -714,12 +714,12 @@ en:
   api:
     v2:
       fields:
-        individual_id:
-          blank: individual_id is required
         date_of_birth:
           blank: date_of_birth is required
         first_name:
           blank: first_name is required
+        individual_id:
+          blank: individual_id is required
         last_name:
           blank: last_name is required
   applicant_mailer:

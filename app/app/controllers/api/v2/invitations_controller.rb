@@ -22,7 +22,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
     if community_engagement? || employment?
       @activity_flow_invitation = CbvInvitationService.new(event_logger)
         .invite_to_activity_flow(
-          @cbv_flow_invitation, 
+          @cbv_flow_invitation,
           verification_range: params[:verification_range],
           employment_focused: employment?,
           context: :v2
