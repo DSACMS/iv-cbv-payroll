@@ -1,0 +1,457 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Emmy Platform API Documentation",
+    "version": "v1",
+    "description": "Integrate your agency's systems with the Emmy platform. This reference currently\ncovers the Tokenized Link API for creating personalized reporting links.\nV2 invitations and outbound report payloads are separate interfaces and are not\nyet covered here. Examples use synthetic applicant data and nonfunctional tokens.\n\nObject schemas allow additional properties for forward compatibility. Integrations\nshould tolerate unknown response fields so new fields can be added without breaking\nexisting clients. Required fields and documented field types still apply.\n\n<!-- Remove this link-check exception after the first reviewed deployment. -->\n<!-- markdown-link-check-disable-next-line -->\n[Download the official OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json).\nThe JSON and this reference are generated together from executable API tests.\n\n## API environments\n\n| Environment | Base URL | Purpose |\n| :-- | :-- | :-- |\n| Dev | https://verify-demo.navapbc.cloud | Develop and test integrations. |\n| Demo | https://demo.reportmyincome.org | Demonstrate and evaluate the platform. |\n\nUse HTTPS for every request and the API key issued for the selected environment.\nYour production hostname and credentials are provided during agency onboarding.\n\n## API keys and authentication\n\nContact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) to request an agency API key\nfor each environment. The Tokenized Link API uses a 32-character secret API key.\nKeep it on your server, never in browser code or public repositories.\n\nEach key identifies an agency and its configured metadata and invitation settings.\nSending a `client_agency_id` cannot select another agency. Include these headers:\n\n```http\nAuthorization: Bearer API_KEY\nContent-Type: application/json\n```\n\nA missing or invalid key returns `401 Unauthorized` with the plain-text body\n`HTTP Token: Access denied.` and a `WWW-Authenticate` header. If a key is\ncompromised, contact emmy@cms.hhs.gov to have it replaced."
+  },
+  "servers": [
+    {
+      "url": "https://verify-demo.navapbc.cloud",
+      "description": "Dev environment"
+    },
+    {
+      "url": "https://demo.reportmyincome.org",
+      "description": "Demo environment"
+    }
+  ],
+  "externalDocs": {
+    "description": "Emmy Platform API Documentation",
+    "url": "https://DSACMS.github.io/iv-cbv-payroll/index.html"
+  },
+  "tags": [
+    {
+      "name": "Invitations",
+      "description": "Generate links for an applicant to begin reporting."
+    }
+  ],
+  "paths": {
+    "/api/v1/invitations": {
+      "post": {
+        "summary": "Create tokenized reporting links",
+        "tags": [
+          "Invitations"
+        ],
+        "operationId": "createInvitation",
+        "description": "Create a personalized income reporting link. Supply `language` (`en` or `es`)\nand an `agency_partner_metadata` object using your agency's schema.\nThe API key determines which agency schema applies; it is not selected by the payload.\n\nThe endpoint does not send email or SMS. Deliver the returned link or redirect\nthe applicant to it. Each request creates a new invitation; there is no\nidempotency key or deduplication. Treat tokens as opaque.\n\nThis V1 endpoint creates only income invitations. The legacy `activities`\nparameter is ignored; it does not create a community engagement invitation.\n\n**Validation:** `422` responses contain field paths and human-readable messages.\nDo not depend on exact message wording. Missing metadata or malformed metadata\ncontainers may raise a server error instead of a structured `422`. Always send\n`agency_partner_metadata` as an object.\n\n**Origin tracking:** To track where an applicant received a link, append an\n`origin` query parameter with a value agreed during onboarding, such as `email`.\nUse `?` when the URL has no query string and `&` otherwise.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Invitations created",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "income": {
+                    "summary": "Income invitation (sandbox agency)",
+                    "value": {
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/en/start/IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "first_name": "Jane",
+                        "middle_name": null,
+                        "last_name": "Doe",
+                        "case_number": "EXAMPLE-123",
+                        "date_of_birth": "01/15/1990"
+                      }
+                    }
+                  },
+                  "spanish": {
+                    "summary": "Spanish invitation",
+                    "value": {
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/es/start/IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "es",
+                      "agency_partner_metadata": {
+                        "first_name": "Jane",
+                        "middle_name": null,
+                        "last_name": "Doe",
+                        "case_number": "EXAMPLE-123",
+                        "date_of_birth": "01/15/1990"
+                      }
+                    }
+                  },
+                  "louisiana": {
+                    "summary": "Louisiana indexing metadata",
+                    "value": {
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/en/start/IncomeExampleToken",
+                      "expiration_date": "2026-12-07T23:59:59.999-05:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "case_number": null,
+                        "date_of_birth": "01/15/1990",
+                        "doc_id": "EXAMPLE-DOC-123"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key (plain text, not JSON)",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "summary": "Authentication failure",
+                    "value": "HTTP Token: Access denied.\n"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "invalid_language": {
+                    "summary": "Unsupported language",
+                    "value": {
+                      "errors": [
+                        {
+                          "field": "language",
+                          "message": "Language must be either English (en) or Spanish (es)."
+                        }
+                      ]
+                    }
+                  },
+                  "missing_name": {
+                    "summary": "Missing applicant name",
+                    "value": {
+                      "errors": [
+                        {
+                          "field": "cbv_applicant.first_name",
+                          "message": "Enter the client's first name."
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationErrors"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvitationRequest"
+              },
+              "examples": {
+                "income": {
+                  "summary": "Income invitation (sandbox agency)",
+                  "value": {
+                    "language": "en",
+                    "agency_partner_metadata": {
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "case_number": "EXAMPLE-123",
+                      "date_of_birth": "01/15/1990"
+                    }
+                  }
+                },
+                "spanish": {
+                  "summary": "Spanish invitation",
+                  "value": {
+                    "language": "es",
+                    "agency_partner_metadata": {
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "case_number": "EXAMPLE-123",
+                      "date_of_birth": "01/15/1990"
+                    }
+                  }
+                },
+                "louisiana": {
+                  "summary": "Louisiana indexing metadata",
+                  "value": {
+                    "language": "en",
+                    "agency_partner_metadata": {
+                      "doc_id": "EXAMPLE-DOC-123",
+                      "date_of_birth": "01/15/1990"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Agency API key. Send Authorization: Bearer API_KEY. The key determines the agency; do not send a client_agency_id."
+      }
+    },
+    "schemas": {
+      "AgencyPartnerMetadata": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Metadata links a submitted report to the agency's records. Select the schema\nfor the agency associated with your API key. Sandbox and Louisiana have\nseparate field sets; do not combine them. Some agency schemas overlap, so\nmatching a schema alone does not identify the agency.\n\nUnrecognized fields and `individual_id` are ignored by this V1 endpoint.\nThe response contains all accepted fields for the agency, with `null` for\nomitted values. Values are echoed as supplied, including date strings.\nSupply dates of birth as `MM/DD/YYYY`.",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/AgencyMetadataSandbox"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataNewHampshire"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataLouisiana"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataResearch"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataAccenture"
+          }
+        ]
+      },
+      "InvitationRequest": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Invitation settings and metadata for the agency identified by the API key.",
+        "required": [
+          "language",
+          "agency_partner_metadata"
+        ],
+        "properties": {
+          "language": {
+            "type": "string",
+            "pattern": "^([eE][nN]|[eE][sS])$",
+            "example": "en",
+            "description": "Preferred language: en (English) or es (Spanish), case insensitive. Required; omitted or unsupported values return 422. Returned in lowercase."
+          },
+          "agency_partner_metadata": {
+            "$ref": "#/components/schemas/AgencyPartnerMetadata"
+          }
+        }
+      },
+      "InvitationResponse": {
+        "type": "object",
+        "description": "Direct the applicant to `tokenized_url` to report income. Its `expiration_date`\nis the end of the day in `America/New_York` after the agency's configured\nvalidity period (14 days for the sandbox). Request a new invitation when a\nlink expires.",
+        "required": [
+          "tokenized_url",
+          "expiration_date",
+          "language",
+          "agency_partner_metadata"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "tokenized_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Income reporting link. Treat the token as opaque and direct the applicant to this URL unchanged."
+          },
+          "expiration_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Expiration of tokenized_url, at the end of the day in America/New_York after the agency's configured validity period."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          },
+          "agency_partner_metadata": {
+            "$ref": "#/components/schemas/AgencyPartnerMetadata"
+          }
+        }
+      },
+      "InvitationErrors": {
+        "type": "object",
+        "required": [
+          "errors"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "errors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "field",
+                "message"
+              ],
+              "additionalProperties": true,
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "description": "Invalid field, including language or cbv_applicant.first_name. Applicant errors may use cbv_applicant or agency_partner_metadata prefixes."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable validation message. Do not depend on the exact wording."
+                }
+              }
+            }
+          }
+        }
+      },
+      "AgencyMetadataSandbox": {
+        "title": "AgencyMetadataSandbox",
+        "type": "object",
+        "description": "Accepted metadata for Sandbox. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "middle_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Alex"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          },
+          "case_number": {
+            "type": "string",
+            "nullable": true,
+            "example": "EXAMPLE-123",
+            "description": "Agency case identifier."
+          },
+          "date_of_birth": {
+            "type": "string",
+            "nullable": true,
+            "example": "01/15/1990",
+            "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
+          }
+        }
+      },
+      "AgencyMetadataNewHampshire": {
+        "title": "AgencyMetadataNewHampshire",
+        "type": "object",
+        "description": "Accepted metadata for New Hampshire. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "middle_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Alex"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          },
+          "case_number": {
+            "type": "string",
+            "nullable": true,
+            "example": "EXAMPLE-123",
+            "description": "Agency case identifier."
+          },
+          "date_of_birth": {
+            "type": "string",
+            "nullable": true,
+            "example": "01/15/1990",
+            "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
+          }
+        },
+        "required": [
+          "first_name",
+          "last_name"
+        ]
+      },
+      "AgencyMetadataLouisiana": {
+        "title": "AgencyMetadataLouisiana",
+        "type": "object",
+        "description": "Accepted metadata for Louisiana. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "case_number": {
+            "type": "string",
+            "nullable": true,
+            "example": "EXAMPLE-123",
+            "description": "Agency case identifier.",
+            "maxLength": 13
+          },
+          "date_of_birth": {
+            "type": "string",
+            "nullable": true,
+            "example": "01/15/1990",
+            "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
+          },
+          "doc_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "EXAMPLE-DOC-123"
+          }
+        }
+      },
+      "AgencyMetadataResearch": {
+        "title": "AgencyMetadataResearch",
+        "type": "object",
+        "description": "Accepted metadata for Research. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "case_number": {
+            "type": "string",
+            "nullable": true,
+            "example": "EXAMPLE-123",
+            "description": "Agency case identifier."
+          },
+          "date_of_birth": {
+            "type": "string",
+            "nullable": true,
+            "example": "01/15/1990",
+            "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
+          }
+        }
+      },
+      "AgencyMetadataAccenture": {
+        "title": "AgencyMetadataAccenture",
+        "type": "object",
+        "description": "Accepted metadata for Accenture. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "case_number": {
+            "type": "string",
+            "nullable": true,
+            "example": "EXAMPLE-123",
+            "description": "Agency case identifier."
+          }
+        }
+      }
+    }
+  }
+}
