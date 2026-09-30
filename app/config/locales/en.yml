@@ -1283,9 +1283,21 @@ en:
       refresh: Refresh page
     home:
       activity_flow_timeout:
-        alert_html: "<strong>Your session has timed out.</strong> Sessions end after 30 minutes of inactivity. This helps keep your information safe."
         description: Emmy (Eligibility Made Easy) is a tool designed to help you report paid or unpaid work, education, community service, and work program activities directly to %{agency_name}.
         header: Welcome to Emmy
+      activity_flow_timeout_new:
+        description: Sessions end after 30 minutes of inactivity. This helps keep your information safe. Any information not submitted was not saved.
+        header: Your session has timed out
+        issues:
+          description: 'If you encounter any issues, contact your benefits agency for assistance in one of the following ways:'
+          list:
+            item_1: 'Self-Service Portal: mymedicaid.la.gov'
+            item_2: 'By telephone: 1-888-342-6207'
+            item_3: 'By email: MyMedicaid@la.gov'
+            item_4: In person at the Medicaid office of your choice
+        summary_box:
+          description: Gather the information and documents you need to submit and either reuse the same link to start reporting again or if you're the head of household, access your link via the Self-Service Portal.
+          header: What to do next
       description_1: Report My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
       description_2: Visit your agency's website for more information on how to submit proof of income for your benefits.
       header: Welcome to Report My Income
