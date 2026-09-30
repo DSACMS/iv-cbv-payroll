@@ -235,5 +235,14 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     click_button I18n.t("activities.employment.review.save")
 
     verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
+
+    agency = Rails.application.config.client_agencies["sandbox"]
+    payload = JSON.parse(Transmitters::ActivityJsonTransmitter.new(flow.reload, agency).payload)
+    employment = payload.dig("ce_report", "activities", "employment")
+    expect(employment.keys).to eq([ first_selected_month, second_selected_month ].map { |month| month.strftime("%Y-%m") })
+    expect(employment[first_selected_month.strftime("%Y-%m")].sole).to include(
+      "employer_name" => "Updated Employer", "data_source" => "self_attested", "hours" => 10.0, "gross_income" => 200.0
+    )
+    expect(employment[second_selected_month.strftime("%Y-%m")].sole).to include("gross_income" => 300.0)
   end
 end

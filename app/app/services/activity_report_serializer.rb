@@ -32,6 +32,10 @@ class ActivityReportSerializer
         contact_phone_number
         additional_comments
       ]
+    },
+    "employment" => {
+      association: :employment_activities,
+      fields: EmploymentActivity::FIELDS + %w[additional_comments]
     }
   }.freeze
 
@@ -107,7 +111,54 @@ class ActivityReportSerializer
   def activities
     SELF_ATTESTED_ACTIVITY_TYPES.each_with_object({}) do |(type, config), result|
       result[type] = months_for(type, config)
+      if type == "employment"
+        payroll_months.each do |month, entries|
+          result[type][month] = result[type].fetch(month, []) + entries
+        end
+        result[type] = result[type].sort.to_h
+      end
     end
+  end
+
+  def payroll_months
+    entries_by_month = Hash.new { |hash, key| hash[key] = [] }
+    fetcher = AggregatorReportFetcher.new(@activity_flow)
+
+    @activity_flow.payroll_accounts.published.order(:id).select(&:sync_succeeded?).each do |account|
+      report = fetcher.report_for_payroll_account(account)
+      unless report&.has_fetched?
+        raise PayrollReportError, "Could not fetch employment report for payroll account #{account.id}"
+      end
+
+      report.income_report_employments.each do |employment|
+        employment = employment.as_json
+        paystubs = employment.fetch("paystubs").select do |paystub|
+          pay_date = paystub["pay_date"]&.to_date
+          pay_date && @activity_flow.reporting_window_range.cover?(pay_date)
+        end
+
+        paystubs.group_by { |paystub| paystub.fetch("pay_date").to_date.strftime("%Y-%m") }.each do |month, monthly_paystubs|
+          entries_by_month[month] << employment.merge(
+            "type" => "employment",
+            "month" => month,
+            "data_source" => "validated",
+            "document_ids" => [],
+            "extended_attributes" => {},
+            "paystubs" => monthly_paystubs.map { |paystub| payroll_paystub(paystub) }
+          )
+        end
+      end
+    end
+
+    entries_by_month
+  end
+
+  def payroll_paystub(paystub)
+    paystub.merge(
+      "extended_attributes" => {},
+      "deductions" => paystub.fetch("deductions").map { |deduction| deduction.merge("extended_attributes" => {}) },
+      "gross_pay_list" => paystub.fetch("gross_pay_list").map { |earning| earning.merge("extended_attributes" => {}) }
+    )
   end
 
   def months_for(type, config)
@@ -124,6 +175,13 @@ class ActivityReportSerializer
 
   def entry(type, config, activity, activity_month)
     attributes = config[:fields].index_with { |field| json_value(activity.public_send(field)) }
+    if type == "employment"
+      attributes.merge!(
+        "employer_address" => activity.formatted_address.presence,
+        "employment_type" => activity.unpaid_or_in_kind? ? "unpaid" : (activity.is_self_employed ? "self_employed" : "w2"),
+        "gross_income" => activity_month.gross_income.to_f
+      )
+    end
 
     { "type" => type }
       .merge(attributes)
@@ -142,4 +200,6 @@ class ActivityReportSerializer
 
     value
   end
+
+  class PayrollReportError < StandardError; end
 end

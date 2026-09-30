@@ -6,7 +6,7 @@ This document describes the **Community Engagement (CE) Activity Report Transmis
 
 The agency must build an API endpoint that meets this specification and integrates with agency systems to process the activity report into the case file for the correct client.
 
-This revision covers the **self-attested activity types only**: `community_service` and `work_program`. Education and employment activities are not yet transmitted; they will be added additively in a later revision.
+This revision covers `community_service`, `work_program`, and `employment`. Employment includes self-attested work and payroll data from linked Argyle or Pinwheel accounts. Education activities will be added additively in a later revision.
 
 # **API Specification**
 
@@ -17,6 +17,8 @@ The agency-built API should contain one endpoint.
 This API endpoint is built by the agency and receives one CE activity report record. The endpoint URL can be whatever the agency desires, however, it must include a version number to allow for easy upgrades in the future.
 
 The machine-readable JSON Schema for the request body is available at [schemas/ce-activity-report-2026-09-01.json](schemas/ce-activity-report-2026-09-01.json). A complete sample request body is available at [samples/ce-activity-report.json](samples/ce-activity-report.json).
+
+[Employment sample reports](samples/ce-employment-reports.json) contains four complete synthetic request bodies, keyed by scenario: Argyle's Bob (gig work), Joe (W-2 work), Kim (W-2 work), and a mixed report with Pinwheel payroll, self-employment, and unpaid work. Each scenario is tested against the schema and transmitted to a stub agency endpoint. To send one to an agency's test endpoint, extract that scenario's value; the enclosing scenario names are not part of the request body.
 
 ### Request Headers
 
@@ -92,14 +94,14 @@ Keys are activity types. Each value is an object keyed by month (`YYYY-MM`), who
 
 An activity that spans several months appears once under each month, carrying that month's hours.
 
-#### Activity Entry – Fields Common to All Types
+#### Self-attested Activity Entry – Common Fields
 
 | Field Name | Required? | Description |
 | :-- | :-- | :-- |
-| type | Yes | String (enum). `community_service` or `work_program`. |
+| type | Yes | String (enum). `community_service`, `work_program`, or `employment`. |
 | month | Yes | String (`YYYY-MM`). The calendar month the reported hours apply to. Repeats the key of the enclosing object. |
 | hours | Yes | Decimal (10,2). Hours reported for this activity in the enclosing month. May be `0`. |
-| data_source | Yes | String (enum). Always `self_attested` for these two activity types. |
+| data_source | Yes | String (enum). `self_attested` for manually reported activities. Linked payroll employment uses `validated`. |
 | document_ids | Yes | Array of `document_id` values from the `documents` array. |
 | street_address, street_address_line_2, city, state, zip_code | No | String or null. Address of the organization. |
 | additional_comments | No | Text or null. Optional free-text comments the applicant added at the review step. |
@@ -123,6 +125,53 @@ An activity that spans several months appears once under each month, carrying th
 | contact_name | No | String or null. |
 | contact_email | No | String or null. |
 | contact_phone_number | No | String or null. |
+
+#### employment – Self-attested Work
+
+Each published employment activity appears once per reported month, including months with zero hours or income. Draft activities are excluded. The common self-attested fields above apply, including address components, comments, hours, and supporting document IDs.
+
+| Field Name | Required? | Description |
+| :-- | :-- | :-- |
+| employer_name | Yes | String. Name of the employer or business. |
+| employer_address | No | String or null. Combined employer address. The individual address fields are also supplied. |
+| employment_type | Yes | `w2` for paid work, `self_employed` for paid self-employment, or `unpaid` for unpaid or in-kind work. |
+| is_self_employed | Yes | Boolean. Whether the applicant marked the work as self-employment. |
+| contact_name, contact_email, contact_phone_number | No | String or null. Employer contact details; null for self-employment. |
+| gross_income | Yes | Number. Self-attested gross income for this month in **dollars**, preserving decimal amounts. |
+
+#### employment – Linked Payroll
+
+Only published, successfully synchronized payroll accounts are included. Each employer appears once in each month in which it has a paycheck in the review period. Paychecks are grouped by `pay_date`, even when their work period falls in another month. Undated paychecks and paychecks outside the review period are omitted. Employers with no dated paychecks in the review period have no monthly entry.
+
+The employment and paystub fields use the [Income Report API format](schemas/income-report-2026-06-18.json), including masked SSNs, applicant comments, employment dates and status, compensation, deductions, and itemized gross pay. Payroll money values are in **cents**. Nullable provider fields remain null, and missing gross pay uses the income report's zero fallback. Payroll hours appear in each paystub's `hours_paid`; there is no calculated employment-level `hours` field.
+
+These CE fields supplement the income employment object:
+
+| Field Name | Required? | Description |
+| :-- | :-- | :-- |
+| type | Yes | `employment`. |
+| month | Yes | `YYYY-MM`, matching the enclosing month. |
+| data_source | Yes | `validated` for both Argyle and Pinwheel. |
+| document_ids | Yes | Empty array for linked payroll. Self-attested documents are referenced from their own activities. |
+| extended_attributes | Yes | Object, currently empty. Also present on paystubs, deductions, and gross pay components. |
+
+Employment follows the September 4 specification's JSON examples: `has_other_jobs` and `income_summary` are omitted. The existing CE envelope, including `review_period`, is preserved. A failed payroll fetch fails transmission so the job can retry instead of sending a partial report.
+
+#### Reproducing the Employment Examples
+
+From `app/`, run the transmission specs to validate the checked-in examples:
+
+```bash
+rtk rbenv exec ruby bin/rspec spec/services/transmitters/activity_json_transmitter_spec.rb
+```
+
+To regenerate the synthetic examples after an intentional contract change:
+
+```bash
+rtk proxy env UPDATE_CE_EMPLOYMENT_SAMPLES=1 rbenv exec ruby bin/rspec spec/services/transmitters/activity_json_transmitter_spec.rb
+```
+
+The examples use recorded sandbox payroll fixtures and synthetic self-attested work. No live payroll or agency requests are made by these tests. Product acceptance and live Launcher testing remain separate checks before merge.
 
 # **Design Principles**
 
