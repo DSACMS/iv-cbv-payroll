@@ -141,7 +141,7 @@ ignore_missing:
     # Activity Hub flow pages/models
     - "shared.credit_hours*"
     - "activities.*"
-    - "pages.home.activity_flow_timeout.*"
+    - "pages.activity_flow_timeout.*"
     - "cbv.*.activity_flow.*" # ActivityFlow copy overrides in controllers/views from CBV flow
     - "activerecord.errors.models.job_training_activity.*"
     - "activerecord.errors.models.education_activity.*"
@@ -157,7 +157,7 @@ ignore_missing:
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
-    - "api.v2.la_ldh.fields.*" # FFS-4797 
+    - "api.v2.la_ldh.fields.*" # FFS-4797
     - "api.v2.fields.*" # FFS-4797
     - "cbv.employer_searches.employer.select_employer"
     - "cbv.employer_searches.show.select_employer"

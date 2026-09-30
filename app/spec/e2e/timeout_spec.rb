@@ -43,10 +43,10 @@ RSpec.describe "timeout test", :js, type: :feature do
       expect(page).to have_selector(".usa-modal__content", visible: true)
       click_link I18n.t("session_timeout.modal.end_button")
 
-      verify_page(page, title: I18n.t("pages.home.activity_flow_timeout_new.header"))
-      expect(page).to have_content(I18n.t("pages.home.activity_flow_timeout_new.description"))
-      expect(page).to have_content(I18n.t("pages.home.activity_flow_timeout_new.summary_box.header"))
-      expect(page).to have_content(I18n.t("pages.home.activity_flow_timeout_new.issues.description"))
+      verify_page(page, title: I18n.t("pages.activity_flow_timeout.header"))
+      expect(page).to have_content(I18n.t("pages.activity_flow_timeout.description"))
+      expect(page).to have_content(I18n.t("pages.activity_flow_timeout.summary_box.header"))
+      expect(page).to have_content(I18n.t("pages.activity_flow_timeout.issues.description"))
     end
   end
 end

@@ -96,25 +96,25 @@ RSpec.describe PagesController do
         expect(response).to render_template("pages/activity_flow_timeout")
         expect(response.body).to have_selector(
           "h1",
-          text: I18n.t("pages.home.activity_flow_timeout_new.header")
+          text: I18n.t("pages.activity_flow_timeout.header")
         )
         expect(response.body).to have_text(
-          I18n.t("pages.home.activity_flow_timeout_new.description")
+          I18n.t("pages.activity_flow_timeout.description")
         )
         expect(response.body).to have_selector(
           ".usa-summary-box",
-          text: I18n.t("pages.home.activity_flow_timeout_new.summary_box.header")
+          text: I18n.t("pages.activity_flow_timeout.summary_box.header")
         )
       end
 
       it "renders the agency contact options" do
         expect(response.body).to have_text(
-          I18n.t("pages.home.activity_flow_timeout_new.issues.description")
+          I18n.t("pages.activity_flow_timeout.issues.description")
         )
 
         (1..4).each do |item|
           expect(response.body).to have_text(
-            I18n.t("pages.home.activity_flow_timeout_new.issues.list.item_#{item}")
+            I18n.t("pages.activity_flow_timeout.issues.list.item_#{item}")
           )
         end
       end
