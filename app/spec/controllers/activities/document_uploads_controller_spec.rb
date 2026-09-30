@@ -178,6 +178,9 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         )
       )
       expect(response.body).to include(activities_flow_income_employment_document_uploads_path)
+      expect(Capybara.string(response.body)).to have_selector(
+        "button", text: I18n.t("activities.document_uploads.new.suggestion_title")
+      )
       expect(response.body).to include(I18n.t("activities.employment.document_upload_suggestion_text_html"))
     end
 
@@ -204,6 +207,41 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         I18n.l(third_month, format: :month)
       ])
       expect(rendered).to have_no_text(I18n.l(second_month, format: :month))
+    end
+
+    it "renders selected unpaid work months with hours and supporting document guidance" do
+      tokenized_flow = create(
+        :activity_flow,
+        activity_flow_invitation: create(:activity_flow_invitation),
+        reporting_window_months: 3
+      )
+      session[:flow_id] = tokenized_flow.id
+      employment_activity = create(:employment_activity, activity_flow: tokenized_flow, compensation_type: :unpaid_or_in_kind)
+      first_month, second_month, third_month = tokenized_flow.reporting_months
+      employment_activity.update!(selected_months: [ third_month, first_month ])
+      [ [ first_month, 12 ], [ second_month, 99 ], [ third_month, 8 ] ].each do |month, hours|
+        create(:employment_activity_month, employment_activity: employment_activity, month: month, hours: hours, gross_income: 500)
+      end
+
+      get :new, params: { employment_id: employment_activity.id }
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text(
+        "#{I18n.l(first_month, format: :month)} (#{I18n.t("shared.hours", count: 12)})",
+        normalize_ws: true
+      )
+      expect(rendered).to have_text(
+        "#{I18n.l(third_month, format: :month)} (#{I18n.t("shared.hours", count: 8)})",
+        normalize_ws: true
+      )
+      expect(rendered).to have_no_text(I18n.l(second_month, format: :month))
+      expect(rendered).to have_no_text(ActiveSupport::NumberHelper.number_to_currency(500))
+      expect(rendered).to have_selector(
+        "button", text: I18n.t("activities.employment.unpaid_or_in_kind.document_upload_suggestion_title")
+      )
+      expect(response.body).to include(
+        I18n.t("activities.employment.unpaid_or_in_kind.document_upload_suggestion_text_html")
+      )
     end
 
     it "renders the upload form for a partially self-attested education activity" do
