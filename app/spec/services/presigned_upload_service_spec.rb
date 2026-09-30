@@ -4,6 +4,15 @@ require "active_storage/service/s3_service"
 RSpec.describe PresignedUploadService do
   let(:checksum) { Digest::SHA256.base64digest("%PDF-1.4") }
   let(:pdf) { { filename: "verification.pdf", content_type: "application/pdf", byte_size: 1_024, checksum: checksum } }
+  let(:max_upload_bytes) { 40.megabytes }
+  let(:client_agency) do
+    instance_double(
+      ClientAgencyConfig::ClientAgency,
+      allowed_document_content_types: [ "application/pdf", "image/jpeg" ],
+      max_document_upload_size_bytes: max_upload_bytes
+    )
+  end
+  let(:upload_service) { described_class.new(client_agency: client_agency) }
 
   def policy_conditions(upload)
     JSON.parse(Base64.decode64(upload[:fields]["policy"])).fetch("conditions")
@@ -11,7 +20,7 @@ RSpec.describe PresignedUploadService do
 
   describe "#call" do
     it "returns one upload descriptor per requested file" do
-      uploads = described_class.new.call([
+      uploads = upload_service.call([
         pdf,
         { filename: "photo.jpg", content_type: "image/jpeg", byte_size: 2_048, checksum: checksum }
       ])
@@ -21,7 +30,7 @@ RSpec.describe PresignedUploadService do
     end
 
     it "creates the blob up front so the form only has to submit a signed ID" do
-      expect { described_class.new.call([ pdf ]) }.to change(ActiveStorage::Blob, :count).by(1)
+      expect { upload_service.call([ pdf ]) }.to change(ActiveStorage::Blob, :count).by(1)
 
       blob = ActiveStorage::Blob.last
 
@@ -33,20 +42,20 @@ RSpec.describe PresignedUploadService do
     end
 
     it "marks the blob identified and analyzed so nothing tries to download it" do
-      described_class.new.call([ pdf ])
+      upload_service.call([ pdf ])
 
       expect(ActiveStorage::Blob.last).to be_identified
       expect(ActiveStorage::Blob.last).to be_analyzed
     end
 
     it "returns a signed ID that resolves back to the blob" do
-      upload = described_class.new.call([ pdf ]).first
+      upload = upload_service.call([ pdf ]).first
 
       expect(ActiveStorage::Blob.find_signed!(upload[:signed_id])).to eq(ActiveStorage::Blob.last)
     end
 
     it "does not let the client choose the object key" do
-      upload = described_class.new.call([ pdf ]).first
+      upload = upload_service.call([ pdf ]).first
       key = ActiveStorage::Blob.find_signed!(upload[:signed_id]).key
 
       expect(key).to match(/\A[a-z0-9]{28}\z/)
@@ -55,15 +64,21 @@ RSpec.describe PresignedUploadService do
 
     it "rejects a content type outside the allowlist before signing anything" do
       expect {
-        described_class.new.call([ pdf.merge(content_type: "application/x-msdownload") ])
+        upload_service.call([ pdf.merge(content_type: "application/x-msdownload") ])
       }.to raise_error(described_class::UnacceptableUpload) { |error|
         expect(error.reason).to eq(:unsupported_type)
       }
     end
 
+    it "accepts a file at the agency's upload limit" do
+      expect {
+        upload_service.call([ pdf.merge(byte_size: max_upload_bytes) ])
+      }.to change(ActiveStorage::Blob, :count).by(1)
+    end
+
     it "rejects a file larger than the upload limit" do
       expect {
-        described_class.new.call([ pdf.merge(byte_size: described_class::MAX_UPLOAD_BYTES + 1) ])
+        upload_service.call([ pdf.merge(byte_size: max_upload_bytes + 1) ])
       }.to raise_error(described_class::UnacceptableUpload) { |error|
         expect(error.reason).to eq(:too_large)
       }
@@ -71,7 +86,7 @@ RSpec.describe PresignedUploadService do
 
     it "rejects an empty file" do
       expect {
-        described_class.new.call([ pdf.merge(byte_size: 0) ])
+        upload_service.call([ pdf.merge(byte_size: 0) ])
       }.to raise_error(described_class::UnacceptableUpload) { |error|
         expect(error.reason).to eq(:empty)
       }
@@ -79,7 +94,7 @@ RSpec.describe PresignedUploadService do
 
     it "rejects a malformed checksum" do
       expect {
-        described_class.new.call([ pdf.merge(checksum: "not-a-digest") ])
+        upload_service.call([ pdf.merge(checksum: "not-a-digest") ])
       }.to raise_error(described_class::UnacceptableUpload) { |error|
         expect(error.reason).to eq(:upload_failed)
       }
@@ -88,26 +103,26 @@ RSpec.describe PresignedUploadService do
     it "leaves no blob behind when one file in the batch is unacceptable" do
       expect {
         expect {
-          described_class.new.call([ pdf, pdf.merge(byte_size: 0) ])
+          upload_service.call([ pdf, pdf.merge(byte_size: 0) ])
         }.to raise_error(described_class::UnacceptableUpload)
       }.not_to change(ActiveStorage::Blob, :count)
     end
 
     it "points uploads at the local stand-in when the unscanned service is Disk" do
-      upload = described_class.new.call([ pdf ]).first
+      upload = upload_service.call([ pdf ]).first
 
       expect(upload[:url]).to eq(Rails.application.routes.url_helpers.activities_flow_local_uploads_path)
     end
 
     it "carries a CSRF token in the local stand-in's form fields" do
-      upload = described_class.new(authenticity_token: "a-token").call([ pdf ]).first
+      upload = described_class.new(client_agency: client_agency, authenticity_token: "a-token").call([ pdf ]).first
 
       expect(upload[:fields]).to include("authenticity_token" => "a-token")
     end
   end
 
   describe "#call against S3" do
-    subject(:upload) { described_class.new(service: service).call([ pdf ]).first }
+    subject(:upload) { described_class.new(client_agency: client_agency, service: service).call([ pdf ]).first }
 
     let(:service) do
       ActiveStorage::Service::S3Service.new(
@@ -139,7 +154,7 @@ RSpec.describe PresignedUploadService do
     end
 
     it "does not leak a CSRF token into the S3 policy fields" do
-      upload = described_class.new(service: service, authenticity_token: "a-token").call([ pdf ]).first
+      upload = described_class.new(client_agency: client_agency, service: service, authenticity_token: "a-token").call([ pdf ]).first
 
       expect(upload[:fields]).not_to include("authenticity_token")
     end

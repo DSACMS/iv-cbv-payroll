@@ -96,52 +96,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
   end
 
-  describe "household reporting context" do
-    before do
-      session[:flow_id] = current_flow.id
-      session[:flow_type] = :activity
-      get :index
-    end
-
-    context "with a household member flow" do
-      let(:household_member) { create(:household_member, display_name: "Avery Johnson") }
-      let(:current_flow) do
-        create(
-          :activity_flow,
-          activity_flow_invitation: household_member.activity_flow_invitation,
-          volunteering_activities_count: 0,
-          job_training_activities_count: 0,
-          education_activities_count: 0
-        )
-      end
-
-      it "shows which household member is reporting" do
-        rendered = Capybara.string(response.body)
-
-        expect(rendered).to have_text("Reporting for Avery Johnson")
-        expect(rendered).to have_css("strong", text: "Avery Johnson")
-      end
-    end
-
-    context "with an invitation that has no household member" do
-      let(:current_flow) do
-        create(
-          :activity_flow,
-          activity_flow_invitation: create(:activity_flow_invitation),
-          volunteering_activities_count: 0,
-          job_training_activities_count: 0,
-          education_activities_count: 0
-        )
-      end
-
-      it "does not show household reporting context" do
-        rendered = Capybara.string(response.body)
-
-        expect(rendered).to have_no_text("Reporting for")
-      end
-    end
-  end
-
   describe "hiding draft activities on the hub" do
     let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
 
@@ -1049,10 +1003,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(assigns(:work_programs_draft_activities).first.program_name).to eq("Career Prep")
     end
 
-    it "renders the pre-populated notice on the hub" do
-      expect(response.body).to include(I18n.t("activities.hub.cards.pre_populated_notice"))
-    end
-
     it "renders the Complete CTA instead of Edit for the draft card" do
       rendered = Capybara.string(response.body)
       work_program_cards = rendered.find("[data-activity-type='work_programs']")
@@ -1067,65 +1017,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       expect(work_program_cards).to have_text("Career Prep")
       expect(work_program_cards).to have_text(I18n.t("activities.hub.cards.hours", count: 10))
-    end
-  end
-
-  context "when the session is pre-populated with a subset of activity types" do
-    let(:invitation) do
-      create(:activity_flow_invitation, pre_populated_activities: [
-        { "type" => "volunteering", "organization_name" => "Red Cross" },
-        { "type" => "education", "school_name" => "Springfield Community College" }
-      ])
-    end
-    let(:current_flow) do
-      create(
-        :activity_flow,
-        activity_flow_invitation: invitation,
-        volunteering_activities_count: 0,
-        job_training_activities_count: 0,
-        education_activities_count: 0
-      )
-    end
-
-    before do
-      session[:flow_id] = current_flow.id
-      session[:flow_type] = :activity
-      get :index
-    end
-
-    it "renders only the pre-filled activity type sections" do
-      rendered = Capybara.string(response.body)
-
-      expect(rendered).to have_css("[data-activity-type='community_service']")
-      expect(rendered).to have_css("[data-activity-type='education']")
-      expect(rendered).to have_no_css("[data-activity-type='employment']")
-      expect(rendered).to have_no_css("[data-activity-type='work_programs']")
-    end
-  end
-
-  context "when a pre-filled activity has already been published" do
-    let(:invitation) do
-      create(:activity_flow_invitation, pre_populated_activities: [
-        { "type" => "volunteering", "organization_name" => "Red Cross" }
-      ])
-    end
-    let(:current_flow) { ActivityFlow.create_from_invitation(invitation, "device123") }
-
-    before do
-      current_flow.volunteering_activities.each(&:publish!)
-      session[:flow_id] = current_flow.id
-      session[:flow_type] = :activity
-      get :index
-    end
-
-    it "still shows the section for the pre-filled type once its draft is published" do
-      rendered = Capybara.string(response.body)
-
-      expect(current_flow.volunteering_activities.pre_populated_drafts).to be_empty
-      expect(rendered).to have_css("[data-activity-type='community_service']")
-      expect(rendered).to have_no_css("[data-activity-type='employment']")
-      expect(rendered).to have_no_css("[data-activity-type='education']")
-      expect(rendered).to have_no_css("[data-activity-type='work_programs']")
     end
   end
 

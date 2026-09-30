@@ -42,6 +42,7 @@ class JsonApiReceiver < Sinatra::Base
     file_path = File.join(directory, filename)
     File.binwrite(file_path, content)
     puts "Document written successfully to #{file_path}"
+    puts "X-IVAAS-Document-Id: #{request.env["HTTP_X_IVAAS_DOCUMENT_ID"]}"
     status 200
   rescue => e
     puts "Error writing document: #{e.message}"

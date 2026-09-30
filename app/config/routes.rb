@@ -84,6 +84,7 @@ Rails.application.routes.draw do
         resource :payment_details, only: %i[show update], controller: "income/payment_details"
         resources :employment, only: %i[new create edit update], controller: "/activities/employment" do
           resources :document_uploads, only: %i[new create destroy], controller: "/activities/document_uploads"
+          resource :month_selection, only: %i[edit update], controller: "employment/month_selections"
           resources :months, only: %i[edit update], controller: "employment/months"
           member do
             get :review
@@ -94,6 +95,7 @@ Rails.application.routes.draw do
 
       scope "/education", as: :education do
         resource :add_your_education, only: %i[show create], controller: "education/add_your_education"
+        resource :other, only: %i[show], controller: "education/other"
       end
 
       get "/education/error", to: "education#error", as: :education_error
@@ -138,10 +140,13 @@ Rails.application.routes.draw do
   namespace :api do
     scope :v1 do
       post "/invitations", to: "invitations#create"
+      delete "/invitations/:token", to: "invitations#expire"
     end
 
     scope :v2, module: :v2 do
-      post "/invitations", to: "invitations#create"
+      post "/:invitation_type/invitations",
+        to: "invitations#create",
+        constraints: { invitation_type: /community-engagement/ }
     end
 
     scope :pinwheel do

@@ -148,4 +148,14 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
   end
+
+  describe "#nsc_disabled?" do
+    it "delegates to Nsc.disabled?" do
+      allow(Nsc).to receive(:disabled?).and_return(true)
+      expect(controller.send(:nsc_disabled?)).to be true
+
+      allow(Nsc).to receive(:disabled?).and_return(false)
+      expect(controller.send(:nsc_disabled?)).to be false
+    end
+  end
 end

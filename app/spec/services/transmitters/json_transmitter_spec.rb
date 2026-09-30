@@ -30,7 +30,7 @@ RSpec.describe Transmitters::JsonTransmitter do
 
   before do
     allow(mock_client_agency).to receive_messages(income_transmission_method_configuration: income_transmission_method_configuration, id: "sandbox")
-    allow(CbvApplicant).to receive(:valid_attributes_for_agency).with("sandbox").and_return([ "case_number" ])
+    allow(CbvApplicant).to receive(:valid_attributes_for_agency).with("sandbox", version: :v1).and_return([ "case_number" ])
     allow(Rails.logger).to receive(:error)
     allow(Rails.logger).to receive(:info)
   end

@@ -26,6 +26,7 @@ erDiagram
 		datetime created_at
 		string device_id
 		datetime documents_deleted_at
+		boolean employment_focused
 		uuid end_user_id
 		integer renewal_required_months
 		integer reporting_window_months
@@ -49,9 +50,9 @@ erDiagram
 		string auth_token
 		string client_agency_id
 		datetime created_at
-		jsonb pre_populated_activities
 		string reference_id
 		datetime updated_at
+		string verification_range
 	}
 	ActivityFlowMonthlySummary {
 		integer accrued_gross_earnings_cents
@@ -141,6 +142,7 @@ erDiagram
 	EmploymentActivity {
 		text additional_comments
 		string city
+		string compensation_type
 		string contact_email
 		string contact_name
 		string contact_phone_number
@@ -150,6 +152,7 @@ erDiagram
 		string employer_name
 		boolean is_self_employed
 		boolean pre_populated
+		date selected_months
 		string state
 		string street_address
 		string street_address_line_2

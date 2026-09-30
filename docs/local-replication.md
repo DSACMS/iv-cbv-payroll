@@ -87,6 +87,7 @@ essentials for a working local app are the payroll-provider sandbox keys:
 | `ARGYLE_API_TOKEN_SANDBOX_ID` | Argyle Console |
 | `ARGYLE_API_TOKEN_SANDBOX_SECRET` | Argyle Console |
 | `ARGYLE_SANDBOX_WEBHOOK_SECRET` | Generate one: `openssl rand -hex 64` |
+| `NSC_DISABLED` | (Optional) Defaults to `true` (self-attestation only). Set to `false` to enable the data-backed NSC education flow. |
 
 Some values (`NEWRELIC_KEY`, `MIXPANEL_TOKEN`, `SLACK_TEST_EMAIL`, and others)
 should be obtained from a teammate — they're kept in Nava's 1Password under
@@ -140,8 +141,11 @@ Once the server is running, you can exercise the full flow with sandbox data
 
 ## Optional: test the outbound JSON API
 
-To exercise the income-report transmission API (see
-[`docs/api/income-report.md`](/docs/api/income-report.md)) against a local
+<!-- Remove this link-check exception after the first reviewed deployment. -->
+<!-- markdown-link-check-disable-next-line -->
+See the [public Emmy Platform API documentation](https://DSACMS.github.io/iv-cbv-payroll/index.html)
+for platform API integration guidance. Outbound report transmission is documented
+separately. To exercise the income-report transmission API against a local
 reference receiver:
 
 ```bash
@@ -162,7 +166,7 @@ Then point the Emmy App at the receiver (running on port 4567) by adding the
 `SANDBOX_ACTIVITY_DOCUMENTS_API_URL=http://localhost:4567/documents`.
 
 To transmit the community engagement activity report (see
-[`docs/api/ce-activity-report.md`](/docs/api/ce-activity-report.md)) instead, set
+[the CE activity report API documentation](/docs/api/ce-activity-report.md)) instead, set
 `SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=json` and
 `SANDBOX_ACTIVITY_JSON_API_URL=http://localhost:4567/activities`. The receiver
 writes the report to `app/tmp/transmitted_activity_report.json`.

@@ -95,6 +95,29 @@ RSpec.describe Cbv::EmployerSearchesController do
       end
     end
 
+    context "popular payroll providers" do
+      before do
+        pinwheel_stub_request_items_response
+        argyle_stub_request_employer_search_response("bob")
+      end
+
+      render_views
+
+      it "labels popular payroll provider buttons" do
+        get :show, params: { type: "payroll" }
+
+        provider_name = ProviderSearchService::TOP_PROVIDERS.first[:name]
+        expected_label = I18n.t(
+          "cbv.employer_searches.show.select_employer",
+          name: provider_name
+        )
+
+        expect(Capybara.string(response.body)).to have_selector(
+          %(button[data-is-default-option="true"][aria-label="#{expected_label}"])
+        )
+      end
+    end
+
     context "when there are search results" do
       before do
         pinwheel_stub_request_items_response
@@ -106,6 +129,12 @@ RSpec.describe Cbv::EmployerSearchesController do
       it "renders successfully" do
         get :show, params: { query: "results" }
         expect(response).to be_successful
+      end
+
+      it "has aria-labels for each employer button" do
+        get :show, params: { query: "results" }
+        expect(response.body).to include('aria-label="Select Walgreens"')
+        expect(response.body).to include('aria-label="Select Greens Group"')
       end
 
       it "tracks a Mixpanel event" do
@@ -169,6 +198,46 @@ RSpec.describe Cbv::EmployerSearchesController do
           expect(response.body).to include(I18n.t("cbv.employer_searches.show.no_results_steps_title"))
         end
       end
+    end
+  end
+
+  describe "when an employer search times out" do
+    let(:cbv_flow) { create(:cbv_flow, :invited) }
+
+    before do
+      session[:flow_id] = cbv_flow.id
+
+      allow(controller).to receive(:provider_search)
+        .and_raise(Faraday::TimeoutError)
+    end
+
+    it "redirects to the employer search with a timeout alert" do
+      get :show, params: { query: "test-business" }
+
+      expect(response).to have_http_status(:found)
+      expect(response).to redirect_to(cbv_flow_employer_search_path)
+
+      expect(flash[:slim_alert]).to eq(
+        type: "error",
+        message_html: I18n.t(
+          "cbv.employer_searches.show.error_search_timeout"
+        )
+      )
+    end
+
+    it "uses the Spanish timeout message when the locale is Spanish" do
+      get :show,
+          params: { query: "test-business" },
+          session: { locale: "es" }
+
+
+      expect(flash[:slim_alert]).to eq(
+        type: "error",
+        message_html: I18n.t(
+          "cbv.employer_searches.show.error_search_timeout",
+          locale: :es
+        )
+      )
     end
   end
 end

@@ -30,7 +30,7 @@
 <%# i18n-tasks-use t('activities.education.hours_input.continue') %>
 <%# i18n-tasks-use t('activities.education.hours_input.description') %>
 <%# i18n-tasks-use t('activities.education.hours_input.description_multi_month') %>
-<% content_for :title, local_assigns[:title] || t("#{t_scope}.title") %>
+<% content_for :title, t("#{t_scope}.title") %>
 
 <% if months.length > 1 %>
   <p class="month-indicator">
@@ -76,14 +76,6 @@
                 month: l(current_month, format: :month_year)),
               class: "usa-checkbox__label" %>
       </div>
-    <% end %>
-
-    <% if local_assigns[:show_gross_income] %>
-      <%= f.currency_field :gross_income,
-            label: t("#{t_scope}.gross_income_label", month: l(current_month, format: :month_year)),
-            label_class: "text-bold",
-            hint: t("#{t_scope}.gross_income_hint"),
-            data: { hours_input_target: "grossIncomeField", action: "input->hours-input#input" } %>
     <% end %>
 
     <%= f.text_field :hours, type: :number, step: "any",

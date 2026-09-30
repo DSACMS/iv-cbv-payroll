@@ -7,10 +7,93 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
-## 0.5.0
+## 0.9.0
+
+### User facing changes to Emmy Income + Emmy CE
+- Handle employer search timeouts gracefully [(#2101)](https://github.com/DSACMS/iv-cbv-payroll/pull/2101) - Jake Wheeler [[FFS-4849]](https://jiraent.cms.gov/browse/FFS-4849)
+- No ticket: add asset to allow PDF to render [(#2100)](https://github.com/DSACMS/iv-cbv-payroll/pull/2100) - Tim Miller
+- Update Argyle FLOW_ID to new account's flow [(#2079)](https://github.com/DSACMS/iv-cbv-payroll/pull/2079) - Tom Dooner [[FFS-4843]](https://jiraent.cms.gov/browse/FFS-4843)
+- Set the default CBV invitation link expiration to 75 days for the Louisiana (LA) agency [(#2082)](https://github.com/DSACMS/iv-cbv-payroll/pull/2082) - Jake Wheeler [[FFS-4830]](https://jiraent.cms.gov/browse/FFS-4830)
 
 ### Emmy Income only user facing changes
 - No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Update month selection and monthly details pages for unpaid/in-kind work in Emmy CE manual reporting flow [(#2111)](https://github.com/DSACMS/iv-cbv-payroll/pull/2111) - Daphne Gold [[FFS-4807]](https://jiraent.cms.gov/browse/FFS-4807)
+- Add an environment variable to disable NSC in a given environment, forcing the Education flow to self-attestation only. [(#2047)](https://github.com/DSACMS/iv-cbv-payroll/pull/2047) - krista-skylight [[FFS-4713]](https://jiraent.cms.gov/browse/FFS-4713)
+- Add headers to outbound document API [(#2102)](https://github.com/DSACMS/iv-cbv-payroll/pull/2102) - Daphne Gold [[FFS-4847]](https://jiraent.cms.gov/browse/FFS-4847)
+- update v2 with latest [(#2105)](https://github.com/DSACMS/iv-cbv-payroll/pull/2105) - Chris [[FFS-4853]](https://jiraent.cms.gov/browse/FFS-4853)
+- Remove prefilled activities [(#2070)](https://github.com/DSACMS/iv-cbv-payroll/pull/2070) - Chris [[FFS-4798]](https://jiraent.cms.gov/browse/FFS-4798)
+- File type and max size settings for LA [(#2098)](https://github.com/DSACMS/iv-cbv-payroll/pull/2098) - Daphne Gold [[FFS-4846]](https://jiraent.cms.gov/browse/FFS-4846)
+- Create v2 Invitations API separate endpoints [(#2078)](https://github.com/DSACMS/iv-cbv-payroll/pull/2078) - Chris [[FFS-4797]](https://jiraent.cms.gov/browse/FFS-4797)
+- Create Aggregators::Sdk::NscFdshService for FDSH NSC test connection [(#2058)](https://github.com/DSACMS/iv-cbv-payroll/pull/2058) - Tom Dooner [[FFS-4711]](https://jiraent.cms.gov/browse/FFS-4711)
+- Change content on employment information page for unpaid/in-kind work in Emmy CE manual reporting flow [(#2081)](https://github.com/DSACMS/iv-cbv-payroll/pull/2081) - Daphne Gold [[FFS-4805]](https://jiraent.cms.gov/browse/FFS-4805)
+
+### Other/Maintenance (Not user facing)
+- Bump vite, sass, @rails/actioncable, newrelic_rpm, parallel_tests, aws-sdk-s3, datadog, prettier, rubocop, autoprefixer, webpack, jsdom, vitest, datadog, prettier, faraday, go.opentelemetry.io/otel/sdk, aws-sdk-s3
+- Create employment activity flow data model [(#2106)](https://github.com/DSACMS/iv-cbv-payroll/pull/2106) - Chris [[FFS-4855]](https://jiraent.cms.gov/browse/FFS-4855)
+- Fix redaction for Argyle accounts linked previously [(#2097)](https://github.com/DSACMS/iv-cbv-payroll/pull/2097) - Tom Dooner [[FFS-4843]](https://jiraent.cms.gov/browse/FFS-4843)
+- Fix Axe failures in E2E tests from Turbo navigation [(#2099)](https://github.com/DSACMS/iv-cbv-payroll/pull/2099) - Tim Miller
+- Update markdown link checker to retry on 429 status [(#2108)](https://github.com/DSACMS/iv-cbv-payroll/pull/2108) - Tom Dooner
+- Patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore [(#2109)](https://github.com/DSACMS/iv-cbv-payroll/pull/2109) - github-actions[bot]
+- No ticket: update AI attestation template [(#2103)](https://github.com/DSACMS/iv-cbv-payroll/pull/2103) - Tim Miller
+- Add scripts to enable site alert and maintenance mode [(#2094)](https://github.com/DSACMS/iv-cbv-payroll/pull/2094) - Tom Dooner [[FFS-4841]](https://jiraent.cms.gov/browse/FFS-4841)
+- Release 0.8.0 [(#2096)](https://github.com/DSACMS/iv-cbv-payroll/pull/2096) - Tom Dooner
+
+## 0.8.0
+
+### User facing changes to Emmy Income + Emmy CE
+- Update Argyle FLOW_ID to new account's flow [(#2079)](https://github.com/DSACMS/iv-cbv-payroll/pull/2079) - Tom Dooner [[FFS-4843]](https://jiraent.cms.gov/browse/FFS-4843)
+- Set the default CBV invitation link expiration to 75 days for the Louisiana (LA) agency [(#2082)](https://github.com/DSACMS/iv-cbv-payroll/pull/2082) - Jake Wheeler [[FFS-4830]](https://jiraent.cms.gov/browse/FFS-4830)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Change content on employment information page for unpaid/in-kind work in Emmy CE manual reporting flow [(#2081)](https://github.com/DSACMS/iv-cbv-payroll/pull/2081) - Daphne Gold [[FFS-4805]](https://jiraent.cms.gov/browse/FFS-4805)
+
+### Other/Maintenance (Not user facing)
+- Bump aws-sdk-s3
+
+## 0.7.0
+
+### User facing changes to Emmy Income + Emmy CE
+- Alternate text for images [(#2050)](https://github.com/DSACMS/iv-cbv-payroll/pull/2050) - Chris [[FFS-4819]](https://jiraent.cms.gov/browse/FFS-4819)
+- Make alerts accessible [(#2055)](https://github.com/DSACMS/iv-cbv-payroll/pull/2055) - Chris [[FFS-4818]](https://jiraent.cms.gov/browse/FFS-4818)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Update monthly details pages for paid work in Emmy CE manual reporting flow [(#2077)](https://github.com/DSACMS/iv-cbv-payroll/pull/2077) - Daphne Gold [[FFS-4822]](https://jiraent.cms.gov/browse/FFS-4822)
+- Implement Education "Other" page (and its radio button) [(#2076)](https://github.com/DSACMS/iv-cbv-payroll/pull/2076) - krista-skylight [[FFS-4792]](https://jiraent.cms.gov/browse/FFS-4792)
+
+### Other/Maintenance (Not user facing)
+- Trigger AI workflows when draft PRs are ready for review [(#2080)](https://github.com/DSACMS/iv-cbv-payroll/pull/2080) - Daphne Gold
+- No ticket: v0.6.0 version bump [(#2074)](https://github.com/DSACMS/iv-cbv-payroll/pull/2074) - Tim Miller
+
+## 0.6.0
+
+### Emmy Income only user facing changes
+- No changes!
+
+### Emmy CE only user facing changes
+- Add month selection page to Emmy CE Employment flow [(#2071)](https://github.com/DSACMS/iv-cbv-payroll/pull/2071) - Daphne Gold [[FFS-4804]](https://jiraent.cms.gov/browse/FFS-4804)
+- Implement Education type selection screen [(#2057)](https://github.com/DSACMS/iv-cbv-payroll/pull/2057) - krista-skylight [[FFS-4791]](https://jiraent.cms.gov/browse/FFS-4791)
+- Create ActivityJsonTransmitter (with the 2 self-attested activity types) [(#2031)](https://github.com/DSACMS/iv-cbv-payroll/pull/2031) - Ben Calegari [[FFS-4768]](https://jiraent.cms.gov/browse/FFS-4768)
+- FFS-4803: Update content on "Choose how you want to add your work" page on Emmy CE Employment flow, Update helper text on employment information page for paid work in Emmy CE manual reporting flow [(#2052)](https://github.com/DSACMS/iv-cbv-payroll/pull/2052) - Daphne Gold [[FFS-4802]](https://jiraent.cms.gov/browse/FFS-4802)
+
+### Other/Maintenance (Not user facing)
+- Create v2 invitations api [(#2033)](https://github.com/DSACMS/iv-cbv-payroll/pull/2033) - Chris [[FFS-4796]](https://jiraent.cms.gov/browse/FFS-4796)
+- Bump aws-sdk-s3, vite, happy-dom, autoprefixer, postcss, sass, net-imap, selenium-webdriver, mission_control-jobs, css_parser
+- fix: app/analytics/requirements.txt to reduce vulnerabilities [(#2072)](https://github.com/DSACMS/iv-cbv-payroll/pull/2072) - Tim Miller
+- Remove bencalegari from reviewer lottery [(#2056)](https://github.com/DSACMS/iv-cbv-payroll/pull/2056) - krista-skylight
+- Add environment selection to deploy script [(#2049)](https://github.com/DSACMS/iv-cbv-payroll/pull/2049) - Tom Dooner [[FFS-4794]](https://jiraent.cms.gov/browse/FFS-4794)
+
+## 0.5.0
+
+### Emmy Income only user facing changes
+- No changes!
 
 ### Emmy CE only user facing changes
 - CE PDF Implementation [(#2035)](https://github.com/DSACMS/iv-cbv-payroll/pull/2035) - Daphne Gold [[FFS-4718]](https://jiraent.cms.gov/browse/FFS-4718)
@@ -44,7 +127,7 @@ integrations, and are accompanied by a notification.
 ## 0.2.0
 
 ### Emmy Income only user facing changes
-- No changes, nothing to review!
+- No changes!
 
 ### Emmy CE only user facing changes
 - Add two more URLs for accenture iframe [(#1961)](https://github.com/DSACMS/iv-cbv-payroll/pull/1961) - Tom Dooner

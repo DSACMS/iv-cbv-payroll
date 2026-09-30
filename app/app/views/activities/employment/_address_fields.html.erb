@@ -1,0 +1,11 @@
+<%= f.text_field :street_address,
+      label: t("activities.employment_info.street_address"),
+      hint: t("activities.employment_info.street_address_hint") %>
+<%= f.text_field :street_address_line_2,
+      label: t("activities.employment_info.street_address_line_2"),
+      optional: true %>
+<%= f.text_field :city, label: t("activities.employment_info.city") %>
+<%= f.combo_box :state,
+      us_state_and_territory_options,
+      { label: t("activities.employment_info.state") } %>
+<%= f.text_field :zip_code, label: t("activities.employment_info.zip_code"), width: "lg" %>

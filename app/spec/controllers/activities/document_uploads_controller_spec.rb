@@ -69,6 +69,32 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       )
       expect(ordered_elements.map { |element| element[:"data-document-upload-target"] })
         .to eq([ "listSection", "input" ])
+      expect(upload_form[:"data-document-upload-error-empty-value"])
+        .to eq(I18n.t("activities.document_uploads.new.errors.empty"))
+      expect(upload_form[:"data-document-upload-error-multiple-files-value"])
+        .to eq(I18n.t("activities.document_uploads.new.errors.multiple_files"))
+    end
+
+    it "uses the current agency's document upload configuration" do
+      volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
+      create(:volunteering_activity_month, volunteering_activity: volunteering_activity, hours: 6)
+      client_agency = Rails.application.config.client_agencies[activity_flow.cbv_applicant.client_agency_id]
+      allowed_content_types = client_agency.allowed_document_content_types.join(",")
+      allowed_types = controller.helpers.document_upload_allowed_types_sentence(client_agency)
+
+      get :new, params: { community_service_id: volunteering_activity.id }
+
+      rendered = Capybara.string(response.body)
+      upload_form = rendered.find("form[data-controller='document-upload']", visible: :all)
+      file_input = upload_form.find("input[type='file']", visible: :all)
+
+      expect(upload_form[:"data-document-upload-max-file-size-value"])
+        .to eq(client_agency.max_document_upload_size_bytes.to_s)
+      expect(upload_form[:"data-document-upload-allowed-types-value"]).to eq(allowed_content_types)
+      expect(file_input[:accept]).to eq(allowed_content_types)
+      expect(rendered).to have_text(
+        I18n.t("activities.document_uploads.new.input_hint", types: allowed_types)
+      )
     end
 
     it "shows the Save changes label and preserves from_review in the form action when from_review is set" do
@@ -152,7 +178,70 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         )
       )
       expect(response.body).to include(activities_flow_income_employment_document_uploads_path)
+      expect(Capybara.string(response.body)).to have_selector(
+        "button", text: I18n.t("activities.document_uploads.new.suggestion_title")
+      )
       expect(response.body).to include(I18n.t("activities.employment.document_upload_suggestion_text_html"))
+    end
+
+    it "renders only selected employment months in chronological order" do
+      tokenized_flow = create(
+        :activity_flow,
+        activity_flow_invitation: create(:activity_flow_invitation),
+        reporting_window_months: 3
+      )
+      session[:flow_id] = tokenized_flow.id
+      employment_activity = create(:employment_activity, activity_flow: tokenized_flow)
+      first_month, second_month, third_month = tokenized_flow.reporting_months
+      employment_activity.update!(selected_months: [ third_month, first_month ])
+      [ third_month, second_month, first_month ].each do |month|
+        create(:employment_activity_month, employment_activity: employment_activity, month: month)
+      end
+
+      get :new, params: { employment_id: employment_activity.id }
+
+      rendered = Capybara.string(response.body)
+      displayed_months = rendered.all("main li strong").map(&:text)
+      expect(displayed_months).to eq([
+        I18n.l(first_month, format: :month),
+        I18n.l(third_month, format: :month)
+      ])
+      expect(rendered).to have_no_text(I18n.l(second_month, format: :month))
+    end
+
+    it "renders selected unpaid work months with hours and supporting document guidance" do
+      tokenized_flow = create(
+        :activity_flow,
+        activity_flow_invitation: create(:activity_flow_invitation),
+        reporting_window_months: 3
+      )
+      session[:flow_id] = tokenized_flow.id
+      employment_activity = create(:employment_activity, activity_flow: tokenized_flow, compensation_type: :unpaid_or_in_kind)
+      first_month, second_month, third_month = tokenized_flow.reporting_months
+      employment_activity.update!(selected_months: [ third_month, first_month ])
+      [ [ first_month, 12 ], [ second_month, 99 ], [ third_month, 8 ] ].each do |month, hours|
+        create(:employment_activity_month, employment_activity: employment_activity, month: month, hours: hours, gross_income: 500)
+      end
+
+      get :new, params: { employment_id: employment_activity.id }
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text(
+        "#{I18n.l(first_month, format: :month)} (#{I18n.t("shared.hours", count: 12)})",
+        normalize_ws: true
+      )
+      expect(rendered).to have_text(
+        "#{I18n.l(third_month, format: :month)} (#{I18n.t("shared.hours", count: 8)})",
+        normalize_ws: true
+      )
+      expect(rendered).to have_no_text(I18n.l(second_month, format: :month))
+      expect(rendered).to have_no_text(ActiveSupport::NumberHelper.number_to_currency(500))
+      expect(rendered).to have_selector(
+        "button", text: I18n.t("activities.employment.unpaid_or_in_kind.document_upload_suggestion_title")
+      )
+      expect(response.body).to include(
+        I18n.t("activities.employment.unpaid_or_in_kind.document_upload_suggestion_text_html")
+      )
     end
 
     it "renders the upload form for a partially self-attested education activity" do
@@ -337,7 +426,8 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       let(:checksum) { Digest::SHA256.base64digest("%PDF-1.4") }
 
       let(:signed_id) do
-        PresignedUploadService.new.call([
+        client_agency = Rails.application.config.client_agencies[activity_flow.cbv_applicant.client_agency_id]
+        PresignedUploadService.new(client_agency: client_agency).call([
           { filename: "verification.pdf", content_type: "application/pdf", byte_size: 8, checksum: checksum }
         ]).first[:signed_id]
       end

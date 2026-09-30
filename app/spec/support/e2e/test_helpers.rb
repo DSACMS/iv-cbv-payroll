@@ -79,7 +79,11 @@ module E2e
       CbvFlow.last.update(end_user_id: Random.new(cassette_name_as_integer).uuid)
     end
 
-    def wait_for_idle(page)
+    def wait_for_idle(page, wait: Capybara.default_max_wait_time)
+      # Wait for Turbo to clear aria-busy from <html> before waiting for the
+      # browser to finish any remaining work after the visit completes.
+      expect(page).to have_no_selector(:xpath, "/html[@aria-busy]", wait: wait)
+
       page.driver.browser.execute_async_script(<<~JS)
         const callback = arguments[arguments.length - 1];
         window.requestIdleCallback(callback, { timeout: 2000 });

@@ -89,7 +89,7 @@ GEM
       aws-sdk-ses (~> 1, >= 1.50.0)
       aws-sdk-sesv2 (~> 1, >= 1.34.0)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1287.0)
+    aws-partitions (1.1290.0)
     aws-sdk-core (3.257.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -108,7 +108,7 @@ GEM
     aws-sdk-rds (1.310.0)
       aws-sdk-core (~> 3, >= 3.244.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.232.0)
+    aws-sdk-s3 (1.232.2)
       aws-sdk-core (~> 3, >= 3.256.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -170,10 +170,10 @@ GEM
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
     csv (3.3.6)
-    datadog (2.41.0)
+    datadog (2.43.0)
       cgi
-      datadog-ruby_core_source (~> 3.5, >= 3.5.4)
-      libdatadog (~> 40.0.0.1.0)
+      datadog-ruby_core_source (~> 3.5, >= 3.5.5)
+      libdatadog (~> 40.0.0.2.0)
       libddwaf (~> 1.30.0.0.0)
       logger
       msgpack
@@ -215,7 +215,7 @@ GEM
       activesupport (>= 6.1.0)
     faker (3.8.0)
       i18n (>= 1.8.11, < 2)
-    faraday (2.14.3)
+    faraday (2.14.4)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -271,16 +271,19 @@ GEM
       railties (>= 6.0.0)
     json (2.21.2)
     json-logic-rb (0.3.0)
+    json-schema (6.2.0)
+      addressable (~> 2.8)
+      bigdecimal (>= 3.1, < 5)
     json_schemer (2.5.0)
       bigdecimal
       hana (~> 1.3)
       regexp_parser (~> 2.0)
       simpleidn (~> 0.2)
     language_server-protocol (3.17.0.6)
-    libdatadog (40.0.0.1.0)
-    libdatadog (40.0.0.1.0-aarch64-linux)
-    libdatadog (40.0.0.1.0-arm64-darwin)
-    libdatadog (40.0.0.1.0-x86_64-linux)
+    libdatadog (40.0.0.2.0)
+    libdatadog (40.0.0.2.0-aarch64-linux)
+    libdatadog (40.0.0.2.0-arm64-darwin)
+    libdatadog (40.0.0.2.0-x86_64-linux)
     libddwaf (1.30.0.0.2-aarch64-linux)
       ffi (~> 1.0)
     libddwaf (1.30.0.0.2-arm64-darwin)
@@ -334,7 +337,7 @@ GEM
       base64
       json-logic-rb (~> 0.2)
       mutex_m
-    msgpack (1.8.4)
+    msgpack (1.8.5)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     mutex_m (0.3.0)
@@ -352,7 +355,7 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     net-ssh (7.3.3)
-    newrelic_rpm (10.7.1)
+    newrelic_rpm (10.8.0)
       logger
     nio4r (2.7.5)
     nokogiri (1.19.4-aarch64-linux-gnu)
@@ -366,7 +369,7 @@ GEM
     orm_adapter (0.5.0)
     ostruct (0.6.3)
     parallel (2.2.0)
-    parallel_tests (5.7.0)
+    parallel_tests (5.8.0)
       parallel
     parser (3.3.12.0)
       ast (~> 2.4.1)
@@ -482,7 +485,7 @@ GEM
       redis-client (= 0.30.1)
     redis-client (0.30.1)
       connection_pool
-    regexp_parser (2.12.0)
+    regexp_parser (2.13.0)
     reline (0.7.0)
       io-console (~> 0.5)
     responders (3.2.0)
@@ -508,7 +511,12 @@ GEM
       rspec-mocks (>= 3.13.0, < 5.0.0)
       rspec-support (>= 3.13.0, < 5.0.0)
     rspec-support (3.13.7)
-    rubocop (1.90.0)
+    rswag-specs (2.17.0)
+      activesupport (>= 5.2, < 8.2)
+      json-schema (>= 2.2, < 7.0)
+      railties (>= 5.2, < 8.2)
+      rspec-core (>= 2.14)
+    rubocop (1.91.0)
       json (>= 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -596,9 +604,9 @@ GEM
       railties (>= 7.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (3.2.0)
-      unicode-emoji (~> 4.1)
-    unicode-emoji (4.2.0)
+    unicode-display_width (3.3.0)
+      unicode-emoji (~> 4.3)
+    unicode-emoji (4.3.0)
     uri (1.1.1)
     useragent (0.16.11)
     vcr (6.4.0)
@@ -657,7 +665,7 @@ DEPENDENCIES
   css_parser (~> 3.1.0)
   cssbundling-rails
   csv
-  datadog (~> 2.41)
+  datadog (~> 2.43)
   debase (~> 0.2.9)
   debase-ruby_core_source (~> 4.0)
   debug
@@ -668,7 +676,7 @@ DEPENDENCIES
   erb_lint
   factory_bot (~> 6.6)
   faker (~> 3.8)
-  faraday (~> 2.14.2)
+  faraday (~> 2.14.4)
   gpgme (~> 2.0)
   i18n-tasks (~> 1.1)
   jbuilder
@@ -683,7 +691,7 @@ DEPENDENCIES
   net-sftp
   net-ssh
   newrelic_rpm
-  parallel_tests (~> 5.5)
+  parallel_tests (~> 5.8)
   pdf-reader (~> 2.16.0)
   pg (~> 1.6)
   pg-aws_rds_iam (~> 0.8.0)
@@ -699,6 +707,7 @@ DEPENDENCIES
   redis (~> 6.0)
   rexml (~> 3.4.2)
   rspec-rails (~> 8.0)
+  rswag-specs (~> 2.17)
   rubocop
   rubocop-rails-omakase
   rubocop-rspec

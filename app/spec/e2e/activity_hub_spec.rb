@@ -173,12 +173,23 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     flow = ActivityFlow.last
     employer_name = "Gainesville Wrecking"
-    flow.reporting_months.each do |month|
-      verify_page(page, title: I18n.t("activities.employment.hours_input.heading",
-        month: I18n.l(month, format: :month_year),
-        organization: employer_name))
-      fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: I18n.l(month, format: :month_year)), with: "500"
-      fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(month, format: :month_year)), with: "40"
+    total_months = flow.reporting_months.length
+    flow.reporting_months.each_with_index do |month, index|
+      month_name = I18n.l(month, format: :month)
+      # The employment hours_input heading doesn't include the month (unlike
+      # community_service/work_programs), so verify_page's title check can't
+      # tell this page apart from the previous month's page. Wait for the
+      # month indicator, which does change, to make sure we're actually on
+      # the new page before verify_page runs its axe check.
+      expect(page).to have_content(
+        I18n.t("activities.employment.hours_input.month_indicator", current: index + 1, total: total_months)
+      )
+      verify_page(page, title: I18n.t(
+        "activities.employment.hours_input.heading",
+        organization: employer_name
+      ))
+      fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: month_name), with: "500"
+      fill_in I18n.t("activities.employment.hours_input.hours_label", month: month_name), with: "40"
       click_button I18n.t("activities.employment.hours_input.continue")
     end
 

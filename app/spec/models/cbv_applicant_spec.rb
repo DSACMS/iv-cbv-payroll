@@ -4,13 +4,13 @@ RSpec.describe CbvApplicant, type: :model do
   describe ".valid_attributes_for_agency" do
     ClientAgencyConfig.client_agencies.client_agency_ids.each do |client_agency_id|
       it "derives a list from config for #{client_agency_id}" do
-        expect(described_class.valid_attributes_for_agency(client_agency_id)).to be_present
+        expect(described_class.valid_attributes_for_agency(client_agency_id, version: :v1)).to be_present
       end
 
       it "matches the config applicant_attributes keys for #{client_agency_id}" do
         expected = ClientAgencyConfig.client_agencies[client_agency_id]
           .applicant_attributes.keys.map(&:to_sym)
-        expect(described_class.valid_attributes_for_agency(client_agency_id)).to eq(expected)
+        expect(described_class.valid_attributes_for_agency(client_agency_id, version: :v1)).to eq(expected)
       end
     end
   end

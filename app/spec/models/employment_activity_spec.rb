@@ -1,6 +1,38 @@
 require "rails_helper"
 
 RSpec.describe EmploymentActivity, type: :model do
+  describe "compensation type" do
+    it "defaults to paid work" do
+      expect(build(:employment_activity)).to be_paid
+    end
+
+    it "supports unpaid or in-kind work" do
+      expect(build(:employment_activity, compensation_type: :unpaid_or_in_kind)).to be_unpaid_or_in_kind
+    end
+  end
+
+  describe "employer name validation" do
+    it "uses the employer or business error for paid work" do
+      activity = build(:employment_activity, employer_name: "")
+
+      activity.validate
+
+      expect(activity.errors[:employer_name]).to contain_exactly(
+        I18n.t("activities.employment_info.employer_name_error")
+      )
+    end
+
+    it "uses the work-focused error for unpaid or in-kind work" do
+      activity = build(:employment_activity, compensation_type: :unpaid_or_in_kind, employer_name: "")
+
+      activity.validate
+
+      expect(activity.errors[:employer_name]).to contain_exactly(
+        I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name_error")
+      )
+    end
+  end
+
   it "has fields for employer information" do
     activity = create(:employment_activity, employer_name: "Acme Corp")
 
@@ -75,6 +107,90 @@ RSpec.describe EmploymentActivity, type: :model do
     end
   end
 
+  describe "#requires_month_selection?" do
+    it "is false for a one-month tokenized application" do
+      flow = create(
+        :activity_flow,
+        activity_flow_invitation: create(:activity_flow_invitation),
+        reporting_window_type: "application",
+        reporting_window_months: 1
+      )
+      activity = create(:employment_activity, activity_flow: flow)
+
+      expect(activity.requires_month_selection?).to be false
+    end
+
+    it "is true for a multi-month tokenized application" do
+      flow = create(
+        :activity_flow,
+        activity_flow_invitation: create(:activity_flow_invitation),
+        reporting_window_type: "application",
+        reporting_window_months: 2
+      )
+      activity = create(:employment_activity, activity_flow: flow)
+
+      expect(activity.requires_month_selection?).to be true
+    end
+
+    it "is true for a one-month tokenized renewal" do
+      flow = create(
+        :activity_flow,
+        activity_flow_invitation: create(:activity_flow_invitation),
+        reporting_window_type: "renewal",
+        reporting_window_months: 1,
+        renewal_required_months: 1
+      )
+      activity = create(:employment_activity, activity_flow: flow)
+
+      expect(activity.requires_month_selection?).to be true
+    end
+
+    it "is false for a generic flow" do
+      activity = create(:employment_activity, activity_flow: create(:activity_flow, activity_flow_invitation: nil))
+
+      expect(activity.requires_month_selection?).to be false
+    end
+  end
+
+  describe "#months_to_report" do
+    let(:activity_flow) do
+      create(
+        :activity_flow,
+        activity_flow_invitation: create(:activity_flow_invitation),
+        reporting_window_months: 3
+      )
+    end
+    let(:activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it "returns selected months in chronological order for a tokenized flow" do
+      first_month, _second_month, third_month = activity_flow.reporting_months
+      activity.update!(selected_months: [ third_month, first_month ])
+
+      expect(activity.months_to_report).to eq([ first_month, third_month ])
+    end
+
+    it "requires an explicit selection for a tokenized activity" do
+      first_month, _second_month, third_month = activity_flow.reporting_months
+      create(:employment_activity_month, employment_activity: activity, month: third_month)
+      create(:employment_activity_month, employment_activity: activity, month: first_month)
+
+      expect(activity.months_to_report).to be_empty
+    end
+
+    it "returns the reporting month for a one-month tokenized application" do
+      activity_flow.update!(reporting_window_type: "application", reporting_window_months: 1)
+
+      expect(activity.months_to_report).to eq(activity_flow.reporting_months)
+    end
+
+    it "returns every reporting month for a generic flow" do
+      generic_flow = create(:activity_flow, activity_flow_invitation: nil, reporting_window_months: 3)
+      generic_activity = create(:employment_activity, activity_flow: generic_flow)
+
+      expect(generic_activity.months_to_report).to eq(generic_flow.reporting_months)
+    end
+  end
+
   describe "#document_upload_details_for_month" do
     let(:activity_flow) { create(:activity_flow, reporting_window_months: 1) }
     let(:activity) { create(:employment_activity, activity_flow: activity_flow) }
@@ -83,9 +199,21 @@ RSpec.describe EmploymentActivity, type: :model do
       month = activity_flow.reporting_months.first.beginning_of_month
       month_record = create(:employment_activity_month, employment_activity: activity, month: month, hours: 12)
 
-      expect(ApplicationHelper).to receive(:format_decimal_amount).with(month_record.hours).and_call_original
+      expected_details = I18n.t(
+        "activities.employment.document_upload_month_detail",
+        gross_income: ActiveSupport::NumberHelper.number_to_currency(month_record.gross_income),
+        hours: I18n.t("shared.hours", count: 12)
+      )
 
-      activity.document_upload_details_for_month(month)
+      expect(activity.document_upload_details_for_month(month)).to eq(expected_details)
+    end
+
+    it "returns only hours for unpaid or in-kind work" do
+      activity.update!(compensation_type: :unpaid_or_in_kind)
+      month = activity_flow.reporting_months.first.beginning_of_month
+      create(:employment_activity_month, employment_activity: activity, month: month, hours: 12, gross_income: 500)
+
+      expect(activity.document_upload_details_for_month(month)).to eq(I18n.t("shared.hours", count: 12))
     end
   end
 

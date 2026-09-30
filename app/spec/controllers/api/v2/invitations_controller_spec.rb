@@ -14,12 +14,12 @@ RSpec.describe Api::V2::InvitationsController do
 
     let(:valid_params) do
       attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
-        params[:type] = "income"
+        params[:invitation_type] = "community-engagement"
+        params[:verification_range] = "last_complete_month"
         params[:agency_partner_metadata] = attributes_for(:cbv_applicant, client_agency_id)
+        params[:agency_partner_metadata][:individual_id] = "ABC1234"
         params[:agency_partner_metadata][:first_name] = "John"
         params[:agency_partner_metadata][:last_name] = "Doe"
-        params[:agency_partner_metadata][:case_number] = "123456789"
-        params[:agency_partner_metadata][:date_of_birth] = "1990-01-01"
         # ensure that client_agency_id is not considered a valid param. it should be inferred from the api token
         params[:agency_partner_metadata].delete(:client_agency_id)
         params.delete(:client_agency_id)
@@ -30,24 +30,9 @@ RSpec.describe Api::V2::InvitationsController do
       request.headers["Authorization"] = "Bearer #{api_access_token_instance.access_token}"
     end
 
-    it "returns a 400 error for an invalid invitation type" do
-      invalid_params = valid_params.merge(type: "invalid_type")
-      post :create, params: invalid_params
-
-      expect(response).to have_http_status(:bad_request)
-      expect(JSON.parse(response.body)).to eq("error" => "Invalid invitation type")
-    end
-
-    it "returns 400 when type is missing" do
-      post :create, params: valid_params.except(:type)
-
-      expect(response).to have_http_status(:bad_request)
-      expect(JSON.parse(response.body)).to eq("error" => "Invalid invitation type")
-    end
-
     it "creates an invitation with an associated cbv_applicant" do
       expect { create_invitation }
-          .to change(CbvFlowInvitation, :count).by(1)
+          .to change(ActivityFlowInvitation, :count).by(1)
           .and change(CbvApplicant, :count).by(1)
 
       expect(response).to have_http_status(:created)
@@ -57,10 +42,10 @@ RSpec.describe Api::V2::InvitationsController do
 
     it "creates an invitation using the client_agency_id in the access_token" do
       expect { create_invitation }
-          .to change(CbvFlowInvitation, :count).by(1)
+          .to change(ActivityFlowInvitation, :count).by(1)
           .and change(CbvApplicant, :count).by(1)
 
-      invitation = CbvFlowInvitation.last
+      invitation = ActivityFlowInvitation.last
       expect(invitation.client_agency_id).to eq(client_agency_id.to_s)
     end
 
@@ -68,21 +53,22 @@ RSpec.describe Api::V2::InvitationsController do
       let(:client_agency_id) { "la_ldh".to_sym }
       let(:valid_params) do
         attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
-          params[:type] = "income"
+          params[:invitation_type] = "community-engagement"
+          params[:verification_range] = "last_complete_month"
           params[:agency_partner_metadata] = {
-            case_number: nil,
-            date_of_birth: nil,
-            individual_id: "ABC1234"
+            individual_id: "ABC1234",
+            first_name: "John",
+            last_name: "Doe"
           }
         end
       end
 
       it "creates an invitation" do
         expect { create_invitation }
-          .to change(CbvFlowInvitation, :count).by(1)
+          .to change(ActivityFlowInvitation, :count).by(1)
           .and change(CbvApplicant, :count).by(1)
 
-        invitation = CbvFlowInvitation.last
+        invitation = ActivityFlowInvitation.last
         expect(invitation.client_agency_id).to eq(client_agency_id.to_s)
 
         applicant = invitation.cbv_applicant
@@ -95,25 +81,38 @@ RSpec.describe Api::V2::InvitationsController do
         parsed_response = JSON.parse(response.body)
         expect(parsed_response["agency_partner_metadata"]).to eq(
           "individual_id" => valid_params[:agency_partner_metadata][:individual_id],
-          "case_number" => valid_params[:agency_partner_metadata][:case_number],
-          "date_of_birth" => valid_params[:agency_partner_metadata][:date_of_birth],
+          "first_name" => valid_params[:agency_partner_metadata][:first_name],
+          "last_name" => valid_params[:agency_partner_metadata][:last_name]
         )
       end
 
-      it "returns 422 when both doc_id and individual_id are nil for income" do
-        valid_params[:agency_partner_metadata] = {
-          case_number: nil,
-          date_of_birth: nil,
-          individual_id: nil
-        }
+      %i[individual_id first_name last_name].each do |field|
+        it "returns 422 when #{field} is missing" do
+          invalid_params = valid_params.deep_dup
+          invalid_params[:agency_partner_metadata].delete(field)
 
-        post :create, params: valid_params
+          post :create, params: invalid_params
 
-        expect(response).to have_http_status(:unprocessable_content)
-        parsed_response = JSON.parse(response.body)
-        expect(parsed_response["errors"]).to include(
-          a_hash_including("message" => I18n.t("cbv.applicant_informations.la_ldh.fields.individual_id.blank"))
-        )
+          expect(response).to have_http_status(:unprocessable_content)
+
+          expect(JSON.parse(response.body)["errors"]).to include(
+            a_hash_including(
+              "field" => field.to_s,
+              "message" =>
+                I18n.t("api.v2.fields.#{field}.blank")
+            )
+          )
+        end
+      end
+
+      it "does not permit unsupported metadata fields" do
+        invalid_attribute_params = valid_params.deep_dup
+        invalid_attribute_params[:agency_partner_metadata][:case_number] = "NOT_ALLOWED"
+
+        post :create, params: invalid_attribute_params
+
+        expect(response).to have_http_status(:created)
+        expect(ActivityFlowInvitation.last.cbv_applicant.case_number).to be_nil
       end
     end
   end
