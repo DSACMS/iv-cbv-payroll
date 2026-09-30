@@ -13,6 +13,9 @@ RSpec.describe Activities::Income::EmployerSearchesController do
       session[:flow_type] = :activity
     end
 
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :show }
+
+
     render_views
 
     it "renders properly" do

@@ -37,6 +37,9 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         pinwheel_stub_request_end_user_paystubs_response
       end
 
+      it_behaves_like "an activity header controlled by employment focus", :flow, -> { get :show, params: { user: { account_id: account_id } } }
+
+
       it "renders properly" do
         get :show, params: { user: { account_id: account_id } }
 

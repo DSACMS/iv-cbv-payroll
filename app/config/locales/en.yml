@@ -298,7 +298,7 @@ en:
       add_your_work:
         show:
           description: If you held multiple jobs during the reporting period, you'll need to add each job separately.
-          header: Choose how you want to add your work
+          header: Choose how you want to add your job
           options:
             automatic:
               hint: We'll pull your hours and income from your payroll account. Works with ADP, Workday, Uber, Lyft, and most large employers.
@@ -308,7 +308,7 @@ en:
               label: Enter paid work manually
             unpaid:
               hint: Add work where you either received no income or you received housing, food, or other goods instead of money.
-              label: Enter unpaid or in-kind work
+              label: Enter in-kind work
       document_upload_month_detail: "%{gross_income}, %{hours}"
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:

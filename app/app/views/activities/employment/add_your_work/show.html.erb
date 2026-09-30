@@ -1,10 +1,11 @@
 <% content_for :title, t(".header") %>
 
-<% content_for :activity_flow_header do %>
-  <%= render ActivityFlowHeaderComponent.new(
-    title: t("activities.employment.title_singular"),
-    exit_url: activities_flow_root_path
-  ) %>
+<% unless @flow.employment_focused? %>
+  <% content_for :activity_flow_header do %>
+    <%= render ActivityFlowHeaderComponent.new(
+      title: t("activities.employment.title_singular")
+    ) %>
+  <% end %>
 <% end %>
 
 <h1><%= t(".header") %></h1>

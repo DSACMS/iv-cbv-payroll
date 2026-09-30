@@ -13,8 +13,10 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   end
 
   describe "GET #new" do
-    let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :new }
+    let(:tracked_flow) { activity_flow }
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :new }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed, extra_attributes: -> { { employment_activity_id: nil } }
 
@@ -96,9 +98,11 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   end
 
   describe "GET #edit" do
-    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
-    let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { id: employment_activity.id } }
+    let(:tracked_flow) { activity_flow }
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :edit, params: { id: employment_activity.id } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed,
       extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
@@ -430,15 +434,17 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   end
 
   describe "GET #review" do
-    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
-    let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :review, params: { id: employment_activity.id } }
+    let(:tracked_flow) { activity_flow }
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
 
     before do
       activity_flow.reporting_months.each do |month|
         create(:employment_activity_month, employment_activity: employment_activity, month: month.beginning_of_month, hours: 25, gross_income: 500)
       end
     end
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :review, params: { id: employment_activity.id } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentReviewViewed,
       extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }

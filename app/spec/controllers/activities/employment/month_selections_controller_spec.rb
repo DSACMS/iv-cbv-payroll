@@ -24,6 +24,7 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
   end
 
   describe "GET #edit" do
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :edit, params: { employment_id: employment_activity.id } }
     it "renders the page content and reporting-period months" do
       get :edit, params: { employment_id: employment_activity.id }
 

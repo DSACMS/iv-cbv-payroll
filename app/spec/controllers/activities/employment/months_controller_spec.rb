@@ -23,8 +23,10 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
   end
 
   describe "GET #edit" do
-    let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
+    let(:tracked_flow) { activity_flow }
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentMonthViewed,
       extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String) } }

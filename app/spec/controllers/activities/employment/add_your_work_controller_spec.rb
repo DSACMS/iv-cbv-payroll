@@ -67,11 +67,19 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(response.body).not_to include("hint=")
     end
 
-    it "renders the activity flow header with exit button and no back link" do
+    it "renders the activity flow header for a flow that is not employment-focused" do
       get :show
-      expect(response.body).to include(I18n.t("activities.employment.title_singular"))
-      expect(response.body).to include("exit-confirmation-modal")
-      expect(Capybara.string(response.body)).not_to have_link("Back")
+      expect(Capybara.string(response.body)).to have_selector("[data-controller='activity-flow-header']")
+    end
+
+    context "with an employment-focused flow" do
+      let(:activity_flow) { create(:activity_flow, employment_focused: true) }
+
+      it "does not render the activity flow header" do
+        get :show
+
+        expect(Capybara.string(response.body)).to have_no_selector("[data-controller='activity-flow-header']")
+      end
     end
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentAddYourWorkViewed
