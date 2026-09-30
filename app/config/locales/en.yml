@@ -1274,13 +1274,7 @@ en:
     activity_flow_timeout:
       description: Sessions end after 30 minutes of inactivity. This helps keep your information safe. Any information not submitted was not saved.
       header: Your session has timed out
-      issues:
-        description: 'If you encounter any issues, contact your benefits agency for assistance in one of the following ways:'
-        list:
-          item_1: 'Self-Service Portal: mymedicaid.la.gov'
-          item_2: 'By telephone: 1-888-342-6207'
-          item_3: 'By email: MyMedicaid@la.gov'
-          item_4: In person at the Medicaid office of your choice
+      issues: If you encounter any issues, contact your benefits agency for assistance.
       summary_box:
         description: Gather the information and documents you need to submit and either reuse the same link to start reporting again or if you're the head of household, access your link via the Self-Service Portal.
         header: What to do next

@@ -109,14 +109,8 @@ RSpec.describe PagesController do
 
       it "renders the agency contact options" do
         expect(response.body).to have_text(
-          I18n.t("pages.activity_flow_timeout.issues.description")
+          I18n.t("pages.activity_flow_timeout.issues")
         )
-
-        (1..4).each do |item|
-          expect(response.body).to have_text(
-            I18n.t("pages.activity_flow_timeout.issues.list.item_#{item}")
-          )
-        end
       end
     end
   end

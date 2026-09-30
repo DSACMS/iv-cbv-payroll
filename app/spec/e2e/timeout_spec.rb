@@ -46,7 +46,7 @@ RSpec.describe "timeout test", :js, type: :feature do
       verify_page(page, title: I18n.t("pages.activity_flow_timeout.header"))
       expect(page).to have_content(I18n.t("pages.activity_flow_timeout.description"))
       expect(page).to have_content(I18n.t("pages.activity_flow_timeout.summary_box.header"))
-      expect(page).to have_content(I18n.t("pages.activity_flow_timeout.issues.description"))
+      expect(page).to have_content(I18n.t("pages.activity_flow_timeout.issues"))
     end
   end
 end
