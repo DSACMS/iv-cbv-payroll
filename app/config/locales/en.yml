@@ -349,8 +349,15 @@ en:
         name: Name
         save: Save and add to my report
         title: Review your employment information for %{employer_name}
+        unpaid_or_in_kind:
+          additional_comments_description: Share any comments or additional information about your unpaid or in-kind work that you’d like %{agency_name} to know.
+          description: Review the information you’ve added for %{employer_name} before adding it to your Community Engagement Report.
+          work_hours: Work hours
       title: Employment
       title_singular: Employment
+      unpaid_or_in_kind:
+        document_upload_suggestion_text_html: "<ul><li>Letter of employment or contract with role, responsibilities and key dates.</li><li>Proof of employment forms from a work supervisor or employer.</li><li>Invoices sent, if self-employed.</li></ul>"
+        document_upload_suggestion_title: Suggested supporting documents
     employment_info:
       city: City
       contact_email: Employer contact email
