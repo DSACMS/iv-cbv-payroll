@@ -92,17 +92,31 @@ RSpec.describe PagesController do
         }
       end
 
-      it "renders the Emmy header and community engagement copy" do
-        expect(response.body).to have_text(I18n.t("shared.pilot_name_hr1_full"))
-        expect(response.body).to have_text(I18n.t("pages.home.activity_flow_timeout.header"))
-        expect(response.body).to have_text(I18n.t(
-          "pages.home.activity_flow_timeout.description",
-          agency_name: I18n.t("shared.agency_full_name.sandbox")
-        ))
+      it "renders the activity flow timeout page" do
+        expect(response).to render_template("pages/activity_flow_timeout")
+        expect(response.body).to have_selector(
+          "h1",
+          text: I18n.t("pages.home.activity_flow_timeout_new.header")
+        )
+        expect(response.body).to have_text(
+          I18n.t("pages.home.activity_flow_timeout_new.description")
+        )
+        expect(response.body).to have_selector(
+          ".usa-summary-box",
+          text: I18n.t("pages.home.activity_flow_timeout_new.summary_box.header")
+        )
       end
 
-      it "renders the activity flow timeout alert" do
-        expect(response.body).to include(I18n.t("pages.home.activity_flow_timeout.alert_html"))
+      it "renders the agency contact options" do
+        expect(response.body).to have_text(
+          I18n.t("pages.home.activity_flow_timeout_new.issues.description")
+        )
+
+        (1..4).each do |item|
+          expect(response.body).to have_text(
+            I18n.t("pages.home.activity_flow_timeout_new.issues.list.item_#{item}")
+          )
+        end
       end
     end
   end
