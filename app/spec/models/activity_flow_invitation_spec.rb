@@ -24,4 +24,12 @@ RSpec.describe ActivityFlowInvitation, type: :model do
       expect(invitation.to_url).to include("activities/start")
     end
   end
+
+  describe "#employment_focused" do
+    it "defaults to false" do
+      invitation = create(:activity_flow_invitation)
+
+      expect(invitation.employment_focused).to be(false)
+    end
+  end
 end
