@@ -349,7 +349,7 @@ module Aggregators
           error_body = parsed_body.is_a?(Hash) ? parsed_body : {}
           code = error_body["code"] || "BAD_REQUEST"
           message = error_body["message"] || "Bad Request to NSC API"
-          @logger.error("Client error (#{response.status}): #{response.body}")
+          @logger.error("Client error (#{response.status}): code=#{code}")
           err = ClientError.new(
             code: code,
             message: message,
