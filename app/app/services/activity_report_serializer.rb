@@ -1,7 +1,7 @@
 class ActivityReportSerializer
   SCHEMA_VERSION = "1.0.0"
 
-  SELF_ATTESTED_ACTIVITY_TYPES = {
+  ACTIVITY_TYPES = {
     "community_service" => {
       association: :volunteering_activities,
       fields: %w[
@@ -35,7 +35,9 @@ class ActivityReportSerializer
     },
     "employment" => {
       association: :employment_activities,
-      fields: EmploymentActivity::FIELDS + %w[additional_comments]
+      fields: EmploymentActivity::FIELDS + %w[additional_comments],
+      additional_fields: :employment_fields,
+      additional_months: :payroll_months
     }
   }.freeze
 
@@ -53,8 +55,7 @@ class ActivityReportSerializer
       "ce_report" => {
         "review_period" => review_period,
         "documents" => documents,
-        "activities" => activities,
-        "extended_attributes" => {}
+        "activities" => activities
       }
     }
   end
@@ -66,11 +67,9 @@ class ActivityReportSerializer
   end
 
   def agency_partner_metadata
-    metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) do |attribute|
+    CbvApplicant.build_agency_partner_metadata(@current_agency.id) do |attribute|
       json_value(applicant.public_send(attribute))
     end
-
-    metadata.merge("extended_attributes" => {})
   end
 
   def review_period
@@ -109,14 +108,13 @@ class ActivityReportSerializer
   end
 
   def activities
-    SELF_ATTESTED_ACTIVITY_TYPES.each_with_object({}) do |(type, config), result|
+    ACTIVITY_TYPES.each_with_object({}) do |(type, config), result|
       result[type] = months_for(type, config)
-      if type == "employment"
-        payroll_months.each do |month, entries|
-          result[type][month] = result[type].fetch(month, []) + entries
-        end
-        result[type] = result[type].sort.to_h
-      end
+      next unless config[:additional_months]
+
+      result[type] = result[type].merge(send(config[:additional_months])) do |_month, entries, additional_entries|
+        entries + additional_entries
+      end.sort.to_h
     end
   end
 
@@ -143,22 +141,13 @@ class ActivityReportSerializer
             "month" => month,
             "data_source" => "validated",
             "document_ids" => [],
-            "extended_attributes" => {},
-            "paystubs" => monthly_paystubs.map { |paystub| payroll_paystub(paystub) }
+            "paystubs" => monthly_paystubs
           )
         end
       end
     end
 
     entries_by_month
-  end
-
-  def payroll_paystub(paystub)
-    paystub.merge(
-      "extended_attributes" => {},
-      "deductions" => paystub.fetch("deductions").map { |deduction| deduction.merge("extended_attributes" => {}) },
-      "gross_pay_list" => paystub.fetch("gross_pay_list").map { |earning| earning.merge("extended_attributes" => {}) }
-    )
   end
 
   def months_for(type, config)
@@ -175,13 +164,7 @@ class ActivityReportSerializer
 
   def entry(type, config, activity, activity_month)
     attributes = config[:fields].index_with { |field| json_value(activity.public_send(field)) }
-    if type == "employment"
-      attributes.merge!(
-        "employer_address" => activity.formatted_address.presence,
-        "employment_type" => activity.unpaid_or_in_kind? ? "unpaid" : (activity.is_self_employed ? "self_employed" : "w2"),
-        "gross_income" => activity_month.gross_income.to_f
-      )
-    end
+    attributes.merge!(send(config[:additional_fields], activity, activity_month)) if config[:additional_fields]
 
     { "type" => type }
       .merge(attributes)
@@ -189,9 +172,16 @@ class ActivityReportSerializer
         "month" => activity_month.month.strftime("%Y-%m"),
         "hours" => activity_month.hours.to_f,
         "data_source" => "self_attested",
-        "document_ids" => document_ids_for(activity),
-        "extended_attributes" => {}
+        "document_ids" => document_ids_for(activity)
       )
+  end
+
+  def employment_fields(activity, activity_month)
+    {
+      "employer_address" => activity.formatted_address.presence,
+      "employment_type" => activity.unpaid_or_in_kind? ? "unpaid" : (activity.is_self_employed ? "self_employed" : "w2"),
+      "gross_income" => activity_month.gross_income.to_f
+    }
   end
 
   def json_value(value)

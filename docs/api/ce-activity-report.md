@@ -1,6 +1,6 @@
 # Community Engagement Activity Report Transmission API Specification [General]
 
-# **Introduction**
+## Model
 
 This document describes the **Community Engagement (CE) Activity Report Transmission API Specification**, a method by which CE activity data can be sent from the Eligibility made easy (Emmy) platform to an agency's systems.
 
@@ -8,7 +8,7 @@ The agency must build an API endpoint that meets this specification and integrat
 
 This revision covers `community_service`, `work_program`, and `employment`. Employment includes self-attested work and payroll data from linked Argyle or Pinwheel accounts. Education activities will be added additively in a later revision.
 
-# **API Specification**
+## Transmission
 
 The agency-built API should contain one endpoint.
 
@@ -16,9 +16,12 @@ The agency-built API should contain one endpoint.
 
 This API endpoint is built by the agency and receives one CE activity report record. The endpoint URL can be whatever the agency desires, however, it must include a version number to allow for easy upgrades in the future.
 
-The machine-readable JSON Schema for the request body is available at [schemas/ce-activity-report-2026-09-01.json](schemas/ce-activity-report-2026-09-01.json). A complete sample request body is available at [samples/ce-activity-report.json](samples/ce-activity-report.json).
-
-[Employment sample reports](samples/ce-employment-reports.json) contains four complete synthetic request bodies, keyed by scenario: Argyle's Bob (gig work), Joe (W-2 work), Kim (W-2 work), and a mixed report with Pinwheel payroll, self-employment, and unpaid work. Each scenario is tested against the schema and transmitted to a stub agency endpoint. To send one to an agency's test endpoint, extract that scenario's value; the enclosing scenario names are not part of the request body.
+The complete `CeActivityReport` model is published in the generated
+[OpenAPI reference](README.md), along with component models for the report,
+review period, documents, activity types, and payroll details. It is a standalone
+model: this outbound report is not an Emmy API operation. The schema's example
+comes from the tested serializer and includes community service, work programs,
+linked payroll, self-employment, and unpaid work.
 
 ### Request Headers
 
@@ -60,7 +63,7 @@ The agency should respond with `200` and a payload containing:
 
 #### Agency Partner Metadata Object
 
-The field structure for this object will differ for each agency based on the integration plan for the agency, exactly as the `agency_partner_metadata` object does in the Income Report Transmission API. It contains whichever fields the agency needs to index the report back into the proper case, plus `extended_attributes`.
+The field structure for this object will differ for each agency based on the integration plan for the agency, exactly as the `agency_partner_metadata` object does in the Income Report Transmission API. It contains whichever fields the agency needs to index the report back into the proper case.
 
 Sample fields:
 
@@ -105,7 +108,6 @@ An activity that spans several months appears once under each month, carrying th
 | document_ids | Yes | Array of `document_id` values from the `documents` array. |
 | street_address, street_address_line_2, city, state, zip_code | No | String or null. Address of the organization. |
 | additional_comments | No | Text or null. Optional free-text comments the applicant added at the review step. |
-| extended_attributes | Yes | Object. Free-form; may be empty. |
 
 #### community_service Additional Fields
 
@@ -153,25 +155,23 @@ These CE fields supplement the income employment object:
 | month | Yes | `YYYY-MM`, matching the enclosing month. |
 | data_source | Yes | `validated` for both Argyle and Pinwheel. |
 | document_ids | Yes | Empty array for linked payroll. Self-attested documents are referenced from their own activities. |
-| extended_attributes | Yes | Object, currently empty. Also present on paystubs, deductions, and gross pay components. |
 
 Employment follows the September 4 specification's JSON examples: `has_other_jobs` and `income_summary` are omitted. The existing CE envelope, including `review_period`, is preserved. A failed payroll fetch fails transmission so the job can retry instead of sending a partial report.
 
-#### Reproducing the Employment Examples
+#### Validating the Model
 
-From `app/`, run the transmission specs to validate the checked-in examples:
-
-```bash
-rtk rbenv exec ruby bin/rspec spec/services/transmitters/activity_json_transmitter_spec.rb
-```
-
-To regenerate the synthetic examples after an intentional contract change:
+From `app/`, run the contract specs or build the complete API reference:
 
 ```bash
-rtk proxy env UPDATE_CE_EMPLOYMENT_SAMPLES=1 rbenv exec ruby bin/rspec spec/services/transmitters/activity_json_transmitter_spec.rb
+rtk rbenv exec ruby bin/rspec spec/services/transmitters/activity_json_transmitter_spec.rb spec/openapi
+rtk proxy env RAILS_ENV=test rbenv exec bundle exec rake api_docs:build
 ```
 
-The examples use recorded sandbox payroll fixtures and synthetic self-attested work. No live payroll or agency requests are made by these tests. Product acceptance and live Launcher testing remain separate checks before merge.
+The build validates the OpenAPI model and its generated example. Contract tests
+also exercise Argyle's Bob, Joe, and Kim sandbox fixtures and a mixed report with
+Pinwheel payroll, self-employment, and unpaid work. Tests make no live payroll or
+agency requests. Product acceptance and live Launcher testing remain separate
+checks before merge.
 
 # **Design Principles**
 
@@ -180,4 +180,3 @@ The examples use recorded sandbox payroll fixtures and synthetic self-attested w
 | Tolerant Reader | Systems should accept payloads that contain unknown or extra fields without rejecting them. Only a minimal set of fields are truly required. |
 | Additive-only schema evolution | New fields can be added to the spec at any time without breaking existing integrations. Fields are only removed in major version releases. |
 | Soft required fields | Fields that should be present but may not always be available from upstream providers are not marked as required, and denote `null` as an acceptable value. |
-| `extended_attributes` | Any unrecognized fields from upstream providers are captured in a free-form `extended_attributes` object rather than being stripped or rejected. An empty object is valid. |

@@ -20,13 +20,16 @@ for each environment. Keep keys server-side and send requests over HTTPS.
 The Dev environment is `https://verify-demo.navapbc.cloud`; the Demo environment
 is `https://demo.reportmyincome.org`. Production access is arranged during onboarding.
 
-The generated reference currently covers `POST /api/v1/invitations`.
-Outbound report and document transmission interfaces will be added separately.
+The generated reference covers `POST /api/v1/invitations` and the standalone
+`CeActivityReport` model, including self-attested and validated employment.
+CE reports are outbound payloads sent to an agency; they are documented under
+Models and do not add an Emmy API endpoint. Document transmission interfaces
+will be added separately.
 For those APIs, see the [CE activity report transmission guide](ce-activity-report.md)
 and [PDF document transmission guide](pdf-transmission.md).
 Existing versioned [income-report](schemas/income-report-2026-06-18.json) and
 [community engagement report](schemas/ce-activity-report-2026-09-01.json) schemas
-remain available for those integrations.
+remain available as historical contracts. The OpenAPI model describes the current CE payload.
 
 ## Build and maintain the reference
 
@@ -39,13 +42,15 @@ npm ci
 RAILS_ENV=test bundle exec rake api_docs:build
 ```
 
-The build runs the rswag request specs, validates the OpenAPI document and all
+The build runs the request, model, and CE transmission specs, validates the OpenAPI document and all
 published examples, then writes `index.html`, `openapi.json`, and local Scalar
 assets to `app/tmp/api-docs/`. Open `index.html` directly in a browser; the site
 works offline and does not submit API requests.
 
 Edit [request specs](../../app/spec/requests/api/invitations_spec.rb),
-[schemas](../../app/spec/openapi/invitation_schemas.rb),
+[invitation schemas](../../app/spec/openapi/invitation_schemas.rb),
+[CE report models](../../app/spec/openapi/activity_report_schemas.rb),
+[CE report description](ce-activity-report.md#model),
 [overview](overview.md), [invitation operation description](post-v1-invitations.md#description),
 [agency metadata description](agency-partner-metadata.md),
 [invitation response description](post-v1-invitations.md#response), and
@@ -54,10 +59,12 @@ The build reads these Markdown descriptions directly from `docs/api/`; Markdown
 changes also trigger the publication workflow after merge.
 Keep endpoint descriptions and responses together, using level-two headings
 to identify the sections included in the generated reference.
-Set `additionalProperties: true` on every OpenAPI object schema, including nested
-objects, so integrations can tolerate additive schema changes.
-Examples come from real test requests using synthetic data and fixed tokens;
-authorization headers are never captured.
+Use `additionalProperties: true` on objects with named fields so integrations can
+tolerate additive schema changes. Month-keyed activity maps use a typed
+`additionalProperties` schema to validate each month's array.
+Request examples come from real test requests using synthetic data and fixed
+tokens. The CE model example comes from the transmission specs; model examples
+are validated during the build. Authorization headers are never captured.
 
 Pull request CI builds an `api-reference` artifact for review. After this change
 is merged into `DSACMS/iv-cbv-payroll`, the

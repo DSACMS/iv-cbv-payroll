@@ -1,4 +1,4 @@
-require "rails_helper"
+require "swagger_helper"
 require "json_schemer"
 
 RSpec.describe Transmitters::ActivityJsonTransmitter do
@@ -30,6 +30,8 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
     )
   end
   let(:transmitter) { described_class.new(activity_flow, current_agency) }
+  let(:document) { JSONSchemer.openapi(JSON.parse(RSpec.configuration.openapi_specs.fetch("openapi.json").to_json)) }
+  let(:schema) { document.schema("CeActivityReport") }
 
   let!(:service_user) { create(:user, client_agency_id: "sandbox", is_service_account: true) }
   let!(:api_token) { create(:api_access_token, user: service_user) }
@@ -77,14 +79,10 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
   end
 
   describe "#payload" do
-    let(:schema_path) { Rails.root.parent.join("docs/api/schemas/ce-activity-report-2026-09-01.json") }
-    let(:sample_path) { Rails.root.parent.join("docs/api/samples/ce-activity-report.json") }
-
     before { populate_activities! }
 
-    it "matches the published CE activity report JSON Schema" do
-      errors = JSONSchemer.schema(JSON.parse(schema_path.read))
-        .validate(JSON.parse(transmitter.payload))
+    it "matches the published CE activity report OpenAPI model" do
+      errors = schema.validate(JSON.parse(transmitter.payload))
         .map { |error| error.slice("data_pointer", "type", "error") }
 
       expect(errors).to eq([])
@@ -97,76 +95,40 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       create(:volunteering_activity_month, volunteering_activity: blank,
         month: activity_flow.reporting_months.first, hours: 5)
 
-      errors = JSONSchemer.schema(JSON.parse(schema_path.read))
-        .validate(JSON.parse(transmitter.payload))
+      errors = schema.validate(JSON.parse(transmitter.payload))
         .map { |error| error.slice("data_pointer", "type", "error") }
 
       expect(errors).to eq([])
     end
 
-    it "matches the published sample report shared with agencies" do
-      payload = JSON.parse(transmitter.payload)
-      sample = JSON.parse(sample_path.read)
-      payload_document_ids = payload.dig("ce_report", "documents").map { |document| document["document_id"] }
-      sample_document_ids = sample.dig("ce_report", "documents").map { |document| document["document_id"] }
-      document_id_mapping = sample_document_ids.zip(payload_document_ids).to_h
-
-      sample["ce_report"]["documents"].each do |document|
-        document["document_id"] = document_id_mapping.fetch(document["document_id"])
-      end
-      sample["ce_report"]["activities"].each_value do |months|
-        months.each_value do |entries|
-          entries.each do |entry|
-            entry["document_ids"].map! { |id| document_id_mapping.fetch(id) }
-          end
-        end
-      end
-
-      expect(payload).to eq(sample)
+    it "omits extended_attributes throughout the report" do
+      expect(transmitter.payload).not_to include('"extended_attributes"')
     end
   end
 
-  describe "employment sample reports" do
+  describe "employment OpenAPI examples" do
     include ArgyleApiHelper
-
-    let(:schema) { JSONSchemer.schema(JSON.parse(Rails.root.parent.join("docs/api/schemas/ce-activity-report-2026-09-01.json").read)) }
-    let(:samples_path) { Rails.root.parent.join("docs/api/samples/ce-employment-reports.json") }
 
     before do
       activity_flow.update!(created_at: Time.zone.parse("2025-04-11 12:00:00"),
         completed_at: Time.zone.parse("2025-04-11 14:00:00"), reporting_window_months: 2)
     end
 
-    def verify_and_export_sample(name)
+    def verify_employment_report
       expect(Rails.logger).not_to receive(:error)
       payload = JSON.parse(transmitter.payload)
       errors = schema.validate(payload).map { |error| error.slice("data_pointer", "type", "error") }
       expect(errors).to eq([])
+      expect(transmitter.payload).not_to include('"extended_attributes"')
       request = stub_request(:post, api_url).with(body: transmitter.payload).to_return(status: 200)
       expect(transmitter.deliver).to eq("ok")
       expect(request).to have_been_requested
 
-      # Attachment IDs vary between runs; keep the public synthetic examples stable.
-      ids = payload.dig("ce_report", "documents").each_with_index.to_h do |document, index|
-        [ document.fetch("document_id"), "DOC-#{index + 1}" ]
-      end
-      payload.dig("ce_report", "documents").each { |document| document["document_id"] = ids.fetch(document["document_id"]) }
-      payload.dig("ce_report", "activities").each_value do |months|
-        months.each_value do |entries|
-          entries.each { |entry| entry["document_ids"].map! { |id| ids.fetch(id) } }
-        end
-      end
-      if ENV["UPDATE_CE_EMPLOYMENT_SAMPLES"] == "1"
-        samples = samples_path.exist? ? JSON.parse(samples_path.read) : {}
-        samples[name] = payload
-        samples_path.write(JSON.pretty_generate(samples.sort.to_h) + "\n")
-      end
-      expect(payload).to eq(JSON.parse(samples_path.read).fetch(name))
       payload
     end
 
     %w[bob joe kim].each do |persona|
-      it "transmits and exports #{persona}'s Argyle sandbox payroll data" do
+      it "validates and transmits #{persona}'s Argyle sandbox payroll data" do
         account_id = argyle_load_relative_json_file(persona, "request_identity.json").fetch("results").first.fetch("account")
         create(:payroll_account, :argyle_fully_synced, flow: activity_flow, aggregator_account_id: account_id)
         argyle_stub_request_identities_response(persona)
@@ -178,7 +140,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
           .to_return(status: 200, body: paystubs.to_json, headers: { "Content-Type" => "application/json" })
         argyle_stub_request_gigs_response(persona == "joe" ? "empty" : persona)
 
-        payload = verify_and_export_sample("argyle_#{persona}")
+        payload = verify_employment_report
         employment = payload.dig("ce_report", "activities", "employment")
         expect(employment.keys).to eq(%w[2025-02 2025-03])
         employment.each do |month, entries|
@@ -189,7 +151,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       end
     end
 
-    it "transmits and exports mixed Pinwheel, self-employed, and unpaid work" do
+    it "publishes a complete CE model example with mixed employment" do
       account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "account1")
       payroll_report = build(:pinwheel_report, :hydrated, payroll_accounts: [ account ], has_fetched: true)
       payroll_report.incomes.first.compensation_unit = "hourly"
@@ -205,7 +167,9 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       create(:employment_activity_month, employment_activity: unpaid, month: Date.new(2025, 3, 1), hours: 20, gross_income: 0)
       self_employed.document_uploads.attach(io: StringIO.new("Synthetic income statement"), filename: "Income statement.pdf", content_type: "application/pdf")
 
-      payload = verify_and_export_sample("mixed_employment")
+      populate_activities!
+      payload = verify_employment_report
+      RSpec.configuration.openapi_specs.fetch("openapi.json")[:components][:schemas][:CeActivityReport][:example] = payload
       expect(payload.dig("ce_report", "activities", "employment", "2025-03").map { |entry| entry["employment_type"] })
         .to eq(%w[self_employed unpaid gig])
     end

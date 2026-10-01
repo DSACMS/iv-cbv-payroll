@@ -1,5 +1,6 @@
 require "rails_helper"
 require_relative "openapi/invitation_schemas"
+require_relative "openapi/activity_report_schemas"
 
 RSpec.configure do |config|
   config.openapi_root = Rails.root.join("tmp/api-docs").to_s
@@ -23,7 +24,7 @@ RSpec.configure do |config|
         securitySchemes: {
           bearerAuth: { type: :http, scheme: :bearer, description: "Agency API key. Send Authorization: Bearer API_KEY. The key determines the agency; do not send a client_agency_id." }
         },
-        schemas: InvitationSchemas.schemas
+        schemas: InvitationSchemas.schemas.merge(ActivityReportSchemas.schemas)
       }
     }
   }

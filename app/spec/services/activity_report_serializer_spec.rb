@@ -38,8 +38,7 @@ RSpec.describe ActivityReportSerializer do
       "middle_name" => "A",
       "last_name" => "Doe",
       "case_number" => "CASE-2026-00987",
-      "date_of_birth" => "1990-04-15",
-      "extended_attributes" => {}
+      "date_of_birth" => "1990-04-15"
     )
   end
 
@@ -118,8 +117,7 @@ RSpec.describe ActivityReportSerializer do
       "month" => "2026-06",
       "hours" => 40.0,
       "data_source" => "self_attested",
-      "document_ids" => [],
-      "extended_attributes" => {}
+      "document_ids" => []
     } ])
   end
 
@@ -204,8 +202,7 @@ RSpec.describe ActivityReportSerializer do
     create(:volunteering_activity_month, volunteering_activity: volunteering, month: first_month, hours: 40)
 
     expect(report["ce_report"]["activities"]["community_service"]["2026-06"].sole).to include(
-      "data_source" => "self_attested",
-      "extended_attributes" => {}
+      "data_source" => "self_attested"
     )
   end
 
@@ -292,13 +289,13 @@ RSpec.describe ActivityReportSerializer do
 
         expect(employment_months.keys).to eq([ "2026-07" ])
         entry = employment_months["2026-07"].sole
-        expect(entry.except("type", "month", "data_source", "document_ids", "extended_attributes", "paystubs"))
+        expect(entry.except("type", "month", "data_source", "document_ids", "paystubs"))
           .to eq(income_employment.except("paystubs"))
         expect(entry).to include("data_source" => "validated", "document_ids" => [], "month" => "2026-07")
         expect(entry["paystubs"].sole).to include(
           "pay_date" => "2026-07-01", "pay_period_start" => "2026-06-15", "pay_gross" => 12345,
-          "hours_paid" => 12.0, "deductions" => [ { "category" => "Tax", "tax" => "pre_tax", "amount" => 2345, "extended_attributes" => {} } ],
-          "gross_pay_list" => [ { "type" => "base", "amount" => 12345, "extended_attributes" => {} } ]
+          "hours_paid" => 12.0, "deductions" => [ { "category" => "Tax", "tax" => "pre_tax", "amount" => 2345 } ],
+          "gross_pay_list" => [ { "type" => "base", "amount" => 12345 } ]
         )
         expect(employment_months).not_to have_key("has_other_jobs")
         expect(employment_months).not_to have_key("income_summary")
