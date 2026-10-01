@@ -1274,6 +1274,13 @@ en:
     body_2: Visit your agency's website for more information on how to submit proof of income for your benefits.
     header: We're undergoing maintenance
   pages:
+    activity_flow_timeout:
+      description: Sessions end after 30 minutes of inactivity. This helps keep your information safe. Any information not submitted was not saved.
+      header: Your session has timed out
+      issues: If you encounter any issues, contact your benefits agency for assistance.
+      summary_box:
+        description: Gather the information and documents you need to submit and either reuse the same link to start reporting again or if you're the head of household, access your link via the Self-Service Portal.
+        header: What to do next
     error_404:
       error_code_html: 'Error code: <strong>404</strong>'
       header: We can't find the page you're looking for
@@ -1285,10 +1292,6 @@ en:
       header: It looks like something went wrong
       refresh: Refresh page
     home:
-      activity_flow_timeout:
-        alert_html: "<strong>Your session has timed out.</strong> Sessions end after 30 minutes of inactivity. This helps keep your information safe."
-        description: Emmy (Eligibility Made Easy) is a tool designed to help you report paid or unpaid work, education, community service, and work program activities directly to %{agency_name}.
-        header: Welcome to Emmy
       description_1: Report My Income is a new tool designed to help you connect your income details from your employer or payroll provider directly to your benefits agency. We're currently testing this tool to ensure it works effectively.
       description_2: Visit your agency's website for more information on how to submit proof of income for your benefits.
       header: Welcome to Report My Income
