@@ -57,7 +57,13 @@ Most developers on the team code using macOS, so we recommend that platform if p
 1. Create database: `bin/rails db:create`
 1. Run migrations: `bin/rails db:migrate`
 1. Run the development server: `bin/dev`
-1. Visit the site: http://localhost:3000
+
+## Manual Testing
+If you're new to CBV, here's a summary of how to get started navigating the app after following setup instructions above.
+1. First, contact someone on the team to get you necessary environment variables to be configured, especially if you want to leverage Argyle.
+   2. for now, recommend just connecting to argyle, SUPPORTED_PROVIDERS=argyle
+1. Follow the instructions in the Setup section to run locally, then go to `http://localhost:3000/launcher/advanced`
+1. Select the Agency as sandbox, then go through the flow as desired.
 
 ### For analytics development
 #### First-time setup
@@ -386,20 +392,6 @@ This translation import system allows for efficient management of translations a
 * Ruby static security scan: `bundle exec rake brakeman`
 * Ruby dependency checks: `bundle exec rake bundler:audit`
 * JS dependency checks: `bundle exec rake npm:audit`
-
-## Manual Testing
-If you're new to CBV, here's a summary of how to get started navigating the app.
-1. First, contact someone on the team to get you set up to log in.
-1. Follow the instructions in the Setup section to run locally, then go to `localhost:3000/sandbox/sso`
-1. The beginning of the workflow is to act as a caseworker to create an invitation. Start by signing in with your Nava credentials.
-1. Create an invitation for an applicant to start using the app (use any email, and don't worry -- it won't really send!)
-1. In your terminal session, navigate to the /app directory and run `rails c` to enter the irb prompt.
-1. At the irb prompt, run `CbvFlowInvitation.last.to_url`.
-1. Click the resulting link. Now you're ready to start acting as an applicant!
-1. Search for your employer. When you select one, the local page will show you some fake credentials at the very bottom of the screen. Use these to sign in.
-1. Finally, you should be able to complete the applicant flow, including looking at the PDF.
-1. To complete the caseworker flow, add `?is_caseworker=true` to the /cbv/summary.pdf path to see the PDF that gets sent (it's different from the one we send the applicant!)
-1. Note: You can switch to a different pilot partner (state) by going to the irb prompt and running `CbvFlow.last.update(client_agency_id: 'la_ldh')`. Right now you can only pass it `la_ldh` or `sandbox`.
 
 ## Automated E2E Testing
 We achieve End-to-End (E2E) testing by using `capybara` (which in turn uses `selenium`) to simulate a real user completing the CBV flow.
