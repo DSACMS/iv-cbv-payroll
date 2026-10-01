@@ -24,14 +24,16 @@ class ActivityFlow < Flow
   scope :transmitted, -> { where.not(transmitted_at: nil) }
 
   def self.create_from_invitation(invitation, device_id, params = {})
-    flow = create(
+    attrs = flow_attributes_from_params(params)
+    # Keep the employment_focused value from the invitation if it exists, don't let params override it
+    attrs[:employment_focused] = invitation.employment_focused if invitation.respond_to?(:employment_focused)
+
+    create(
       activity_flow_invitation: invitation,
       cbv_applicant: invitation.cbv_applicant || CbvApplicant.create(client_agency_id: invitation.client_agency_id),
       device_id: device_id,
-      **flow_attributes_from_params(params)
+      **attrs
     )
-
-    flow
   end
 
   def self.resume_or_create_from_invitation(invitation, device_id, params = {})
@@ -167,6 +169,12 @@ class ActivityFlow < Flow
   end
 
   def calculate_reporting_window_months
+    # Keep the provider fetch range and report window aligned with the invitation.
+    case activity_flow_invitation&.verification_range
+    when "last_complete_month" then return 1
+    when "last_12_complete_months" then return 12
+    end
+
     return DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS if renewal_reporting_window?
 
     client_agency = Rails.application.config.client_agencies[cbv_applicant&.client_agency_id]

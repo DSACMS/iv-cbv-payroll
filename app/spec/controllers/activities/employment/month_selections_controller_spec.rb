@@ -17,6 +17,7 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
   end
   let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
   let(:reporting_months) { activity_flow.reporting_months.map(&:beginning_of_month) }
+  let(:tracked_flow) { activity_flow }
 
   before do
     session[:flow_id] = activity_flow.id
@@ -24,6 +25,38 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
   end
 
   describe "GET #edit" do
+    let(:perform_tracked_action) { get :edit, params: { employment_id: employment_activity.id } }
+
+    it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSelectionViewed,
+      extra_attributes: -> { { employment_activity_id: employment_activity.id } }
+
+    context "when from_edit and from_review are present" do
+      let(:perform_tracked_action) do
+        get :edit, params: { employment_id: employment_activity.id, from_edit: 1, from_review: 1 }
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSelectionViewed,
+        extra_attributes: -> { { employment_activity_id: employment_activity.id, from_edit: "1", from_review: "1" } }
+    end
+
+    context "when work is unpaid or in-kind" do
+      let(:employment_activity) do
+        create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSelectionViewed,
+        extra_attributes: -> { { employment_activity_id: employment_activity.id } }
+    end
+
+    context "with a one-month tokenized renewal" do
+      before do
+        activity_flow.update!(reporting_window_type: "renewal", reporting_window_months: 1)
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSelectionViewed,
+        extra_attributes: -> { { employment_activity_id: employment_activity.id } }
+    end
+
     it "renders the page content and reporting-period months" do
       get :edit, params: { employment_id: employment_activity.id }
 
@@ -88,6 +121,8 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
     end
 
     it "redirects generic flows to the existing first-month page" do
+      expect(EventTrackingJob).not_to receive(:perform_later)
+
       generic_flow = create(:activity_flow, activity_flow_invitation: nil, reporting_window_months: 3)
       generic_activity = create(:employment_activity, activity_flow: generic_flow)
       session[:flow_id] = generic_flow.id
@@ -100,6 +135,8 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
     end
 
     it "redirects one-month tokenized applications to the first-month page" do
+      expect(EventTrackingJob).not_to receive(:perform_later)
+
       one_month_flow = create(
         :activity_flow,
         activity_flow_invitation: create(:activity_flow_invitation),
@@ -118,6 +155,47 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
   end
 
   describe "PATCH #update" do
+    let(:submitted_months) do
+      [ "", reporting_months.third.iso8601, reporting_months.first.iso8601,
+        reporting_months.third.iso8601, Date.current.beginning_of_month.iso8601 ]
+    end
+    let(:navigation_params) { {} }
+    let(:perform_tracked_action) do
+      patch :update, params: {
+        employment_id: employment_activity.id,
+        employment_activity: { selected_months: submitted_months },
+        **navigation_params
+      }
+    end
+    let(:submission_attributes) do
+      {
+        employment_activity_id: employment_activity.id,
+        selected_months: [
+          I18n.l(reporting_months.first, format: :month_year),
+          I18n.l(reporting_months.third, format: :month_year)
+        ]
+      }
+    end
+
+    it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSelectionSubmitted,
+      extra_attributes: -> { submission_attributes }
+
+    context "when from_edit and from_review are present" do
+      let(:navigation_params) { { from_edit: 1, from_review: 1 } }
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSelectionSubmitted,
+        extra_attributes: -> { submission_attributes.merge(from_edit: "1", from_review: "1") }
+    end
+
+    context "when work is unpaid or in-kind" do
+      let(:employment_activity) do
+        create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSelectionSubmitted,
+        extra_attributes: -> { submission_attributes }
+    end
+
     it "saves selected months chronologically and redirects to the earliest selection" do
       patch :update, params: {
         employment_id: employment_activity.id,
@@ -157,6 +235,8 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
     end
 
     it "requires at least one selected month" do
+      expect(EventTrackingJob).not_to receive(:perform_later)
+
       patch :update, params: {
         employment_id: employment_activity.id,
         employment_activity: { selected_months: [ "" ] }
@@ -171,6 +251,8 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
     end
 
     it "ignores months outside the reporting period" do
+      expect(EventTrackingJob).not_to receive(:perform_later)
+
       patch :update, params: {
         employment_id: employment_activity.id,
         employment_activity: { selected_months: [ Date.current.beginning_of_month.iso8601 ] }
