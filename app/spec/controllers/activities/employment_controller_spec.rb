@@ -457,6 +457,16 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response.body).to include(I18n.t("activities.employment.review.community_engagement_hours"))
       expect(response.body).to include("25")
       expect(response.body).to include("500")
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text(
+        I18n.t("activities.employment.review.description", employer_name: employment_activity.employer_name)
+      )
+      expect(rendered).to have_text(
+        I18n.t(
+          "activities.employment.review.additional_comments_description",
+          agency_name: I18n.t("shared.agency_full_name.sandbox")
+        )
+      )
     end
 
     it "includes an edit link for each month" do
@@ -503,6 +513,50 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         expect(rendered).to have_text(third_month_label)
         expect(response.body.index(first_month_label)).to be < response.body.index(third_month_label)
         expect(rendered).to have_no_text(second_month_label)
+      end
+    end
+
+    context "when reviewing unpaid or in-kind work" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          activity_flow_invitation: create(:activity_flow_invitation),
+          reporting_window_months: 3
+        )
+      end
+      let(:employment_activity) do
+        create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
+      end
+
+      it "displays selected months and CE hours without income" do
+        first_month, second_month, third_month = activity_flow.reporting_months
+        employment_activity.update!(selected_months: [ third_month, first_month ])
+        employment_activity.employment_activity_months.find_by!(month: third_month).update!(hours: 40)
+
+        get :review, params: { id: employment_activity.id }
+
+        rendered = Capybara.string(response.body)
+        table = rendered.find("table.activity-review-hours-table")
+        rows = table.all("tbody tr")
+        hours_label = I18n.t("activities.employment.review.community_engagement_hours")
+        expect(rendered).to have_text(
+          I18n.t("activities.employment.review.unpaid_or_in_kind.description", employer_name: employment_activity.employer_name)
+        )
+        expect(rendered).to have_selector("h2", text: I18n.t("activities.employment.review.unpaid_or_in_kind.work_hours"))
+        expect(rows.length).to eq(2)
+        expect(rows[0]).to have_text(I18n.l(first_month, format: :month_year))
+        expect(rows[0]).to have_selector("td[data-label='#{hours_label}']", text: ApplicationHelper.format_decimal_amount(25))
+        expect(rows[1]).to have_text(I18n.l(third_month, format: :month_year))
+        expect(rows[1]).to have_selector("td[data-label='#{hours_label}']", text: ApplicationHelper.format_decimal_amount(40))
+        expect(table).to have_no_text(I18n.l(second_month, format: :month_year))
+        expect(table).to have_no_text(I18n.t("activities.employment.review.gross_income"))
+        expect(table).to have_no_text(ActiveSupport::NumberHelper.number_to_currency(500))
+        expect(rendered).to have_text(
+          I18n.t(
+            "activities.employment.review.unpaid_or_in_kind.additional_comments_description",
+            agency_name: I18n.t("shared.agency_full_name.sandbox")
+          )
+        )
       end
     end
 

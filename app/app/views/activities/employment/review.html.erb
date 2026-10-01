@@ -1,3 +1,8 @@
+<% unpaid = @employment_activity.unpaid_or_in_kind? %>
+<%# i18n-tasks-use t('activities.employment.review.description') %>
+<%# i18n-tasks-use t('activities.employment.review.unpaid_or_in_kind.description') %>
+<%# i18n-tasks-use t('activities.employment.review.additional_comments_description') %>
+<%# i18n-tasks-use t('activities.employment.review.unpaid_or_in_kind.additional_comments_description') %>
 <% content_for :title, t("activities.employment.review.title", employer_name: @employment_activity.employer_name) %>
 
 <% content_for :activity_flow_header do %>
@@ -13,7 +18,8 @@
   <%= t("activities.employment.review.title", employer_name: @employment_activity.employer_name) %>
 </h1>
 <p>
-  <%= t("activities.employment.review.description", employer_name: @employment_activity.employer_name) %>
+  <%= t(unpaid ? "activities.employment.review.unpaid_or_in_kind.description" : "activities.employment.review.description",
+        employer_name: @employment_activity.employer_name) %>
 </p>
 
 <div class="display-flex flex-justify activity-review-edit-header">
@@ -30,10 +36,12 @@
   { label: t("activities.employment.review.contact_phone"), value: @employment_activity.contact_phone_number }
 ])) %>
 
-<h2><%= t("activities.summary.monthly_details") %></h2>
+<h2><%= unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_hours") : t("activities.summary.monthly_details") %></h2>
 <%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
   <%= table.with_header_cell.with_content(t("activities.summary.employment.month")) %>
-  <%= table.with_header_cell.with_content(t("activities.employment.review.gross_income")) %>
+  <% unless unpaid %>
+    <%= table.with_header_cell.with_content(t("activities.employment.review.gross_income")) %>
+  <% end %>
   <%= table.with_header_cell(class_names: "text-no-wrap").with_content(t("activities.employment.review.community_engagement_hours")) %>
   <%= table.with_header_cell.with_content(tag.span(t("activities.hub.edit"), class: "usa-sr-only")) %>
 
@@ -47,8 +55,10 @@
         <%= I18n.l(activity_month.month, format: :month_year) %>
         <%= link_to t("activities.hub.edit"), edit_path, class: "usa-link mobile-edit-link" %>
       <% end %>
-      <%= row.with_data_cell(data_label: t("activities.employment.review.gross_income"))
-             .with_content(number_to_currency(activity_month.gross_income)) %>
+      <% unless unpaid %>
+        <%= row.with_data_cell(data_label: t("activities.employment.review.gross_income"))
+               .with_content(number_to_currency(activity_month.gross_income)) %>
+      <% end %>
       <%= row.with_data_cell(data_label: t("activities.employment.review.community_engagement_hours"))
              .with_content(format_decimal_amount(activity_month.hours)) %>
       <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
@@ -76,7 +86,7 @@
       class: "usa-form usa-form--large" do |form| %>
   <h2><%= t("activities.employment.review.additional_comments_title") %></h2>
   <%= form.label :additional_comments,
-        t("activities.employment.review.additional_comments_description",
+        t(unpaid ? "activities.employment.review.unpaid_or_in_kind.additional_comments_description" : "activities.employment.review.additional_comments_description",
           agency_name: agency_translation("shared.agency_full_name")),
         class: "usa-label" %>
   <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>

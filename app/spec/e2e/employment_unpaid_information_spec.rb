@@ -4,7 +4,7 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
   include E2e::TestHelpers
   include_context "activity_hub"
 
-  it "preserves unpaid work through validation, saving, and editing" do
+  it "preserves unpaid work through validation, upload, review, and editing" do # rubocop:disable RSpec/MultipleExpectations
     invitation = create(:activity_flow_invitation, client_agency_id: "sandbox")
     visit activities_flow_start_path(token: invitation.auth_token, reporting_window_months: 3)
     click_link I18n.t("activities.entries.show.continue")
@@ -68,6 +68,31 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(third_month, format: :month)), with: "8"
     click_button I18n.t("activities.employment.hours_input.continue")
     verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: "Example work"), skip_axe_rules: %w[heading-order])
+    expect(page).to have_text(
+      "#{I18n.l(first_month, format: :month)} (#{I18n.t("shared.hours", count: 12)})",
+      normalize_ws: true
+    )
+    expect(page).to have_text(
+      "#{I18n.l(third_month, format: :month)} (#{I18n.t("shared.hours", count: 8)})",
+      normalize_ws: true
+    )
+    expect(page).to have_no_text(ActiveSupport::NumberHelper.number_to_currency(0))
+    click_button I18n.t("activities.employment.unpaid_or_in_kind.document_upload_suggestion_title")
+    suggestions = Capybara.string(I18n.t("activities.employment.unpaid_or_in_kind.document_upload_suggestion_text_html"))
+    suggestions.all("li").each { |item| expect(page).to have_text(item.text) }
+    click_button I18n.t("activities.document_uploads.new.continue")
+
+    verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Example work"))
+    expect(page).to have_selector("h2", text: I18n.t("activities.employment.review.unpaid_or_in_kind.work_hours"))
+    expect(page).to have_text(I18n.l(first_month, format: :month_year))
+    expect(page).to have_text(I18n.l(third_month, format: :month_year))
+    expect(page).to have_no_text(I18n.t("activities.employment.review.gross_income"))
+    expect(page).to have_text(
+      I18n.t(
+        "activities.employment.review.unpaid_or_in_kind.additional_comments_description",
+        agency_name: I18n.t("shared.agency_full_name.sandbox")
+      )
+    )
 
     expect(activity).to be_unpaid_or_in_kind
     visit edit_activities_flow_income_employment_path(id: activity)
