@@ -100,7 +100,7 @@ resource "aws_cloudwatch_metric_alarm" "nsc_hub_high_failure_rate" {
 resource "aws_cloudwatch_log_metric_filter" "nsc_cert_expiring" {
   count          = var.log_group_name != null ? 1 : 0
   name           = "${var.service_name}-nsc-cert-expiring"
-  pattern        = "\"[NSC Client Cert EXPIRING SOON]\""
+  pattern        = "?\"[NSC Client Cert EXPIRING SOON]\" ?\"[NSC Client Cert EXPIRED]\" ?\"[NSC Client Cert INVALID]\""
   log_group_name = var.log_group_name
 
   metric_transformation {
