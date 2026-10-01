@@ -1,5 +1,5 @@
 output "application_log_group" {
-  value = aws_cloudwatch_log_group.service_logs.name
+  value = local.log_group_name
 }
 
 output "application_log_stream_prefix" {
