@@ -60,8 +60,8 @@ Most developers on the team code using macOS, so we recommend that platform if p
 
 ## Manual Testing
 If you're new to CBV, here's a summary of how to get started navigating the app after following setup instructions above.
-1. First, contact someone on the team to get you necessary environment variables to be configured, especially if you want to leverage Argyle.
-   2. for now, recommend just connecting to argyle, SUPPORTED_PROVIDERS=argyle
+1. First, contact someone on the team to get you necessary environment variables to be configured in your app/.env file, especially if you want to leverage Argyle.
+   2. For now, recommend just connecting to argyle, setting env SUPPORTED_PROVIDERS=argyle in the .env file.
 1. Follow the instructions in the Setup section to run locally, then go to `http://localhost:3000/launcher/advanced`
 1. Select the Agency as sandbox, then go through the flow as desired.
 
