@@ -127,27 +127,69 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       payload
     end
 
-    %w[bob joe kim].each do |persona|
-      it "validates and transmits #{persona}'s Argyle sandbox payroll data" do
-        account_id = argyle_load_relative_json_file(persona, "request_identity.json").fetch("results").first.fetch("account")
-        create(:payroll_account, :argyle_fully_synced, flow: activity_flow, aggregator_account_id: account_id)
-        argyle_stub_request_identities_response(persona)
-        argyle_stub_request_account_response(persona)
-        # Only the recorded page is needed for this review period.
-        paystubs = argyle_load_relative_json_file(persona, "request_paystubs.json").merge("next" => nil)
-        stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}})
-          .with(query: hash_including("account" => account_id, "from_start_date" => "2025-02-01", "to_start_date" => "2025-03-31"))
-          .to_return(status: 200, body: paystubs.to_json, headers: { "Content-Type" => "application/json" })
-        argyle_stub_request_gigs_response(persona == "joe" ? "empty" : persona)
+    it "validates and transmits bob's Argyle sandbox payroll data" do
+      account_id = argyle_load_relative_json_file("bob", "request_identity.json").fetch("results").first.fetch("account")
+      create(:payroll_account, :argyle_fully_synced, flow: activity_flow, aggregator_account_id: account_id)
+      argyle_stub_request_identities_response("bob")
+      argyle_stub_request_account_response("bob")
+      # Only the recorded page is needed for this review period.
+      paystubs = argyle_load_relative_json_file("bob", "request_paystubs.json").merge("next" => nil)
+      stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}})
+        .with(query: hash_including("account" => account_id, "from_start_date" => "2025-02-01", "to_start_date" => "2025-03-31"))
+        .to_return(status: 200, body: paystubs.to_json, headers: { "Content-Type" => "application/json" })
+      argyle_stub_request_gigs_response("bob")
 
-        payload = verify_employment_report
-        employment = payload.dig("ce_report", "activities", "employment")
-        expect(employment.keys).to eq(%w[2025-02 2025-03])
-        employment.each do |month, entries|
-          expect(entries.sole["data_source"]).to eq("validated")
-          expect(entries.sole["paystubs"]).not_to be_empty
-          expect(entries.sole["paystubs"].map { |paystub| paystub["pay_date"][0, 7] }.uniq).to eq([ month ])
-        end
+      payload = verify_employment_report
+      employment = payload.dig("ce_report", "activities", "employment")
+      expect(employment.keys).to eq(%w[2025-02 2025-03])
+      employment.each do |month, entries|
+        expect(entries.sole["data_source"]).to eq("validated")
+        expect(entries.sole["paystubs"]).not_to be_empty
+        expect(entries.sole["paystubs"].map { |paystub| paystub["pay_date"][0, 7] }.uniq).to eq([ month ])
+      end
+    end
+
+    it "validates and transmits joe's Argyle sandbox payroll data" do
+      account_id = argyle_load_relative_json_file("joe", "request_identity.json").fetch("results").first.fetch("account")
+      create(:payroll_account, :argyle_fully_synced, flow: activity_flow, aggregator_account_id: account_id)
+      argyle_stub_request_identities_response("joe")
+      argyle_stub_request_account_response("joe")
+      # Only the recorded page is needed for this review period.
+      paystubs = argyle_load_relative_json_file("joe", "request_paystubs.json").merge("next" => nil)
+      stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}})
+        .with(query: hash_including("account" => account_id, "from_start_date" => "2025-02-01", "to_start_date" => "2025-03-31"))
+        .to_return(status: 200, body: paystubs.to_json, headers: { "Content-Type" => "application/json" })
+      argyle_stub_request_gigs_response("empty")
+
+      payload = verify_employment_report
+      employment = payload.dig("ce_report", "activities", "employment")
+      expect(employment.keys).to eq(%w[2025-02 2025-03])
+      employment.each do |month, entries|
+        expect(entries.sole["data_source"]).to eq("validated")
+        expect(entries.sole["paystubs"]).not_to be_empty
+        expect(entries.sole["paystubs"].map { |paystub| paystub["pay_date"][0, 7] }.uniq).to eq([ month ])
+      end
+    end
+
+    it "validates and transmits kim's Argyle sandbox payroll data" do
+      account_id = argyle_load_relative_json_file("kim", "request_identity.json").fetch("results").first.fetch("account")
+      create(:payroll_account, :argyle_fully_synced, flow: activity_flow, aggregator_account_id: account_id)
+      argyle_stub_request_identities_response("kim")
+      argyle_stub_request_account_response("kim")
+      # Only the recorded page is needed for this review period.
+      paystubs = argyle_load_relative_json_file("kim", "request_paystubs.json").merge("next" => nil)
+      stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}})
+        .with(query: hash_including("account" => account_id, "from_start_date" => "2025-02-01", "to_start_date" => "2025-03-31"))
+        .to_return(status: 200, body: paystubs.to_json, headers: { "Content-Type" => "application/json" })
+      argyle_stub_request_gigs_response("kim")
+
+      payload = verify_employment_report
+      employment = payload.dig("ce_report", "activities", "employment")
+      expect(employment.keys).to eq(%w[2025-02 2025-03])
+      employment.each do |month, entries|
+        expect(entries.sole["data_source"]).to eq("validated")
+        expect(entries.sole["paystubs"]).not_to be_empty
+        expect(entries.sole["paystubs"].map { |paystub| paystub["pay_date"][0, 7] }.uniq).to eq([ month ])
       end
     end
 

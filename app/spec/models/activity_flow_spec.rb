@@ -65,20 +65,30 @@ RSpec.describe ActivityFlow, type: :model do
       expect(flow.cbv_applicant).to eq(cbv_applicant)
     end
 
-    { "last_complete_month" => 1, "last_12_complete_months" => 12 }.each do |verification_range, months|
-      it "uses #{verification_range} for the reporting window instead of renewal defaults" do
-        invitation = create(:activity_flow_invitation, verification_range: verification_range)
-        flow = nil
-        Timecop.freeze(Time.zone.local(2024, 3, 15)) do
-          flow = described_class.create_from_invitation(invitation, device_id, reporting_window: "renewal")
-        end
-
-        expect(flow.reporting_window_months).to eq(months)
-        expect(flow.reporting_months.size).to eq(months)
-        expect(flow.reporting_window_range).to eq((Date.new(2024, 3, 1) - months.months)..Date.new(2024, 2, 29))
-        expected_days = flow.reporting_window_range.count
-        expect(flow.aggregator_lookback_days).to eq(w2: expected_days, gig: expected_days)
+    it "uses last_complete_month for the reporting window instead of renewal defaults" do
+      invitation = create(:activity_flow_invitation, verification_range: "last_complete_month")
+      flow = nil
+      Timecop.freeze(Time.zone.local(2024, 3, 15)) do
+        flow = described_class.create_from_invitation(invitation, device_id, reporting_window: "renewal")
       end
+
+      expect(flow.reporting_window_months).to eq(1)
+      expect(flow.reporting_months.size).to eq(1)
+      expect(flow.reporting_window_range).to eq(Date.new(2024, 2, 1)..Date.new(2024, 2, 29))
+      expect(flow.aggregator_lookback_days).to eq(w2: 29, gig: 29)
+    end
+
+    it "uses last_12_complete_months for the reporting window instead of renewal defaults" do
+      invitation = create(:activity_flow_invitation, verification_range: "last_12_complete_months")
+      flow = nil
+      Timecop.freeze(Time.zone.local(2024, 3, 15)) do
+        flow = described_class.create_from_invitation(invitation, device_id, reporting_window: "renewal")
+      end
+
+      expect(flow.reporting_window_months).to eq(12)
+      expect(flow.reporting_months.size).to eq(12)
+      expect(flow.reporting_window_range).to eq(Date.new(2023, 3, 1)..Date.new(2024, 2, 29))
+      expect(flow.aggregator_lookback_days).to eq(w2: 366, gig: 366)
     end
 
     it "defaults employment_focused to false when absent from params" do

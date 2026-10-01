@@ -71,31 +71,79 @@ RSpec.describe AggregatorReportFetcher do
       )
     end
 
-    { "last_complete_month" => Date.new(2024, 2, 1), "last_12_complete_months" => Date.new(2023, 3, 1) }.each do |range_name, start_date|
-      context "with #{range_name}" do
-        let(:verification_range) { range_name }
-        let(:end_date) { Date.new(2024, 2, 29) }
+    context "with last_complete_month" do
+      let(:verification_range) { "last_complete_month" }
+      let(:start_date) { Date.new(2024, 2, 1) }
+      let(:end_date) { Date.new(2024, 2, 29) }
 
-        [ :report, :report_for_payroll_account ].each do |method|
-          it "fetches the exact calendar range through #{method}, even when resumed later" do
-            reports = if method == :report
-                        [ activity_fetcher.report ]
-                      else
-                        [ pinwheel_account, argyle_account ].map { |account| activity_fetcher.report_for_payroll_account(account) }
-                      end
+      it "fetches the exact calendar range through report, even when resumed later" do
+        report = activity_fetcher.report
 
-            expect(reports).to all(have_attributes(has_fetched?: true, from_date: start_date, to_date: end_date))
-            expect(pinwheel).to have_received(:fetch_paystubs_api).with(
-              account_id: pinwheel_account.aggregator_account_id, from_pay_date: start_date, to_pay_date: end_date
-            )
-            expect(argyle).to have_received(:fetch_paystubs_api).with(
-              account: argyle_account.aggregator_account_id, from_start_date: start_date, to_start_date: end_date
-            )
-            expect(argyle).to have_received(:fetch_gigs_api).with(
-              account: argyle_account.aggregator_account_id, from_start_datetime: start_date, to_start_datetime: end_date
-            )
-          end
-        end
+        expect(report).to have_attributes(has_fetched?: true, from_date: start_date, to_date: end_date)
+        expect(pinwheel).to have_received(:fetch_paystubs_api).with(
+          account_id: pinwheel_account.aggregator_account_id, from_pay_date: start_date, to_pay_date: end_date
+        )
+        expect(argyle).to have_received(:fetch_paystubs_api).with(
+          account: argyle_account.aggregator_account_id, from_start_date: start_date, to_start_date: end_date
+        )
+        expect(argyle).to have_received(:fetch_gigs_api).with(
+          account: argyle_account.aggregator_account_id, from_start_datetime: start_date, to_start_datetime: end_date
+        )
+      end
+
+      it "fetches the exact calendar range through report_for_payroll_account, even when resumed later" do
+        pinwheel_report = activity_fetcher.report_for_payroll_account(pinwheel_account)
+        argyle_report = activity_fetcher.report_for_payroll_account(argyle_account)
+
+        expect(pinwheel_report).to have_attributes(has_fetched?: true, from_date: start_date, to_date: end_date)
+        expect(argyle_report).to have_attributes(has_fetched?: true, from_date: start_date, to_date: end_date)
+        expect(pinwheel).to have_received(:fetch_paystubs_api).with(
+          account_id: pinwheel_account.aggregator_account_id, from_pay_date: start_date, to_pay_date: end_date
+        )
+        expect(argyle).to have_received(:fetch_paystubs_api).with(
+          account: argyle_account.aggregator_account_id, from_start_date: start_date, to_start_date: end_date
+        )
+        expect(argyle).to have_received(:fetch_gigs_api).with(
+          account: argyle_account.aggregator_account_id, from_start_datetime: start_date, to_start_datetime: end_date
+        )
+      end
+    end
+
+    context "with last_12_complete_months" do
+      let(:verification_range) { "last_12_complete_months" }
+      let(:start_date) { Date.new(2023, 3, 1) }
+      let(:end_date) { Date.new(2024, 2, 29) }
+
+      it "fetches the exact calendar range through report, even when resumed later" do
+        report = activity_fetcher.report
+
+        expect(report).to have_attributes(has_fetched?: true, from_date: start_date, to_date: end_date)
+        expect(pinwheel).to have_received(:fetch_paystubs_api).with(
+          account_id: pinwheel_account.aggregator_account_id, from_pay_date: start_date, to_pay_date: end_date
+        )
+        expect(argyle).to have_received(:fetch_paystubs_api).with(
+          account: argyle_account.aggregator_account_id, from_start_date: start_date, to_start_date: end_date
+        )
+        expect(argyle).to have_received(:fetch_gigs_api).with(
+          account: argyle_account.aggregator_account_id, from_start_datetime: start_date, to_start_datetime: end_date
+        )
+      end
+
+      it "fetches the exact calendar range through report_for_payroll_account, even when resumed later" do
+        pinwheel_report = activity_fetcher.report_for_payroll_account(pinwheel_account)
+        argyle_report = activity_fetcher.report_for_payroll_account(argyle_account)
+
+        expect(pinwheel_report).to have_attributes(has_fetched?: true, from_date: start_date, to_date: end_date)
+        expect(argyle_report).to have_attributes(has_fetched?: true, from_date: start_date, to_date: end_date)
+        expect(pinwheel).to have_received(:fetch_paystubs_api).with(
+          account_id: pinwheel_account.aggregator_account_id, from_pay_date: start_date, to_pay_date: end_date
+        )
+        expect(argyle).to have_received(:fetch_paystubs_api).with(
+          account: argyle_account.aggregator_account_id, from_start_date: start_date, to_start_date: end_date
+        )
+        expect(argyle).to have_received(:fetch_gigs_api).with(
+          account: argyle_account.aggregator_account_id, from_start_datetime: start_date, to_start_datetime: end_date
+        )
       end
     end
   end
