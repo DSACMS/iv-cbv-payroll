@@ -135,6 +135,9 @@ module Aggregators
           notice_cert_error(CertificateInvalidError.new(result.error_message), result)
         when :not_configured
           @logger.info("[NSC Client Cert] No client certificate configured for #{@environment} environment.")
+        when :error
+          @logger.error("[NSC Client Cert ERROR] #{result.error_message}")
+          notice_cert_error(CertificateError.new(result.error_message), result)
         end
 
         result
