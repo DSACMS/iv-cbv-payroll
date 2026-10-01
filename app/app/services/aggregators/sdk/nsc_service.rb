@@ -219,7 +219,7 @@ module Aggregators
 
         token_conn = Faraday.new do |conn|
           conn.request :url_encoded
-          conn.response :logger, @logger, bodies: true, headers: true
+          conn.response :logger, @logger, bodies: false, headers: false
           conn.response :json
           conn.options.timeout = MAX_TIMEOUT.to_i
           conn.options.open_timeout = MAX_TIMEOUT.to_i
