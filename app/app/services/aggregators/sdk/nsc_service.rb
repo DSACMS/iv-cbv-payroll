@@ -374,7 +374,7 @@ module Aggregators
           @logger.error("NSC API server error (#{response.status}): #{response.body}")
           err = ServerError.new(
             code: "SERVER_ERROR_#{response.status}",
-            message: "NSC API server error: #{response.status} - #{response.body}",
+            message: "NSC API server error: #{response.status}",
             status: response.status,
             endpoint: endpoint,
             details: { response_body: response.body }
