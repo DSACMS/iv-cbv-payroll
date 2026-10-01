@@ -64,7 +64,7 @@ RSpec.describe ActivityReportSerializer do
     job_training = create(:job_training_activity, activity_flow: activity_flow)
     create(:job_training_activity_month, job_training_activity: job_training, month: second_month, hours: 8)
 
-    expect(report["ce_report"]["activities"].keys).to eq(%w[community_service work_program])
+    expect(report["ce_report"]["activities"].keys).to eq(%w[community_service work_program education])
     expect(report["ce_report"]["activities"]["community_service"].keys).to eq(%w[2026-06 2026-07])
     expect(report["ce_report"]["activities"]["work_program"].keys).to eq(%w[2026-07])
   end
@@ -182,7 +182,7 @@ RSpec.describe ActivityReportSerializer do
   end
 
   it "emits an empty object for an in-scope type with no activities" do
-    expect(report["ce_report"]["activities"]).to eq("community_service" => {}, "work_program" => {})
+    expect(report["ce_report"]["activities"]).to eq("community_service" => {}, "work_program" => {}, "education" => {})
   end
 
   it "excludes draft activities" do
@@ -219,12 +219,267 @@ RSpec.describe ActivityReportSerializer do
       .to eq([ "Local Food Bank", "Animal Shelter" ])
   end
 
-  it "omits out-of-scope activity types entirely" do
-    create(:education_activity, activity_flow: activity_flow)
+  it "reports the supported activity types when employment is present" do
     create(:employment_activity, activity_flow: activity_flow)
 
-    expect(report["ce_report"]["activities"].keys).to eq(%w[community_service work_program])
-    expect(report["ce_report"]).not_to have_key("income_summary")
+    expect(report["ce_report"]["activities"].keys).to eq(%w[community_service work_program education])
+  end
+
+  describe "education" do
+    let(:education_entries) { JSON.parse(report.to_json).dig("ce_report", "activities", "education") }
+
+    it "reports monthly self-attested credit hours with school and contact information" do
+      education = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :fully_self_attested,
+        school_name: "City Community College",
+        street_address: "2 Main St",
+        street_address_line_2: "",
+        city: "New Orleans",
+        state: "LA",
+        zip_code: "70112",
+        contact_name: "Casey Doe",
+        contact_email: "casey@example.org",
+        contact_phone_number: "5045555678",
+        additional_comments: "Evening classes"
+      )
+      create(:education_activity_month, education_activity: education, month: second_month, hours: 0)
+      create(:education_activity_month, education_activity: education, month: first_month, hours: 3.5)
+
+      expect(education_entries.keys).to eq(%w[2026-06 2026-07])
+      expect(education_entries["2026-06"].sole).to eq(
+        "type" => "education",
+        "month" => "2026-06",
+        "school_name" => "City Community College",
+        "street_address" => "2 Main St",
+        "street_address_line_2" => nil,
+        "city" => "New Orleans",
+        "state" => "LA",
+        "zip_code" => "70112",
+        "contact_name" => "Casey Doe",
+        "contact_email" => "casey@example.org",
+        "contact_phone_number" => "5045555678",
+        "additional_comments" => "Evening classes",
+        "hours" => 3.5,
+        "data_source" => "self_attested",
+        "document_ids" => [],
+        "extended_attributes" => {}
+      )
+      expect(education_entries["2026-07"].sole["hours"]).to eq(0.0)
+    end
+
+    it "reports verified NSC terms in each overlapping reporting month" do
+      education = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        status: :succeeded,
+        additional_comments: ""
+      )
+      create(
+        :nsc_enrollment_term,
+        education_activity: education,
+        school_name: "State University",
+        enrollment_status: :three_quarter_time,
+        term_begin: Date.new(2026, 5, 15),
+        term_end: Date.new(2026, 7, 15)
+      )
+
+      expect(education_entries.keys).to eq(%w[2026-06 2026-07])
+      expect(education_entries["2026-06"].sole).to eq(
+        "type" => "education",
+        "month" => "2026-06",
+        "school_name" => "State University",
+        "enrollment_status" => "three_quarter_time",
+        "enrollment_hours" => nil,
+        "credit_hours" => nil,
+        "term" => {
+          "start_month" => "2026-05",
+          "end_month" => "2026-07"
+        },
+        "data_source" => "nsc",
+        "additional_comments" => nil,
+        "document_ids" => [],
+        "extended_attributes" => {}
+      )
+      expect(education_entries["2026-07"].sole["month"]).to eq("2026-07")
+    end
+
+    it "collects multiple education activities into one month bucket" do
+      first = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :fully_self_attested,
+        school_name: "City Community College"
+      )
+      create(:education_activity_month, education_activity: first, month: first_month, hours: 3.5)
+      second = create(:education_activity, activity_flow: activity_flow, status: :succeeded)
+      create(
+        :nsc_enrollment_term,
+        education_activity: second,
+        school_name: "State University",
+        term_begin: first_month,
+        term_end: first_month.end_of_month
+      )
+
+      expect(education_entries["2026-06"]).to contain_exactly(
+        hash_including(
+          "school_name" => "City Community College",
+          "hours" => 3.5,
+          "data_source" => "self_attested"
+        ),
+        hash_including(
+          "school_name" => "State University",
+          "data_source" => "nsc"
+        )
+      )
+    end
+
+    it "reports partially self-attested terms with their own school names and credit hours" do
+      education = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+      document = attach_document(education, "Transcript.pdf")
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education,
+        school_name: "North College",
+        credit_hours: 3.25,
+        term_begin: first_month,
+        term_end: first_month.end_of_month
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education,
+        school_name: "South College",
+        credit_hours: 4,
+        term_begin: first_month,
+        term_end: second_month.end_of_month
+      )
+
+      expect(education_entries["2026-06"]).to contain_exactly(
+        hash_including(
+          "school_name" => "North College",
+          "hours" => 3.25,
+          "data_source" => "self_attested",
+          "enrollment_status" => "less_than_half_time",
+          "credit_hours" => 3.25,
+          "term" => {
+            "start_month" => "2026-06",
+            "end_month" => "2026-06"
+          }
+        ),
+        hash_including(
+          "school_name" => "South College",
+          "hours" => 4.0,
+          "data_source" => "self_attested"
+        )
+      )
+      expect(education_entries["2026-07"].sole).to include(
+        "school_name" => "South College",
+        "hours" => 4.0,
+        "data_source" => "self_attested",
+        "contact_name" => nil,
+        "street_address" => nil
+      )
+      expect(education_entries.values.flatten).to all(include("document_ids" => [ "DOC-#{document.id}" ]))
+    end
+
+    it "preserves enrollment with unknown credit hours in a partially self-attested activity" do
+      education = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :partially_self_attested,
+        status: :succeeded
+      )
+      create(
+        :nsc_enrollment_term,
+        education_activity: education,
+        enrollment_status: :half_time,
+        term_begin: second_month,
+        term_end: second_month.end_of_month
+      )
+
+      expect(education_entries.keys).to eq(%w[2026-07])
+      expect(education_entries["2026-07"].sole).to include(
+        "data_source" => "self_attested",
+        "enrollment_status" => "half_time",
+        "hours" => nil,
+        "credit_hours" => nil
+      )
+    end
+
+    it "includes the qualifying spring term for summer carryover and preserves its original dates" do
+      education = create(:education_activity, activity_flow: activity_flow, status: :succeeded)
+      create(
+        :nsc_enrollment_term,
+        education_activity: education,
+        school_name: "Spring College",
+        term_begin: Date.new(2026, 3, 1),
+        term_end: Date.new(2026, 6, 15)
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: education,
+        school_name: "Summer College",
+        term_begin: second_month,
+        term_end: Date.new(2026, 8, 15)
+      )
+
+      expect(education_entries["2026-07"]).to contain_exactly(
+        hash_including(
+          "school_name" => "Spring College",
+          "enrollment_status" => "half_time",
+          "term" => {
+            "start_month" => "2026-03",
+            "end_month" => "2026-06"
+          }
+        ),
+        hash_including(
+          "school_name" => "Summer College",
+          "enrollment_status" => "less_than_half_time"
+        )
+      )
+      expect(education_entries["2026-06"].size).to eq(1)
+    end
+
+    it "includes summer carryover when no summer term exists" do
+      education = create(:education_activity, activity_flow: activity_flow, status: :succeeded)
+      create(
+        :nsc_enrollment_term,
+        education_activity: education,
+        term_begin: Date.new(2026, 3, 1),
+        term_end: Date.new(2026, 6, 15)
+      )
+
+      expect(education_entries["2026-07"].sole).to include(
+        "enrollment_status" => "half_time",
+        "term" => {
+          "start_month" => "2026-03",
+          "end_month" => "2026-06"
+        }
+      )
+    end
+
+    it "omits education drafts and terms outside the reporting window" do
+      draft = create(:education_activity, activity_flow: activity_flow, draft: true)
+      create(:nsc_enrollment_term, education_activity: draft)
+      education = create(:education_activity, activity_flow: activity_flow, status: :succeeded)
+      create(
+        :nsc_enrollment_term,
+        education_activity: education,
+        term_begin: Date.new(2026, 9, 1),
+        term_end: Date.new(2026, 12, 31)
+      )
+
+      expect(education_entries).to eq({})
+    end
   end
 
   describe "documents" do
@@ -255,8 +510,16 @@ RSpec.describe ActivityReportSerializer do
         .to eq([ "DOC-#{job_training_document.id}" ])
     end
 
-    it "includes documents belonging to out-of-scope activity types" do
-      education = create(:education_activity, activity_flow: activity_flow)
+    it "lists education documents and references them from each reported month" do
+      education = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :fully_self_attested,
+        school_name: "City Community College"
+      )
+      activity_flow.reporting_months.each do |month|
+        create(:education_activity_month, education_activity: education, month: month, hours: 3)
+      end
       document = attach_document(education, "Transcript.pdf")
 
       expect(report["ce_report"]["documents"]).to include(
@@ -264,6 +527,31 @@ RSpec.describe ActivityReportSerializer do
         "document_name" => "SANDBOX123_education_transcript.pdf",
         "file_type" => "pdf"
       )
+      expect(report["ce_report"]["activities"]["education"].keys).to eq(%w[2026-06 2026-07])
+      report["ce_report"]["activities"]["education"].each_value do |entries|
+        expect(entries.sole["document_ids"]).to eq([ "DOC-#{document.id}" ])
+      end
+    end
+
+    it "lists verified NSC education documents and references them from each reported month" do
+      education = create(:education_activity, activity_flow: activity_flow, status: :succeeded)
+      create(
+        :nsc_enrollment_term,
+        education_activity: education,
+        term_begin: first_month,
+        term_end: second_month.end_of_month
+      )
+      document = attach_document(education, "Enrollment Letter.pdf")
+
+      expect(report["ce_report"]["documents"]).to include(
+        "document_id" => "DOC-#{document.id}",
+        "document_name" => "SANDBOX123_education_enrollment_letter.pdf",
+        "file_type" => "pdf"
+      )
+      expect(report["ce_report"]["activities"]["education"].keys).to eq(%w[2026-06 2026-07])
+      report["ce_report"]["activities"]["education"].each_value do |entries|
+        expect(entries.sole).to include("data_source" => "nsc", "document_ids" => [ "DOC-#{document.id}" ])
+      end
     end
   end
 
