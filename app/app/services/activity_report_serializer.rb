@@ -36,8 +36,10 @@ class ActivityReportSerializer
     "employment" => {
       association: :employment_activities,
       fields: EmploymentActivity::FIELDS + %w[additional_comments],
-      additional_fields: :employment_fields,
-      additional_months: :payroll_months
+      # Method returning extra fields for each self-attested activity month.
+      additional_fields_method: :employment_fields,
+      # Method returning additional activities grouped by month.
+      additional_months_method: :payroll_months
     }
   }.freeze
 
@@ -110,9 +112,9 @@ class ActivityReportSerializer
   def activities
     ACTIVITY_TYPES.each_with_object({}) do |(type, config), result|
       result[type] = months_for(type, config)
-      next unless config[:additional_months]
+      next unless config[:additional_months_method]
 
-      result[type] = result[type].merge(send(config[:additional_months])) do |_month, entries, additional_entries|
+      result[type] = result[type].merge(send(config[:additional_months_method])) do |_month, entries, additional_entries|
         entries + additional_entries
       end.sort.to_h
     end
@@ -164,7 +166,7 @@ class ActivityReportSerializer
 
   def entry(type, config, activity, activity_month)
     attributes = config[:fields].index_with { |field| json_value(activity.public_send(field)) }
-    attributes.merge!(send(config[:additional_fields], activity, activity_month)) if config[:additional_fields]
+    attributes.merge!(send(config[:additional_fields_method], activity, activity_month)) if config[:additional_fields_method]
 
     { "type" => type }
       .merge(attributes)

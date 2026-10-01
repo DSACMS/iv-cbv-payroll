@@ -7,7 +7,7 @@ RSpec.configure do |config|
   config.openapi_format = :json
   config.openapi_specs = {
     "openapi.json" => {
-      openapi: "3.0.3",
+      openapi: "3.1.0",
       info: {
         title: "Emmy Platform API Documentation",
         version: "v1",

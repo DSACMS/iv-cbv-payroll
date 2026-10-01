@@ -4,7 +4,7 @@ require_relative "invitation_schemas"
 RSpec.describe InvitationSchemas do
   let(:document) do
     JSONSchemer.openapi(JSON.parse({
-      openapi: "3.0.3", info: { title: "Test", version: "v1" }, paths: {},
+      openapi: "3.1.0", info: { title: "Test", version: "v1" }, paths: {},
       components: { schemas: described_class.schemas }
     }.to_json))
   end

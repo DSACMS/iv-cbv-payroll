@@ -14,17 +14,9 @@ module ActivityReportSchemas
         schema_version: { type: :string, pattern: '^\d+\.\d+\.\d+$', example: "1.0.0" },
         confirmation_code: { type: :string, description: "Confirmation code shared with the applicant." },
         completed_at: { type: :string, format: :"date-time", description: "UTC time the applicant completed the report." },
-        agency_partner_metadata: ref("CeAgencyPartnerMetadata"),
+        agency_partner_metadata: ref("AgencyPartnerMetadata"),
         ce_report: ref("CeReport")
       }).merge(description: InvitationDocumentation.read("ce-activity-report", section: "Model")),
-      CeAgencyPartnerMetadata: object([], {
-        first_name: nullable_string,
-        middle_name: nullable_string,
-        last_name: nullable_string,
-        case_number: nullable_string,
-        date_of_birth: nullable_string.merge(format: :date),
-        doc_id: nullable_string
-      }).merge(description: "Applicant identifiers configured for the receiving agency. Only the agency's configured fields are sent; blank strings are null."),
       CeReport: object(%w[review_period documents activities], {
         review_period: ref("CeReviewPeriod"),
         documents: { type: :array, items: ref("CeDocument") },
@@ -109,7 +101,7 @@ module ActivityReportSchemas
         pay_gross: cents.merge(description: "Gross pay in cents. Missing gross pay uses the income report's zero fallback."),
         pay_gross_ytd: cents(nullable: true),
         pay_net: cents(nullable: true),
-        hours_paid: { type: :number, nullable: true, description: "Hours paid, including overtime." },
+        hours_paid: { type: %w[number null], description: "Hours paid, including overtime." },
         deductions: { type: :array, items: ref("CePaystubDeduction") },
         gross_pay_list: { type: :array, items: ref("CeGrossPayComponent") }
       }),
@@ -143,7 +135,8 @@ module ActivityReportSchemas
     {
       type: :object,
       description: "Map of YYYY-MM calendar months to activity arrays. Months with no reported activity are omitted; no activities is an empty object.",
-      additionalProperties: { type: :array, items: ref(name) }
+      additionalProperties: true,
+      patternProperties: { '^\d{4}-\d{2}$' => { type: :array, items: ref(name) } }
     }
   end
 
@@ -152,7 +145,7 @@ module ActivityReportSchemas
   end
 
   def self.nullable_string
-    { type: :string, nullable: true }
+    { type: %w[string null] }
   end
 
   def self.nullable_enum(values)
@@ -160,6 +153,6 @@ module ActivityReportSchemas
   end
 
   def self.cents(nullable: false)
-    { type: :integer, nullable: nullable, description: "Amount in cents (12345 represents $123.45)." }
+    { type: nullable ? %w[integer null] : :integer, description: "Amount in cents (12345 represents $123.45)." }
   end
 end

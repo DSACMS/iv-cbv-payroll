@@ -33,8 +33,8 @@ RSpec.describe ActivityReportSchemas do
 
   it "defines valid OpenAPI components without requiring an API operation" do
     standalone = JSONSchemer.openapi(JSON.parse({
-      openapi: "3.0.3", info: { title: "CE reports", version: "v1" }, paths: {},
-      components: { schemas: described_class.schemas }
+      openapi: "3.1.0", info: { title: "CE reports", version: "v1" }, paths: {},
+      components: { schemas: InvitationSchemas.schemas.merge(described_class.schemas) }
     }.to_json))
 
     expect(standalone.validate.to_a).to be_empty
@@ -45,9 +45,26 @@ RSpec.describe ActivityReportSchemas do
     expect(schema.validate(report).to_a).to be_empty
   end
 
+  it "accepts overlapping agency metadata shapes and validates their shared fields" do
+    report["agency_partner_metadata"] = { "first_name" => "Jane", "last_name" => "Doe", "case_number" => "EXAMPLE-123" }
+    expect(schema.valid?(report)).to be(true)
+
+    report["agency_partner_metadata"]["case_number"] = 123
+    expect(schema.valid?(report)).to be(false)
+  end
+
   it "validates every month's entries, including months absent from documentation examples" do
     report["ce_report"]["activities"]["employment"]["2030-12"] = [ payroll.merge("paystubs" => [ { "pay_date" => "2030-12-01", "pay_gross" => "invalid" } ]) ]
 
+    expect(schema.valid?(report)).to be(false)
+  end
+
+  it "requires arrays for month keys while allowing future non-month fields" do
+    employment = report["ce_report"]["activities"]["employment"]
+    employment["future_field"] = { "value" => true }
+    expect(schema.valid?(report)).to be(true)
+
+    employment["2026-08"] = { "value" => true }
     expect(schema.valid?(report)).to be(false)
   end
 

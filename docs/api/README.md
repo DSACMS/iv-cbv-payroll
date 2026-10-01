@@ -59,9 +59,11 @@ The build reads these Markdown descriptions directly from `docs/api/`; Markdown
 changes also trigger the publication workflow after merge.
 Keep endpoint descriptions and responses together, using level-two headings
 to identify the sections included in the generated reference.
-Use `additionalProperties: true` on objects with named fields so integrations can
-tolerate additive schema changes. Month-keyed activity maps use a typed
-`additionalProperties` schema to validate each month's array.
+The reference uses OpenAPI 3.1. Use `additionalProperties: true` on objects so
+integrations can tolerate additive schema changes. Month-keyed activity maps
+also use `patternProperties` to validate arrays under `YYYY-MM` keys while
+allowing future fields with other names. Nullable fields include `null` in their
+`type` array.
 Request examples come from real test requests using synthetic data and fixed
 tokens. The CE model example comes from the transmission specs; model examples
 are validated during the build. Authorization headers are never captured.
