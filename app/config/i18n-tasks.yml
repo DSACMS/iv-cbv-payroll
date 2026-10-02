@@ -162,6 +162,8 @@ ignore_missing:
     - "cbv.employer_searches.employer.select_employer"
     - "cbv.employer_searches.show.select_employer"
     - "activerecord.errors.models.activity_flow_invitation.*" # FFS-4853
+    - "activities.entries.show.employment_focused.*" # FFS-4859
+    - "activities.add_your_work.add_jobs.*" # FFS-4861
 
 ## Consider these keys used:
 ignore_unused:

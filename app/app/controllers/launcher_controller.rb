@@ -220,12 +220,13 @@ class LauncherController < ApplicationController
   def build_tokenized_url(client_agency_id, overrides)
     invitation = create_launcher_activity_flow_invitation!(
       client_agency_id: client_agency_id,
-      reference_id: "demo-#{SecureRandom.hex(4)}"
+      reference_id: "demo-#{SecureRandom.hex(4)}",
+      employment_focused: ActiveModel::Type::Boolean.new.cast(overrides[:employment_focused]) || false
     )
 
     invitation.to_url(
       **launcher_url_options,
-      **overrides
+      **overrides.except(:employment_focused)
     )
   end
 
@@ -259,12 +260,13 @@ class LauncherController < ApplicationController
     invitation = create_launcher_activity_flow_invitation!(
       cbv_applicant: cbv_applicant,
       client_agency_id: client_agency_id,
-      reference_id: "demo-#{scenario_key}"
+      reference_id: "demo-#{scenario_key}",
+      employment_focused: ActiveModel::Type::Boolean.new.cast(overrides[:employment_focused]) || false
     )
 
     invitation.to_url(
       **launcher_url_options,
-      **overrides
+      **overrides.except(:employment_focused)
     )
   end
 
@@ -282,13 +284,14 @@ class LauncherController < ApplicationController
     invitation = create_launcher_activity_flow_invitation!(
       cbv_applicant: cbv_applicant,
       client_agency_id: client_agency_id,
-      reference_id: "demo-#{scenario_key}"
+      reference_id: "demo-#{scenario_key}",
+      employment_focused: ActiveModel::Type::Boolean.new.cast(overrides[:employment_focused]) || false
     )
     merged_overrides = overrides.to_h
 
     invitation.to_url(
       **launcher_url_options,
-      **merged_overrides
+      **merged_overrides.except(:employment_focused)
     )
   end
 

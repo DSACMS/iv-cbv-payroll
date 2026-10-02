@@ -296,6 +296,15 @@ en:
         last_name: Last name
     employment:
       add_your_work:
+        add_jobs:
+          yes: Yes
+          no: No
+          header: Do you have another job to add?
+          job_connected: "%{name} (connected via payroll)"
+          job_manual: "%{name} (entered manually)"
+          jobs_added_heading: Jobs added (%{count})
+          reporting_period_label: 'Reporting period:'
+          submit: Continue
         show:
           description: If you held multiple jobs during the reporting period, you'll need to add each job separately.
           header: Choose how you want to add your work
@@ -403,6 +412,17 @@ en:
         continue: Report your activities
         description: "%{agency_name} needs your information to determine your %{benefit} eligibility."
         disclaimer: Your state will determine eligibility based on the information you submit.
+        employment_focused:
+          get_started: Get started
+          header: Add your jobs with Emmy
+          how_it_works: 'How it works:'
+          reporting_period_label: 'Reporting period:'
+          step1: Choose how you want to add your jobs
+          step1_description: Add automatically by logging in the same way you do to view pay stubs or enter manually.
+          step2: Add and review your information
+          step2_description: You will be able to preview and approve your information before it's shared.
+          step3: Share with %{agency_name}
+          step3_description: We'll send information about your jobs to %{agency_name}. This can help you get a benefits decision faster.
         title: Report your %{benefit} eligibility
     error_no_identity: Please provide your name and date of birth
     errors:
