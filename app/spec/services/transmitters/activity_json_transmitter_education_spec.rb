@@ -61,7 +61,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       end
 
       it_behaves_like "an education report", %w[partial_enrollment_casey summer_term_carryover_sage spring_fall_no_summer_morgan]
-        .include?(profile.scenario_key) ? "nsc" : "self_attested"
+        .include?(profile.scenario_key) ? "verified" : "verified_enrollment_only"
     end
   end
 
@@ -79,7 +79,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       end
 
       it_behaves_like "an education report", {
-        "rick" => "nsc", "lynette" => "self_attested", "dominique" => nil, "linda" => nil
+        "rick" => "verified", "lynette" => "verified_enrollment_only", "dominique" => nil, "linda" => nil
       }.fetch(key)
     end
   end

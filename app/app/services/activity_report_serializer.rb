@@ -190,15 +190,14 @@ class ActivityReportSerializer
 
   def education_term_entry(activity, month, term)
     base = if activity.partially_self_attested?
-             self_attested_education_entry(activity, month, term.credit_hours)
+             self_attested_education_entry(activity, month, term.credit_hours).merge("data_source" => "verified_enrollment_only")
            else
-             education_entry(activity, month).merge("data_source" => "nsc")
+             education_entry(activity, month).merge("data_source" => "verified")
            end
 
     base.merge(
       "school_name" => json_value(term.school_name),
       "enrollment_status" => term.enrollment_status,
-      "enrollment_hours" => nil,
       "credit_hours" => term.credit_hours&.to_f,
       "term" => {
         "start_month" => term.term_begin.strftime("%Y-%m"),

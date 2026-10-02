@@ -291,13 +291,12 @@ RSpec.describe ActivityReportSerializer do
         "month" => "2026-06",
         "school_name" => "State University",
         "enrollment_status" => "three_quarter_time",
-        "enrollment_hours" => nil,
         "credit_hours" => nil,
         "term" => {
           "start_month" => "2026-05",
           "end_month" => "2026-07"
         },
-        "data_source" => "nsc",
+        "data_source" => "verified",
         "additional_comments" => nil,
         "document_ids" => [],
         "extended_attributes" => {}
@@ -330,7 +329,7 @@ RSpec.describe ActivityReportSerializer do
         ),
         hash_including(
           "school_name" => "State University",
-          "data_source" => "nsc"
+          "data_source" => "verified"
         )
       )
     end
@@ -366,7 +365,7 @@ RSpec.describe ActivityReportSerializer do
         hash_including(
           "school_name" => "North College",
           "hours" => 3.25,
-          "data_source" => "self_attested",
+          "data_source" => "verified_enrollment_only",
           "enrollment_status" => "less_than_half_time",
           "credit_hours" => 3.25,
           "term" => {
@@ -377,13 +376,13 @@ RSpec.describe ActivityReportSerializer do
         hash_including(
           "school_name" => "South College",
           "hours" => 4.0,
-          "data_source" => "self_attested"
+          "data_source" => "verified_enrollment_only"
         )
       )
       expect(education_entries["2026-07"].sole).to include(
         "school_name" => "South College",
         "hours" => 4.0,
-        "data_source" => "self_attested",
+        "data_source" => "verified_enrollment_only",
         "contact_name" => nil,
         "street_address" => nil
       )
@@ -407,7 +406,7 @@ RSpec.describe ActivityReportSerializer do
 
       expect(education_entries.keys).to eq(%w[2026-07])
       expect(education_entries["2026-07"].sole).to include(
-        "data_source" => "self_attested",
+        "data_source" => "verified_enrollment_only",
         "enrollment_status" => "half_time",
         "hours" => nil,
         "credit_hours" => nil
@@ -550,7 +549,7 @@ RSpec.describe ActivityReportSerializer do
       )
       expect(report["ce_report"]["activities"]["education"].keys).to eq(%w[2026-06 2026-07])
       report["ce_report"]["activities"]["education"].each_value do |entries|
-        expect(entries.sole).to include("data_source" => "nsc", "document_ids" => [ "DOC-#{document.id}" ])
+        expect(entries.sole).to include("data_source" => "verified", "document_ids" => [ "DOC-#{document.id}" ])
       end
     end
   end
