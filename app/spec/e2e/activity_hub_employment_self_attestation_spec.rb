@@ -35,7 +35,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     end
 
     # Add your work page
-    verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+    verify_page(page, title: I18n.t("activities.employment.add_your_work.show.employment_focused.header"))
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     click_button I18n.t("continue")
     expect(page).to have_content(I18n.t("shared.next_path.notice_no_answer"))
@@ -54,6 +54,8 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     verify_page(page, title: I18n.t("activities.employment_info.title"))
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
+    expect(page).to have_selector("input[name='employment_activity[employer_name]'][required]")
+    expect(page).to have_selector("label[for='employment_activity_street_address'] strong", text: I18n.t("activities.employment_info.street_address"))
     fill_in I18n.t("activities.employment_info.employer_name"), with: "Gainesville Wrecking"
     fill_in I18n.t("activities.employment_info.street_address"), with: "942 W Harlan Ave"
     fill_in I18n.t("activities.employment_info.city"), with: "Gainesville"
@@ -83,7 +85,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     # Hours input for the first selected month
     monthly_details_title = I18n.t(
-      "activities.employment.hours_input.heading",
+      "activities.employment.hours_input.employment_focused.heading",
       organization: "Gainesville Wrecking"
     )
     verify_page(page, title: monthly_details_title)
@@ -195,7 +197,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     month_edit_links.first.click
 
     updated_monthly_details_title = I18n.t(
-      "activities.employment.hours_input.heading",
+      "activities.employment.hours_input.employment_focused.heading",
       organization: "Updated Employer"
     )
     verify_page(page, title: updated_monthly_details_title)

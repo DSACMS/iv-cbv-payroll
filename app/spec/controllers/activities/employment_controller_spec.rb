@@ -13,6 +13,32 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   end
 
   describe "GET #new" do
+    [ "paid", "unpaid_or_in_kind" ].each do |compensation_type|
+      [ false, true ].each do |employment_focused|
+        it "styles and marks the #{compensation_type} form fields for employment focus #{employment_focused}" do
+          activity_flow.update!(employment_focused: employment_focused)
+
+          get :new, params: { compensation_type: compensation_type }
+
+          rendered = Capybara.string(response.body)
+          if employment_focused
+            expect(rendered).to have_selector("input[name='employment_activity[employer_name]'][required]")
+          else
+            expect(rendered).to have_no_selector("input[name='employment_activity[employer_name]'][required]")
+          end
+          fields = %w[employer_name street_address street_address_line_2 city state zip_code contact_name contact_email contact_phone_number]
+          fields.each do |field|
+            label = rendered.find("label[for='employment_activity_#{field}']")
+            if employment_focused
+              expect(label).to have_selector("strong")
+            else
+              expect(label).to have_no_selector("strong")
+            end
+          end
+        end
+      end
+    end
+
     let(:perform_tracked_action) { get :new }
     let(:tracked_flow) { activity_flow }
 

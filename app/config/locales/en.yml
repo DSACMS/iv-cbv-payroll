@@ -320,6 +320,8 @@ en:
         gross_income_hint: How much you made before taxes
         gross_income_label: "%{month} gross income"
         heading: Add your income and hours for %{organization}
+        employment_focused:
+          heading: Add your income and/or hours for %{organization}
         hours_label: "%{month} hours worked"
         month_indicator: 'Month %{current} of %{total}:'
         unpaid_or_in_kind:

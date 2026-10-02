@@ -14,7 +14,8 @@
 <% month_label = l(@current_month, format: :month) %>
 <% unpaid = @employment_activity.unpaid_or_in_kind? %>
 <% input_scope = unpaid ? "activities.employment.hours_input.unpaid_or_in_kind" : "activities.employment.hours_input" %>
-<% heading = t("#{input_scope}.heading",
+<% heading_key = @flow.employment_focused? && !unpaid ? "activities.employment.hours_input.employment_focused.heading" : "#{input_scope}.heading" %>
+<% heading = t(heading_key,
   organization: @employment_activity.employer_name) %>
 <% content_for :title, heading %>
 
