@@ -478,6 +478,16 @@ en:
           none_found_description: This typically happens when you haven't received income from this job between %{start_month} and %{end_month}. If you believe this is an error, add a comment below.
           subheader_html: "<p>We have gathered your records from %{start_month} to %{end_month}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
           subheader_single_month_html: "<p>We have gathered your records for %{month}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}. This will be included in your community engagement report.</p>"
+          employment_focused:
+            employment_information: Employment information
+            compensation_amount: Compensation amount
+            monthly_details: Monthly details
+            month: Month
+            gross_income: Gross income
+            number_of_paychecks: Number of paychecks
+            hours_worked: Hours worked
+            subheader_html: "<p>We have gathered your records from %{start_month} to %{end_month}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}.</p>"
+            subheader_single_month_html: "<p>We have gathered your records for %{month}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}.</p>"
           unknown: Unknown
       synchronization_failures:
         show:

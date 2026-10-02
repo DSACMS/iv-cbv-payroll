@@ -1,0 +1,29 @@
+<div class="margin-top-5">
+  <h2><%= t("activities.income.payment_details.show.employment_focused.employment_information") %></h2>
+  <%= render TableComponent.new do |table| %>
+    <%= table.with_header_cell(scope: "col").with_content(t("activities.income.payment_details.show.employment_focused.employment_information")) %>
+    <%= table.with_header_cell(scope: "col").with_content(t("shared.table_headers.your_details")) %>
+    <%= table.with_data_point(:employment_start_date, @account_report.employment&.start_date) %>
+    <%= table.with_data_point(:employment_end_date, @account_report.employment&.termination_date) %>
+    <%= table.with_data_point(:employment_status, @account_report.employment&.status) %>
+    <%= table.with_data_point(:pay_frequency, @payroll_account.job_succeeded?("income") ? @account_report.income&.pay_frequency : nil) %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true, scope: "row").with_content(t("activities.income.payment_details.show.employment_focused.compensation_amount")) %>
+      <%= row.with_data_cell.with_content(compensation) %>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="margin-top-5">
+  <h2><%= t("activities.income.payment_details.show.employment_focused.monthly_details") %></h2>
+  <% @report.flow.reporting_months.each do |month| %>
+    <%= render TableComponent.new(attributes: { "aria-label" => I18n.l(month, format: :month_year) }) do |table| %>
+      <% month_rows(month).each do |field, value| %>
+        <%= table.with_row do |row| %>
+          <%= row.with_data_cell(is_header: true, scope: "row").with_content(t("activities.income.payment_details.show.employment_focused.#{field}")) %>
+          <%= row.with_data_cell.with_content(value) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
