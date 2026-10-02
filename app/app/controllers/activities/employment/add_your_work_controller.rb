@@ -23,6 +23,27 @@ class Activities::Employment::AddYourWorkController < Activities::BaseController
     redirect_to next_step_path(add_work_method)
   end
 
+  def add_jobs
+    @connected_jobs = @flow.payroll_accounts.published.select(&:sync_succeeded?).map do |account|
+      @flow.employment_summaries_by_account_with_fallback.dig(account.aggregator_account_id, :employer_name) ||
+        t("activities.employment.title")
+    end
+    @manual_jobs = @flow.employment_activities.published.pluck(:employer_name)
+  end
+
+  def create_add_jobs
+    unless params[:additional_jobs].present? && %w[true false].include?(params[:additional_jobs])
+      flash[:slim_alert] = { message: t("shared.next_path.notice_no_answer"), type: "error" }
+      return redirect_to activities_flow_income_add_jobs_path
+    end
+
+    if params[:additional_jobs] == "true"
+      redirect_to activities_flow_income_add_your_work_path
+    else
+      redirect_to after_activity_path
+    end
+  end
+
   private
 
   def next_step_path(add_work_method)

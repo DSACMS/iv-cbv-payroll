@@ -63,7 +63,7 @@ class FlowController < ApplicationController
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
 
-      @flow = flow_class(flow_param).create_from_invitation(
+      @flow = flow_class(flow_param).resume_or_create_from_invitation(
         invitation,
         cookies.permanent.signed[:device_id],
         params

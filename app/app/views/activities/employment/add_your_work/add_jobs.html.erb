@@ -1,0 +1,33 @@
+<% title = t(".header") %>
+<% content_for :title, title %>
+
+<h1><%= title %></h1>
+<p>
+    <strong><%= t(".reporting_period_label") %></strong>
+    <%= @flow.reporting_window_display %>
+</p>
+
+<% total_jobs = @connected_jobs.size + @manual_jobs.size %>
+<% if total_jobs.positive? %>
+    <div class="summary-box margin-top-3 maxw-mobile-lg">
+        <h2><%= t(".jobs_added_heading", count: total_jobs) %></h2>
+        <ul>
+            <% @connected_jobs.each do |name| %>
+                <li><%= t(".job_connected", name: name) %></li>
+            <% end %>
+            <% @manual_jobs.each do |name| %>
+                <li><%= t(".job_manual", name: name) %></li>
+            <% end %>
+        </ul>
+    </div>
+<% end %>
+
+<%= form_with url: activities_flow_income_add_jobs_path, method: :post, builder: UswdsFormBuilder do |form| %>
+    <div class="width-full">
+        <%= form.radio_button(:additional_jobs, true, { label: t(".yes") }) %>
+        <%= form.radio_button(:additional_jobs, false, { label: t(".no") }) %>
+    </div>
+    <div>
+        <%= form.submit t(".submit"), class: "btn btn-primary usa-button width-full margin-top-4" %>
+    </div>
+<% end %>
