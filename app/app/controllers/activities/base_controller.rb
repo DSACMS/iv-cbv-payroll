@@ -82,6 +82,7 @@ class Activities::BaseController < FlowController
       is_a?(Activities::JobTrainingController) ||
       is_a?(Activities::VolunteeringController) ||
       is_a?(Activities::DocumentUploadsController) ||
+      is_a?(Activities::Employment::MonthSelectionsController) ||
       is_a?(Activities::Employment::MonthsController) ||
       is_a?(Activities::Education::MonthsController) ||
       is_a?(Activities::JobTraining::MonthsController) ||

@@ -31,6 +31,11 @@ class CbvFlowInvitation < ApplicationRecord
     message: :invalid_format,
     case_sensitive: false
   }
+  validates :verification_range, inclusion: {
+    in: Flow::VALID_VERIFICATION_RANGES,
+    message: :invalid_format,
+    case_sensitive: true
+  }, on: :v2
   validate :applicant_information
 
   include Redactable

@@ -6,10 +6,13 @@
 <%# i18n-tasks-use t('activities.document_uploads.new.title', name: 'name') %>
 <%# i18n-tasks-use t('activities.document_uploads.new.title_generic') %>
 <%# i18n-tasks-use t('activities.document_uploads.new.suggestion_text_html') %>
+<%# i18n-tasks-use t('activities.document_uploads.new.suggestion_title') %>
 <%# i18n-tasks-use t('activities.community_service.document_upload_suggestion_text_html') %>
 <%# i18n-tasks-use t('activities.education.document_upload_suggestion_text_html') %>
 <%# i18n-tasks-use t('activities.job_training.document_upload_suggestion_text_html') %>
 <%# i18n-tasks-use t('activities.employment.document_upload_suggestion_text_html') %>
+<%# i18n-tasks-use t('activities.employment.unpaid_or_in_kind.document_upload_suggestion_text_html') %>
+<%# i18n-tasks-use t('activities.employment.unpaid_or_in_kind.document_upload_suggestion_title') %>
 
 <% content_for :activity_flow_header do %>
   <%= render ActivityFlowHeaderComponent.new(
@@ -89,7 +92,7 @@
   <div class="usa-error-message" hidden data-document-upload-target="error" role="alert"></div>
 
   <%= render(AccordionComponent.new(id: "document-upload-suggestions")) do |accordion| %>
-    <% accordion.with_title { t(".suggestion_title") } %>
+    <% accordion.with_title { t(@activity.document_upload_suggestion_title_i18n_key) } %>
     <% accordion.with_accordion_item do %>
       <%= t(@activity.document_upload_suggestion_text) %>
     <% end %>

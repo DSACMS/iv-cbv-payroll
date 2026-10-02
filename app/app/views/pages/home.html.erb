@@ -1,14 +1,8 @@
 <% if pilot_ended? %>
   <%= render "#{current_agency&.id}_pilot_end" %>
 <% else %>
-  <% welcome = activity_flow_timeout? ? t(".activity_flow_timeout.header") : t(".header") %>
-  <% content_for :title, welcome %>
-  <h1><%= welcome %></h1>
-
-  <% if activity_flow_timeout? %>
-    <p><%= t(".activity_flow_timeout.description", agency_name: agency_translation("shared.agency_full_name")) %></p>
-  <% else %>
-    <p><%= t(".description_1") %></p>
-    <p><%= t(".description_2") %></p>
-  <% end %>
+  <% content_for :title, t(".header") %>
+  <h1><%= t(".header") %></h1>
+  <p><%= t(".description_1") %></p>
+  <p><%= t(".description_2") %></p>
 <% end %>

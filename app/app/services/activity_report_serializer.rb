@@ -105,9 +105,10 @@ class ActivityReportSerializer
   end
 
   def activities
-    SELF_ATTESTED_ACTIVITY_TYPES.each_with_object({}) do |(type, config), result|
+    result = SELF_ATTESTED_ACTIVITY_TYPES.each_with_object({}) do |(type, config), result|
       result[type] = months_for(type, config)
     end
+    result.merge("education" => education_months)
   end
 
   def months_for(type, config)
@@ -134,6 +135,75 @@ class ActivityReportSerializer
         "document_ids" => document_ids_for(activity),
         "extended_attributes" => {}
       )
+  end
+
+  def education_months
+    entries_by_month = Hash.new { |hash, key| hash[key] = [] }
+
+    @activity_flow.education_activities.published.order(:id).each do |activity|
+      if activity.fully_self_attested?
+        activity.activity_months.sort_by(&:month).each do |activity_month|
+          month = activity_month.month.strftime("%Y-%m")
+          entries_by_month[month] << self_attested_education_entry(activity, month, activity_month.hours)
+        end
+      else
+        education_term_entries(activity).each do |entry|
+          entries_by_month[entry["month"]] << entry
+        end
+      end
+    end
+
+    entries_by_month.sort.to_h
+  end
+
+  def education_term_entries(activity)
+    resolver = EducationReportingMonthResolver.new(
+      terms: activity.nsc_enrollment_terms.order(:term_begin, :id),
+      reporting_months: @activity_flow.reporting_months
+    )
+
+    resolver.reporting_month_enrollments.flat_map do |enrollment|
+      month = enrollment.month.strftime("%Y-%m")
+      terms = (enrollment.terms + [ enrollment.effective_term ]).compact.uniq
+      terms.map { |term| education_term_entry(activity, month, term) }
+    end
+  end
+
+  def education_entry(activity, month)
+    {
+      "type" => "education",
+      "month" => month,
+      "document_ids" => document_ids_for(activity),
+      "additional_comments" => json_value(activity.additional_comments),
+      "extended_attributes" => {}
+    }
+  end
+
+  def self_attested_education_entry(activity, month, credit_hours)
+    attributes = EducationActivity::FIELDS.index_with { |field| json_value(activity.public_send(field)) }
+
+    education_entry(activity, month).merge(attributes).merge(
+      "hours" => credit_hours&.to_f,
+      "data_source" => "self_attested"
+    )
+  end
+
+  def education_term_entry(activity, month, term)
+    base = if activity.partially_self_attested?
+             self_attested_education_entry(activity, month, term.credit_hours).merge("data_source" => "verified_enrollment_only")
+           else
+             education_entry(activity, month).merge("data_source" => "verified")
+           end
+
+    base.merge(
+      "school_name" => json_value(term.school_name),
+      "enrollment_status" => term.enrollment_status,
+      "credit_hours" => term.credit_hours&.to_f,
+      "term" => {
+        "start_month" => term.term_begin.strftime("%Y-%m"),
+        "end_month" => term.term_end.strftime("%Y-%m")
+      }
+    )
   end
 
   def json_value(value)

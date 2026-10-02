@@ -1,0 +1,19 @@
+<% content_for :title, t(".header") %>
+
+<h1><%= t(".header") %></h1>
+<p><%= t(".description") %></p>
+<div
+  class="usa-summary-box margin-bottom-4 measure-5"
+  role="region"
+  aria-labelledby="summary-box-key-information"
+>
+  <div class="usa-summary-box__body">
+    <h2 class="usa-summary-box__heading" id="summary-box-key-information">
+      <%= t(".summary_box.header") %>
+    </h2>
+    <div class="usa-summary-box__text">
+      <%= t(".summary_box.description") %>
+    </div>
+  </div>
+</div>
+<p><%= t(".issues") %></p>

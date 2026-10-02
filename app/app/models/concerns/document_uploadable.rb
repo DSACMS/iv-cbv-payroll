@@ -44,6 +44,11 @@ module DocumentUploadable
     "activities.document_uploads.new.suggestion_text_html"
   end
 
+  # Override this method to change the "Suggested documents" accordion title.
+  def document_upload_suggestion_title_i18n_key
+    "activities.document_uploads.new.suggestion_title"
+  end
+
   # Override when an activity should use a different title key.
   # Default is "Upload supporting documents for %{name}".
   def document_upload_title_i18n_key

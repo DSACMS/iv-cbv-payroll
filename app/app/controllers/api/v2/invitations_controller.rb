@@ -19,19 +19,27 @@ class Api::V2::InvitationsController < Api::InvitationsController
       delivery_method: nil
     )
 
-    if community_engagement?
+    if community_engagement? || employment?
       @activity_flow_invitation = CbvInvitationService.new(event_logger)
         .invite_to_activity_flow(
-          @cbv_flow_invitation, verification_range: params[:verification_range], context: :v2
+          @cbv_flow_invitation,
+          verification_range: params[:verification_range],
+          employment_focused: employment?,
+          context: :v2
         )
     end
 
     return render_validation_errors if @cbv_flow_invitation.errors.any?
+    return render_validation_errors if @activity_flow_invitation&.errors&.any?
 
     render_created_response
   end
 
   private
+
+  def employment?
+    invitation_type == "employment"
+  end
 
   def invitation_type
     @invitation_type ||= params[:invitation_type].tr("-", "_")
@@ -46,7 +54,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
   end
 
   def cbv_flow_invitation_params(contract)
-    permitted = params.permit(:language)
+    permitted = params.permit(:language, :verification_range)
 
     permitted.deep_merge(
       client_agency_id: @current_user.client_agency_id,
@@ -79,7 +87,10 @@ class Api::V2::InvitationsController < Api::InvitationsController
   end
 
   def render_validation_errors
-    render json: errors_to_json(@cbv_flow_invitation.errors),
-      status: :unprocessable_content
+    errors = []
+    errors += errors_to_json(@cbv_flow_invitation.errors)[:errors] if @cbv_flow_invitation&.errors&.any?
+    errors += errors_to_json(@activity_flow_invitation.errors)[:errors] if @activity_flow_invitation&.errors&.any?
+
+    render json: { errors: errors }, status: :unprocessable_content
   end
 end

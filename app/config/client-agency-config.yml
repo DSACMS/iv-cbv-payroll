@@ -66,18 +66,22 @@
           - individual_id
           - first_name
           - last_name
+          - date_of_birth
         required:
           - individual_id
           - first_name
           - last_name
-      income:
+          - date_of_birth
+      employment:
         metadata:
-          - case_number
-          - date_of_birth
-          - doc_id
           - individual_id
-        required:
+          - first_name
+          - last_name
           - date_of_birth
+        required:
+          - individual_id
+          - first_name
+          - last_name
 
 - id: nh_dhhs
   agency_name: Department of Health and Human Services
@@ -149,22 +153,22 @@
           - individual_id
           - first_name
           - last_name
+          - date_of_birth
         required:
           - individual_id
           - first_name
           - last_name
-      income:
+          - date_of_birth
+      employment:
         metadata:
+          - individual_id
           - first_name
-          - middle_name
           - last_name
-          - case_number
           - date_of_birth
         required:
+          - individual_id
           - first_name
           - last_name
-          - case_number
-          - date_of_birth
 
 - id: sandbox
   agency_name: Test Agency
@@ -240,22 +244,22 @@
           - individual_id
           - first_name
           - last_name
+          - date_of_birth
         required:
           - individual_id
           - first_name
           - last_name
-      income:
+          - date_of_birth
+      employment:
         metadata:
+          - individual_id
           - first_name
-          - middle_name
           - last_name
-          - case_number
           - date_of_birth
         required:
+          - individual_id
           - first_name
           - last_name
-          - case_number
-          - date_of_birth
 # Uncomment for local testing:
 #    - http://localhost:8000
 #    - https://*.ngrok-free.app
@@ -312,21 +316,26 @@
   api:
     v2:
       community_engagement:
-        mmetadata:
-          - individual_id
-          - first_name
-          - last_name
-        required:
-          - individual_id
-          - first_name
-          - last_name
-      income:
         metadata:
-          - case_number
+          - individual_id
+          - first_name
+          - last_name
           - date_of_birth
         required:
-          - case_number
+          - individual_id
+          - first_name
+          - last_name
           - date_of_birth
+      employment:
+        metadata:
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
+        required:
+          - individual_id
+          - first_name
+          - last_name
 
 - id: accenture
   agency_name: Accenture
@@ -368,15 +377,22 @@
           - individual_id
           - first_name
           - last_name
+          - date_of_birth
         required:
           - individual_id
           - first_name
           - last_name
-      income:
+          - date_of_birth
+      employment:
         metadata:
-          - case_number
+          - individual_id
+          - first_name
+          - last_name
+          - date_of_birth
         required:
-          - case_number
+          - individual_id
+          - first_name
+          - last_name
   allowed_iframe_ancestors:
     - https://ac1752691868225.lightning.force.com
     - https://ac1752691868225.my.salesforce-sites.com

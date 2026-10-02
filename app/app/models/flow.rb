@@ -3,6 +3,8 @@ class Flow < ApplicationRecord
 
   has_many :payroll_accounts, as: :flow, dependent: :destroy
 
+  VALID_VERIFICATION_RANGES = %w[last_complete_month last_12_complete_months].freeze
+
   def self.flow_attributes_from_params(params)
     {}
   end

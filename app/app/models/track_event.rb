@@ -109,6 +109,8 @@ module TrackEvent
   EmploymentInfoSubmitted = "EmploymentInfoSubmitted"
   EmploymentInfoValidationFailed = "EmploymentInfoValidationFailed"
   EmploymentInfoViewed = "EmploymentInfoViewed"
+  EmploymentMonthSelectionSubmitted = "EmploymentMonthSelectionSubmitted"
+  EmploymentMonthSelectionViewed = "EmploymentMonthSelectionViewed"
   EmploymentMonthSubmitted = "EmploymentMonthSubmitted"
   EmploymentMonthValidationFailed = "EmploymentMonthValidationFailed"
   EmploymentMonthViewed = "EmploymentMonthViewed"

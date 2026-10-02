@@ -18,6 +18,7 @@ RSpec.describe Api::V2::InvitationMetadata do
       individual_id: "IND123",
       first_name: "Jane",
       last_name: "Doe",
+      date_of_birth: "1977-09-13",
       unexpected: "discard me"
     }
   end
@@ -26,7 +27,8 @@ RSpec.describe Api::V2::InvitationMetadata do
     expect(contract.permitted.to_h).to eq(
       "individual_id" => "IND123",
       "first_name" => "Jane",
-      "last_name" => "Doe"
+      "last_name" => "Doe",
+      "date_of_birth" => "1977-09-13"
     )
   end
 
@@ -48,7 +50,70 @@ RSpec.describe Api::V2::InvitationMetadata do
 
     it "returns errors for the missing fields" do
       expect(contract.errors.map { |error| error[:field] })
-        .to contain_exactly(:last_name)
+        .to contain_exactly(:date_of_birth, :last_name)
+    end
+  end
+
+  context "for employment invitations" do
+    let(:flow_type) { "employment" }
+    let(:metadata) do
+      {
+        individual_id: "IND123",
+        first_name: "Jane",
+        last_name: "Doe",
+        unexpected: "discard me"
+      }
+    end
+
+    it "permits configured employment metadata" do
+      expect(contract.errors).to be_empty
+      expect(contract.permitted.to_h).to include(
+        "individual_id" => "IND123",
+        "first_name" => "Jane",
+        "last_name" => "Doe"
+      )
+    end
+  end
+
+  context "for LA LDH employment invitations" do
+    let(:client_agency_id) { "la_ldh" }
+    let(:flow_type) { "employment" }
+
+    let(:metadata) do
+      {
+        individual_id: "IND123",
+        first_name: "Jane",
+        last_name: "Doe"
+      }
+    end
+
+    it "accepts individual_id" do
+      expect(contract.errors).to be_empty
+    end
+
+    context "when both identifiers are missing" do
+      let(:metadata) do
+        {
+          date_of_birth: "1977-09-13"
+        }
+      end
+
+      it "returns the agency-specific identifier error" do
+        expect(contract.errors).to include(
+          {
+            field: :individual_id,
+            message_key: "api.v2.fields.individual_id.blank"
+          },
+          {
+            field: :first_name,
+            message_key: "api.v2.fields.first_name.blank"
+          },
+          {
+            field: :last_name,
+            message_key: "api.v2.fields.last_name.blank"
+          }
+        )
+      end
     end
   end
 end

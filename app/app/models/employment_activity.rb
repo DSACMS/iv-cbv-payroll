@@ -86,15 +86,26 @@ class EmploymentActivity < Activity
 
     return unless activity_month
 
+    hours = I18n.t("shared.hours", count: ApplicationHelper.format_decimal_amount(activity_month.hours))
+    return hours if unpaid_or_in_kind?
+
     I18n.t(
       "activities.employment.document_upload_month_detail",
       gross_income: ActiveSupport::NumberHelper.number_to_currency(activity_month.gross_income),
-      hours: I18n.t("shared.hours", count: ApplicationHelper.format_decimal_amount(activity_month.hours))
+      hours: hours
     )
   end
 
   def document_upload_suggestion_text
+    return "activities.employment.unpaid_or_in_kind.document_upload_suggestion_text_html" if unpaid_or_in_kind?
+
     "activities.employment.document_upload_suggestion_text_html"
+  end
+
+  def document_upload_suggestion_title_i18n_key
+    return "activities.employment.unpaid_or_in_kind.document_upload_suggestion_title" if unpaid_or_in_kind?
+
+    super
   end
 
   def document_upload_header_title_i18n_key

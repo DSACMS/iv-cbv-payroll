@@ -1,0 +1,79 @@
+name: Publish API documentation
+
+on:
+  push:
+    branches: [main]
+    paths: ['app/**', 'docs/api/**', '.github/actions/**', '.github/workflows/api-docs.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: api-docs-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      pages: write
+    services:
+      postgres:
+        image: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports: ["5432:5432"]
+        env:
+          POSTGRES_DB: iv_cbv_payroll_test
+          POSTGRES_USER: cidbuser
+          POSTGRES_PASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-project
+        with:
+          rails_env: test
+
+      - name: Build and validate API reference
+        working-directory: app
+        env:
+          RAILS_ENV: test
+          DB_HOST: localhost
+          DB_USERNAME: cidbuser
+          DB_PASSWORD: postgres
+        run: bundle exec rake api_docs:build
+
+      - name: Prepare publication branch
+        run: |
+          published_ref="$(git ls-remote --heads origin refs/heads/gh-pages)"
+          if [ -n "$published_ref" ]; then
+            git fetch --depth=1 origin refs/heads/gh-pages
+            git worktree add --detach published-api-docs FETCH_HEAD
+          else
+            git worktree add --detach --no-checkout published-api-docs HEAD
+            git -C published-api-docs switch --orphan gh-pages
+          fi
+
+      - name: Update generated files on gh-pages
+        working-directory: published-api-docs
+        run: |
+          cp ../app/tmp/api-docs/{index.html,openapi.json,scalar.js,.nojekyll} .
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html openapi.json scalar.js .nojekyll
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish API documentation for ${GITHUB_SHA}"
+            git push origin HEAD:gh-pages
+          fi
+
+      # GITHUB_TOKEN pushes do not trigger Pages automatically.
+      - name: Request GitHub Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"

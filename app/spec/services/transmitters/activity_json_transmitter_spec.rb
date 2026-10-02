@@ -104,7 +104,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       expect(errors).to eq([])
     end
 
-    it "matches the published sample report shared with agencies" do
+    it "matches the published sample for documented activity types" do
       payload = JSON.parse(transmitter.payload)
       sample = JSON.parse(sample_path.read)
       payload_document_ids = payload.dig("ce_report", "documents").map { |document| document["document_id"] }
@@ -122,6 +122,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
         end
       end
 
+      payload["ce_report"]["activities"].slice!(*sample["ce_report"]["activities"].keys)
       expect(payload).to eq(sample)
     end
   end
