@@ -298,7 +298,9 @@ en:
       add_your_work:
         show:
           description: If you held multiple jobs during the reporting period, you'll need to add each job separately.
-          header: Choose how you want to add your job
+          header: Choose how you want to add your work
+          employment_focused:
+            header: Choose how you want to add your job
           options:
             automatic:
               hint: We'll pull your hours and income from your payroll account. Works with ADP, Workday, Uber, Lyft, and most large employers.

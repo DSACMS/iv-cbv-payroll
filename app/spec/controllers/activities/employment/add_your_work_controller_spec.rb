@@ -27,6 +27,14 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.employment.add_your_work.show.description")))
     end
 
+    it "uses work in the heading and browser title for other flows" do
+      get :show
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector("h1", text: "Choose how you want to add your work")
+      expect(rendered).to have_title(/Choose how you want to add your work/)
+    end
+
     context "with a three-month reporting period" do
       let(:activity_flow) { create(:activity_flow, reporting_window_months: 3) }
 
@@ -74,6 +82,14 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
 
     context "with an employment-focused flow" do
       let(:activity_flow) { create(:activity_flow, employment_focused: true) }
+
+      it "uses job in the heading and browser title" do
+        get :show
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("h1", text: "Choose how you want to add your job")
+        expect(rendered).to have_title(/Choose how you want to add your job/)
+      end
 
       it "does not render the activity flow header" do
         get :show

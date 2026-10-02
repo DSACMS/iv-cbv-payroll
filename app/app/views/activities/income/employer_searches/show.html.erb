@@ -21,9 +21,14 @@
     <%= search_results_page ? t(".search_results_header") : t(".header") %>
   </h1>
 
-  <% unless search_results_page %>
+  <% if @flow.employment_focused? || !search_results_page %>
     <p>
-      <%= t(".search_label") %>
+      <% if @flow.employment_focused? %>
+        <strong><%= t("activities.hub.empty_state_reporting_period_label") %></strong>
+        <%= @flow.reporting_window_display %>
+      <% else %>
+        <%= t(".search_label") %>
+      <% end %>
     </p>
   <% end %>
 

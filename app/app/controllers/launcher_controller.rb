@@ -135,7 +135,8 @@ class LauncherController < ApplicationController
   end
 
   def create_launcher_activity_flow_invitation!(attributes)
-    ActivityFlowInvitation.create!(attributes)
+    employment_focused = ActiveModel::Type::Boolean.new.cast(launcher_params[:employment_focused]) || false
+    ActivityFlowInvitation.create!(attributes.reverse_merge(employment_focused: employment_focused))
   end
 
   def launch_overrides(flow_type)
