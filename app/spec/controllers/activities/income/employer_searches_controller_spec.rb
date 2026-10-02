@@ -13,11 +13,35 @@ RSpec.describe Activities::Income::EmployerSearchesController do
       session[:flow_type] = :activity
     end
 
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :show }
+
+
     render_views
 
     it "renders properly" do
       get :show
       expect(response).to be_successful
+    end
+
+    it "shows the reporting period with a bold label for employment-focused flows" do
+      activity_flow.update!(employment_focused: true)
+
+      get :show
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector("strong", text: "Reporting period:")
+      expect(rendered).to have_text(activity_flow.reporting_window_display)
+      expect(rendered).to have_no_text(I18n.t("activities.income.employer_searches.show.search_label"))
+    end
+
+    it "preserves the search instructions for other activity flows" do
+      activity_flow.update!(employment_focused: false)
+
+      get :show
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text(I18n.t("activities.income.employer_searches.show.search_label"))
+      expect(rendered).to have_no_selector("strong", text: "Reporting period:")
     end
 
     it "renders the activity flow header with exit button" do
@@ -68,6 +92,16 @@ RSpec.describe Activities::Income::EmployerSearchesController do
       before do
         pinwheel_stub_request_items_response
         argyle_stub_request_employer_search_response("bob")
+      end
+
+      it "keeps the reporting period visible for employment-focused flows" do
+        activity_flow.update!(employment_focused: true)
+
+        get :show, params: { query: "results" }
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("strong", text: "Reporting period:")
+        expect(rendered).to have_text(activity_flow.reporting_window_display)
       end
 
       it "tracks a searched-for-employer event with activity_flow_id" do

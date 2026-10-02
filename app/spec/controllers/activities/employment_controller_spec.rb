@@ -13,8 +13,36 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   end
 
   describe "GET #new" do
-    let(:tracked_flow) { activity_flow }
+    [ "paid", "unpaid_or_in_kind" ].each do |compensation_type|
+      [ false, true ].each do |employment_focused|
+        it "styles and marks the #{compensation_type} form fields for employment focus #{employment_focused}" do
+          activity_flow.update!(employment_focused: employment_focused)
+
+          get :new, params: { compensation_type: compensation_type }
+
+          rendered = Capybara.string(response.body)
+          if employment_focused
+            expect(rendered).to have_selector("input[name='employment_activity[employer_name]'][required]")
+          else
+            expect(rendered).to have_no_selector("input[name='employment_activity[employer_name]'][required]")
+          end
+          fields = %w[employer_name street_address street_address_line_2 city state zip_code contact_name contact_email contact_phone_number]
+          fields.each do |field|
+            label = rendered.find("label[for='employment_activity_#{field}']")
+            if employment_focused
+              expect(label).to have_selector("strong")
+            else
+              expect(label).to have_no_selector("strong")
+            end
+          end
+        end
+      end
+    end
+
     let(:perform_tracked_action) { get :new }
+    let(:tracked_flow) { activity_flow }
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :new }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed, extra_attributes: -> { { employment_activity_id: nil } }
 
@@ -96,9 +124,11 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   end
 
   describe "GET #edit" do
-    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
-    let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { id: employment_activity.id } }
+    let(:tracked_flow) { activity_flow }
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :edit, params: { id: employment_activity.id } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed,
       extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
@@ -430,15 +460,17 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   end
 
   describe "GET #review" do
-    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
-    let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :review, params: { id: employment_activity.id } }
+    let(:tracked_flow) { activity_flow }
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
 
     before do
       activity_flow.reporting_months.each do |month|
         create(:employment_activity_month, employment_activity: employment_activity, month: month.beginning_of_month, hours: 25, gross_income: 500)
       end
     end
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :review, params: { id: employment_activity.id } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentReviewViewed,
       extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }

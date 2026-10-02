@@ -23,8 +23,34 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
   end
 
   describe "GET #edit" do
+    [ false, true ].each do |employment_focused|
+      it "uses the correct paid-work heading for employment focus #{employment_focused}" do
+        activity_flow.update!(employment_focused: employment_focused)
+
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        conjunction = employment_focused ? "and/or" : "and"
+        heading = "Add your income #{conjunction} hours for #{employment_activity.employer_name}"
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("h1", text: heading, exact_text: true, normalize_ws: true)
+        expect(rendered).to have_title(/#{Regexp.escape(heading)}/)
+      end
+    end
+
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
+
+    it "keeps the hours-only heading for employment-focused unpaid work" do
+      activity_flow.update!(employment_focused: true)
+      employment_activity.update!(compensation_type: :unpaid_or_in_kind)
+
+      get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+      expect(Capybara.string(response.body)).to have_selector("h1", text: "Add your hours for #{employment_activity.employer_name}", exact_text: true, normalize_ws: true)
+    end
+
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentMonthViewed,
       extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String) } }

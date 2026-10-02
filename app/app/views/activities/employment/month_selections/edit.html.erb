@@ -1,16 +1,18 @@
 <% title = t(".title", employer_name: @employment_activity.employer_name) %>
 <% content_for :title, title %>
 
-<% content_for :activity_flow_header do %>
-  <%= render ActivityFlowHeaderComponent.new(
-    title: t("activities.employment.title_singular"),
-    exit_url: activities_flow_root_path,
-    back_url: edit_activities_flow_income_employment_path(
-      id: @employment_activity,
-      from_edit: params[:from_edit].presence
-    ),
-    track_event_prefix: "Employment"
-  ) %>
+<% unless @flow.employment_focused? %>
+  <% content_for :activity_flow_header do %>
+    <%= render ActivityFlowHeaderComponent.new(
+      title: t("activities.employment.title_singular"),
+      exit_url: activities_flow_root_path,
+      back_url: edit_activities_flow_income_employment_path(
+        id: @employment_activity,
+        from_edit: params[:from_edit].presence
+      ),
+      track_event_prefix: "Employment"
+    ) %>
+  <% end %>
 <% end %>
 
 <h1><%= title %></h1>

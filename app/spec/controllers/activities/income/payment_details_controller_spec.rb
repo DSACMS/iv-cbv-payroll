@@ -37,6 +37,9 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         pinwheel_stub_request_end_user_paystubs_response
       end
 
+      it_behaves_like "an activity header controlled by employment focus", :flow, -> { get :show, params: { user: { account_id: account_id } } }
+
+
       it "renders properly" do
         get :show, params: { user: { account_id: account_id } }
 
@@ -45,6 +48,39 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         expect(page).to have_css("h2", text: I18n.t("shared.table_headers.employer_information"))
         expect(response.body).to include(I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours"))
         expect(response.body).to include(I18n.t("components.report.monthly_summary_table.activity.payment_information"))
+      end
+
+      it "renders the employment-focused tables before additional comments" do
+        flow.update!(employment_focused: true, reporting_window_months: 3)
+
+        get :show, params: { user: { account_id: account_id } }
+
+        page = Capybara.string(response.body)
+        headings = page.all("h2").map(&:text)
+        expect(headings.first(3)).to eq([ "Employment information", "Monthly details", "Additional comments (optional)" ])
+        expect(page).to have_selector("table", count: 4)
+        expect(page).to have_text("Compensation amount")
+        expect(page).to have_field("payroll_account_additional_information")
+        expect(page).to have_no_text("Community engagement hours")
+      end
+
+      [ 1, 3 ].each do |months|
+        [ false, true ].each do |employment_focused|
+          it "uses the correct report description for #{months} months with employment focus #{employment_focused}" do
+            flow.update!(reporting_window_months: months, employment_focused: employment_focused)
+
+            get :show, params: { user: { account_id: account_id } }
+
+            page = Capybara.string(response.body)
+            expect(page).to have_text("Please review your information.")
+            sentence = "This will be included in your community engagement report."
+            if employment_focused
+              expect(page).to have_no_text(sentence)
+            else
+              expect(page).to have_text(sentence)
+            end
+          end
+        end
       end
 
       it "renders the activity flow header with exit button and back link" do

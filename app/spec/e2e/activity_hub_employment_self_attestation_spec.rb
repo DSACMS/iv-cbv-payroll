@@ -19,6 +19,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     flow = ActivityFlow.last
+    flow.update!(employment_focused: true)
     first_selected_month = flow.reporting_months.first
     unselected_month = flow.reporting_months.second
     second_selected_month = flow.reporting_months.third
@@ -34,7 +35,8 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     end
 
     # Add your work page
-    verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+    verify_page(page, title: I18n.t("activities.employment.add_your_work.show.employment_focused.header"))
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     click_button I18n.t("continue")
     expect(page).to have_content(I18n.t("shared.next_path.notice_no_answer"))
     find("label[for='add_work_method_connect_automatically']").click
@@ -42,13 +44,18 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     # Employer search page
     verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     find('.usa-input[type="search"]').fill_in with: "blahblahblah"
     click_button I18n.t("activities.income.employer_searches.show.search")
     verify_page(page, title: I18n.t("activities.income.employer_searches.show.search_results_header"))
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_content(I18n.t("activities.income.employer_searches.employer.search_subheader"))
     click_link I18n.t("activities.income.employer_searches.employer.add_employment_manually")
 
     verify_page(page, title: I18n.t("activities.employment_info.title"))
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
+    expect(page).to have_selector("input[name='employment_activity[employer_name]'][required]")
+    expect(page).to have_selector("label[for='employment_activity_street_address'] strong", text: I18n.t("activities.employment_info.street_address"))
     fill_in I18n.t("activities.employment_info.employer_name"), with: "Gainesville Wrecking"
     fill_in I18n.t("activities.employment_info.street_address"), with: "942 W Harlan Ave"
     fill_in I18n.t("activities.employment_info.city"), with: "Gainesville"
@@ -66,6 +73,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       employer_name: "Gainesville Wrecking"
     )
     verify_page(page, title: month_selection_title)
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_content(flow.reporting_window_display)
     click_button I18n.t("activities.employment.month_selections.edit.continue")
     expect(page).to have_content(I18n.t("activities.employment.month_selections.edit.error_heading"))
@@ -77,10 +85,11 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     # Hours input for the first selected month
     monthly_details_title = I18n.t(
-      "activities.employment.hours_input.heading",
+      "activities.employment.hours_input.employment_focused.heading",
       organization: "Gainesville Wrecking"
     )
     verify_page(page, title: monthly_details_title)
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_content(
       [
         I18n.t(
@@ -94,8 +103,9 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     )
     expect(page).to have_no_selector('input[name="no_hours"]', visible: :all)
 
-    click_link I18n.t("activities.activity_header_component.back")
+    page.go_back
     verify_page(page, title: month_selection_title)
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     [ first_selected_month_label, second_selected_month_label ].each do |month_label|
       expect(page).to have_field(month_label, checked: true, visible: :all)
     end
@@ -103,12 +113,14 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     click_button I18n.t("activities.employment.month_selections.edit.continue")
 
     verify_page(page, title: monthly_details_title)
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: "500"
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: "40"
     click_button I18n.t("activities.employment.hours_input.continue")
 
     # Hours input for the second selected month
     verify_page(page, title: monthly_details_title)
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_content(
       [
         I18n.t(
@@ -185,7 +197,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     month_edit_links.first.click
 
     updated_monthly_details_title = I18n.t(
-      "activities.employment.hours_input.heading",
+      "activities.employment.hours_input.employment_focused.heading",
       organization: "Updated Employer"
     )
     verify_page(page, title: updated_monthly_details_title)
