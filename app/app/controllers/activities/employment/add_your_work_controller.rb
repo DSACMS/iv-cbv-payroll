@@ -24,8 +24,9 @@ class Activities::Employment::AddYourWorkController < Activities::BaseController
   end
 
   def add_jobs
+    employment_summaries = @flow.employment_summaries_by_account_with_fallback
     @connected_jobs = @flow.payroll_accounts.published.select(&:sync_succeeded?).map do |account|
-      @flow.employment_summaries_by_account_with_fallback.dig(account.aggregator_account_id, :employer_name) ||
+      employment_summaries.dig(account.aggregator_account_id, :employer_name) ||
         t("activities.employment.title")
     end
     @manual_jobs = @flow.employment_activities.published.pluck(:employer_name)

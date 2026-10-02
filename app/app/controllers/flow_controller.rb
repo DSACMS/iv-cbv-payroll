@@ -63,11 +63,23 @@ class FlowController < ApplicationController
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
 
-      @flow = flow_class(flow_param).resume_or_create_from_invitation(
-        invitation,
-        cookies.permanent.signed[:device_id],
-        params
-      )
+      flow_class = flow_class(flow_param)
+      device_id = cookies.permanent.signed[:device_id]
+      @flow =
+        if flow_param == :activity
+          flow_class.resume_or_create_from_invitation(
+            invitation,
+            device_id,
+            params
+          )
+        else
+          flow_class.create_from_invitation(
+            invitation,
+            device_id,
+            params
+          )
+        end
+
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       set_flow_session(@flow.id, flow_param)
       apply_launcher_overrides
