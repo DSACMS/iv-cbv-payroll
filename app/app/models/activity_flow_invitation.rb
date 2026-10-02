@@ -6,8 +6,6 @@ class ActivityFlowInvitation < ApplicationRecord
     "job_training" => JobTrainingActivity
   }.freeze
 
-  VALID_VERIFICATION_RANGES = %w[last_complete_month last_12_complete_months].freeze
-
   belongs_to :cbv_applicant, optional: true
   has_many :activity_flows
   has_one :household_member
@@ -15,7 +13,7 @@ class ActivityFlowInvitation < ApplicationRecord
   has_secure_token :auth_token, length: 10
 
   validates :verification_range, inclusion: {
-    in: VALID_VERIFICATION_RANGES,
+    in: Flow::VALID_VERIFICATION_RANGES,
     message: :invalid_format,
     case_sensitive: true
   }, on: :v2

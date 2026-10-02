@@ -5,9 +5,11 @@ class PagesController < ApplicationController
   def home
     return unless flow_timeout?
 
-    # i18n-tasks-use t("pages.home.activity_flow_timeout.alert_html")
-    message_key = activity_flow_timeout? ? "pages.home.activity_flow_timeout.alert_html" : "cbv.error_missing_token_html"
-    flash.now[:slim_alert] = { "type" => "info", "message_html" => t(message_key) }
+    if activity_flow_timeout?
+      render "activity_flow_timeout"
+    else
+      flash.now[:slim_alert] = { "type" => "info", "message_html" => t("cbv.error_missing_token_html") }
+    end
   end
 
   def error_404
