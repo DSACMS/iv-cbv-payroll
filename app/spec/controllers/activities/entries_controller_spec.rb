@@ -103,4 +103,33 @@ RSpec.describe Activities::EntriesController do
       expect(response).to redirect_to(root_url)
     end
   end
+
+  describe "employment focused entry page" do
+    context "when the flow is employment_focused" do
+      let(:invitation) { create(:activity_flow_invitation, employment_focused: true) }
+
+      it "renders the employment-focused entry content instead of the default content" do
+        get :show, params: { token: invitation.auth_token }
+
+        expect(response.body).to include(I18n.t("activities.entries.show.employment_focused.header"))
+        expect(response.body).not_to include(I18n.t("activities.entries.show.title", benefit: "Medicaid"))
+      end
+
+      it "links to the employment activity selection screen" do
+        get :show, params: { token: invitation.auth_token }
+
+        expect(response.body).to include(activities_flow_income_add_your_work_path)
+      end
+    end
+
+    context "when the flow is not employment_focused" do
+      let(:invitation) { create(:activity_flow_invitation, employment_focused: false) }
+
+      it "renders the default entry content" do
+        get :show, params: { token: invitation.auth_token }
+        expect(response.body).to include(I18n.t("activities.entries.show.title", benefit: "Medicaid"))
+        expect(response.body).not_to include(I18n.t("activities.entries.show.employment_focused.header"))
+      end
+    end
+  end
 end
