@@ -169,6 +169,12 @@ class ActivityFlow < Flow
   end
 
   def calculate_reporting_window_months
+    # Keep the provider fetch range and report window aligned with the invitation.
+    case activity_flow_invitation&.verification_range
+    when "last_complete_month" then return 1
+    when "last_12_complete_months" then return 12
+    end
+
     return DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS if renewal_reporting_window?
 
     client_agency = Rails.application.config.client_agencies[cbv_applicant&.client_agency_id]
