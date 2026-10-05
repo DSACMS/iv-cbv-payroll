@@ -163,8 +163,8 @@ Employment follows the September 4 specification's JSON examples: `has_other_job
 From `app/`, run the contract specs or build the complete API reference:
 
 ```bash
-rtk rbenv exec ruby bin/rspec spec/services/transmitters/activity_json_transmitter_spec.rb spec/openapi
-rtk proxy env RAILS_ENV=test rbenv exec bundle exec rake api_docs:build
+rbenv exec ruby bin/rspec spec/services/transmitters/activity_json_transmitter_spec.rb spec/openapi
+RAILS_ENV=test rbenv exec bundle exec rake api_docs:build
 ```
 
 The build validates the OpenAPI model and its generated example. Contract tests
