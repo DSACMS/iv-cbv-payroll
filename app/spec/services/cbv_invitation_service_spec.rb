@@ -110,4 +110,21 @@ RSpec.describe CbvInvitationService, type: :service do
       end
     end
   end
+
+  describe "#invite_to_activity_flow" do
+    let(:cbv_flow_invitation) { create(:cbv_flow_invitation) }
+
+    it "persists employment_focused: true when passed" do
+      invitation = service.invite_to_activity_flow(cbv_flow_invitation, employment_focused: true)
+
+      expect(invitation).to be_persisted
+      expect(invitation.employment_focused).to be(true)
+    end
+
+    it "defaults employment_focused to false" do
+      invitation = service.invite_to_activity_flow(cbv_flow_invitation)
+
+      expect(invitation.employment_focused).to be(false)
+    end
+  end
 end

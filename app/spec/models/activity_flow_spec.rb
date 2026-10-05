@@ -65,13 +65,31 @@ RSpec.describe ActivityFlow, type: :model do
       expect(flow.cbv_applicant).to eq(cbv_applicant)
     end
 
-    it "persists employment_focused: true when passed in params" do
-    invitation = create(:activity_flow_invitation)
+    it "uses last_complete_month for the reporting window instead of renewal defaults" do
+      invitation = create(:activity_flow_invitation, verification_range: "last_complete_month")
+      flow = nil
+      Timecop.freeze(Time.zone.local(2024, 3, 15)) do
+        flow = described_class.create_from_invitation(invitation, device_id, reporting_window: "renewal")
+      end
 
-    flow = described_class.create_from_invitation(invitation, device_id, employment_focused: "true")
+      expect(flow.reporting_window_months).to eq(1)
+      expect(flow.reporting_months.size).to eq(1)
+      expect(flow.reporting_window_range).to eq(Date.new(2024, 2, 1)..Date.new(2024, 2, 29))
+      expect(flow.aggregator_lookback_days).to eq(w2: 29, gig: 29)
+    end
 
-    expect(flow.employment_focused).to be(true)
-  end
+    it "uses last_12_complete_months for the reporting window instead of renewal defaults" do
+      invitation = create(:activity_flow_invitation, verification_range: "last_12_complete_months")
+      flow = nil
+      Timecop.freeze(Time.zone.local(2024, 3, 15)) do
+        flow = described_class.create_from_invitation(invitation, device_id, reporting_window: "renewal")
+      end
+
+      expect(flow.reporting_window_months).to eq(12)
+      expect(flow.reporting_months.size).to eq(12)
+      expect(flow.reporting_window_range).to eq(Date.new(2023, 3, 1)..Date.new(2024, 2, 29))
+      expect(flow.aggregator_lookback_days).to eq(w2: 366, gig: 366)
+    end
 
     it "defaults employment_focused to false when absent from params" do
       invitation = create(:activity_flow_invitation)
@@ -79,6 +97,22 @@ RSpec.describe ActivityFlow, type: :model do
       flow = described_class.create_from_invitation(invitation, device_id)
 
       expect(flow).to be_persisted
+      expect(flow.employment_focused).to be(false)
+    end
+
+    it "uses invitation.employment_focused over a conflicting params[:employment_focused]" do
+      invitation = create(:activity_flow_invitation, employment_focused: true)
+
+      flow = described_class.create_from_invitation(invitation, device_id, employment_focused: "false")
+
+      expect(flow.employment_focused).to be(true)
+    end
+
+    it "does not let params[:employment_focused] override a false invitation flag" do
+      invitation = create(:activity_flow_invitation, employment_focused: false)
+
+      flow = described_class.create_from_invitation(invitation, device_id, employment_focused: "true")
+
       expect(flow.employment_focused).to be(false)
     end
   end

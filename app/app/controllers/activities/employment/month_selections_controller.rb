@@ -2,6 +2,7 @@ class Activities::Employment::MonthSelectionsController < Activities::BaseContro
   before_action :set_employment_activity
   before_action :redirect_unless_month_selection_required
   before_action :set_reporting_months
+  after_action :track_month_selection_viewed_event, only: :edit
 
   def edit
     @selected_months = @employment_activity.months_to_report
@@ -17,6 +18,11 @@ class Activities::Employment::MonthSelectionsController < Activities::BaseContro
     end
 
     @employment_activity.update_selected_months!(@selected_months)
+    track_event(
+      TrackEvent::EmploymentMonthSelectionSubmitted,
+      employment_activity_id: @employment_activity.id,
+      selected_months: @employment_activity.selected_months.map { |month| I18n.l(month, format: :month_year) }
+    )
 
     redirect_to edit_activities_flow_income_employment_month_path(
       employment_id: @employment_activity,
@@ -26,6 +32,12 @@ class Activities::Employment::MonthSelectionsController < Activities::BaseContro
   end
 
   private
+
+  def track_month_selection_viewed_event
+    return unless response.successful?
+
+    track_event(TrackEvent::EmploymentMonthSelectionViewed, employment_activity_id: @employment_activity.id)
+  end
 
   def set_employment_activity
     @employment_activity = @flow.employment_activities.find(params[:employment_id])
