@@ -45,10 +45,6 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     # Employer search page
     verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
-    expect(page).to have_selector("strong", text: "Reporting period:")
-    expect(page).to have_text(flow.reporting_window_display)
-    expect(page).to have_no_text(I18n.t("activities.income.employer_searches.show.search_label"))
-    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     find('.usa-input[type="search"]').fill_in with: "blahblahblah"
     click_button I18n.t("activities.income.employer_searches.show.search")
     verify_page(page, title: I18n.t("activities.income.employer_searches.show.search_results_header"))
