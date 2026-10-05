@@ -45,10 +45,15 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     # Employer search page
     verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
+    expect(page).to have_selector("strong", text: "Reporting period:")
+    expect(page).to have_text(flow.reporting_window_display)
+    expect(page).to have_no_text(I18n.t("activities.income.employer_searches.show.search_label"))
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     find('.usa-input[type="search"]').fill_in with: "blahblahblah"
     click_button I18n.t("activities.income.employer_searches.show.search")
     verify_page(page, title: I18n.t("activities.income.employer_searches.show.search_results_header"))
+    expect(page).to have_selector("strong", text: "Reporting period:")
+    expect(page).to have_text(flow.reporting_window_display)
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_content(I18n.t("activities.income.employer_searches.employer.search_subheader"))
     click_link I18n.t("activities.income.employer_searches.employer.add_employment_manually")
@@ -57,6 +62,9 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_selector("input[name='employment_activity[employer_name]'][required]")
     expect(page).to have_selector("label[for='employment_activity_street_address'] strong", text: I18n.t("activities.employment_info.street_address"))
+    %w[employer_name street_address_line_2 city state zip_code contact_name contact_email contact_phone_number].each do |field|
+      expect(page).to have_selector("label[for='employment_activity_#{field}'] strong", text: I18n.t("activities.employment_info.#{field}"))
+    end
     fill_in I18n.t("activities.employment_info.employer_name"), with: "Gainesville Wrecking"
     fill_in I18n.t("activities.employment_info.street_address"), with: "942 W Harlan Ave"
     fill_in I18n.t("activities.employment_info.city"), with: "Gainesville"
@@ -90,6 +98,8 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       organization: "Gainesville Wrecking"
     )
     verify_page(page, title: monthly_details_title)
+    expect(page).to have_selector("h1", text: "Add your income and/or hours for Gainesville Wrecking")
+    expect(page).to have_no_text("Add your income and hours for Gainesville Wrecking")
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_content(
       [
