@@ -33,7 +33,7 @@ module InvitationSchemas
       },
       InvitationResponse: {
         type: :object,
-        description: InvitationDocumentation.read("post-v1-invitations", section: "Response"),
+        description: InvitationDocumentation.read("invitations", section: "Response"),
         required: %w[tokenized_url expiration_date language agency_partner_metadata],
         additionalProperties: true,
         properties: {

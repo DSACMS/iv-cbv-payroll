@@ -24,7 +24,7 @@ module ActivityReportSchemas
         completed_at: { type: :string, format: :"date-time", description: "UTC time the applicant completed the report." },
         agency_partner_metadata: ref("AgencyPartnerMetadata"),
         ce_report: ref("CeReport")
-      }).merge(description: InvitationDocumentation.read("ce-activity-report", section: "Model")),
+      }).merge(description: InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Model")),
       CeReport: object(%w[review_period documents activities], {
         review_period: ref("CeReviewPeriod"),
         documents: { type: :array, items: ref("CeDocument") },

@@ -26,7 +26,7 @@ namespace :api_docs do
     errors = validator.validate.to_a
     abort "Invalid OpenAPI document: #{errors.inspect}" if errors.any?
 
-    # Standalone report models have examples without an API operation.
+    # Validate model examples as well as operation examples.
     document.fetch("components").fetch("schemas").each do |name, schema|
       next unless schema.key?("example")
 
@@ -35,20 +35,24 @@ namespace :api_docs do
     end
 
     # Validate every published example, including all variants of each response.
-    document.fetch("paths").each do |path, operations|
-      operations.each do |method, operation|
-        body_paths = [ [ "requestBody" ], *operation.fetch("responses").keys.map { |status| [ "responses", status ] } ]
-        body_paths.each do |body_path|
-          body = operation.dig(*body_path)
-          next unless body
+    %w[paths webhooks].each do |section|
+      document.fetch(section, {}).each do |path, operations|
+        operations.each do |method, operation|
+          next unless %w[get put post delete options head patch trace].include?(method)
 
-          body.fetch("content", {}).each do |mime, media|
-            pointer = [ "paths", path, method, *body_path, "content", mime, "schema" ]
-              .map { |part| part.gsub("~", "~0").gsub("/", "~1") }.join("/")
-            schema = validator.ref("#/#{pointer}")
-            media.fetch("examples", {}).each do |name, example|
-              errors = schema.validate(example.fetch("value")).to_a
-              abort "Invalid #{method.upcase} #{path} example #{name}: #{errors.inspect}" if errors.any?
+          body_paths = [ [ "requestBody" ], *operation.fetch("responses").keys.map { |status| [ "responses", status ] } ]
+          body_paths.each do |body_path|
+            body = operation.dig(*body_path)
+            next unless body
+
+            body.fetch("content", {}).each do |mime, media|
+              pointer = [ section, path, method, *body_path, "content", mime, "schema" ]
+                .map { |part| part.gsub("~", "~0").gsub("/", "~1") }.join("/")
+              schema = validator.ref("#/#{pointer}")
+              media.fetch("examples", {}).each do |name, example|
+                errors = schema.validate(example.fetch("value")).to_a
+                abort "Invalid #{section} #{method.upcase} #{path} example #{name}: #{errors.inspect}" if errors.any?
+              end
             end
           end
         end
@@ -64,6 +68,7 @@ namespace :api_docs do
       FileUtils.rm_f(output.join(file))
     end
     FileUtils.cp(assets.join("dist/browser/standalone.js"), output.join("scalar.js"))
+    FileUtils.cp(Rails.root.join("../docs/api/api-flow.png"), output.join("api-flow.png"))
 
     # Embed the spec so index.html also works directly from disk, without fetch,
     # a running Rails app, a CDN, or a separate static web server.

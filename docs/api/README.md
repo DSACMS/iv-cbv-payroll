@@ -4,14 +4,10 @@ Emmy helps agencies collect income and community engagement information from
 applicants. Its Tokenized Link API creates personalized reporting links that
 an agency can deliver through its own website, email, or SMS workflow.
 
-<!-- These generated URLs are unavailable until the first reviewed deployment.
-Remove the two link-check exceptions below after that deployment. -->
-<!-- markdown-link-check-disable-next-line -->
 The official [Emmy Platform API Documentation](https://DSACMS.github.io/iv-cbv-payroll/index.html)
 contains authentication guidance, environment URLs, agency-specific schemas,
 and tested request and response examples.
 
-<!-- markdown-link-check-disable-next-line -->
 The accompanying [OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json) is generated
 by the same build; do not maintain or commit a separate copy.
 
@@ -20,17 +16,33 @@ for each environment. Keep keys server-side and send requests over HTTPS.
 The Dev environment is `https://verify-demo.navapbc.cloud`; the Demo environment
 is `https://demo.reportmyincome.org`. Production access is arranged during onboarding.
 
-The generated reference covers `POST /api/v1/invitations` and the standalone
-`CeActivityReport` model, including self-attested and validated employment and
-self-attested, verified, and partially self-attested education.
-CE reports are outbound payloads sent to an agency; they are documented under
-Models and do not add an Emmy API endpoint. Document transmission interfaces
+The generated reference covers `POST /api/v1/invitations` and the CE Activity
+Report webhook, including self-attested and validated employment and
+self-attested, verified, and partially self-attested education. Find the webhook under **Receiving data from the Emmy Platform** in the left navigation,
+with request and response examples and a signed cURL delivery sample.
+CE reports are outbound payloads sent to an agency; their component schemas
+also appear under Models. Document transmission interfaces
 will be added separately.
-For those APIs, see the [CE activity report transmission guide](ce-activity-report.md)
+For those APIs, see the [CE activity report transmission guide](receiving-data/ce-activity-json.md)
 and [PDF document transmission guide](pdf-transmission.md).
-Existing versioned [income-report](schemas/income-report-2026-06-18.json) and
-[community engagement report](schemas/ce-activity-report-2026-09-01.json) schemas
-remain available as historical contracts. The OpenAPI model describes the current CE payload.
+The generated OpenAPI document is the source for current schemas and tested
+request and response examples.
+
+## Reference sections
+
+The Markdown files follow the generated reference's navigation:
+
+| Reference section | Markdown source |
+| :-- | :-- |
+| Introduction and its subsections | [introduction.md](introduction.md) |
+| Invitations | [invitations.md](invitations.md) |
+| Receiving data from the Emmy Platform | [receiving-data/README.md](receiving-data/README.md) |
+| Receive a CE Activity Report (JSON) | [receiving-data/ce-activity-json.md](receiving-data/ce-activity-json.md) |
+
+Level-two headings in `introduction.md` appear as subsections under Introduction.
+The introduction embeds [api-flow.png](api-flow.png), which is included in the
+generated site. Add future delivery-method documents under `receiving-data/`
+and connect their contracts to the receiving-data tag.
 
 ## Build and maintain the reference
 
@@ -44,8 +56,8 @@ RAILS_ENV=test bundle exec rake api_docs:build
 ```
 
 The build runs the request, model, and CE transmission specs, validates the OpenAPI document and all
-published examples, then writes `index.html`, `openapi.json`, and local Scalar
-assets to `app/tmp/api-docs/`. Open `index.html` directly in a browser; the site
+published examples, then writes `index.html`, `openapi.json`, `api-flow.png`, and
+local Scalar assets to `app/tmp/api-docs/`. Open `index.html` directly in a browser; the site
 works offline and does not submit API requests.
 
 The build also exports education JSON samples to `app/tmp/ce-education-reports/`.
@@ -53,10 +65,12 @@ The build also exports education JSON samples to `app/tmp/ce-education-reports/`
 Edit [request specs](../../app/spec/requests/api/invitations_spec.rb),
 [invitation schemas](../../app/spec/openapi/invitation_schemas.rb),
 [CE report models](../../app/spec/openapi/activity_report_schemas.rb),
-[CE report description](ce-activity-report.md#model),
-[overview](overview.md), [invitation operation description](post-v1-invitations.md#description),
+[webhook contract](../../app/spec/openapi/activity_report_webhook.rb),
+[receiving data introduction](receiving-data/README.md),
+[CE report description](receiving-data/ce-activity-json.md#model),
+[introduction](introduction.md), [invitation operation description](invitations.md#description),
 [agency metadata description](agency-partner-metadata.md),
-[invitation response description](post-v1-invitations.md#response), and
+[invitation response description](invitations.md#response), and
 [document settings](../../app/spec/swagger_helper.rb), not generated files.
 The build reads these Markdown descriptions directly from `docs/api/`; Markdown
 changes also trigger the publication workflow after merge.
@@ -69,7 +83,11 @@ allowing future fields with other names. Nullable fields include `null` in their
 `type` array.
 Request examples come from real test requests using synthetic data and fixed
 tokens. The CE model example comes from the transmission specs; model examples
-are validated during the build. Authorization headers are never captured.
+and webhook request and response examples are validated during the build.
+The webhook reuses the tested CE model example. Its description, response
+example, and cURL sample come from the Transmission, Response, and cURL example
+sections of the CE report guide. Add future delivery methods under the same
+receiving-data tag. Authorization headers are never captured.
 
 Pull request CI builds an `api-reference` artifact for review. After this change
 is merged into `DSACMS/iv-cbv-payroll`, the

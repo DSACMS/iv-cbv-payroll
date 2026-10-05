@@ -10,16 +10,18 @@ This revision covers `community_service`, `work_program`, `employment`, and `edu
 
 ## Transmission
 
-The agency-built API should contain one endpoint.
+Emmy sends a completed CE Activity Report as an HTTP `POST` to an endpoint
+hosted by your agency. This is an outbound webhook, not an endpoint on Emmy's
+Dev or Demo servers.
 
-## **POST /api/v1/ce-activity-report** (Receive a CE activity report)
+### POST /api/v1/ce-activity-report
 
 This API endpoint is built by the agency and receives one CE activity report record. The endpoint URL can be whatever the agency desires, however, it must include a version number to allow for easy upgrades in the future.
 
 The complete `CeActivityReport` model is published in the generated
-[OpenAPI reference](README.md), along with component models for the report,
-review period, documents, activity types, and payroll details. It is a standalone
-model: this outbound report is not an Emmy API operation. The schema's example
+OpenAPI reference, along with component models for the report,
+review period, documents, activity types, and payroll details. Find the webhook
+under **Receiving data from the Emmy Platform**. The request example
 comes from the tested serializer and includes community service, work programs,
 linked payroll, self-employment, unpaid work, and all three education variants.
 
@@ -35,7 +37,10 @@ The same signing scheme used by the Income Report Transmission API applies.
 
 Any additional headers the agency requires (for example an API gateway key) can be configured per-agency and are sent verbatim.
 
-### Response Body
+Sign the exact bytes sent, including any trailing
+newline; reformatting JSON after signing changes the signature.
+
+## Response
 
 The agency should respond with `200` and a payload containing:
 
@@ -49,7 +54,9 @@ The agency should respond with `200` and a payload containing:
 }
 ```
 
-### Request Body – Root Fields
+Emmy currently checks the HTTP status and does not validate this response body.
+
+## Request Body – Root Fields
 
 | Field Name | Required? | Description |
 | :-- | :-- | :-- |
@@ -145,7 +152,13 @@ Each published employment activity appears once per reported month, including mo
 
 Only published, successfully synchronized payroll accounts are included. Each employer appears once in each month in which it has a paycheck in the review period. Paychecks are grouped by `pay_date`, even when their work period falls in another month. Undated paychecks and paychecks outside the review period are omitted. Employers with no dated paychecks in the review period have no monthly entry.
 
-The employment and paystub fields use the [Income Report API format](schemas/income-report-2026-06-18.json), including masked SSNs, applicant comments, employment dates and status, compensation, deductions, and itemized gross pay. Payroll money values are in **cents**. Nullable provider fields remain null, and missing gross pay uses the income report's zero fallback. Payroll hours appear in each paystub's `hours_paid`; there is no calculated employment-level `hours` field.
+The employment and paystub fields are defined by the `CeValidatedEmploymentActivity`
+and `CePaystub` models in the generated OpenAPI reference, including masked SSNs,
+applicant comments, employment dates and status, compensation, deductions, and
+itemized gross pay. Payroll money values are in **cents**. Nullable provider
+fields remain null, and missing gross pay uses the income report's zero fallback.
+Payroll hours appear in each paystub's `hours_paid`; there is no calculated
+employment-level `hours` field.
 
 These CE fields supplement the income employment object:
 
@@ -192,6 +205,38 @@ The build validates the OpenAPI model and its generated example. Contract tests
 also exercise Argyle's Bob, Joe, and Kim sandbox fixtures and a mixed report with
 Pinwheel payroll, self-employment, unpaid work, and all education variants. Tests
 make no live payroll, NSC, or agency requests.
+
+## cURL example
+
+Save the request payload shown in the OpenAPI reference as `ce-activity-report.json`.
+Set `AGENCY_API_KEY` and `AGENCY_REPORT_URL` for your test receiver before running
+this command. It simulates Emmy sending a report to your agency and requires
+Bash, cURL, OpenSSL, and jq.
+
+```bash
+set -euo pipefail
+: "${AGENCY_API_KEY:?Set AGENCY_API_KEY to your test agency API key}"
+AGENCY_REPORT_URL="${AGENCY_REPORT_URL:-https://agency.example.org/api/v1/ce-activity-report}"
+REPORT_FILE="${REPORT_FILE:-ce-activity-report.json}"
+
+timestamp=$(date +%s)
+confirmation_code=$(jq -er '.confirmation_code' "$REPORT_FILE")
+signature=$(
+  { printf '%s:' "$timestamp"; cat "$REPORT_FILE"; } |
+    openssl dgst -sha512 -hmac "$AGENCY_API_KEY" | awk '{print $NF}'
+)
+
+curl --request POST "$AGENCY_REPORT_URL" \
+  --header 'Content-Type: application/json' \
+  --header "X-IVAAS-Timestamp: $timestamp" \
+  --header "X-IVAAS-Signature: $signature" \
+  --header "X-IVAAS-Confirmation-Code: $confirmation_code" \
+  --data-binary "@$REPORT_FILE"
+```
+
+Add any agency-specific gateway headers configured during onboarding. The agency
+API key is used for signing; this webhook does not use the invitation API's
+`Authorization: Bearer` header.
 
 # **Design Principles**
 

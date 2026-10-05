@@ -1,6 +1,7 @@
 require "rails_helper"
 require_relative "openapi/invitation_schemas"
 require_relative "openapi/activity_report_schemas"
+require_relative "openapi/activity_report_webhook"
 
 RSpec.configure do |config|
   config.openapi_root = Rails.root.join("tmp/api-docs").to_s
@@ -11,15 +12,19 @@ RSpec.configure do |config|
       info: {
         title: "Emmy Platform API Documentation",
         version: "v1",
-        description: InvitationDocumentation.read("overview")
+        description: InvitationDocumentation.read("introduction")
       },
       servers: [
         { url: "https://verify-demo.navapbc.cloud", description: "Dev environment" },
         { url: "https://demo.reportmyincome.org", description: "Demo environment" }
       ],
       externalDocs: { description: "Emmy Platform API Documentation", url: InvitationDocumentation::SITE_URL },
-      tags: [ { name: "Invitations", description: "Generate links for an applicant to begin reporting." } ],
+      tags: [
+        { name: "Invitations", description: "Generate links for an applicant to begin reporting." },
+        { name: ActivityReportWebhook::TAG, description: InvitationDocumentation.read("receiving-data/README") }
+      ],
       paths: {},
+      webhooks: { ActivityReportWebhook::PATH => { post: ActivityReportWebhook.operation } },
       components: {
         securitySchemes: {
           bearerAuth: { type: :http, scheme: :bearer, description: "Agency API key. Send Authorization: Bearer API_KEY. The key determines the agency; do not send a client_agency_id." }
