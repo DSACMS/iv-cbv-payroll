@@ -64,22 +64,47 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         expect(page).to have_no_text("Community engagement hours")
       end
 
-      [ 1, 3 ].each do |months|
-        [ false, true ].each do |employment_focused|
-          it "uses the correct report description for #{months} months with employment focus #{employment_focused}" do
-            flow.update!(reporting_window_months: months, employment_focused: employment_focused)
+      context "for an employment_focused activity" do
+        before { flow.update!(employment_focused: true) }
 
-            get :show, params: { user: { account_id: account_id } }
+        it "omits the community engagement report description for a single month" do
+          flow.update!(reporting_window_months: 1)
+          get :show, params: { user: { account_id: account_id } }
 
-            page = Capybara.string(response.body)
-            expect(page).to have_text("Please review your information.")
-            sentence = "This will be included in your community engagement report."
-            if employment_focused
-              expect(page).to have_no_text(sentence)
-            else
-              expect(page).to have_text(sentence)
-            end
-          end
+          page = Capybara.string(response.body)
+          expect(page).to have_text("Please review your information.")
+          expect(page).to have_no_text("This will be included in your community engagement report.")
+        end
+
+        it "omits the community engagement report description for multiple months" do
+          flow.update!(reporting_window_months: 3)
+          get :show, params: { user: { account_id: account_id } }
+
+          page = Capybara.string(response.body)
+          expect(page).to have_text("Please review your information.")
+          expect(page).to have_no_text("This will be included in your community engagement report.")
+        end
+      end
+
+      context "for a standard CE activity" do
+        before { flow.update!(employment_focused: false) }
+
+        it "includes the community engagement report description for a single month" do
+          flow.update!(reporting_window_months: 1)
+          get :show, params: { user: { account_id: account_id } }
+
+          page = Capybara.string(response.body)
+          expect(page).to have_text("Please review your information.")
+          expect(page).to have_text("This will be included in your community engagement report.")
+        end
+
+        it "includes the community engagement report description for multiple months" do
+          flow.update!(reporting_window_months: 3)
+          get :show, params: { user: { account_id: account_id } }
+
+          page = Capybara.string(response.body)
+          expect(page).to have_text("Please review your information.")
+          expect(page).to have_text("This will be included in your community engagement report.")
         end
       end
 
