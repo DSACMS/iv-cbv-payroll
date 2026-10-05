@@ -16,6 +16,8 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
 
     verify_page(page, title: "Choose how you want to add your job")
     expect(page).to have_no_text("Choose how you want to add your work")
+    expect(page).to have_selector("label .text-bold", text: "Enter in-kind work", exact_text: true)
+    expect(page).to have_no_text("Enter unpaid or in-kind work")
     expect(page).to have_selector("strong", text: "Reporting period:")
     expect(page).to have_text(ActivityFlow.last.reporting_window_display)
   end
@@ -32,5 +34,6 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
     within("[data-activity-type='employment']") { click_button I18n.t("activities.hub.add") }
     verify_page(page, title: "Choose how you want to add your work")
     expect(page).to have_no_text("Choose how you want to add your job")
+    expect(page).to have_selector("label .text-bold", text: "Enter unpaid or in-kind work", exact_text: true)
   end
 end
