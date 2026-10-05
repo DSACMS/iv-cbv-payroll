@@ -248,20 +248,6 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     # /activities/income/payment_details
     @e2e.replay_webhooks
     verify_page(page, title: I18n.t("activities.income.payment_details.show.header", employer_name: ""), wait: 60)
-    flow = ActivityFlow.last
-    flow.update!(employment_focused: true)
-    visit current_url
-    verify_page(page, title: I18n.t("activities.income.payment_details.show.header", employer_name: ""))
-    expect(page).to have_selector("h2", text: "Employment information")
-    expect(page).to have_selector("h2", text: "Monthly details")
-    expect(page).to have_selector("table", count: flow.reporting_months.size + 1)
-    expect(page).to have_text("Compensation amount")
-    expect(page).to have_text("Hours worked")
-    expect(page).to have_field("payroll_account[additional_information]")
-
-    flow.update!(employment_focused: false)
-    visit current_url
-    verify_page(page, title: I18n.t("activities.income.payment_details.show.header", employer_name: ""))
     fill_in "payroll_account[additional_information]",
       with: "Some kind of additional information"
     click_button I18n.t("activities.income.payment_details.show.continue")

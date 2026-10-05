@@ -60,6 +60,7 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         expect(headings.first(3)).to eq([ "Employment information", "Monthly details", "Additional comments (optional)" ])
         expect(page).to have_selector("table", count: 4)
         expect(page).to have_text("Compensation amount")
+        expect(page).to have_text("Hours worked")
         expect(page).to have_field("payroll_account_additional_information")
         expect(page).to have_no_text("Community engagement hours")
       end
