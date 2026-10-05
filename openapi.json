@@ -1,9 +1,9 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.0",
   "info": {
     "title": "Emmy Platform API Documentation",
     "version": "v1",
-    "description": "Integrate your agency's systems with the Emmy platform. This reference currently\ncovers the Tokenized Link API for creating personalized reporting links.\nV2 invitations and outbound report payloads are separate interfaces and are not\nyet covered here. Examples use synthetic applicant data and nonfunctional tokens.\n\nObject schemas allow additional properties for forward compatibility. Integrations\nshould tolerate unknown response fields so new fields can be added without breaking\nexisting clients. Required fields and documented field types still apply.\n\n<!-- Remove this link-check exception after the first reviewed deployment. -->\n<!-- markdown-link-check-disable-next-line -->\n[Download the official OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json).\nThe JSON and this reference are generated together from executable API tests.\n\n## API environments\n\n| Environment | Base URL | Purpose |\n| :-- | :-- | :-- |\n| Dev | https://verify-demo.navapbc.cloud | Develop and test integrations. |\n| Demo | https://demo.reportmyincome.org | Demonstrate and evaluate the platform. |\n\nUse HTTPS for every request and the API key issued for the selected environment.\nYour production hostname and credentials are provided during agency onboarding.\n\n## API keys and authentication\n\nContact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) to request an agency API key\nfor each environment. The Tokenized Link API uses a 32-character secret API key.\nKeep it on your server, never in browser code or public repositories.\n\nEach key identifies an agency and its configured metadata and invitation settings.\nSending a `client_agency_id` cannot select another agency. Include these headers:\n\n```http\nAuthorization: Bearer API_KEY\nContent-Type: application/json\n```\n\nA missing or invalid key returns `401 Unauthorized` with the plain-text body\n`HTTP Token: Access denied.` and a `WWW-Authenticate` header. If a key is\ncompromised, contact emmy@cms.hhs.gov to have it replaced."
+    "description": "Integrate your agency's systems with the Emmy platform. This reference currently\ncovers the Tokenized Link API for creating personalized reporting links and the\n`CeActivityReport` model for outbound community engagement reports. Find the CE\nreport and its activity types under Models, including self-attested employment\nand validated payroll. This model describes data Emmy sends to an agency, not\nan endpoint hosted by Emmy. V2 invitations are not yet covered here.\nExamples use synthetic applicant data and nonfunctional tokens.\n\nObject schemas allow additional properties for forward compatibility. Integrations\nshould tolerate unknown response fields so new fields can be added without breaking\nexisting clients. Required fields and documented field types still apply.\n\n<!-- Remove this link-check exception after the first reviewed deployment. -->\n<!-- markdown-link-check-disable-next-line -->\n[Download the official OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json).\nThe JSON and this reference are generated together from executable API tests.\n\n## API environments\n\n| Environment | Base URL | Purpose |\n| :-- | :-- | :-- |\n| Dev | https://verify-demo.navapbc.cloud | Develop and test integrations. |\n| Demo | https://demo.reportmyincome.org | Demonstrate and evaluate the platform. |\n\nUse HTTPS for every request and the API key issued for the selected environment.\nYour production hostname and credentials are provided during agency onboarding.\n\n## API keys and authentication\n\nContact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) to request an agency API key\nfor each environment. The Tokenized Link API uses a 32-character secret API key.\nKeep it on your server, never in browser code or public repositories.\n\nEach key identifies an agency and its configured metadata and invitation settings.\nSending a `client_agency_id` cannot select another agency. Include these headers:\n\n```http\nAuthorization: Bearer API_KEY\nContent-Type: application/json\n```\n\nA missing or invalid key returns `401 Unauthorized` with the plain-text body\n`HTTP Token: Access denied.` and a `WWW-Authenticate` header. If a key is\ncompromised, contact emmy@cms.hhs.gov to have it replaced."
   },
   "servers": [
     {
@@ -330,8 +330,10 @@
             "example": "Jane"
           },
           "middle_name": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "Alex"
           },
           "last_name": {
@@ -340,14 +342,18 @@
             "example": "Doe"
           },
           "case_number": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "EXAMPLE-123",
             "description": "Agency case identifier."
           },
           "date_of_birth": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "01/15/1990",
             "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
           }
@@ -365,8 +371,10 @@
             "example": "Jane"
           },
           "middle_name": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "Alex"
           },
           "last_name": {
@@ -375,14 +383,18 @@
             "example": "Doe"
           },
           "case_number": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "EXAMPLE-123",
             "description": "Agency case identifier."
           },
           "date_of_birth": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "01/15/1990",
             "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
           }
@@ -399,21 +411,27 @@
         "additionalProperties": true,
         "properties": {
           "case_number": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "EXAMPLE-123",
             "description": "Agency case identifier.",
             "maxLength": 13
           },
           "date_of_birth": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "01/15/1990",
             "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
           },
           "doc_id": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "EXAMPLE-DOC-123"
           }
         }
@@ -425,14 +443,18 @@
         "additionalProperties": true,
         "properties": {
           "case_number": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "EXAMPLE-123",
             "description": "Agency case identifier."
           },
           "date_of_birth": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "01/15/1990",
             "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
           }
@@ -445,12 +467,1032 @@
         "additionalProperties": true,
         "properties": {
           "case_number": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "example": "EXAMPLE-123",
             "description": "Agency case identifier."
           }
         }
+      },
+      "CeActivityReport": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "example": "1.0.0"
+          },
+          "confirmation_code": {
+            "type": "string",
+            "description": "Confirmation code shared with the applicant."
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC time the applicant completed the report."
+          },
+          "agency_partner_metadata": {
+            "$ref": "#/components/schemas/AgencyPartnerMetadata"
+          },
+          "ce_report": {
+            "$ref": "#/components/schemas/CeReport"
+          }
+        },
+        "required": [
+          "schema_version",
+          "confirmation_code",
+          "completed_at",
+          "agency_partner_metadata",
+          "ce_report"
+        ],
+        "description": "This document describes the **Community Engagement (CE) Activity Report Transmission API Specification**, a method by which CE activity data can be sent from the Eligibility made easy (Emmy) platform to an agency's systems.\n\nThe agency must build an API endpoint that meets this specification and integrates with agency systems to process the activity report into the case file for the correct client.\n\nThis revision covers `community_service`, `work_program`, and `employment`. Employment includes self-attested work and payroll data from linked Argyle or Pinwheel accounts. Education activities will be added additively in a later revision.",
+        "example": {
+          "schema_version": "1.0.0",
+          "confirmation_code": "SANDBOX123",
+          "completed_at": "2025-04-11T14:00:00Z",
+          "agency_partner_metadata": {
+            "first_name": "Jane",
+            "middle_name": "A",
+            "last_name": "Doe",
+            "case_number": "CASE-2026-00987",
+            "date_of_birth": "1990-04-15"
+          },
+          "ce_report": {
+            "review_period": {
+              "start_month": "2025-02",
+              "end_month": "2025-03"
+            },
+            "documents": [
+              {
+                "document_id": "DOC-5",
+                "document_name": "SANDBOX123_work_programs_wioa_participation_letter.pdf",
+                "file_type": "pdf"
+              },
+              {
+                "document_id": "DOC-4",
+                "document_name": "SANDBOX123_employment_income_statement.pdf",
+                "file_type": "pdf"
+              }
+            ],
+            "activities": {
+              "community_service": {
+                "2025-02": [
+                  {
+                    "type": "community_service",
+                    "organization_name": "Local Food Bank",
+                    "street_address": "1 Main St",
+                    "street_address_line_2": null,
+                    "city": "New Orleans",
+                    "state": "LA",
+                    "zip_code": "70112",
+                    "coordinator_name": "Jane Smith",
+                    "coordinator_email": "jane@example.org",
+                    "coordinator_phone_number": "5045551234",
+                    "additional_comments": null,
+                    "month": "2025-02",
+                    "hours": 40.0,
+                    "data_source": "self_attested",
+                    "document_ids": []
+                  }
+                ],
+                "2025-03": [
+                  {
+                    "type": "community_service",
+                    "organization_name": "Local Food Bank",
+                    "street_address": "1 Main St",
+                    "street_address_line_2": null,
+                    "city": "New Orleans",
+                    "state": "LA",
+                    "zip_code": "70112",
+                    "coordinator_name": "Jane Smith",
+                    "coordinator_email": "jane@example.org",
+                    "coordinator_phone_number": "5045551234",
+                    "additional_comments": null,
+                    "month": "2025-03",
+                    "hours": 40.0,
+                    "data_source": "self_attested",
+                    "document_ids": []
+                  }
+                ]
+              },
+              "work_program": {
+                "2025-02": [
+                  {
+                    "type": "work_program",
+                    "organization_name": "Goodwill",
+                    "program_name": "WIOA",
+                    "street_address": "123 Main St",
+                    "street_address_line_2": null,
+                    "city": "Baton Rouge",
+                    "state": "LA",
+                    "zip_code": "70802",
+                    "contact_name": "Casey Doe",
+                    "contact_email": "casey@example.org",
+                    "contact_phone_number": "5045555678",
+                    "additional_comments": null,
+                    "month": "2025-02",
+                    "hours": 20.0,
+                    "data_source": "self_attested",
+                    "document_ids": [
+                      "DOC-5"
+                    ]
+                  }
+                ],
+                "2025-03": [
+                  {
+                    "type": "work_program",
+                    "organization_name": "Goodwill",
+                    "program_name": "WIOA",
+                    "street_address": "123 Main St",
+                    "street_address_line_2": null,
+                    "city": "Baton Rouge",
+                    "state": "LA",
+                    "zip_code": "70802",
+                    "contact_name": "Casey Doe",
+                    "contact_email": "casey@example.org",
+                    "contact_phone_number": "5045555678",
+                    "additional_comments": null,
+                    "month": "2025-03",
+                    "hours": 20.0,
+                    "data_source": "self_attested",
+                    "document_ids": [
+                      "DOC-5"
+                    ]
+                  }
+                ]
+              },
+              "employment": {
+                "2025-03": [
+                  {
+                    "employer_name": "Side Gig LLC",
+                    "is_self_employed": true,
+                    "street_address": "942 W Harlan Ave",
+                    "street_address_line_2": null,
+                    "city": "Gainesville",
+                    "state": "FL",
+                    "zip_code": "32611",
+                    "contact_name": null,
+                    "contact_email": null,
+                    "contact_phone_number": null,
+                    "type": "employment",
+                    "month": "2025-03",
+                    "hours": 12.75,
+                    "data_source": "self_attested",
+                    "document_ids": [
+                      "DOC-4"
+                    ],
+                    "additional_comments": null,
+                    "employer_address": "942 W Harlan Ave, Gainesville, FL 32611",
+                    "employment_type": "self_employed",
+                    "gross_income": 123.45
+                  },
+                  {
+                    "employer_name": "Work For Free LLC",
+                    "is_self_employed": false,
+                    "street_address": "942 W Harlan Ave",
+                    "street_address_line_2": null,
+                    "city": "Gainesville",
+                    "state": "FL",
+                    "zip_code": "32611",
+                    "contact_name": "Donny Spears",
+                    "contact_email": "donny@gainesvillewrecking.com",
+                    "contact_phone_number": "(415) 344-8009",
+                    "type": "employment",
+                    "month": "2025-03",
+                    "hours": 20.0,
+                    "data_source": "self_attested",
+                    "document_ids": [],
+                    "additional_comments": null,
+                    "employer_address": "942 W Harlan Ave, Gainesville, FL 32611",
+                    "employment_type": "unpaid",
+                    "gross_income": 0.0
+                  },
+                  {
+                    "applicant_full_name": "Cool Guy",
+                    "applicant_ssn": "XXX-XX-1234",
+                    "applicant_extra_comments": null,
+                    "employer_name": "Cool Company",
+                    "employer_phone": "604-555-1234",
+                    "employer_address": "1234 Main St Vancouver BC V5K 0A1",
+                    "employment_status": "inactive",
+                    "employment_type": "gig",
+                    "employment_start_date": "2014-01-01",
+                    "employment_end_date": "2014-01-02",
+                    "pay_frequency": "variable",
+                    "compensation_amount": 100,
+                    "compensation_unit": "hourly",
+                    "paystubs": [
+                      {
+                        "pay_date": "2025-03-01",
+                        "pay_period_start": "2025-02-15",
+                        "pay_period_end": "2025-02-28",
+                        "pay_gross": 12345,
+                        "gross_pay_list": [],
+                        "pay_gross_ytd": 12345,
+                        "pay_net": 12345,
+                        "hours_paid": 12.0,
+                        "deductions": []
+                      }
+                    ],
+                    "type": "employment",
+                    "month": "2025-03",
+                    "data_source": "validated",
+                    "document_ids": []
+                  }
+                ]
+              },
+              "education": {}
+            }
+          }
+        }
+      },
+      "CeReport": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "review_period": {
+            "$ref": "#/components/schemas/CeReviewPeriod"
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CeDocument"
+            }
+          },
+          "activities": {
+            "$ref": "#/components/schemas/CeActivities"
+          }
+        },
+        "required": [
+          "review_period",
+          "documents",
+          "activities"
+        ]
+      },
+      "CeReviewPeriod": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "start_month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month as YYYY-MM."
+          },
+          "end_month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month as YYYY-MM."
+          }
+        },
+        "required": [
+          "start_month",
+          "end_month"
+        ],
+        "description": "Inclusive calendar months covered by the report."
+      },
+      "CeDocument": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "description": "Attachment identifier referenced by an activity's document_ids."
+          },
+          "document_name": {
+            "type": "string",
+            "description": "Filename used when transmitting the document separately."
+          },
+          "file_type": {
+            "type": "string",
+            "description": "File extension without the leading dot."
+          }
+        },
+        "required": [
+          "document_id",
+          "document_name",
+          "file_type"
+        ]
+      },
+      "CeActivities": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "community_service": {
+            "type": "object",
+            "description": "Map of YYYY-MM calendar months to activity arrays. Months with no reported activity are omitted; no activities is an empty object.",
+            "additionalProperties": true,
+            "patternProperties": {
+              "^\\d{4}-\\d{2}$": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CeCommunityServiceActivity"
+                }
+              }
+            }
+          },
+          "work_program": {
+            "type": "object",
+            "description": "Map of YYYY-MM calendar months to activity arrays. Months with no reported activity are omitted; no activities is an empty object.",
+            "additionalProperties": true,
+            "patternProperties": {
+              "^\\d{4}-\\d{2}$": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CeWorkProgramActivity"
+                }
+              }
+            }
+          },
+          "employment": {
+            "type": "object",
+            "description": "Map of YYYY-MM calendar months to activity arrays. Months with no reported activity are omitted; no activities is an empty object.",
+            "additionalProperties": true,
+            "patternProperties": {
+              "^\\d{4}-\\d{2}$": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CeEmploymentActivity"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "community_service",
+          "work_program",
+          "employment"
+        ]
+      },
+      "CeActivity": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "community_service",
+              "work_program",
+              "employment"
+            ]
+          },
+          "month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month as YYYY-MM."
+          },
+          "data_source": {
+            "type": "string",
+            "enum": [
+              "self_attested",
+              "validated"
+            ]
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "month",
+          "data_source",
+          "document_ids"
+        ]
+      },
+      "CeCommunityServiceActivity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CeActivity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "street_address": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "street_address_line_2": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "city": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "zip_code": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "hours": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Hours reported for this month; may be zero."
+              },
+              "additional_comments": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "community_service"
+                ]
+              },
+              "data_source": {
+                "type": "string",
+                "enum": [
+                  "self_attested"
+                ]
+              },
+              "organization_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "coordinator_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "coordinator_email": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "coordinator_phone_number": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "hours"
+            ]
+          }
+        ]
+      },
+      "CeWorkProgramActivity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CeActivity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "street_address": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "street_address_line_2": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "city": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "zip_code": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "hours": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Hours reported for this month; may be zero."
+              },
+              "additional_comments": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_email": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_phone_number": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "work_program"
+                ]
+              },
+              "data_source": {
+                "type": "string",
+                "enum": [
+                  "self_attested"
+                ]
+              },
+              "organization_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "program_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "hours"
+            ]
+          }
+        ]
+      },
+      "CeEmploymentActivity": {
+        "description": "One employer's activity in the enclosing month, either self-attested or validated payroll data.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CeSelfAttestedEmploymentActivity"
+          },
+          {
+            "$ref": "#/components/schemas/CeValidatedEmploymentActivity"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "data_source",
+          "mapping": {
+            "self_attested": "#/components/schemas/CeSelfAttestedEmploymentActivity",
+            "validated": "#/components/schemas/CeValidatedEmploymentActivity"
+          }
+        }
+      },
+      "CeSelfAttestedEmploymentActivity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CeActivity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "street_address": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "street_address_line_2": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "city": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "zip_code": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "hours": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Hours reported for this month; may be zero."
+              },
+              "additional_comments": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_email": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_phone_number": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "employment"
+                ]
+              },
+              "data_source": {
+                "type": "string",
+                "enum": [
+                  "self_attested"
+                ]
+              },
+              "employer_name": {
+                "type": "string"
+              },
+              "employer_address": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Combined address, also supplied as individual address fields."
+              },
+              "employment_type": {
+                "type": "string",
+                "enum": [
+                  "w2",
+                  "self_employed",
+                  "unpaid"
+                ],
+                "description": "Paid work, paid self-employment, or unpaid/in-kind work."
+              },
+              "is_self_employed": {
+                "type": "boolean",
+                "description": "Employer contact fields are null when true."
+              },
+              "gross_income": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Self-attested monthly gross income in dollars, including cents as a decimal."
+              }
+            },
+            "required": [
+              "employer_name",
+              "employment_type",
+              "is_self_employed",
+              "hours",
+              "gross_income"
+            ]
+          }
+        ]
+      },
+      "CeValidatedEmploymentActivity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CeActivity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "employment"
+                ]
+              },
+              "data_source": {
+                "type": "string",
+                "enum": [
+                  "validated"
+                ],
+                "description": "Used for both Argyle and Pinwheel."
+              },
+              "applicant_full_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "applicant_ssn": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^XXX-XX-\\d{4}$",
+                "description": "Masked SSN, when available."
+              },
+              "applicant_extra_comments": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "employer_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "employer_phone": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "employer_address": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "employment_status": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "employed",
+                  "inactive",
+                  "terminated",
+                  null
+                ]
+              },
+              "employment_type": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "w2",
+                  "gig",
+                  null
+                ]
+              },
+              "employment_start_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
+              "employment_end_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
+              "pay_frequency": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "daily",
+                  "weekly",
+                  "biweekly",
+                  "semimonthly",
+                  "monthly",
+                  "quarterly",
+                  "variable",
+                  null
+                ]
+              },
+              "compensation_amount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "Amount in cents (12345 represents $123.45)."
+              },
+              "compensation_unit": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "hourly",
+                  "daily",
+                  "weekly",
+                  "biweekly",
+                  "semimonthly",
+                  "monthly",
+                  "annual",
+                  "salary",
+                  "per_mile",
+                  "semiweekly",
+                  "variable",
+                  null
+                ]
+              },
+              "paystubs": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/components/schemas/CePaystub"
+                },
+                "description": "Only payments dated within the enclosing month and review period. Grouped by pay_date, not pay period."
+              }
+            },
+            "required": [
+              "applicant_full_name",
+              "employer_name",
+              "paystubs"
+            ]
+          }
+        ]
+      },
+      "CePaystub": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "pay_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "pay_period_start": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "pay_period_end": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "pay_gross": {
+            "type": "integer",
+            "description": "Gross pay in cents. Missing gross pay uses the income report's zero fallback."
+          },
+          "pay_gross_ytd": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Amount in cents (12345 represents $123.45)."
+          },
+          "pay_net": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Amount in cents (12345 represents $123.45)."
+          },
+          "hours_paid": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Hours paid, including overtime."
+          },
+          "deductions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CePaystubDeduction"
+            }
+          },
+          "gross_pay_list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CeGrossPayComponent"
+            }
+          }
+        },
+        "required": [
+          "pay_date",
+          "pay_gross"
+        ]
+      },
+      "CePaystubDeduction": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tax": {
+            "type": "string",
+            "enum": [
+              "pre_tax",
+              "post_tax",
+              "unknown"
+            ]
+          },
+          "amount": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Amount in cents (12345 represents $123.45)."
+          }
+        },
+        "required": [
+          "category",
+          "tax",
+          "amount"
+        ]
+      },
+      "CeGrossPayComponent": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "base",
+              "benefits",
+              "bereavement",
+              "bonus",
+              "commission",
+              "disability",
+              "double_overtime",
+              "employer_contribution",
+              "fare",
+              "holiday",
+              "hourly",
+              "life_insurance",
+              "meal_comp",
+              "medical",
+              "other",
+              "overtime",
+              "parental",
+              "premium",
+              "pto",
+              "retirement",
+              "retro_pay",
+              "salary",
+              "shift_differential",
+              "sick",
+              "stock",
+              "tips",
+              "unpaid",
+              "vacation"
+            ]
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Amount in cents (12345 represents $123.45)."
+          }
+        },
+        "required": [
+          "type",
+          "amount"
+        ]
       }
     }
   }
