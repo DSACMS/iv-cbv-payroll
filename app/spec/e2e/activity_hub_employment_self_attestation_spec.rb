@@ -13,16 +13,17 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
   it "supports editing an employment activity through the full flow" do # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
     visit URI(root_url).request_uri
-    invitation = create(:activity_flow_invitation, client_agency_id: "sandbox")
-    visit activities_flow_start_path(token: invitation.auth_token, reporting_window_months: 3)
+    invitation = create(:activity_flow_invitation, client_agency_id: "sandbox", verification_range: "last_12_complete_months")
+    visit activities_flow_start_path(token: invitation.auth_token)
     click_link I18n.t("activities.entries.show.continue")
     verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     flow = ActivityFlow.last
     flow.update!(employment_focused: true)
+    expect(flow.reporting_months.size).to eq(12)
     first_selected_month = flow.reporting_months.first
     unselected_month = flow.reporting_months.second
-    second_selected_month = flow.reporting_months.third
+    second_selected_month = flow.reporting_months.last
     first_selected_month_label = I18n.l(first_selected_month, format: :month_year)
     unselected_month_label = I18n.l(unselected_month, format: :month_year)
     second_selected_month_label = I18n.l(second_selected_month, format: :month_year)
@@ -247,5 +248,18 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     click_button I18n.t("activities.employment.review.save")
 
     verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
+
+    agency = Rails.application.config.client_agencies["sandbox"]
+    payload = JSON.parse(Transmitters::ActivityJsonTransmitter.new(flow.reload, agency).payload)
+    expect(payload.dig("ce_report", "review_period")).to eq(
+      "start_month" => first_selected_month.strftime("%Y-%m"),
+      "end_month" => second_selected_month.strftime("%Y-%m")
+    )
+    employment = payload.dig("ce_report", "activities", "employment")
+    expect(employment.keys).to eq([ first_selected_month, second_selected_month ].map { |month| month.strftime("%Y-%m") })
+    expect(employment[first_selected_month.strftime("%Y-%m")].sole).to include(
+      "employer_name" => "Updated Employer", "data_source" => "self_attested", "hours" => 10.0, "gross_income" => 200.0
+    )
+    expect(employment[second_selected_month.strftime("%Y-%m")].sole).to include("gross_income" => 300.0)
   end
 end
