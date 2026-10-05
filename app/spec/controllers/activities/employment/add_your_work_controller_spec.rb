@@ -89,6 +89,23 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
         rendered = Capybara.string(response.body)
         expect(rendered).to have_selector("h1", text: "Choose how you want to add your job")
         expect(rendered).to have_title(/Choose how you want to add your job/)
+        expect(rendered).to have_no_text("Choose how you want to add your work")
+      end
+
+      it "uses the bold in-kind work label" do
+        get :show
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("label .text-bold", text: "Enter in-kind work", exact_text: true)
+        expect(rendered).to have_no_text("Enter unpaid or in-kind work")
+      end
+
+      it "renders the reporting period with a bold label" do
+        get :show
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("strong", text: "Reporting period:")
+        expect(rendered).to have_text(activity_flow.reporting_window_display)
       end
 
       it "does not render the activity flow header" do
