@@ -23,30 +23,41 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
   end
 
   describe "GET #edit" do
-    [ false, true ].each do |employment_focused|
-      it "uses the correct paid-work heading for employment focus #{employment_focused}" do
-        activity_flow.update!(employment_focused: employment_focused)
+    let(:perform_tracked_action) { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
+    let(:tracked_flow) { activity_flow }
 
+    context "for an employment_focused activity" do
+      before { activity_flow.update!(employment_focused: true) }
+
+      it "uses income and/or hours in the paid-work heading and browser title" do
         get :edit, params: { employment_id: employment_activity.id, id: 0 }
 
-        conjunction = employment_focused ? "and/or" : "and"
-        heading = "Add your income #{conjunction} hours for #{employment_activity.employer_name}"
+        heading = "Add your income and/or hours for #{employment_activity.employer_name}"
         rendered = Capybara.string(response.body)
         expect(rendered).to have_selector("h1", text: heading, exact_text: true, normalize_ws: true)
         expect(rendered).to have_title(/#{Regexp.escape(heading)}/)
       end
+
+      it "keeps the hours-only heading for unpaid work" do
+        employment_activity.update!(compensation_type: :unpaid_or_in_kind)
+
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        expect(Capybara.string(response.body)).to have_selector("h1", text: "Add your hours for #{employment_activity.employer_name}", exact_text: true, normalize_ws: true)
+      end
     end
 
-    let(:tracked_flow) { activity_flow }
-    let(:perform_tracked_action) { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
+    context "for a standard CE activity" do
+      before { activity_flow.update!(employment_focused: false) }
 
-    it "keeps the hours-only heading for employment-focused unpaid work" do
-      activity_flow.update!(employment_focused: true)
-      employment_activity.update!(compensation_type: :unpaid_or_in_kind)
+      it "uses income and hours in the paid-work heading and browser title" do
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
 
-      get :edit, params: { employment_id: employment_activity.id, id: 0 }
-
-      expect(Capybara.string(response.body)).to have_selector("h1", text: "Add your hours for #{employment_activity.employer_name}", exact_text: true, normalize_ws: true)
+        heading = "Add your income and hours for #{employment_activity.employer_name}"
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("h1", text: heading, exact_text: true, normalize_ws: true)
+        expect(rendered).to have_title(/#{Regexp.escape(heading)}/)
+      end
     end
 
 
