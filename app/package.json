@@ -41,6 +41,7 @@
     "nanoid": "^5.0.9"
   },
   "overrides": {
-    "serialize-javascript": "^7.0.3"
+    "serialize-javascript": "^7.0.3",
+    "undici@7.29.0": "7.29.1"
   }
 }
