@@ -1,7 +1,7 @@
 class ActivityFlowNavigator
   include Rails.application.routes.url_helpers
 
-  def initialize(params, flow, overall_progress_result: nil)
+  def initialize(params, flow = nil, overall_progress_result: nil)
     @params = params
     @flow = flow
     @overall_progress_result = overall_progress_result
