@@ -176,7 +176,7 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
     end
 
     it "redirects to after_activity_path when answering no" do
-      post :create_add_jobs, params: { additional_jobs: "false"}
+      post :create_add_jobs, params: { additional_jobs: "false" }
       expect(response).to redirect_to(activities_flow_root_path)
     end
 

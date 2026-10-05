@@ -96,7 +96,7 @@ class FlowController < ApplicationController
         if flow_param == :activity
           @flow = flow_class(flow_param).find(session[:flow_id])
         else
-          @flow = flow_class.find(session[:flow_id])
+          @flow = flow_class(session[:flow_type].presence || flow_param).find(session[:flow_id])
         end
 
         @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
