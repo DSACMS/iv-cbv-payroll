@@ -24,8 +24,8 @@
 
 <%= form_with url: activities_flow_income_add_jobs_path, method: :post, builder: UswdsFormBuilder do |form| %>
     <div class="width-full">
-        <%= form.radio_button(:additional_jobs, true, { label: t(".yes") }) %>
-        <%= form.radio_button(:additional_jobs, false, { label: t(".no") }) %>
+        <%= form.radio_button(:additional_jobs, true, { label: t("us_form_with.boolean_true") }) %>
+        <%= form.radio_button(:additional_jobs, false, { label: t("us_form_with.boolean_false") }) %>
     </div>
     <div>
         <%= form.submit t(".submit"), class: "btn btn-primary usa-button width-full margin-top-4" %>

@@ -297,8 +297,6 @@ en:
     employment:
       add_your_work:
         add_jobs:
-          yes: Yes
-          no: No
           header: Do you have another job to add?
           job_connected: "%{name} (connected via payroll)"
           job_manual: "%{name} (entered manually)"
