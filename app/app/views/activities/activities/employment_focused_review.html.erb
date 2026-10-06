@@ -30,19 +30,24 @@
             <%= table.with_data_point(:employment_end_date, account_report.employment.termination_date) %>
             <%= table.with_data_point(:employment_status, account_report.employment.status) %>
             <%= table.with_data_point(:pay_frequency, account_report.income&.pay_frequency) %>
-            <%= table.with_data_point(:compensation_amount, account_report.income&.compensation_amount) %>
+            <%= table.with_data_point(:hourly_rate, account_report.income&.compensation_amount, account_report.income&.compensation_unit) %>
         <% end %>
 
         <h2><%= t(".monthly_details") %></h2>
-        <% if @is_w2_worker %>
-            <% if @payroll_account_report.paystubs.any? %>
+        <% if account_report.employment.employment_type == :w2 %>
+            <% if account_report.paystubs.any? %>
                 <%= render(Report::W2MonthlySummaryTableComponent.new(
                     @aggregator_report,
-                    @payroll_account,
+                    job,
                     activity_flow_labels: true
-                    )) 
-                %>
+                    )) %>
             <% end %>
+        <% else %>
+            <%= render(Report::GigMonthlySummaryTableComponent.new(
+                @aggregator_report,
+                job,
+                activity_flow_labels: true
+                )) %>
         <% end %>
     <% end %>
 <% end %>
@@ -88,7 +93,7 @@
             documents: activity.document_uploads.map do |attachment|
             {
                 filename: attachment.filename.to_s,
-                remove_path: remove_document_upload_path(attachment)
+                remove_path: activities_flow_income_employment_document_upload_path(employment_id: activity, id: attachment)
             }
             end,
             show_remove_file: true,

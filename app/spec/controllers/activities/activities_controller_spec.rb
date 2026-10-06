@@ -1046,7 +1046,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
   end
 
-  context "when the flow is employment-focused and has a self-attested employment activity" do
+  context "when the flow is employment-focused" do
     let(:current_flow) do
       create(
         :activity_flow,
@@ -1056,85 +1056,243 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
         education_activities_count: 0
       )
     end
-    let(:reporting_month) { current_flow.reporting_months.first.beginning_of_month }
 
     before do
-      activity = create(:employment_activity, activity_flow: current_flow)
-      create(:employment_activity_month, employment_activity: activity, month: reporting_month, hours: 15, gross_income: 450)
       session[:flow_id] = current_flow.id
       session[:flow_type] = :activity
-      get :index
     end
 
-    it "renders the employment-focused template" do
-      expect(response).to render_template(:employment_focused)
-    end
-
-    it "renders the employer information section for the self-attested job" do
-      rendered = Capybara.string(response.body)
-
-      expect(rendered).to have_text(I18n.t("activities.activities.employment_focused.employer_information"))
-      expect(rendered).to have_text("Gainesville Wrecking")
-      expect(rendered).to have_text("942 W Harlan Ave, Gainesville, FL 32611")
-      expect(rendered).to have_text("Donny Spears")
-      expect(rendered).to have_text("donny@gainesvillewrecking.com")
-      expect(rendered).to have_text("(415) 344-8009")
-    end
-
-    it "renders the hours and income section with monthly data" do
-      rendered = Capybara.string(response.body)
-
-      expect(rendered).to have_text(I18n.t("activities.activities.employment_focused.hours_and_income"))
-      expect(rendered).to have_text(I18n.l(reporting_month, format: :month_year))
-      expect(rendered).to have_text("$450.00")
-      expect(rendered).to have_text("15")
-    end
-  end
-
-  context "when the flow is employment-focused and has a synced payroll account" do
-    let(:current_flow) do
-      create(
-        :activity_flow,
-        employment_focused: true,
-        volunteering_activities_count: 0,
-        job_training_activities_count: 0,
-        education_activities_count: 0
+    # Builds a real (unmocked) Aggregators::AggregatorReports::AggregatorReport
+    # populated with the given employment/income/paystub data, and stubs
+    # AggregatorReportFetcher to return it for the current flow. Using a real
+    # report (rather than a method-by-method double) exercises the actual
+    # find_account_report/summarize_by_month logic the view depends on.
+    def stub_aggregator_report_for(payroll_account, employment_type:, employment_status: "employed", pay_frequency: "biweekly", compensation_amount: 25_00, compensation_unit: "hourly", paystubs: [], gigs: [])
+      employment = Aggregators::ResponseObjects::Employment.new(
+        account_id: payroll_account.aggregator_account_id,
+        employer_name: "Acme Employer",
+        employment_type: employment_type,
+        start_date: "2024-01-01",
+        termination_date: nil,
+        status: employment_status
       )
-    end
-    let(:latest_month) { current_flow.reporting_months.max }
+      income = Aggregators::ResponseObjects::Income.new(
+        account_id: payroll_account.aggregator_account_id,
+        pay_frequency: pay_frequency,
+        compensation_amount: compensation_amount,
+        compensation_unit: compensation_unit
+      )
+      report = Aggregators::AggregatorReports::AggregatorReport.new(
+        payroll_accounts: [ payroll_account ],
+        reporting_date_range: current_flow.reporting_window_range
+      )
+      report.employments = [ employment ]
+      report.incomes = [ income ]
+      report.paystubs = paystubs
+      report.gigs = gigs
+      report.identities = []
+      report.has_fetched = true
 
-    before do
-      payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow, aggregator_account_id: "acct-123")
-      create(:activity_flow_employment_summary, activity_flow: current_flow, payroll_account: payroll_account, employer_name: "Acme Employer", employment_type: "w2")
-      current_flow.reporting_months.each do |month|
-        create(
-          :activity_flow_monthly_summary,
-          activity_flow: current_flow,
-          payroll_account: payroll_account,
-          month: month.beginning_of_month,
-          total_w2_hours: (month == latest_month ? 35.0 : 0.0),
-          accrued_gross_earnings_cents: (month == latest_month ? 222_22 : 0),
-          paychecks_count: (month == latest_month ? 2 : 0)
+      allow(AggregatorReportFetcher).to receive(:new)
+        .with(current_flow)
+        .and_return(instance_double(AggregatorReportFetcher, report: report))
+    end
+
+    context "with a self-attested employment activity" do
+      let(:reporting_month) { current_flow.reporting_months.first.beginning_of_month }
+      let!(:employment_activity) { create(:employment_activity, activity_flow: current_flow) }
+
+      before do
+        create(:employment_activity_month, employment_activity: employment_activity, month: reporting_month, hours: 15, gross_income: 450)
+        get :index
+      end
+
+      it "renders the employment-focused review template" do
+        expect(response).to render_template(:employment_focused_review)
+      end
+
+      it "renders the job heading and employer information section" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_text(
+          I18n.t("activities.activities.employment_focused_review.employment_header", count: 1, employer_name: "Gainesville Wrecking")
+        )
+        expect(rendered).to have_text(I18n.t("activities.activities.employment_focused_review.employer_information"))
+        expect(rendered).to have_text("Gainesville Wrecking")
+        expect(rendered).to have_text("942 W Harlan Ave, Gainesville, FL 32611")
+        expect(rendered).to have_text("Donny Spears")
+        expect(rendered).to have_text("donny@gainesvillewrecking.com")
+        expect(rendered).to have_text("(415) 344-8009")
+      end
+
+      it "renders the hours and income section with monthly data" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_text(I18n.t("activities.activities.employment_focused_review.hours_and_income"))
+        expect(rendered).to have_text(I18n.l(reporting_month, format: :month_year))
+        expect(rendered).to have_text("$450.00")
+        expect(rendered).to have_text("15")
+      end
+
+      it "renders the consent checkbox and submit button" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_css("input[type='checkbox'][name='activity_flow[consent_to_submit]']")
+        expect(rendered).to have_button(
+          I18n.t("activities.activities.employment_focused_review.submit", agency_name: "Test Agency")
         )
       end
-      session[:flow_id] = current_flow.id
-      session[:flow_type] = :activity
-      get :index
+
+      it "does not render a document upload section when no documents are attached" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_no_text(I18n.t("activities.document_uploads.remove_file"))
+      end
+
+      context "with an uploaded document" do
+        before do
+          employment_activity.document_uploads.attach(
+            io: StringIO.new("synthetic document"),
+            filename: "Paystub.pdf",
+            content_type: "application/pdf"
+          )
+          get :index
+        end
+
+        it "renders the uploaded document with a working remove link" do
+          rendered = Capybara.string(response.body)
+
+          expect(rendered).to have_text("Paystub.pdf")
+          expect(rendered).to have_css(
+            "a[href='#{
+              activities_flow_income_employment_document_upload_path(
+                employment_id: employment_activity, id: employment_activity.document_uploads.first
+              )
+            }']"
+          )
+        end
+      end
+
+      context "with a second self-attested job" do
+        let!(:second_employment_activity) { create(:employment_activity, activity_flow: current_flow, employer_name: "Beta Staffing") }
+
+        before do
+          create(:employment_activity_month, employment_activity: second_employment_activity, month: reporting_month, hours: 20, gross_income: 300)
+          get :index
+        end
+
+        it "numbers each job heading sequentially, newest job first" do
+          rendered = Capybara.string(response.body)
+
+          expect(rendered).to have_text(
+            I18n.t("activities.activities.employment_focused_review.employment_header", count: 1, employer_name: "Beta Staffing")
+          )
+          expect(rendered).to have_text(
+            I18n.t("activities.activities.employment_focused_review.employment_header", count: 2, employer_name: "Gainesville Wrecking")
+          )
+        end
+      end
     end
 
-    it "renders the employment-focused template" do
-      expect(response).to render_template(:employment_focused)
+    context "with a synced w2 payroll account" do
+      let(:latest_month) { current_flow.reporting_months.max }
+      let!(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: current_flow, aggregator_account_id: "acct-123") }
+
+      before do
+        paystub = Aggregators::ResponseObjects::Paystub.new(
+          account_id: payroll_account.aggregator_account_id,
+          gross_pay_amount: 222_22,
+          pay_date: latest_month.to_s,
+          hours: 35.0,
+          earnings: [],
+          deductions: []
+        )
+        stub_aggregator_report_for(payroll_account, employment_type: :w2, paystubs: [ paystub ])
+
+        get :index
+      end
+
+      it "renders the employment-focused review template" do
+        expect(response).to render_template(:employment_focused_review)
+      end
+
+      it "renders the job heading and employment details table" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_text(
+          I18n.t("activities.activities.employment_focused_review.employment_header", count: 1, employer_name: "Acme Employer")
+        )
+        expect(rendered).to have_text(I18n.t("activities.activities.employment_focused_review.employment_details"))
+        expect(rendered).to have_text(I18n.l(Date.parse("2024-01-01"), format: :long))
+        expect(rendered).to have_text("Employed")
+        expect(rendered).to have_text("Bi-weekly")
+        expect(rendered).to have_text("$25.00")
+      end
+
+      it "renders the monthly details table with month, gross income, number of paychecks, and hours worked" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_text(I18n.t("activities.activities.employment_focused_review.monthly_details"))
+        expect(rendered).to have_text(I18n.t("components.report.monthly_summary_table.w2.title_number_of_paychecks"))
+        expect(rendered).to have_text(I18n.t("components.report.monthly_summary_table.activity.hours_worked"))
+        expect(rendered).to have_text(I18n.l(latest_month.beginning_of_month, format: :month_year))
+        expect(rendered).to have_text("$222.22")
+        expect(rendered).to have_text("35")
+      end
     end
 
-    it "renders the monthly details table with month, gross income, number of paychecks, and hours worked" do
-      rendered = Capybara.string(response.body)
+    context "with a synced gig payroll account" do
+      let(:latest_month) { current_flow.reporting_months.max }
+      let!(:payroll_account) { create(:payroll_account, :argyle_fully_synced, flow: current_flow, aggregator_account_id: "acct-456") }
 
-      expect(rendered).to have_text(I18n.t("activities.activities.employment_focused.monthly_details"))
-      expect(rendered).to have_text(I18n.t("activities.activities.employment_focused.number_of_paychecks"))
-      expect(rendered).to have_text(I18n.t("activities.activities.employment_focused.hours_worked"))
-      expect(rendered).to have_text(I18n.l(latest_month.beginning_of_month, format: :month_year))
-      expect(rendered).to have_text("$222.22")
-      expect(rendered).to have_text("35")
+      before do
+        gig = Aggregators::ResponseObjects::Gig.new(
+          account_id: payroll_account.aggregator_account_id,
+          gig_type: "rideshare",
+          hours: 20.0,
+          start_date: latest_month.to_s,
+          end_date: latest_month.to_s,
+          compensation_amount: 15_000
+        )
+        stub_aggregator_report_for(payroll_account, employment_type: :gig, gigs: [ gig ])
+
+        get :index
+      end
+
+      it "renders the gig monthly summary table instead of the w2 table" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_text(I18n.t("activities.activities.employment_focused_review.monthly_details"))
+        # Gig hours are always labeled "Community engagement hours" here, by
+        # design — GigMonthlySummaryTableComponent's hours_header is not
+        # conditioned on employment_focused? the way the W2 table's is.
+        expect(rendered).to have_text(I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours"))
+        expect(rendered).to have_text(I18n.l(latest_month.beginning_of_month, format: :month_year))
+        expect(rendered).to have_text("20")
+      end
+    end
+
+    context "with both a synced payroll account and a self-attested job" do
+      let!(:payroll_account) { create(:payroll_account, :pinwheel_fully_synced, flow: current_flow, aggregator_account_id: "acct-123") }
+      let!(:employment_activity) { create(:employment_activity, activity_flow: current_flow, employer_name: "Beta Staffing") }
+
+      before do
+        stub_aggregator_report_for(payroll_account, employment_type: :w2, paystubs: [])
+        create(:employment_activity_month, employment_activity: employment_activity, month: current_flow.reporting_months.first.beginning_of_month, hours: 10, gross_income: 100)
+
+        get :index
+      end
+
+      it "numbers the payroll job first and the self-attested job second" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_text(
+          I18n.t("activities.activities.employment_focused_review.employment_header", count: 1, employer_name: "Acme Employer")
+        )
+        expect(rendered).to have_text(
+          I18n.t("activities.activities.employment_focused_review.employment_header", count: 2, employer_name: "Beta Staffing")
+        )
+      end
     end
   end
 end
