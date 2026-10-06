@@ -1045,4 +1045,96 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(rendered).to have_css("[data-activity-type='work_programs']")
     end
   end
+
+  context "when the flow is employment-focused and has a self-attested employment activity" do
+    let(:current_flow) do
+      create(
+        :activity_flow,
+        employment_focused: true,
+        volunteering_activities_count: 0,
+        job_training_activities_count: 0,
+        education_activities_count: 0
+      )
+    end
+    let(:reporting_month) { current_flow.reporting_months.first.beginning_of_month }
+
+    before do
+      activity = create(:employment_activity, activity_flow: current_flow)
+      create(:employment_activity_month, employment_activity: activity, month: reporting_month, hours: 15, gross_income: 450)
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "renders the employment-focused template" do
+      expect(response).to render_template(:employment_focused)
+    end
+
+    it "renders the employer information section for the self-attested job" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_text(I18n.t("activities.activities.employment_focused.employer_information"))
+      expect(rendered).to have_text("Gainesville Wrecking")
+      expect(rendered).to have_text("942 W Harlan Ave, Gainesville, FL 32611")
+      expect(rendered).to have_text("Donny Spears")
+      expect(rendered).to have_text("donny@gainesvillewrecking.com")
+      expect(rendered).to have_text("(415) 344-8009")
+    end
+
+    it "renders the hours and income section with monthly data" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_text(I18n.t("activities.activities.employment_focused.hours_and_income"))
+      expect(rendered).to have_text(I18n.l(reporting_month, format: :month_year))
+      expect(rendered).to have_text("$450.00")
+      expect(rendered).to have_text("15")
+    end
+  end
+
+  context "when the flow is employment-focused and has a synced payroll account" do
+    let(:current_flow) do
+      create(
+        :activity_flow,
+        employment_focused: true,
+        volunteering_activities_count: 0,
+        job_training_activities_count: 0,
+        education_activities_count: 0
+      )
+    end
+    let(:latest_month) { current_flow.reporting_months.max }
+
+    before do
+      payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: current_flow, aggregator_account_id: "acct-123")
+      create(:activity_flow_employment_summary, activity_flow: current_flow, payroll_account: payroll_account, employer_name: "Acme Employer", employment_type: "w2")
+      current_flow.reporting_months.each do |month|
+        create(
+          :activity_flow_monthly_summary,
+          activity_flow: current_flow,
+          payroll_account: payroll_account,
+          month: month.beginning_of_month,
+          total_w2_hours: (month == latest_month ? 35.0 : 0.0),
+          accrued_gross_earnings_cents: (month == latest_month ? 222_22 : 0),
+          paychecks_count: (month == latest_month ? 2 : 0)
+        )
+      end
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "renders the employment-focused template" do
+      expect(response).to render_template(:employment_focused)
+    end
+
+    it "renders the monthly details table with month, gross income, number of paychecks, and hours worked" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_text(I18n.t("activities.activities.employment_focused.monthly_details"))
+      expect(rendered).to have_text(I18n.t("activities.activities.employment_focused.number_of_paychecks"))
+      expect(rendered).to have_text(I18n.t("activities.activities.employment_focused.hours_worked"))
+      expect(rendered).to have_text(I18n.l(latest_month.beginning_of_month, format: :month_year))
+      expect(rendered).to have_text("$222.22")
+      expect(rendered).to have_text("35")
+    end
+  end
 end

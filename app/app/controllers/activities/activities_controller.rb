@@ -17,7 +17,13 @@ class Activities::ActivitiesController < Activities::BaseController
     @employment_payroll_accounts = @flow.payroll_accounts.published.order(created_at: :desc).select(&:sync_succeeded?)
     @employment_activities = @flow.employment_activities.published.includes(:employment_activity_months).order(created_at: :desc)
     @employment_draft_activities = @flow.employment_activities.pre_populated_drafts.includes(:employment_activity_months).order(created_at: :desc)
-    @persisted_report = PersistedReportAdapter.new(@flow) if @employment_payroll_accounts.any?
+    if @flow.employment_focused?
+      @aggregator_report = AggregatorReportFetcher.new(@flow).report if @employment_payroll_accounts.any?
+    else
+      @persisted_report = PersistedReportAdapter.new(@flow) if @employment_payroll_accounts.any?
+    end
+
+    render :employment_focused_review if @flow.employment_focused?
   end
 
   private
