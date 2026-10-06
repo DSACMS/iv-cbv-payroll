@@ -68,7 +68,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         visible: :all
       )
       expect(ordered_elements.map { |element| element[:"data-document-upload-target"] })
-        .to eq([ "listSection", "input" ])
+        .to eq([ "input", "listSection" ])
       expect(upload_form[:"data-document-upload-error-empty-value"])
         .to eq(I18n.t("activities.document_uploads.new.errors.empty"))
       expect(upload_form[:"data-document-upload-error-multiple-files-value"])
@@ -300,6 +300,10 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include("verification.pdf")
       expect(response.body).to include(I18n.t("activities.document_uploads.remove_file"))
       expect(response.body).to include("file_present")
+      rendered = Capybara.string(response.body)
+      expect(rendered.find("input[type='file']", visible: :all)).to have_xpath(
+        "following::h2", text: I18n.t("activities.document_uploads.heading_previous", document_count: 1)
+      )
     end
   end
 

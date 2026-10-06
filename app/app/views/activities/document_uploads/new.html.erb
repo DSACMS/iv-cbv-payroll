@@ -36,19 +36,6 @@
   <% end %>
 </ul>
 
-<% if @activity.document_uploads.any? %>
-  <%= render DocumentUploadsComponent.new(
-    documents: @activity.document_uploads.map do |attachment|
-      {
-        filename: attachment.filename.to_s,
-        remove_path: remove_document_upload_path(attachment)
-      }
-    end,
-    show_remove_file: true,
-    previously_uploaded: true
-  ) %>
-<% end %>
-
 <%= form_with(builder: UswdsFormBuilder, scope: :activity, model: @activity, url: upload_path, method: :post, data: {
       controller: "document-upload",
       document_upload_presign_url_value: activities_flow_presigned_uploads_path,
@@ -72,11 +59,6 @@
 
   <div hidden data-document-upload-target="signedIds"></div>
 
-  <div class="document-uploads" hidden data-document-upload-target="listSection">
-    <h2 class="document-uploads__heading" data-document-upload-target="listHeading"></h2>
-    <ul class="document-uploads__list" data-document-upload-target="list"></ul>
-  </div>
-
   <%= f.file_field :document_uploads,
       multiple: true,
       label: t(".input_label"),
@@ -97,6 +79,25 @@
       <%= t(@activity.document_upload_suggestion_text) %>
     <% end %>
   <% end %>
+
+  <% if @activity.document_uploads.any? %>
+    <%= render DocumentUploadsComponent.new(
+      documents: @activity.document_uploads.map do |attachment|
+        {
+          filename: attachment.filename.to_s,
+          remove_path: remove_document_upload_path(attachment)
+        }
+      end,
+      show_remove_file: true,
+      previously_uploaded: true
+    ) %>
+  <% end %>
+
+  <div class="document-uploads" hidden data-document-upload-target="listSection">
+    <h2 class="document-uploads__heading" data-document-upload-target="listHeading"></h2>
+    <ul class="document-uploads__list" data-document-upload-target="list"></ul>
+  </div>
+
   <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t(".continue") %>
   <%= f.submit submit_label %>
 <% end %>

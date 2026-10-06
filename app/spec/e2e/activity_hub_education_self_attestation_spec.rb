@@ -76,6 +76,9 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     )
     expect(page).to have_content(I18n.t("activities.document_uploads.heading_previous", document_count: 1))
     expect(page).to have_content("document_upload.pdf")
+    expect(page.find("input[type='file']", visible: :all)).to have_xpath(
+      "following::h2", text: I18n.t("activities.document_uploads.heading_previous", document_count: 1)
+    )
     click_link I18n.t("activities.document_uploads.remove_file")
     expect(page).not_to have_content("document_upload.pdf")
 
