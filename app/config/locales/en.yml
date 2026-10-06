@@ -182,7 +182,7 @@ en:
               hint: Add education details about your trade school, vocational school, or career and technical education (CTE) programs.
               label: Enter a trade or technical program
           reporting_period_label: 'Reporting period:'
-      document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
+      document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Student portal screenshot</li><li>Transcript from most recent enrollment period</li></ul>"
       edit:
         additional_information_header: Additional comments (optional)
         additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
@@ -211,6 +211,8 @@ en:
         field_error: Add hours for at least one month
         heading: Add your %{month} credit hours for %{organization}
         hours_label: "%{month} credit hours"
+        term_start_date_label: Term start date
+        term_end_date_label: Term end date
         month_indicator: Month %{current} / %{total}
         no_hours_checkbox: I didn't take any credit hours at %{organization} in %{month}
         title: Credit hours
