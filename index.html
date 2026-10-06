@@ -18,7 +18,7 @@
   "info": {
     "title": "Emmy Platform API Documentation",
     "version": "v1",
-    "description": "Integrate your agency's systems with the Emmy platform. This reference currently\ncovers the Tokenized Link API for creating personalized reporting links and the\n`CeActivityReport` model for outbound community engagement reports. Find the CE\nreport and its activity types under Models, including self-attested employment\nand validated payroll. This model describes data Emmy sends to an agency, not\nan endpoint hosted by Emmy. V2 invitations are not yet covered here.\nExamples use synthetic applicant data and nonfunctional tokens.\n\nObject schemas allow additional properties for forward compatibility. Integrations\nshould tolerate unknown response fields so new fields can be added without breaking\nexisting clients. Required fields and documented field types still apply.\n\n\u003c!-- Remove this link-check exception after the first reviewed deployment. --\u003e\n\u003c!-- markdown-link-check-disable-next-line --\u003e\n[Download the official OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json).\nThe JSON and this reference are generated together from executable API tests.\n\n## API environments\n\n| Environment | Base URL | Purpose |\n| :-- | :-- | :-- |\n| Dev | https://verify-demo.navapbc.cloud | Develop and test integrations. |\n| Demo | https://demo.reportmyincome.org | Demonstrate and evaluate the platform. |\n\nUse HTTPS for every request and the API key issued for the selected environment.\nYour production hostname and credentials are provided during agency onboarding.\n\n## API keys and authentication\n\nContact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) to request an agency API key\nfor each environment. The Tokenized Link API uses a 32-character secret API key.\nKeep it on your server, never in browser code or public repositories.\n\nEach key identifies an agency and its configured metadata and invitation settings.\nSending a `client_agency_id` cannot select another agency. Include these headers:\n\n```http\nAuthorization: Bearer API_KEY\nContent-Type: application/json\n```\n\nA missing or invalid key returns `401 Unauthorized` with the plain-text body\n`HTTP Token: Access denied.` and a `WWW-Authenticate` header. If a key is\ncompromised, contact emmy@cms.hhs.gov to have it replaced."
+    "description": "Integrate your agency's systems with the Emmy platform. This reference currently\ncovers the Tokenized Link API for creating personalized reporting links and the\n`CeActivityReport` model for outbound community engagement reports. Find the CE\nreport and its activity types under Models, including self-attested employment,\nvalidated payroll, and education. This model describes data Emmy sends to an\nagency, not an endpoint hosted by Emmy. V2 invitations are not yet covered here.\nExamples use synthetic applicant data and nonfunctional tokens.\n\nObject schemas allow additional properties for forward compatibility. Integrations\nshould tolerate unknown response fields so new fields can be added without breaking\nexisting clients. Required fields and documented field types still apply.\n\n\u003c!-- Remove this link-check exception after the first reviewed deployment. --\u003e\n\u003c!-- markdown-link-check-disable-next-line --\u003e\n[Download the official OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json).\nThe JSON and this reference are generated together from executable API tests.\n\n## API environments\n\n| Environment | Base URL | Purpose |\n| :-- | :-- | :-- |\n| Dev | https://verify-demo.navapbc.cloud | Develop and test integrations. |\n| Demo | https://demo.reportmyincome.org | Demonstrate and evaluate the platform. |\n\nUse HTTPS for every request and the API key issued for the selected environment.\nYour production hostname and credentials are provided during agency onboarding.\n\n## API keys and authentication\n\nContact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) to request an agency API key\nfor each environment. The Tokenized Link API uses a 32-character secret API key.\nKeep it on your server, never in browser code or public repositories.\n\nEach key identifies an agency and its configured metadata and invitation settings.\nSending a `client_agency_id` cannot select another agency. Include these headers:\n\n```http\nAuthorization: Bearer API_KEY\nContent-Type: application/json\n```\n\nA missing or invalid key returns `401 Unauthorized` with the plain-text body\n`HTTP Token: Access denied.` and a `WWW-Authenticate` header. If a key is\ncompromised, contact emmy@cms.hhs.gov to have it replaced."
   },
   "servers": [
     {
@@ -523,7 +523,7 @@
           "agency_partner_metadata",
           "ce_report"
         ],
-        "description": "This document describes the **Community Engagement (CE) Activity Report Transmission API Specification**, a method by which CE activity data can be sent from the Eligibility made easy (Emmy) platform to an agency's systems.\n\nThe agency must build an API endpoint that meets this specification and integrates with agency systems to process the activity report into the case file for the correct client.\n\nThis revision covers `community_service`, `work_program`, and `employment`. Employment includes self-attested work and payroll data from linked Argyle or Pinwheel accounts. Education activities will be added additively in a later revision.",
+        "description": "This document describes the **Community Engagement (CE) Activity Report Transmission API Specification**, a method by which CE activity data can be sent from the Eligibility made easy (Emmy) platform to an agency's systems.\n\nThe agency must build an API endpoint that meets this specification and integrates with agency systems to process the activity report into the case file for the correct client.\n\nThis revision covers `community_service`, `work_program`, `employment`, and `education`. Employment includes self-attested work and payroll data from linked Argyle or Pinwheel accounts. Education includes self-attested credits, verified NSC enrollment, and partially self-attested education.",
         "example": {
           "schema_version": "1.0.0",
           "confirmation_code": "SANDBOX123",
@@ -544,6 +544,11 @@
               {
                 "document_id": "DOC-5",
                 "document_name": "SANDBOX123_work_programs_wioa_participation_letter.pdf",
+                "file_type": "pdf"
+              },
+              {
+                "document_id": "DOC-6",
+                "document_name": "SANDBOX123_education_transcript.pdf",
                 "file_type": "pdf"
               },
               {
@@ -719,7 +724,149 @@
                   }
                 ]
               },
-              "education": {}
+              "education": {
+                "2025-02": [
+                  {
+                    "type": "education",
+                    "month": "2025-02",
+                    "document_ids": [],
+                    "additional_comments": null,
+                    "school_name": "Example Community College",
+                    "street_address": null,
+                    "street_address_line_2": null,
+                    "city": null,
+                    "state": null,
+                    "zip_code": null,
+                    "contact_name": null,
+                    "contact_email": "registrar@example.org",
+                    "contact_phone_number": null,
+                    "hours": 3.5,
+                    "data_source": "self_attested"
+                  },
+                  {
+                    "type": "education",
+                    "month": "2025-02",
+                    "document_ids": [],
+                    "additional_comments": null,
+                    "data_source": "verified",
+                    "school_name": "Example University",
+                    "enrollment_status": "full_time",
+                    "credit_hours": null,
+                    "term": {
+                      "start_month": "2025-02",
+                      "end_month": "2025-03"
+                    }
+                  },
+                  {
+                    "type": "education",
+                    "month": "2025-02",
+                    "document_ids": [
+                      "DOC-6"
+                    ],
+                    "additional_comments": null,
+                    "school_name": "Example Technical College",
+                    "street_address": null,
+                    "street_address_line_2": null,
+                    "city": null,
+                    "state": null,
+                    "zip_code": null,
+                    "contact_name": null,
+                    "contact_email": null,
+                    "contact_phone_number": null,
+                    "hours": 3.25,
+                    "data_source": "verified_enrollment_only",
+                    "enrollment_status": "less_than_half_time",
+                    "credit_hours": 3.25,
+                    "term": {
+                      "start_month": "2025-02",
+                      "end_month": "2025-03"
+                    }
+                  },
+                  {
+                    "type": "education",
+                    "month": "2025-02",
+                    "document_ids": [
+                      "DOC-6"
+                    ],
+                    "additional_comments": null,
+                    "school_name": "Example State University",
+                    "street_address": null,
+                    "street_address_line_2": null,
+                    "city": null,
+                    "state": null,
+                    "zip_code": null,
+                    "contact_name": null,
+                    "contact_email": null,
+                    "contact_phone_number": null,
+                    "hours": null,
+                    "data_source": "verified_enrollment_only",
+                    "enrollment_status": "half_time",
+                    "credit_hours": null,
+                    "term": {
+                      "start_month": "2025-02",
+                      "end_month": "2025-02"
+                    }
+                  }
+                ],
+                "2025-03": [
+                  {
+                    "type": "education",
+                    "month": "2025-03",
+                    "document_ids": [],
+                    "additional_comments": null,
+                    "school_name": "Example Community College",
+                    "street_address": null,
+                    "street_address_line_2": null,
+                    "city": null,
+                    "state": null,
+                    "zip_code": null,
+                    "contact_name": null,
+                    "contact_email": "registrar@example.org",
+                    "contact_phone_number": null,
+                    "hours": 3.5,
+                    "data_source": "self_attested"
+                  },
+                  {
+                    "type": "education",
+                    "month": "2025-03",
+                    "document_ids": [],
+                    "additional_comments": null,
+                    "data_source": "verified",
+                    "school_name": "Example University",
+                    "enrollment_status": "full_time",
+                    "credit_hours": null,
+                    "term": {
+                      "start_month": "2025-02",
+                      "end_month": "2025-03"
+                    }
+                  },
+                  {
+                    "type": "education",
+                    "month": "2025-03",
+                    "document_ids": [
+                      "DOC-6"
+                    ],
+                    "additional_comments": null,
+                    "school_name": "Example Technical College",
+                    "street_address": null,
+                    "street_address_line_2": null,
+                    "city": null,
+                    "state": null,
+                    "zip_code": null,
+                    "contact_name": null,
+                    "contact_email": null,
+                    "contact_phone_number": null,
+                    "hours": 3.25,
+                    "data_source": "verified_enrollment_only",
+                    "enrollment_status": "less_than_half_time",
+                    "credit_hours": 3.25,
+                    "term": {
+                      "start_month": "2025-02",
+                      "end_month": "2025-03"
+                    }
+                  }
+                ]
+              }
             }
           }
         }
@@ -833,12 +980,26 @@
                 }
               }
             }
+          },
+          "education": {
+            "type": "object",
+            "description": "Map of YYYY-MM calendar months to activity arrays. Months with no reported activity are omitted; no activities is an empty object.",
+            "additionalProperties": true,
+            "patternProperties": {
+              "^\\d{4}-\\d{2}$": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CeEducationActivity"
+                }
+              }
+            }
           }
         },
         "required": [
           "community_service",
           "work_program",
-          "employment"
+          "employment",
+          "education"
         ]
       },
       "CeActivity": {
@@ -850,7 +1011,8 @@
             "enum": [
               "community_service",
               "work_program",
-              "employment"
+              "employment",
+              "education"
             ]
           },
           "month": {
@@ -862,7 +1024,9 @@
             "type": "string",
             "enum": [
               "self_attested",
-              "validated"
+              "validated",
+              "verified",
+              "verified_enrollment_only"
             ]
           },
           "document_ids": {
@@ -1364,6 +1528,327 @@
             ]
           }
         ]
+      },
+      "CeEducationActivity": {
+        "description": "Education in the enclosing month: self-attested credits, verified NSC enrollment, or verified enrollment with self-attested credits.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CeSelfAttestedEducationActivity"
+          },
+          {
+            "$ref": "#/components/schemas/CeVerifiedEducationActivity"
+          },
+          {
+            "$ref": "#/components/schemas/CeVerifiedEnrollmentOnlyEducationActivity"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "data_source",
+          "mapping": {
+            "self_attested": "#/components/schemas/CeSelfAttestedEducationActivity",
+            "verified": "#/components/schemas/CeVerifiedEducationActivity",
+            "verified_enrollment_only": "#/components/schemas/CeVerifiedEnrollmentOnlyEducationActivity"
+          }
+        }
+      },
+      "CeSelfAttestedEducationActivity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CeActivity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "street_address": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "street_address_line_2": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "city": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "zip_code": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "hours": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Academic credit hours reported for this month; may be zero."
+              },
+              "additional_comments": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_email": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_phone_number": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "education"
+                ]
+              },
+              "data_source": {
+                "type": "string",
+                "enum": [
+                  "self_attested"
+                ]
+              },
+              "school_name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "school_name",
+              "hours"
+            ]
+          }
+        ]
+      },
+      "CeVerifiedEducationActivity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CeActivity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "education"
+                ]
+              },
+              "school_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "enrollment_status": {
+                "type": "string",
+                "enum": [
+                  "full_time",
+                  "three_quarter_time",
+                  "half_time",
+                  "less_than_half_time",
+                  "enrolled",
+                  "unknown"
+                ]
+              },
+              "credit_hours": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Academic credit hours for the term; null when not supplied."
+              },
+              "term": {
+                "$ref": "#/components/schemas/CeEducationTerm"
+              },
+              "additional_comments": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "data_source": {
+                "type": "string",
+                "enum": [
+                  "verified"
+                ],
+                "description": "NSC-verified enrollment."
+              }
+            },
+            "required": [
+              "school_name",
+              "enrollment_status",
+              "term"
+            ]
+          }
+        ]
+      },
+      "CeVerifiedEnrollmentOnlyEducationActivity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CeActivity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "street_address": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "street_address_line_2": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "city": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "zip_code": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "hours": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Self-attested academic credit hours for the term, also supplied as credit_hours; null when not reported."
+              },
+              "additional_comments": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_email": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_phone_number": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "education"
+                ]
+              },
+              "school_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "enrollment_status": {
+                "type": "string",
+                "enum": [
+                  "full_time",
+                  "three_quarter_time",
+                  "half_time",
+                  "less_than_half_time",
+                  "enrolled",
+                  "unknown"
+                ]
+              },
+              "credit_hours": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Academic credit hours for the term; null when not supplied."
+              },
+              "term": {
+                "$ref": "#/components/schemas/CeEducationTerm"
+              },
+              "data_source": {
+                "type": "string",
+                "enum": [
+                  "verified_enrollment_only"
+                ],
+                "description": "NSC-verified enrollment with self-attested academic credits."
+              }
+            },
+            "required": [
+              "school_name",
+              "hours",
+              "enrollment_status",
+              "term"
+            ]
+          }
+        ]
+      },
+      "CeEducationTerm": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "start_month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month as YYYY-MM."
+          },
+          "end_month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month as YYYY-MM."
+          }
+        },
+        "required": [
+          "start_month",
+          "end_month"
+        ],
+        "description": "Original enrollment term dates, retained in each applicable reporting month, including summer carryover."
       },
       "CePaystub": {
         "type": "object",
