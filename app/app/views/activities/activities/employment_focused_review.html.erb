@@ -11,21 +11,13 @@
 
 <h1><%= t(".header") %></h1>
 <% @employment_payroll_accounts.each_with_index do |job, index| %>
-    <% account_report = @aggregator_report&.find_account_report(job.aggregator_account_id) %>
+    <% account_report = @persisted_report&.find_account_report(job.aggregator_account_id) %>
     <% if account_report.present? %>
         <h2><%= t(".employment_header", count: index + 1, employer_name: account_report.employment.employer_name) %></h2>
         <h3><%= t(".employment_details") %></h3>
         <%= render(TableComponent.new) do |table| %>
-            <% headers = {
-                employment_start_date: t(".employment_start_date"),
-                employment_end_date: t(".employment_end_date"),
-                employment_status: t(".employment_status"),
-                pay_frequency: t(".pay_frequency"),
-                compensation: t(".compensation_amount")
-            } %>
-            <% headers.each_value do |label| %>
-                <%= table.with_header_cell(scope: "col") { label } %>
-            <% end %>
+            <%= table.with_header_cell(scope: "col") { t(".employment_details") } %>
+            <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
             <%= table.with_data_point(:employment_start_date, account_report.employment.start_date) %>
             <%= table.with_data_point(:employment_end_date, account_report.employment.termination_date) %>
             <%= table.with_data_point(:employment_status, account_report.employment.status) %>
@@ -35,16 +27,14 @@
 
         <h2><%= t(".monthly_details") %></h2>
         <% if account_report.employment.employment_type == :w2 %>
-            <% if account_report.paystubs.any? %>
-                <%= render(Report::W2MonthlySummaryTableComponent.new(
-                    @aggregator_report,
-                    job,
-                    activity_flow_labels: true
-                    )) %>
-            <% end %>
+            <%= render(Report::W2MonthlySummaryTableComponent.new(
+                @persisted_report,
+                job,
+                activity_flow_labels: true
+                )) %>
         <% else %>
             <%= render(Report::GigMonthlySummaryTableComponent.new(
-                @aggregator_report,
+                @persisted_report,
                 job,
                 activity_flow_labels: true
                 )) %>

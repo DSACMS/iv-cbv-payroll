@@ -2,6 +2,10 @@ class Activities::ActivitiesController < Activities::BaseController
   after_action :track_hub_viewed_event, only: :index
 
   def index
+    if @flow.employment_focused? && !@flow.any_activities_added?
+      return redirect_to activities_flow_income_add_your_work_path
+    end
+
     unless @flow.identity
       @flow.identity = IdentityService.new(request, @flow.cbv_applicant).get_identity
       @flow.save
@@ -14,14 +18,8 @@ class Activities::ActivitiesController < Activities::BaseController
     @education_activities = @flow.education_activities.published.includes(:education_activity_months, :nsc_enrollment_terms).order(created_at: :desc)
     @education_draft_activities = @flow.education_activities.pre_populated_drafts.includes(:education_activity_months).order(created_at: :desc)
 
-    @employment_payroll_accounts = @flow.payroll_accounts.published.order(created_at: :desc).select(&:sync_succeeded?)
-    @employment_activities = @flow.employment_activities.published.includes(:employment_activity_months).order(created_at: :desc)
     @employment_draft_activities = @flow.employment_activities.pre_populated_drafts.includes(:employment_activity_months).order(created_at: :desc)
-    if @flow.employment_focused?
-      @aggregator_report = AggregatorReportFetcher.new(@flow).report if @employment_payroll_accounts.any?
-    else
-      @persisted_report = PersistedReportAdapter.new(@flow) if @employment_payroll_accounts.any?
-    end
+    load_employment_focused_review_data
 
     render :employment_focused_review if @flow.employment_focused?
   end
@@ -29,6 +27,8 @@ class Activities::ActivitiesController < Activities::BaseController
   private
 
   def track_hub_viewed_event
+    return unless response.successful?
+
     track_event(TrackEvent::HubViewed)
   end
 end

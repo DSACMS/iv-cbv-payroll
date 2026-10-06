@@ -1062,6 +1062,21 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       session[:flow_type] = :activity
     end
 
+    context "with no activities added" do
+      before { get :index }
+
+      it "redirects to the add-your-work page instead of rendering the review page" do
+        expect(response).to redirect_to(activities_flow_income_add_your_work_path)
+      end
+
+      it "does not track a hub-viewed event" do
+        allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
+
+        expect(EventTrackingJob).not_to receive(:perform_later).with("HubViewed", anything, anything)
+        get :index
+      end
+    end
+
     # Builds a real (unmocked) Aggregators::AggregatorReports::AggregatorReport
     # populated with the given employment/income/paystub data, and stubs
     # AggregatorReportFetcher to return it for the current flow. Using a real

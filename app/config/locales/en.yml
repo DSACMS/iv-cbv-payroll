@@ -94,7 +94,6 @@ en:
     activities:
       employment_focused_review:
         additional_comments: Additional comments
-        compensation_amount: Compensation amount
         employer_address: Address
         employer_contact_email: Employer contact email
         employer_contact_name: Employer contact name
@@ -103,17 +102,13 @@ en:
         employer_information: Employer information
         employer_name: Name
         employment_details: Employment details
-        employment_end_date: Employment end date
         employment_header: 'Job %{count}: %{employer_name}'
-        employment_start_date: Employment start date
-        employment_status: Employment status
         gross_income: Gross income
         header: Review and submit the jobs you've added
         hours_and_income: Hours and income
         hours_worked: Hours worked
         month: Month
         monthly_details: Monthly details
-        pay_frequency: Pay frequency
         submit: Submit to %{agency_name}
     activity_header_component:
       back: Back
@@ -661,6 +656,7 @@ en:
         program_name: Program name
       legal_agreement: Legal agreement
       monthly_details: Monthly details
+      no_activities_added: Add at least one activity before submitting your report.
       submit: Submit to %{agency_name}
       title: Review and submit your %{benefit} community engagement report
     work_programs:

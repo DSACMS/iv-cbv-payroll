@@ -13,8 +13,17 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
     employer_address: :string,
     employment_status: :string,
     employment_start_date: :date,
-    employment_termination_date: :date
+    employment_termination_date: :date,
+    pay_frequency: :string,
+    compensation_unit: :string
   )
+
+  # Redactable doesn't support integer fields, so compensation_amount (cents)
+  # is redacted separately after the string/date fields above are handled.
+  def redact!
+    super
+    update_column(:compensation_amount, nil)
+  end
 
   def self.load_complete_summary_data(activity_flow:)
     payroll_accounts = activity_flow.payroll_accounts.published.select(&:sync_succeeded?)
@@ -34,7 +43,10 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
         employer_address: row.employer_address,
         employment_status: row.employment_status,
         employment_start_date: row.employment_start_date,
-        employment_termination_date: row.employment_termination_date
+        employment_termination_date: row.employment_termination_date,
+        pay_frequency: row.pay_frequency,
+        compensation_amount: row.compensation_amount,
+        compensation_unit: row.compensation_unit
       }
     end
   end
@@ -59,6 +71,7 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
 
     account_report = report.find_account_report(payroll_account.aggregator_account_id)
     employment = account_report&.employment
+    income = account_report&.income
 
     upsert(
       {
@@ -71,12 +84,16 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
         employment_status: employment&.status,
         employment_start_date: employment&.start_date,
         employment_termination_date: employment&.termination_date,
+        pay_frequency: income&.pay_frequency,
+        compensation_amount: income&.compensation_amount,
+        compensation_unit: income&.compensation_unit,
         redacted_at: nil
       },
       unique_by: :index_activity_flow_employment_summaries_on_flow_account,
       update_only: %i[
         employer_name employment_type employer_phone_number employer_address
-        employment_status employment_start_date employment_termination_date redacted_at
+        employment_status employment_start_date employment_termination_date
+        pay_frequency compensation_amount compensation_unit redacted_at
       ]
     )
   end

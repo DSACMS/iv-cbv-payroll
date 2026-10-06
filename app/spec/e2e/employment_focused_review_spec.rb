@@ -79,8 +79,14 @@ RSpec.describe "e2e Employment-focused review page", :js, type: :feature do
     click_button I18n.t("activities.activities.employment_focused_review.submit", agency_name: "Test Agency")
     expect(page).to have_content(I18n.t("activities.submit.consent_required"))
 
+    # --- The error re-renders the same employment-focused review page, not the generic summary ---
+    verify_page(page, title: I18n.t("activities.activities.employment_focused_review.header"))
+    expect(page).to have_content(
+      I18n.t("activities.activities.employment_focused_review.employment_header", count: 1, employer_name: "Gainesville Wrecking")
+    )
+
     find("label[for='activity_flow_consent_to_submit']").click
-    click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
+    click_button I18n.t("activities.activities.employment_focused_review.submit", agency_name: "Test Agency")
 
     verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
   end
