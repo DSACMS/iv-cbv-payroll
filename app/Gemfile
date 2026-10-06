@@ -12,7 +12,7 @@ gem "sprockets-rails"
 
 # Remove this pin once Active Support includes the fix from
 # https://github.com/rails/rails/pull/58601.
-gem "json", "~> 2.21"
+gem "json", "~> 3.0"
 
 
 # as of ruby 3.4, csv is no longer a default gem
