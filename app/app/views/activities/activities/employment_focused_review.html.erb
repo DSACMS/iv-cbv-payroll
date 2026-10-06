@@ -49,6 +49,11 @@
                 activity_flow_labels: true
                 )) %>
         <% end %>
+
+        <% if job.additional_information.present? %>
+            <h2><%= t(".additional_comments") %></h2>
+            <p><%= job.additional_information %></p>
+        <% end %>
     <% end %>
 <% end %>
 <% @employment_activities.each_with_index do |activity, index| %>
@@ -91,22 +96,27 @@
     <% if activity.document_uploads.any? %>
         <%= render DocumentUploadsComponent.new(
             documents: activity.document_uploads.map do |attachment|
-            {
-                filename: attachment.filename.to_s,
-                remove_path: activities_flow_income_employment_document_upload_path(employment_id: activity, id: attachment)
-            }
+              {
+                  filename: attachment.filename.to_s,
+                  remove_path: activities_flow_income_employment_document_upload_path(employment_id: activity, id: attachment)
+              }
             end,
             show_remove_file: true,
             previously_uploaded: true
         ) %>
+    <% end %>
+
+    <% if activity.additional_comments.present? %>
+        <h2><%= t(".additional_comments") %></h2>
+        <p><%= activity.additional_comments %></p>
     <% end %>
 <% end %>
 
 <%= form_with model: @flow, url: activities_flow_summary_path, method: :patch, builder: UswdsFormBuilder do |f| %>
     <%= f.check_box :consent_to_submit, {
       label: t("activities.summary.consent_label_html",
-               agency_name: agency_translation("shared.agency_full_name"),
-               agency_initials: agency_translation("shared.agency_acronym"))
+      agency_name: agency_translation("shared.agency_full_name"),
+      agency_initials: agency_translation("shared.agency_acronym"))
     } %>
     <%= f.submit t(".submit", agency_name: agency_translation("shared.agency_full_name")), class: "usa-button" %>
 <% end %>

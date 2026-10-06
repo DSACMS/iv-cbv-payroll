@@ -1149,6 +1149,26 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
         expect(rendered).to have_no_text(I18n.t("activities.document_uploads.remove_file"))
       end
 
+      it "does not render an additional comments section when none is present" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_no_text(I18n.t("activities.activities.employment_focused_review.additional_comments"))
+      end
+
+      context "with additional comments" do
+        before do
+          employment_activity.update!(additional_comments: "I was paid late this month.")
+          get :index
+        end
+
+        it "renders the additional comments section" do
+          rendered = Capybara.string(response.body)
+
+          expect(rendered).to have_text(I18n.t("activities.activities.employment_focused_review.additional_comments"))
+          expect(rendered).to have_text("I was paid late this month.")
+        end
+      end
+
       context "with an uploaded document" do
         before do
           employment_activity.document_uploads.attach(
@@ -1238,6 +1258,26 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
         expect(rendered).to have_text(I18n.l(latest_month.beginning_of_month, format: :month_year))
         expect(rendered).to have_text("$222.22")
         expect(rendered).to have_text("35")
+      end
+
+      it "does not render an additional comments section when none is present" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_no_text(I18n.t("activities.activities.employment_focused_review.additional_comments"))
+      end
+
+      context "with additional comments" do
+        before do
+          payroll_account.update!(additional_information: "I switched employers mid-month.")
+          get :index
+        end
+
+        it "renders the additional comments section" do
+          rendered = Capybara.string(response.body)
+
+          expect(rendered).to have_text(I18n.t("activities.activities.employment_focused_review.additional_comments"))
+          expect(rendered).to have_text("I switched employers mid-month.")
+        end
       end
     end
 

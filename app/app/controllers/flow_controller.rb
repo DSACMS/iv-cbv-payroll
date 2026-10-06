@@ -31,7 +31,7 @@ class FlowController < ApplicationController
     when %r{^(/#{locales})?/activities}
       overall_progress_result = progress_calculator&.overall_result
       ActivityFlowNavigator.new(
-        params, 
+        params,
         overall_progress_result: overall_progress_result,
         employment_focused: @flow&.employment_focused)
     when %r{^(/#{locales})?/cbv}

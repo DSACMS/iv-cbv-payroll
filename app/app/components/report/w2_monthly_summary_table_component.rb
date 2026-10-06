@@ -54,7 +54,7 @@ class Report::W2MonthlySummaryTableComponent < ViewComponent::Base
 
   def hours_header
     if @activity_flow_labels
-      if @report.flow.employment_focused?
+      if @report.flow.respond_to?(:employment_focused?) && @report.flow.employment_focused?
         I18n.t("components.report.monthly_summary_table.activity.hours_worked")
       else
         I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours")

@@ -93,35 +93,27 @@ en:
   activities:
     activities:
       employment_focused_review:
-        header: Review and submit the jobs you've added
-        employment_header: "Job %{count}: %{employer_name}"
-        employment_details: Employment details
-        employment_start_date: Employment start date
-        employment_end_date: Employment end date
-        employment_status: Employment status
+        additional_comments: Additional comments
+        compensation_amount: Compensation amount
+        employer_address: Address
+        employer_contact_email: Employer contact email
+        employer_contact_name: Employer contact name
+        employer_contact_phone_number: Employer contact phone number
         employer_details: Employer details
         employer_information: Employer information
         employer_name: Name
-        employer_address: Address
-        employer_contact_name: Employer contact name
-        employer_contact_email: Employer contact email
-        employer_contact_phone_number: Employer contact phone number
-        pay_frequency: Pay frequency
-        compensation_amount: Compensation amount
-        monthly_details: Monthly details
-        month: Month
+        employment_details: Employment details
+        employment_end_date: Employment end date
+        employment_header: 'Job %{count}: %{employer_name}'
+        employment_start_date: Employment start date
+        employment_status: Employment status
         gross_income: Gross income
+        header: Review and submit the jobs you've added
         hours_and_income: Hours and income
-        number_of_paychecks: Number of paychecks
         hours_worked: Hours worked
-        additional_comments: Additional comments
-        uploaded_documents: Uploaded documents
-        legal_agreement: Legal agreement
-        check_box: "Check this box to confirm:"
-        legal_agreement_text_1: The information provided by you is true and complete to the best of your knowledge.
-        legal_agreement_text_2: You agree to inform %{agency_name} of any <activities> not reflected in this report or any discrepancies found in the information gathered with this tool.
-        legal_agreement_text_3: You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.
-        legal_agreement_footer: By sending this report, you authorize its use for <community engagement verification> by authorized %{agency_initials} personnel.
+        month: Month
+        monthly_details: Monthly details
+        pay_frequency: Pay frequency
         submit: Submit to %{agency_name}
     activity_header_component:
       back: Back
@@ -1168,8 +1160,8 @@ en:
         accrued_gross_earnings: Accrued gross earnings
         activity:
           community_engagement_hours: Community engagement hours
-          hours_worked: Hours worked
           gross_income: Gross income
+          hours_worked: Hours worked
           mileage_expenses: Mileage expenses
           payment_information: Payment information
         compact:
