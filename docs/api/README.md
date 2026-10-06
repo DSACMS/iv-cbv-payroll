@@ -21,7 +21,8 @@ The Dev environment is `https://verify-demo.navapbc.cloud`; the Demo environment
 is `https://demo.reportmyincome.org`. Production access is arranged during onboarding.
 
 The generated reference covers `POST /api/v1/invitations` and the standalone
-`CeActivityReport` model, including self-attested and validated employment.
+`CeActivityReport` model, including self-attested and validated employment and
+self-attested, verified, and partially self-attested education.
 CE reports are outbound payloads sent to an agency; they are documented under
 Models and do not add an Emmy API endpoint. Document transmission interfaces
 will be added separately.
@@ -46,6 +47,8 @@ The build runs the request, model, and CE transmission specs, validates the Open
 published examples, then writes `index.html`, `openapi.json`, and local Scalar
 assets to `app/tmp/api-docs/`. Open `index.html` directly in a browser; the site
 works offline and does not submit API requests.
+
+The build also exports education JSON samples to `app/tmp/ce-education-reports/`.
 
 Edit [request specs](../../app/spec/requests/api/invitations_spec.rb),
 [invitation schemas](../../app/spec/openapi/invitation_schemas.rb),

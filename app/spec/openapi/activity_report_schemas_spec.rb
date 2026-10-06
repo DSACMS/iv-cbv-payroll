@@ -26,7 +26,7 @@ RSpec.describe ActivityReportSchemas do
       "ce_report" => {
         "review_period" => { "start_month" => "2026-07", "end_month" => "2026-07" },
         "documents" => [],
-        "activities" => { "community_service" => {}, "work_program" => {}, "employment" => { "2026-07" => [ self_attested, payroll ] } }
+        "activities" => { "community_service" => {}, "work_program" => {}, "employment" => { "2026-07" => [ self_attested, payroll ] }, "education" => {} }
       }
     }
   end
@@ -89,6 +89,65 @@ RSpec.describe ActivityReportSchemas do
     payroll["paystubs"].first["deductions"].first["amount"] = 1234
     payroll["paystubs"].first["gross_pay_list"].first.delete("type")
     expect(schema.valid?(report)).to be(false)
+  end
+
+  describe "education" do
+    let(:self_attested_education) do
+      {
+        "type" => "education", "month" => "2026-07", "data_source" => "self_attested", "document_ids" => [],
+        "school_name" => "Example Community College", "hours" => 3.5, "contact_email" => nil
+      }
+    end
+    let(:verified_education) do
+      {
+        "type" => "education", "month" => "2026-07", "data_source" => "verified", "document_ids" => [],
+        "school_name" => nil, "enrollment_status" => "half_time", "credit_hours" => nil,
+        "term" => { "start_month" => "2026-05", "end_month" => "2026-08" }
+      }
+    end
+    let(:partial_education) do
+      verified_education.merge("data_source" => "verified_enrollment_only", "enrollment_status" => "less_than_half_time",
+        "hours" => 3.25, "credit_hours" => 3.25, "street_address" => nil)
+    end
+
+    before do
+      report["ce_report"]["activities"]["education"]["2026-07"] = [ self_attested_education, verified_education, partial_education ]
+    end
+
+    it "accepts all education sources with fractional credits and nullable NSC fields" do
+      expect(schema.validate(report).to_a).to be_empty
+    end
+
+    it "accepts zero self-attested credits and unknown partial credits" do
+      self_attested_education["hours"] = 0
+      partial_education["hours"] = nil
+      partial_education["credit_hours"] = nil
+
+      expect(schema.valid?(report)).to be(true)
+    end
+
+    it "requires numeric academic credits" do
+      partial_education["hours"] = "3.25"
+      expect(schema.valid?(report)).to be(false)
+      partial_education["hours"] = 3.25
+      partial_education["credit_hours"] = "3.25"
+      expect(schema.valid?(report)).to be(false)
+    end
+
+    it "validates enrollment statuses and term months" do
+      verified_education["enrollment_status"] = "invalid"
+      expect(schema.valid?(report)).to be(false)
+      verified_education["enrollment_status"] = "unknown"
+      verified_education["term"]["start_month"] = "2026-05-01"
+      expect(schema.valid?(report)).to be(false)
+    end
+
+    it "requires credit hours when the source is fully self-attested" do
+      verified_education["data_source"] = "self_attested"
+      verified_education["school_name"] = "Example University"
+
+      expect(schema.valid?(report)).to be(false)
+    end
   end
 
   it "allows future fields on the report, activities, paystubs, and metadata" do
