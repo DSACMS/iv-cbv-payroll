@@ -10,7 +10,7 @@
 <div data-controller="self-employed">
   <h2><%= t("activities.employment_info.contact_section_title") %></h2>
   <%= f.check_box :is_self_employed,
-        label: field_label.call(t("activities.employment_info.self_employed")),
+        label: t("activities.employment_info.self_employed"),
         data: { "self-employed-target": "checkbox", action: "self-employed#toggle" } %>
   <%= f.text_field :contact_name,
         label: field_label.call(t("activities.employment_info.contact_name")),

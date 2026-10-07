@@ -23,6 +23,7 @@ RSpec.describe Report::EmploymentFocusedPaymentDetailsComponent, type: :componen
     expect(rendered).to have_selector("h2", text: "Employment information")
     expect(rendered).to have_selector("h2", text: "Monthly details")
     expect(rendered).to have_selector("table", count: 3)
+    expect(rendered).to have_selector("table.maxw-none[aria-label]", count: 2)
     employment_table = rendered.css("table").first
     expect(employment_table.css("tbody th").map { |cell| cell.text.strip }).to eq([
       "Employment start date", "Employment end date", "Employment status", "Pay frequency", "Compensation amount"

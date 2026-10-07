@@ -26,6 +26,24 @@ RSpec.describe "Employment-focused payment details copy", :js, type: :feature do
       verify_employment_details_copy
     end
 
+    it "expands employment information and monthly tables to the available desktop width" do
+      original_size = page.current_window.size
+      page.current_window.resize_to(1440, 900)
+      open_payment_details(months: 3)
+
+      tables = page.all("table.maxw-none")
+      expect(tables.size).to eq(4)
+      tables.each do |table|
+        dimensions = page.evaluate_script(<<~JS, table)
+          [arguments[0].getBoundingClientRect().width,
+           arguments[0].parentElement.getBoundingClientRect().width]
+        JS
+        expect(dimensions.first).to be_within(1).of(dimensions.last)
+      end
+    ensure
+      page.current_window.resize_to(*original_size)
+    end
+
     it "shows employment and monthly details for a three-month report" do
       open_payment_details(months: 3)
       expect(page).to have_selector("table", count: 4)
