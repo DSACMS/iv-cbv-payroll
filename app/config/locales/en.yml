@@ -182,6 +182,12 @@ en:
               hint: Add education details about your trade school, vocational school, or career and technical education (CTE) programs.
               label: Enter a trade or technical program
           reporting_period_label: 'Reporting period:'
+      categories:
+        college_or_university: College/University
+        high_school_ged: High School/GED
+        other: Other
+        trade_or_technical: Work/Technical Program
+      category_label: Education category
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (optional)

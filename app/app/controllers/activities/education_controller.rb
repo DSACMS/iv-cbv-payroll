@@ -194,9 +194,10 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def create_fully_self_attested_activity
-    @education_activity = @flow.education_activities.new(fully_self_attested_education_params.merge(draft: true))
+    @education_activity = @flow.education_activities.new(fully_self_attested_education_params.merge(draft: true, education_category: selected_education_category))
     @education_activity.data_source = :fully_self_attested
     if @education_activity.save
+      session.delete(:education_selection)
       track_event(TrackEvent::EducationInfoSubmitted, education_activity_id: @education_activity.id)
       redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0)
     else
@@ -210,7 +211,7 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def create_validated_activity
-    @education_activity = @flow.education_activities.create(draft: true)
+    @education_activity = @flow.education_activities.create(draft: true, education_category: selected_education_category)
     NscSynchronizationJob.perform_later(@education_activity.id)
     redirect_to activities_flow_education_path(id: @education_activity.id)
   end
@@ -221,6 +222,11 @@ class Activities::EducationController < Activities::BaseController
     else
       after_activity_path
     end
+  end
+
+  def selected_education_category
+    selection = session[:education_selection]&.with_indifferent_access
+    selection[:category] if selection && selection[:flow_id] == @flow.id
   end
 
   def summer_logic_applied?

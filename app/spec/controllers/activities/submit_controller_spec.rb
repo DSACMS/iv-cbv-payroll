@@ -75,7 +75,8 @@ RSpec.describe Activities::SubmitController, type: :controller do
         :education_activity,
         activity_flow: activity_flow,
         data_source: :fully_self_attested,
-        school_name: "Bayou College"
+        school_name: "Bayou College",
+        education_category: "college_or_university"
       )
       create(:education_activity_month, education_activity: education, month: activity_flow.reporting_months.first, hours: 3)
       volunteering = create(
@@ -111,6 +112,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(pdf_text).to include("Garden State Market")
       expect(pdf_text).to include("(225) 555-0199")
       expect(pdf_text).to include("Bayou College")
+      expect(pdf_text).to include("Education category", "College/University")
       expect(pdf_text).to include("Volunteer Log.pdf")
       expect(pdf_text).to include(test_confirmation_code)
       expect(pdf_text).to include("December 1, 2025 12:00:00 UTC")
@@ -213,7 +215,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
         "Education details",
         "This schedule covers both institutions"
       )
-      expect(education_details_text).not_to include("Institution information")
+      expect(education_details_text).to include("Institution information", "Education category")
     end
 
     it "omits contact rows that do not apply to self-employed work" do
@@ -253,6 +255,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
         :education_activity,
         activity_flow: activity_flow,
         data_source: :partially_self_attested,
+        education_category: "trade_or_technical",
         status: :succeeded,
         school_name: nil,
         additional_comments: "Comment for both reported schools"
@@ -281,6 +284,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       )
 
       get :show, format: :pdf
+      expect(extract_pdf_text(response)).to include("Work/Technical Program")
 
       pdf_text = extract_pdf_text(response)
       expect(pdf_text.scan("Comment for both reported schools").size).to eq(2)

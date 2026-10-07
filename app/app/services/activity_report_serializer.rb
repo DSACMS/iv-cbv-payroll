@@ -233,6 +233,7 @@ class ActivityReportSerializer
   def education_entry(activity, month)
     {
       "type" => "education",
+      "education_category" => activity.education_category,
       "month" => month,
       "document_ids" => document_ids_for(activity),
       "additional_comments" => json_value(activity.additional_comments)

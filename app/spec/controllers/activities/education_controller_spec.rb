@@ -42,6 +42,43 @@ RSpec.describe Activities::EducationController, type: :controller do
   end
 
   describe "POST #create" do
+    context "with a saved education selection" do
+      before do
+        session[:education_selection] = { flow_id: activity_flow.id, category: "college_or_university" }
+      end
+
+      it "saves the category on the NSC activity" do
+        post :create
+
+        expect(activity_flow.education_activities.last.education_category).to eq("college_or_university")
+      end
+
+      it "retains the original category when NSC fails and the applicant enters education manually" do
+        post :create
+        activity_flow.education_activities.last.update!(status: :no_enrollments)
+        post :create, params: { education_activity: { school_name: "Example College" } }
+
+        activity = activity_flow.education_activities.last
+        expect(activity.data_source).to eq("fully_self_attested")
+        expect(activity.education_category).to eq("college_or_university")
+        expect(session[:education_selection]).to be_nil
+      end
+
+      it "preserves the selection after an invalid manual form" do
+        post :create, params: { education_activity: { school_name: "" } }
+        post :create, params: { education_activity: { school_name: "Example College" } }
+
+        expect(activity_flow.education_activities.last.education_category).to eq("college_or_university")
+      end
+
+      it "does not use another flow's selection" do
+        session[:education_selection] = { flow_id: -1, category: "college_or_university" }
+        post :create
+
+        expect(activity_flow.education_activities.last.education_category).to be_nil
+      end
+    end
+
     context "self-attested tracking" do
       let(:tracked_flow) { activity_flow }
       let(:perform_tracked_action) do

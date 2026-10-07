@@ -1,5 +1,5 @@
 class Activities::Education::AddYourEducationController < Activities::BaseController
-  ADD_EDUCATION_METHODS = %w[college_or_university high_school_ged trade_or_technical other].freeze
+  ADD_EDUCATION_METHODS = EducationActivity::EDUCATION_CATEGORIES
 
   def show
   end
@@ -12,6 +12,7 @@ class Activities::Education::AddYourEducationController < Activities::BaseContro
       return redirect_to activities_flow_education_add_your_education_path
     end
 
+    session[:education_selection] = { flow_id: @flow.id, category: add_education_method }
     redirect_to next_step_path(add_education_method)
   end
 

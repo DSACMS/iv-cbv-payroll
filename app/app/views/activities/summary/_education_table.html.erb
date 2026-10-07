@@ -1,3 +1,8 @@
+<p>
+  <strong><%= t("activities.education.category_label") %></strong>
+  <%= activity.education_category_display %>
+</p>
+
 <% if activity.fully_self_attested? %>
   <%= render "activities/summary/fully_self_attested_education_table", activity: activity %>
 <% elsif activity.partially_self_attested? %>

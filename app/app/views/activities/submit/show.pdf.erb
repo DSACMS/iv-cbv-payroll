@@ -374,7 +374,7 @@
           ),
           comments: entry.comments,
           information_heading: t("activities.submit.pdf.institution_information"),
-          details: education_details %>
+          details: [ [ t("activities.education.category_label"), activity.education_category_display ] ] + education_details %>
       <% end %>
     </section>
   <% end %>
