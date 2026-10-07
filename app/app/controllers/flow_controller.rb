@@ -65,20 +65,11 @@ class FlowController < ApplicationController
 
       flow_class = flow_class(flow_param)
       device_id = cookies.permanent.signed[:device_id]
-      @flow =
-        if flow_param == :activity
-          flow_class.resume_or_create_from_invitation(
+      @flow = flow_class.create_from_invitation(
             invitation,
             device_id,
             params
           )
-        else
-          flow_class.create_from_invitation(
-            invitation,
-            device_id,
-            params
-          )
-        end
 
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       set_flow_session(@flow.id, flow_param)
