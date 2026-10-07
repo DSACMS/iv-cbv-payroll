@@ -296,6 +296,13 @@ en:
         last_name: Last name
     employment:
       add_your_work:
+        add_jobs:
+          header: Do you have another job to add?
+          job_connected: "%{name} (connected via payroll)"
+          job_manual: "%{name} (entered manually)"
+          jobs_added_heading: Jobs added (%{count})
+          reporting_period_label: 'Reporting period:'
+          submit: Continue
         show:
           description: If you held multiple jobs during the reporting period, you'll need to add each job separately.
           employment_focused:

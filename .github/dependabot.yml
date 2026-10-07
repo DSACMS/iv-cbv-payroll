@@ -4,15 +4,19 @@ updates:
     directory: "/app"
     schedule:
       interval: weekly
+      day: "monday"
   - package-ecosystem: npm
     directory: "/app"
     schedule:
       interval: weekly
+      day: "monday"
   - package-ecosystem: docker
     directory: "/app"
     schedule:
       interval: weekly
+      day: "monday"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
+      day: "monday"

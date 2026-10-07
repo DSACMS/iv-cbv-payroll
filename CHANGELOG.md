@@ -7,6 +7,27 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.10.0
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Add employment activities to ActivityJsonTransmitter [(#2130)](https://github.com/DSACMS/iv-cbv-payroll/pull/2130) - Tom Dooner [[FFS-4770]](https://jiraent.cms.gov/browse/FFS-4770)
+- Add employment-focused entry page [(#2129)](https://github.com/DSACMS/iv-cbv-payroll/pull/2129) - Chris [[FFS-4859]](https://jiraent.cms.gov/browse/FFS-4859)
+- Add education activities to ActivityJsonTransmitter [(#2131)](https://github.com/DSACMS/iv-cbv-payroll/pull/2131) - Daphne Gold [[FFS-4769]](https://jiraent.cms.gov/browse/FFS-4769)
+- Update CE timeout page [(#2124)](https://github.com/DSACMS/iv-cbv-payroll/pull/2124) - Jake Wheeler [[FFS-4848]](https://jiraent.cms.gov/browse/FFS-4848)
+- Add employment-focused Tokenized API endpoint [(#2112)](https://github.com/DSACMS/iv-cbv-payroll/pull/2112) - Chris [[FFS-4858]](https://jiraent.cms.gov/browse/FFS-4858)
+- Update doc upload and review pages for unpaid/in-kind work in Emmy CE manual reporting flow [(#2125)](https://github.com/DSACMS/iv-cbv-payroll/pull/2125) - Daphne Gold [[FFS-4808]](https://jiraent.cms.gov/browse/FFS-4808)
+- Update API Docs generation to occur on DSACMS/iv-cbv-payroll [(#2123)](https://github.com/DSACMS/iv-cbv-payroll/pull/2123) - Tom Dooner [[FFS-4389]](https://jiraent.cms.gov/browse/FFS-4389)
+- Generate and publish OpenAPI developer documentation [(#2107)](https://github.com/DSACMS/iv-cbv-payroll/pull/2107) - Tom Dooner [[FFS-4389]](https://jiraent.cms.gov/browse/FFS-4389)
+
+### Other/Maintenance (Not user facing)
+- Bump vitest
+- Update readme to keep testing flow up to date [(#2128)](https://github.com/DSACMS/iv-cbv-payroll/pull/2128) - iannorriswork
+- No ticket: Update PR template to include new test deployment job link [(#2127)](https://github.com/DSACMS/iv-cbv-payroll/pull/2127) - Jake Wheeler
+- Add Mixpanel events for employment month selection page [(#2126)](https://github.com/DSACMS/iv-cbv-payroll/pull/2126) - Daphne Gold [[FFS-4850]](https://jiraent.cms.gov/browse/FFS-4850)
+
 ## 0.9.0
 
 ### User facing changes to Emmy Income + Emmy CE
