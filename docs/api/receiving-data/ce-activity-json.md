@@ -25,20 +25,10 @@ under **Receiving data from the Emmy Platform**. The request example
 comes from the tested serializer and includes community service, work programs,
 linked payroll, self-employment, unpaid work, and all three education variants.
 
-### Request Headers
+### Request signatures
 
-The same signing scheme used by the Income Report Transmission API applies.
-
-| Header | Description |
-| :-- | :-- |
-| `X-IVAAS-Timestamp` | Unix timestamp the request was signed at. |
-| `X-IVAAS-Signature` | HMAC-SHA512 hexdigest of `"<timestamp>:<request body>"`, keyed with the agency's API key. |
-| `X-IVAAS-Confirmation-Code` | The report's confirmation code, repeated for convenience. |
-
-Any additional headers the agency requires (for example an API gateway key) can be configured per-agency and are sent verbatim.
-
-Sign the exact bytes sent, including any trailing
-newline; reformatting JSON after signing changes the signature.
+See [Webhook signatures](webhook-signatures.md) for signing headers,
+verification guidance, and a signed cURL example for testing your receiver.
 
 ## Response
 
@@ -56,143 +46,14 @@ The agency should respond with `200` and a payload containing:
 
 Emmy currently checks the HTTP status and does not validate this response body.
 
-## Request Body – Root Fields
+## Request body
 
-| Field Name | Required? | Description |
-| :-- | :-- | :-- |
-| schema_version | Yes | String (semver). Version of the CE compliance spec this payload conforms to. |
-| confirmation_code | Yes | String. Unique code assigned when the report was completed. This is shared with the user and used to debug any errors while processing the report. |
-| completed_at | Yes | Date Time (ISO8601). The UTC time when the user completed the report. |
-| agency_partner_metadata | Yes | JSON object (See Agency Partner Metadata Object below). |
-| ce_report | Yes | JSON object (See CE Report Object below). |
+The request body uses the `CeActivityReport` OpenAPI model. Expand its properties
+and linked models in the reference for field descriptions, required and nullable
+fields, monthly reporting rules, and the employment and education variants.
+The generated request example shows a complete report with all activity types.
 
-### Request Object Type Definitions
-
-#### Agency Partner Metadata Object
-
-The field structure for this object will differ for each agency based on the integration plan for the agency, exactly as the `agency_partner_metadata` object does in the Income Report Transmission API. It contains whichever fields the agency needs to index the report back into the proper case.
-
-Sample fields:
-
-| Field Name | Required? | Field Type |
-| :-- | :-- | :-- |
-| case_number | Agency-specific | String |
-| date_of_birth | Agency-specific | Date String |
-| doc_id | Agency-specific | String |
-
-#### CE Report Object
-
-| Field Name | Required? | Field Type |
-| :-- | :-- | :-- |
-| review_period | Yes | Object. The full date range this CE compliance determination covers. `start_month` and `end_month` are both `YYYY-MM` strings. |
-| documents | Yes | Array of Document objects. All supporting documents uploaded for the activities in this report. |
-| activities | Yes | Object. Activity types at the top level; within each type, months keyed as `YYYY-MM`. |
-
-#### Document Object
-
-| Field Name | Required? | Field Type |
-| :-- | :-- | :-- |
-| document_id | Yes | String. Identifier based on the Emmy Active Storage attachment ID, referenced from each activity's `document_ids`. |
-| document_name | Yes | String. The filename the document is transmitted under. |
-| file_type | Yes | String. The file extension, without the leading dot. |
-
-Documents themselves are transmitted separately by the document transmission integration; this array describes what to expect.
-
-#### Activities Object
-
-Keys are activity types. Each value is an object keyed by month (`YYYY-MM`), whose value is an array of activity entries reported for that month. A month with no reported activity is omitted; an activity type with no activities is an empty object.
-
-Activities spanning several months appear under each applicable month.
-
-#### Self-attested Activity Entry – Common Fields
-
-| Field Name | Required? | Description |
-| :-- | :-- | :-- |
-| type | Yes | String (enum). `community_service`, `work_program`, `employment`, or `education`. |
-| month | Yes | String (`YYYY-MM`). The calendar month the reported hours apply to. Repeats the key of the enclosing object. |
-| hours | Yes | Decimal (10,2). Hours reported for this activity in the enclosing month. May be `0`. For education, this is academic credit hours; partially self-attested credits may be null. |
-| data_source | Yes | String (enum). `self_attested` for manually reported activities. Linked payroll employment uses `validated`. Education sources are described below. |
-| document_ids | Yes | Array of `document_id` values from the `documents` array. |
-| street_address, street_address_line_2, city, state, zip_code | No | String or null. Address of the organization. |
-| additional_comments | No | Text or null. Optional free-text comments the applicant added at the review step. |
-
-#### community_service Additional Fields
-
-| Field Name | Required? | Description |
-| :-- | :-- | :-- |
-| organization_name | Yes | String. Full, official name of the community service organization. |
-| coordinator_name | No | String or null. Coordinator/supervisor the applicant worked most closely with. |
-| coordinator_email | No | String or null. |
-| coordinator_phone_number | No | String or null. |
-
-#### work_program Additional Fields
-
-| Field Name | Required? | Description |
-| :-- | :-- | :-- |
-| organization_name | Yes | String. Name of the organization or provider running the work/training program. |
-| program_name | Yes | String. Full name of the work program. |
-| contact_name | No | String or null. |
-| contact_email | No | String or null. |
-| contact_phone_number | No | String or null. |
-
-#### employment – Self-attested Work
-
-Each published employment activity appears once per reported month, including months with zero hours or income. Draft activities are excluded. The common self-attested fields above apply, including address components, comments, hours, and supporting document IDs.
-
-| Field Name | Required? | Description |
-| :-- | :-- | :-- |
-| employer_name | Yes | String. Name of the employer or business. |
-| employer_address | No | String or null. Combined employer address. The individual address fields are also supplied. |
-| employment_type | Yes | `w2` for paid work, `self_employed` for paid self-employment, or `unpaid` for unpaid or in-kind work. |
-| is_self_employed | Yes | Boolean. Whether the applicant marked the work as self-employment. |
-| contact_name, contact_email, contact_phone_number | No | String or null. Employer contact details; null for self-employment. |
-| gross_income | Yes | Number. Self-attested gross income for this month in **dollars**, preserving decimal amounts. |
-
-#### employment – Linked Payroll
-
-Only published, successfully synchronized payroll accounts are included. Each employer appears once in each month in which it has a paycheck in the review period. Paychecks are grouped by `pay_date`, even when their work period falls in another month. Undated paychecks and paychecks outside the review period are omitted. Employers with no dated paychecks in the review period have no monthly entry.
-
-The employment and paystub fields are defined by the `CeValidatedEmploymentActivity`
-and `CePaystub` models in the generated OpenAPI reference, including masked SSNs,
-applicant comments, employment dates and status, compensation, deductions, and
-itemized gross pay. Payroll money values are in **cents**. Nullable provider
-fields remain null, and missing gross pay uses the income report's zero fallback.
-Payroll hours appear in each paystub's `hours_paid`; there is no calculated
-employment-level `hours` field.
-
-These CE fields supplement the income employment object:
-
-| Field Name | Required? | Description |
-| :-- | :-- | :-- |
-| type | Yes | `employment`. |
-| month | Yes | `YYYY-MM`, matching the enclosing month. |
-| data_source | Yes | `validated` for both Argyle and Pinwheel. |
-| document_ids | Yes | Empty array for linked payroll. Self-attested documents are referenced from their own activities. |
-
-Employment follows the September 4 specification's JSON examples: `has_other_jobs` and `income_summary` are omitted. The existing CE envelope, including `review_period`, is preserved. A failed payroll fetch fails transmission so the job can retry instead of sending a partial report.
-
-#### education
-
-Only published education activities are included. Fully self-attested education appears under each reported month. NSC term entries appear under each applicable reporting month, including eligible summer carryover. A month can contain multiple schools or terms.
-
-| data_source | Description |
-| :-- | :-- |
-| `self_attested` | School details and monthly academic credits reported by the applicant. Uses the common self-attested fields above. |
-| `verified` | NSC-verified enrollment and term details. NSC does not provide academic credit hours, so `credit_hours` is null. |
-| `verified_enrollment_only` | Partially self-attested education: NSC enrollment and term details with applicant-reported academic credits. Retains the self-attested address and contact fields. |
-
-| Field Name | Required? | Description |
-| :-- | :-- | :-- |
-| school_name | Yes | String. For NSC term entries, the school's name from that term; may be null when unavailable. |
-| contact_name, contact_email, contact_phone_number | No | String or null. Included on fully and partially self-attested education. |
-| hours | Self-attested variants | Number. Monthly academic credits for `self_attested`; the term's credits for `verified_enrollment_only`, matching `credit_hours`. May be `0` or null for unknown partial credits. |
-| enrollment_status | NSC term entries | `full_time`, `three_quarter_time`, `half_time`, `less_than_half_time`, `enrolled`, or `unknown`. |
-| credit_hours | No | Number or null. Academic credits for the term, reported by the applicant where needed. Fractions are preserved; unknown credits stay null. |
-| term | NSC term entries | Object with `start_month` and `end_month`, both required `YYYY-MM` strings for the original enrollment term. |
-
-Every term entry from a partially self-attested activity uses `verified_enrollment_only`, including terms with half-time or greater enrollment.
-
-#### Validating the Model
+## Validating the Model
 
 From `app/`, run the contract specs or build the complete API reference:
 
@@ -205,38 +66,6 @@ The build validates the OpenAPI model and its generated example. Contract tests
 also exercise Argyle's Bob, Joe, and Kim sandbox fixtures and a mixed report with
 Pinwheel payroll, self-employment, unpaid work, and all education variants. Tests
 make no live payroll, NSC, or agency requests.
-
-## cURL example
-
-Save the request payload shown in the OpenAPI reference as `ce-activity-report.json`.
-Set `AGENCY_API_KEY` and `AGENCY_REPORT_URL` for your test receiver before running
-this command. It simulates Emmy sending a report to your agency and requires
-Bash, cURL, OpenSSL, and jq.
-
-```bash
-set -euo pipefail
-: "${AGENCY_API_KEY:?Set AGENCY_API_KEY to your test agency API key}"
-AGENCY_REPORT_URL="${AGENCY_REPORT_URL:-https://agency.example.org/api/v1/ce-activity-report}"
-REPORT_FILE="${REPORT_FILE:-ce-activity-report.json}"
-
-timestamp=$(date +%s)
-confirmation_code=$(jq -er '.confirmation_code' "$REPORT_FILE")
-signature=$(
-  { printf '%s:' "$timestamp"; cat "$REPORT_FILE"; } |
-    openssl dgst -sha512 -hmac "$AGENCY_API_KEY" | awk '{print $NF}'
-)
-
-curl --request POST "$AGENCY_REPORT_URL" \
-  --header 'Content-Type: application/json' \
-  --header "X-IVAAS-Timestamp: $timestamp" \
-  --header "X-IVAAS-Signature: $signature" \
-  --header "X-IVAAS-Confirmation-Code: $confirmation_code" \
-  --data-binary "@$REPORT_FILE"
-```
-
-Add any agency-specific gateway headers configured during onboarding. The agency
-API key is used for signing; this webhook does not use the invitation API's
-`Authorization: Bearer` header.
 
 # **Design Principles**
 

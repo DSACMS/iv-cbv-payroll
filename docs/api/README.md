@@ -37,6 +37,7 @@ The Markdown files follow the generated reference's navigation:
 | Introduction and its subsections | [introduction.md](introduction.md) |
 | Invitations | [invitations.md](invitations.md) |
 | Receiving data from the Emmy Platform | [receiving-data/README.md](receiving-data/README.md) |
+| Webhook signatures | [receiving-data/webhook-signatures.md](receiving-data/webhook-signatures.md) |
 | Receive a CE Activity Report (JSON) | [receiving-data/ce-activity-json.md](receiving-data/ce-activity-json.md) |
 
 Level-two headings in `introduction.md` appear as subsections under Introduction.
@@ -84,10 +85,11 @@ allowing future fields with other names. Nullable fields include `null` in their
 Request examples come from real test requests using synthetic data and fixed
 tokens. The CE model example comes from the transmission specs; model examples
 and webhook request and response examples are validated during the build.
-The webhook reuses the tested CE model example. Its description, response
-example, and cURL sample come from the Transmission, Response, and cURL example
-sections of the CE report guide. Add future delivery methods under the same
-receiving-data tag. Authorization headers are never captured.
+The webhook reuses the tested CE model example. Its description includes the
+entire CE report guide. Shared signing guidance and the tested cURL sample live
+on the separate Webhook signatures page in the receiving-data navigation group.
+The response example is extracted from the CE guide's Response section. Add future delivery
+methods under the same receiving-data tag. Authorization headers are never captured.
 
 Pull request CI builds an `api-reference` artifact for review. After this change
 is merged into `DSACMS/iv-cbv-payroll`, the

@@ -1,7 +1,7 @@
 require_relative "invitation_documentation"
 
 module ActivityReportWebhook
-  TAG = "Receiving data from the Emmy Platform".freeze
+  TAG = "CE Activity Reports".freeze
   PATH = "/api/v1/ce-activity-report".freeze
 
   def self.operation
@@ -9,12 +9,8 @@ module ActivityReportWebhook
       tags: [ TAG ],
       operationId: "receiveCeActivityReport",
       summary: "Receive a CE Activity Report (JSON)",
-      # Scalar shows webhook payloads in its sample panel, but not custom code samples.
-      description: [
-        InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Transmission"),
-        "### cURL example",
-        InvitationDocumentation.read("receiving-data/ce-activity-json", section: "cURL example")
-      ].join("\n\n"),
+      description: InvitationDocumentation.read("receiving-data/ce-activity-json")
+        .sub("(webhook-signatures.md)", "(#tag/webhook-signatures)"),
       servers: [ { url: "https://agency.example.org", description: "Agency system (replace with your receiver URL)" } ],
       security: [],
       parameters: [
@@ -43,18 +39,11 @@ module ActivityReportWebhook
                   schema_version_received: { type: :string }, unrecognized_fields_detected: { type: :boolean }
                 }
               },
-              examples: { received: { value: JSON.parse(code_block("Response", "json")) } }
+              examples: { received: { value: JSON.parse(InvitationDocumentation.code_block("receiving-data/ce-activity-json", section: "Response", language: "json")) } }
             }
           }
         }
-      },
-      "x-codeSamples" => [ { lang: "Shell", label: "cURL (signed delivery)", source: code_block("cURL example", "bash") } ]
+      }
     }
-  end
-
-  def self.code_block(section, language)
-    markdown = InvitationDocumentation.read("receiving-data/ce-activity-json", section: section)
-    markdown.match(/^```#{Regexp.escape(language)}\n(.*?)^```/m)&.captures&.first ||
-      raise(ArgumentError, "Missing #{language} code block in CE report #{section}")
   end
 end

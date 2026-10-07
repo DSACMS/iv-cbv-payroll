@@ -21,7 +21,12 @@ RSpec.configure do |config|
       externalDocs: { description: "Emmy Platform API Documentation", url: InvitationDocumentation::SITE_URL },
       tags: [
         { name: "Invitations", description: "Generate links for an applicant to begin reporting." },
+        { name: "Webhook signatures", description: InvitationDocumentation.read("receiving-data/webhook-signatures") },
         { name: ActivityReportWebhook::TAG, description: InvitationDocumentation.read("receiving-data/README") }
+      ],
+      "x-tagGroups" => [
+        { name: "Emmy API", tags: [ "Invitations" ] },
+        { name: "Receiving data from the Emmy Platform", tags: [ "Webhook signatures", ActivityReportWebhook::TAG ] }
       ],
       paths: {},
       webhooks: { ActivityReportWebhook::PATH => { post: ActivityReportWebhook.operation } },
