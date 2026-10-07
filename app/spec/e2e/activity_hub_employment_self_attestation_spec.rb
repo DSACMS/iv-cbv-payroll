@@ -37,6 +37,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     # Add your work page
     verify_page(page, title: I18n.t("activities.employment.add_your_work.show.employment_focused.header"))
+    expect(page).to have_text(I18n.t("activities.employment.add_your_work.show.employment_focused.description"))
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     click_button I18n.t("continue")
     expect(page).to have_content(I18n.t("shared.next_path.notice_no_answer"))
@@ -78,6 +79,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       employer_name: "Gainesville Wrecking"
     )
     verify_page(page, title: month_selection_title)
+    expect(page).to have_text(I18n.t("activities.employment.month_selections.edit.employment_focused.description"))
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_content(flow.reporting_window_display)
     click_button I18n.t("activities.employment.month_selections.edit.continue")
@@ -153,6 +155,8 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     # Review page
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Gainesville Wrecking"))
+    expect(page).to have_selector("h1 + p br", visible: :all)
+    expect(page).to have_text(I18n.t("activities.employment.review.employment_focused.comment_prompt", agency_initials: I18n.t("shared.agency_acronym.sandbox")))
     expect(page).to have_content "Gainesville Wrecking"
     expect(page).to have_content "942 W Harlan Ave"
     expect(page).to have_content "Donny Spears"

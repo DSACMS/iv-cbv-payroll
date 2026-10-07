@@ -493,6 +493,19 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       end
     end
 
+    context "with an employment-focused flow" do
+      before { activity_flow.update!(employment_focused: true) }
+
+      it "shows the employer and agency comment prompt on separate lines" do
+        get :review, params: { id: employment_activity.id }
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("h1 + p", text: "Review the information you've added for #{employment_activity.employer_name}.")
+        expect(rendered).to have_selector("h1 + p br")
+        expect(rendered).to have_text("If you'd like to provide additional context, add a comment for #{I18n.t('shared.agency_acronym.sandbox')}.")
+      end
+    end
+
     it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :review, params: { id: employment_activity.id } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentReviewViewed,

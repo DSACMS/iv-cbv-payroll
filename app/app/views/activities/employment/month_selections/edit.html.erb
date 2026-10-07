@@ -20,7 +20,13 @@
   <strong><%= t("activities.hub.empty_state_reporting_period_label") %></strong>
   <%= @flow.reporting_window_display %>
 </p>
-<p><%= @employment_activity.unpaid_or_in_kind? ? t(".unpaid_or_in_kind_description") : t(".paid_description") %></p>
+<p>
+  <% if @flow.employment_focused? %>
+    <%= t(".employment_focused.description") %>
+  <% else %>
+    <%= @employment_activity.unpaid_or_in_kind? ? t(".unpaid_or_in_kind_description") : t(".paid_description") %>
+  <% end %>
+</p>
 
 <% if @error %>
   <%= render Uswds::Alert.new(type: :error, heading: t(".error_heading"), class: "margin-bottom-4") do %>

@@ -299,6 +299,7 @@ en:
         show:
           description: If you held multiple jobs during the reporting period, you'll need to add each job separately.
           employment_focused:
+            description: If you held multiple jobs during the reporting period, you will need to add each job separately. All three options are for paid work, whether you were paid in money or goods. You can report unpaid work later.
             header: Choose how you want to add your job
             options:
               unpaid:
@@ -335,6 +336,8 @@ en:
           hours_hint: If you performed in-kind work, provide an estimate
       month_selections:
         edit:
+          employment_focused:
+            description: For each month, you will need to report how much you made and how many hours you worked. Only include months you were paid, you can report unpaid work later.
           continue: Continue
           error_body: Select at least one month to continue
           error_heading: No months selected
@@ -343,6 +346,9 @@ en:
           title: Select which months you worked for %{employer_name}
           unpaid_or_in_kind_description: For each month, you will need to report how many hours you worked.
       review:
+        employment_focused:
+          description: Review the information you've added for %{employer_name}.
+          comment_prompt: If you'd like to provide additional context, add a comment for %{agency_initials}.
         additional_comments_description: Share any comments or additional information that you'd like %{agency_name} to know.
         additional_comments_title: Additional comments (optional)
         address: Address

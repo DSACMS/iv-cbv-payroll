@@ -83,6 +83,14 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
     context "with an employment-focused flow" do
       let(:activity_flow) { create(:activity_flow, employment_focused: true) }
 
+      it "explains paid work and reporting unpaid work later" do
+        get :show
+
+        expect(Capybara.string(response.body)).to have_text(
+          I18n.t("activities.employment.add_your_work.show.employment_focused.description")
+        )
+      end
+
       it "uses job in the heading and browser title" do
         get :show
 
