@@ -750,34 +750,6 @@ RSpec.describe Activities::SummaryController, type: :controller do
   end
 
   describe "PATCH #update" do
-    before do
-      create(:employment_activity, activity_flow: activity_flow)
-    end
-
-    context "when no activities have been added" do
-      let(:empty_flow) do
-        create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
-      end
-
-      before do
-        session[:flow_id] = empty_flow.id
-        session[:flow_type] = :activity
-      end
-
-      it "redirects to the hub instead of completing submission" do
-        patch :update, params: { activity_flow: { consent_to_submit: "1" } }
-
-        expect(response).to redirect_to(activities_flow_root_path)
-        expect(flash[:slim_alert][:message]).to eq(I18n.t("activities.summary.no_activities_added"))
-      end
-
-      it "does not mark the flow as completed" do
-        patch :update, params: { activity_flow: { consent_to_submit: "1" } }
-
-        expect(empty_flow.reload.completed_at).to be_nil
-      end
-    end
-
     it "marks the flow as completed and redirects to success" do
       expect {
         patch :update, params: { activity_flow: { consent_to_submit: "1" } }
@@ -811,34 +783,6 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(flash.now[:alert]).to eq(I18n.t("activities.submit.consent_required"))
       expect(response.body).to include("Helping Hands")
       expect(response.body).to include(I18n.t("activities.summary.legal_agreement"))
-    end
-
-    context "when the flow is employment-focused" do
-      let(:activity_flow) do
-        create(
-          :activity_flow,
-          employment_focused: true,
-          volunteering_activities_count: 0,
-          job_training_activities_count: 0,
-          education_activities_count: 0
-        )
-      end
-
-      before do
-        create(:employment_activity, activity_flow: activity_flow, employer_name: "Gainesville Wrecking")
-      end
-
-      it "re-renders the employment-focused review page instead of the generic summary when consent is missing" do
-        patch :update
-
-        expect(activity_flow.reload.completed_at).to be_nil
-        expect(response).to have_http_status(:unprocessable_content)
-        expect(response).to render_template("activities/activities/employment_focused_review")
-        expect(flash.now[:alert]).to eq(I18n.t("activities.submit.consent_required"))
-        expect(response.body).to include("Gainesville Wrecking")
-        expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.activities.employment_focused_review.header")))
-        expect(response.body).not_to include(CGI.escapeHTML(I18n.t("activities.summary.title", benefit: "Medicaid")))
-      end
     end
 
     it "generates a confirmation code" do

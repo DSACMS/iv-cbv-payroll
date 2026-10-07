@@ -1,6 +1,21 @@
 require_relative "invitation_documentation"
 
 module InvitationSchemas
+  # Mirrors config/client-agency-config.yml's api.v2.{employment,community_engagement}
+  # blocks, which are identical across all five agencies today. Keep this in
+  # sync with that file rather than deriving V2 schemas from the V1 agency
+  # field lists, which do not reflect per-flow V2 requirements.
+  V2_CONTRACT = {
+    "community_engagement" => {
+      metadata: %i[individual_id first_name last_name date_of_birth],
+      required: %i[individual_id first_name last_name date_of_birth]
+    },
+    "employment" => {
+      metadata: %i[individual_id first_name last_name date_of_birth],
+      required: %i[individual_id first_name last_name date_of_birth]
+    }
+  }.freeze
+
   def self.schemas
     metadata_fields = {
       individual_id: { type: :string, minLength: 1, example: "INDIVIDUAL-123", description: "Agency individual identifier. Required for V2 activity invitations." },
@@ -65,20 +80,24 @@ module InvitationSchemas
         type: :object,
         additionalProperties: true,
         description: InvitationDocumentation.read("agency-partner-metadata"),
-        anyOf: %w[Sandbox NewHampshire Louisiana Research Accenture].map { |agency| { "$ref" => "#/components/schemas/V2AgencyMetadata#{agency}" } }
+        anyOf: %w[community_engagement employment].flat_map do |invitation_type|
+          %w[Sandbox NewHampshire Louisiana Research Accenture].map do |agency|
+            { "$ref" => "#/components/schemas/V2AgencyMetadata#{agency}#{invitation_type.camelize}" }
+          end
+        end
       },
       V2InvitationRequest: {
         type: :object,
         additionalProperties: true,
         description: "Invitation settings and metadata for the agency identified by the API key. invitation_type is selected via the URL path, not this body.",
-        required: %w[language agency_partner_metadata],
+        required: %w[language verification_range agency_partner_metadata],
         properties: {
           language: {
             type: :string, pattern: "^([eE][nN]|[eE][sS])$", example: "en",
             description: "Preferred language: en (English) or es (Spanish), case insensitive. Required; omitted or unsupported values return 422. Returned in lowercase."
           },
           verification_range: {
-            type: :string, nullable: true, enum: [ "last_complete_month", "last_12_complete_months", nil ],
+            type: :string, enum: [ "last_complete_month", "last_12_complete_months" ],
             description: "Reporting window for the activity invitation."
           },
           agency_partner_metadata: { "$ref" => "#/components/schemas/V2AgencyPartnerMetadata" }
@@ -110,8 +129,7 @@ module InvitationSchemas
               properties: {
                 field: {
                   type: :string,
-                  enum: %w[language individual_id first_name last_name date_of_birth],
-                  description: "Invalid field. language is a top-level request field; individual_id, first_name, last_name, and date_of_birth come from agency_partner_metadata and are validated against the agency's configured api.v2 metadata and required fields for the given invitation_type."
+                  description: "Invalid request field. Applicant validation errors may use an agency_partner_metadata prefix."
                 },
                 message: { type: :string, description: "Human-readable validation message. Do not depend on the exact wording." }
               }
@@ -142,20 +160,19 @@ module InvitationSchemas
       end
       schemas[schema_name] = schema
 
-      v2_schema_name = "V2AgencyMetadata#{agency}"
-      v2_fields = fields + [ :individual_id ]
-      v2_schema = {
-        title: v2_schema_name,
-        type: :object,
-        description: "Accepted V2 metadata for #{title}, including individual_id required for activity invitations. The API ignores fields outside this schema.",
-        additionalProperties: true,
-        properties: metadata_fields.slice(*v2_fields),
-        required: %w[individual_id first_name last_name date_of_birth] & v2_fields.map(&:to_s)
-      }
-      if agency == "Louisiana"
-        v2_schema[:properties][:case_number] = metadata_fields[:case_number].merge(maxLength: 13)
+      V2_CONTRACT.each do |invitation_type, contract|
+        v2_schema_name = "V2AgencyMetadata#{agency}#{invitation_type.camelize}"
+        v2_fields = contract[:metadata]
+        v2_schema = {
+          title: v2_schema_name,
+          type: :object,
+          description: "Accepted V2 metadata for #{title}'s #{invitation_type.humanize.downcase} invitations. The API ignores fields outside this schema.",
+          additionalProperties: true,
+          properties: metadata_fields.slice(*v2_fields),
+          required: contract[:required].map(&:to_s)
+        }
+        schemas[v2_schema_name] = v2_schema
       end
-      schemas[v2_schema_name] = v2_schema
     end
 
     schemas

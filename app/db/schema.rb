@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_06_193004) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_28_165029) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -45,8 +45,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_193004) do
 
   create_table "activity_flow_employment_summaries", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
-    t.integer "compensation_amount"
-    t.string "compensation_unit"
     t.datetime "created_at", null: false
     t.string "employer_address"
     t.string "employer_name"
@@ -55,7 +53,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_193004) do
     t.string "employment_status"
     t.date "employment_termination_date"
     t.string "employment_type"
-    t.string "pay_frequency"
     t.bigint "payroll_account_id", null: false
     t.datetime "redacted_at"
     t.datetime "updated_at", null: false

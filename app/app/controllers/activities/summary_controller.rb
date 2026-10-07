@@ -6,20 +6,9 @@ class Activities::SummaryController < Activities::BaseController
   def show; end
 
   def update
-    unless @flow.any_activities_added?
-      flash[:slim_alert] = { message: t("activities.summary.no_activities_added"), type: "error" }
-      return redirect_to activities_flow_root_path
-    end
-
     unless params.dig(:activity_flow, :consent_to_submit) == "1"
-      flash.now[:alert] = t("activities.submit.consent_required")
-
-      if @flow.employment_focused?
-        load_employment_focused_review_data
-        return render "activities/activities/employment_focused_review", status: :unprocessable_content
-      end
-
       load_summary_data
+      flash.now[:alert] = t("activities.submit.consent_required")
       return render :show, status: :unprocessable_content
     end
 
