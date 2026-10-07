@@ -6,7 +6,7 @@ This document describes the **Community Engagement (CE) Activity Report Transmis
 
 The agency must build an API endpoint that meets this specification and integrates with agency systems to process the activity report into the case file for the correct client.
 
-This revision covers `community_service`, `work_program`, and `employment`. Employment includes self-attested work and payroll data from linked Argyle or Pinwheel accounts. Education activities will be added additively in a later revision.
+This revision covers `community_service`, `work_program`, `employment`, and `education`. Employment includes self-attested work and payroll data from linked Argyle or Pinwheel accounts. Education includes self-attested credits, verified NSC enrollment, and partially self-attested education.
 
 ## Transmission
 
@@ -21,7 +21,7 @@ The complete `CeActivityReport` model is published in the generated
 review period, documents, activity types, and payroll details. It is a standalone
 model: this outbound report is not an Emmy API operation. The schema's example
 comes from the tested serializer and includes community service, work programs,
-linked payroll, self-employment, and unpaid work.
+linked payroll, self-employment, unpaid work, and all three education variants.
 
 ### Request Headers
 
@@ -95,16 +95,16 @@ Documents themselves are transmitted separately by the document transmission int
 
 Keys are activity types. Each value is an object keyed by month (`YYYY-MM`), whose value is an array of activity entries reported for that month. A month with no reported activity is omitted; an activity type with no activities is an empty object.
 
-An activity that spans several months appears once under each month, carrying that month's hours.
+Activities spanning several months appear under each applicable month.
 
 #### Self-attested Activity Entry – Common Fields
 
 | Field Name | Required? | Description |
 | :-- | :-- | :-- |
-| type | Yes | String (enum). `community_service`, `work_program`, or `employment`. |
+| type | Yes | String (enum). `community_service`, `work_program`, `employment`, or `education`. |
 | month | Yes | String (`YYYY-MM`). The calendar month the reported hours apply to. Repeats the key of the enclosing object. |
-| hours | Yes | Decimal (10,2). Hours reported for this activity in the enclosing month. May be `0`. |
-| data_source | Yes | String (enum). `self_attested` for manually reported activities. Linked payroll employment uses `validated`. |
+| hours | Yes | Decimal (10,2). Hours reported for this activity in the enclosing month. May be `0`. For education, this is academic credit hours; partially self-attested credits may be null. |
+| data_source | Yes | String (enum). `self_attested` for manually reported activities. Linked payroll employment uses `validated`. Education sources are described below. |
 | document_ids | Yes | Array of `document_id` values from the `documents` array. |
 | street_address, street_address_line_2, city, state, zip_code | No | String or null. Address of the organization. |
 | additional_comments | No | Text or null. Optional free-text comments the applicant added at the review step. |
@@ -158,20 +158,40 @@ These CE fields supplement the income employment object:
 
 Employment follows the September 4 specification's JSON examples: `has_other_jobs` and `income_summary` are omitted. The existing CE envelope, including `review_period`, is preserved. A failed payroll fetch fails transmission so the job can retry instead of sending a partial report.
 
+#### education
+
+Only published education activities are included. Fully self-attested education appears under each reported month. NSC term entries appear under each applicable reporting month, including eligible summer carryover. A month can contain multiple schools or terms.
+
+| data_source | Description |
+| :-- | :-- |
+| `self_attested` | School details and monthly academic credits reported by the applicant. Uses the common self-attested fields above. |
+| `verified` | NSC-verified enrollment and term details. NSC does not provide academic credit hours, so `credit_hours` is null. |
+| `verified_enrollment_only` | Partially self-attested education: NSC enrollment and term details with applicant-reported academic credits. Retains the self-attested address and contact fields. |
+
+| Field Name | Required? | Description |
+| :-- | :-- | :-- |
+| school_name | Yes | String. For NSC term entries, the school's name from that term; may be null when unavailable. |
+| contact_name, contact_email, contact_phone_number | No | String or null. Included on fully and partially self-attested education. |
+| hours | Self-attested variants | Number. Monthly academic credits for `self_attested`; the term's credits for `verified_enrollment_only`, matching `credit_hours`. May be `0` or null for unknown partial credits. |
+| enrollment_status | NSC term entries | `full_time`, `three_quarter_time`, `half_time`, `less_than_half_time`, `enrolled`, or `unknown`. |
+| credit_hours | No | Number or null. Academic credits for the term, reported by the applicant where needed. Fractions are preserved; unknown credits stay null. |
+| term | NSC term entries | Object with `start_month` and `end_month`, both required `YYYY-MM` strings for the original enrollment term. |
+
+Every term entry from a partially self-attested activity uses `verified_enrollment_only`, including terms with half-time or greater enrollment.
+
 #### Validating the Model
 
 From `app/`, run the contract specs or build the complete API reference:
 
 ```bash
-rbenv exec ruby bin/rspec spec/services/transmitters/activity_json_transmitter_spec.rb spec/openapi
+rbenv exec ruby bin/rspec spec/services/transmitters/activity_json_transmitter_spec.rb spec/services/transmitters/activity_json_transmitter_education_spec.rb spec/openapi
 RAILS_ENV=test rbenv exec bundle exec rake api_docs:build
 ```
 
 The build validates the OpenAPI model and its generated example. Contract tests
 also exercise Argyle's Bob, Joe, and Kim sandbox fixtures and a mixed report with
-Pinwheel payroll, self-employment, and unpaid work. Tests make no live payroll or
-agency requests. Product acceptance and live Launcher testing remain separate
-checks before merge.
+Pinwheel payroll, self-employment, unpaid work, and all education variants. Tests
+make no live payroll, NSC, or agency requests.
 
 # **Design Principles**
 

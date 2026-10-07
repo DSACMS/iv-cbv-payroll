@@ -1,4 +1,4 @@
-require "rails_helper"
+require "swagger_helper"
 
 RSpec.describe Transmitters::ActivityJsonTransmitter do
   include NscApiHelper
@@ -25,6 +25,8 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
   let(:transmitter) { described_class.new(activity_flow, current_agency) }
   let(:payload) { JSON.parse(transmitter.payload) }
   let(:education_entries) { payload.dig("ce_report", "activities", "education").values.flatten }
+  let(:document) { JSONSchemer.openapi(JSON.parse(RSpec.configuration.openapi_specs.fetch("openapi.json").to_json)) }
+  let(:schema) { document.schema("CeActivityReport") }
 
   before do
     create(:user, :with_access_token, client_agency_id: "sandbox", is_service_account: true)
@@ -32,7 +34,10 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
   end
 
   shared_examples "an education report" do |expected_data_source|
-    it "delivers an education report" do
+    it "validates and delivers an education report" do
+      errors = schema.validate(payload).map { |error| error.slice("data_pointer", "type", "error") }
+      expect(errors).to eq([])
+
       if expected_data_source
         expect(education_entries).to be_present
         expect(education_entries).to all(include("type" => "education", "data_source" => expected_data_source))
