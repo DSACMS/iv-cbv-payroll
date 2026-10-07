@@ -1,8 +1,9 @@
 class ActivityFlowNavigator
   include Rails.application.routes.url_helpers
 
-  def initialize(params, overall_progress_result: nil, employment_focused: false)
+  def initialize(params, flow = nil, overall_progress_result: nil, employment_focused: false)
     @params = params
+    @flow = flow
     @overall_progress_result = overall_progress_result
     @employment_focused = employment_focused
   end
@@ -48,7 +49,11 @@ class ActivityFlowNavigator
   private
 
   def after_income_path
+<<<<<<< HEAD
     return activities_flow_root_path if @employment_focused
+=======
+    return activities_flow_income_add_jobs_path if @flow&.employment_focused?
+>>>>>>> main
     return activities_flow_root_path unless @overall_progress_result
 
     @overall_progress_result.meets_routing_requirements ? activities_flow_summary_path : activities_flow_root_path
