@@ -78,6 +78,27 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
     )
   end
 
+  def populate_education_activities!
+    self_attested = create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested,
+      school_name: "Example Community College", contact_email: "registrar@example.org", additional_comments: nil)
+    activity_flow.reporting_months.each do |month|
+      create(:education_activity_month, education_activity: self_attested, month: month, hours: 3.5)
+    end
+
+    verified = create(:education_activity, activity_flow: activity_flow, status: :succeeded, additional_comments: nil)
+    create(:nsc_enrollment_term, :full_time, education_activity: verified, school_name: "Example University")
+
+    partial = create(:education_activity, activity_flow: activity_flow, data_source: :partially_self_attested,
+      status: :succeeded, additional_comments: nil)
+    create(:nsc_enrollment_term, :less_than_half_time, education_activity: partial,
+      school_name: "Example Technical College", credit_hours: 3.25)
+    create(:nsc_enrollment_term, education_activity: partial, school_name: "Example State University",
+      term_end: activity_flow.reporting_months.first.end_of_month)
+    expect(EducationActivity.data_source_from_nsc_results(partial.nsc_enrollment_terms,
+      reporting_months: activity_flow.reporting_months)).to eq(:partially_self_attested)
+    partial.document_uploads.attach(io: StringIO.new("Synthetic transcript"), filename: "Transcript.pdf", content_type: "application/pdf")
+  end
+
   describe "#payload" do
     before { populate_activities! }
 
@@ -193,7 +214,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       end
     end
 
-    it "publishes a complete CE model example with mixed employment" do
+    it "publishes a complete CE model example with mixed employment and education" do
       account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "account1")
       payroll_report = build(:pinwheel_report, :hydrated, payroll_accounts: [ account ], has_fetched: true)
       payroll_report.incomes.first.compensation_unit = "hourly"
@@ -210,10 +231,16 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       self_employed.document_uploads.attach(io: StringIO.new("Synthetic income statement"), filename: "Income statement.pdf", content_type: "application/pdf")
 
       populate_activities!
+      populate_education_activities!
       payload = verify_employment_report
       RSpec.configuration.openapi_specs.fetch("openapi.json")[:components][:schemas][:CeActivityReport][:example] = payload
       expect(payload.dig("ce_report", "activities", "employment", "2025-03").map { |entry| entry["employment_type"] })
         .to eq(%w[self_employed unpaid gig])
+      expect(payload.dig("ce_report", "activities", "education", "2025-03").map { |entry| entry["data_source"] }.uniq)
+        .to eq(%w[self_attested verified verified_enrollment_only])
+      partial_entries = payload.dig("ce_report", "activities", "education", "2025-02")
+        .select { |entry| entry["data_source"] == "verified_enrollment_only" }
+      expect(partial_entries.map { |entry| entry["credit_hours"] }).to contain_exactly(3.25, nil)
     end
 
     it "does not post a partial report when a payroll fetch fails" do

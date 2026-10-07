@@ -23,9 +23,6 @@ inside that subtree.
 - `infra/` - Terraform and infrastructure-as-code for Emmy environments.
 - `load_testing/` - Load testing resources and related support files.
 
-The Emmy API is maintained separately at
-`https://github.com/CMSgov/emmy-api`; do not assume API-only behavior is
-implemented in this repository.
 
 ## General Working Principles
 
@@ -58,7 +55,13 @@ In short:
   rather than making controllers heavier.
 
 Use the Rails app instructions for command details, coding style, i18n rules,
-frontend conventions, and end-to-end test expectations.
+frontend conventions, and end-to-end test expectations. In addition, the team of
+humans maintaining this codebase kindly requests the following code styling:
+
+- In rspec tests: Favor shorter `it` blocks by using `before`/`let`
+  initialization to the greatest extent possible. Avoid dynamically defining
+  rspec tests in loops, preferring to use `context`s that can be extended later
+  for that case. Prefer some duplication to using a shared examples group.
 
 ## Documentation Work
 
