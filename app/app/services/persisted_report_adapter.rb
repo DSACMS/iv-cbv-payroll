@@ -50,13 +50,14 @@ class PersistedReportAdapter
 
   def build_month_summary(summary)
     count = summary[:paychecks_count].to_i
+    gig_count = summary[:total_gig_hours].to_f > 0 ? [ count, 1 ].max : count
     {
       accrued_gross_earnings: summary[:accrued_gross_earnings],
       total_w2_hours: summary[:total_w2_hours],
       total_gig_hours: summary[:total_gig_hours],
       total_mileage: summary[:total_mileage],
       paystubs: Array.new(count),
-      gigs: Array.new(count),
+      gigs: Array.new(gig_count),
       partial_month_range: { is_partial_month: false, description: nil }
     }
   end

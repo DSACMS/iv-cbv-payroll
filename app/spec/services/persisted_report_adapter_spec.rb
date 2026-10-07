@@ -140,6 +140,18 @@ RSpec.describe PersistedReportAdapter do
       expect(result["acct-1"][second_month.strftime("%Y-%m")][:total_gig_hours]).to eq(12.5)
     end
 
+    it "builds a non-empty gigs marker for gig-only months so hours are not rendered as N/A" do
+      ActivityFlowMonthlySummary
+        .find_by(activity_flow: flow, payroll_account: payroll_account, month: second_month.beginning_of_month)
+        .update!(total_gig_hours: 12.5, paychecks_count: 0)
+
+      result = adapter.summarize_by_month
+      summary = result["acct-1"][second_month.strftime("%Y-%m")]
+
+      expect(summary[:gigs]).not_to be_empty
+      expect(summary[:paystubs]).to be_empty
+    end
+
     it "returns months in reverse chronological order" do
       ActivityFlowMonthlySummary
         .find_by(activity_flow: flow, payroll_account: payroll_account, month: second_month.beginning_of_month)
