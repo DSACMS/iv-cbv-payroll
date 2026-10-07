@@ -1314,14 +1314,15 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
         get :index
       end
 
-      it "renders the gig monthly summary table instead of the w2 table" do
+      it "renders the gig monthly summary table with the employment-focused hours label" do
         rendered = Capybara.string(response.body)
 
         expect(rendered).to have_text(I18n.t("activities.activities.employment_focused_review.monthly_details"))
-        # Gig hours are always labeled "Community engagement hours" here, by
-        # design — GigMonthlySummaryTableComponent's hours_header is not
-        # conditioned on employment_focused? the way the W2 table's is.
-        expect(rendered).to have_text(I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours"))
+        # On the employment-focused review page, gig hours use the same
+        # employment-focused label as the W2 table (GigMonthlySummaryTableComponent#hours_header
+        # mirrors W2MonthlySummaryTableComponent#hours_header).
+        expect(rendered).to have_text(I18n.t("components.report.monthly_summary_table.activity.hours_worked"))
+        expect(rendered).not_to have_text(I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours"))
         expect(rendered).to have_text(I18n.l(latest_month.beginning_of_month, format: :month_year))
         expect(rendered).to have_text("20")
       end
