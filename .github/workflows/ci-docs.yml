@@ -6,10 +6,14 @@ on:
     paths:
       - '**/*.md'
       - 'docs/api/schemas/*.json'
+      - '.github/workflows/ci-docs.yml'
+      - '.github/workflows/markdownlint-config.json'
   pull_request:
     paths:
       - '**/*.md'
       - 'docs/api/schemas/*.json'
+      - '.github/workflows/ci-docs.yml'
+      - '.github/workflows/markdownlint-config.json'
 
 permissions:
   contents: read
