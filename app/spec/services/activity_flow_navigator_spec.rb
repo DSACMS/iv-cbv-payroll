@@ -21,11 +21,46 @@ RSpec.describe ActivityFlowNavigator do
     describe "after the activity payment details controller" do
       let(:params) { { controller: "activities/income/payment_details" } }
 
-      it "returns the activity root path when the flow is employment-focused, regardless of routing requirements" do
-        overall_progress_result = ActivityFlowProgressCalculator::OverallResult.new(meets_routing_requirements: true)
-        navigator = described_class.new(params, overall_progress_result: overall_progress_result, employment_focused: true)
+      context "when employment-focused" do
+        let(:overall_progress_result) { ActivityFlowProgressCalculator::OverallResult.new(meets_routing_requirements: true) }
+        let(:navigator) { described_class.new(params, overall_progress_result: overall_progress_result, employment_focused: true) }
 
-        expect(navigator.next_path).to eq(activities_flow_root_path)
+        it "returns the add jobs path when routing requirements are met" do
+          expect(navigator.next_path).to eq(activities_flow_income_add_jobs_path)
+        end
+
+        context "when routing requirements are not met" do
+          let(:overall_progress_result) { ActivityFlowProgressCalculator::OverallResult.new(meets_routing_requirements: false) }
+
+          it "returns the add jobs path" do
+            expect(navigator.next_path).to eq(activities_flow_income_add_jobs_path)
+          end
+        end
+
+        context "when there is no overall progress result" do
+          let(:overall_progress_result) { nil }
+
+          it "returns the add jobs path" do
+            expect(navigator.next_path).to eq(activities_flow_income_add_jobs_path)
+          end
+        end
+
+        context "when the employment-focused state is provided by the flow" do
+          let(:flow) { instance_double(ActivityFlow, employment_focused?: true) }
+          let(:navigator) { described_class.new(params, flow, overall_progress_result: overall_progress_result) }
+
+          it "returns the add jobs path" do
+            expect(navigator.next_path).to eq(activities_flow_income_add_jobs_path)
+          end
+        end
+
+        context "when using the CBV payment details controller" do
+          let(:params) { { controller: "cbv/payment_details" } }
+
+          it "returns the add jobs path" do
+            expect(navigator.next_path).to eq(activities_flow_income_add_jobs_path)
+          end
+        end
       end
 
       it "returns the activity root path when there is no overall progress result" do
