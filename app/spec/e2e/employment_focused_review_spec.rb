@@ -23,6 +23,7 @@ RSpec.describe "e2e Employment-focused review page", :js, type: :feature do
 
     # --- Add a single self-attested, manually-entered paid job ---
     verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+
     find("label[for='add_work_method_enter_paid_manually']").click
     click_button I18n.t("continue")
 
@@ -53,6 +54,11 @@ RSpec.describe "e2e Employment-focused review page", :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Gainesville Wrecking"))
     click_button I18n.t("activities.employment.review.save")
+
+    # --- Saving the review prompts for additional jobs before showing the summary ---
+    verify_page(page, title: I18n.t("activities.employment.add_your_work.add_jobs.header"))
+    find("label[for='additional_jobs_false']").click
+    click_button I18n.t("activities.employment.add_your_work.add_jobs.submit")
 
     # --- Saving the review returns to the employment-focused review page ---
     verify_page(page, title: I18n.t("activities.activities.employment_focused_review.header"))
