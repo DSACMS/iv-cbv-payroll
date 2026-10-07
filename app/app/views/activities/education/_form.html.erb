@@ -17,8 +17,14 @@
   <hr class="margin-y-5 border-base-light border-top-0">
 
   <h2><%= t("activities.education.new.contact_section_title") %></h2>
+  <p>
+    <%= t("activities.education.new.contact_section_description") %>
+  </p>
   <%= f.text_field :contact_name,
         label: t("activities.education.new.contact_name"),
+        optional: true %>
+  <%= f.text_field :contact_title,
+        label: t("activities.education.new.contact_title"),
         optional: true %>
   <%= f.email_field :contact_email,
         label: t("activities.education.new.contact_email"),

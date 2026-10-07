@@ -11,6 +11,7 @@ class EducationActivity < Activity
     state
     zip_code
     contact_name
+    contact_title
     contact_email
     contact_phone_number
   ].freeze
