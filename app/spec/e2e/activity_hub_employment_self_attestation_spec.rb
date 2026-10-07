@@ -253,10 +253,14 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: "10"
     click_button I18n.t("activities.hub.save")
 
-    # Back to review, then save to hub
+    # Back to review, then finish adding jobs and return to the hub
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Updated Employer"))
     click_button I18n.t("activities.employment.review.save")
 
+    verify_page(page, title: I18n.t("activities.employment.add_your_work.add_jobs.header"))
+    expect(page).to have_content(I18n.t("activities.employment.add_your_work.add_jobs.job_manual", name: "Updated Employer"))
+    find("label[for='additional_jobs_false']").click
+    click_button I18n.t("activities.employment.add_your_work.add_jobs.submit")
     verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
 
     agency = Rails.application.config.client_agencies["sandbox"]

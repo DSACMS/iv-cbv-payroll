@@ -60,7 +60,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
       click_button I18n.t("activities.employment_info.continue")
 
       month_label = I18n.l(flow.reporting_months.first, format: :month)
-      verify_page(page, title: I18n.t("activities.employment.hours_input.heading", organization: employer_name))
+      verify_page(page, title: I18n.t("activities.employment.hours_input.employment_focused.heading", organization: employer_name))
       fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: month_label), with: gross_income
       fill_in I18n.t("activities.employment.hours_input.hours_label", month: month_label), with: hours
       click_button I18n.t("activities.employment.hours_input.continue")
@@ -83,7 +83,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
       flow = ActivityFlow.last
 
       # No jobs added yet — the summary box shouldn't render
-      verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+      verify_page(page, title: I18n.t("activities.employment.add_your_work.show.employment_focused.header"))
       expect(page).to have_no_content(I18n.t("activities.employment.add_your_work.add_jobs.jobs_added_heading", count: 0))
 
       # --- Add the first job, landing on the add_jobs page afterward ---
@@ -102,7 +102,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
       # --- Answering "yes" returns to the add-your-work page to add another job ---
       find("label[for='additional_jobs_true']").click
       click_button I18n.t("activities.employment.add_your_work.add_jobs.submit")
-      verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+      verify_page(page, title: I18n.t("activities.employment.add_your_work.show.employment_focused.header"))
 
       # --- Add a second job, landing back on the add_jobs page with both jobs listed ---
       add_manual_job(employer_name: "Beta Staffing", gross_income: "300", hours: "20", flow: flow)
