@@ -211,10 +211,10 @@ en:
         field_error: Add hours for at least one month
         heading: Add your %{month} credit hours for %{organization}
         hours_label: "%{month} credit hours"
-        term_start_date_label: Term start date
-        term_end_date_label: Term end date
         month_indicator: Month %{current} / %{total}
         no_hours_checkbox: I didn't take any credit hours at %{organization} in %{month}
+        term_end_date_label: Term end date
+        term_start_date_label: Term start date
         title: Credit hours
       new:
         city: City
