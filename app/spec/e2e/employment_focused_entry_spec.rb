@@ -60,7 +60,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
       click_button I18n.t("activities.employment_info.continue")
 
       month_label = I18n.l(flow.reporting_months.first, format: :month)
-      verify_page(page, title: I18n.t("activities.employment.hours_input.employment_focused.heading", organization: employer_name))
+      verify_page(page, title: I18n.t("activities.employment.hours_input.heading", organization: employer_name))
       fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: month_label), with: gross_income
       fill_in I18n.t("activities.employment.hours_input.hours_label", month: month_label), with: hours
       click_button I18n.t("activities.employment.hours_input.continue")

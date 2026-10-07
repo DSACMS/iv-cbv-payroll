@@ -29,10 +29,10 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
     context "for an employment_focused activity" do
       before { activity_flow.update!(employment_focused: true) }
 
-      it "uses income and/or hours in the paid-work heading and browser title" do
+      it "uses income and hours in the paid-work heading and browser title" do
         get :edit, params: { employment_id: employment_activity.id, id: 0 }
 
-        heading = "Add your income and/or hours for #{employment_activity.employer_name}"
+        heading = "Add your income and hours for #{employment_activity.employer_name}"
         rendered = Capybara.string(response.body)
         expect(rendered).to have_selector("h1", text: heading, exact_text: true, normalize_ws: true)
         expect(rendered).to have_title(/#{Regexp.escape(heading)}/)

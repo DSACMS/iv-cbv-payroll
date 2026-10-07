@@ -92,12 +92,11 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     # Hours input for the first selected month
     monthly_details_title = I18n.t(
-      "activities.employment.hours_input.employment_focused.heading",
+      "activities.employment.hours_input.heading",
       organization: "Gainesville Wrecking"
     )
     verify_page(page, title: monthly_details_title)
-    expect(page).to have_selector("h1", text: "Add your income and/or hours for Gainesville Wrecking")
-    expect(page).to have_no_text("Add your income and hours for Gainesville Wrecking")
+    expect(page).to have_selector("h1", text: "Add your income and hours for Gainesville Wrecking")
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_content(
       [
@@ -208,7 +207,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     month_edit_links.first.click
 
     updated_monthly_details_title = I18n.t(
-      "activities.employment.hours_input.employment_focused.heading",
+      "activities.employment.hours_input.heading",
       organization: "Updated Employer"
     )
     verify_page(page, title: updated_monthly_details_title)
