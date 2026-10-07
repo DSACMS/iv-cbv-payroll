@@ -10,11 +10,12 @@ module E2e
     # the next page to load. If the default wait time (2 seconds) isn't enough,
     # pass in a higher value (in seconds) in for `wait`.
     def verify_page(page, title:, wait: Capybara.default_max_wait_time, skip_axe_rules: [])
-      wait_for_idle(page)
-
       retry_on_transient_selenium_page_error do
         expect(page).to have_content(title, wait: wait)
       end
+      # The previous page may still be idle before Turbo starts the visit.
+      # Wait for the expected page first, then for that visit to complete.
+      wait_for_idle(page, wait: wait)
 
       # Verify page has no missing translations
       Capybara.using_wait_time(0) do
@@ -88,6 +89,7 @@ module E2e
         const callback = arguments[arguments.length - 1];
         window.requestIdleCallback(callback, { timeout: 2000 });
       JS
+      expect(page).to have_no_selector(:xpath, "/html[@aria-busy]", wait: wait)
     end
 
     def retry_on_transient_selenium_page_error(max_attempts: 3)
