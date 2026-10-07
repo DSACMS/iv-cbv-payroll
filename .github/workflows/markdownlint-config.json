@@ -26,6 +26,9 @@
           "pattern": "^https://([^.]+\\.)*your-agency\\.gov/api/v1/income-report$"
         },
         {
+          "pattern": "^https://([^.]+\\.)*your-agency\\.gov/api/v1/documents$"
+        },
+        {
           "pattern": "^https://hhs.responsibledisclosure.com/$"
         }
     ],
