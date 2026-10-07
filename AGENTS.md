@@ -23,9 +23,6 @@ inside that subtree.
 - `infra/` - Terraform and infrastructure-as-code for Emmy environments.
 - `load_testing/` - Load testing resources and related support files.
 
-The Emmy API is maintained separately at
-`https://github.com/CMSgov/emmy-api`; do not assume API-only behavior is
-implemented in this repository.
 
 ## General Working Principles
 
