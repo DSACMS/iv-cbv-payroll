@@ -8,6 +8,14 @@ module ActivityReportSchemas
       hours: { type: :number, minimum: 0, description: "Hours reported for this month; may be zero." },
       additional_comments: nullable_string
     )
+    education_term = {
+      type: { type: :string, enum: %w[education] },
+      school_name: nullable_string,
+      enrollment_status: { type: :string, enum: NscEnrollmentTerm.enrollment_statuses.keys },
+      credit_hours: { type: %w[number null], minimum: 0, description: "Academic credit hours for the term; null when not supplied." },
+      term: ref("CeEducationTerm"),
+      additional_comments: nullable_string
+    }
 
     {
       CeActivityReport: object(%w[schema_version confirmation_code completed_at agency_partner_metadata ce_report], {
@@ -31,15 +39,16 @@ module ActivityReportSchemas
         document_name: { type: :string, description: "Filename used when transmitting the document separately." },
         file_type: { type: :string, description: "File extension without the leading dot." }
       }),
-      CeActivities: object(%w[community_service work_program employment], {
+      CeActivities: object(%w[community_service work_program employment education], {
         community_service: months("CeCommunityServiceActivity"),
         work_program: months("CeWorkProgramActivity"),
-        employment: months("CeEmploymentActivity")
+        employment: months("CeEmploymentActivity"),
+        education: months("CeEducationActivity")
       }),
       CeActivity: object(%w[type month data_source document_ids], {
-        type: { type: :string, enum: %w[community_service work_program employment] },
+        type: { type: :string, enum: %w[community_service work_program employment education] },
         month: month,
-        data_source: { type: :string, enum: %w[self_attested validated] },
+        data_source: { type: :string, enum: %w[self_attested validated verified verified_enrollment_only] },
         document_ids: { type: :array, items: { type: :string } }
       }),
       CeCommunityServiceActivity: activity(%w[hours], self_attested.merge(
@@ -94,6 +103,35 @@ module ActivityReportSchemas
         compensation_unit: nullable_enum(%w[hourly daily weekly biweekly semimonthly monthly annual salary per_mile semiweekly variable]),
         paystubs: { type: :array, minItems: 1, items: ref("CePaystub"), description: "Only payments dated within the enclosing month and review period. Grouped by pay_date, not pay period." }
       }),
+      CeEducationActivity: {
+        description: "Education in the enclosing month: self-attested credits, verified NSC enrollment, or verified enrollment with self-attested credits.",
+        oneOf: [ ref("CeSelfAttestedEducationActivity"), ref("CeVerifiedEducationActivity"), ref("CeVerifiedEnrollmentOnlyEducationActivity") ],
+        discriminator: {
+          propertyName: "data_source",
+          mapping: {
+            self_attested: "#/components/schemas/CeSelfAttestedEducationActivity",
+            verified: "#/components/schemas/CeVerifiedEducationActivity",
+            verified_enrollment_only: "#/components/schemas/CeVerifiedEnrollmentOnlyEducationActivity"
+          }
+        }
+      },
+      CeSelfAttestedEducationActivity: activity(%w[school_name hours], self_attested.merge(contact).merge(
+        type: { type: :string, enum: %w[education] },
+        data_source: { type: :string, enum: %w[self_attested] },
+        school_name: { type: :string },
+        hours: { type: :number, minimum: 0, description: "Academic credit hours reported for this month; may be zero." }
+      )),
+      CeVerifiedEducationActivity: activity(%w[school_name enrollment_status term], education_term.merge(
+        data_source: { type: :string, enum: %w[verified], description: "NSC-verified enrollment." }
+      )),
+      CeVerifiedEnrollmentOnlyEducationActivity: activity(%w[school_name hours enrollment_status term], self_attested.merge(contact).merge(education_term).merge(
+        data_source: { type: :string, enum: %w[verified_enrollment_only], description: "NSC-verified enrollment with self-attested academic credits." },
+        hours: { type: %w[number null], minimum: 0, description: "Self-attested academic credit hours for the term, also supplied as credit_hours; null when not reported." }
+      )),
+      CeEducationTerm: object(%w[start_month end_month], {
+        start_month: month,
+        end_month: month
+      }).merge(description: "Original enrollment term dates, retained in each applicable reporting month, including summer carryover."),
       CePaystub: object(%w[pay_date pay_gross], {
         pay_date: { type: :string, format: :date },
         pay_period_start: nullable_string.merge(format: :date),

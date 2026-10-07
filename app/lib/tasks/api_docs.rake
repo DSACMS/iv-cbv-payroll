@@ -17,7 +17,8 @@ namespace :api_docs do
       "bundle", "exec", "rspec", "--options", "/dev/null",
       "--order", "defined", "--format", "Rswag::Specs::SwaggerFormatter",
       "--format", "progress", "spec/requests/api", "spec/openapi",
-      "spec/services/transmitters/activity_json_transmitter_spec.rb")
+      "spec/services/transmitters/activity_json_transmitter_spec.rb",
+      "spec/services/transmitters/activity_json_transmitter_education_spec.rb")
 
     output = Rails.root.join("tmp/api-docs")
     document = JSON.parse(output.join("openapi.json").read)

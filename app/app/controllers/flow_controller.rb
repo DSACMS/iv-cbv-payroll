@@ -30,7 +30,7 @@ class FlowController < ApplicationController
     case request.path
     when %r{^(/#{locales})?/activities}
       overall_progress_result = progress_calculator&.overall_result
-      ActivityFlowNavigator.new(params, overall_progress_result: overall_progress_result)
+      ActivityFlowNavigator.new(params, @flow, overall_progress_result: overall_progress_result)
     when %r{^(/#{locales})?/cbv}
       CbvFlowNavigator.new(params)
     else
@@ -63,11 +63,14 @@ class FlowController < ApplicationController
         return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
       end
 
-      @flow = flow_class(flow_param).create_from_invitation(
-        invitation,
-        cookies.permanent.signed[:device_id],
-        params
-      )
+      flow_class = flow_class(flow_param)
+      device_id = cookies.permanent.signed[:device_id]
+      @flow = flow_class.create_from_invitation(
+            invitation,
+            device_id,
+            params
+          )
+
       @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
       set_flow_session(@flow.id, flow_param)
       apply_launcher_overrides
@@ -84,7 +87,7 @@ class FlowController < ApplicationController
         if flow_param == :activity
           @flow = flow_class(flow_param).find(session[:flow_id])
         else
-          @flow = flow_class.find(session[:flow_id])
+          @flow = flow_class(session[:flow_type].presence || flow_param).find(session[:flow_id])
         end
 
         @cbv_flow = @flow # Maintain for compatibility until all controllers are converted
