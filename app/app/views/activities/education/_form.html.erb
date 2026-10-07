@@ -1,5 +1,5 @@
 <% form_url ||= education_activity.persisted? ? activities_flow_education_path(id: education_activity, from_review: params[:from_review].presence, from_edit: params[:from_edit].presence) : activities_flow_education_index_path %>
-<%= uswds_form_with(model: education_activity, url: form_url) do |f| %>
+<%= uswds_form_with(model: education_activity, url: form_url, html: { class: "usa-form usa-form--large education-information-form" }) do |f| %>
   <h2><%= t("activities.education.new.school_section_title") %></h2>
   <%= f.text_field :school_name,
         label: t("activities.education.new.school_name"),
