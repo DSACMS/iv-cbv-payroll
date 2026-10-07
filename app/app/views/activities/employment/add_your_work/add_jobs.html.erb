@@ -9,7 +9,7 @@
 
 <% total_jobs = @connected_jobs.size + @manual_jobs.size %>
 <% if total_jobs.positive? %>
-    <div class="summary-box margin-top-3 maxw-mobile-lg">
+    <div class="usa-summary-box margin-top-3 maxw-mobile-lg">
         <h2><%= t(".jobs_added_heading", count: total_jobs) %></h2>
         <ul>
             <% @connected_jobs.each do |name| %>

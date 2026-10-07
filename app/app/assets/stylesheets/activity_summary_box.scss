@@ -1,9 +1,0 @@
-@forward "uswds";
-@use "uswds" as *;
-
-.summary-box {
-    border-radius: 4px;
-    border: 1px solid var(--component-summary-box-border-color, #5DC0D1);
-    background-color: var(--component-summary-box-background-color, #E7F6F8);
-    padding: units(3);
-}
