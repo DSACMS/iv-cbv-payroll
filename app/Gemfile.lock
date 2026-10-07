@@ -681,7 +681,7 @@ DEPENDENCIES
   i18n-tasks (~> 1.1)
   jbuilder
   jsbundling-rails
-  json (~> 2.21)
+  json (~> 2.9)
   json_schemer (~> 2.5)
   lookbook
   mission_control-jobs
