@@ -16,13 +16,23 @@ namespace :api_docs do
     sh({ "RAILS_ENV" => "test", "RSWAG_DRY_RUN" => "0" },
       "bundle", "exec", "rspec", "--options", "/dev/null",
       "--order", "defined", "--format", "Rswag::Specs::SwaggerFormatter",
-      "--format", "progress", "spec/requests/api")
+      "--format", "progress", "spec/requests/api", "spec/openapi",
+      "spec/services/transmitters/activity_json_transmitter_spec.rb",
+      "spec/services/transmitters/activity_json_transmitter_education_spec.rb")
 
     output = Rails.root.join("tmp/api-docs")
     document = JSON.parse(output.join("openapi.json").read)
     validator = JSONSchemer.openapi(document)
     errors = validator.validate.to_a
     abort "Invalid OpenAPI document: #{errors.inspect}" if errors.any?
+
+    # Standalone report models have examples without an API operation.
+    document.fetch("components").fetch("schemas").each do |name, schema|
+      next unless schema.key?("example")
+
+      errors = validator.schema(name).validate(schema.fetch("example")).to_a
+      abort "Invalid #{name} model example: #{errors.inspect}" if errors.any?
+    end
 
     # The v2 spec's parameter name: :invitation_type, in: :path is declared outside the post block,
     # so rswag writes it to the path-item level parameters array in the OpenAPI JSON (shared across methods),

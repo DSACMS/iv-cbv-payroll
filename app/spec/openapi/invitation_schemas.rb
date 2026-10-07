@@ -5,11 +5,11 @@ module InvitationSchemas
     metadata_fields = {
       individual_id: { type: :string, minLength: 1, example: "INDIVIDUAL-123", description: "Agency individual identifier. Required for V2 activity invitations." },
       first_name: { type: :string, minLength: 1, example: "Jane" },
-      middle_name: { type: :string, nullable: true, example: "Alex" },
+      middle_name: { type: %w[string null], example: "Alex" },
       last_name: { type: :string, minLength: 1, example: "Doe" },
-      case_number: { type: :string, nullable: true, example: "EXAMPLE-123", description: "Agency case identifier." },
-      date_of_birth: { type: :string, nullable: true, example: "01/15/1990", description: "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response." },
-      doc_id: { type: :string, nullable: true, example: "EXAMPLE-DOC-123" }
+      case_number: { type: %w[string null], example: "EXAMPLE-123", description: "Agency case identifier." },
+      date_of_birth: { type: %w[string null], example: "01/15/1990", description: "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response." },
+      doc_id: { type: %w[string null], example: "EXAMPLE-DOC-123" }
     }
 
     schemas = {

@@ -49,8 +49,7 @@ class ActivityReportSerializer
       "ce_report" => {
         "review_period" => review_period,
         "documents" => documents,
-        "activities" => activities,
-        "extended_attributes" => {}
+        "activities" => activities
       }
     }
   end
@@ -62,11 +61,9 @@ class ActivityReportSerializer
   end
 
   def agency_partner_metadata
-    metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) do |attribute|
+    CbvApplicant.build_agency_partner_metadata(@current_agency.id) do |attribute|
       json_value(applicant.public_send(attribute))
     end
-
-    metadata.merge("extended_attributes" => {})
   end
 
   def review_period
@@ -108,7 +105,10 @@ class ActivityReportSerializer
     result = SELF_ATTESTED_ACTIVITY_TYPES.each_with_object({}) do |(type, config), result|
       result[type] = months_for(type, config)
     end
-    result.merge("education" => education_months)
+    result.merge(
+      "employment" => employment_months,
+      "education" => education_months
+    )
   end
 
   def months_for(type, config)
@@ -132,9 +132,70 @@ class ActivityReportSerializer
         "month" => activity_month.month.strftime("%Y-%m"),
         "hours" => activity_month.hours.to_f,
         "data_source" => "self_attested",
-        "document_ids" => document_ids_for(activity),
-        "extended_attributes" => {}
+        "document_ids" => document_ids_for(activity)
       )
+  end
+
+  def employment_months
+    entries_by_month = Hash.new { |hash, key| hash[key] = [] }
+
+    @activity_flow.employment_activities.published.order(:id).each do |activity|
+      activity.activity_months.sort_by(&:month).each do |activity_month|
+        month = activity_month.month.strftime("%Y-%m")
+        entries_by_month[month] << self_attested_employment_entry(activity, activity_month)
+      end
+    end
+
+    fetcher = AggregatorReportFetcher.new(@activity_flow)
+
+    @activity_flow.payroll_accounts.published.order(:id).select(&:sync_succeeded?).each do |account|
+      report = fetcher.report_for_payroll_account(account)
+      unless report&.has_fetched?
+        raise PayrollReportError, "Could not fetch employment report for payroll account #{account.id}"
+      end
+
+      employment_payroll_entries(report).each do |entry|
+        entries_by_month[entry["month"]] << entry
+      end
+    end
+
+    entries_by_month.sort.to_h
+  end
+
+  def employment_payroll_entries(report)
+    report.income_report_employments.flat_map do |employment|
+      employment = employment.as_json
+      paystubs = employment.fetch("paystubs").select do |paystub|
+        pay_date = paystub["pay_date"]&.to_date
+        pay_date && @activity_flow.reporting_window_range.cover?(pay_date)
+      end
+
+      paystubs.group_by { |paystub| paystub.fetch("pay_date").to_date.strftime("%Y-%m") }.map do |month, monthly_paystubs|
+        employment.merge(
+          "type" => "employment",
+          "month" => month,
+          "data_source" => "validated",
+          "document_ids" => [],
+          "paystubs" => monthly_paystubs
+        )
+      end
+    end
+  end
+
+  def self_attested_employment_entry(activity, activity_month)
+    attributes = EmploymentActivity::FIELDS.index_with { |field| json_value(activity.public_send(field)) }
+
+    attributes.merge(
+      "type" => "employment",
+      "month" => activity_month.month.strftime("%Y-%m"),
+      "hours" => activity_month.hours.to_f,
+      "data_source" => "self_attested",
+      "document_ids" => document_ids_for(activity),
+      "additional_comments" => json_value(activity.additional_comments),
+      "employer_address" => activity.formatted_address.presence,
+      "employment_type" => activity.unpaid_or_in_kind? ? "unpaid" : (activity.is_self_employed ? "self_employed" : "w2"),
+      "gross_income" => activity_month.gross_income.to_f
+    )
   end
 
   def education_months
@@ -174,8 +235,7 @@ class ActivityReportSerializer
       "type" => "education",
       "month" => month,
       "document_ids" => document_ids_for(activity),
-      "additional_comments" => json_value(activity.additional_comments),
-      "extended_attributes" => {}
+      "additional_comments" => json_value(activity.additional_comments)
     }
   end
 
@@ -212,4 +272,6 @@ class ActivityReportSerializer
 
     value
   end
+
+  class PayrollReportError < StandardError; end
 end

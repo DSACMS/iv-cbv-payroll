@@ -1,4 +1,4 @@
-require "rails_helper"
+require "swagger_helper"
 require "json_schemer"
 
 RSpec.describe Transmitters::ActivityJsonTransmitter do
@@ -30,6 +30,8 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
     )
   end
   let(:transmitter) { described_class.new(activity_flow, current_agency) }
+  let(:document) { JSONSchemer.openapi(JSON.parse(RSpec.configuration.openapi_specs.fetch("openapi.json").to_json)) }
+  let(:schema) { document.schema("CeActivityReport") }
 
   let!(:service_user) { create(:user, client_agency_id: "sandbox", is_service_account: true) }
   let!(:api_token) { create(:api_access_token, user: service_user) }
@@ -76,15 +78,32 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
     )
   end
 
-  describe "#payload" do
-    let(:schema_path) { Rails.root.parent.join("docs/api/schemas/ce-activity-report-2026-09-01.json") }
-    let(:sample_path) { Rails.root.parent.join("docs/api/samples/ce-activity-report.json") }
+  def populate_education_activities!
+    self_attested = create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested,
+      school_name: "Example Community College", contact_email: "registrar@example.org", additional_comments: nil)
+    activity_flow.reporting_months.each do |month|
+      create(:education_activity_month, education_activity: self_attested, month: month, hours: 3.5)
+    end
 
+    verified = create(:education_activity, activity_flow: activity_flow, status: :succeeded, additional_comments: nil)
+    create(:nsc_enrollment_term, :full_time, education_activity: verified, school_name: "Example University")
+
+    partial = create(:education_activity, activity_flow: activity_flow, data_source: :partially_self_attested,
+      status: :succeeded, additional_comments: nil)
+    create(:nsc_enrollment_term, :less_than_half_time, education_activity: partial,
+      school_name: "Example Technical College", credit_hours: 3.25)
+    create(:nsc_enrollment_term, education_activity: partial, school_name: "Example State University",
+      term_end: activity_flow.reporting_months.first.end_of_month)
+    expect(EducationActivity.data_source_from_nsc_results(partial.nsc_enrollment_terms,
+      reporting_months: activity_flow.reporting_months)).to eq(:partially_self_attested)
+    partial.document_uploads.attach(io: StringIO.new("Synthetic transcript"), filename: "Transcript.pdf", content_type: "application/pdf")
+  end
+
+  describe "#payload" do
     before { populate_activities! }
 
-    it "matches the published CE activity report JSON Schema" do
-      errors = JSONSchemer.schema(JSON.parse(schema_path.read))
-        .validate(JSON.parse(transmitter.payload))
+    it "matches the published CE activity report OpenAPI model" do
+      errors = schema.validate(JSON.parse(transmitter.payload))
         .map { |error| error.slice("data_pointer", "type", "error") }
 
       expect(errors).to eq([])
@@ -97,33 +116,142 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       create(:volunteering_activity_month, volunteering_activity: blank,
         month: activity_flow.reporting_months.first, hours: 5)
 
-      errors = JSONSchemer.schema(JSON.parse(schema_path.read))
-        .validate(JSON.parse(transmitter.payload))
+      errors = schema.validate(JSON.parse(transmitter.payload))
         .map { |error| error.slice("data_pointer", "type", "error") }
 
       expect(errors).to eq([])
     end
 
-    it "matches the published sample for documented activity types" do
+    it "omits extended_attributes throughout the report" do
+      expect(transmitter.payload).not_to include('"extended_attributes"')
+    end
+  end
+
+  describe "employment OpenAPI examples" do
+    include ArgyleApiHelper
+
+    before do
+      activity_flow.update!(created_at: Time.zone.parse("2025-04-11 12:00:00"),
+        completed_at: Time.zone.parse("2025-04-11 14:00:00"), reporting_window_months: 2)
+    end
+
+    def verify_employment_report
+      expect(Rails.logger).not_to receive(:error)
       payload = JSON.parse(transmitter.payload)
-      sample = JSON.parse(sample_path.read)
-      payload_document_ids = payload.dig("ce_report", "documents").map { |document| document["document_id"] }
-      sample_document_ids = sample.dig("ce_report", "documents").map { |document| document["document_id"] }
-      document_id_mapping = sample_document_ids.zip(payload_document_ids).to_h
+      errors = schema.validate(payload).map { |error| error.slice("data_pointer", "type", "error") }
+      expect(errors).to eq([])
+      expect(transmitter.payload).not_to include('"extended_attributes"')
+      request = stub_request(:post, api_url).with(body: transmitter.payload).to_return(status: 200)
+      expect(transmitter.deliver).to eq("ok")
+      expect(request).to have_been_requested
 
-      sample["ce_report"]["documents"].each do |document|
-        document["document_id"] = document_id_mapping.fetch(document["document_id"])
-      end
-      sample["ce_report"]["activities"].each_value do |months|
-        months.each_value do |entries|
-          entries.each do |entry|
-            entry["document_ids"].map! { |id| document_id_mapping.fetch(id) }
-          end
-        end
-      end
+      payload
+    end
 
-      payload["ce_report"]["activities"].slice!(*sample["ce_report"]["activities"].keys)
-      expect(payload).to eq(sample)
+    it "validates and transmits bob's Argyle sandbox payroll data" do
+      account_id = argyle_load_relative_json_file("bob", "request_identity.json").fetch("results").first.fetch("account")
+      create(:payroll_account, :argyle_fully_synced, flow: activity_flow, aggregator_account_id: account_id)
+      argyle_stub_request_identities_response("bob")
+      argyle_stub_request_account_response("bob")
+      # Only the recorded page is needed for this review period.
+      paystubs = argyle_load_relative_json_file("bob", "request_paystubs.json").merge("next" => nil)
+      stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}})
+        .with(query: hash_including("account" => account_id, "from_start_date" => "2025-02-01", "to_start_date" => "2025-03-31"))
+        .to_return(status: 200, body: paystubs.to_json, headers: { "Content-Type" => "application/json" })
+      argyle_stub_request_gigs_response("bob")
+
+      payload = verify_employment_report
+      employment = payload.dig("ce_report", "activities", "employment")
+      expect(employment.keys).to eq(%w[2025-02 2025-03])
+      employment.each do |month, entries|
+        expect(entries.sole["data_source"]).to eq("validated")
+        expect(entries.sole["paystubs"]).not_to be_empty
+        expect(entries.sole["paystubs"].map { |paystub| paystub["pay_date"][0, 7] }.uniq).to eq([ month ])
+      end
+    end
+
+    it "validates and transmits joe's Argyle sandbox payroll data" do
+      account_id = argyle_load_relative_json_file("joe", "request_identity.json").fetch("results").first.fetch("account")
+      create(:payroll_account, :argyle_fully_synced, flow: activity_flow, aggregator_account_id: account_id)
+      argyle_stub_request_identities_response("joe")
+      argyle_stub_request_account_response("joe")
+      # Only the recorded page is needed for this review period.
+      paystubs = argyle_load_relative_json_file("joe", "request_paystubs.json").merge("next" => nil)
+      stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}})
+        .with(query: hash_including("account" => account_id, "from_start_date" => "2025-02-01", "to_start_date" => "2025-03-31"))
+        .to_return(status: 200, body: paystubs.to_json, headers: { "Content-Type" => "application/json" })
+      argyle_stub_request_gigs_response("empty")
+
+      payload = verify_employment_report
+      employment = payload.dig("ce_report", "activities", "employment")
+      expect(employment.keys).to eq(%w[2025-02 2025-03])
+      employment.each do |month, entries|
+        expect(entries.sole["data_source"]).to eq("validated")
+        expect(entries.sole["paystubs"]).not_to be_empty
+        expect(entries.sole["paystubs"].map { |paystub| paystub["pay_date"][0, 7] }.uniq).to eq([ month ])
+      end
+    end
+
+    it "validates and transmits kim's Argyle sandbox payroll data" do
+      account_id = argyle_load_relative_json_file("kim", "request_identity.json").fetch("results").first.fetch("account")
+      create(:payroll_account, :argyle_fully_synced, flow: activity_flow, aggregator_account_id: account_id)
+      argyle_stub_request_identities_response("kim")
+      argyle_stub_request_account_response("kim")
+      # Only the recorded page is needed for this review period.
+      paystubs = argyle_load_relative_json_file("kim", "request_paystubs.json").merge("next" => nil)
+      stub_request(:get, %r{#{Aggregators::Sdk::ArgyleService::PAYSTUBS_ENDPOINT}})
+        .with(query: hash_including("account" => account_id, "from_start_date" => "2025-02-01", "to_start_date" => "2025-03-31"))
+        .to_return(status: 200, body: paystubs.to_json, headers: { "Content-Type" => "application/json" })
+      argyle_stub_request_gigs_response("kim")
+
+      payload = verify_employment_report
+      employment = payload.dig("ce_report", "activities", "employment")
+      expect(employment.keys).to eq(%w[2025-02 2025-03])
+      employment.each do |month, entries|
+        expect(entries.sole["data_source"]).to eq("validated")
+        expect(entries.sole["paystubs"]).not_to be_empty
+        expect(entries.sole["paystubs"].map { |paystub| paystub["pay_date"][0, 7] }.uniq).to eq([ month ])
+      end
+    end
+
+    it "publishes a complete CE model example with mixed employment and education" do
+      account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "account1")
+      payroll_report = build(:pinwheel_report, :hydrated, payroll_accounts: [ account ], has_fetched: true)
+      payroll_report.incomes.first.compensation_unit = "hourly"
+      payroll_report.paystubs.first.pay_date = "2025-03-01"
+      payroll_report.paystubs.first.pay_period_start = "2025-02-15"
+      payroll_report.paystubs.first.pay_period_end = "2025-02-28"
+      fetcher = instance_double(AggregatorReportFetcher, report_for_payroll_account: payroll_report)
+      allow(AggregatorReportFetcher).to receive(:new).with(activity_flow).and_return(fetcher)
+
+      self_employed = create(:employment_activity, activity_flow: activity_flow, employer_name: "Side Gig LLC", is_self_employed: true)
+      unpaid = create(:employment_activity, activity_flow: activity_flow, employer_name: "Work For Free LLC", compensation_type: :unpaid_or_in_kind)
+      create(:employment_activity_month, employment_activity: self_employed, month: Date.new(2025, 3, 1), hours: 12.75, gross_income: 123.45)
+      create(:employment_activity_month, employment_activity: unpaid, month: Date.new(2025, 3, 1), hours: 20, gross_income: 0)
+      self_employed.document_uploads.attach(io: StringIO.new("Synthetic income statement"), filename: "Income statement.pdf", content_type: "application/pdf")
+
+      populate_activities!
+      populate_education_activities!
+      payload = verify_employment_report
+      RSpec.configuration.openapi_specs.fetch("openapi.json")[:components][:schemas][:CeActivityReport][:example] = payload
+      expect(payload.dig("ce_report", "activities", "employment", "2025-03").map { |entry| entry["employment_type"] })
+        .to eq(%w[self_employed unpaid gig])
+      expect(payload.dig("ce_report", "activities", "education", "2025-03").map { |entry| entry["data_source"] }.uniq)
+        .to eq(%w[self_attested verified verified_enrollment_only])
+      partial_entries = payload.dig("ce_report", "activities", "education", "2025-02")
+        .select { |entry| entry["data_source"] == "verified_enrollment_only" }
+      expect(partial_entries.map { |entry| entry["credit_hours"] }).to contain_exactly(3.25, nil)
+    end
+
+    it "does not post a partial report when a payroll fetch fails" do
+      create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow)
+      failed_report = instance_double(Aggregators::AggregatorReports::PinwheelReport, has_fetched?: false)
+      fetcher = instance_double(AggregatorReportFetcher, report_for_payroll_account: failed_report)
+      allow(AggregatorReportFetcher).to receive(:new).with(activity_flow).and_return(fetcher)
+      request = stub_request(:post, api_url).to_return(status: 200)
+
+      expect { transmitter.deliver }.to raise_error(ActivityReportSerializer::PayrollReportError)
+      expect(request).not_to have_been_requested
     end
   end
 
