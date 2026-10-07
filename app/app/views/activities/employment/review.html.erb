@@ -23,6 +23,7 @@
   <% if @flow.employment_focused? %>
     <%= t(".employment_focused.description", employer_name: @employment_activity.employer_name) %>
     <br>
+    <br>
     <%= t(".employment_focused.comment_prompt", agency_initials: agency_translation("shared.agency_acronym")) %>
   <% else %>
     <%= t(unpaid ? "activities.employment.review.unpaid_or_in_kind.description" : "activities.employment.review.description",
