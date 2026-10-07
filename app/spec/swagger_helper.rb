@@ -44,7 +44,8 @@ RSpec.configure do |config|
 
     if response.status == 201
       document = JSONSchemer.openapi(JSON.parse(config.openapi_specs.fetch("openapi.json").to_json))
-      errors = document.schema("InvitationRequest").validate(invitation.deep_stringify_keys).to_a
+      request_schema = metadata[:operation][:operationId].to_s.start_with?("createInvitationV2") ? "V2InvitationRequest" : "InvitationRequest"
+      errors = document.schema(request_schema).validate(invitation.deep_stringify_keys).to_a
       expect(errors).to be_empty, errors.inspect
       metadata[:operation][:request_examples] ||= []
       metadata[:operation][:request_examples] << { name: name, summary: summary, value: invitation }

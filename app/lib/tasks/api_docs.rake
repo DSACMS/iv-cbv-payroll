@@ -24,9 +24,17 @@ namespace :api_docs do
     errors = validator.validate.to_a
     abort "Invalid OpenAPI document: #{errors.inspect}" if errors.any?
 
+    # The v2 spec's parameter name: :invitation_type, in: :path is declared outside the post block,
+    # so rswag writes it to the path-item level parameters array in the OpenAPI JSON (shared across methods),
+    # not under post. This rake task's loop doesn't filter for HTTP method keys,
+    # so it also tries to treat that "parameters" array as an operation.
+    HTTP_METHODS = %w[get put post delete options head patch trace].freeze
+
     # Validate every published example, including all variants of each response.
     document.fetch("paths").each do |path, operations|
       operations.each do |method, operation|
+        next unless HTTP_METHODS.include?(method.downcase)
+
         body_paths = [ [ "requestBody" ], *operation.fetch("responses").keys.map { |status| [ "responses", status ] } ]
         body_paths.each do |body_path|
           body = operation.dig(*body_path)
@@ -34,7 +42,7 @@ namespace :api_docs do
 
           body.fetch("content", {}).each do |mime, media|
             pointer = [ "paths", path, method, *body_path, "content", mime, "schema" ]
-              .map { |part| part.gsub("~", "~0").gsub("/", "~1") }.join("/")
+              .map { |part| part.gsub("~", "~0").gsub("/", "~1") }.join("/").then { |p| CGI.escape(p).gsub("+", "%20") }
             schema = validator.ref("#/#{pointer}")
             media.fetch("examples", {}).each do |name, example|
               errors = schema.validate(example.fetch("value")).to_a

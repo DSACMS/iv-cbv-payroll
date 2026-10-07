@@ -1,6 +1,6 @@
 Integrate your agency's systems with the Emmy platform. This reference currently
-covers the Tokenized Link API for creating personalized reporting links.
-V2 invitations and outbound report payloads are separate interfaces and are not
+covers the Tokenized Link API (v1 and v2) for creating personalized reporting links.
+Outbound report payloads are separate interfaces and are not
 yet covered here. Examples use synthetic applicant data and nonfunctional tokens.
 
 Object schemas allow additional properties for forward compatibility. Integrations
