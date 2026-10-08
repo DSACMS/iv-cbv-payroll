@@ -11,6 +11,63 @@ RSpec.describe InvitationSchemas do
   let(:sandbox) { { "first_name" => "Jane", "last_name" => "Doe", "middle_name" => nil, "case_number" => "EXAMPLE-123" } }
   let(:louisiana) { { "doc_id" => "EXAMPLE-DOC-123", "case_number" => nil, "date_of_birth" => "01/15/1990" } }
 
+  describe "V2 agency metadata" do
+    let(:metadata) { { "individual_id" => "INDIVIDUAL-123", "first_name" => "Jane", "last_name" => "Doe" } }
+
+    it "uses each agency's configured metadata and required fields for both invitation types" do
+      agencies = {
+        "Sandbox" => "sandbox", "NewHampshire" => "nh_dhhs", "Louisiana" => "la_ldh",
+        "Research" => "research", "Accenture" => "accenture"
+      }
+
+      agencies.each do |name, id|
+        agency = Rails.application.config.client_agencies[id]
+        %w[community_engagement employment].each do |invitation_type|
+          schema = described_class.schemas.fetch("V2AgencyMetadata#{name}#{invitation_type.camelize}")
+
+          expect(schema[:properties].keys).to match_array(agency.api_metadata(invitation_type))
+          expect(schema[:required]).to match_array(agency.api_required_metadata(invitation_type).map(&:to_s))
+        end
+      end
+    end
+
+    it "does not document date of birth for employment invitations" do
+      schema = document.schema("V2AgencyMetadataSandboxEmployment")
+
+      expect(described_class.schemas.fetch("V2AgencyMetadataSandboxEmployment")[:properties]).not_to have_key(:date_of_birth)
+      expect(schema.valid?(metadata)).to be(true)
+      expect(schema.valid?(metadata.except("individual_id"))).to be(false)
+    end
+
+    it "requires date of birth for community engagement invitations" do
+      schema = document.schema("V2AgencyMetadataSandboxCommunityEngagement")
+
+      expect(schema.valid?(metadata)).to be(false)
+      expect(schema.valid?(metadata.merge("date_of_birth" => "01/15/1990"))).to be(true)
+    end
+
+    context "when one agency's configuration changes" do
+      let(:agency) { Rails.application.config.client_agencies["sandbox"] }
+
+      before do
+        allow(agency).to receive(:api_metadata).and_call_original
+        allow(agency).to receive(:api_required_metadata).and_call_original
+        allow(agency).to receive(:api_metadata).with("employment").and_return(%i[individual_id case_number])
+        allow(agency).to receive(:api_required_metadata).with("employment").and_return(%i[individual_id case_number])
+      end
+
+      it "updates only that agency's matching V2 schema" do
+        schemas = described_class.schemas
+
+        expect(schemas.fetch("V2AgencyMetadataSandboxEmployment")[:properties].keys).to contain_exactly(:individual_id, :case_number)
+        expect(schemas.fetch("V2AgencyMetadataSandboxEmployment")[:required]).to contain_exactly("individual_id", "case_number")
+        expect(schemas.fetch("V2AgencyMetadataSandboxCommunityEngagement")[:properties]).to have_key(:first_name)
+        expect(schemas.fetch("V2AgencyMetadataLouisianaEmployment")[:properties]).to have_key(:first_name)
+        expect(schemas.fetch("AgencyMetadataSandbox")[:properties]).to have_key(:middle_name)
+      end
+    end
+  end
+
   it "defines separate sandbox and Louisiana field sets" do
     expect(document.schema("AgencyMetadataSandbox").valid?(sandbox)).to be(true)
     expect(document.schema("AgencyMetadataLouisiana").valid?(louisiana)).to be(true)

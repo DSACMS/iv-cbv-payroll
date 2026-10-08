@@ -1,21 +1,6 @@
 require_relative "invitation_documentation"
 
 module InvitationSchemas
-  # Mirrors config/client-agency-config.yml's api.v2.{employment,community_engagement}
-  # blocks, which are identical across all five agencies today. Keep this in
-  # sync with that file rather than deriving V2 schemas from the V1 agency
-  # field lists, which do not reflect per-flow V2 requirements.
-  V2_CONTRACT = {
-    "community_engagement" => {
-      metadata: %i[individual_id first_name last_name date_of_birth],
-      required: %i[individual_id first_name last_name date_of_birth]
-    },
-    "employment" => {
-      metadata: %i[individual_id first_name last_name date_of_birth],
-      required: %i[individual_id first_name last_name date_of_birth]
-    }
-  }.freeze
-
   def self.schemas
     metadata_fields = {
       individual_id: { type: :string, minLength: 1, example: "INDIVIDUAL-123", description: "Agency individual identifier. Required for V2 activity invitations." },
@@ -34,6 +19,16 @@ module InvitationSchemas
         description: InvitationDocumentation.read("agency-partner-metadata"),
         anyOf: %w[Sandbox NewHampshire Louisiana Research Accenture].map { |agency| { "$ref" => "#/components/schemas/AgencyMetadata#{agency}" } }
       },
+      AgencyPartnerMetadataV2: {
+        type: :object,
+        additionalProperties: true,
+        description: InvitationDocumentation.read("agency-partner-metadata"),
+        anyOf: %w[community_engagement employment].flat_map do |invitation_type|
+          %w[Sandbox NewHampshire Louisiana Research Accenture].map do |agency|
+            { "$ref" => "#/components/schemas/V2AgencyMetadata#{agency}#{invitation_type.camelize}" }
+          end
+        end
+      },
       InvitationRequest: {
         type: :object,
         additionalProperties: true,
@@ -47,6 +42,23 @@ module InvitationSchemas
           agency_partner_metadata: { "$ref" => "#/components/schemas/AgencyPartnerMetadata" }
         }
       },
+      InvitationRequestV2: {
+        type: :object,
+        additionalProperties: true,
+        description: "Invitation settings and metadata for the agency identified by the API key. invitation_type is selected via the URL path, not this body.",
+        required: %w[language verification_range agency_partner_metadata],
+        properties: {
+          language: {
+            type: :string, pattern: "^([eE][nN]|[eE][sS])$", example: "en",
+            description: "Preferred language: en (English) or es (Spanish), case insensitive. Required; omitted or unsupported values return 422. Returned in lowercase."
+          },
+          verification_range: {
+            type: :string, enum: [ "last_complete_month", "last_12_complete_months" ],
+            description: "Reporting window for the activity invitation."
+          },
+          agency_partner_metadata: { "$ref" => "#/components/schemas/AgencyPartnerMetadataV2" }
+        }
+      },
       InvitationResponse: {
         type: :object,
         description: InvitationDocumentation.read("post-v1-invitations", section: "Response"),
@@ -57,6 +69,19 @@ module InvitationSchemas
           expiration_date: { type: :string, format: :"date-time", description: "Expiration of tokenized_url, at the end of the day in America/New_York after the agency's configured validity period." },
           language: { type: :string, enum: %w[en es] },
           agency_partner_metadata: { "$ref" => "#/components/schemas/AgencyPartnerMetadata" }
+        }
+      },
+      InvitationResponseV2: {
+        type: :object,
+        description: InvitationDocumentation.read("post-v2-invitations", section: "Response"),
+        required: %w[tokenized_url activity_tokenized_url expiration_date language agency_partner_metadata],
+        additionalProperties: true,
+        properties: {
+          tokenized_url: { type: :string, format: :uri, description: "Income reporting link. Treat the token as opaque and direct the applicant to this URL unchanged." },
+          activity_tokenized_url: { type: :string, format: :uri, description: "Activity reporting link for the selected invitation_type." },
+          expiration_date: { type: :string, format: :"date-time", description: "Expiration of tokenized_url, at the end of the day in America/New_York after the agency's configured validity period." },
+          language: { type: :string, enum: %w[en es] },
+          agency_partner_metadata: { "$ref" => "#/components/schemas/AgencyPartnerMetadataV2" }
         }
       },
       InvitationErrors: {
@@ -76,47 +101,7 @@ module InvitationSchemas
           }
         }
       },
-      V2AgencyPartnerMetadata: {
-        type: :object,
-        additionalProperties: true,
-        description: InvitationDocumentation.read("agency-partner-metadata"),
-        anyOf: %w[community_engagement employment].flat_map do |invitation_type|
-          %w[Sandbox NewHampshire Louisiana Research Accenture].map do |agency|
-            { "$ref" => "#/components/schemas/V2AgencyMetadata#{agency}#{invitation_type.camelize}" }
-          end
-        end
-      },
-      V2InvitationRequest: {
-        type: :object,
-        additionalProperties: true,
-        description: "Invitation settings and metadata for the agency identified by the API key. invitation_type is selected via the URL path, not this body.",
-        required: %w[language verification_range agency_partner_metadata],
-        properties: {
-          language: {
-            type: :string, pattern: "^([eE][nN]|[eE][sS])$", example: "en",
-            description: "Preferred language: en (English) or es (Spanish), case insensitive. Required; omitted or unsupported values return 422. Returned in lowercase."
-          },
-          verification_range: {
-            type: :string, enum: [ "last_complete_month", "last_12_complete_months" ],
-            description: "Reporting window for the activity invitation."
-          },
-          agency_partner_metadata: { "$ref" => "#/components/schemas/V2AgencyPartnerMetadata" }
-        }
-      },
-      V2InvitationResponse: {
-        type: :object,
-        description: InvitationDocumentation.read("post-v2-invitations", section: "Response"),
-        required: %w[tokenized_url activity_tokenized_url expiration_date language agency_partner_metadata],
-        additionalProperties: true,
-        properties: {
-          tokenized_url: { type: :string, format: :uri, description: "Income reporting link. Treat the token as opaque and direct the applicant to this URL unchanged." },
-          activity_tokenized_url: { type: :string, format: :uri, description: "Activity reporting link for the selected invitation_type." },
-          expiration_date: { type: :string, format: :"date-time", description: "Expiration of tokenized_url, at the end of the day in America/New_York after the agency's configured validity period." },
-          language: { type: :string, enum: %w[en es] },
-          agency_partner_metadata: { "$ref" => "#/components/schemas/V2AgencyPartnerMetadata" }
-        }
-      },
-      V2InvitationErrors: {
+      InvitationErrorsV2: {
         type: :object,
         required: %w[errors],
         additionalProperties: true,
@@ -140,12 +125,12 @@ module InvitationSchemas
     }
 
     {
-      "Sandbox" => [ "Sandbox", %i[first_name middle_name last_name case_number date_of_birth] ],
-      "NewHampshire" => [ "New Hampshire", %i[first_name middle_name last_name case_number date_of_birth] ],
-      "Louisiana" => [ "Louisiana", %i[case_number date_of_birth doc_id] ],
-      "Research" => [ "Research", %i[case_number date_of_birth] ],
-      "Accenture" => [ "Accenture", %i[case_number] ]
-    }.each do |agency, (title, fields)|
+      "Sandbox" => [ "sandbox", "Sandbox", %i[first_name middle_name last_name case_number date_of_birth] ],
+      "NewHampshire" => [ "nh_dhhs", "New Hampshire", %i[first_name middle_name last_name case_number date_of_birth] ],
+      "Louisiana" => [ "la_ldh", "Louisiana", %i[case_number date_of_birth doc_id] ],
+      "Research" => [ "research", "Research", %i[case_number date_of_birth] ],
+      "Accenture" => [ "accenture", "Accenture", %i[case_number] ]
+    }.each do |agency, (agency_id, title, fields)|
       schema_name = "AgencyMetadata#{agency}"
       schema = {
         title: schema_name,
@@ -160,16 +145,19 @@ module InvitationSchemas
       end
       schemas[schema_name] = schema
 
-      V2_CONTRACT.each do |invitation_type, contract|
+      client_agency = Rails.application.config.client_agencies[agency_id] ||
+        raise(KeyError, "No client agency config for #{agency_id.inspect}")
+
+      %w[community_engagement employment].each do |invitation_type|
         v2_schema_name = "V2AgencyMetadata#{agency}#{invitation_type.camelize}"
-        v2_fields = contract[:metadata]
+        v2_fields = client_agency.api_metadata(invitation_type)
         v2_schema = {
           title: v2_schema_name,
           type: :object,
           description: "Accepted V2 metadata for #{title}'s #{invitation_type.humanize.downcase} invitations. The API ignores fields outside this schema.",
           additionalProperties: true,
-          properties: metadata_fields.slice(*v2_fields),
-          required: contract[:required].map(&:to_s)
+          properties: v2_fields.to_h { |field| [ field, metadata_fields.fetch(field) ] },
+          required: client_agency.api_required_metadata(invitation_type).map(&:to_s)
         }
         schemas[v2_schema_name] = v2_schema
       end

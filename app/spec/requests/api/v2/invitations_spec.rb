@@ -36,17 +36,17 @@ RSpec.describe "Tokenized Link API V2", type: :request do
       type: :string, enum: [ "community-engagement", "employment" ]
     }, description: "Selects which activity flow is created alongside the income invitation."
 
-    post "Create tokenized reporting links, with an activity invitation" do
+    post "Create a Tokenized Link to Emmy Community Engagement" do
       tags "Invitations"
       operationId "createInvitationV2"
       description InvitationDocumentation.read("post-v2-invitations", section: "Description")
       consumes "application/json"
       produces "application/json"
       security [ bearerAuth: [] ]
-      parameter name: :invitation, in: :body, required: true, schema: { "$ref" => "#/components/schemas/V2InvitationRequest" }
+      parameter name: :invitation, in: :body, required: true, schema: { "$ref" => "#/components/schemas/InvitationRequestV2" }
 
       response "201", "Invitations created" do
-        schema "$ref" => "#/components/schemas/V2InvitationResponse"
+        schema "$ref" => "#/components/schemas/InvitationResponseV2"
 
         context "with invitation_type employment" do
           let(:invitation_type) { "employment" }
@@ -77,7 +77,7 @@ RSpec.describe "Tokenized Link API V2", type: :request do
       end
 
       response "422", "Validation failed" do
-        schema "$ref" => "#/components/schemas/V2InvitationErrors"
+        schema "$ref" => "#/components/schemas/InvitationErrorsV2"
 
         context "without a required applicant name" do
           let(:invitation) { super().deep_merge(agency_partner_metadata: { first_name: nil }) }
