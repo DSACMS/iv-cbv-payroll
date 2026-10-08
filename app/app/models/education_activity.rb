@@ -116,6 +116,10 @@ class EducationActivity < Activity
     "activities.education.document_upload_suggestion_text_html"
   end
 
+  def document_upload_suggestion_title_i18n_key
+    "activities.document_uploads.new.education.suggestion_title"
+  end
+
   def document_upload_title_i18n_key
     if partially_self_attested? && document_upload_school_names.length > 1
       "activities.document_uploads.new.title_generic"

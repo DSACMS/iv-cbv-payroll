@@ -150,7 +150,10 @@ en:
       heading_previous: Previously uploaded documents (%{document_count})
       new:
         continue: Continue to review
-        description: 'Upload documents that verify the information you entered:'
+        description: 'Upload documents that verify the information you entered for:'
+        education:
+          description: 'Upload documents that verify the information you entered:'
+          suggestion_title: Suggested supporting documents
         errors:
           empty: That file is empty. Choose a different file.
           multiple_files: We could not upload one or more files. Check the files and try again.
@@ -160,7 +163,7 @@ en:
         input_hint: Select %{types} files
         input_label: Add documents
         suggestion_text_html: "<ul><li>Document Type Placeholder 1</li><li>Document Type Placeholder 2</li><li>Document Type Placeholder 3</li></ul>"
-        suggestion_title: Suggested supporting documents
+        suggestion_title: Suggested documents
         title: Upload supporting documents for %{name}
         title_generic: Upload supporting documents
       remove_file: Remove file
