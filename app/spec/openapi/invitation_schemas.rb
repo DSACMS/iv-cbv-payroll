@@ -25,7 +25,7 @@ module InvitationSchemas
         description: InvitationDocumentation.read("agency-partner-metadata"),
         anyOf: %w[community_engagement employment].flat_map do |invitation_type|
           %w[Sandbox NewHampshire Louisiana Research Accenture].map do |agency|
-            { "$ref" => "#/components/schemas/V2AgencyMetadata#{agency}#{invitation_type.camelize}" }
+            { "$ref" => "#/components/schemas/AgencyMetadataV2#{agency}#{invitation_type.camelize}" }
           end
         end
       },
