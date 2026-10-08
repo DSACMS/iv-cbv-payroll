@@ -78,6 +78,8 @@ Rails.application.routes.draw do
       resource :success, only: %i[show], controller: "success"
       scope "/income", as: :income do
         resource :add_your_work, only: %i[show create], controller: "employment/add_your_work"
+        get "add_your_work/add_jobs", to: "employment/add_your_work#add_jobs", as: :add_jobs
+        post "add_your_work/add_jobs", to: "employment/add_your_work#create_add_jobs"
         resource :employer_search, only: %i[show], controller: "income/employer_searches"
         resource :synchronizations, only: %i[show update], controller: "income/synchronizations"
         resource :synchronization_failures, only: %i[show], controller: "income/synchronization_failures"

@@ -44,6 +44,8 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       )
     end
 
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :new, params: { employment_id: create(:employment_activity, activity_flow: activity_flow).id } }
+
     it "renders the upload form for a volunteering activity" do
       volunteering_activity = create(
         :volunteering_activity,

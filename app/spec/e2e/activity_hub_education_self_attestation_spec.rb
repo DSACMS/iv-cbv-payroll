@@ -16,7 +16,8 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
 
     # Start at the activity hub
     visit URI(root_url).request_uri
-    visit activities_flow_entry_path(client_agency_id: "sandbox")
+    invitation = create(:activity_flow_invitation, client_agency_id: "sandbox")
+    visit activities_flow_start_path(token: invitation.auth_token)
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     click_link I18n.t("activities.entries.show.continue")
     verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
@@ -35,6 +36,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     find(".usa-combo-box__list-option", text: "Illinois (IL)").click
     fill_in I18n.t("activities.education.new.zip_code"), with: "61820"
     fill_in I18n.t("activities.education.new.contact_name"), with: "Dr. Smith"
+    fill_in I18n.t("activities.education.new.contact_title"), with: "Academic advisor"
     fill_in I18n.t("activities.education.new.contact_email"), with: "smith@illinois.edu"
     click_button I18n.t("activities.education.new.continue")
 
@@ -91,6 +93,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     edit_links = all("a", text: I18n.t("activities.hub.edit"))
     edit_links.first.click
     verify_page(page, title: I18n.t("activities.education.new.edit_title"))
+    expect(page).to have_field(I18n.t("activities.education.new.contact_title"), with: "Academic advisor")
     fill_in I18n.t("activities.education.new.school_name"), with: "Updated University of Illinois"
     click_button I18n.t("activities.hub.save")
 

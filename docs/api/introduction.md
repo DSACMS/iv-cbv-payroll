@@ -1,12 +1,12 @@
 # Introduction
 
 Integrate your agency's systems with the Emmy platform. This reference currently
-covers the Tokenized Link API for creating personalized reporting links and the
+covers the Tokenized Link API (v1 and v2) for creating personalized reporting links and the
 CE Activity Report webhook for outbound community engagement reports. Find the
 webhook under **Receiving data from the Emmy Platform**, including its JSON
 request example, signing headers, expected response, and signed cURL sample.
 Its component models include self-attested employment, validated payroll, and education.
-Your agency hosts this receiver. V2 invitations are not yet covered here.
+Your agency hosts this receiver.
 Examples use synthetic applicant data and nonfunctional tokens.
 
 Object schemas allow additional properties for forward compatibility. Integrations

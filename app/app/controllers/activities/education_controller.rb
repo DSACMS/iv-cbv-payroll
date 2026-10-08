@@ -170,11 +170,7 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def fully_self_attested_education_params
-    params.require(:education_activity).permit(
-      :school_name, :street_address, :street_address_line_2,
-      :city, :state, :zip_code,
-      :contact_name, :contact_email, :contact_phone_number
-    )
+    params.require(:education_activity).permit(*EducationActivity::FIELDS)
   end
 
   def set_completed_indicators

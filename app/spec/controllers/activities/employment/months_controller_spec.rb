@@ -23,8 +23,45 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
   end
 
   describe "GET #edit" do
-    let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
+    let(:tracked_flow) { activity_flow }
+
+    context "for an employment_focused activity" do
+      before { activity_flow.update!(employment_focused: true) }
+
+      it "uses income and hours in the paid-work heading and browser title" do
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        heading = "Add your income and hours for #{employment_activity.employer_name}"
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("h1", text: heading, exact_text: true, normalize_ws: true)
+        expect(rendered).to have_title(/#{Regexp.escape(heading)}/)
+      end
+
+      it "keeps the hours-only heading for unpaid work" do
+        employment_activity.update!(compensation_type: :unpaid_or_in_kind)
+
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        expect(Capybara.string(response.body)).to have_selector("h1", text: "Add your hours for #{employment_activity.employer_name}", exact_text: true, normalize_ws: true)
+      end
+    end
+
+    context "for a standard CE activity" do
+      before { activity_flow.update!(employment_focused: false) }
+
+      it "uses income and hours in the paid-work heading and browser title" do
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        heading = "Add your income and hours for #{employment_activity.employer_name}"
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("h1", text: heading, exact_text: true, normalize_ws: true)
+        expect(rendered).to have_title(/#{Regexp.escape(heading)}/)
+      end
+    end
+
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentMonthViewed,
       extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String) } }

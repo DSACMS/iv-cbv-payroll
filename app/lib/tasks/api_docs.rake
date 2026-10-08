@@ -47,7 +47,7 @@ namespace :api_docs do
 
             body.fetch("content", {}).each do |mime, media|
               pointer = [ section, path, method, *body_path, "content", mime, "schema" ]
-                .map { |part| part.gsub("~", "~0").gsub("/", "~1") }.join("/")
+                .map { |part| part.gsub("~", "~0").gsub("/", "~1") }.join("/").then { |pointer| CGI.escape(pointer).gsub("+", "%20") }
               schema = validator.ref("#/#{pointer}")
               media.fetch("examples", {}).each do |name, example|
                 errors = schema.validate(example.fetch("value")).to_a

@@ -238,6 +238,7 @@ RSpec.describe ActivityReportSerializer do
         state: "LA",
         zip_code: "70112",
         contact_name: "Casey Doe",
+        contact_title: "Registrar",
         contact_email: "casey@example.org",
         contact_phone_number: "5045555678",
         additional_comments: "Evening classes"
@@ -256,6 +257,7 @@ RSpec.describe ActivityReportSerializer do
         "state" => "LA",
         "zip_code" => "70112",
         "contact_name" => "Casey Doe",
+        "contact_title" => "Registrar",
         "contact_email" => "casey@example.org",
         "contact_phone_number" => "5045555678",
         "additional_comments" => "Evening classes",
@@ -264,6 +266,14 @@ RSpec.describe ActivityReportSerializer do
         "document_ids" => []
       )
       expect(education_entries["2026-07"].sole["hours"]).to eq(0.0)
+    end
+
+    it "reports an omitted school official title as null" do
+      education = create(:education_activity, activity_flow: activity_flow,
+        data_source: :fully_self_attested, school_name: "City Community College")
+      create(:education_activity_month, education_activity: education, month: first_month, hours: 3.5)
+
+      expect(education_entries["2026-06"].sole).to include("contact_title" => nil)
     end
 
     it "reports verified NSC terms in each overlapping reporting month" do

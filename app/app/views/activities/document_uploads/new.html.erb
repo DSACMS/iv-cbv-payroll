@@ -14,13 +14,15 @@
 <%# i18n-tasks-use t('activities.employment.unpaid_or_in_kind.document_upload_suggestion_text_html') %>
 <%# i18n-tasks-use t('activities.employment.unpaid_or_in_kind.document_upload_suggestion_title') %>
 
-<% content_for :activity_flow_header do %>
-  <%= render ActivityFlowHeaderComponent.new(
-    title: t(@activity.document_upload_header_title_i18n_key),
-    exit_url: activities_flow_root_path,
-    back_url: @back_url,
-    track_event_prefix: track_event_prefix
-  ) %>
+<% unless @flow.employment_focused? %>
+  <% content_for :activity_flow_header do %>
+    <%= render ActivityFlowHeaderComponent.new(
+      title: t(@activity.document_upload_header_title_i18n_key),
+      exit_url: activities_flow_root_path,
+      back_url: @back_url,
+      track_event_prefix: track_event_prefix
+    ) %>
+  <% end %>
 <% end %>
 
 <h1><%= title %></h1>
