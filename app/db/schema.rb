@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_06_203042) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_08_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -68,6 +68,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_203042) do
     t.datetime "created_at", null: false
     t.boolean "employment_focused", default: false, null: false
     t.string "reference_id"
+    t.boolean "unpaid_work_only", default: false
     t.datetime "updated_at", null: false
     t.string "verification_range"
     t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
@@ -109,6 +110,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_203042) do
     t.integer "reporting_window_months"
     t.string "reporting_window_type"
     t.datetime "transmitted_at"
+    t.boolean "unpaid_work_only", default: false
     t.datetime "updated_at", null: false
     t.index ["activity_flow_invitation_id"], name: "index_activity_flows_on_activity_flow_invitation_id"
     t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"

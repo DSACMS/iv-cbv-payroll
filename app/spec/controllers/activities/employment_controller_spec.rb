@@ -146,6 +146,38 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     end
   end
 
+  context "with unpaid-only employment" do
+    before { activity_flow.update!(unpaid_work_only: true) }
+
+    it "shows the unpaid form even when the URL requests paid employment" do
+      get :new, params: { compensation_type: "paid" }
+
+      expect(Capybara.string(response.body)).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.title"))
+    end
+
+    it "returns to the hub when going back from a validation error" do
+      post :create, params: { employment_activity: { employer_name: "" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(Capybara.string(response.body)).to have_link("Back", href: activities_flow_root_path)
+    end
+
+    it "creates unpaid work when the compensation type is omitted" do
+      post :create, params: { employment_activity: { employer_name: "Example work" } }
+
+      expect(activity_flow.employment_activities.last).to be_unpaid_or_in_kind
+    end
+
+    it "does not allow submitted compensation types to bypass the restriction" do
+      post :create, params: {
+        compensation_type: "paid",
+        employment_activity: { employer_name: "Example work", compensation_type: "paid" }
+      }
+
+      expect(activity_flow.employment_activities.last).to be_unpaid_or_in_kind
+    end
+  end
+
   describe "GET #edit" do
     let(:perform_tracked_action) { get :edit, params: { id: employment_activity.id } }
     let(:tracked_flow) { activity_flow }

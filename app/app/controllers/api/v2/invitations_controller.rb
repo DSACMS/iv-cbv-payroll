@@ -1,4 +1,6 @@
 class Api::V2::InvitationsController < Api::InvitationsController
+  before_action :validate_unpaid_work_only, only: :create
+
   def create
     contract = metadata_contract
 
@@ -25,6 +27,7 @@ class Api::V2::InvitationsController < Api::InvitationsController
           @cbv_flow_invitation,
           verification_range: params[:verification_range],
           employment_focused: employment?,
+          unpaid_work_only: params.fetch(:unpaid_work_only, false),
           context: :v2
         )
     end
@@ -36,6 +39,19 @@ class Api::V2::InvitationsController < Api::InvitationsController
   end
 
   private
+
+  def validate_unpaid_work_only
+    return unless params.key?(:unpaid_work_only)
+
+    message = if !community_engagement?
+                I18n.t("api.v2.fields.unpaid_work_only.unsupported")
+              elsif ![ true, false, nil ].include?(params[:unpaid_work_only])
+                I18n.t("api.v2.fields.unpaid_work_only.invalid")
+              end
+    return unless message
+
+    render json: { errors: [ { field: "unpaid_work_only", message: message } ] }, status: :unprocessable_content
+  end
 
   def employment?
     invitation_type == "employment"

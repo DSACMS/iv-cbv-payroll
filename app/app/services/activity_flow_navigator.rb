@@ -17,7 +17,7 @@ class ActivityFlowNavigator
       activities_flow_income_synchronizations_path
     when "activities/income/synchronizations"
       activities_flow_income_payment_details_path
-    when "activities/income/payment_details"
+    when "activities/income/payment_details", "activities/employment"
       after_income_path
     when "cbv/employer_searches"
       activities_flow_income_synchronizations_path

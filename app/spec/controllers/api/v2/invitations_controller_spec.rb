@@ -118,6 +118,87 @@ RSpec.describe Api::V2::InvitationsController do
       end
     end
 
+    context "unpaid_work_only configuration" do
+      it "defaults community-engagement invitations to unrestricted employment" do
+        post :create, params: valid_params, as: :json
+
+        expect(response).to have_http_status(:created)
+        expect(ActivityFlowInvitation.last).not_to be_unpaid_work_only
+      end
+
+      it "persists unpaid-only employment on the invitation and resulting flow" do
+        post :create, params: valid_params.merge(unpaid_work_only: true), as: :json
+
+        expect(response).to have_http_status(:created)
+        invitation = ActivityFlowInvitation.last
+        expect(invitation).to be_unpaid_work_only
+        expect(invitation).not_to be_employment_focused
+        expect(JSON.parse(response.body).fetch("activity_tokenized_url")).to include(invitation.auth_token)
+        expect(ActivityFlow.create_from_invitation(invitation, "example-device")).to be_unpaid_work_only
+      end
+
+      it "accepts false without restricting employment" do
+        post :create, params: valid_params.merge(unpaid_work_only: false), as: :json
+
+        expect(response).to have_http_status(:created)
+        expect(ActivityFlowInvitation.last).not_to be_unpaid_work_only
+      end
+
+      it "rejects a string before creating any invitation or applicant" do
+        expect do
+          post :create, params: valid_params.merge(unpaid_work_only: "true"), as: :json
+        end.not_to change { [ ActivityFlowInvitation.count, CbvFlowInvitation.count, CbvApplicant.count ] }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body).fetch("errors")).to include(
+          "field" => "unpaid_work_only", "message" => I18n.t("api.v2.fields.unpaid_work_only.invalid")
+        )
+      end
+
+      it "preserves null on the invitation and flow without restricting employment" do
+        post :create, params: valid_params.merge(unpaid_work_only: nil), as: :json
+
+        expect(response).to have_http_status(:created)
+        invitation = ActivityFlowInvitation.last
+        expect(invitation.unpaid_work_only).to be_nil
+        flow = ActivityFlow.create_from_invitation(invitation, "example-device")
+        expect(flow.reload.unpaid_work_only).to be_nil
+        expect(flow).not_to be_unpaid_work_only
+      end
+
+      context "on the employment endpoint" do
+        let(:valid_params) { super().merge(invitation_type: "employment") }
+
+        it "keeps employment unrestricted when the field is omitted" do
+          post :create, params: valid_params, as: :json
+
+          expect(response).to have_http_status(:created)
+          expect(ActivityFlowInvitation.last).to be_employment_focused
+          expect(ActivityFlowInvitation.last).not_to be_unpaid_work_only
+        end
+
+        it "rejects the flag before creating any invitation or applicant" do
+          expect do
+            post :create, params: valid_params.merge(unpaid_work_only: true), as: :json
+          end.not_to change { [ ActivityFlowInvitation.count, CbvFlowInvitation.count, CbvApplicant.count ] }
+
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(JSON.parse(response.body).fetch("errors")).to include(
+            "field" => "unpaid_work_only", "message" => I18n.t("api.v2.fields.unpaid_work_only.unsupported")
+          )
+        end
+
+        it "rejects the field even when false" do
+          post :create, params: valid_params.merge(unpaid_work_only: false), as: :json
+
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(JSON.parse(response.body).fetch("errors")).to include(
+            "field" => "unpaid_work_only", "message" => I18n.t("api.v2.fields.unpaid_work_only.unsupported")
+          )
+        end
+      end
+    end
+
     context "employment_focused propagation" do
       let(:base_params) do
         attributes_for(:cbv_flow_invitation, client_agency_id).tap do |params|
