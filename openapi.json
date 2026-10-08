@@ -3,7 +3,7 @@
   "info": {
     "title": "Emmy Platform API Documentation",
     "version": "v1",
-    "description": "Integrate your agency's systems with the Emmy platform. This reference currently\ncovers the Tokenized Link API for creating personalized reporting links and the\n`CeActivityReport` model for outbound community engagement reports. Find the CE\nreport and its activity types under Models, including self-attested employment,\nvalidated payroll, and education. This model describes data Emmy sends to an\nagency, not an endpoint hosted by Emmy. V2 invitations are not yet covered here.\nExamples use synthetic applicant data and nonfunctional tokens.\n\nObject schemas allow additional properties for forward compatibility. Integrations\nshould tolerate unknown response fields so new fields can be added without breaking\nexisting clients. Required fields and documented field types still apply.\n\n<!-- Remove this link-check exception after the first reviewed deployment. -->\n<!-- markdown-link-check-disable-next-line -->\n[Download the official OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json).\nThe JSON and this reference are generated together from executable API tests.\n\n## API environments\n\n| Environment | Base URL | Purpose |\n| :-- | :-- | :-- |\n| Dev | https://verify-demo.navapbc.cloud | Develop and test integrations. |\n| Demo | https://demo.reportmyincome.org | Demonstrate and evaluate the platform. |\n\nUse HTTPS for every request and the API key issued for the selected environment.\nYour production hostname and credentials are provided during agency onboarding.\n\n## API keys and authentication\n\nContact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) to request an agency API key\nfor each environment. The Tokenized Link API uses a 32-character secret API key.\nKeep it on your server, never in browser code or public repositories.\n\nEach key identifies an agency and its configured metadata and invitation settings.\nSending a `client_agency_id` cannot select another agency. Include these headers:\n\n```http\nAuthorization: Bearer API_KEY\nContent-Type: application/json\n```\n\nA missing or invalid key returns `401 Unauthorized` with the plain-text body\n`HTTP Token: Access denied.` and a `WWW-Authenticate` header. If a key is\ncompromised, contact emmy@cms.hhs.gov to have it replaced."
+    "description": "Integrate your agency's systems with the Emmy platform. This reference currently\ncovers the Tokenized Link API (v1 and v2) for creating personalized reporting links and the\n`CeActivityReport` model for outbound community engagement reports. Find the CE\nreport and its activity types under Models, including self-attested employment,\nvalidated payroll, and education. This model describes data Emmy sends to an\nagency, not an endpoint hosted by Emmy.\nExamples use synthetic applicant data and nonfunctional tokens.\n\nObject schemas allow additional properties for forward compatibility. Integrations\nshould tolerate unknown response fields so new fields can be added without breaking\nexisting clients. Required fields and documented field types still apply.\n\n<!-- Remove this link-check exception after the first reviewed deployment. -->\n<!-- markdown-link-check-disable-next-line -->\n[Download the official OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json).\nThe JSON and this reference are generated together from executable API tests.\n\n## API environments\n\n| Environment | Base URL | Purpose |\n| :-- | :-- | :-- |\n| Dev | https://verify-demo.navapbc.cloud | Develop and test integrations. |\n| Demo | https://demo.reportmyincome.org | Demonstrate and evaluate the platform. |\n\nUse HTTPS for every request and the API key issued for the selected environment.\nYour production hostname and credentials are provided during agency onboarding.\n\n## API keys and authentication\n\nContact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) to request an agency API key\nfor each environment. The Tokenized Link API uses a 32-character secret API key.\nKeep it on your server, never in browser code or public repositories.\n\nEach key identifies an agency and its configured metadata and invitation settings.\nSending a `client_agency_id` cannot select another agency. Include these headers:\n\n```http\nAuthorization: Bearer API_KEY\nContent-Type: application/json\n```\n\nA missing or invalid key returns `401 Unauthorized` with the plain-text body\n`HTTP Token: Access denied.` and a `WWW-Authenticate` header. If a key is\ncompromised, contact emmy@cms.hhs.gov to have it replaced."
   },
   "servers": [
     {
@@ -28,7 +28,7 @@
   "paths": {
     "/api/v1/invitations": {
       "post": {
-        "summary": "Create tokenized reporting links",
+        "summary": "Create a Tokenized Link to Emmy Income",
         "tags": [
           "Invitations"
         ],
@@ -201,6 +201,162 @@
           "required": true
         }
       }
+    },
+    "/api/v2/{invitation_type}/invitations": {
+      "parameters": [
+        {
+          "name": "invitation_type",
+          "in": "path",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "community-engagement",
+              "employment"
+            ]
+          },
+          "description": "Selects which activity flow is created alongside the income invitation.",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Create a Tokenized Link to Emmy Community Engagement",
+        "tags": [
+          "Invitations"
+        ],
+        "operationId": "createInvitationV2",
+        "description": "Create a personalized income reporting link and an activity reporting link\nfor the applicant described by `agency_partner_metadata`. The path segment\n`invitation_type` selects which activity flow is created: `employment` or\n`community-engagement`.\n\n`verification_range` controls the reporting window for the activity\ninvitation (`last_complete_month` or `last_12_complete_months`).",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Invitations created",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "employment": {
+                    "summary": "Employment invitation (sandbox agency)",
+                    "value": {
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/en/start/IncomeExampleToken",
+                      "token": "IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "individual_id": "INDIVIDUAL-123",
+                        "first_name": "Jane",
+                        "last_name": "Doe"
+                      },
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/dGZvsTjM7z"
+                    }
+                  },
+                  "community_engagement": {
+                    "summary": "Community engagement invitation (sandbox agency)",
+                    "value": {
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/en/start/IncomeExampleToken",
+                      "token": "IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "individual_id": "INDIVIDUAL-123",
+                        "first_name": "Jane",
+                        "last_name": "Doe",
+                        "date_of_birth": "01/15/1990"
+                      },
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/gmZbib2RMu"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationResponseV2"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key (plain text, not JSON)",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "headers": {
+              "WWW-Authenticate": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "missing_name": {
+                    "summary": "Missing applicant name",
+                    "value": {
+                      "errors": [
+                        {
+                          "field": "first_name",
+                          "message": "first_name is required"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationErrorsV2"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvitationRequestV2"
+              },
+              "examples": {
+                "employment": {
+                  "summary": "Employment invitation (sandbox agency)",
+                  "value": {
+                    "language": "en",
+                    "verification_range": "last_complete_month",
+                    "agency_partner_metadata": {
+                      "individual_id": "INDIVIDUAL-123",
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "case_number": "EXAMPLE-123",
+                      "date_of_birth": "01/15/1990"
+                    }
+                  }
+                },
+                "community_engagement": {
+                  "summary": "Community engagement invitation (sandbox agency)",
+                  "value": {
+                    "language": "en",
+                    "verification_range": "last_complete_month",
+                    "agency_partner_metadata": {
+                      "individual_id": "INDIVIDUAL-123",
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "case_number": "EXAMPLE-123",
+                      "date_of_birth": "01/15/1990"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        }
+      }
     }
   },
   "components": {
@@ -234,6 +390,43 @@
           }
         ]
       },
+      "AgencyPartnerMetadataV2": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Metadata links a submitted report to the agency's records. Select the schema\nfor the agency associated with your API key. Sandbox and Louisiana have\nseparate field sets; do not combine them. Some agency schemas overlap, so\nmatching a schema alone does not identify the agency.\n\nUnrecognized fields and `individual_id` are ignored by this V1 endpoint.\nThe response contains all accepted fields for the agency, with `null` for\nomitted values. Values are echoed as supplied, including date strings.\nSupply dates of birth as `MM/DD/YYYY`.",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/AgencyMetadataV2SandboxCommunityEngagement"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataV2NewHampshireCommunityEngagement"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataV2LouisianaCommunityEngagement"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataV2ResearchCommunityEngagement"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataV2AccentureCommunityEngagement"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataV2SandboxEmployment"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataV2NewHampshireEmployment"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataV2LouisianaEmployment"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataV2ResearchEmployment"
+          },
+          {
+            "$ref": "#/components/schemas/AgencyMetadataV2AccentureEmployment"
+          }
+        ]
+      },
       "InvitationRequest": {
         "type": "object",
         "additionalProperties": true,
@@ -251,6 +444,35 @@
           },
           "agency_partner_metadata": {
             "$ref": "#/components/schemas/AgencyPartnerMetadata"
+          }
+        }
+      },
+      "InvitationRequestV2": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Invitation settings and metadata for the agency identified by the API key. invitation_type is selected via the URL path, not this body.",
+        "required": [
+          "language",
+          "verification_range",
+          "agency_partner_metadata"
+        ],
+        "properties": {
+          "language": {
+            "type": "string",
+            "pattern": "^([eE][nN]|[eE][sS])$",
+            "example": "en",
+            "description": "Preferred language: en (English) or es (Spanish), case insensitive. Required; omitted or unsupported values return 422. Returned in lowercase."
+          },
+          "verification_range": {
+            "type": "string",
+            "enum": [
+              "last_complete_month",
+              "last_12_complete_months"
+            ],
+            "description": "Reporting window for the activity invitation."
+          },
+          "agency_partner_metadata": {
+            "$ref": "#/components/schemas/AgencyPartnerMetadataV2"
           }
         }
       },
@@ -287,6 +509,45 @@
           }
         }
       },
+      "InvitationResponseV2": {
+        "type": "object",
+        "description": "Direct the applicant to `tokenized_url` to complete income verification, and\nto `activity_tokenized_url` to complete the corresponding activity flow.\nTreat both tokens as opaque.",
+        "required": [
+          "tokenized_url",
+          "activity_tokenized_url",
+          "expiration_date",
+          "language",
+          "agency_partner_metadata"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "tokenized_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Income reporting link. Treat the token as opaque and direct the applicant to this URL unchanged."
+          },
+          "activity_tokenized_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Activity reporting link for the selected invitation_type."
+          },
+          "expiration_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Expiration of tokenized_url, at the end of the day in America/New_York after the agency's configured validity period."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          },
+          "agency_partner_metadata": {
+            "$ref": "#/components/schemas/AgencyPartnerMetadataV2"
+          }
+        }
+      },
       "InvitationErrors": {
         "type": "object",
         "required": [
@@ -308,6 +569,38 @@
                 "field": {
                   "type": "string",
                   "description": "Invalid field, including language or cbv_applicant.first_name. Applicant errors may use cbv_applicant or agency_partner_metadata prefixes."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable validation message. Do not depend on the exact wording."
+                }
+              }
+            }
+          }
+        }
+      },
+      "InvitationErrorsV2": {
+        "type": "object",
+        "required": [
+          "errors"
+        ],
+        "additionalProperties": true,
+        "description": "Validation errors for a V2 invitation request. The field attribute identifies the invalid value.",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "field",
+                "message"
+              ],
+              "additionalProperties": true,
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "description": "Invalid request field. Applicant validation errors may use an agency_partner_metadata prefix."
                 },
                 "message": {
                   "type": "string",
@@ -359,6 +652,73 @@
           }
         }
       },
+      "AgencyMetadataV2SandboxCommunityEngagement": {
+        "title": "AgencyMetadataV2SandboxCommunityEngagement",
+        "type": "object",
+        "description": "Accepted V2 metadata for Sandbox's community engagement invitations. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "individual_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "INDIVIDUAL-123",
+            "description": "Agency individual identifier. Required for V2 activity invitations."
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          },
+          "date_of_birth": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "01/15/1990",
+            "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
+          }
+        },
+        "required": [
+          "individual_id",
+          "first_name",
+          "last_name",
+          "date_of_birth"
+        ]
+      },
+      "AgencyMetadataV2SandboxEmployment": {
+        "title": "AgencyMetadataV2SandboxEmployment",
+        "type": "object",
+        "description": "Accepted V2 metadata for Sandbox's employment invitations. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "individual_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "INDIVIDUAL-123",
+            "description": "Agency individual identifier. Required for V2 activity invitations."
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          }
+        },
+        "required": [
+          "individual_id",
+          "first_name",
+          "last_name"
+        ]
+      },
       "AgencyMetadataNewHampshire": {
         "title": "AgencyMetadataNewHampshire",
         "type": "object",
@@ -404,6 +764,73 @@
           "last_name"
         ]
       },
+      "AgencyMetadataV2NewHampshireCommunityEngagement": {
+        "title": "AgencyMetadataV2NewHampshireCommunityEngagement",
+        "type": "object",
+        "description": "Accepted V2 metadata for New Hampshire's community engagement invitations. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "individual_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "INDIVIDUAL-123",
+            "description": "Agency individual identifier. Required for V2 activity invitations."
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          },
+          "date_of_birth": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "01/15/1990",
+            "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
+          }
+        },
+        "required": [
+          "individual_id",
+          "first_name",
+          "last_name",
+          "date_of_birth"
+        ]
+      },
+      "AgencyMetadataV2NewHampshireEmployment": {
+        "title": "AgencyMetadataV2NewHampshireEmployment",
+        "type": "object",
+        "description": "Accepted V2 metadata for New Hampshire's employment invitations. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "individual_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "INDIVIDUAL-123",
+            "description": "Agency individual identifier. Required for V2 activity invitations."
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          }
+        },
+        "required": [
+          "individual_id",
+          "first_name",
+          "last_name"
+        ]
+      },
       "AgencyMetadataLouisiana": {
         "title": "AgencyMetadataLouisiana",
         "type": "object",
@@ -436,6 +863,73 @@
           }
         }
       },
+      "AgencyMetadataV2LouisianaCommunityEngagement": {
+        "title": "AgencyMetadataV2LouisianaCommunityEngagement",
+        "type": "object",
+        "description": "Accepted V2 metadata for Louisiana's community engagement invitations. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "individual_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "INDIVIDUAL-123",
+            "description": "Agency individual identifier. Required for V2 activity invitations."
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          },
+          "date_of_birth": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "01/15/1990",
+            "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
+          }
+        },
+        "required": [
+          "individual_id",
+          "first_name",
+          "last_name",
+          "date_of_birth"
+        ]
+      },
+      "AgencyMetadataV2LouisianaEmployment": {
+        "title": "AgencyMetadataV2LouisianaEmployment",
+        "type": "object",
+        "description": "Accepted V2 metadata for Louisiana's employment invitations. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "individual_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "INDIVIDUAL-123",
+            "description": "Agency individual identifier. Required for V2 activity invitations."
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          }
+        },
+        "required": [
+          "individual_id",
+          "first_name",
+          "last_name"
+        ]
+      },
       "AgencyMetadataResearch": {
         "title": "AgencyMetadataResearch",
         "type": "object",
@@ -460,6 +954,73 @@
           }
         }
       },
+      "AgencyMetadataV2ResearchCommunityEngagement": {
+        "title": "AgencyMetadataV2ResearchCommunityEngagement",
+        "type": "object",
+        "description": "Accepted V2 metadata for Research's community engagement invitations. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "individual_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "INDIVIDUAL-123",
+            "description": "Agency individual identifier. Required for V2 activity invitations."
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          },
+          "date_of_birth": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "01/15/1990",
+            "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
+          }
+        },
+        "required": [
+          "individual_id",
+          "first_name",
+          "last_name",
+          "date_of_birth"
+        ]
+      },
+      "AgencyMetadataV2ResearchEmployment": {
+        "title": "AgencyMetadataV2ResearchEmployment",
+        "type": "object",
+        "description": "Accepted V2 metadata for Research's employment invitations. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "individual_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "INDIVIDUAL-123",
+            "description": "Agency individual identifier. Required for V2 activity invitations."
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          }
+        },
+        "required": [
+          "individual_id",
+          "first_name",
+          "last_name"
+        ]
+      },
       "AgencyMetadataAccenture": {
         "title": "AgencyMetadataAccenture",
         "type": "object",
@@ -475,6 +1036,73 @@
             "description": "Agency case identifier."
           }
         }
+      },
+      "AgencyMetadataV2AccentureCommunityEngagement": {
+        "title": "AgencyMetadataV2AccentureCommunityEngagement",
+        "type": "object",
+        "description": "Accepted V2 metadata for Accenture's community engagement invitations. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "individual_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "INDIVIDUAL-123",
+            "description": "Agency individual identifier. Required for V2 activity invitations."
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          },
+          "date_of_birth": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "01/15/1990",
+            "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
+          }
+        },
+        "required": [
+          "individual_id",
+          "first_name",
+          "last_name",
+          "date_of_birth"
+        ]
+      },
+      "AgencyMetadataV2AccentureEmployment": {
+        "title": "AgencyMetadataV2AccentureEmployment",
+        "type": "object",
+        "description": "Accepted V2 metadata for Accenture's employment invitations. The API ignores fields outside this schema.",
+        "additionalProperties": true,
+        "properties": {
+          "individual_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "INDIVIDUAL-123",
+            "description": "Agency individual identifier. Required for V2 activity invitations."
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Jane"
+          },
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Doe"
+          }
+        },
+        "required": [
+          "individual_id",
+          "first_name",
+          "last_name"
+        ]
       },
       "CeActivityReport": {
         "type": "object",
