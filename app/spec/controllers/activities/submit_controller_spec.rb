@@ -76,7 +76,8 @@ RSpec.describe Activities::SubmitController, type: :controller do
         activity_flow: activity_flow,
         data_source: :fully_self_attested,
         school_name: "Bayou College",
-        education_category: "college_or_university"
+        education_category: "college_or_university",
+        contact_title: "Registrar"
       )
       create(:education_activity_month, education_activity: education, month: activity_flow.reporting_months.first, hours: 3)
       volunteering = create(
@@ -113,13 +114,15 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(pdf_text).to include("(225) 555-0199")
       expect(pdf_text).to include("Bayou College")
       expect(pdf_text).to include("Education category", "College/University")
+      expect(pdf_text).to include(education.contact_title)
       expect(pdf_text).to include("Volunteer Log.pdf")
       expect(pdf_text).to include(test_confirmation_code)
       expect(pdf_text).to include("December 1, 2025 12:00:00 UTC")
       expect(pdf_text).to include(
-        "School contact name",
-        "School contact email",
-        "School contact phone number"
+        I18n.t("activities.submit.pdf.school_contact_name"),
+        I18n.t("activities.submit.pdf.school_contact_title"),
+        I18n.t("activities.submit.pdf.school_contact_email"),
+        I18n.t("activities.submit.pdf.school_contact_phone_number")
       )
       expect(pdf_text.scan("Organization contact name").size).to eq(2)
       expect(pdf_text.scan("Organization contact email").size).to eq(2)

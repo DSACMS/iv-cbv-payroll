@@ -62,6 +62,11 @@ The build reads these Markdown descriptions directly from `docs/api/`; Markdown
 changes also trigger the publication workflow after merge.
 Keep endpoint descriptions and responses together, using level-two headings
 to identify the sections included in the generated reference.
+V2 agency metadata fields and required fields are read from each agency's
+`api.v2.community_engagement` and `api.v2.employment` configuration in
+[client-agency-config.yml](../../app/config/client-agency-config.yml).
+Update that configuration and rebuild the reference rather than maintaining a
+separate V2 field list in the invitation schemas.
 The reference uses OpenAPI 3.1. Use `additionalProperties: true` on objects so
 integrations can tolerate additive schema changes. Month-keyed activity maps
 also use `patternProperties` to validate arrays under `YYYY-MM` keys while

@@ -19,6 +19,7 @@ RSpec.describe Cbv::EmployerSearchesController do
       it "renders properly" do
         get :show
         expect(response).to be_successful
+        expect(response.body).to include(I18n.t("cbv.employer_searches.show.search_label"))
       end
 
       it "renders Common questions content" do

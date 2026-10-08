@@ -27,6 +27,14 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.employment.add_your_work.show.description")))
     end
 
+    it "uses work in the heading and browser title for other flows" do
+      get :show
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector("h1", text: "Choose how you want to add your work")
+      expect(rendered).to have_title(/Choose how you want to add your work/)
+    end
+
     context "with a three-month reporting period" do
       let(:activity_flow) { create(:activity_flow, reporting_window_months: 3) }
 
@@ -67,11 +75,52 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(response.body).not_to include("hint=")
     end
 
-    it "renders the activity flow header with exit button and no back link" do
+    it "renders the activity flow header for a flow that is not employment-focused" do
       get :show
-      expect(response.body).to include(I18n.t("activities.employment.title_singular"))
-      expect(response.body).to include("exit-confirmation-modal")
-      expect(Capybara.string(response.body)).not_to have_link("Back")
+      expect(Capybara.string(response.body)).to have_selector("[data-controller='activity-flow-header']")
+    end
+
+    context "with an employment-focused flow" do
+      let(:activity_flow) { create(:activity_flow, employment_focused: true) }
+
+      it "explains paid work and reporting unpaid work later" do
+        get :show
+
+        expect(Capybara.string(response.body)).to have_text(
+          I18n.t("activities.employment.add_your_work.show.employment_focused.description")
+        )
+      end
+
+      it "uses job in the heading and browser title" do
+        get :show
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("h1", text: "Choose how you want to add your job")
+        expect(rendered).to have_title(/Choose how you want to add your job/)
+        expect(rendered).to have_no_text("Choose how you want to add your work")
+      end
+
+      it "uses the bold in-kind work label" do
+        get :show
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("label .text-bold", text: "Enter in-kind work", exact_text: true)
+        expect(rendered).to have_no_text("Enter unpaid or in-kind work")
+      end
+
+      it "renders the reporting period with a bold label" do
+        get :show
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("strong", text: "Reporting period:")
+        expect(rendered).to have_text(activity_flow.reporting_window_display)
+      end
+
+      it "does not render the activity flow header" do
+        get :show
+
+        expect(Capybara.string(response.body)).to have_no_selector("[data-controller='activity-flow-header']")
+      end
     end
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentAddYourWorkViewed

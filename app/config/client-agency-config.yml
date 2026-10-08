@@ -77,7 +77,6 @@
           - individual_id
           - first_name
           - last_name
-          - date_of_birth
         required:
           - individual_id
           - first_name
@@ -164,7 +163,6 @@
           - individual_id
           - first_name
           - last_name
-          - date_of_birth
         required:
           - individual_id
           - first_name
@@ -255,7 +253,6 @@
           - individual_id
           - first_name
           - last_name
-          - date_of_birth
         required:
           - individual_id
           - first_name
@@ -331,7 +328,6 @@
           - individual_id
           - first_name
           - last_name
-          - date_of_birth
         required:
           - individual_id
           - first_name
@@ -388,7 +384,6 @@
           - individual_id
           - first_name
           - last_name
-          - date_of_birth
         required:
           - individual_id
           - first_name

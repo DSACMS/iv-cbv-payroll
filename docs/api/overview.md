@@ -1,9 +1,9 @@
 Integrate your agency's systems with the Emmy platform. This reference currently
-covers the Tokenized Link API for creating personalized reporting links and the
+covers the Tokenized Link API (v1 and v2) for creating personalized reporting links and the
 `CeActivityReport` model for outbound community engagement reports. Find the CE
 report and its activity types under Models, including self-attested employment,
 validated payroll, and education. This model describes data Emmy sends to an
-agency, not an endpoint hosted by Emmy. V2 invitations are not yet covered here.
+agency, not an endpoint hosted by Emmy.
 Examples use synthetic applicant data and nonfunctional tokens.
 
 Object schemas allow additional properties for forward compatibility. Integrations

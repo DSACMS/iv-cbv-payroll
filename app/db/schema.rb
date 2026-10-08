@@ -187,6 +187,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_07_180000) do
     t.string "contact_email"
     t.string "contact_name"
     t.string "contact_phone_number"
+    t.string "contact_title"
     t.datetime "created_at", null: false
     t.integer "credit_hours"
     t.string "data_source", default: "validated", null: false

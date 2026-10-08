@@ -140,12 +140,13 @@ RSpec.describe Activities::EducationController, type: :controller do
 
     it "creates a self-attested EducationActivity and redirects to month 0" do
       expect {
-        post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St" } }
+        post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St", contact_title: "Registrar" } }
       }.to change(EducationActivity, :count).by(1)
 
       activity = EducationActivity.last
       expect(activity.data_source).to eq("fully_self_attested")
       expect(activity.school_name).to eq("Test University")
+      expect(activity.contact_title).to eq("Registrar")
       expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: activity.id, id: 0))
     end
 
@@ -361,11 +362,25 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to have_http_status(:ok)
       expect(response.body).to have_content(I18n.t("activities.education.new.title"))
     end
+
+    it "renders the school contact information" do
+      get :new
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector("h2", text: I18n.t("activities.education.new.contact_section_title"))
+      expect(rendered).to have_text(I18n.t("activities.education.new.contact_section_description"))
+      expect(rendered).to have_field(I18n.t("activities.education.new.contact_name"))
+      expect(rendered).to have_field(I18n.t("activities.education.new.contact_title"))
+      expect(rendered).to have_field(I18n.t("activities.education.new.contact_email"))
+      expect(rendered).to have_field(I18n.t("activities.education.new.contact_phone_number"))
+      expect(rendered).to have_selector("label[for='education_activity_contact_title']",
+        text: "#{I18n.t('activities.education.new.contact_title')} (#{I18n.t('us_form_with.optional').downcase})")
+    end
   end
 
   describe "GET #edit" do
     let(:self_attested_activity) do
-      create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "Test University")
+      create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "Test University", contact_title: "Registrar")
     end
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { id: self_attested_activity.id } }
@@ -414,9 +429,11 @@ RSpec.describe Activities::EducationController, type: :controller do
     it "renders the fully self-attested education info form for fully self-attested activities" do
       get :edit, params: { id: self_attested_activity.id }
 
+      rendered = Capybara.string(response.body)
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.education.new.edit_title"))
-      expect(Capybara.string(response.body)).to have_field("education_activity_school_name", with: "Test University")
+      expect(rendered).to have_text(I18n.t("activities.education.new.edit_title"))
+      expect(rendered).to have_field(I18n.t("activities.education.new.school_name"), with: self_attested_activity.school_name)
+      expect(rendered).to have_field(I18n.t("activities.education.new.contact_title"), with: self_attested_activity.contact_title)
     end
 
     it "raises RecordNotFound when the activity is missing" do
@@ -1110,11 +1127,13 @@ RSpec.describe Activities::EducationController, type: :controller do
           city: "New City",
           state: "CA",
           zip_code: "90001",
-          street_address: "123 Main St"
+          street_address: "123 Main St",
+          contact_title: "Academic advisor"
         }
       }
 
       expect(fully_self_attested_activity.reload.school_name).to eq("New School")
+      expect(fully_self_attested_activity.contact_title).to eq("Academic advisor")
       expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: fully_self_attested_activity, id: 0))
     end
 
