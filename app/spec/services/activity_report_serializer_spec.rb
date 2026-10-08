@@ -5,10 +5,12 @@ RSpec.describe ActivityReportSerializer do
     create(:cbv_applicant, client_agency_id: "sandbox", first_name: "Jane", middle_name: "A", last_name: "Doe",
       case_number: "CASE-2026-00987", date_of_birth: Date.new(1990, 4, 15))
   end
+  let(:employment_focused) { true }
   let(:activity_flow) do
     create(
       :activity_flow,
       cbv_applicant: cbv_applicant,
+      employment_focused: employment_focused,
       volunteering_activities_count: 0,
       job_training_activities_count: 0,
       education_activities_count: 0,
@@ -63,6 +65,8 @@ RSpec.describe ActivityReportSerializer do
     job_training = create(:job_training_activity, activity_flow: activity_flow)
     create(:job_training_activity_month, job_training_activity: job_training, month: second_month, hours: 8)
 
+    expect(report["ce_report"].keys).to include("report_variant")
+    expect(report["ce_report"]["report_variant"]).to eq("employment")
     expect(report["ce_report"]["activities"].keys).to eq(%w[community_service work_program employment education])
     expect(report["ce_report"]["activities"]["community_service"].keys).to eq(%w[2026-06 2026-07])
     expect(report["ce_report"]["activities"]["work_program"].keys).to eq(%w[2026-07])
@@ -694,6 +698,24 @@ RSpec.describe ActivityReportSerializer do
       expect(report["ce_report"]["activities"]["education"].keys).to eq(%w[2026-06 2026-07])
       report["ce_report"]["activities"]["education"].each_value do |entries|
         expect(entries.sole).to include("data_source" => "verified", "document_ids" => [ "DOC-#{document.id}" ])
+      end
+    end
+  end
+
+  describe "report variant" do
+    context "when the flow is employment-focused" do
+      let(:employment_focused) { true }
+
+      it "identifies the report as employment" do
+        expect(report.dig("ce_report", "report_variant")).to eq("employment")
+      end
+    end
+
+    context "when the flow is not employment-focused" do
+      let(:employment_focused) { false }
+
+      it "identifies the report as community engagement" do
+        expect(report.dig("ce_report", "report_variant")).to eq("community_engagement")
       end
     end
   end
