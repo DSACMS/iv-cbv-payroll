@@ -36,7 +36,7 @@ RSpec.describe GpgEncryptable do
       encrypted_file_path = class_instance.gpg_encrypt_file(test_file_path, @public_key)
 
       expect(File.exist?(encrypted_file_path)).to be true
-      encrypted_content = File.read(encrypted_file_path)
+      encrypted_content = File.binread(encrypted_file_path)
       expect(encrypted_content).not_to include(test_file_content)
 
       # Decrypt the file and verify its contents
@@ -52,7 +52,7 @@ RSpec.describe GpgEncryptable do
 
       # Encrypt the tar file
       encrypted_tar_file_path = class_instance.gpg_encrypt_file(tmp_tar.path, @public_key)
-      encrypted_content = File.read(encrypted_tar_file_path)
+      encrypted_content = File.binread(encrypted_tar_file_path)
       expect(encrypted_content).not_to be_empty
 
       # Decrypt the file and verify its contents
