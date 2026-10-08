@@ -22,7 +22,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
     visit activities_flow_start_path(token: non_employment_invitation.auth_token)
 
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
-    expect(page).to have_no_content(I18n.t("activities.entries.show.employment_focused.header"))
+    expect(page).to have_no_content(I18n.t("activities.employ.show.employment_focused.header"))
 
     click_link I18n.t("activities.entries.show.continue")
     verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
@@ -44,7 +44,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
     # through a single-month, manually-entered paid job and lands on the
     # add_jobs page.
     def add_manual_job(employer_name:, gross_income:, hours:, flow:)
-      verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+      verify_page(page, title: I18n.t("activities.employment.add_your_work.show.employment_focused.header"))
       find("label[for='add_work_method_enter_paid_manually']").click
       click_button I18n.t("continue")
 

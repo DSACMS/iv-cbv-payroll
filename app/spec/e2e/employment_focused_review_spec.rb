@@ -22,7 +22,7 @@ RSpec.describe "e2e Employment-focused review page", :js, type: :feature do
     month_label = I18n.l(flow.reporting_months.first, format: :month)
 
     # --- Add a single self-attested, manually-entered paid job ---
-    verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+    verify_page(page, title: I18n.t("activities.employment.add_your_work.show.employment_focused.header"))
 
     find("label[for='add_work_method_enter_paid_manually']").click
     click_button I18n.t("continue")
