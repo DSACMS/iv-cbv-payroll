@@ -47,7 +47,11 @@ RSpec.describe ActivityFlowNavigator do
 
         context "when the employment-focused state is provided by the flow" do
           let(:flow) { instance_double(ActivityFlow, employment_focused?: true) }
-          let(:navigator) { described_class.new(params, flow, overall_progress_result: overall_progress_result) }
+          let(:navigator) { described_class.new(
+            params,
+            flow,
+            overall_progress_result: overall_progress_result,
+            employment_focused: flow.employment_focused?) }
 
           it "returns the add jobs path" do
             expect(navigator.next_path).to eq(activities_flow_income_add_jobs_path)
