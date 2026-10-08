@@ -614,6 +614,19 @@ en:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
         done_for_now: You're done for now. %{agency_full_name} will review your information and contact you if needed.
         download_pdf: Download my report
+        employment:
+          subheading: It may take a few moments for them to be reflected in the system.
+          title: Your jobs have been submitted to %{agency_name}
+          whats_next:
+            download_your_report:
+              heading: Download your report
+            head_of_household:
+              heading: If you’re the head of household
+              subheading: Continue your renewal in the Self-Service Portal (SSP) or use the forms mailed to you. You may close this tab.
+            household_member:
+              heading: If you’re a household member
+              subheading: You’re done for now. %{agency_name} will review your information and contact you if needed. You may close this tab.
+            subheading: "%{agency_name} will review your information and contact you if needed."
         survey: Take the 3 question survey
         title: Your community engagement report was successfully sent to %{agency_acronym}
         whats_next: What's next?

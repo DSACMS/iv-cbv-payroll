@@ -1,10 +1,23 @@
-<% title = t(".title", agency_acronym: agency_translation("shared.agency_acronym")) %>
+<% title = @flow.employment_focused? ? t("activities.success.show.employment.title", agency_name: agency_translation("shared.agency_full_name")) : t(".title", agency_acronym: agency_translation("shared.agency_acronym")) %>
 <% content_for :title, title %>
 
 <div class="grid-col tablet:grid-col-8">
+  <% if @flow.employment_focused? %>
+    <div class="grid-row flex-justify-center">
+      <svg class="usa-icon usa-icon--size-9 text-success-dark" aria-hidden="true" role="img">
+        <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#check_circle") %>"></use>
+      </svg>
+    </div>
+  <% end %>
   <h1>
     <%= title %>
   </h1>
+
+  <% if @flow.employment_focused? %>
+    <p>
+      <%= t("activities.success.show.employment.subheading") %>
+    </p>
+  <% end %>
 
   <p>
     <%= t(".confirmation_code_html", confirmation_code: @flow.confirmation_code) %>
@@ -14,7 +27,7 @@
     <%= t(".whats_next") %>
   </h2>
   <p>
-    <%= t(".done_for_now", agency_full_name: agency_translation("shared.agency_full_name")) %>
+    <%= @flow.employment_focused? ? t("activities.success.show.employment.whats_next.subheading", agency_name: agency_translation("shared.agency_full_name")) : t(".done_for_now", agency_full_name: agency_translation("shared.agency_full_name")) %>
   </p>
 
   <ul class="usa-icon-list margin-top-3">
@@ -25,9 +38,10 @@
         </svg>
       </div>
       <div class="usa-icon-list__content">
-        <h3><%= t(".whats_next_1_title") %></h3>
+        <h3><%= @flow.employment_focused? ? t("activities.success.show.employment.whats_next.download_your_report.heading") : t(".whats_next_1_title") %></h3>
         <p><%= t(".whats_next_1_li_1") %></p>
 
+        <% button_variant_class = @flow.employment_focused? ? "usa-button--outline" : "usa-button--primary" %>
         <%= render(LinkWithIconComponent.new(
             t(".download_pdf"),
             url: activities_flow_submit_path(format: :pdf),
@@ -35,11 +49,35 @@
             icon_position: :leading,
             variant: :primary,
             rel: "noopener noreferer",
-            class: "usa-button usa-button--primary margin-top-2",
+            class: "usa-button #{button_variant_class} margin-top-2",
             target: "_blank"
           )) %>
       </div>
     </li>
+    <% if @flow.employment_focused? %>
+      <li class="usa-icon-list__item margin-bottom-3">
+        <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill margin-right-1">
+          <svg class="usa-icon" aria-hidden="true" role="img">
+            <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#groups") %>"></use>
+          </svg>
+        </div>
+        <div class="usa-icon-list__content">
+          <h3><%= t("activities.success.show.employment.whats_next.head_of_household.heading") %></h3>
+          <p><%= t("activities.success.show.employment.whats_next.head_of_household.subheading") %></p>
+        </div>
+      </li>
+      <li class="usa-icon-list__item margin-bottom-3">
+        <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill margin-right-1">
+          <svg class="usa-icon" aria-hidden="true" role="img">
+            <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#person") %>"></use>
+          </svg>
+        </div>
+        <div class="usa-icon-list__content">
+          <h3><%= t("activities.success.show.employment.whats_next.household_member.heading") %></h3>
+          <p><%= t("activities.success.show.employment.whats_next.household_member.subheading", agency_name: agency_translation("shared.agency_full_name")) %></p>
+        </div>
+      </li>
+    <% end %>
   </ul>
 
   <div class="divider margin-top-5"></div>
