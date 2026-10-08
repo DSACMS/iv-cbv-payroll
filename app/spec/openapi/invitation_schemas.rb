@@ -149,7 +149,7 @@ module InvitationSchemas
         raise(KeyError, "No client agency config for #{agency_id.inspect}")
 
       %w[community_engagement employment].each do |invitation_type|
-        v2_schema_name = "V2AgencyMetadata#{agency}#{invitation_type.camelize}"
+        v2_schema_name = "AgencyMetadataV2#{agency}#{invitation_type.camelize}"
         v2_fields = client_agency.api_metadata(invitation_type)
         v2_schema = {
           title: v2_schema_name,
