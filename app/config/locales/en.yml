@@ -582,6 +582,7 @@ en:
         description: We have collected %{activity_types} information with your consent and sent it to %{agency_name}. Any additional income that you weren’t able to add to this report should be shared separately with %{agency_name}.
         education_details: Education details
         education_summary: Education summary
+        education_type: Type
         employer_title: 'Employer %{number}: %{name}'
         employment_details: Employment details
         employment_status: Employment status
@@ -589,7 +590,6 @@ en:
         gig_payments_description: 'These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount:'
         heading: Community Engagement Report
         hourly_wage_hours_paid: 'Hourly wage: Hours paid'
-        education_type: Type
         institution_information: Institution information
         institution_title: 'Institution %{number}: %{name}'
         mileage_expense_value: "%{amount} (%{rate} x %{miles} miles)"
