@@ -23,7 +23,7 @@ RSpec.describe InvitationSchemas do
       agencies.each do |name, id|
         agency = Rails.application.config.client_agencies[id]
         %w[community_engagement employment].each do |invitation_type|
-          schema = described_class.schemas.fetch("V2AgencyMetadata#{name}#{invitation_type.camelize}")
+          schema = described_class.schemas.fetch("AgencyMetadataV2#{name}#{invitation_type.camelize}")
 
           expect(schema[:properties].keys).to match_array(agency.api_metadata(invitation_type))
           expect(schema[:required]).to match_array(agency.api_required_metadata(invitation_type).map(&:to_s))
@@ -32,15 +32,15 @@ RSpec.describe InvitationSchemas do
     end
 
     it "does not document date of birth for employment invitations" do
-      schema = document.schema("V2AgencyMetadataSandboxEmployment")
+      schema = document.schema("AgencyMetadataV2SandboxEmployment")
 
-      expect(described_class.schemas.fetch("V2AgencyMetadataSandboxEmployment")[:properties]).not_to have_key(:date_of_birth)
+      expect(described_class.schemas.fetch("AgencyMetadataV2SandboxEmployment")[:properties]).not_to have_key(:date_of_birth)
       expect(schema.valid?(metadata)).to be(true)
       expect(schema.valid?(metadata.except("individual_id"))).to be(false)
     end
 
     it "requires date of birth for community engagement invitations" do
-      schema = document.schema("V2AgencyMetadataSandboxCommunityEngagement")
+      schema = document.schema("AgencyMetadataV2SandboxCommunityEngagement")
 
       expect(schema.valid?(metadata)).to be(false)
       expect(schema.valid?(metadata.merge("date_of_birth" => "01/15/1990"))).to be(true)
@@ -59,10 +59,10 @@ RSpec.describe InvitationSchemas do
       it "updates only that agency's matching V2 schema" do
         schemas = described_class.schemas
 
-        expect(schemas.fetch("V2AgencyMetadataSandboxEmployment")[:properties].keys).to contain_exactly(:individual_id, :case_number)
-        expect(schemas.fetch("V2AgencyMetadataSandboxEmployment")[:required]).to contain_exactly("individual_id", "case_number")
-        expect(schemas.fetch("V2AgencyMetadataSandboxCommunityEngagement")[:properties]).to have_key(:first_name)
-        expect(schemas.fetch("V2AgencyMetadataLouisianaEmployment")[:properties]).to have_key(:first_name)
+        expect(schemas.fetch("AgencyMetadataV2SandboxEmployment")[:properties].keys).to contain_exactly(:individual_id, :case_number)
+        expect(schemas.fetch("AgencyMetadataV2SandboxEmployment")[:required]).to contain_exactly("individual_id", "case_number")
+        expect(schemas.fetch("AgencyMetadataV2SandboxCommunityEngagement")[:properties]).to have_key(:first_name)
+        expect(schemas.fetch("AgencyMetadataV2LouisianaEmployment")[:properties]).to have_key(:first_name)
         expect(schemas.fetch("AgencyMetadataSandbox")[:properties]).to have_key(:middle_name)
       end
     end
