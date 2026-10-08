@@ -85,6 +85,29 @@ RSpec.describe LauncherController, type: :controller do
   end
 
   describe "POST #create" do
+    [ nil, "lynette", "partial_enrollment_maya" ].each do |test_scenario|
+      [ "true", "false", nil ].each do |employment_focused|
+        it "persists employment focus #{employment_focused.inspect} for scenario #{test_scenario.inspect}" do
+          post :create, params: {
+            flow_type: "activity",
+            client_agency_id: "sandbox",
+            launch_type: "tokenized",
+            test_scenario: test_scenario,
+            employment_focused: employment_focused
+          }, format: :json
+
+          expect(response).to have_http_status(:success)
+          invitation = ActivityFlowInvitation.order(:id).last
+          expected_focus = employment_focused == "true"
+          expect(invitation.employment_focused?).to eq(expected_focus)
+
+          flow = ActivityFlow.create_from_invitation(invitation, SecureRandom.uuid, employment_focused: employment_focused)
+          expect(flow).to be_persisted
+          expect(flow.employment_focused?).to eq(expected_focus)
+        end
+      end
+    end
+
     context "with cbv flow and generic launch type" do
       it "returns JSON with a url containing the client agency" do
         post :create, params: {

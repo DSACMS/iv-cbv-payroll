@@ -37,6 +37,9 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         pinwheel_stub_request_end_user_paystubs_response
       end
 
+      it_behaves_like "an activity header controlled by employment focus", :flow, -> { get :show, params: { user: { account_id: account_id } } }
+
+
       it "renders properly" do
         get :show, params: { user: { account_id: account_id } }
 
@@ -45,6 +48,65 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         expect(page).to have_css("h2", text: I18n.t("shared.table_headers.employer_information"))
         expect(response.body).to include(I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours"))
         expect(response.body).to include(I18n.t("components.report.monthly_summary_table.activity.payment_information"))
+      end
+
+      it "renders the employment-focused tables before additional comments" do
+        flow.update!(employment_focused: true, reporting_window_months: 3)
+
+        get :show, params: { user: { account_id: account_id } }
+
+        page = Capybara.string(response.body)
+        headings = page.all("h2").map(&:text)
+        expect(headings.first(3)).to eq([ "Employment information", "Monthly details", "Additional comments (optional)" ])
+        expect(page).to have_selector("table", count: 4)
+        expect(page).to have_text("Compensation amount")
+        expect(page).to have_text("Hours worked")
+        expect(page).to have_field("payroll_account_additional_information")
+        expect(page).to have_no_text("Community engagement hours")
+      end
+
+      context "for an employment_focused activity" do
+        before { flow.update!(employment_focused: true) }
+
+        it "omits the community engagement report description for a single month" do
+          flow.update!(reporting_window_months: 1)
+          get :show, params: { user: { account_id: account_id } }
+
+          page = Capybara.string(response.body)
+          expect(page).to have_text("Please review your information.")
+          expect(page).to have_no_text("This will be included in your community engagement report.")
+        end
+
+        it "omits the community engagement report description for multiple months" do
+          flow.update!(reporting_window_months: 3)
+          get :show, params: { user: { account_id: account_id } }
+
+          page = Capybara.string(response.body)
+          expect(page).to have_text("Please review your information.")
+          expect(page).to have_no_text("This will be included in your community engagement report.")
+        end
+      end
+
+      context "for a standard CE activity" do
+        before { flow.update!(employment_focused: false) }
+
+        it "includes the community engagement report description for a single month" do
+          flow.update!(reporting_window_months: 1)
+          get :show, params: { user: { account_id: account_id } }
+
+          page = Capybara.string(response.body)
+          expect(page).to have_text("Please review your information.")
+          expect(page).to have_text("This will be included in your community engagement report.")
+        end
+
+        it "includes the community engagement report description for multiple months" do
+          flow.update!(reporting_window_months: 3)
+          get :show, params: { user: { account_id: account_id } }
+
+          page = Capybara.string(response.body)
+          expect(page).to have_text("Please review your information.")
+          expect(page).to have_text("This will be included in your community engagement report.")
+        end
       end
 
       it "renders the activity flow header with exit button and back link" do

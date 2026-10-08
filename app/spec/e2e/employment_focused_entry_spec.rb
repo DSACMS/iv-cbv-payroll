@@ -14,7 +14,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
 
     click_link I18n.t("activities.entries.show.employment_focused.get_started")
 
-    verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+    verify_page(page, title: "Choose how you want to add your job")
   end
 
   it "renders the generic entry content when not employment_focused" do
@@ -23,6 +23,13 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     expect(page).to have_no_content(I18n.t("activities.entries.show.employment_focused.header"))
+
+    click_link I18n.t("activities.entries.show.continue")
+    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
+    within("[data-activity-type='employment']") { click_button I18n.t("activities.hub.add") }
+    verify_page(page, title: "Choose how you want to add your work")
+    expect(page).to have_no_text("Choose how you want to add your job")
+    expect(page).to have_selector("label .text-bold", text: "Enter unpaid or in-kind work", exact_text: true)
   end
 
   context "the add_jobs page" do
@@ -77,7 +84,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
       flow = ActivityFlow.last
 
       # No jobs added yet — the summary box shouldn't render
-      verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+      verify_page(page, title: I18n.t("activities.employment.add_your_work.show.employment_focused.header"))
       expect(page).to have_no_content(I18n.t("activities.employment.add_your_work.add_jobs.jobs_added_heading", count: 0))
 
       # --- Add the first job, landing on the add_jobs page afterward ---
@@ -96,7 +103,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
       # --- Answering "yes" returns to the add-your-work page to add another job ---
       find("label[for='additional_jobs_true']").click
       click_button I18n.t("activities.employment.add_your_work.add_jobs.submit")
-      verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
+      verify_page(page, title: I18n.t("activities.employment.add_your_work.show.employment_focused.header"))
 
       # --- Add a second job, landing back on the add_jobs page with both jobs listed ---
       add_manual_job(employer_name: "Beta Staffing", gross_income: "300", hours: "20", flow: flow)

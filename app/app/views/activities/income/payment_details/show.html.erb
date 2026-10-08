@@ -1,9 +1,11 @@
-<% content_for :activity_flow_header do %>
-  <%= render ActivityFlowHeaderComponent.new(
-    title: t("activities.employment.title_singular"),
-    exit_url: activities_flow_root_path,
-    back_url: activities_flow_income_employer_search_path
-  ) %>
+<% unless @flow.employment_focused? %>
+  <% content_for :activity_flow_header do %>
+    <%= render ActivityFlowHeaderComponent.new(
+      title: t("activities.employment.title_singular"),
+      exit_url: activities_flow_root_path,
+      back_url: activities_flow_income_employer_search_path
+    ) %>
+  <% end %>
 <% end %>
 
 <% header = employer_name ? t(".header", employer_name: employer_name) : t(".header_no_employer_name") %>
@@ -17,8 +19,11 @@
 <% reporting_window_start_month = l(reporting_window_range.begin, format: :month_year) %>
 <% reporting_window_end_month = l(reporting_window_range.end, format: :month_year) %>
 <% subheader_key = @flow.reporting_months.one? ? ".subheader_single_month_html" : ".subheader_html" %>
+<% subheader_key = ".employment_focused#{subheader_key}" if @flow.employment_focused? %>
 <%# i18n-tasks-use t('activities.income.payment_details.show.subheader_html') %>
 <%# i18n-tasks-use t('activities.income.payment_details.show.subheader_single_month_html') %>
+<%# i18n-tasks-use t('activities.income.payment_details.show.employment_focused.subheader_html') %>
+<%# i18n-tasks-use t('activities.income.payment_details.show.employment_focused.subheader_single_month_html') %>
 
 <%= t(subheader_key,
       month: reporting_window_start_month,
@@ -27,41 +32,46 @@
       agency_acronym: agency_translation("shared.agency_acronym"),
     ) %>
 
-<%= render(Report::EmploymentDetailsTableComponent.new(
-  @aggregator_report,
-  @payroll_account,
-  show_income: @is_w2_worker,
-  activity_flow_labels: true
-)) %>
+<% if @flow.employment_focused? %>
+  <%= render Report::EmploymentFocusedPaymentDetailsComponent.new(@aggregator_report, @payroll_account, is_w2_worker: @is_w2_worker) %>
+<% else %>
+  <%= render(Report::EmploymentDetailsTableComponent.new(
+    @aggregator_report,
+    @payroll_account,
+    show_income: @is_w2_worker,
+    activity_flow_labels: true
+  )) %>
 
-<% if @is_w2_worker %>
-  <% if @payroll_account_report.paystubs.any? %>
-    <%= render(Report::W2MonthlySummaryTableComponent.new(
+  <% if @is_w2_worker %>
+    <% if @payroll_account_report.paystubs.any? %>
+      <%= render(Report::W2MonthlySummaryTableComponent.new(
+        @aggregator_report,
+        @payroll_account,
+        activity_flow_labels: true
+      )) %>
+    <% else %>
+      <%= render Uswds::Alert.new(type: :info, heading: t(".none_found"), class: "margin-top-5") do %>
+        <%= t(".none_found_description",
+          start_month: reporting_window_start_month,
+          end_month: reporting_window_end_month,
+        ) %>
+      <% end %>
+    <% end %>
+    <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(
+      @aggregator_report,
+      @payroll_account,
+      is_w2_worker: @is_w2_worker,
+      pay_frequency_text: pay_frequency,
+      activity_flow_labels: true
+    )) %>
+  <% else %>
+    <%= render(Report::GigMonthlySummaryTableComponent.new(
       @aggregator_report,
       @payroll_account,
       activity_flow_labels: true
     )) %>
-  <% else %>
-    <%= render Uswds::Alert.new(type: :info, heading: t(".none_found"), class: "margin-top-5") do %>
-      <%= t(".none_found_description",
-        start_month: reporting_window_start_month,
-        end_month: reporting_window_end_month,
-      ) %>
-    <% end %>
   <% end %>
-  <%= render(Report::PaymentsDeductionsMonthlySummaryComponent.new(
-    @aggregator_report,
-    @payroll_account,
-    is_w2_worker: @is_w2_worker,
-    pay_frequency_text: pay_frequency,
-    activity_flow_labels: true
-  )) %>
-<% else %>
-  <%= render(Report::GigMonthlySummaryTableComponent.new(
-    @aggregator_report,
-    @payroll_account,
-    activity_flow_labels: true
-  )) %>
+
 <% end %>
 
 <div class="usa-form-group margin-top-5">

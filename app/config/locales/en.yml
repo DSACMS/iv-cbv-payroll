@@ -324,6 +324,12 @@ en:
           submit: Continue
         show:
           description: If you held multiple jobs during the reporting period, you'll need to add each job separately.
+          employment_focused:
+            description: If you held multiple jobs during the reporting period, you will need to add each job separately. All three options are for paid work, whether you were paid in money or goods. You can report unpaid work later.
+            header: Choose how you want to add your job
+            options:
+              unpaid:
+                label: Enter in-kind work
           header: Choose how you want to add your work
           options:
             automatic:
@@ -355,6 +361,8 @@ en:
       month_selections:
         edit:
           continue: Continue
+          employment_focused:
+            description: For each month, you will need to report how much you made and how many hours you worked. Only include months you were paid, you can report unpaid work later.
           error_body: Select at least one month to continue
           error_heading: No months selected
           legend: Months worked
@@ -371,6 +379,9 @@ en:
         contact_phone: Employer contact phone number
         description: Review all the information you've added for %{employer_name} before adding it to your Community Engagement Report.
         employer_info: Employer information
+        employment_focused:
+          comment_prompt: If you'd like to provide additional context, add a comment for %{agency_initials}.
+          description: Review the information you've added for %{employer_name}.
         gross_income: Gross income
         name: Name
         save: Save and add to my report
@@ -507,6 +518,16 @@ en:
           additional_information_header: Additional comments (optional)
           additional_information_label: Share any comments or additional information about the details above that you'd like %{agency_acronym} to know. For example, you can share if the information is inaccurate or if you’re no longer working at that job.
           continue: Continue
+          employment_focused:
+            compensation_amount: Compensation amount
+            employment_information: Employment information
+            gross_income: Gross income
+            hours_worked: Hours worked
+            month: Month
+            monthly_details: Monthly details
+            number_of_paychecks: Number of paychecks
+            subheader_html: "<p>We have gathered your records from %{start_month} to %{end_month}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}.</p>"
+            subheader_single_month_html: "<p>We have gathered your records for %{month}.</p><p>Please review your information. If something is missing or inaccurate, add a comment for %{agency_acronym}.</p>"
           header: Review your information from %{employer_name}
           header_no_employer_name: Your information from your employer
           none_found: We didn't find any payments from this employer
