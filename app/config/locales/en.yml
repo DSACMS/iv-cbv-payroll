@@ -235,10 +235,12 @@ en:
         title: Credit hours
       new:
         city: City
-        contact_email: Contact email
-        contact_name: School contact name
-        contact_phone_number: Contact phone number
+        contact_email: School official’s email
+        contact_name: School official’s name
+        contact_phone_number: School phone number
+        contact_section_description: 'Share contact information for someone who can verify your enrollment: registrar, financial aid office, or an academic advisor, faculty member or instructor.'
         contact_section_title: School contact information
+        contact_title: School official’s title
         continue: Continue
         edit_title: Edit Education Activity
         school_name: School or program name
@@ -619,6 +621,7 @@ en:
         school_contact_email: School contact email
         school_contact_name: School contact name
         school_contact_phone_number: School contact phone number
+        school_contact_title: School official’s title
         term_date_range: "%{start_date} to %{end_date}"
         title: Community Engagement Report
         total_hours_worked: Total hours worked
