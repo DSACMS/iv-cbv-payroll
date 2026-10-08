@@ -68,15 +68,6 @@ class Activities::EmploymentController < Activities::BaseController
 
   private
 
-  # Employment-focused completions must always return to the activity hub,
-  # not the generic summary, regardless of whether routing requirements are
-  # met, so the hub can render the employment-focused review page before any
-  # community-engagement progress is evaluated. Overrides
-  # Activities::BaseController#after_activity_path.
-  def after_activity_path
-    activities_flow_root_path
-  end
-
   def ensure_review_ready
     if @employment_activity.employer_name.blank?
       redirect_to edit_activities_flow_income_employment_path(@employment_activity)

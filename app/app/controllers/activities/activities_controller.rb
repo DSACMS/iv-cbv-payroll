@@ -1,11 +1,8 @@
 class Activities::ActivitiesController < Activities::BaseController
+  before_action :redirect_empty_employment_flow, only: :index
   after_action :track_hub_viewed_event, only: :index
 
   def index
-    if @flow.employment_focused? && !@flow.any_activities_added?
-      return redirect_to activities_flow_income_add_your_work_path
-    end
-
     unless @flow.identity
       @flow.identity = IdentityService.new(request, @flow.cbv_applicant).get_identity
       @flow.save

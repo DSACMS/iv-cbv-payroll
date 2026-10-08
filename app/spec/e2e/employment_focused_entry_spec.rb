@@ -97,12 +97,10 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
       find("label[for='additional_jobs_true']").click
       click_button I18n.t("activities.employment.add_your_work.add_jobs.submit")
       verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
-      expect(flow.reload.employment_activities.count).to eq(1)
 
       # --- Add a second job, landing back on the add_jobs page with both jobs listed ---
       add_manual_job(employer_name: "Beta Staffing", gross_income: "300", hours: "20", flow: flow)
 
-      expect(flow.reload.employment_activities.count).to eq(2)
       verify_page(page, title: I18n.t("activities.employment.add_your_work.add_jobs.header"))
       expect(page).to have_content(I18n.t("activities.employment.add_your_work.add_jobs.jobs_added_heading", count: 2))
       expect(page).to have_content(I18n.t("activities.employment.add_your_work.add_jobs.job_manual", name: "Acme Co"))

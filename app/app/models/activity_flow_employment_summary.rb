@@ -15,7 +15,8 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
     employment_start_date: :date,
     employment_termination_date: :date,
     pay_frequency: :string,
-    compensation_unit: :string
+    compensation_amount: :integer,
+    compensation_unit: :string,
   )
 
   # Redactable doesn't support integer fields, so compensation_amount (cents)

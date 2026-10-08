@@ -149,4 +149,10 @@ class FlowController < ApplicationController
       session[:launcher_timeout] = params[:launcher_timeout].to_i.minutes.to_i
     end
   end
+
+  def redirect_empty_employment_flow
+    return unless @flow.employment_focused? && !@flow.any_activities_added?
+
+    redirect_to activities_flow_income_add_your_work_path
+  end
 end

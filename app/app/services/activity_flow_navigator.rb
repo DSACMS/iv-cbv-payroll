@@ -49,7 +49,7 @@ class ActivityFlowNavigator
   private
 
   def after_income_path
-    return activities_flow_income_add_jobs_path if @flow&.employment_focused? || @employment_focused
+    return activities_flow_income_add_jobs_path if @employment_focused
     return activities_flow_root_path unless @overall_progress_result
 
     @overall_progress_result.meets_routing_requirements ? activities_flow_summary_path : activities_flow_root_path
