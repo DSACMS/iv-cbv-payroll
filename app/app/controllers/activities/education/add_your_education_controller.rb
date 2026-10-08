@@ -1,5 +1,5 @@
 class Activities::Education::AddYourEducationController < Activities::BaseController
-  ADD_EDUCATION_METHODS = EducationActivity::EDUCATION_CATEGORIES
+  ADD_EDUCATION_METHODS = EducationActivity::EDUCATION_TYPES
 
   def show
   end

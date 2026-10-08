@@ -291,7 +291,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.education.error.enter_manually_button")
     expect(page).to have_content I18n.t("activities.education.error.retry_button")
 
-    expect(EducationActivity.last.education_category).to eq("college_or_university")
+    expect(EducationActivity.last.education_type).to eq("college_or_university")
     click_link I18n.t("activities.education.error.enter_manually_button")
     verify_page(page, title: I18n.t("activities.education.new.title"))
     fill_in I18n.t("activities.education.new.school_name"), with: "Example College"
@@ -300,7 +300,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.education.hours_input.heading",
       month: I18n.l(flow.reporting_months.first, format: :month_year), organization: "Example College"))
     expect(EducationActivity.last.data_source).to eq("fully_self_attested")
-    expect(EducationActivity.last.education_category).to eq("college_or_university")
+    expect(EducationActivity.last.education_type).to eq("college_or_university")
 
     visit activities_flow_root_path
     verify_page(page, title: I18n.t("activities.hub.empty_state_title"))

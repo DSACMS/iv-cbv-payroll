@@ -6,27 +6,27 @@ RSpec.describe EducationActivity do
   describe "validations" do
     let(:activity_flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
 
-    context "education category" do
+    context "education type" do
       let(:activity) { build(:education_activity, activity_flow: activity_flow) }
 
       it "accepts older records without a saved selection" do
-        activity.education_category = nil
+        activity.education_type = nil
 
         expect(activity).to be_valid
       end
 
       it "rejects unsupported categories" do
-        activity.education_category = "unsupported"
+        activity.education_type = "unsupported"
 
         expect(activity).not_to be_valid
-        expect(activity.errors[:education_category]).to be_present
+        expect(activity.errors[:education_type]).to be_present
       end
 
       it "displays the original category after changing to self-attestation" do
-        activity.education_category = "college_or_university"
+        activity.education_type = "college_or_university"
         activity.data_source = :fully_self_attested
 
-        expect(activity.education_category_display).to eq("College/University")
+        expect(activity.education_type_display).to eq("College/University")
       end
     end
 

@@ -50,32 +50,58 @@ RSpec.describe Activities::EducationController, type: :controller do
       it "saves the category on the NSC activity" do
         post :create
 
-        expect(activity_flow.education_activities.last.education_category).to eq("college_or_university")
+        expect(activity_flow.education_activities.last.education_type).to eq("college_or_university")
       end
 
-      it "retains the original category when NSC fails and the applicant enters education manually" do
-        post :create
-        activity_flow.education_activities.last.update!(status: :no_enrollments)
-        post :create, params: { education_activity: { school_name: "Example College" } }
+      context "when the NSC request fails" do
+        before do
+          post :create
+          activity_flow.education_activities.last.update!(status: :failed)
+          get :show, params: { id: activity_flow.education_activities.last.id }
+        end
 
-        activity = activity_flow.education_activities.last
-        expect(activity.data_source).to eq("fully_self_attested")
-        expect(activity.education_category).to eq("college_or_university")
-        expect(session[:education_selection]).to be_nil
+        it "routes the applicant to the fallback page" do
+          expect(response).to redirect_to(activities_flow_education_error_path)
+        end
+
+        it "preserves the original type when the applicant enters education manually" do
+          post :create, params: { education_activity: { school_name: "Example College" } }
+
+          activity = activity_flow.education_activities.last
+          expect(activity.data_source).to eq("fully_self_attested")
+          expect(activity.education_type).to eq("college_or_university")
+          expect(session[:education_selection]).to be_nil
+        end
+      end
+
+      context "when NSC finds no enrollment records" do
+        before do
+          post :create
+          activity_flow.education_activities.last.update!(status: :no_enrollments)
+        end
+
+        it "preserves the original type when the applicant enters education manually" do
+          post :create, params: { education_activity: { school_name: "Example College" } }
+
+          activity = activity_flow.education_activities.last
+          expect(activity.data_source).to eq("fully_self_attested")
+          expect(activity.education_type).to eq("college_or_university")
+          expect(session[:education_selection]).to be_nil
+        end
       end
 
       it "preserves the selection after an invalid manual form" do
         post :create, params: { education_activity: { school_name: "" } }
         post :create, params: { education_activity: { school_name: "Example College" } }
 
-        expect(activity_flow.education_activities.last.education_category).to eq("college_or_university")
+        expect(activity_flow.education_activities.last.education_type).to eq("college_or_university")
       end
 
       it "does not use another flow's selection" do
         session[:education_selection] = { flow_id: -1, category: "college_or_university" }
         post :create
 
-        expect(activity_flow.education_activities.last.education_category).to be_nil
+        expect(activity_flow.education_activities.last.education_type).to be_nil
       end
     end
 

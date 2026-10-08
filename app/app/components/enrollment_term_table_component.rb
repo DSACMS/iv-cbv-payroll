@@ -1,5 +1,6 @@
 class EnrollmentTermTableComponent < ViewComponent::Base
-  def initialize(nsc_enrollment_term:)
+  def initialize(nsc_enrollment_term:, education_activity: nil)
+    @education_activity = education_activity
     @nsc_enrollment_term = nsc_enrollment_term
   end
 

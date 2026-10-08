@@ -76,7 +76,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
         activity_flow: activity_flow,
         data_source: :fully_self_attested,
         school_name: "Bayou College",
-        education_category: "college_or_university",
+        education_type: "college_or_university",
         contact_title: "Registrar"
       )
       create(:education_activity_month, education_activity: education, month: activity_flow.reporting_months.first, hours: 3)
@@ -113,7 +113,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(pdf_text).to include("Garden State Market")
       expect(pdf_text).to include("(225) 555-0199")
       expect(pdf_text).to include("Bayou College")
-      expect(pdf_text).to include("Education category", "College/University")
+      expect(pdf_text).to match(/Institution information\s+Your details\s+Type\s+College\/University/)
       expect(pdf_text).to include(education.contact_title)
       expect(pdf_text).to include("Volunteer Log.pdf")
       expect(pdf_text).to include(test_confirmation_code)
@@ -218,7 +218,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
         "Education details",
         "This schedule covers both institutions"
       )
-      expect(education_details_text).to include("Institution information", "Education category")
+      expect(education_details_text).to include("Institution information", "Type")
     end
 
     it "omits contact rows that do not apply to self-employed work" do
@@ -253,12 +253,30 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(pdf_text).to match(/Food Pantry.*October 2025\s+17.*November 2025\s+19/)
     end
 
+    context "when the education type is other" do
+      let(:education) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested,
+          school_name: "Example School", education_type: "other")
+      end
+
+      before do
+        education
+        get :show, format: :pdf
+      end
+
+      it "displays Other as the first institution information row" do
+        pdf_text = extract_pdf_text(response)
+        expect(pdf_text).to match(/Institution information\s+Your details\s+Type\s+Other/)
+        expect(pdf_text).not_to include("I'm not sure")
+      end
+    end
+
     it "renders activity-level education data for each NSC school" do
       education = create(
         :education_activity,
         activity_flow: activity_flow,
         data_source: :partially_self_attested,
-        education_category: "trade_or_technical",
+        education_type: "trade_or_technical",
         status: :succeeded,
         school_name: nil,
         additional_comments: "Comment for both reported schools"

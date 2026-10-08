@@ -229,7 +229,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         activity_flow: activity_flow,
         data_source: :fully_self_attested,
         school_name: "University of Illinois",
-        education_category: "high_school_ged",
+        education_type: "high_school_ged",
         street_address: "601 E John St",
         city: "Champaign",
         state: "IL",
@@ -242,7 +242,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       get :show
 
-      expect(Capybara.string(response.body)).to have_text("High School/GED")
+      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?("Education information") }.all("tbody tr").first).to have_text("Type High School/GED", normalize_ws: true)
 
       expect(response.body).to include(activity.school_name)
       expect(response.body).to include(activity.formatted_address)
@@ -266,7 +266,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         :education_activity,
         activity_flow: activity_flow,
         data_source: :partially_self_attested,
-        education_category: "trade_or_technical",
+        education_type: "trade_or_technical",
         status: :succeeded
       )
       create(
@@ -281,7 +281,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       )
 
       get :show
-      expect(Capybara.string(response.body)).to have_text("Work/Technical Program")
+      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?("Education information") }.all("tbody tr").first).to have_text("Type Work/Technical Program", normalize_ws: true)
 
       doc = Capybara.string(response.body)
       expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
@@ -394,7 +394,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         :education_activity,
         activity_flow: activity_flow,
         data_source: :validated,
-        education_category: "college_or_university",
+        education_type: "college_or_university",
         status: :succeeded
       )
       first_month = activity_flow.reporting_months.first
@@ -418,7 +418,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       )
 
       get :show
-      expect(Capybara.string(response.body)).to have_text("College/University")
+      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?("Education information") }.all("tbody tr").first).to have_text("Type College/University", normalize_ws: true)
 
       doc = Capybara.string(response.body)
       expect(response.body).to include(half_time_school_name)

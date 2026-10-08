@@ -95,13 +95,13 @@ RSpec.describe ActivityReportSchemas do
     let(:self_attested_education) do
       {
         "type" => "education", "month" => "2026-07", "data_source" => "self_attested", "document_ids" => [],
-        "school_name" => "Example Community College", "hours" => 3.5, "contact_email" => nil, "education_category" => "high_school_ged"
+        "school_name" => "Example Community College", "hours" => 3.5, "contact_email" => nil, "education_type" => "high_school_ged"
       }
     end
     let(:verified_education) do
       {
         "type" => "education", "month" => "2026-07", "data_source" => "verified", "document_ids" => [],
-        "school_name" => nil, "enrollment_status" => "half_time", "credit_hours" => nil, "education_category" => "college_or_university",
+        "school_name" => nil, "enrollment_status" => "half_time", "credit_hours" => nil, "education_type" => "college_or_university",
         "term" => { "start_month" => "2026-05", "end_month" => "2026-08" }
       }
     end
@@ -119,19 +119,19 @@ RSpec.describe ActivityReportSchemas do
     end
 
     it "rejects unsupported categories" do
-      verified_education["education_category"] = "invalid"
+      verified_education["education_type"] = "invalid"
 
       expect(schema.valid?(report)).to be(false)
     end
 
     it "accepts null categories for older records" do
-      verified_education["education_category"] = nil
+      verified_education["education_type"] = nil
 
       expect(schema.valid?(report)).to be(true)
     end
 
     it "requires the category field even when its value is unknown" do
-      self_attested_education.delete("education_category")
+      self_attested_education.delete("education_type")
 
       expect(schema.valid?(report)).to be(false)
     end

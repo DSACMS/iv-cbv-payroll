@@ -9,7 +9,7 @@ module ActivityReportSchemas
       additional_comments: nullable_string
     )
     education_term = {
-      education_category: education_category,
+      education_type: education_type,
       type: { type: :string, enum: %w[education] },
       school_name: nullable_string,
       enrollment_status: { type: :string, enum: NscEnrollmentTerm.enrollment_statuses.keys },
@@ -116,17 +116,17 @@ module ActivityReportSchemas
           }
         }
       },
-      CeSelfAttestedEducationActivity: activity(%w[school_name hours education_category], self_attested.merge(contact).merge(
-        education_category: education_category,
+      CeSelfAttestedEducationActivity: activity(%w[school_name hours education_type], self_attested.merge(contact).merge(
+        education_type: education_type,
         type: { type: :string, enum: %w[education] },
         data_source: { type: :string, enum: %w[self_attested] },
         school_name: { type: :string },
         hours: { type: :number, minimum: 0, description: "Academic credit hours reported for this month; may be zero." }
       )),
-      CeVerifiedEducationActivity: activity(%w[school_name enrollment_status term education_category], education_term.merge(
+      CeVerifiedEducationActivity: activity(%w[school_name enrollment_status term education_type], education_term.merge(
         data_source: { type: :string, enum: %w[verified], description: "NSC-verified enrollment." }
       )),
-      CeVerifiedEnrollmentOnlyEducationActivity: activity(%w[school_name hours enrollment_status term education_category], self_attested.merge(contact).merge(education_term).merge(
+      CeVerifiedEnrollmentOnlyEducationActivity: activity(%w[school_name hours enrollment_status term education_type], self_attested.merge(contact).merge(education_term).merge(
         data_source: { type: :string, enum: %w[verified_enrollment_only], description: "NSC-verified enrollment with self-attested academic credits." },
         hours: { type: %w[number null], minimum: 0, description: "Self-attested academic credit hours for the term, also supplied as credit_hours; null when not reported." }
       )),
@@ -188,9 +188,9 @@ module ActivityReportSchemas
     { type: %w[string null] }
   end
 
-  def self.education_category
-    nullable_enum(EducationActivity::EDUCATION_CATEGORIES).merge(
-      description: "Original education category selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
+  def self.education_type
+    nullable_enum(EducationActivity::EDUCATION_TYPES).merge(
+      description: "Original education type selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
       example: "college_or_university"
     )
   end
