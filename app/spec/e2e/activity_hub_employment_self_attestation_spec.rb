@@ -238,13 +238,23 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     month_edit_links.first.click
 
     verify_page(page, title: updated_monthly_details_title)
+    income_field = find_field(
+      I18n.t(
+        "activities.employment.hours_input.gross_income_label",
+        month: first_selected_month_name
+      )
+    )
+
     fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: ""
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: ""
     click_button I18n.t("activities.hub.save")
 
-    # Should stay on hours input with an error
-    expect(page).to have_content I18n.t("activities.employment.hours_input.error_heading")
-    expect(page).to have_content I18n.t("activities.employment.hours_input.error_body")
+    # Each selected month requires income; hours are optional 
+    expect(income_field[:required]).to be_present
+    expect(income_field.evaluate_script("this.validity.valueMissing")).to be true
+    expect(page).to have_no_content(
+      I18n.t("activities.employment.hours_input.error_heading")
+    )
     expect(page).to have_no_selector(".usa-error-message")
 
     # Fix it — set to valid values and save
