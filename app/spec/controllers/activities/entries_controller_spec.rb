@@ -131,5 +131,49 @@ RSpec.describe Activities::EntriesController do
         expect(response.body).not_to include(I18n.t("activities.entries.show.employment_focused.header"))
       end
     end
+
+    context "with an existing activity session" do
+      let(:flow) { create(:activity_flow, employment_focused: true) }
+      let!(:employment_activity) do
+        create(:employment_activity, activity_flow: flow, employer_name: "Example Employer")
+      end
+
+      before do
+        session[:flow_id] = flow.id
+        session[:flow_type] = :activity
+      end
+
+      it "reuses the flow without creating another flow or applicant" do
+        expect {
+          get :show
+        }.to change(ActivityFlow, :count).by(0)
+          .and change(CbvApplicant, :count).by(0)
+
+        expect(session[:flow_id]).to eq(flow.id)
+        expect(flow.reload.employment_activities).to include(employment_activity)
+      end
+
+      it "renders the employment-focused entry page" do
+        get :show
+
+        expect(response).to have_http_status(:ok)
+        expect(Capybara.string(response.body)).to have_selector(
+          "h1",
+          text: I18n.t("activities.entries.show.employment_focused.header")
+        )
+      end
+
+      context "when the session flow type is a string" do
+        before { session[:flow_type] = "activity" }
+
+        it "reuses the existing flow" do
+          expect {
+            get :show
+          }.not_to change(ActivityFlow, :count)
+
+          expect(session[:flow_id]).to eq(flow.id)
+        end
+      end
+    end
   end
 end
