@@ -12,6 +12,8 @@ class Activities::EducationController < Activities::BaseController
   ARTIFICIAL_DELAY = 7.seconds
   INDICATOR_COUNT = 3
 
+  helper_method :education_type
+
   before_action :redirect_if_nsc_disabled, only: %i[verify show sync error]
   before_action :set_education_activity, only: %i[show edit update destroy review save_review]
   before_action :set_back_url, only: %i[new create verify edit update review]
@@ -26,7 +28,7 @@ class Activities::EducationController < Activities::BaseController
     if params[:education_activity]
       create_fully_self_attested_activity
     elsif nsc_disabled?
-      redirect_to new_activities_flow_education_path
+      redirect_to new_activities_flow_education_path(education_type: education_type)
     else
       create_validated_activity
     end
@@ -40,7 +42,7 @@ class Activities::EducationController < Activities::BaseController
     set_completed_indicators
 
     if @education_activity.sync_failed? || @education_activity.sync_no_enrollments?
-      redirect_to activities_flow_education_error_path
+      redirect_to activities_flow_education_error_path(education_type: @education_activity.education_type)
     elsif @education_activity.sync_succeeded? && !testing_synchronization_page?
       redirect_to education_sync_success_path
     else
@@ -97,7 +99,7 @@ class Activities::EducationController < Activities::BaseController
     if @education_activity.sync_unknown?
       render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
     elsif @education_activity.sync_failed? || @education_activity.sync_no_enrollments?
-      render turbo_stream: turbo_stream.action(:redirect, activities_flow_education_error_path)
+      render turbo_stream: turbo_stream.action(:redirect, activities_flow_education_error_path(education_type: @education_activity.education_type))
     elsif @wait_time < ARTIFICIAL_DELAY && !testing_synchronization_page?
       render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
     else
@@ -106,7 +108,7 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def new
-    @education_activity = @flow.education_activities.new
+    @education_activity = @flow.education_activities.new(education_type: education_type)
   end
 
   def review
@@ -190,10 +192,9 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def create_fully_self_attested_activity
-    @education_activity = @flow.education_activities.new(fully_self_attested_education_params.merge(draft: true, education_type: selected_education_type))
+    @education_activity = @flow.education_activities.new(fully_self_attested_education_params.merge(draft: true, education_type: education_type))
     @education_activity.data_source = :fully_self_attested
     if @education_activity.save
-      session.delete(:education_selection)
       track_event(TrackEvent::EducationInfoSubmitted, education_activity_id: @education_activity.id)
       redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0)
     else
@@ -207,7 +208,7 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def create_validated_activity
-    @education_activity = @flow.education_activities.create(draft: true, education_type: selected_education_type)
+    @education_activity = @flow.education_activities.create(draft: true, education_type: education_type)
     NscSynchronizationJob.perform_later(@education_activity.id)
     redirect_to activities_flow_education_path(id: @education_activity.id)
   end
@@ -220,9 +221,8 @@ class Activities::EducationController < Activities::BaseController
     end
   end
 
-  def selected_education_type
-    selection = session[:education_selection]&.with_indifferent_access
-    selection[:category] if selection && selection[:flow_id] == @flow.id
+  def education_type
+    params[:education_type] if EducationActivity::EDUCATION_TYPES.include?(params[:education_type])
   end
 
   def summer_logic_applied?

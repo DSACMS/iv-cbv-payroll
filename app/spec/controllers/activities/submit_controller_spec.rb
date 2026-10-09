@@ -5,6 +5,14 @@ RSpec.describe Activities::SubmitController, type: :controller do
 
   render_views
 
+  let(:institution_type_row_prefix) do
+    [
+      I18n.t("activities.submit.pdf.institution_information"),
+      I18n.t("shared.table_headers.your_details"),
+      I18n.t("activities.submit.pdf.education_type")
+    ].map { |label| Regexp.escape(label) }.join('\s+')
+  end
+
   let(:identity) do
     create(
       :identity,
@@ -113,7 +121,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(pdf_text).to include("Garden State Market")
       expect(pdf_text).to include("(225) 555-0199")
       expect(pdf_text).to include("Bayou College")
-      expect(pdf_text).to match(/Institution information\s+Your details\s+Type\s+College\/University/)
+      expect(pdf_text).to match(/#{institution_type_row_prefix}\s+#{Regexp.escape(I18n.t("activities.education.types.college_or_university"))}/)
       expect(pdf_text).to include(education.contact_title)
       expect(pdf_text).to include("Volunteer Log.pdf")
       expect(pdf_text).to include(test_confirmation_code)
@@ -218,7 +226,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
         "Education details",
         "This schedule covers both institutions"
       )
-      expect(education_details_text).to include("Institution information", "Type")
+      expect(education_details_text).to include(I18n.t("activities.submit.pdf.institution_information"), I18n.t("activities.submit.pdf.education_type"))
     end
 
     it "omits contact rows that do not apply to self-employed work" do
@@ -266,7 +274,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
 
       it "displays Other as the first institution information row" do
         pdf_text = extract_pdf_text(response)
-        expect(pdf_text).to match(/Institution information\s+Your details\s+Type\s+Other/)
+        expect(pdf_text).to match(/#{institution_type_row_prefix}\s+#{Regexp.escape(I18n.t("activities.education.types.other"))}/)
         expect(pdf_text).not_to include("I'm not sure")
       end
     end
@@ -305,7 +313,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       )
 
       get :show, format: :pdf
-      expect(extract_pdf_text(response)).to include("Work/Technical Program")
+      expect(extract_pdf_text(response)).to include(I18n.t("activities.education.types.trade_or_technical"))
 
       pdf_text = extract_pdf_text(response)
       expect(pdf_text.scan("Comment for both reported schools").size).to eq(2)

@@ -55,33 +55,29 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
   describe "#create" do
     it "redirects to verify enrollment when college or university is selected" do
       post :create, params: { add_education_method: "college_or_university" }
-      expect(response).to redirect_to(verify_activities_flow_education_index_path)
-      expect(session[:education_selection]).to eq({ flow_id: activity_flow.id, category: "college_or_university" })
+      expect(response).to redirect_to(verify_activities_flow_education_index_path(education_type: "college_or_university"))
     end
 
     it "redirects to self-attested education when college or university is selected and NSC is disabled" do
       stub_environment_variable("NSC_DISABLED", "true") do
         post :create, params: { add_education_method: "college_or_university" }
-        expect(response).to redirect_to(new_activities_flow_education_path)
+        expect(response).to redirect_to(new_activities_flow_education_path(education_type: "college_or_university"))
       end
     end
 
     it "redirects to self-attested education when high school or GED is selected" do
       post :create, params: { add_education_method: "high_school_ged" }
-      expect(response).to redirect_to(new_activities_flow_education_path)
-      expect(session[:education_selection]).to eq({ flow_id: activity_flow.id, category: "high_school_ged" })
+      expect(response).to redirect_to(new_activities_flow_education_path(education_type: "high_school_ged"))
     end
 
     it "redirects to self-attested education when trade or technical program is selected" do
       post :create, params: { add_education_method: "trade_or_technical" }
-      expect(response).to redirect_to(new_activities_flow_education_path)
-      expect(session[:education_selection]).to eq({ flow_id: activity_flow.id, category: "trade_or_technical" })
+      expect(response).to redirect_to(new_activities_flow_education_path(education_type: "trade_or_technical"))
     end
 
     it "redirects to other education routing page when other is selected" do
       post :create, params: { add_education_method: "other" }
-      expect(response).to redirect_to(activities_flow_education_other_path)
-      expect(session[:education_selection]).to eq({ flow_id: activity_flow.id, category: "other" })
+      expect(response).to redirect_to(activities_flow_education_other_path(education_type: "other"))
     end
 
     it "redirects back with an alert when nothing is selected" do

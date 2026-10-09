@@ -76,7 +76,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     expect(education_activity.education_type).to eq("high_school_ged")
     visit activities_flow_summary_path
     verify_page(page, title: I18n.t("activities.summary.title", benefit: "Medicaid"))
-    expect(page).to have_selector("tr", text: "Type High School/GED")
+    expect(page).to have_selector("tr", text: "#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.high_school_ged")}")
     visit new_activities_flow_education_document_upload_path(education_id: education_activity)
     verify_page(
       page,

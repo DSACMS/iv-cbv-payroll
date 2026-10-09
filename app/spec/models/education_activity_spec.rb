@@ -26,7 +26,7 @@ RSpec.describe EducationActivity do
         activity.education_type = "college_or_university"
         activity.data_source = :fully_self_attested
 
-        expect(activity.education_type_display).to eq("College/University")
+        expect(activity.education_type_display).to eq(I18n.t("activities.education.types.college_or_university"))
       end
     end
 

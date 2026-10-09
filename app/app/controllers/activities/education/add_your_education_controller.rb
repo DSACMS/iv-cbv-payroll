@@ -12,7 +12,6 @@ class Activities::Education::AddYourEducationController < Activities::BaseContro
       return redirect_to activities_flow_education_add_your_education_path
     end
 
-    session[:education_selection] = { flow_id: @flow.id, category: add_education_method }
     redirect_to next_step_path(add_education_method)
   end
 
@@ -21,11 +20,11 @@ class Activities::Education::AddYourEducationController < Activities::BaseContro
   def next_step_path(add_education_method)
     case add_education_method
     when "college_or_university"
-      nsc_disabled? ? new_activities_flow_education_path : verify_activities_flow_education_index_path
+      nsc_disabled? ? new_activities_flow_education_path(education_type: add_education_method) : verify_activities_flow_education_index_path(education_type: add_education_method)
     when "other"
-      activities_flow_education_other_path
+      activities_flow_education_other_path(education_type: add_education_method)
     else
-      new_activities_flow_education_path
+      new_activities_flow_education_path(education_type: add_education_method)
     end
   end
 end

@@ -242,7 +242,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       get :show
 
-      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?("Education information") }.all("tbody tr").first).to have_text("Type High School/GED", normalize_ws: true)
+      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }.all("tbody tr").first).to have_text("#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.high_school_ged")}", normalize_ws: true)
 
       expect(response.body).to include(activity.school_name)
       expect(response.body).to include(activity.formatted_address)
@@ -281,7 +281,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       )
 
       get :show
-      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?("Education information") }.all("tbody tr").first).to have_text("Type Work/Technical Program", normalize_ws: true)
+      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }.all("tbody tr").first).to have_text("#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.trade_or_technical")}", normalize_ws: true)
 
       doc = Capybara.string(response.body)
       expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
@@ -418,7 +418,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       )
 
       get :show
-      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?("Education information") }.all("tbody tr").first).to have_text("Type College/University", normalize_ws: true)
+      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }.all("tbody tr").first).to have_text("#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.college_or_university")}", normalize_ws: true)
 
       doc = Capybara.string(response.body)
       expect(response.body).to include(half_time_school_name)
