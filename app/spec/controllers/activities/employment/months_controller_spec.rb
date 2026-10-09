@@ -45,6 +45,19 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
 
         expect(Capybara.string(response.body)).to have_selector("h1", text: "Add your hours for #{employment_activity.employer_name}", exact_text: true, normalize_ws: true)
       end
+
+      it "requires gross income while keeping paid-work hours optional" do
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_selector(
+          'input[name="employment_activity_month[gross_income]"][required]'
+        )
+        expect(rendered).to have_selector(
+          'input[name="employment_activity_month[hours]"]:not([required])'
+        )
+      end
     end
 
     context "for a standard CE activity" do
