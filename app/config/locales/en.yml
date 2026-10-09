@@ -554,6 +554,8 @@ en:
       new:
         description: Enter as much information as you can. This will help %{agency_acronym} get in touch with your work program, if needed.
         title: Tell us about your work or training program
+    reporting_for:
+      text_html: Reporting for %{name}
     submit:
       confirm: Share my report
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized agency personnel.'

@@ -13,6 +13,19 @@ RSpec.describe Activities::SuccessController, type: :controller do
   end
 
   describe "GET #show" do
+    context "with a named applicant in a tokenized flow" do
+      let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+      let(:activity_flow) { create(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation, completed_at: Time.current) }
+
+      before { get :show }
+
+      it "does not display the reporting banner" do
+        expect(response).to have_http_status(:ok)
+        expect(Capybara.string(response.body)).to have_no_text("Reporting for")
+      end
+    end
+
     it "redirects to summary if the flow has not been submitted" do
       get :show
 

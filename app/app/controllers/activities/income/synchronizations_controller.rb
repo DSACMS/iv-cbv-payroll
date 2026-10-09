@@ -21,6 +21,10 @@ class Activities::Income::SynchronizationsController < Activities::BaseControlle
     end
   end
 
+  def show_activity_reporting_banner?
+    false
+  end
+
   private
 
   def session_timeout_enabled?
