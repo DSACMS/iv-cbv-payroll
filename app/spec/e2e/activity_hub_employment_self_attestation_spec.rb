@@ -249,7 +249,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: ""
     click_button I18n.t("activities.hub.save")
 
-    # Each selected month requires income; hours are optional 
+    # Each selected month requires income; hours are optional
     expect(income_field[:required]).to be_present
     expect(income_field.evaluate_script("this.validity.valueMissing")).to be true
     expect(page).to have_no_content(
