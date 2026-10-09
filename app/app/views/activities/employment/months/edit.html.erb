@@ -47,7 +47,8 @@
         from_review: from_review ? 1 : nil,
         from_edit: from_edit ? 1 : nil
       ),
-      method: :patch
+      method: :patch,
+      html: { novalidate: true }
     ) do |f| %>
   <% unless unpaid %>
     <%= f.currency_field :gross_income,
