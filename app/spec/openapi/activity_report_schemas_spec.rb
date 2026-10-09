@@ -24,6 +24,7 @@ RSpec.describe ActivityReportSchemas do
       "schema_version" => "1.0.0", "confirmation_code" => "EXAMPLE123", "completed_at" => "2026-08-11T14:00:00Z",
       "agency_partner_metadata" => { "first_name" => "Jane", "date_of_birth" => "1990-04-15" },
       "ce_report" => {
+        "report_variant" => "community_engagement",
         "review_period" => { "start_month" => "2026-07", "end_month" => "2026-07" },
         "documents" => [],
         "activities" => { "community_service" => {}, "work_program" => {}, "employment" => { "2026-07" => [ self_attested, payroll ] }, "education" => {} }
