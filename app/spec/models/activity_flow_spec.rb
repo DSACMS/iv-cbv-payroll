@@ -294,15 +294,18 @@ RSpec.describe ActivityFlow, type: :model do
         summarize_by_month: { "acct-1" => {} }
       )
       allow(report).to receive(:find_account_report).with("acct-1").and_return(
-        double(employment: instance_double(Aggregators::ResponseObjects::Employment,
-          employer_name: "Test Employer",
-          employment_type: :w2,
-          employer_phone_number: nil,
-          employer_address: nil,
-          status: nil,
-          start_date: nil,
-          termination_date: nil
-        ))
+        double(
+          employment: instance_double(Aggregators::ResponseObjects::Employment,
+            employer_name: "Test Employer",
+            employment_type: :w2,
+            employer_phone_number: nil,
+            employer_address: nil,
+            status: nil,
+            start_date: nil,
+            termination_date: nil
+          ),
+          income: nil
+        )
       )
     end
 

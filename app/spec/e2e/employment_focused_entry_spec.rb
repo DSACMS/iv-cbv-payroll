@@ -22,7 +22,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
     visit activities_flow_start_path(token: non_employment_invitation.auth_token)
 
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
-    expect(page).to have_no_content(I18n.t("activities.entries.show.employment_focused.header"))
+    expect(page).to have_no_content(I18n.t("activities.employ.show.employment_focused.header"))
 
     click_link I18n.t("activities.entries.show.continue")
     verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
@@ -44,6 +44,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
     # through a single-month, manually-entered paid job and lands on the
     # add_jobs page.
     def add_manual_job(employer_name:, gross_income:, hours:, flow:)
+      verify_page(page, title: I18n.t("activities.employment.add_your_work.show.employment_focused.header"))
       find("label[for='add_work_method_enter_paid_manually']").click
       click_button I18n.t("continue")
 
@@ -112,10 +113,16 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
       expect(page).to have_content(I18n.t("activities.employment.add_your_work.add_jobs.job_manual", name: "Acme Co"))
       expect(page).to have_content(I18n.t("activities.employment.add_your_work.add_jobs.job_manual", name: "Beta Staffing"))
 
-      # --- Answering "no" finishes and returns to the activity hub ---
+      # --- Answering "no" finishes and returns to the employment-focused review page ---
       find("label[for='additional_jobs_false']").click
       click_button I18n.t("activities.employment.add_your_work.add_jobs.submit")
-      verify_page(page, title: I18n.t("activities.hub.completed_state_title"))
+      verify_page(page, title: I18n.t("activities.activities.employment_focused_review.header"))
+      expect(page).to have_content(
+        I18n.t("activities.activities.employment_focused_review.employment_header", count: 1, employer_name: "Acme Co")
+      )
+      expect(page).to have_content(
+        I18n.t("activities.activities.employment_focused_review.employment_header", count: 2, employer_name: "Beta Staffing")
+      )
     end
   end
 end

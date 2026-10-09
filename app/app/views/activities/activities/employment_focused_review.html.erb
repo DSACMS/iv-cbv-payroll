@@ -1,0 +1,103 @@
+<% content_for :title, t(".header") %>
+
+<h1><%= t(".header") %></h1>
+<% @employment_payroll_accounts.each_with_index do |job, index| %>
+    <% account_report = @persisted_report&.find_account_report(job.aggregator_account_id) %>
+    <% if account_report.present? %>
+        <h2><%= t(".employment_header", count: index + 1, employer_name: account_report.employment.employer_name) %></h2>
+        <h3><%= t(".employment_details") %></h3>
+        <%= render(TableComponent.new) do |table| %>
+            <%= table.with_header_cell(scope: "col") { t(".employment_details") } %>
+            <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
+            <%= table.with_data_point(:employment_start_date, account_report.employment.start_date) %>
+            <%= table.with_data_point(:employment_end_date, account_report.employment.termination_date) %>
+            <%= table.with_data_point(:employment_status, account_report.employment.status) %>
+            <%= table.with_data_point(:pay_frequency, account_report.income&.pay_frequency) %>
+            <%= table.with_data_point(:hourly_rate, account_report.income&.compensation_amount, account_report.income&.compensation_unit) %>
+        <% end %>
+
+        <h2><%= t(".monthly_details") %></h2>
+        <% if account_report.employment.employment_type == :w2 %>
+            <%= render(Report::W2MonthlySummaryTableComponent.new(
+                @persisted_report,
+                job,
+                activity_flow_labels: true
+                )) %>
+        <% else %>
+            <%= render(Report::GigMonthlySummaryTableComponent.new(
+                @persisted_report,
+                job,
+                activity_flow_labels: true
+                )) %>
+        <% end %>
+
+        <% if job.additional_information.present? %>
+            <h2><%= t(".additional_comments") %></h2>
+            <p><%= job.additional_information %></p>
+        <% end %>
+    <% end %>
+<% end %>
+<% @employment_activities.each_with_index do |activity, index| %>
+    <h2><%= t(".employment_header", count: @employment_payroll_accounts.size + index + 1, employer_name: activity.employer_name) %></h2>
+    <h3><%= t(".employer_information") %></h3>
+    <%= render(ContactInfoReviewTableComponent.new(
+          field_header: t(".employer_information"),
+          value_header: t(".employer_details"),
+          rows: [
+            { label: t(".employer_name"), value: activity.employer_name },
+            { label: t(".employer_address"), value: activity.formatted_address },
+            { label: t(".employer_contact_name"), value: activity.contact_name },
+            { label: t(".employer_contact_email"), value: activity.contact_email },
+            { label: t(".employer_contact_phone_number"), value: activity.contact_phone_number }
+          ]
+        )) %>
+
+    <h2><%= t(".hours_and_income") %></h2>
+    <%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+        <%= table.with_header_cell(scope: "col") { t(".month") } %>
+        <%= table.with_header_cell(scope: "col") { t(".gross_income") } %>
+        <%= table.with_header_cell(scope: "col") { t(".hours_worked") } %>
+
+        <% activity.employment_activity_months
+             .where(month: activity.months_to_report)
+             .order(:month)
+             .each do |activity_month| %>
+            <%= table.with_row do |row| %>
+                <%= row.with_data_cell(data_label: t(".month"), scope: "row", is_header: true) do %>
+                    <%= I18n.l(activity_month.month, format: :month_year) %>
+                <% end %>
+                <%= row.with_data_cell(data_label: t(".gross_income"))
+                       .with_content(number_to_currency(activity_month.gross_income)) %>
+                <%= row.with_data_cell(data_label: t(".hours_worked"))
+                       .with_content(format_decimal_amount(activity_month.hours)) %>
+            <% end %>
+        <% end %>
+    <% end %>
+
+    <% if activity.document_uploads.any? %>
+        <%= render DocumentUploadsComponent.new(
+            documents: activity.document_uploads.map do |attachment|
+              {
+                  filename: attachment.filename.to_s,
+                  remove_path: activities_flow_income_employment_document_upload_path(employment_id: activity, id: attachment)
+              }
+            end,
+            show_remove_file: true,
+            previously_uploaded: true
+        ) %>
+    <% end %>
+
+    <% if activity.additional_comments.present? %>
+        <h2><%= t(".additional_comments") %></h2>
+        <p><%= activity.additional_comments %></p>
+    <% end %>
+<% end %>
+
+<%= form_with model: @flow, url: activities_flow_summary_path, method: :patch, builder: UswdsFormBuilder do |f| %>
+    <%= f.check_box :consent_to_submit, {
+      label: t("activities.summary.consent_label_html",
+      agency_name: agency_translation("shared.agency_full_name"),
+      agency_initials: agency_translation("shared.agency_acronym"))
+    } %>
+    <%= f.submit t(".submit", agency_name: agency_translation("shared.agency_full_name")), class: "usa-button" %>
+<% end %>

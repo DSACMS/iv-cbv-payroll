@@ -16,7 +16,11 @@ class PersistedReportAdapter
 
     AccountReport.new(
       paystubs: [],
-      income: nil,
+      income: Income.new(
+        pay_frequency: source[:pay_frequency],
+        compensation_amount: source[:compensation_amount],
+        compensation_unit: source[:compensation_unit]
+      ),
       identity: nil,
       employment: Employment.new(
         employer_name: source[:employer_name],
@@ -33,7 +37,10 @@ class PersistedReportAdapter
   def summarize_by_month(from_date: nil, to_date: nil)
     @monthly_data.transform_values do |months|
       months
-        .select { |_month, summary| summary[:paychecks_count].to_i > 0 }
+        # A month only has real activity if it has paychecks (w2) or gig
+        # hours (gig) — paychecks_count alone misses gig-only accounts,
+        # since gig workers never have paychecks.
+        .select { |_month, summary| summary[:paychecks_count].to_i > 0 || summary[:total_gig_hours].to_f > 0 }
         .sort_by { |month, _summary| month }.reverse.to_h
         .transform_values { |summary| build_month_summary(summary) }
     end
@@ -43,13 +50,14 @@ class PersistedReportAdapter
 
   def build_month_summary(summary)
     count = summary[:paychecks_count].to_i
+    gig_count = summary[:total_gig_hours].to_f > 0 ? [ count, 1 ].max : count
     {
       accrued_gross_earnings: summary[:accrued_gross_earnings],
       total_w2_hours: summary[:total_w2_hours],
       total_gig_hours: summary[:total_gig_hours],
       total_mileage: summary[:total_mileage],
       paystubs: Array.new(count),
-      gigs: Array.new(count),
+      gigs: Array.new(gig_count),
       partial_month_range: { is_partial_month: false, description: nil }
     }
   end
@@ -62,6 +70,12 @@ class PersistedReportAdapter
     :status,
     :start_date,
     :termination_date,
+    keyword_init: true
+  )
+  Income = Struct.new(
+    :pay_frequency,
+    :compensation_amount,
+    :compensation_unit,
     keyword_init: true
   )
   AccountReport = Struct.new(:paystubs, :income, :identity, :employment, keyword_init: true)
