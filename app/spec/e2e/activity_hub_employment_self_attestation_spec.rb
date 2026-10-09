@@ -251,7 +251,9 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     verify_page(page, title: updated_monthly_details_title)
     # Each selected month requires income; hours are optional
-    expect(income_field[:required]).to be_present
+    expect(page).to have_selector(
+      'input[name="employment_activity_month[gross_income]"][required]'
+    )
     expect(page).to have_selector(
       ".usa-alert--error",
       text: I18n.t("activities.employment.hours_input.error_body")
@@ -259,7 +261,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     expect(page).to have_selector(
       'input[name="employment_activity_month[gross_income]"].usa-input--error'
     )
-    expect(page).to have_no_selector(".usa-error-message")
+    expect(page).to have_selector(".usa-error-message", count: 1)
 
     # Fix it — set to valid values and save
     fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: "200"
