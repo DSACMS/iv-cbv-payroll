@@ -28,12 +28,13 @@ class CbvInvitationService
     cbv_flow_invitation
   end
 
-  def invite_to_activity_flow(cbv_flow_invitation, verification_range: nil, employment_focused: false, context: nil)
+  def invite_to_activity_flow(cbv_flow_invitation, verification_range: nil, employment_focused: false, unpaid_work_only: false, context: nil)
     activity_flow_invitation = ActivityFlowInvitation.new(
       client_agency_id: cbv_flow_invitation.client_agency_id,
       cbv_applicant: cbv_flow_invitation.cbv_applicant,
       verification_range: verification_range,
       employment_focused: employment_focused,
+      unpaid_work_only: unpaid_work_only,
     )
     activity_flow_invitation.save(context: context)
     activity_flow_invitation

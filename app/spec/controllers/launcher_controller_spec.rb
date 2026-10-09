@@ -140,6 +140,53 @@ RSpec.describe LauncherController, type: :controller do
     end
   end
 
+  describe "unpaid-only launches" do
+    let(:launch_params) do
+      { flow_type: "activity", client_agency_id: "sandbox", launch_type: "tokenized", unpaid_work_only: "true" }
+    end
+
+    it "renders the option in the advanced launcher" do
+      get :advanced
+
+      expect(Capybara.string(response.body)).to have_unchecked_field(I18n.t("launcher.advanced.unpaid_work_only.label"))
+    end
+
+    it "stores the restriction on the invitation instead of the URL" do
+      post :create, params: launch_params, format: :json
+
+      expect(ActivityFlowInvitation.last).to be_unpaid_work_only
+      expect(JSON.parse(response.body).fetch("url")).not_to include("unpaid_work_only")
+    end
+
+    it "defaults to unrestricted employment when the option is omitted" do
+      post :create, params: launch_params.except(:unpaid_work_only), format: :json
+
+      expect(ActivityFlowInvitation.last).not_to be_unpaid_work_only
+    end
+
+    it "honors an explicit false value" do
+      post :create, params: launch_params.merge(unpaid_work_only: "false"), format: :json
+
+      expect(ActivityFlowInvitation.last).not_to be_unpaid_work_only
+    end
+
+    context "with an NSC scenario" do
+      it "stores the restriction on the scenario invitation" do
+        post :create, params: launch_params.merge(test_scenario: "lynette"), format: :json
+
+        expect(ActivityFlowInvitation.last).to be_unpaid_work_only
+      end
+    end
+
+    context "with a fake NSC scenario" do
+      it "stores the restriction on the scenario invitation" do
+        post :create, params: launch_params.merge(test_scenario: "partial_enrollment_sam"), format: :json
+
+        expect(ActivityFlowInvitation.last).to be_unpaid_work_only
+      end
+    end
+  end
+
   describe "POST #simple_create" do
     context "with valid activity/tokenized params" do
       it "returns 200 with a url" do

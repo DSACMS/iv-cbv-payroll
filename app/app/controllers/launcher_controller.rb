@@ -143,7 +143,7 @@ class LauncherController < ApplicationController
     overrides = if flow_type == "cbv"
                   launcher_params.slice(:launcher_timeout).select { |_, v| v.present? }
                 else
-                  allowed_overrides = [ :reporting_window, :reporting_window_months, :reporting_window_start, :launcher_timeout, :employment_focused ]
+                  allowed_overrides = [ :reporting_window, :reporting_window_months, :reporting_window_start, :launcher_timeout, :employment_focused, :unpaid_work_only ]
                   allowed_overrides << :renewal_required_months if launcher_params[:reporting_window] == "renewal"
                   launcher_params.slice(*allowed_overrides).select { |_, v| v.present? }
                 end
@@ -165,6 +165,7 @@ class LauncherController < ApplicationController
       :renewal_required_months,
       :reporting_window_start,
       :employment_focused,
+      :unpaid_work_only,
       :launcher_timeout,
       :launch_type
     )
@@ -222,12 +223,13 @@ class LauncherController < ApplicationController
     invitation = create_launcher_activity_flow_invitation!(
       client_agency_id: client_agency_id,
       reference_id: "demo-#{SecureRandom.hex(4)}",
-      employment_focused: ActiveModel::Type::Boolean.new.cast(overrides[:employment_focused]) || false
+      employment_focused: ActiveModel::Type::Boolean.new.cast(overrides[:employment_focused]) || false,
+      unpaid_work_only: ActiveModel::Type::Boolean.new.cast(overrides[:unpaid_work_only]) || false
     )
 
     invitation.to_url(
       **launcher_url_options,
-      **overrides.except(:employment_focused)
+      **overrides.except(:employment_focused, :unpaid_work_only)
     )
   end
 
@@ -262,12 +264,13 @@ class LauncherController < ApplicationController
       cbv_applicant: cbv_applicant,
       client_agency_id: client_agency_id,
       reference_id: "demo-#{scenario_key}",
-      employment_focused: ActiveModel::Type::Boolean.new.cast(overrides[:employment_focused]) || false
+      employment_focused: ActiveModel::Type::Boolean.new.cast(overrides[:employment_focused]) || false,
+      unpaid_work_only: ActiveModel::Type::Boolean.new.cast(overrides[:unpaid_work_only]) || false
     )
 
     invitation.to_url(
       **launcher_url_options,
-      **overrides.except(:employment_focused)
+      **overrides.except(:employment_focused, :unpaid_work_only)
     )
   end
 
@@ -286,13 +289,14 @@ class LauncherController < ApplicationController
       cbv_applicant: cbv_applicant,
       client_agency_id: client_agency_id,
       reference_id: "demo-#{scenario_key}",
-      employment_focused: ActiveModel::Type::Boolean.new.cast(overrides[:employment_focused]) || false
+      employment_focused: ActiveModel::Type::Boolean.new.cast(overrides[:employment_focused]) || false,
+      unpaid_work_only: ActiveModel::Type::Boolean.new.cast(overrides[:unpaid_work_only]) || false
     )
     merged_overrides = overrides.to_h
 
     invitation.to_url(
       **launcher_url_options,
-      **merged_overrides.except(:employment_focused)
+      **merged_overrides.except(:employment_focused, :unpaid_work_only)
     )
   end
 

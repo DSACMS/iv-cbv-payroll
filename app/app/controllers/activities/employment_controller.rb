@@ -63,7 +63,7 @@ class Activities::EmploymentController < Activities::BaseController
     @employment_activity.update(review_params)
     @employment_activity.publish!
     track_event(TrackEvent::EmploymentReviewSubmitted, employment_activity_id: @employment_activity.id)
-    redirect_to(@flow.employment_focused? ? activities_flow_income_add_jobs_path : after_activity_path)
+    redirect_to next_path
   end
 
   private
@@ -101,7 +101,7 @@ class Activities::EmploymentController < Activities::BaseController
 
   def set_back_url
     if action_name.in?(%w[new create])
-      @back_url = activities_flow_income_add_your_work_path
+      @back_url = @flow.unpaid_work_only? ? activities_flow_root_path : activities_flow_income_add_your_work_path
     elsif action_name == "edit" && params[:from_review].present?
       @back_url = review_activities_flow_income_employment_path(
         id: @employment_activity,
@@ -123,6 +123,8 @@ class Activities::EmploymentController < Activities::BaseController
   end
 
   def compensation_type
+    return "unpaid_or_in_kind" if @flow.unpaid_work_only?
+
     return params[:compensation_type] if EmploymentActivity.compensation_types.key?(params[:compensation_type])
 
     "paid"
