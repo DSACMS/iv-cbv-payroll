@@ -1,0 +1,12 @@
+<% if @activity.document_uploads.any? %>
+  <%= render DocumentUploadsComponent.new(
+    documents: @activity.document_uploads.map do |attachment|
+      {
+        filename: attachment.filename.to_s,
+        remove_path: remove_document_upload_path(attachment)
+      }
+    end,
+    show_remove_file: true,
+    previously_uploaded: true
+  ) %>
+<% end %>

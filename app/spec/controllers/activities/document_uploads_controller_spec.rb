@@ -64,6 +64,8 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("activities.document_uploads.new.input_label"))
 
       rendered = Capybara.string(response.body)
+      expect(rendered).to have_text("Upload documents that verify the information you entered for:")
+      expect(rendered).to have_selector("button", text: "Suggested documents", exact_text: true, normalize_ws: true)
       upload_form = rendered.find("form[data-controller='document-upload']", visible: :all)
       ordered_elements = upload_form.all(
         "[data-document-upload-target='listSection'], input[type='file']",
@@ -124,6 +126,11 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: "Resume Workshop"))
       expect(response.body).to include(I18n.t("shared.hours", count: 10))
       expect(response.body).to include(activities_flow_job_training_document_uploads_path)
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text("Upload documents that verify the information you entered for:")
+      expect(rendered.find("input[type='file']", visible: :all)).to have_xpath(
+        "preceding::div[@data-document-upload-target='listSection']", visible: :all
+      )
     end
 
     it "renders the upload form for an education activity" do
@@ -135,8 +142,20 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       )
       create(:education_activity_month, education_activity: education_activity, hours: 15)
 
+      education_activity.document_uploads.attach(
+        io: StringIO.new("%PDF-1.4"), filename: "verification.pdf", content_type: "application/pdf"
+      )
+
       get :new, params: { education_id: education_activity.id }
 
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text("Upload documents that verify the information you entered:")
+      expect(rendered).to have_selector("button", text: "Suggested supporting documents")
+      expect(rendered.find("input[type='file']", visible: :all)).to have_xpath(
+        "following::h2", text: I18n.t("activities.document_uploads.heading_previous", document_count: 1)
+      )
+      ordered_elements = rendered.all("input[type='file'], [data-document-upload-target='listSection']", visible: :all)
+      expect(ordered_elements.map { |element| element[:"data-document-upload-target"] }).to eq([ "input", "listSection" ])
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: "University of Illinois"))
       expect(response.body).to include(I18n.t("shared.credit_hours", count: 15))
@@ -184,6 +203,11 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         "button", text: I18n.t("activities.document_uploads.new.suggestion_title")
       )
       expect(response.body).to include(I18n.t("activities.employment.document_upload_suggestion_text_html"))
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text("Upload documents that verify the information you entered for:")
+      expect(rendered.find("input[type='file']", visible: :all)).to have_xpath(
+        "preceding::div[@data-document-upload-target='listSection']", visible: :all
+      )
     end
 
     it "renders only selected employment months in chronological order" do
@@ -302,6 +326,10 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include("verification.pdf")
       expect(response.body).to include(I18n.t("activities.document_uploads.remove_file"))
       expect(response.body).to include("file_present")
+      rendered = Capybara.string(response.body)
+      expect(rendered.find("input[type='file']", visible: :all)).to have_xpath(
+        "preceding::h2", text: I18n.t("activities.document_uploads.heading_previous", document_count: 1)
+      )
     end
   end
 
