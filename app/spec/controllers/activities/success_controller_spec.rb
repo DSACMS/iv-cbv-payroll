@@ -30,6 +30,32 @@ RSpec.describe Activities::SuccessController, type: :controller do
       expect(response.body).to include(feedbacks_path(form: "survey"))
     end
 
+    it "displays the community engagement next steps" do
+      activity_flow.touch(:completed_at)
+
+      get :show
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector(".usa-icon-list__item", count: 1)
+      expect(rendered).to have_text(I18n.t("activities.success.show.whats_next_1_title"))
+      expect(rendered).to have_no_text(I18n.t("activities.success.show.employment.whats_next.head_of_household.heading"))
+    end
+
+    it "displays the employment-focused next steps" do
+      activity_flow.update!(completed_at: Time.current, employment_focused: true)
+
+      get :show
+
+      rendered = Capybara.string(response.body)
+      download_link = rendered.find_link(I18n.t("activities.success.show.download_pdf"))
+
+      expect(rendered).to have_selector(".usa-icon-list__item", count: 3)
+      expect(rendered).to have_text(I18n.t("activities.success.show.employment.whats_next.head_of_household.heading"))
+      expect(rendered).to have_text(I18n.t("activities.success.show.employment.whats_next.household_member.heading"))
+      expect(download_link[:class]).to include("usa-button--outline")
+      expect(download_link[:rel]).to eq("noopener noreferrer")
+    end
+
     it "displays the confirmation code" do
       completed_time = Time.zone.now
       confirmation_code = "SANDBOX123"
