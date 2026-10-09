@@ -390,7 +390,6 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         )
         expect(rendered.find_field(gross_income_label).value).to be_nil
         expect(rendered).to have_selector(".usa-error-message", count: 1)
-        expect(rendered).to have_selector(".usa-error-message", count: 1)
         expect(rendered).to have_selector(
           'input[name="employment_activity_month[gross_income]"].usa-input--error'
         )
