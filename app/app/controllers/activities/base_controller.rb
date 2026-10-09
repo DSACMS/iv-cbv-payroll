@@ -23,6 +23,10 @@ class Activities::BaseController < FlowController
     )
   end
 
+  def show_activity_reporting_banner?
+    true
+  end
+
   private
 
   def redirect_if_nsc_disabled

@@ -13,6 +13,22 @@ RSpec.describe Activities::Income::SynchronizationsController do
     session[:flow_type] = :activity
   end
 
+  describe "#show" do
+    let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
+    let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+    let(:flow) { create(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation) }
+
+    before do
+      allow_any_instance_of(PayrollAccount::Pinwheel).to receive(:has_fully_synced?).and_return(false)
+      get :show, params: { user: { account_id: payroll_account.aggregator_account_id } }
+    end
+
+    it "does not display the reporting banner for a named applicant in a tokenized flow" do
+      expect(response).to have_http_status(:ok)
+      expect(Capybara.string(response.body)).to have_no_text("Reporting for")
+    end
+  end
+
   describe "#update" do
     context "when account exists but is not fully synced" do
       before do

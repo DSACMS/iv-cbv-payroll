@@ -4,6 +4,10 @@ class Activities::SuccessController < Activities::BaseController
   def show
   end
 
+  def show_activity_reporting_banner?
+    false
+  end
+
   private
 
   def ensure_completed

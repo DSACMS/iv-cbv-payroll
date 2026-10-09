@@ -3,6 +3,56 @@ require "rails_helper"
 RSpec.describe ActivitiesHelper do
   include ActiveSupport::Testing::TimeHelpers
 
+  describe "#activity_reporting_name" do
+    let(:applicant) { build_stubbed(:cbv_applicant, first_name: " Lisa ", last_name: " Williams ") }
+    let(:invitation) { build_stubbed(:activity_flow_invitation, cbv_applicant: applicant) }
+    let(:flow) { build_stubbed(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation) }
+
+    it "uses both indexing fields without surrounding whitespace" do
+      expect(helper.activity_reporting_name(flow)).to eq("Lisa Williams")
+    end
+
+    context "without a first name" do
+      before { applicant.first_name = nil }
+
+      it "omits the name" do
+        expect(helper.activity_reporting_name(flow)).to be_nil
+      end
+    end
+
+    context "with an empty last name" do
+      before { applicant.last_name = "" }
+
+      it "omits the name" do
+        expect(helper.activity_reporting_name(flow)).to be_nil
+      end
+    end
+
+    context "with a whitespace-only first name" do
+      before { applicant.first_name = "  " }
+
+      it "omits the name" do
+        expect(helper.activity_reporting_name(flow)).to be_nil
+      end
+    end
+
+    context "without an invitation" do
+      before { flow.activity_flow_invitation = nil }
+
+      it "omits the name even when the applicant has both names" do
+        expect(helper.activity_reporting_name(flow)).to be_nil
+      end
+    end
+
+    it "omits the name without a loaded flow" do
+      expect(helper.activity_reporting_name(nil)).to be_nil
+    end
+
+    it "omits the name for an income flow" do
+      expect(helper.activity_reporting_name(build_stubbed(:cbv_flow))).to be_nil
+    end
+  end
+
   describe "#document_upload_allowed_types_sentence" do
     it "formats the agency's configured types for user-facing copy" do
       client_agency = instance_double(

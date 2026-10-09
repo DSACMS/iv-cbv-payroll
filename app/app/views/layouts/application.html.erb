@@ -40,6 +40,9 @@
               <% end %>
             <% end %>
           <% end %>
+          <% if show_activity_reporting_banner? %>
+            <%= render "activities/reporting_for", flow: @flow %>
+          <% end %>
           <%= yield %>
         </section>
       </main>
