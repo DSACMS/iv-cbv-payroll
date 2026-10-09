@@ -2,11 +2,11 @@
 <% agency_name = agency_translation("shared.agency_full_name") %>
 <% agency_acronym = agency_translation("shared.agency_acronym") %>
 
-<% title = employment_focused ? t(".employment.title", agency_name: agency_name) : t(".title", agency_acronym: agency_acronym) %>
+<% title = employment_focused ? t(".employment_focused.title", agency_name: agency_name) : t(".title", agency_acronym: agency_acronym) %>
 
-<% next_steps_description = employment_focused ? t(".employment.whats_next.subheading", agency_name: agency_name) : t(".done_for_now", agency_full_name: agency_name) %>
+<% next_steps_description = employment_focused ? t(".employment_focused.whats_next.subheading", agency_name: agency_name) : t(".done_for_now", agency_full_name: agency_name) %>
 
-<% download_heading = employment_focused ? t(".employment.whats_next.download_your_report.heading") : t(".whats_next_1_title") %>
+<% download_heading = employment_focused ? t(".employment_focused.whats_next.download_your_report.heading") : t(".whats_next_1_title") %>
 
 <% download_button_classes = class_names(
   "usa-button",
@@ -30,7 +30,7 @@
 
   <% if employment_focused %>
     <p>
-      <%= t(".employment.subheading") %>
+      <%= t(".employment_focused.subheading") %>
     </p>
   <% end %>
 
@@ -64,13 +64,13 @@
 
     <% if employment_focused %>
       <%= icon_list.with_item(icon: "groups") do %>
-        <h3><%= t(".employment.whats_next.head_of_household.heading") %></h3>
-        <p><%= t(".employment.whats_next.head_of_household.subheading") %></p>
+        <h3><%= t(".employment_focused.whats_next.head_of_household.heading") %></h3>
+        <p><%= t(".employment_focused.whats_next.head_of_household.subheading") %></p>
       <% end %>
 
       <%= icon_list.with_item(icon: "person") do %>
-        <h3><%= t(".employment.whats_next.household_member.heading") %></h3>
-        <p><%= t(".employment.whats_next.household_member.subheading", agency_name: agency_name) %></p>
+        <h3><%= t(".employment_focused.whats_next.household_member.heading") %></h3>
+        <p><%= t(".employment_focused.whats_next.household_member.subheading", agency_name: agency_name) %></p>
       <% end %>
     <% end %>
   <% end %>

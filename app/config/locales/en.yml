@@ -614,7 +614,7 @@ en:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
         done_for_now: You're done for now. %{agency_full_name} will review your information and contact you if needed.
         download_pdf: Download my report
-        employment:
+        employment_focused:
           subheading: It may take a few moments for them to be reflected in the system.
           title: Your jobs have been submitted to %{agency_name}
           whats_next:

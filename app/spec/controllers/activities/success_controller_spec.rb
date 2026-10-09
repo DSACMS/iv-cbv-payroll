@@ -38,7 +38,7 @@ RSpec.describe Activities::SuccessController, type: :controller do
       rendered = Capybara.string(response.body)
       expect(rendered).to have_selector(".usa-icon-list__item", count: 1)
       expect(rendered).to have_text(I18n.t("activities.success.show.whats_next_1_title"))
-      expect(rendered).to have_no_text(I18n.t("activities.success.show.employment.whats_next.head_of_household.heading"))
+      expect(rendered).to have_no_text(I18n.t("activities.success.show.employment_focused.whats_next.head_of_household.heading"))
     end
 
     it "displays the employment-focused next steps" do
@@ -50,8 +50,8 @@ RSpec.describe Activities::SuccessController, type: :controller do
       download_link = rendered.find_link(I18n.t("activities.success.show.download_pdf"))
 
       expect(rendered).to have_selector(".usa-icon-list__item", count: 3)
-      expect(rendered).to have_text(I18n.t("activities.success.show.employment.whats_next.head_of_household.heading"))
-      expect(rendered).to have_text(I18n.t("activities.success.show.employment.whats_next.household_member.heading"))
+      expect(rendered).to have_text(I18n.t("activities.success.show.employment_focused.whats_next.head_of_household.heading"))
+      expect(rendered).to have_text(I18n.t("activities.success.show.employment_focused.whats_next.household_member.heading"))
       expect(download_link[:class]).to include("usa-button--outline")
       expect(download_link[:rel]).to eq("noopener noreferrer")
     end
