@@ -264,7 +264,7 @@
                         "first_name": "Jane",
                         "last_name": "Doe"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/dGZvsTjM7z"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/A9DTwkfTkL"
                     }
                   },
                   "community_engagement": {
@@ -280,7 +280,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/gmZbib2RMu"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/NbqVnGxQVD"
                     }
                   }
                 },
@@ -1164,6 +1164,7 @@
             "date_of_birth": "1990-04-15"
           },
           "ce_report": {
+            "report_variant": "community_engagement",
             "review_period": {
               "start_month": "2025-02",
               "end_month": "2025-03"
@@ -1508,6 +1509,13 @@
         "type": "object",
         "additionalProperties": true,
         "properties": {
+          "report_variant": {
+            "type": "string",
+            "enum": [
+              "employment",
+              "community_engagement"
+            ]
+          },
           "review_period": {
             "$ref": "#/components/schemas/CeReviewPeriod"
           },
@@ -1522,6 +1530,7 @@
           }
         },
         "required": [
+          "report_variant",
           "review_period",
           "documents",
           "activities"
