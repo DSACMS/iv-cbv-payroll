@@ -2,23 +2,11 @@
 <% agency_name = agency_translation("shared.agency_full_name") %>
 <% agency_acronym = agency_translation("shared.agency_acronym") %>
 
-<% title = if employment_focused
-             t(".employment.title", agency_name: agency_name)
-           else
-             t(".title", agency_acronym: agency_acronym)
-           end %>
+<% title = employment_focused ? t(".employment.title", agency_name: agency_name) : t(".title", agency_acronym: agency_acronym) %>
 
-<% next_steps_description = if employment_focused
-                              t(".employment.whats_next.subheading", agency_name: agency_name)
-                            else
-                              t(".done_for_now", agency_full_name: agency_name)
-                            end %>
+<% next_steps_description = employment_focused ? t(".employment.whats_next.subheading", agency_name: agency_name) : t(".done_for_now", agency_full_name: agency_name) %>
 
-<% download_heading = if employment_focused
-                        t(".employment.whats_next.download_your_report.heading")
-                      else
-                        t(".whats_next_1_title")
-                      end %>
+<% download_heading = employment_focused ? t(".employment.whats_next.download_your_report.heading") : t(".whats_next_1_title") %>
 
 <% download_button_classes = class_names(
   "usa-button",
