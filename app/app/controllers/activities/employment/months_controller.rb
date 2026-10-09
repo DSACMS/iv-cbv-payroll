@@ -62,9 +62,8 @@ class Activities::Employment::MonthsController < Activities::BaseController
       return
     end
 
-    default_value = month_params.values.all?(&:blank?) ? nil : 0
-    @activity_month.hours = month_params[:hours].presence || default_value
-    @activity_month.gross_income = month_params[:gross_income].presence || default_value
+    @activity_month.hours = month_params[:hours].presence || 0
+    @activity_month.gross_income = month_params[:gross_income].presence
   end
 
   def hours_submission_params
@@ -140,7 +139,9 @@ class Activities::Employment::MonthsController < Activities::BaseController
       return (@activity_month.hours || 0).positive?
     end
 
-    income = @activity_month.gross_income || 0
+    return false unless @activity_month.valid?
+
+    income = @activity_month.gross_income
     hours = @activity_month.hours || 0
     income >= 0 && hours >= 0 && (income.positive? || hours.positive?)
   end

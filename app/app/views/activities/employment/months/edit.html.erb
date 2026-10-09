@@ -51,6 +51,7 @@
     ) do |f| %>
   <% unless unpaid %>
     <%= f.currency_field :gross_income,
+          required: true,
           label: t("activities.employment.hours_input.gross_income_label", month: month_label),
           label_class: "text-bold",
           hint: t("activities.employment.hours_input.gross_income_hint") %>
