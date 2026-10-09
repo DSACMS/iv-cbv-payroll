@@ -11,6 +11,7 @@
     "extended_attributes": {}
   },
   "ce_report": {
+    "report_variant": "community_engagement",
     "review_period": {
       "start_month": "2026-06",
       "end_month": "2026-07"
