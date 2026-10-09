@@ -1,4 +1,5 @@
 require "rails_helper"
+RSpec::Matchers.define_negated_matcher :not_change, :change
 
 RSpec.describe Activities::EntriesController do
   include_context "activity_hub"
@@ -146,8 +147,8 @@ RSpec.describe Activities::EntriesController do
       it "reuses the flow without creating another flow or applicant" do
         expect {
           get :show
-        }.to change(ActivityFlow, :count).by(0)
-          .and change(CbvApplicant, :count).by(0)
+        }.to not_change(ActivityFlow, :count)
+          .and not_change(CbvApplicant, :count)
 
         expect(session[:flow_id]).to eq(flow.id)
         expect(flow.reload.employment_activities).to include(employment_activity)
