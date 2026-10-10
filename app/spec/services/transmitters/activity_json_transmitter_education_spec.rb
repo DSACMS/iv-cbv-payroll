@@ -21,7 +21,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       completed_at: Time.zone.parse("2026-09-01 14:00:00"), reporting_window_months: 6,
       confirmation_code: "EDUCATION-SAMPLE")
   end
-  let(:education_activity) { create(:education_activity, activity_flow: activity_flow, draft: true, additional_comments: nil) }
+  let(:education_activity) { create(:education_activity, activity_flow: activity_flow, draft: true, education_type: "college_or_university", additional_comments: nil) }
   let(:transmitter) { described_class.new(activity_flow, current_agency) }
   let(:payload) { JSON.parse(transmitter.payload) }
   let(:education_entries) { payload.dig("ce_report", "activities", "education").values.flatten }
@@ -40,7 +40,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
 
       if expected_data_source
         expect(education_entries).to be_present
-        expect(education_entries).to all(include("type" => "education", "data_source" => expected_data_source))
+        expect(education_entries).to all(include("type" => "education", "data_source" => expected_data_source, "education_type" => "college_or_university"))
       else
         expect(payload.dig("ce_report", "activities", "education")).to eq({})
       end
@@ -108,7 +108,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
   end
 
   def add_manual_education!
-    education = create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested,
+    education = create(:education_activity, education_type: "college_or_university", activity_flow: activity_flow, data_source: :fully_self_attested,
       school_name: "Example Community College", contact_email: "registrar@example.org", additional_comments: nil)
     activity_flow.reporting_months.each do |month|
       create(:education_activity_month, education_activity: education, month: month, hours: 3.5)

@@ -172,6 +172,7 @@ Only published education activities are included. Fully self-attested education 
 | Field Name | Required? | Description |
 | :-- | :-- | :-- |
 | school_name | Yes | String. For NSC term entries, the school's name from that term; may be null when unavailable. |
+| education_type | Yes | String (enum) or null. Original applicant selection: `college_or_university` (College/University), `high_school_ged` (High School/GED), `trade_or_technical` (Work/Technical Program), or `other` (Other). Included for every education data source and preserved when NSC verification falls back to self-attestation. Null for older records without a saved selection; never inferred from data source. |
 | contact_name, contact_email, contact_phone_number | No | String or null. Included on fully and partially self-attested education. |
 | hours | Self-attested variants | Number. Monthly academic credits for `self_attested`; the term's credits for `verified_enrollment_only`, matching `credit_hours`. May be `0` or null for unknown partial credits. |
 | enrollment_status | NSC term entries | `full_time`, `three_quarter_time`, `half_time`, `less_than_half_time`, `enrolled`, or `unknown`. |

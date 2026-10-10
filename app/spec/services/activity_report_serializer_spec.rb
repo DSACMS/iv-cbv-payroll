@@ -253,6 +253,7 @@ RSpec.describe ActivityReportSerializer do
       expect(education_entries.keys).to eq(%w[2026-06 2026-07])
       expect(education_entries["2026-06"].sole).to eq(
         "type" => "education",
+        "education_type" => nil,
         "month" => "2026-06",
         "school_name" => "City Community College",
         "street_address" => "2 Main St",
@@ -299,6 +300,7 @@ RSpec.describe ActivityReportSerializer do
       expect(education_entries.keys).to eq(%w[2026-06 2026-07])
       expect(education_entries["2026-06"].sole).to eq(
         "type" => "education",
+        "education_type" => nil,
         "month" => "2026-06",
         "school_name" => "State University",
         "enrollment_status" => "three_quarter_time",

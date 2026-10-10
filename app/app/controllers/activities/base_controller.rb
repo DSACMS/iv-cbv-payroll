@@ -26,7 +26,7 @@ class Activities::BaseController < FlowController
   private
 
   def redirect_if_nsc_disabled
-    redirect_to new_activities_flow_education_path if nsc_disabled?
+    redirect_to new_activities_flow_education_path(education_type: params[:education_type].presence) if nsc_disabled?
   end
 
   def after_activity_path

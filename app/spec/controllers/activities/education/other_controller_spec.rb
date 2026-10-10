@@ -39,7 +39,7 @@ RSpec.describe Activities::Education::OtherController, type: :controller do
       expect(response.body).to include(I18n.t("activities.education.other.show.accordion.not_listed.body"))
       expect(page).to have_link(
         I18n.t("activities.education.other.show.accordion.not_listed.link"),
-        href: new_activities_flow_education_path
+        href: new_activities_flow_education_path(education_type: "other")
       )
 
       # Section 2: job training

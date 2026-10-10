@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_06_203042) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_08_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -192,6 +192,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_203042) do
     t.integer "credit_hours"
     t.string "data_source", default: "validated", null: false
     t.boolean "draft", default: false, null: false
+    t.string "education_type"
     t.boolean "pre_populated", default: false, null: false
     t.string "school_name"
     t.string "state"

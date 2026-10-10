@@ -1,5 +1,5 @@
 class Activities::Education::AddYourEducationController < Activities::BaseController
-  ADD_EDUCATION_METHODS = %w[college_or_university high_school_ged trade_or_technical other].freeze
+  ADD_EDUCATION_METHODS = EducationActivity::EDUCATION_TYPES
 
   def show
   end
@@ -20,11 +20,11 @@ class Activities::Education::AddYourEducationController < Activities::BaseContro
   def next_step_path(add_education_method)
     case add_education_method
     when "college_or_university"
-      nsc_disabled? ? new_activities_flow_education_path : verify_activities_flow_education_index_path
+      nsc_disabled? ? new_activities_flow_education_path(education_type: add_education_method) : verify_activities_flow_education_index_path(education_type: add_education_method)
     when "other"
-      activities_flow_education_other_path
+      activities_flow_education_other_path(education_type: add_education_method)
     else
-      new_activities_flow_education_path
+      new_activities_flow_education_path(education_type: add_education_method)
     end
   end
 end

@@ -17,7 +17,7 @@
     <%= t(".accordion.not_listed.body") %>
   <% end %>
   <% accordion.with_accordion_item do %>
-    <%= link_to t(".accordion.not_listed.link"), new_activities_flow_education_path, class: "usa-link" %>
+    <%= link_to t(".accordion.not_listed.link"), new_activities_flow_education_path(education_type: "other"), class: "usa-link" %>
   <% end %>
 <% end %>
 

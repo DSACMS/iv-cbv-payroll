@@ -3,6 +3,7 @@ class EducationActivity < Activity
   include DocumentUploadable
 
   CREDIT_HOUR_CE_MULTIPLIER = 13
+  EDUCATION_TYPES = %w[college_or_university high_school_ged trade_or_technical other].freeze
   FIELDS = %w[
     school_name
     street_address
@@ -29,6 +30,7 @@ class EducationActivity < Activity
     { "data_source" => "fully_self_attested" }
   end
 
+  validates :education_type, inclusion: { in: EDUCATION_TYPES }, allow_nil: true
   validates :school_name, presence: true, if: :fully_self_attested?
 
   enum :data_source, {
@@ -52,6 +54,10 @@ class EducationActivity < Activity
     all_months_have_sufficient_enrollment = resolver.reporting_month_enrollments.all?(&:sufficient_enrollment?)
 
     all_months_have_sufficient_enrollment ? :validated : :partially_self_attested
+  end
+
+  def education_type_display
+    education_type.present? ? I18n.t("activities.education.types.#{education_type}") : I18n.t("shared.not_applicable")
   end
 
   def formatted_address
