@@ -120,6 +120,7 @@ RUN apt-get update -qq && \
       libudev1 \
       libunbound8 \
       libuuid1 \
+      libvips42t64 \
       libxml2 \
       libxml2-dev \
       linux-libc-dev \
