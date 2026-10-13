@@ -117,6 +117,14 @@ class Activities::EducationController < Activities::BaseController
 
   def save_review
     @education_activity.update(review_params)
+    if @education_activity.fully_self_attested? && !@education_activity.valid?(:add_your_term)
+      return redirect_to edit_activities_flow_education_add_your_term_path(
+        education_id: @education_activity,
+        from_review: 1,
+        from_edit: params[:from_edit].presence
+      )
+    end
+
     @education_activity.publish!
     # Fires for every data source; see track_review_viewed_event.
     track_event(TrackEvent::EducationReviewSubmitted, education_activity_id: @education_activity.id)

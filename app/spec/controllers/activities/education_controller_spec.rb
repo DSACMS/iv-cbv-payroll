@@ -766,7 +766,7 @@ RSpec.describe Activities::EducationController, type: :controller do
 
   describe "PATCH #save_review" do
     let(:education_activity) do
-      create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
+      create(:education_activity, :with_self_attested_term, activity_flow: activity_flow, draft: true, school_name: "University of Illinois")
     end
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) do
@@ -784,11 +784,29 @@ RSpec.describe Activities::EducationController, type: :controller do
     end
 
     it "publishes the activity" do
-      education_activity.update!(draft: true)
-
       patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
 
       expect(education_activity.reload.draft).to be(false)
+    end
+
+    context "with incomplete manual term details" do
+      let(:education_activity) do
+        create(:education_activity, :pre_populated_draft, activity_flow: activity_flow, school_name: "University of Illinois")
+      end
+
+      before do
+        patch :save_review, params: { id: education_activity.id, from_edit: 1, education_activity: { additional_comments: "Some notes" } }
+      end
+
+      it "returns to the term form with review navigation" do
+        expect(response).to redirect_to(edit_activities_flow_education_add_your_term_path(
+          education_id: education_activity, from_review: 1, from_edit: 1
+        ))
+      end
+
+      it "keeps the activity as a draft with its comments" do
+        expect(education_activity.reload).to have_attributes(draft: true, additional_comments: "Some notes")
+      end
     end
 
     context "when validated mixed enrollment has half-time-or-above in each reporting month" do
