@@ -20,20 +20,26 @@ class EducationActivityCardBuilder
   private
 
   def fully_self_attested_cards
-    months_by_date = @activity.education_activity_months.index_by(&:month)
-    months = @reporting_months.filter_map do |month_start|
-      activity_month = months_by_date[month_start.beginning_of_month]
-      next unless activity_month
-      next unless education_credit_hours(activity_month).positive?
-
-      self_attested_month_data(activity_month: activity_month, month_start: month_start)
-    end
+    months = @reporting_months.select { |month| @activity.self_attested_term_overlaps_month?(month) }
+      .map { |month_start| self_attested_term_month_data(month_start) }
 
     [ {
       name: @activity.school_name.presence || I18n.t("activities.education.title"),
       months: months,
       edit_path: review_activities_flow_education_path(id: @activity.id, from_edit: 1)
     } ]
+  end
+
+  def self_attested_term_month_data(month_start)
+    if @activity.self_attested_credit_hours_applicable?
+      {
+        month: month_start,
+        credit_hours: @activity.credit_hours || 0,
+        community_engagement_hours: @activity.community_engagement_hours(@activity.credit_hours)
+      }
+    else
+      { month: month_start, enrollment_status: @activity.self_attested_enrollment_status_display }
+    end
   end
 
   def partially_self_attested_cards(terms)
@@ -75,22 +81,6 @@ class EducationActivityCardBuilder
       month: month_start,
       enrollment_status: term.enrollment_status_display
     }
-  end
-
-  def self_attested_month_data(activity_month:, month_start:)
-    credit_hours = education_credit_hours(activity_month)
-    {
-      month: month_start,
-      credit_hours: credit_hours,
-      community_engagement_hours: @activity.community_engagement_hours(credit_hours)
-    }
-  end
-
-  def education_credit_hours(activity_month)
-    return 0 unless activity_month
-    return activity_month.credit_hours || 0 if activity_month.has_attribute?(:credit_hours)
-
-    activity_month.hours || 0
   end
 
   def terms_grouped_by_school(terms)

@@ -3,6 +3,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
   before_action :ensure_months_selected, only: %i[edit update]
 
   include MonthlyHoursInput
+  include NavigationTracking
 
   before_action :set_back_url, only: %i[edit update]
   after_action :track_month_viewed_event, only: :edit

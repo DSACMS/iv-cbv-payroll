@@ -858,19 +858,15 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     let(:education_activity) do
       create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: current_flow,
-        data_source: :fully_self_attested,
-        school_name: "Colorado Springs Community College"
+        school_name: "Colorado Springs Community College",
+        credit_hours: 4
       )
     end
 
     before do
-      create(
-        :education_activity_month,
-        education_activity: education_activity,
-        month: current_flow.reporting_months.first.beginning_of_month,
-        hours: 4
-      )
+      education_activity
       session[:flow_id] = current_flow.id
       session[:flow_type] = :activity
       get :index
@@ -888,6 +884,52 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(
         review_activities_flow_education_path(id: education_activity.id, from_edit: 1)
       )
+    end
+  end
+
+  context "when a self-attested education term is added" do
+    let(:credit_hours) { 3.5 }
+    let(:current_flow) do
+      create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
+        education_activities_count: 0, reporting_window_months: 2)
+    end
+    let(:education_activity) do
+      create(:education_activity, activity_flow: current_flow, data_source: :fully_self_attested,
+        school_name: "Test University", self_attested_term_start: current_flow.reporting_months.first,
+        self_attested_term_end: current_flow.reporting_months.last,
+        self_attested_enrollment_status: "less_than_half_time", credit_hours: credit_hours)
+    end
+    let(:rendered) { Capybara.string(response.body) }
+
+    before do
+      education_activity
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "shows the term's fractional credit hours" do
+      expect(rendered).to have_selector("p", text: I18n.t("activities.hub.cards.credit_hours",
+        amount: ApplicationHelper.format_decimal_amount(education_activity.credit_hours)), exact_text: true)
+    end
+
+    it "shows the term's community engagement hours" do
+      expect(rendered).to have_selector("p", text: I18n.t("activities.hub.cards.hours",
+        count: ApplicationHelper.format_decimal_amount(education_activity.community_engagement_hours(education_activity.credit_hours))), exact_text: true)
+    end
+
+    context "with whole-number credits" do
+      let(:credit_hours) { 6 }
+
+      it "formats the credit hours without insignificant zeros" do
+        expect(rendered).to have_selector("p", text: I18n.t("activities.hub.cards.credit_hours",
+          amount: ApplicationHelper.format_decimal_amount(education_activity.credit_hours)), exact_text: true)
+      end
+
+      it "formats the community engagement hours without insignificant zeros" do
+        expect(rendered).to have_selector("p", text: I18n.t("activities.hub.cards.hours",
+          count: ApplicationHelper.format_decimal_amount(education_activity.community_engagement_hours(education_activity.credit_hours))), exact_text: true)
+      end
     end
   end
 
@@ -953,8 +995,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
 
     before do
-      education_activity = create(:education_activity, :pre_populated_draft, activity_flow: current_flow, school_name: "Springfield Community College")
-      create(:education_activity_month, education_activity: education_activity, month: current_flow.reporting_months.first.beginning_of_month, hours: 6)
+      create(:education_activity, :pre_populated_draft, activity_flow: current_flow, school_name: "Springfield Community College")
       session[:flow_id] = current_flow.id
       session[:flow_type] = :activity
       get :index
@@ -977,13 +1018,11 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(education_cards).to have_no_text(I18n.t("activities.hub.edit"))
     end
 
-    it "renders education month data as self-attested credit hours" do
+    it "renders the pre-populated school name" do
       rendered = Capybara.string(response.body)
       education_cards = rendered.find("[data-activity-type='education']")
 
       expect(education_cards).to have_text("Springfield Community College")
-      expect(education_cards).to have_text(I18n.t("activities.hub.cards.credit_hours", amount: 6))
-      expect(education_cards).to have_text(I18n.t("activities.hub.cards.hours", count: 78))
     end
   end
 

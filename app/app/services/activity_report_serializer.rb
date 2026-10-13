@@ -203,9 +203,9 @@ class ActivityReportSerializer
 
     @activity_flow.education_activities.published.order(:id).each do |activity|
       if activity.fully_self_attested?
-        activity.activity_months.sort_by(&:month).each do |activity_month|
-          month = activity_month.month.strftime("%Y-%m")
-          entries_by_month[month] << self_attested_education_entry(activity, month, activity_month.hours)
+        activity.self_attested_reporting_months.each do |month_start|
+          month = month_start.strftime("%Y-%m")
+          entries_by_month[month] << self_attested_education_term_entry(activity, month)
         end
       else
         education_term_entries(activity).each do |entry|
@@ -262,6 +262,17 @@ class ActivityReportSerializer
       "term" => {
         "start_month" => term.term_begin.strftime("%Y-%m"),
         "end_month" => term.term_end.strftime("%Y-%m")
+      }
+    )
+  end
+
+  def self_attested_education_term_entry(activity, month)
+    self_attested_education_entry(activity, month, activity.credit_hours || 0).merge(
+      "enrollment_status" => activity.self_attested_enrollment_status,
+      "credit_hours" => activity.credit_hours&.to_f,
+      "term" => {
+        "start_month" => activity.self_attested_term_start.strftime("%Y-%m"),
+        "end_month" => activity.self_attested_term_end.strftime("%Y-%m")
       }
     )
   end

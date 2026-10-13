@@ -72,6 +72,12 @@ en:
           attributes:
             school_name:
               blank: Enter the school or program name.
+            self_attested_term_end:
+              blank: Add term end date to continue
+              invalid: Add a valid date with month and year
+            self_attested_term_start:
+              blank: Add term start date to continue
+              invalid: Add a valid date with month and year
         job_training_activity:
           attributes:
             organization_name:
@@ -182,6 +188,30 @@ en:
               hint: Add education details about your trade school, vocational school, or career and technical education (CTE) programs.
               label: Enter a trade or technical program
           reporting_period_label: 'Reporting period:'
+      add_your_term:
+        edit:
+          continue: Continue
+          credit_hours: Credit hours
+          credit_hours_hint: If you aren't sure what to put here or your school does not use credits, enter the number of hours you typically spend in class each week
+          description: Review all the information you’ve added for %{school_name} before adding it to your community engagement report.
+          enrollment_status: Enrollment status
+          enrollment_status_options:
+            full_time: Full-time
+            half_time: Half-time
+            less_than_half_time: Less than half-time
+            unknown: I’m not sure
+          multiple_terms_description: If you were enrolled in multiple terms during the reporting period, you’ll need to add each term separately.
+          select_one: "- Select one -"
+          term_date_placeholder: MM/YYYY
+          term_end: Term end date
+          term_end_hint: If you’re not sure, enter when your current classes are expected to end
+          term_start: Term start date
+          title: Add your term for %{school_name}
+        errors:
+          dates_body: Add a valid date with a MM/YYYY format to continue.
+          dates_heading: Check your term dates
+          information_body: Add your term dates and enrollment status to continue.
+          information_heading: No education information added
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (optional)
@@ -201,19 +231,6 @@ en:
         retry_button: Retry student verification
       errors:
         unexpected: An unexpected error occurred. Please try again.
-      hours_input:
-        continue: Continue
-        description: "%{agency_acronym} needs your community engagement for %{reporting_window}. Add the total number of credit hours you were taking."
-        description_multi_month: "%{agency_acronym} needs your community engagement for %{reporting_window}. If you were enrolled as a student in %{month}, add the number of credit hours you were taking."
-        error_body: You need to add credit hours to continue.
-        error_body_multi_month: You need to add credit hours for at least one month to continue.
-        error_heading: No hours entered
-        field_error: Add hours for at least one month
-        heading: Add your %{month} credit hours for %{organization}
-        hours_label: "%{month} credit hours"
-        month_indicator: Month %{current} / %{total}
-        no_hours_checkbox: I didn't take any credit hours at %{organization} in %{month}
-        title: Credit hours
       new:
         city: City
         contact_email: School official’s email
@@ -643,7 +660,6 @@ en:
         contact_name: School contact name
         contact_phone: School contact phone number
         credit_hours: Credit hours
-        month: Month
         school_name: School or program
         term_credit_hours: Credit hours
         term_details: Term details

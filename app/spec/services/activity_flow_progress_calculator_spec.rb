@@ -570,21 +570,13 @@ RSpec.describe ActivityFlowProgressCalculator do
       let(:education_activity) do
         create(
           :education_activity,
+          :with_self_attested_term,
           activity_flow: flow,
-          data_source: :fully_self_attested,
-          status: "unknown",
-          school_name: "Test U"
+          credit_hours: 7
         )
       end
 
-      before do
-        create(
-          :education_activity_month,
-          education_activity: education_activity,
-          month: flow.reporting_months.first.beginning_of_month,
-          hours: 7
-        )
-      end
+      before { education_activity }
 
       it "does not mark the monthly result with sufficient enrollment" do
         expect(result.first).to have_attributes(
@@ -819,35 +811,19 @@ RSpec.describe ActivityFlowProgressCalculator do
 
     context "when education is fully self-attested" do
       let(:flow) { create(:activity_flow, reporting_window_months: 2, education_activities_count: 0) }
-      let(:fully_self_attested_monthly_credit_hours) do
-        {
-          flow.reporting_months.first.beginning_of_month => 4,
-          flow.reporting_months.second.beginning_of_month => 5
-        }
-      end
+      let(:credit_hours) { 4 }
       let(:education_activity) do
         create(
           :education_activity,
+          :with_self_attested_term,
           activity_flow: flow,
-          data_source: :fully_self_attested,
           school_name: "University of Illinois",
-          status: "unknown"
+          credit_hours: credit_hours
         )
       end
 
-      before do
-        fully_self_attested_monthly_credit_hours.each do |month, hours|
-          create(
-            :education_activity_month,
-            education_activity: education_activity,
-            month: month,
-            hours: hours
-          )
-        end
-      end
-
-      it "converts monthly credit hours to CE hours and applies them for each reporting month" do
-        expected_hours = fully_self_attested_monthly_credit_hours.values.sum * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER
+      it "converts term credit hours to CE hours for each reporting month" do
+        expected_hours = credit_hours * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER * flow.reporting_months.length
         expect(progress.total_hours).to eq(expected_hours)
       end
 

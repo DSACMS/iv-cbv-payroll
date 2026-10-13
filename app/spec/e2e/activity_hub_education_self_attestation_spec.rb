@@ -23,8 +23,6 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
 
     flow = ActivityFlow.last
-    month1 = flow.reporting_months.first
-    month1_label = I18n.l(month1, format: :month_year)
 
     # --- Step 1: Create a new self-attested education activity ---
     visit new_activities_flow_education_path
@@ -40,14 +38,22 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     fill_in I18n.t("activities.education.new.contact_email"), with: "smith@illinois.edu"
     click_button I18n.t("activities.education.new.continue")
 
-    # Hours input for each reporting month
-    flow.reporting_months.each do |month|
-      month_label = I18n.l(month, format: :month_year)
-      verify_page(page, title: I18n.t("activities.education.hours_input.heading",
-        month: month_label, organization: "University of Illinois"))
-      fill_in I18n.t("activities.education.hours_input.hours_label", month: month_label), with: "4"
-      click_button I18n.t("activities.education.hours_input.continue")
-    end
+    term_title = I18n.t("activities.education.add_your_term.edit.title", school_name: "University of Illinois")
+    verify_page(page, title: term_title)
+    click_button I18n.t("activities.education.add_your_term.edit.continue")
+    verify_page(page, title: term_title)
+    expect(page).to have_text(I18n.t("activities.education.add_your_term.errors.information_heading"))
+
+    fill_in I18n.t("activities.education.add_your_term.edit.term_start"), with: "55/2026"
+    fill_in I18n.t("activities.education.add_your_term.edit.term_end"), with: flow.reporting_months.last.strftime("%m/%Y")
+    select I18n.t("activities.education.add_your_term.edit.enrollment_status_options.less_than_half_time"),
+      from: I18n.t("activities.education.add_your_term.edit.enrollment_status")
+    fill_in I18n.t("activities.education.add_your_term.edit.credit_hours"), with: "3.5"
+    click_button I18n.t("activities.education.add_your_term.edit.continue")
+    verify_page(page, title: term_title)
+    expect(page).to have_text(I18n.t("activities.education.add_your_term.errors.dates_heading"))
+    fill_in I18n.t("activities.education.add_your_term.edit.term_start"), with: flow.reporting_months.first.strftime("%m/%Y")
+    click_button I18n.t("activities.education.add_your_term.edit.continue")
 
     # Document upload
     verify_page(
@@ -63,13 +69,13 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     expect(page).to have_content "601 E John St, Champaign, IL"
     expect(page).to have_content "Dr. Smith"
     expect(page).to have_content "smith@illinois.edu"
-    expect(page).to have_content "52"
+    education_activity = EducationActivity.last
+    expect(education_activity.credit_hours).to eq(3.5)
 
     # --- Step 2: Save and return to the hub ---
     click_button I18n.t("activities.education.review.save")
     verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
 
-    education_activity = EducationActivity.last
     visit new_activities_flow_education_document_upload_path(education_id: education_activity)
     verify_page(
       page,
@@ -90,8 +96,9 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     expect(page).to have_button I18n.t("activities.hub.save")
 
     # Edit school info from review
-    edit_links = all("a", text: I18n.t("activities.hub.edit"))
-    edit_links.first.click
+    within(".activity-review-edit-header", text: I18n.t("activities.education.review.school_info")) do
+      click_link I18n.t("activities.hub.edit")
+    end
     verify_page(page, title: I18n.t("activities.education.new.edit_title"))
     expect(page).to have_field(I18n.t("activities.education.new.contact_title"), with: "Academic advisor")
     fill_in I18n.t("activities.education.new.school_name"), with: "Updated University of Illinois"
@@ -101,17 +108,19 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     verify_page(page, title: I18n.t("activities.education.review.title", school_name: "Updated University of Illinois"))
     expect(page).to have_content "601 E John St, Champaign, IL"
 
-    # Edit month 1 from review
-    month_edit_links = all("table a", text: I18n.t("activities.education.review.edit"))
-    month_edit_links.first.click
-    verify_page(page, title: I18n.t("activities.education.hours_input.heading",
-      month: month1_label, organization: "Updated University of Illinois"))
-    fill_in I18n.t("activities.education.hours_input.hours_label", month: month1_label), with: "6"
+    # Edit the term from review
+    within(".activity-review-edit-header", text: I18n.t("activities.summary.education.term_details")) do
+      click_link I18n.t("activities.hub.edit")
+    end
+    verify_page(page, title: I18n.t("activities.education.add_your_term.edit.title", school_name: "Updated University of Illinois"))
+    expect(page).to have_field(I18n.t("activities.education.add_your_term.edit.term_start"), with: flow.reporting_months.first.strftime("%m/%Y"))
+    fill_in I18n.t("activities.education.add_your_term.edit.credit_hours"), with: "6"
+    click_button I18n.t("activities.education.add_your_term.edit.continue")
+    verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: "Updated University of Illinois"), skip_axe_rules: %w[heading-order])
     click_button I18n.t("activities.hub.save")
 
     verify_page(page, title: I18n.t("activities.education.review.title", school_name: "Updated University of Illinois"))
-    expect(page).to have_content "78"
-    expect(page).to have_content "52"
+    expect(education_activity.reload.credit_hours).to eq(6)
 
     # --- Step 4: Save and return to the hub ---
     click_button I18n.t("activities.hub.save")
