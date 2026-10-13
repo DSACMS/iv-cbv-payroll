@@ -65,6 +65,49 @@ RSpec.describe Cbv::EmployerSearchesController do
         allow(EventTrackingJob).to receive(:perform_later).with("ApplicantAccessedSearchPage", anything, anything)
         get :show, params: { type: "employer" }
       end
+
+      context "with the accessible provider tabs" do
+        let(:payroll_label) { I18n.t("cbv.employer_searches.show.payroll_providers") }
+        let(:employer_label) { I18n.t("cbv.employer_searches.show.app_based_providers") }
+        let(:page) { Capybara.string(response.body) }
+
+        before do
+          allow(EventTrackingJob).to receive(:perform_later)
+          get :show, params: tab_params
+        end
+
+        context "when the payroll tab is selected" do
+          let(:tab_params) { { type: "payroll" } }
+
+          it "marks only the payroll link as current" do
+            expect(page).to have_css("a[aria-current='true']", text: payroll_label)
+            expect(page).to have_no_css("a[aria-current]", text: employer_label)
+          end
+
+          it "labels the tab group" do
+            expect(page).to have_css(
+              "[role='group'][aria-label='#{I18n.t("cbv.employer_searches.show.provider_types_label")}']"
+            )
+          end
+
+          it "wires each link to the announcement action with its name" do
+            expect(page).to have_css(
+              "a[data-action='click->cbv-employer-search#announceTab']" \
+              "[data-tab-name='#{I18n.t("cbv.employer_searches.show.tab_selected", name: employer_label)}']",
+              text: employer_label
+            )
+          end
+        end
+
+        context "when the employer tab is selected" do
+          let(:tab_params) { { type: "employer" } }
+
+          it "marks only the app-based link as current" do
+            expect(page).to have_css("a[aria-current='true']", text: employer_label)
+            expect(page).to have_no_css("a[aria-current]", text: payroll_label)
+          end
+        end
+      end
     end
 
     context "when there are no employer search results" do
