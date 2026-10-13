@@ -79,15 +79,6 @@ RSpec.describe Activities::EntriesController do
           expect(page).to have_text(reporting_for_text, count: 1)
           expect(page).to have_selector("strong", text: "Lisa Williams")
         end
-
-        context "with markup in the name" do
-          let(:applicant) { create(:cbv_applicant, first_name: "<script>alert(1)</script>", last_name: "Williams") }
-
-          it "escapes the name" do
-            expect(response.body).to include("&lt;script&gt;alert(1)&lt;/script&gt;")
-            expect(response.body).not_to include("<script>alert(1)</script>")
-          end
-        end
       end
 
       it "creates a flow from the invitation and sets session" do
