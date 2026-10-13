@@ -260,7 +260,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     expect(page).to have_content(I18n.t("activities.employment.add_your_work.add_jobs.job_manual", name: "Updated Employer"))
     find("label[for='additional_jobs_false']").click
     click_button I18n.t("activities.employment.add_your_work.add_jobs.submit")
-    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
+    verify_page(page, title: I18n.t("activities.activities.employment_focused_review.header"))
 
     agency = Rails.application.config.client_agencies["sandbox"]
     payload = JSON.parse(Transmitters::ActivityJsonTransmitter.new(flow.reload, agency).payload)

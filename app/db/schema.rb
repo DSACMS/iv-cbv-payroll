@@ -45,6 +45,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_203042) do
 
   create_table "activity_flow_employment_summaries", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
+    t.integer "compensation_amount"
+    t.string "compensation_unit"
     t.datetime "created_at", null: false
     t.string "employer_address"
     t.string "employer_name"
@@ -53,6 +55,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_203042) do
     t.string "employment_status"
     t.date "employment_termination_date"
     t.string "employment_type"
+    t.string "pay_frequency"
     t.bigint "payroll_account_id", null: false
     t.datetime "redacted_at"
     t.datetime "updated_at", null: false
