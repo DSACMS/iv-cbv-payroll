@@ -80,7 +80,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           let(:tab_params) { { type: "payroll" } }
 
           it "marks only the payroll link as current" do
-            expect(page).to have_css("a[aria-current='true']", text: payroll_label)
+            expect(page).to have_css("a[aria-current='page']", text: payroll_label)
             expect(page).to have_no_css("a[aria-current]", text: employer_label)
           end
 
@@ -103,7 +103,7 @@ RSpec.describe Cbv::EmployerSearchesController do
           let(:tab_params) { { type: "employer" } }
 
           it "marks only the app-based link as current" do
-            expect(page).to have_css("a[aria-current='true']", text: employer_label)
+            expect(page).to have_css("a[aria-current='page']", text: employer_label)
             expect(page).to have_no_css("a[aria-current]", text: payroll_label)
           end
         end
