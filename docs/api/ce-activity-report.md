@@ -77,6 +77,7 @@ Sample fields:
 
 | Field Name | Required? | Field Type |
 | :-- | :-- | :-- |
+| report_variant | Yes | String. One of `employment` or `community_engagement`.
 | review_period | Yes | Object. The full date range this CE compliance determination covers. `start_month` and `end_month` are both `YYYY-MM` strings. |
 | documents | Yes | Array of Document objects. All supporting documents uploaded for the activities in this report. |
 | activities | Yes | Object. Activity types at the top level; within each type, months keyed as `YYYY-MM`. |

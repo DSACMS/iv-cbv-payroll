@@ -47,6 +47,7 @@ class ActivityReportSerializer
       "completed_at" => @activity_flow.completed_at&.utc&.iso8601,
       "agency_partner_metadata" => agency_partner_metadata,
       "ce_report" => {
+        "report_variant" => @activity_flow.employment_focused? ? "employment" : "community_engagement",
         "review_period" => review_period,
         "documents" => documents,
         "activities" => activities

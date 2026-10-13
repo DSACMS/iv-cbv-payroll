@@ -19,7 +19,10 @@ RSpec.describe PersistedReportAdapter do
       employer_address: "123 Main St",
       employment_status: "employed",
       employment_start_date: Date.new(2024, 1, 15),
-      employment_termination_date: nil
+      employment_termination_date: nil,
+      pay_frequency: "biweekly",
+      compensation_amount: 25_00,
+      compensation_unit: "hourly"
     )
 
     create(:activity_flow_monthly_summary,
@@ -57,6 +60,16 @@ RSpec.describe PersistedReportAdapter do
         status: "employed",
         start_date: Date.new(2024, 1, 15),
         termination_date: nil
+      )
+    end
+
+    it "returns persisted income fields for the review table" do
+      report = adapter.find_account_report("acct-1")
+
+      expect(report.income).to have_attributes(
+        pay_frequency: "biweekly",
+        compensation_amount: 25_00,
+        compensation_unit: "hourly"
       )
     end
 
@@ -114,6 +127,29 @@ RSpec.describe PersistedReportAdapter do
         gigs: have_attributes(count: 2),
         partial_month_range: { is_partial_month: false, description: nil }
       )
+    end
+
+    it "includes months with gig hours even when paychecks_count is zero" do
+      ActivityFlowMonthlySummary
+        .find_by(activity_flow: flow, payroll_account: payroll_account, month: second_month.beginning_of_month)
+        .update!(total_gig_hours: 12.5, paychecks_count: 0)
+
+      result = adapter.summarize_by_month
+
+      expect(result["acct-1"].keys).to include(second_month.strftime("%Y-%m"))
+      expect(result["acct-1"][second_month.strftime("%Y-%m")][:total_gig_hours]).to eq(12.5)
+    end
+
+    it "builds a non-empty gigs marker for gig-only months so hours are not rendered as N/A" do
+      ActivityFlowMonthlySummary
+        .find_by(activity_flow: flow, payroll_account: payroll_account, month: second_month.beginning_of_month)
+        .update!(total_gig_hours: 12.5, paychecks_count: 0)
+
+      result = adapter.summarize_by_month
+      summary = result["acct-1"][second_month.strftime("%Y-%m")]
+
+      expect(summary[:gigs]).not_to be_empty
+      expect(summary[:paystubs]).to be_empty
     end
 
     it "returns months in reverse chronological order" do

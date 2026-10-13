@@ -88,7 +88,11 @@ class Report::GigMonthlySummaryTableComponent < ViewComponent::Base
 
   def hours_header
     if @activity_flow_labels
-      I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours")
+      if @report.flow.respond_to?(:employment_focused?) && @report.flow.employment_focused?
+        I18n.t("components.report.monthly_summary_table.activity.hours_worked")
+      else
+        I18n.t("components.report.monthly_summary_table.activity.community_engagement_hours")
+      end
     else
       I18n.t("components.report.monthly_summary_table.total_gig_hours")
     end

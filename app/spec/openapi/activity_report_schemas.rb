@@ -25,7 +25,8 @@ module ActivityReportSchemas
         agency_partner_metadata: ref("AgencyPartnerMetadata"),
         ce_report: ref("CeReport")
       }).merge(description: InvitationDocumentation.read("ce-activity-report", section: "Model")),
-      CeReport: object(%w[review_period documents activities], {
+      CeReport: object(%w[report_variant review_period documents activities], {
+        report_variant: { type: :string, enum: %w[employment community_engagement] },
         review_period: ref("CeReviewPeriod"),
         documents: { type: :array, items: ref("CeDocument") },
         activities: ref("CeActivities")
