@@ -7,6 +7,30 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.11.0
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Update "Success" page for Employment-focused ActivityFlow [(#2156)](https://github.com/DSACMS/iv-cbv-payroll/pull/2156) - Jake Wheeler [[FFS-4857]](https://jiraent.cms.gov/browse/FFS-4857)
+- custom submit page [(#2147)](https://github.com/DSACMS/iv-cbv-payroll/pull/2147) - Chris [[FFS-4864]](https://jiraent.cms.gov/browse/FFS-4864)
+- add report variant to json [(#2159)](https://github.com/DSACMS/iv-cbv-payroll/pull/2159) - Chris [[FFS-4856]](https://jiraent.cms.gov/browse/FFS-4856)
+- Add report_variant to CeReport [(#2155)](https://github.com/DSACMS/iv-cbv-payroll/pull/2155) - Chris [[FFS-4856]](https://jiraent.cms.gov/browse/FFS-4856)
+- Update Education self-attestation flow school info page [(#2153)](https://github.com/DSACMS/iv-cbv-payroll/pull/2153) - Daphne Gold [[FFS-4867]](https://jiraent.cms.gov/browse/FFS-4867)
+- Update copy on shared Employment-focused ActivityFlow pages [(#2133)](https://github.com/DSACMS/iv-cbv-payroll/pull/2133) - krista-skylight [[FFS-4865]](https://jiraent.cms.gov/browse/FFS-4865)
+- Add another job page [(#2132)](https://github.com/DSACMS/iv-cbv-payroll/pull/2132) - Chris [[FFS-4861]](https://jiraent.cms.gov/browse/FFS-4861)
+- Document Education JSON transmissions [(#2148)](https://github.com/DSACMS/iv-cbv-payroll/pull/2148) - Daphne Gold [[FFS-4919]](https://jiraent.cms.gov/browse/FFS-4919)
+
+### Other/Maintenance (Not user facing)
+- Bump json, pg, newrelic_rpm, brakeman, sass, vite, pip, @scalar/api-reference, postcss-nesting, aws-sdk-s3, jsdom
+- v2 api docs [(#2149)](https://github.com/DSACMS/iv-cbv-payroll/pull/2149) - Chris [[FFS-4887]](https://jiraent.cms.gov/browse/FFS-4887)
+- Fix markdownlint for your-agency.gov links [(#2150)](https://github.com/DSACMS/iv-cbv-payroll/pull/2150) - Tom Dooner
+- [No ticket] Run dependabot on mondays [(#2151)](https://github.com/DSACMS/iv-cbv-payroll/pull/2151) - Chris
+- Update documentation about release process [(#2134)](https://github.com/DSACMS/iv-cbv-payroll/pull/2134) - Nočnica Mellifera [[FFS-4720]](https://jiraent.cms.gov/browse/FFS-4720)
+- Update documentation to remove Emmy API references [(#2073)](https://github.com/DSACMS/iv-cbv-payroll/pull/2073) - Nočnica Mellifera [[FFS-4708]](https://jiraent.cms.gov/browse/FFS-4708)
+- Add Rspec style preference to AGENTS.md [(#2135)](https://github.com/DSACMS/iv-cbv-payroll/pull/2135) - Tom Dooner
+
 ## 0.10.0
 
 ### Emmy Income only user facing changes
