@@ -21,7 +21,8 @@ module Redactable
     date: Date.new(1990, 1, 1),
     email: "REDACTED@example.com",
     object: {},
-    uuid: "00000000-0000-0000-0000-000000000000"
+    uuid: "00000000-0000-0000-0000-000000000000",
+    integer: nil
   }
 
   included do
