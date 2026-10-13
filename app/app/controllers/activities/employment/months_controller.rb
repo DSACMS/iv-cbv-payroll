@@ -21,6 +21,13 @@ class Activities::Employment::MonthsController < Activities::BaseController
     )
   end
 
+  def failed_fields
+    return %w[hours] if @employment_activity.unpaid_or_in_kind?
+
+    fields = @activity_month.errors.attribute_names.map(&:to_s) & %w[gross_income hours]
+    fields.presence || %w[gross_income]
+  end
+
   def track_month_submission_event
     return unless @activity_month.present?
 
@@ -31,7 +38,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
       month: I18n.l(@current_month, format: :month_year)
     }
     if @error
-      attributes[:error_fields] = @employment_activity.unpaid_or_in_kind? ? %w[hours] : %w[gross_income hours]
+      attributes[:error_fields] = failed_fields
     end
     track_event(event, attributes)
   end
