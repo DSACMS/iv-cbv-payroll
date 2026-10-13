@@ -245,7 +245,22 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
 
       it_behaves_like "tracks an event", TrackEvent::EmploymentMonthValidationFailed,
         extra_attributes: -> {
-          { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_fields: [ "gross_income", "hours" ] }
+          { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_fields: [ "gross_income" ] }
+        }
+    end
+
+    context "when only hours are provided" do
+      let(:perform_tracked_action) do
+        patch :update, params: {
+          employment_id: employment_activity.id,
+          id: 0,
+          employment_activity_month: { gross_income: "", hours: "10" }
+        }
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentMonthValidationFailed,
+        extra_attributes: -> {
+          { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_fields: [ "gross_income" ] }
         }
     end
 
@@ -426,7 +441,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
               employment_activity_id: kind_of(Integer),
               month_index: 0,
               month: kind_of(String),
-              error_fields: [ "gross_income", "hours" ]
+              error_fields: [ "gross_income" ]
             }
           }
       end
