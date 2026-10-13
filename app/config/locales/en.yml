@@ -97,6 +97,25 @@ en:
             hours:
               greater_than_or_equal_to: Hours must be 0 or more
   activities:
+    activities:
+      employment_focused_review:
+        additional_comments: Additional comments
+        employer_address: Address
+        employer_contact_email: Employer contact email
+        employer_contact_name: Employer contact name
+        employer_contact_phone_number: Employer contact phone number
+        employer_details: Employer details
+        employer_information: Employer information
+        employer_name: Name
+        employment_details: Employment details
+        employment_header: 'Job %{count}: %{employer_name}'
+        gross_income: Gross income
+        header: Review and submit the jobs you've added
+        hours_and_income: Hours and income
+        hours_worked: Hours worked
+        month: Month
+        monthly_details: Monthly details
+        submit: Submit to %{agency_name}
     activity_header_component:
       back: Back
       exit: Exit
@@ -631,6 +650,19 @@ en:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
         done_for_now: You're done for now. %{agency_full_name} will review your information and contact you if needed.
         download_pdf: Download my report
+        employment_focused:
+          subheading: It may take a few moments for them to be reflected in the system.
+          title: Your jobs have been submitted to %{agency_name}
+          whats_next:
+            download_your_report:
+              heading: Download your report
+            head_of_household:
+              heading: If you’re the head of household
+              subheading: Continue your renewal in the Self-Service Portal (SSP) or use the forms mailed to you. You may close this tab.
+            household_member:
+              heading: If you’re a household member
+              subheading: You’re done for now. %{agency_name} will review your information and contact you if needed. You may close this tab.
+            subheading: "%{agency_name} will review your information and contact you if needed."
         survey: Take the 3 question survey
         title: Your community engagement report was successfully sent to %{agency_acronym}
         whats_next: What's next?
@@ -684,6 +716,7 @@ en:
         program_name: Program name
       legal_agreement: Legal agreement
       monthly_details: Monthly details
+      no_activities_added: Add at least one activity before submitting your report.
       submit: Submit to %{agency_name}
       title: Review and submit your %{benefit} community engagement report
     work_programs:
@@ -1184,6 +1217,7 @@ en:
         activity:
           community_engagement_hours: Community engagement hours
           gross_income: Gross income
+          hours_worked: Hours worked
           mileage_expenses: Mileage expenses
           payment_information: Payment information
         compact:

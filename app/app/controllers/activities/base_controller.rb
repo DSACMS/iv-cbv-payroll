@@ -30,8 +30,22 @@ class Activities::BaseController < FlowController
   end
 
   def after_activity_path
+    return activities_flow_root_path if @flow.employment_focused?
+
     progress_result = progress_calculator.overall_result
     progress_result.meets_routing_requirements ? activities_flow_summary_path : activities_flow_root_path
+  end
+
+  # Loads the data needed to render the employment-focused review page
+  # (app/views/activities/activities/employment_focused_review.html.erb).
+  # Shared by Activities::ActivitiesController#index and
+  # Activities::SummaryController#update, since the latter needs to
+  # re-render this same page when consent validation fails for an
+  # employment-focused flow, instead of falling back to the generic summary.
+  def load_employment_focused_review_data
+    @employment_payroll_accounts = @flow.payroll_accounts.published.order(created_at: :desc).select(&:sync_succeeded?)
+    @employment_activities = @flow.employment_activities.published.includes(:employment_activity_months).order(created_at: :desc)
+    @persisted_report = PersistedReportAdapter.new(@flow) if @employment_payroll_accounts.any?
   end
 
   def progress_calculator
