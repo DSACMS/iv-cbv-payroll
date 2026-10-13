@@ -1,6 +1,6 @@
 <h2><%= t("activities.employment_info.employer_section_title") %></h2>
 <%= f.text_field :employer_name,
-      required: @flow.employment_focused?,
+      required: true,
       label: field_label.call(t("activities.employment_info.employer_name")),
       hint: t("activities.employment_info.employer_name_hint") %>
 <%= render "address_fields", f: f, field_label: field_label %>
