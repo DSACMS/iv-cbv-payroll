@@ -54,13 +54,13 @@
     <div class="grid-row maxw-mobile-lg margin-left-0 padding-left-0 margin-top-3" role="group" aria-label="<%= t(".provider_types_label") %>">
       <%= link_to t(".payroll_providers"), @payroll_path,
         class: "grid-col usa-button margin-0 radius-right-0 #{@selected_tab != 'payroll' && 'usa-button--outline'}",
-        aria: { current: (@selected_tab == "payroll" ? "true" : nil) },
+        aria: { current: (@selected_tab == "payroll" ? "page" : nil) },
         data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false,
                 action: "click->cbv-employer-search#announceTab",
                 tab_name: t(".tab_selected", name: t(".payroll_providers")) } %>
       <%= link_to t(".app_based_providers"), @employer_path,
         class: "grid-col usa-button margin-0 radius-left-0 #{@selected_tab != 'employer' && 'usa-button--outline'}",
-        aria: { current: (@selected_tab == "employer" ? "true" : nil) },
+        aria: { current: (@selected_tab == "employer" ? "page" : nil) },
         data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false,
                 action: "click->cbv-employer-search#announceTab",
                 tab_name: t(".tab_selected", name: t(".app_based_providers")) } %>

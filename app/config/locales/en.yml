@@ -509,11 +509,13 @@ en:
           header: Search for your employer
           payroll_providers: Payroll providers
           popular_providers: Popular providers
+          provider_types_label: Provider type
           query_label: Search for your employer
           search: Search
           search_label: Search for the employer or business you want to add. If you can't find it, you can add it manually.
           search_results_header: Select your employer
           select_employer: Select %{name}
+          tab_selected: "%{name} selected"
       error_no_access: You don't have permission to access that information
       payment_details:
         show:
