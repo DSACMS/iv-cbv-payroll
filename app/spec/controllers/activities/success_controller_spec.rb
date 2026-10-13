@@ -17,12 +17,15 @@ RSpec.describe Activities::SuccessController, type: :controller do
       let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
       let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
       let(:activity_flow) { create(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation, completed_at: Time.current) }
+      let(:reporting_for_text) {
+        I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+      }
 
       before { get :show }
 
       it "does not display the reporting banner" do
         expect(response).to have_http_status(:ok)
-        expect(Capybara.string(response.body)).to have_no_text("Reporting for")
+        expect(Capybara.string(response.body)).to have_no_text(reporting_for_text)
       end
     end
 

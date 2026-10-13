@@ -17,6 +17,9 @@ RSpec.describe Activities::Income::SynchronizationsController do
     let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
     let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
     let(:flow) { create(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation) }
+    let(:reporting_for_text) {
+      I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+    }
 
     before do
       allow_any_instance_of(PayrollAccount::Pinwheel).to receive(:has_fully_synced?).and_return(false)
@@ -25,7 +28,7 @@ RSpec.describe Activities::Income::SynchronizationsController do
 
     it "does not display the reporting banner for a named applicant in a tokenized flow" do
       expect(response).to have_http_status(:ok)
-      expect(Capybara.string(response.body)).to have_no_text("Reporting for")
+      expect(Capybara.string(response.body)).to have_no_text(reporting_for_text)
     end
   end
 

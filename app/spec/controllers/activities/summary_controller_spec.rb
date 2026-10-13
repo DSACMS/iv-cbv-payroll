@@ -25,6 +25,9 @@ RSpec.describe Activities::SummaryController, type: :controller do
     context "with a tokenized flow" do
       let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
       let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+      let(:reporting_for_text) {
+        I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+      }
 
       before do
         activity_flow.update!(cbv_applicant: applicant, activity_flow_invitation: invitation)
@@ -32,7 +35,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       end
 
       it "keeps the reporting banner on requests without a token parameter" do
-        expect(Capybara.string(response.body)).to have_text("Reporting for Lisa Williams", count: 1)
+        expect(Capybara.string(response.body)).to have_text(reporting_for_text, count: 1)
       end
     end
 
