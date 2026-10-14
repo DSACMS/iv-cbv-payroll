@@ -38,19 +38,12 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
       })
       field_options = options.except(:label, :hint, :label_class)
 
-      aria_options = (field_options[:aria] || {}).dup
-      description_ids = [
-        aria_options[:describedby],
-        field_options.delete(:aria_describedby),
-        field_options.delete(:"aria-describedby")
-      ].compact.flat_map { |value| value.to_s.split }
-
-      description_ids << "#{field_id(attribute)}_error" if has_error?(attribute)
-      description_ids << hint_id(attribute) if options[:hint]
-
-      aria_options[:describedby] = description_ids.uniq.join(" ") if description_ids.any?
-      aria_options[:invalid] = "true" if has_error?(attribute)
-      field_options[:aria] = aria_options
+      field_options[:aria] = build_aria_options(
+        attribute,
+        field_options,
+        existing_aria: field_options[:aria] || {},
+        hint: options[:hint]
+      )
 
       form_group(attribute, options[:group_options] || {}) do
         us_text_field_label(attribute, label_text, label_options) + super(attribute, field_options)
@@ -96,6 +89,8 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     data = options.delete(:data) || {}
     input_class = has_error?(attribute) ? "usa-input usa-input--error" : "usa-input"
 
+    aria_options = build_aria_options(attribute, options)
+
     form_group(attribute) do
       us_text_field_label(attribute, label_text, options) +
         @template.render(Uswds::PhoneInput.new(
@@ -103,7 +98,8 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
           id: field_id(attribute),
           value: object&.send(attribute),
           input_class: input_class,
-          data: data
+          data: data,
+          aria: aria_options
         ))
     end
   end
@@ -116,9 +112,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
     label_options = { class: label_class }
 
-    description_ids = []
-    description_ids << "#{field_id(attribute)}_error" if has_error?(attribute)
-    description_ids << hint_id(attribute) if options[:hint]
+    aria_options = build_aria_options(attribute, options)
 
     form_group(attribute) do
       us_text_field_label(attribute, label_text, options.merge(label_options)) +
@@ -129,10 +123,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
           input_class: input_class,
           data: data,
           required: options[:required],
-          aria: {
-            describedby: description_ids.presence&.join(" "),
-            invalid: (has_error?(attribute) ? "true": nil)
-          }
+          aria: aria_options
         ))
     end
   end
@@ -140,13 +131,16 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   def combo_box(attribute, choices, options = {})
     label_text = options.delete(:label)
 
+    aria_options = build_aria_options(attribute, options)
+
     form_group(attribute) do
       us_text_field_label(attribute, label_text, options) +
         @template.render(Uswds::ComboBox.new(
           name: field_name(attribute),
           id: field_id(attribute),
           options: choices,
-          selected: object&.send(attribute)
+          selected: object&.send(attribute),
+          aria: aria_options
         ))
     end
   end
@@ -207,10 +201,10 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   def field_error(attribute, label_id: nil)
     return unless has_error?(attribute)
     error_messages = object.errors.messages_for(attribute)
-    error_sentence = @template.safe_join(error_messages, @template.tag.br)
+
     @template.content_tag(
       :span,
-      error_sentence,
+      @template.safe_join(error_messages, @template.tag.br),
       id: "#{field_id(attribute)}_error",
       class: "usa-error-message",
       data: { error_label_id: label_id }
@@ -331,6 +325,26 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
   private
 
+  # Build the list of description element IDs (error + hint) and the
+  # resulting aria-describedby/aria-invalid options for a field.
+  def build_aria_options(attribute, options, existing_aria: {}, hint: options[:hint])
+    aria_options = existing_aria.dup
+
+    description_ids = [
+      aria_options[:describedby],
+      options.delete(:aria_describedby),
+      options.delete(:"aria-describedby")
+    ].compact.flat_map { |value| value.to_s.split }
+
+    description_ids << "#{field_id(attribute)}_error" if has_error?(attribute)
+    description_ids << hint_id(attribute) if hint
+
+    aria_options[:describedby] = description_ids.uniq.join(" ") if description_ids.any?
+    aria_options[:invalid] = "true" if has_error?(attribute)
+
+    aria_options
+  end
+
   def append_to_option(options, key, value)
     current_value = options[key] || ""
 
@@ -389,13 +403,17 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     label_id = "#{field_id(attribute)}_label"
     error = show_error_message ? field_error(attribute, label_id: label_id) : nil
 
-    label(
-      attribute,
-      @template.raw(text),
-      class: classes,
-      for: for_attr,
-      id: label_id
-    ) + error.to_s + hint.to_s
+    @template.safe_join([
+      label(
+        attribute,
+        @template.raw(text),
+        class: classes,
+        for: for_attr,
+        id: label_id
+      ),
+      error,
+      hint
+    ].compact)
   end
 
   # Label for a checkbox or radio
@@ -413,6 +431,6 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def hint_id(attribute)
-    "#{attribute}_hint"
+    "#{field_id(attribute)}_hint"
   end
 end

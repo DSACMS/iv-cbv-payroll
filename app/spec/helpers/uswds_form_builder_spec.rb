@@ -49,7 +49,7 @@ RSpec.describe UswdsFormBuilder do
       end
 
       it 'adds aria-describedby to the input' do
-        expect(result).to have_css('input[aria-describedby="first_name_hint"]')
+        expect(result).to have_css('input[aria-describedby="object_first_name_hint"]')
       end
     end
 
@@ -138,10 +138,21 @@ RSpec.describe UswdsFormBuilder do
   end
 
   describe '#hint' do
-    let(:result) { builder.hint('Enter your name') }
+    context 'when attribute has both a hint and an error' do
+      let(:result) { builder.text_field(:first_name, hint: 'Enter your name') }
 
-    it 'outputs a hint' do
-      expect(result).to have_element(:div, text: 'Enter your name', class: 'usa-hint')
+      before do
+        object.errors.add(:first_name, 'is invalid')
+      end
+
+      it 'includes both the hint and error IDs in aria-describedby' do
+        input = Capybara.string(result).find('input[name="object[first_name]"]')
+
+        expect(input['aria-describedby'].split).to contain_exactly(
+          'object_first_name_hint',
+          'object_first_name_error'
+        )
+      end
     end
   end
 
