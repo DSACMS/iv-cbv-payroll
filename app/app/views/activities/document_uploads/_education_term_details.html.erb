@@ -1,0 +1,24 @@
+<% terms = activity.nsc_enrollment_terms.order(:term_begin, :term_end, :school_name).map do |term|
+  { start_date: term.term_begin, end_date: term.term_end, hours: term.credit_hours }
+end %>
+<% if terms.empty? && activity.self_attested_term? %>
+  <% terms = [ { start_date: activity.self_attested_term_start, end_date: activity.self_attested_term_end, hours: activity.credit_hours } ] %>
+<% end %>
+
+<ul>
+  <% terms.each do |term| %>
+    <li>
+      <strong><%= t("activities.document_uploads.new.education.term_start") %>:</strong>
+      <%= term[:start_date]&.strftime("%m/%d/%Y") || t("shared.not_applicable") %>
+    </li>
+    <li>
+      <strong><%= t("activities.document_uploads.new.education.term_end") %>:</strong>
+      <%= term[:end_date]&.strftime("%m/%d/%Y") || t("shared.not_applicable") %>
+    </li>
+    <li>
+      <strong><%= t("activities.document_uploads.new.education.hours_per_term") %></strong>
+      <%= t("activities.document_uploads.new.education.if_applicable") %>
+      <%= format_decimal_amount(term[:hours]) if term[:hours].present? %>
+    </li>
+  <% end %>
+</ul>

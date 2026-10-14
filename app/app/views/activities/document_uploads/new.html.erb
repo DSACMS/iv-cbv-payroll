@@ -29,6 +29,9 @@
 
 <h1><%= title %></h1>
 <p><%= education_upload ? t(".education.description") : t(".description") %></p>
+<% if education_upload %>
+  <%= render "education_term_details", activity: @activity %>
+<% else %>
 <ul>
   <% @activity.document_upload_verification_items.each do |item| %>
     <li>
@@ -39,6 +42,7 @@
     </li>
   <% end %>
 </ul>
+<% end %>
 
 <% unless education_upload %>
   <%= render "previous_uploads" %>
@@ -87,6 +91,11 @@
     <% accordion.with_title { t(@activity.document_upload_suggestion_title_i18n_key) } %>
     <% accordion.with_accordion_item do %>
       <%= t(@activity.document_upload_suggestion_text) %>
+      <% if education_upload %>
+        <ul>
+          <li><%= t(".education.transcript") %></li>
+        </ul>
+      <% end %>
     <% end %>
   <% end %>
 

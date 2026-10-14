@@ -176,6 +176,16 @@ en:
       new:
         continue: Continue to review
         description: 'Upload documents that verify the information you entered for:'
+        education:
+          description: 'Upload documents that verify the information you entered:'
+          suggestion_title: Suggested supporting documents
+          term_start: Term start date
+          term_end: Term end date
+          enrollment_status: Enrollment status
+          credit_hours: Credit hours
+          hours_per_term: Hours per term
+          if_applicable: "(if applicable):"
+          transcript: Transcript from most recent enrollment period
         errors:
           empty: That file is empty. Choose a different file.
           multiple_files: We could not upload one or more files. Check the files and try again.

@@ -177,6 +177,17 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         expect(assigns(:back_url)).to eq(edit_activities_flow_education_add_your_term_path(education_id: education_activity))
       end
 
+      it "shows the entered term details and transcript suggestion" do
+        expect(rendered).to have_selector("li", text: "Term start date: #{education_activity.self_attested_term_start.strftime('%m/%d/%Y')}", normalize_ws: true)
+        expect(rendered).to have_selector("li", text: "Term end date: #{education_activity.self_attested_term_end.strftime('%m/%d/%Y')}", normalize_ws: true)
+        expect(rendered).to have_selector("li", text: "Hours per term (if applicable): 3.5", normalize_ws: true)
+        expect(rendered).to have_selector("li strong", text: "Term start date:", exact_text: true)
+        expect(rendered).to have_selector("li strong", text: "Term end date:", exact_text: true)
+        expect(rendered).to have_selector("li strong", text: "Hours per term", exact_text: true)
+        expect(rendered).to have_no_selector("strong", text: "(if applicable)")
+        expect(rendered).to have_text("Transcript from most recent enrollment period")
+      end
+
       context "when editing from review" do
         let(:navigation_params) { { from_review: 1, from_edit: 1 } }
 
@@ -347,7 +358,10 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: term.school_name))
-      expect(response.body).to include("#{I18n.l(term.term_begin, format: :short)} to #{I18n.l(term.term_end, format: :short)}")
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector("li", text: "Term start date: 01/05/2026", normalize_ws: true)
+      expect(rendered).to have_selector("li", text: "Term end date: 05/15/2026", normalize_ws: true)
+      expect(rendered).to have_selector("li strong", text: "Hours per term", exact_text: true)
     end
 
     it "uses the simplified title when partially self-attested education has multiple schools" do
