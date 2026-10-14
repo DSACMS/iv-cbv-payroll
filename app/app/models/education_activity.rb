@@ -138,6 +138,10 @@ class EducationActivity < Activity
     school_name
   end
 
+  def manual_education_upload?
+    fully_self_attested?
+  end
+
   def document_upload_suggestion_text
     "activities.education.document_upload_suggestion_text_html"
   end

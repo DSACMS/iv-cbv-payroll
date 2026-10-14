@@ -1,4 +1,3 @@
-<% manual_education_upload = @activity.is_a?(EducationActivity) && @activity.fully_self_attested? %>
 <% title = t(@activity.document_upload_title_i18n_key, name: @activity.document_upload_object_title) %>
 <% upload_max_file_size = current_agency.max_document_upload_size_bytes %>
 <% upload_allowed_content_types = current_agency.allowed_document_content_types.join(",") %>
@@ -27,8 +26,8 @@
 <% end %>
 
 <h1><%= title %></h1>
-<p><%= manual_education_upload ? t(".education.description") : t(".description") %></p>
-<% if manual_education_upload %>
+<p><%= @activity.manual_education_upload? ? t(".education.description") : t(".description") %></p>
+<% if @activity.manual_education_upload? %>
   <%= render "education_term_details", activity: @activity %>
 <% else %>
 <ul>
@@ -43,7 +42,7 @@
 </ul>
 <% end %>
 
-<% unless manual_education_upload %>
+<% unless @activity.manual_education_upload? %>
   <%= render "previous_uploads" %>
 <% end %>
 
@@ -70,7 +69,7 @@
 
   <div hidden data-document-upload-target="signedIds"></div>
 
-  <%= render "selected_uploads" unless manual_education_upload %>
+  <%= render "selected_uploads" unless @activity.manual_education_upload? %>
 
   <%= f.file_field :document_uploads,
       multiple: true,
@@ -87,12 +86,12 @@
   <div class="usa-error-message" hidden data-document-upload-target="error" role="alert"></div>
 
   <%= render(AccordionComponent.new(id: "document-upload-suggestions")) do |accordion| %>
-    <% accordion.with_title { manual_education_upload ? t(".education.suggestion_title") : t(@activity.document_upload_suggestion_title_i18n_key) } %>
+    <% accordion.with_title { @activity.manual_education_upload? ? t(".education.suggestion_title") : t(@activity.document_upload_suggestion_title_i18n_key) } %>
     <% accordion.with_accordion_item do %>
-      <%= manual_education_upload ? t(".education.suggestions_html") : t(@activity.document_upload_suggestion_text) %>
+      <%= @activity.manual_education_upload? ? t(".education.suggestions_html") : t(@activity.document_upload_suggestion_text) %>
     <% end %>
   <% end %>
-  <% if manual_education_upload %>
+  <% if @activity.manual_education_upload? %>
     <%= render "previous_uploads" %>
     <%= render "selected_uploads" %>
   <% end %>

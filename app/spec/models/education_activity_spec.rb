@@ -3,6 +3,34 @@ require "rails_helper"
 RSpec.describe EducationActivity do
   include ActiveSupport::Testing::TimeHelpers
 
+  describe "#manual_education_upload?" do
+    subject(:activity) { described_class.new(data_source: data_source) }
+
+    context "when fully self-attested" do
+      let(:data_source) { :fully_self_attested }
+
+      it "returns true" do
+        expect(activity).to be_manual_education_upload
+      end
+    end
+
+    context "when partially self-attested" do
+      let(:data_source) { :partially_self_attested }
+
+      it "returns false" do
+        expect(activity).not_to be_manual_education_upload
+      end
+    end
+
+    context "when validated" do
+      let(:data_source) { :validated }
+
+      it "returns false" do
+        expect(activity).not_to be_manual_education_upload
+      end
+    end
+  end
+
   describe "validations" do
     let(:activity_flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
 
