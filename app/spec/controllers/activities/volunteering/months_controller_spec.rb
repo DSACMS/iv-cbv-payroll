@@ -25,7 +25,7 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
       rendered = Capybara.string(response.body)
       expect(rendered).to have_selector(
         "label[for='volunteering_activity_month_hours']",
-        text: "#{label} #{I18n.t('us_form_with.required')}",
+        text: "#{label} *",
         exact_text: true
       )
       expect(rendered).to have_selector("input[name='volunteering_activity_month[hours]'][required]")

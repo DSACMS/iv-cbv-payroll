@@ -151,7 +151,6 @@ ignore_missing:
     - "components.report.monthly_summary_table.activity.*"
     - "shared.table_headers.*"
     - "activity_flow_progress_indicator.*"
-    - "us_form_with.required" # Currently used only in ActivityFlow
     - "activerecord.errors.models.volunteering_activity_month.*" # Self attestation hours entry error messages
     - "activerecord.errors.models.job_training_activity_month.*" # Self attestation hours entry error messages
     - "shared.header.logo_alt_text.nh_dhhs"

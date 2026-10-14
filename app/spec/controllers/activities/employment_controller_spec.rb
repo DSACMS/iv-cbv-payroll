@@ -26,7 +26,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         expect(rendered).to have_selector("input[name='employment_activity[employer_name]'][required]")
         expect(rendered).to have_selector(
           "label[for='employment_activity_employer_name']",
-          text: "#{I18n.t('activities.employment_info.employer_name')} #{I18n.t('us_form_with.required')}",
+          text: "#{I18n.t('activities.employment_info.employer_name')} *",
           exact_text: true
         )
         %w[employer_name street_address street_address_line_2 city state zip_code contact_name contact_email contact_phone_number].each do |field|
