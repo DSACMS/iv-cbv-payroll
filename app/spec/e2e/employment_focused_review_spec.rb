@@ -94,12 +94,6 @@ RSpec.describe "e2e Employment-focused review page", :js, type: :feature do
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.activities.employment_focused_review.submit", agency_name: "Test Agency")
 
-    verify_page(
-      page,
-      title: I18n.t(
-        "activities.success.show.employment_focused.title",
-        agency_name: I18n.t("shared.agency_full_name.sandbox")
-      )
-    )
+    verify_page(page, title: I18n.t("activities.success.show.employment_focused.title", agency_name: "Test Agency"))
   end
 end

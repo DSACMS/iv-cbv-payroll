@@ -347,7 +347,7 @@ en:
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:
         continue: Continue
-        error_body: Add income or hours to continue.
+        error_body: Add income to continue.
         error_heading: No employment information added
         gross_income_hint: How much you made before taxes
         gross_income_label: "%{month} gross income"
@@ -509,11 +509,13 @@ en:
           header: Search for your employer
           payroll_providers: Payroll providers
           popular_providers: Popular providers
+          provider_types_label: Provider type
           query_label: Search for your employer
           search: Search
           search_label: Search for the employer or business you want to add. If you can't find it, you can add it manually.
           search_results_header: Select your employer
           select_employer: Select %{name}
+          tab_selected: "%{name} selected"
       error_no_access: You don't have permission to access that information
       payment_details:
         show:
@@ -959,6 +961,7 @@ en:
         no_results_title: We couldn’t find your employer or payroll provider.
         payroll_providers: Payroll providers
         popular_providers: Or choose from popular payroll providers or apps
+        provider_types_label: Provider type
         results:
           one: We found 1 result
           other: We found %{count} results
@@ -968,6 +971,7 @@ en:
         search_subheader: Select your employer from the list. Then, follow the screens to log in and verify your income.
         select: Select
         select_employer: Select %{name}
+        tab_selected: "%{name} selected"
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to %{agency_acronym}'s website</a> to learn about other ways to report your income.
