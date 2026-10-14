@@ -177,9 +177,7 @@ en:
         continue: Continue to review
         description: 'Upload documents that verify the information you entered for:'
         education:
-          credit_hours: Credit hours
           description: 'Upload documents that verify the information you entered:'
-          enrollment_status: Enrollment status
           hours_per_term: Hours per term
           if_applicable: "(if applicable):"
           suggestion_title: Suggested supporting documents
