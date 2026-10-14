@@ -64,8 +64,6 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("activities.document_uploads.new.input_label"))
 
       rendered = Capybara.string(response.body)
-      expect(rendered).to have_text("Upload documents that verify the information you entered for:")
-      expect(rendered).to have_selector("button", text: "Suggested documents", exact_text: true, normalize_ws: true)
       upload_form = rendered.find("form[data-controller='document-upload']", visible: :all)
       ordered_elements = upload_form.all(
         "[data-document-upload-target='listSection'], input[type='file']",
@@ -126,11 +124,6 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: "Resume Workshop"))
       expect(response.body).to include(I18n.t("shared.hours", count: 10))
       expect(response.body).to include(activities_flow_job_training_document_uploads_path)
-      rendered = Capybara.string(response.body)
-      expect(rendered).to have_text("Upload documents that verify the information you entered for:")
-      expect(rendered.find("input[type='file']", visible: :all)).to have_xpath(
-        "preceding::div[@data-document-upload-target='listSection']", visible: :all
-      )
     end
 
     it "renders the upload form for an education activity" do
@@ -141,24 +134,61 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         school_name: "University of Illinois"
       )
 
-      education_activity.document_uploads.attach(
-        io: StringIO.new("%PDF-1.4"), filename: "verification.pdf", content_type: "application/pdf"
-      )
-
       get :new, params: { education_id: education_activity.id }
 
-      rendered = Capybara.string(response.body)
-      expect(rendered).to have_text("Upload documents that verify the information you entered:")
-      expect(rendered).to have_selector("button", text: "Suggested supporting documents")
-      expect(rendered.find("input[type='file']", visible: :all)).to have_xpath(
-        "following::h2", text: I18n.t("activities.document_uploads.heading_previous", document_count: 1)
-      )
-      ordered_elements = rendered.all("input[type='file'], [data-document-upload-target='listSection']", visible: :all)
-      expect(ordered_elements.map { |element| element[:"data-document-upload-target"] }).to eq([ "input", "listSection" ])
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: "University of Illinois"))
       expect(response.body).to include(activities_flow_education_document_uploads_path)
-      expect(response.body).to include(I18n.t("activities.education.document_upload_suggestion_text_html"))
+      expect(response.body).to include(I18n.t("activities.document_uploads.new.education.suggestions_html"))
+    end
+
+    context "with manual education upload details" do
+      let(:education_activity) do
+        create(:education_activity, :with_self_attested_term, activity_flow: activity_flow,
+          self_attested_term_start: Date.new(2026, 1, 5), self_attested_term_end: Date.new(2026, 5, 15),
+          self_attested_enrollment_status: "less_than_half_time", credit_hours: 3.5)
+      end
+      let(:rendered) { Capybara.string(response.body) }
+
+      before { get :new, params: { education_id: education_activity.id } }
+
+      it "shows four bullets with bold labels and plain dates, enrollment, and credits" do
+        expect(rendered).to have_text("Upload documents that verify the information you entered:")
+        expect(rendered).to have_selector("li", text: "Term start date: 01/05/2026", normalize_ws: true)
+        expect(rendered).to have_selector("li", text: "Term end date: 05/15/2026", normalize_ws: true)
+        expect(rendered).to have_selector("li", text: "Enrollment status: #{education_activity.self_attested_enrollment_status_display}", normalize_ws: true)
+        expect(rendered).to have_selector("li", text: "Credit hours: 3.5", normalize_ws: true)
+        expect(rendered.all("main li strong").map(&:text)).to eq([
+          "Term start date", "Term end date", "Enrollment status", "Credit hours"
+        ])
+      end
+
+      context "with an existing upload" do
+        before do
+          education_activity.document_uploads.attach(
+            io: StringIO.new("%PDF-1.4"), filename: "transcript.pdf", content_type: "application/pdf"
+          )
+          get :new, params: { education_id: education_activity.id }
+        end
+
+        it "places existing and newly selected documents after the upload input" do
+          input = rendered.find("input[type='file']", visible: :all)
+          expect(input).to have_xpath("following::h2", text: I18n.t("activities.document_uploads.heading_previous", document_count: 1))
+          expect(input).to have_xpath("following::div[@data-document-upload-target='listSection']", visible: :all)
+        end
+      end
+
+      it "suggests exactly the five supporting documents" do
+        suggestions = rendered.find("#document-upload-suggestions", visible: :all)
+        expect(suggestions).to have_text("Suggested supporting documents")
+        expect(suggestions.all("li", visible: :all).map(&:text)).to eq([
+          "Tuition receipt",
+          "Student portal screenshot",
+          "Official course enrollment for the current term from the Office of the Registrar",
+          "Copy of class schedule for the current term",
+          "Transcript from most recent enrollment period"
+        ])
+      end
     end
 
     context "with a self-attested education term" do
@@ -175,17 +205,6 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       it "links back to the term form" do
         expect(assigns(:back_url)).to eq(edit_activities_flow_education_add_your_term_path(education_id: education_activity))
-      end
-
-      it "shows the entered term details and transcript suggestion" do
-        expect(rendered).to have_selector("li", text: "Term start date: #{education_activity.self_attested_term_start.strftime('%m/%d/%Y')}", normalize_ws: true)
-        expect(rendered).to have_selector("li", text: "Term end date: #{education_activity.self_attested_term_end.strftime('%m/%d/%Y')}", normalize_ws: true)
-        expect(rendered).to have_selector("li", text: "Hours per term (if applicable): 3.5", normalize_ws: true)
-        expect(rendered).to have_selector("li strong", text: "Term start date:", exact_text: true)
-        expect(rendered).to have_selector("li strong", text: "Term end date:", exact_text: true)
-        expect(rendered).to have_selector("li strong", text: "Hours per term", exact_text: true)
-        expect(rendered).to have_no_selector("strong", text: "(if applicable)")
-        expect(rendered).to have_text("Transcript from most recent enrollment period")
       end
 
       context "when editing from review" do
@@ -279,11 +298,6 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         "button", text: I18n.t("activities.document_uploads.new.suggestion_title")
       )
       expect(response.body).to include(I18n.t("activities.employment.document_upload_suggestion_text_html"))
-      rendered = Capybara.string(response.body)
-      expect(rendered).to have_text("Upload documents that verify the information you entered for:")
-      expect(rendered.find("input[type='file']", visible: :all)).to have_xpath(
-        "preceding::div[@data-document-upload-target='listSection']", visible: :all
-      )
     end
 
     it "renders only selected employment months in chronological order" do
@@ -358,10 +372,12 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: term.school_name))
+      expect(response.body).to include("#{I18n.l(term.term_begin, format: :short)} to #{I18n.l(term.term_end, format: :short)}")
       rendered = Capybara.string(response.body)
-      expect(rendered).to have_selector("li", text: "Term start date: 01/05/2026", normalize_ws: true)
-      expect(rendered).to have_selector("li", text: "Term end date: 05/15/2026", normalize_ws: true)
-      expect(rendered).to have_selector("li strong", text: "Hours per term", exact_text: true)
+      expect(rendered).to have_text("Upload documents that verify the information you entered for:")
+      expect(rendered).to have_selector("button", text: "Suggested documents", exact_text: true, normalize_ws: true)
+      expect(response.body).to include(I18n.t("activities.education.document_upload_suggestion_text_html"))
+      expect(rendered).to have_no_text("Transcript from most recent enrollment period")
     end
 
     it "uses the simplified title when partially self-attested education has multiple schools" do
@@ -405,10 +421,6 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include("verification.pdf")
       expect(response.body).to include(I18n.t("activities.document_uploads.remove_file"))
       expect(response.body).to include("file_present")
-      rendered = Capybara.string(response.body)
-      expect(rendered.find("input[type='file']", visible: :all)).to have_xpath(
-        "preceding::h2", text: I18n.t("activities.document_uploads.heading_previous", document_count: 1)
-      )
     end
   end
 

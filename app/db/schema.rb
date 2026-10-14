@@ -195,7 +195,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.decimal "credit_hours", precision: 10, scale: 2
     t.string "data_source", default: "validated", null: false
     t.boolean "draft", default: false, null: false
-    t.string "education_type"
     t.boolean "pre_populated", default: false, null: false
     t.string "school_name"
     t.string "self_attested_enrollment_status"
