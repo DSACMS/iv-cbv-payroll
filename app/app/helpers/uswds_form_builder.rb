@@ -112,7 +112,8 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
           id: field_id(attribute),
           value: object&.send(attribute),
           input_class: input_class,
-          data: data
+          data: data,
+          required: options[:required]
         ))
     end
   end
