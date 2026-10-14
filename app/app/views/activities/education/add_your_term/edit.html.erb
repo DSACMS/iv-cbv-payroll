@@ -49,7 +49,7 @@
 
   <div data-education-term-target="creditHours" <%= "hidden" unless @education_activity.self_attested_credit_hours_applicable? %>>
     <%= f.text_field :credit_hours, type: :number, min: 0, step: "any",
-          label: t(".credit_hours"), label_class: "text-bold", hint: t(".credit_hours_hint"), optional: true,
+          label: tag.strong(t(".credit_hours")), hint: t(".credit_hours_hint"), optional: true,
           value: params.dig(:education_activity, :credit_hours) || decimal_input_value(@education_activity.credit_hours),
           disabled: !@education_activity.self_attested_credit_hours_applicable?,
           data: { education_term_target: "creditHoursField" } %>
