@@ -28,7 +28,7 @@
 <h1><%= title %></h1>
 <p><%= @activity.manual_education_upload? ? t(".education.description") : t(".description") %></p>
 <% if @activity.manual_education_upload? %>
-  <%= render "education_term_details", activity: @activity %>
+  <%= render EducationTermDetailsComponent.new(activity: @activity) %>
 <% else %>
 <ul>
   <% @activity.document_upload_verification_items.each do |item| %>

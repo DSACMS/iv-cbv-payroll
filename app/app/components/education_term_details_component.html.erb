@@ -13,6 +13,6 @@
   </li>
   <li>
     <strong><%= t("activities.document_uploads.new.education.credit_hours") %></strong>:
-    <%= activity.credit_hours.present? ? format_decimal_amount(activity.credit_hours) : t("shared.not_applicable") %>
+    <%= activity.credit_hours.present? ? helpers.format_decimal_amount(activity.credit_hours) : t("shared.not_applicable") %>
   </li>
 </ul>
