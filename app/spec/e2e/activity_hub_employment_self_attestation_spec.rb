@@ -238,14 +238,24 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     month_edit_links.first.click
 
     verify_page(page, title: updated_monthly_details_title)
+
     fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: ""
-    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: ""
+    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: "10"
     click_button I18n.t("activities.hub.save")
 
-    # Should stay on hours input with an error
-    expect(page).to have_content I18n.t("activities.employment.hours_input.error_heading")
-    expect(page).to have_content I18n.t("activities.employment.hours_input.error_body")
-    expect(page).to have_no_selector(".usa-error-message")
+    verify_page(page, title: updated_monthly_details_title)
+    # Each selected month requires income; hours are optional
+    expect(page).to have_selector(
+      'input[name="employment_activity_month[gross_income]"][required]'
+    )
+    expect(page).to have_selector(
+      ".usa-alert--error",
+      text: I18n.t("activities.employment.hours_input.error_body")
+    )
+    expect(page).to have_selector(
+      'input[name="employment_activity_month[gross_income]"].usa-input--error'
+    )
+    expect(page).to have_selector(".usa-error-message", count: 1)
 
     # Fix it — set to valid values and save
     fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: "200"
@@ -260,7 +270,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     expect(page).to have_content(I18n.t("activities.employment.add_your_work.add_jobs.job_manual", name: "Updated Employer"))
     find("label[for='additional_jobs_false']").click
     click_button I18n.t("activities.employment.add_your_work.add_jobs.submit")
-    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
+    verify_page(page, title: I18n.t("activities.activities.employment_focused_review.header"))
 
     agency = Rails.application.config.client_agencies["sandbox"]
     payload = JSON.parse(Transmitters::ActivityJsonTransmitter.new(flow.reload, agency).payload)

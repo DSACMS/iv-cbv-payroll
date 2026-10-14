@@ -108,10 +108,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
   end
 
   def add_manual_education!
-    education = create(:education_activity, education_type: "college_or_university", activity_flow: activity_flow, data_source: :fully_self_attested,
+    create(:education_activity, :with_self_attested_term, education_type: "college_or_university", activity_flow: activity_flow, credit_hours: 3.5,
       school_name: "Example Community College", contact_email: "registrar@example.org", additional_comments: nil)
-    activity_flow.reporting_months.each do |month|
-      create(:education_activity_month, education_activity: education, month: month, hours: 3.5)
-    end
   end
 end

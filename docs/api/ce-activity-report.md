@@ -161,11 +161,11 @@ Employment follows the September 4 specification's JSON examples: `has_other_job
 
 #### education
 
-Only published education activities are included. Fully self-attested education appears under each reported month. NSC term entries appear under each applicable reporting month, including eligible summer carryover. A month can contain multiple schools or terms.
+Only published education activities are included. Manual terms appear in each reporting month covered by their dates. NSC term entries appear under each applicable reporting month, including eligible summer carryover. A month can contain multiple schools or terms.
 
 | data_source | Description |
 | :-- | :-- |
-| `self_attested` | School details and monthly academic credits reported by the applicant. Uses the common self-attested fields above. |
+| `self_attested` | School details, term dates, enrollment status, and optional academic credits reported by the applicant. Uses the common self-attested fields above. |
 | `verified` | NSC-verified enrollment and term details. NSC does not provide academic credit hours, so `credit_hours` is null. |
 | `verified_enrollment_only` | Partially self-attested education: NSC enrollment and term details with applicant-reported academic credits. Retains the self-attested address and contact fields. |
 
@@ -174,10 +174,10 @@ Only published education activities are included. Fully self-attested education 
 | school_name | Yes | String. For NSC term entries, the school's name from that term; may be null when unavailable. |
 | education_type | Yes | String (enum) or null. Original applicant selection: `college_or_university` (College/University), `high_school_ged` (High School/GED), `trade_or_technical` (Work/Technical Program), or `other` (Other). Included for every education data source and preserved when NSC verification falls back to self-attestation. Null for older records without a saved selection; never inferred from data source. |
 | contact_name, contact_email, contact_phone_number | No | String or null. Included on fully and partially self-attested education. |
-| hours | Self-attested variants | Number. Monthly academic credits for `self_attested`; the term's credits for `verified_enrollment_only`, matching `credit_hours`. May be `0` or null for unknown partial credits. |
-| enrollment_status | NSC term entries | `full_time`, `three_quarter_time`, `half_time`, `less_than_half_time`, `enrolled`, or `unknown`. |
+| hours | Self-attested variants | Number. Academic credits for the term. Manual terms with no credits use `0`; unknown partial credits may be null. |
+| enrollment_status | Term entries | Manual terms use `full_time`, `half_time`, `less_than_half_time`, or `unknown`. NSC terms also support `three_quarter_time` and `enrolled`. |
 | credit_hours | No | Number or null. Academic credits for the term, reported by the applicant where needed. Fractions are preserved; unknown credits stay null. |
-| term | NSC term entries | Object with `start_month` and `end_month`, both required `YYYY-MM` strings for the original enrollment term. |
+| term | Term entries | Object with `start_month` and `end_month`, both required `YYYY-MM` strings for the original enrollment term. |
 
 Every term entry from a partially self-attested activity uses `verified_enrollment_only`, including terms with half-time or greater enrollment.
 

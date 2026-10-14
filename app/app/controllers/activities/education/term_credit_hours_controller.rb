@@ -1,4 +1,6 @@
 class Activities::Education::TermCreditHoursController < Activities::BaseController
+  include NavigationTracking
+
   before_action :redirect_if_nsc_disabled
   before_action :set_education_activity
   before_action :set_term_credit_hours_vars, only: %i[edit update]

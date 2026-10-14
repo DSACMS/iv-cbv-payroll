@@ -1,4 +1,6 @@
 class Activities::Employment::MonthSelectionsController < Activities::BaseController
+  include NavigationTracking
+
   before_action :set_employment_activity
   before_action :redirect_unless_month_selection_required
   before_action :set_reporting_months

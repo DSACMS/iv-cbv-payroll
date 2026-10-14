@@ -24,7 +24,10 @@ RSpec.describe ActivityFlowEmploymentSummary, type: :model do
         employer_address: "123 Main St",
         employment_status: "employed",
         employment_start_date: Date.new(2024, 1, 15),
-        employment_termination_date: Date.new(2024, 3, 15)
+        employment_termination_date: Date.new(2024, 3, 15),
+        pay_frequency: "biweekly",
+        compensation_amount: 25_00,
+        compensation_unit: "hourly"
       )
 
       summary.redact!
@@ -37,6 +40,9 @@ RSpec.describe ActivityFlowEmploymentSummary, type: :model do
         employment_status: "REDACTED",
         employment_start_date: Date.new(1990, 1, 1),
         employment_termination_date: Date.new(1990, 1, 1),
+        pay_frequency: "REDACTED",
+        compensation_amount: nil,
+        compensation_unit: "REDACTED",
         redacted_at: be_present
       )
     end
@@ -50,15 +56,22 @@ RSpec.describe ActivityFlowEmploymentSummary, type: :model do
     before do
       allow(report).to receive(:has_fetched?).and_return(true)
       allow(report).to receive(:find_account_report).with("acct-1").and_return(
-        double(employment: instance_double(Aggregators::ResponseObjects::Employment,
-          employer_name: "Acme Employer",
-          employment_type: :w2,
-          employer_phone_number: "6045551234",
-          employer_address: "123 Main St",
-          status: "employed",
-          start_date: Date.new(2024, 1, 15),
-          termination_date: nil
-        ))
+        double(
+          employment: instance_double(Aggregators::ResponseObjects::Employment,
+            employer_name: "Acme Employer",
+            employment_type: :w2,
+            employer_phone_number: "6045551234",
+            employer_address: "123 Main St",
+            status: "employed",
+            start_date: Date.new(2024, 1, 15),
+            termination_date: nil
+          ),
+          income: instance_double(Aggregators::ResponseObjects::Income,
+            pay_frequency: "biweekly",
+            compensation_amount: 25_00,
+            compensation_unit: "hourly"
+          )
+        )
       )
     end
 
@@ -73,7 +86,10 @@ RSpec.describe ActivityFlowEmploymentSummary, type: :model do
         employer_address: "123 Main St",
         employment_status: "employed",
         employment_start_date: Date.new(2024, 1, 15),
-        employment_termination_date: nil
+        employment_termination_date: nil,
+        pay_frequency: "biweekly",
+        compensation_amount: 25_00,
+        compensation_unit: "hourly"
       )
     end
 
@@ -153,15 +169,22 @@ RSpec.describe ActivityFlowEmploymentSummary, type: :model do
           }
         )
         allow(mock_report).to receive(:find_account_report).with("acct-1").and_return(
-          double(employment: instance_double(Aggregators::ResponseObjects::Employment,
-            employer_name: "Fetched Employer",
-            employment_type: :w2,
-            employer_phone_number: "6045551234",
-            employer_address: "123 Main St",
-            status: "employed",
-            start_date: Date.new(2024, 1, 15),
-            termination_date: nil
-          ))
+          double(
+            employment: instance_double(Aggregators::ResponseObjects::Employment,
+              employer_name: "Fetched Employer",
+              employment_type: :w2,
+              employer_phone_number: "6045551234",
+              employer_address: "123 Main St",
+              status: "employed",
+              start_date: Date.new(2024, 1, 15),
+              termination_date: nil
+            ),
+            income: instance_double(Aggregators::ResponseObjects::Income,
+              pay_frequency: "weekly",
+              compensation_amount: 18_00,
+              compensation_unit: "hourly"
+            )
+          )
         )
         allow(AggregatorReportFetcher).to receive(:new).with(flow).and_return(double(report: mock_report))
       end
@@ -172,7 +195,10 @@ RSpec.describe ActivityFlowEmploymentSummary, type: :model do
         expect(result["acct-1"]).to include(
           employer_name: "Fetched Employer",
           employer_phone_number: "6045551234",
-          employment_start_date: Date.new(2024, 1, 15)
+          employment_start_date: Date.new(2024, 1, 15),
+          pay_frequency: "weekly",
+          compensation_amount: 18_00,
+          compensation_unit: "hourly"
         )
         expect(flow.activity_flow_employment_summaries.where(payroll_account: payroll_account).count).to eq(1)
       end

@@ -3,6 +3,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
   before_action :ensure_months_selected, only: %i[edit update]
 
   include MonthlyHoursInput
+  include NavigationTracking
 
   before_action :set_back_url, only: %i[edit update]
   after_action :track_month_viewed_event, only: :edit
@@ -21,6 +22,13 @@ class Activities::Employment::MonthsController < Activities::BaseController
     )
   end
 
+  def failed_fields
+    return %w[hours] if @employment_activity.unpaid_or_in_kind?
+
+    fields = @activity_month.errors.attribute_names.map(&:to_s) & %w[gross_income hours]
+    fields.presence || %w[gross_income]
+  end
+
   def track_month_submission_event
     return unless @activity_month.present?
 
@@ -31,7 +39,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
       month: I18n.l(@current_month, format: :month_year)
     }
     if @error
-      attributes[:error_fields] = @employment_activity.unpaid_or_in_kind? ? %w[hours] : %w[gross_income hours]
+      attributes[:error_fields] = failed_fields
     end
     track_event(event, attributes)
   end
@@ -62,9 +70,8 @@ class Activities::Employment::MonthsController < Activities::BaseController
       return
     end
 
-    default_value = month_params.values.all?(&:blank?) ? nil : 0
-    @activity_month.hours = month_params[:hours].presence || default_value
-    @activity_month.gross_income = month_params[:gross_income].presence || default_value
+    @activity_month.hours = month_params[:hours].presence || 0
+    @activity_month.gross_income = month_params[:gross_income].presence
   end
 
   def hours_submission_params
@@ -140,7 +147,9 @@ class Activities::Employment::MonthsController < Activities::BaseController
       return (@activity_month.hours || 0).positive?
     end
 
-    income = @activity_month.gross_income || 0
+    return false unless @activity_month.valid?
+
+    income = @activity_month.gross_income
     hours = @activity_month.hours || 0
     income >= 0 && hours >= 0 && (income.positive? || hours.positive?)
   end
