@@ -52,6 +52,7 @@ RUN apt-get update -qq && \
       curl \
       gir1.2-glib-2.0 \
       gir1.2-glib-2.0-dev \
+      gir1.2-rsvg-2.0 \
       girepository-tools \
       gzip \
       krb5-multidev \
@@ -109,6 +110,9 @@ RUN apt-get update -qq && \
       libpcre2-posix3 \
       libperl5.40 \
       libraw23t64 \
+      librsvg2-2 \
+      librsvg2-common \
+      librsvg2-dev \
       libsmartcols1 \
       libsqlite3-0 \
       libsqlite3-dev \
@@ -244,6 +248,7 @@ ENV GNUPGHOME="/rails/tmp"
 ENV PIDFILE="/rails/tmp/pids/server.pid"
 
 # Install packages needed for deployment
+# Keep libvips unpinned so this stage preserves security updates from BASE.
 #
 # To debug a missing package version (i.e. if one of these versions gets
 # superceded in the upstream package repo), run:
@@ -256,7 +261,7 @@ ENV PIDFILE="/rails/tmp/pids/server.pid"
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
         libgpgme11t64=1.24.2-3 \
-        libvips42t64=8.16.1-1+deb13u1 \
+        libvips42t64 \
         postgresql-client-17 \
         python-is-python3=3.13.3-1 \
         python3-venv=3.13.5-1 \
