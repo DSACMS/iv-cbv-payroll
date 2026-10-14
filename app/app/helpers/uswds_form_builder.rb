@@ -84,9 +84,10 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     append_to_option(html_options, :class, " usa-select")
 
     label_text = options.delete(:label)
+    show_error_message = options.delete(:show_error_message) { true }
 
     form_group(attribute) do
-      us_text_field_label(attribute, label_text, options) + super(attribute, choices, options, html_options)
+      us_text_field_label(attribute, label_text, options, show_error_message: show_error_message) + super(attribute, choices, options, html_options)
     end
   end
 
@@ -357,7 +358,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   # Render the label, hint text, and error message for a form field
-  def us_text_field_label(attribute, text = nil, options = {})
+  def us_text_field_label(attribute, text = nil, options = {}, show_error_message: true)
     hint_option = options.delete(:hint)
     classes = "usa-label"
     for_attr = options[:for] || field_id(attribute)

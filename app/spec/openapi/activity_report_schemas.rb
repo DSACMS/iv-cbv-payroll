@@ -116,11 +116,12 @@ module ActivityReportSchemas
           }
         }
       },
-      CeSelfAttestedEducationActivity: activity(%w[school_name hours], self_attested.merge(contact).merge(
+      CeSelfAttestedEducationActivity: activity(%w[school_name hours enrollment_status term], self_attested.merge(contact).merge(education_term).merge(
         type: { type: :string, enum: %w[education] },
         data_source: { type: :string, enum: %w[self_attested] },
         school_name: { type: :string },
-        hours: { type: :number, minimum: 0, description: "Academic credit hours reported for this month; may be zero." }
+        hours: { type: :number, minimum: 0, description: "Academic credit hours for the term; zero when optional credits are not supplied." },
+        enrollment_status: { type: :string, enum: EducationActivity::SELF_ATTESTED_ENROLLMENT_STATUSES, description: "Self-attested enrollment status." }
       )),
       CeVerifiedEducationActivity: activity(%w[school_name enrollment_status term], education_term.merge(
         data_source: { type: :string, enum: %w[verified], description: "NSC-verified enrollment." }

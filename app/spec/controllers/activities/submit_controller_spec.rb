@@ -61,6 +61,37 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(response.headers["Expires"]).to eq("#{1.year.ago}")
     end
 
+    context "with a manual education term" do
+      let(:education) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested,
+          school_name: "Manual University", self_attested_term_start: activity_flow.reporting_months.first,
+          self_attested_term_end: activity_flow.reporting_months.last,
+          self_attested_enrollment_status: "less_than_half_time", credit_hours: 3.5)
+      end
+
+      before { education }
+
+      it "renders the term, enrollment status, and fractional credits in the PDF" do
+        get :show, format: :pdf
+
+        pdf_text = extract_pdf_text(response)
+        expect(response).to have_http_status(:ok)
+        expect(pdf_text).to include(education.self_attested_term_date_display)
+        expect(pdf_text).to include(I18n.t("activities.education.add_your_term.edit.enrollment_status_options.less_than_half_time"))
+        expect(pdf_text).to include(ApplicationHelper.format_decimal_amount(education.credit_hours).to_s)
+      end
+
+      context "with full-time enrollment" do
+        before { education.update!(self_attested_enrollment_status: "full_time", credit_hours: nil) }
+
+        it "renders enrollment when credits are not applicable" do
+          get :show, format: :pdf
+
+          expect(extract_pdf_text(response)).to include(I18n.t("activities.education.add_your_term.edit.enrollment_status_options.full_time"))
+        end
+      end
+    end
+
     it "renders the submitted activity summaries and details from the approved design" do
       activity_flow.update!(completed_at: frozen_time, confirmation_code: test_confirmation_code)
       employment = create(
@@ -73,12 +104,12 @@ RSpec.describe Activities::SubmitController, type: :controller do
       create(:employment_activity_month, employment_activity: employment, month: activity_flow.reporting_months.first, hours: 12, gross_income: 240)
       education = create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: activity_flow,
-        data_source: :fully_self_attested,
         school_name: "Bayou College",
-        contact_title: "Registrar"
+        contact_title: "Registrar",
+        credit_hours: 3
       )
-      create(:education_activity_month, education_activity: education, month: activity_flow.reporting_months.first, hours: 3)
       volunteering = create(
         :volunteering_activity,
         activity_flow: activity_flow,

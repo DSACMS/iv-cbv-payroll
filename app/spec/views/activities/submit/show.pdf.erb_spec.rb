@@ -1,0 +1,39 @@
+require "rails_helper"
+
+RSpec.describe "activities/submit/show.pdf.erb", type: :view do
+  let(:flow) do
+    create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
+      education_activities_count: 0, employment_activities_count: 0, reporting_window_months: 3)
+  end
+  let(:enrollment_status) { "less_than_half_time" }
+  let(:credit_hours) { 3.5 }
+  let(:education_activity) do
+    create(:education_activity, activity_flow: flow, data_source: :fully_self_attested, school_name: "Test University",
+      self_attested_term_start: flow.reporting_months.first, self_attested_term_end: flow.reporting_months.last,
+      self_attested_enrollment_status: enrollment_status, credit_hours: credit_hours)
+  end
+  let(:document) { Capybara.string(rendered) }
+
+  before do
+    education_activity
+    assign(:report, ActivityPdfReport.new(flow: flow, caseworker: false))
+    render
+  end
+
+  it "renders the manual term and fractional credits" do
+    expect(document).to have_text(education_activity.self_attested_term_date_display)
+    expect(document).to have_text(I18n.t("activities.education.add_your_term.edit.enrollment_status_options.less_than_half_time"))
+    expect(document).to have_text(ApplicationHelper.format_decimal_amount(credit_hours))
+    expect(document).to have_text(ApplicationHelper.format_decimal_amount(education_activity.community_engagement_hours(credit_hours)))
+  end
+
+  context "with full-time enrollment" do
+    let(:enrollment_status) { "full_time" }
+    let(:credit_hours) { nil }
+
+    it "renders the enrollment status and term" do
+      expect(document).to have_text(I18n.t("activities.education.add_your_term.edit.enrollment_status_options.full_time"))
+      expect(document).to have_text(education_activity.self_attested_term_date_display)
+    end
+  end
+end

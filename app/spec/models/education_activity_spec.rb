@@ -24,11 +24,76 @@ RSpec.describe EducationActivity do
     end
   end
 
+  describe "credit hours when adding a term" do
+    let(:enrollment_status) { "less_than_half_time" }
+    let(:credit_hours) { 3.5 }
+    let(:validation_context) { :add_your_term }
+    let(:activity) do
+      build(:education_activity, data_source: :fully_self_attested, school_name: "Test U",
+        self_attested_term_start: Date.new(2026, 6, 1), self_attested_term_end: Date.new(2026, 8, 1),
+        self_attested_enrollment_status: enrollment_status, credit_hours: credit_hours)
+    end
+
+    before { activity.save!(context: validation_context) }
+
+    it "keeps fractional credits for less-than-half-time enrollment" do
+      expect(activity.reload.credit_hours).to eq(credit_hours)
+    end
+
+    context "with full-time enrollment" do
+      let(:enrollment_status) { "full_time" }
+
+      it "saves enrollment without credits" do
+        expect(activity.reload.credit_hours).to be_nil
+      end
+    end
+
+    context "with half-time enrollment" do
+      let(:enrollment_status) { "half_time" }
+
+      it "saves enrollment without credits" do
+        expect(activity.reload.credit_hours).to be_nil
+      end
+    end
+
+    context "outside term validation" do
+      let(:enrollment_status) { "full_time" }
+      let(:validation_context) { nil }
+
+      it "preserves the existing credits" do
+        expect(activity.reload.credit_hours).to eq(credit_hours)
+      end
+    end
+  end
+
   describe "#document_upload_suggestion_text" do
     it "returns the education suggestion translation key" do
       activity = build(:education_activity, school_name: "University of Illinois")
 
       expect(activity.document_upload_suggestion_text).to eq("activities.education.document_upload_suggestion_text_html")
+    end
+  end
+
+  describe "#self_attested_term_date_display" do
+    let(:activity) do
+      build(:education_activity, data_source: :fully_self_attested, school_name: "Test U",
+        self_attested_term_start: Date.new(2026, 6, 1), self_attested_term_end: Date.new(2026, 8, 1))
+    end
+
+    it "formats dates within one year" do
+      expect(activity.self_attested_term_date_display).to eq("Jun - Aug 2026")
+    end
+
+    it "includes both years when the term spans years" do
+      activity.self_attested_term_start = Date.new(2025, 12, 1)
+
+      expect(activity.self_attested_term_date_display).to eq("Dec 2025 - Aug 2026")
+    end
+
+    it "returns nil for an incomplete draft term" do
+      activity.self_attested_term_end = nil
+
+      expect(activity.self_attested_term_date_display).to be_nil
     end
   end
 
@@ -165,25 +230,6 @@ RSpec.describe EducationActivity do
       activity = build(:education_activity, street_address: nil, street_address_line_2: nil, city: nil, state: nil, zip_code: nil)
 
       expect(activity.formatted_address).to be_nil
-    end
-  end
-
-  describe "#document_upload_months_to_verify" do
-    it "returns months from education_activity_months when present" do
-      activity_flow = create(:activity_flow, reporting_window_months: 2, education_activities_count: 0)
-      activity = create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "Test U")
-      first_month = activity.activity_flow.reporting_months.first.beginning_of_month
-      second_month = activity.activity_flow.reporting_months.second.beginning_of_month
-      create(:education_activity_month, education_activity: activity, month: first_month, hours: 6)
-      create(:education_activity_month, education_activity: activity, month: second_month, hours: 12)
-
-      expect(activity.document_upload_months_to_verify).to eq([ first_month, second_month ])
-    end
-
-    it "returns an empty list when no education_activity_months exist" do
-      activity = create(:education_activity)
-
-      expect(activity.document_upload_months_to_verify).to eq([])
     end
   end
 
@@ -374,32 +420,28 @@ RSpec.describe EducationActivity do
     end
 
     context "when fully self-attested" do
-      let(:monthly_credit_hours) { 4 }
+      let(:credit_hours) { 4 }
 
       let(:education_activity) do
         create(
           :education_activity,
+          :with_self_attested_term,
           activity_flow: flow,
-          data_source: :fully_self_attested,
-          school_name: "Test U",
-          status: "unknown"
+          credit_hours: credit_hours
         )
       end
 
       it "returns credit hours multiplied by the CE conversion value for the month" do
-        create(
-          :education_activity_month,
-          education_activity: education_activity,
-          month: month_start.beginning_of_month,
-          hours: monthly_credit_hours
-        )
-
-        expected_hours = monthly_credit_hours * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER
+        expected_hours = credit_hours * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER
         expect(education_activity.progress_hours_for_month(month_start)).to eq(expected_hours)
       end
 
-      it "returns 0 when no monthly credit hours are present" do
-        expect(education_activity.progress_hours_for_month(month_start)).to eq(0)
+      context "without credits" do
+        let(:credit_hours) { nil }
+
+        it "returns 0 hours" do
+          expect(education_activity.progress_hours_for_month(month_start)).to eq(0)
+        end
       end
     end
 
