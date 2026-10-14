@@ -163,7 +163,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.7)
-    css_parser (3.1.0)
+    css_parser (3.3.0)
       addressable
       base64
       ssrf_filter (~> 1.5)
@@ -662,7 +662,7 @@ DEPENDENCIES
   capybara
   cgi (>= 0.4.2)
   climate_control (~> 1.0)
-  css_parser (~> 3.1.0)
+  css_parser (~> 3.3.0)
   cssbundling-rails
   csv
   datadog (~> 2.43)
