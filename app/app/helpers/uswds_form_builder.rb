@@ -351,6 +351,10 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
       text += @template.content_tag(:span, " (#{I18n.t('us_form_with.optional').downcase})", class: "usa-hint")
     end
 
+    if options[:required]
+      text += @template.content_tag(:span, " #{I18n.t('us_form_with.required')}")
+    end
+
     if hint_option
       if hint_option.is_a?(Proc)
         hint_content = @template.capture(&hint_option)

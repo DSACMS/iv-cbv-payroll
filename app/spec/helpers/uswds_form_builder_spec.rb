@@ -82,6 +82,15 @@ RSpec.describe UswdsFormBuilder do
       end
     end
 
+    context 'with required set to true' do
+      let(:result) { builder.text_field(:first_name, label: 'Name', required: true) }
+
+      it 'identifies the field as required in its label' do
+        expect(result).to have_element(:label, text: 'Name (required)')
+        expect(result).to have_element(:input, required: 'required')
+      end
+    end
+
     context 'with custom class' do
       let(:result) { builder.text_field(:first_name, class: 'custom-class') }
 
