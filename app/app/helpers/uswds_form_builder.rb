@@ -353,7 +353,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     end
 
     if options[:required]
-      text += @template.content_tag(:span, " *", class: "usa-hint--required", "aria-hidden": true)
+      text += @template.content_tag(:span, "*", class: "usa-hint--required", "aria-hidden": true)
     end
 
     if hint_option

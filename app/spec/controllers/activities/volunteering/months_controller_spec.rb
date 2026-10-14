@@ -25,7 +25,7 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
       rendered = Capybara.string(response.body)
       expect(rendered).to have_selector(
         "label[for='volunteering_activity_month_hours']",
-        text: "#{label} *",
+        text: "#{label}*",
         exact_text: true
       )
       expect(rendered).to have_selector("input[name='volunteering_activity_month[hours]'][required]")
@@ -46,7 +46,8 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
         expect(rendered).to have_selector(
           "#hours-requirement.usa-sr-only",
           text: I18n.t("activities.community_service.hours_input.error_body_multi_month"),
-          exact_text: true
+          exact_text: true,
+          normalize_ws: true
         )
         expect(rendered).to have_selector(
           "input[name='volunteering_activity_month[hours]']" \
