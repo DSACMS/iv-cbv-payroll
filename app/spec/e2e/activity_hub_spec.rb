@@ -296,9 +296,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.education.new.title"))
     fill_in I18n.t("activities.education.new.school_name"), with: "Example College"
     click_button I18n.t("activities.education.new.continue")
-    flow = ActivityFlow.last
-    verify_page(page, title: I18n.t("activities.education.hours_input.heading",
-      month: I18n.l(flow.reporting_months.first, format: :month_year), organization: "Example College"))
+    verify_page(page, title: I18n.t("activities.education.add_your_term.edit.title", school_name: "Example College"))
     expect(EducationActivity.last.data_source).to eq("fully_self_attested")
     expect(EducationActivity.last.education_type).to eq("college_or_university")
 
