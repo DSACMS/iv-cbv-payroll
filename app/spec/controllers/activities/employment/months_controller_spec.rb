@@ -583,7 +583,8 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         )
         expect(input["aria-invalid"]).to eq("true")
         expect(input["aria-describedby"]).to include(
-          "employment_activity_month_gross_income_error"
+          "employment_activity_month_gross_income_error",
+          "gross_income_hint"
         )
         expect(rendered).to have_css(
           "#employment_activity_month_gross_income_error" \

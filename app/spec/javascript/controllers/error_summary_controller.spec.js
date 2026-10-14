@@ -10,7 +10,7 @@ describe("ErrorSummaryController", () => {
   const mount = async (html) => {
     document.body.innerHTML = html
 
-    document.querySelectorAll("input").forEach((input) => {
+    document.querySelectorAll("input, select, textarea").forEach((input) => {
       vi.spyOn(input, "getClientRects").mockReturnValue([{}])
     })
 
@@ -230,6 +230,57 @@ describe("ErrorSummaryController", () => {
         "Error summary: no visible, enabled field is associated with the inline errors",
         document.getElementById("work-form")
       )
+    })
+  })
+
+  describe("with an invalid memorable date and no banner", () => {
+    beforeEach(async () => {
+      await mount(`
+        <form id="applicant-form" data-controller="error-summary">
+          <fieldset aria-describedby="applicant_date_of_birth_error">
+            <legend id="applicant_date_of_birth_legend">Date of birth</legend>
+
+            <span id="applicant_date_of_birth_error"
+                  class="usa-error-message">
+                  data-error-label-id="applicant_date_of_birth_legend">
+              is invalid
+            </span>
+
+            <label for="birth-month">Month</label>
+            <select id="birth-month"
+                    aria-invalid="true"
+                    aria-describedby="applicant_date_of_birth_error">
+              <option value="">Select</option>
+            </select>
+
+            <label for="birth-day">Day</label>
+            <input id="birth-day" type="number"
+                   aria-invalid="true"
+                   aria-describedby="applicant_date_of_birth_error">
+
+            <label for="birth-year">Year</label>
+            <input id="birth-year" type="number"
+                   aria-invalid="true"
+                   aria-describedby="applicant_date_of_birth_error">
+          </fieldset>
+        </form>  
+      `)
+    })
+
+    it("focuses the month select without logging an association error", () => {
+      runFrames()
+
+      expect(document.activeElement).toBe(document.getElementById("birth-month"))
+      expect(consoleError).not.toHaveBeenCalled()
+    })
+
+    it("focuses the day input when the month select is disabled", () => {
+      document.getElementById("birth-month").disabled = true
+
+      runFrames()
+
+      expect(document.activeElement).toBe(document.getElementById("birth-day"))
+      expect(consoleError).not.toHaveBeenCalled()
     })
   })
 

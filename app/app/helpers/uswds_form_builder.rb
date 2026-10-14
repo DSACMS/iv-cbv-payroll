@@ -118,6 +118,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
     description_ids = []
     description_ids << "#{field_id(attribute)}_error" if has_error?(attribute)
+    description_ids << hint_id(attribute) if options[:hint]
 
     form_group(attribute) do
       us_text_field_label(attribute, label_text, options.merge(label_options)) +
@@ -386,6 +387,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     end
 
     label_id = "#{field_id(attribute)}_label"
+    error = show_error_message ? field_error(attribute, label_id: label_id) : nil
 
     label(
       attribute,
@@ -393,7 +395,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
       class: classes,
       for: for_attr,
       id: label_id
-    ) + field_error(attribute, label_id: label_id) + hint
+    ) + error.to_s + hint.to_s
   end
 
   # Label for a checkbox or radio
