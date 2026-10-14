@@ -49,7 +49,7 @@ RSpec.describe UswdsFormBuilder do
       end
 
       it 'adds aria-describedby to the input' do
-        expect(result).to have_element(:input, aria_describedby: 'first_name_hint')
+        expect(result).to have_css('input[aria-describedby="first_name_hint"]')
       end
     end
 
@@ -95,6 +95,44 @@ RSpec.describe UswdsFormBuilder do
 
       it 'adds the class to the label' do
         expect(result).to have_element(:label, class: 'usa-label custom-label-class')
+      end
+    end
+
+    context 'with an error and a custom input ID' do
+      let(:result) do
+        builder.text_field(
+          :first_name,
+          id: 'custom-name',
+          label: 'Name',
+          aria: { describedby: 'existing-description' }
+        )
+      end
+
+      before do
+        object.errors.add(:first_name, 'is invalid')
+      end
+
+      it 'keeps the label associated with the custom input' do
+        expect(result).to have_css(
+          'label#object_first_name_label[for="custom-name"]',
+          text: 'Name'
+        )
+      end
+
+      it 'preserves existing descriptions and includes the error' do
+        input = Capybara.string(result).find('#custom-name')
+
+        expect(input['aria-invalid']).to eq('true')
+        expect(input['aria-describedby'].split).to contain_exactly(
+          'existing-description',
+          'object_first_name_error'
+        )
+      end
+
+      it 'connects the error to the rendered label' do
+        expect(result).to have_css(
+          '#object_first_name_error[data-error-label-id="object_first_name_label"]'
+        )
       end
     end
   end
@@ -406,6 +444,60 @@ RSpec.describe UswdsFormBuilder do
         expect(result).to have_element(:button, class: 'usa-button usa-button--big')
         expect(result).to have_element(:svg, class: 'usa-icon')
         expect(result).to have_element(:use, href: /.svg#save_alt/)
+      end
+    end
+  end
+
+  describe '#field_error' do
+    let(:result) do
+      builder.field_error(:first_name, label_id: 'object_first_name_label')
+    end
+
+    it 'returns nothing when the field has no errors' do
+      expect(result).to be_nil
+    end
+
+    context 'with errors' do
+      before do
+        object.errors.add(:first_name, 'is invalid')
+      end
+
+      it 'identifies the error and its field label' do
+        expect(result).to have_css(
+          '#object_first_name_error.usa-error-message' \
+          '[data-error-label-id="object_first_name_label"]',
+          text: 'is invalid'
+        )
+      end
+
+      it 'does not create a competing live region or focus target' do
+        expect(result).to have_no_css('[role="alert"]')
+        expect(result).to have_no_css('[aria-live]')
+        expect(result).to have_no_css('[tabindex]')
+      end
+
+      context 'with multiple errors' do
+        before do
+          object.errors.add(:first_name, 'is required')
+        end
+
+        it 'includes both messages in one error element' do
+          expect(result).to have_css('.usa-error-message', count: 1)
+          expect(result).to have_text('is invalid')
+          expect(result).to have_text('is required')
+          expect(result).to have_css('br', count: 1)
+        end
+      end
+
+      context 'with HTML in an error message' do
+        before do
+          object.errors.add(:first_name, '<strong>invalid value</strong>')
+        end
+
+        it 'escapes the message' do
+          expect(result).to have_no_css('strong')
+          expect(result).to have_text('<strong>invalid value</strong>')
+        end
       end
     end
   end

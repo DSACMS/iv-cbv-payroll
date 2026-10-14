@@ -16,6 +16,7 @@ import SelfEmployedController from "./self_employed_controller.js"
 import ActivityFlowHeaderController from "./activity_flow_header_controller.js"
 import ProgressIndicatorUnitsController from "./progress_indicator_units_controller.js"
 import DocumentUploadController from "./document_upload_controller.js"
+import ErrorSummaryController from "./error_summary_controller.js" 
 
 application.register("cbv-employer-search", CbvEmployerSearch)
 application.register("polling", PollingController)
@@ -33,6 +34,7 @@ application.register("self-employed", SelfEmployedController)
 application.register("activity-flow-header", ActivityFlowHeaderController)
 application.register("progress-indicator-units", ProgressIndicatorUnitsController)
 application.register("document-upload", DocumentUploadController)
+application.register("error-summary", ErrorSummaryController)
 
 Turbo.StreamActions.redirect = function () {
   Turbo.visit(this.target)

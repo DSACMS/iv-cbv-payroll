@@ -51,7 +51,12 @@
 <% end %>
 
 <% if error %>
-  <%= render Uswds::Alert.new(type: :error, heading: t("#{t_scope}.error_heading"), class: "margin-bottom-4") do %>
+  <%= render Uswds::Alert.new(
+    type: :error, 
+    heading: t("#{t_scope}.error_heading"),
+    form_id: "hours_input_form",
+    class: "margin-bottom-4"
+  ) do %>
     <% if months.length > 1 %>
       <%= t("#{t_scope}.error_body_multi_month") %>
     <% else %>
@@ -61,6 +66,7 @@
 <% end %>
 
 <%= uswds_form_with(model: activity_month,
+      id: "hours_input_form",
       url: form_url,
       method: :patch) do |f| %>
 

@@ -112,8 +112,16 @@ module ApplicationHelper
 
   def uswds_form_with(model: false, scope: nil, url: nil, format: nil, **options, &block)
     options[:builder] = UswdsFormBuilder
-    options[:data] ||= {}
-    options[:data][:turbo_frame] = "_top"
+
+    data = (options[:data] || {}).dup
+    controllers = [
+      data.delete(:controller),
+      data.delete("controller")
+    ].compact.flat_map { |value| value.to_s.split }
+
+    data[:controller] = (controllers + [ "error-summary" ]).uniq.join(" ")
+    data[:turbo_frame] = "_top"
+    options[:data] = data
 
     turbo_frame_tag(model, target: "_top") do
       form_with(model: model, scope: scope, url: url, format: format, **options, &block)
