@@ -146,6 +146,7 @@ ignore_missing:
     - "activerecord.errors.models.job_training_activity.*"
     - "activerecord.errors.models.education_activity.*"
     - "activerecord.errors.models.volunteering_activity.*"
+    - "activerecord.errors.models.activity_flow_invitation.*"
     - "components.enrollment_term_table_component.*"
     - "components.report.monthly_summary_table.activity.*"
     - "shared.table_headers.*"
@@ -161,8 +162,6 @@ ignore_missing:
     - "api.v2.fields.*" # FFS-4797
     - "cbv.employer_searches.employer.select_employer"
     - "cbv.employer_searches.show.select_employer"
-    - "activerecord.errors.models.activity_flow_invitation.*" # FFS-4853
-    - "activities.entries.employment_focused.*" # FFS-4859
 
 ## Consider these keys used:
 ignore_unused:

@@ -1,4 +1,13 @@
 module ActivitiesHelper
+  def activity_reporting_name(flow)
+    return unless flow.is_a?(ActivityFlow) && flow.activity_flow_invitation.present?
+
+    applicant = flow.cbv_applicant
+    return unless applicant.first_name.present? && applicant.last_name.present?
+
+    [ applicant.first_name.strip, applicant.last_name.strip ].join(" ")
+  end
+
   # i18n-tasks-use t('activities.document_uploads.new.errors.empty')
   # i18n-tasks-use t('activities.document_uploads.new.errors.too_large')
   # i18n-tasks-use t('activities.document_uploads.new.errors.unsupported_type')
@@ -152,19 +161,9 @@ module ActivitiesHelper
 
   def education_activity_draft_cards(activities)
     activities.map do |activity|
-      months = activity.education_activity_months.sort_by(&:month).filter_map do |activity_month|
-        credit_hours = activity_month.hours.to_i
-        next unless credit_hours.positive?
-
-        {
-          month: activity_month.month,
-          credit_hours: credit_hours,
-          community_engagement_hours: activity.community_engagement_hours(credit_hours)
-        }
-      end
       {
         name: activity.school_name,
-        months: months,
+        months: [],
         edit_path: edit_activities_flow_education_path(id: activity.id),
         pre_populated: true
       }

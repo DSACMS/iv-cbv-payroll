@@ -1,23 +1,26 @@
-<% content_for :title, t(".header") %>
+<% heading = @flow.employment_focused? ? t(".employment_focused.header") : t(".header") %>
+<% content_for :title, heading %>
 
-<% content_for :activity_flow_header do %>
-  <%= render ActivityFlowHeaderComponent.new(
-    title: t("activities.employment.title_singular"),
-    exit_url: activities_flow_root_path
-  ) %>
+<% unless @flow.employment_focused? %>
+  <% content_for :activity_flow_header do %>
+    <%= render ActivityFlowHeaderComponent.new(
+      title: t("activities.employment.title_singular")
+    ) %>
+  <% end %>
 <% end %>
 
-<h1><%= t(".header") %></h1>
+<h1><%= heading %></h1>
 <p>
   <strong><%= t("activities.hub.empty_state_reporting_period_label") %></strong>
   <%= @flow.reporting_window_display %>
 </p>
-<p><%= t(".description") %></p>
+<p><%= @flow.employment_focused? ? t(".employment_focused.description") : t(".description") %></p>
 
 <%= form_with(url: activities_flow_income_add_your_work_path, class: "maxw-none", builder: UswdsFormBuilder, id: "add_your_work_form") do |f| %>
   <%= f.radio_button(:add_work_method, "connect_automatically", { label: tag.span(t(".options.automatic.label"), class: "text-bold"), hint: t(".options.automatic.hint") }) %>
   <%= f.radio_button(:add_work_method, "enter_paid_manually", { label: tag.span(t(".options.paid.label"), class: "text-bold"), hint: t(".options.paid.hint") }) %>
-  <%= f.radio_button(:add_work_method, "enter_unpaid_manually", { label: tag.span(t(".options.unpaid.label"), class: "text-bold"), hint: t(".options.unpaid.hint") }) %>
+  <% unpaid_label = @flow.employment_focused? ? t(".employment_focused.options.unpaid.label") : t(".options.unpaid.label") %>
+  <%= f.radio_button(:add_work_method, "enter_unpaid_manually", { label: tag.span(unpaid_label, class: "text-bold"), hint: t(".options.unpaid.hint") }) %>
 
   <%= f.submit t("continue") %>
 <% end %>

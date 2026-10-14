@@ -44,6 +44,8 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       )
     end
 
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :new, params: { employment_id: create(:employment_activity, activity_flow: activity_flow).id } }
+
     it "renders the upload form for a volunteering activity" do
       volunteering_activity = create(
         :volunteering_activity,
@@ -134,11 +136,10 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
     it "renders the upload form for an education activity" do
       education_activity = create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: activity_flow,
-        data_source: :fully_self_attested,
         school_name: "University of Illinois"
       )
-      create(:education_activity_month, education_activity: education_activity, hours: 15)
 
       education_activity.document_uploads.attach(
         io: StringIO.new("%PDF-1.4"), filename: "verification.pdf", content_type: "application/pdf"
@@ -156,9 +157,75 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(ordered_elements.map { |element| element[:"data-document-upload-target"] }).to eq([ "input", "listSection" ])
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: "University of Illinois"))
-      expect(response.body).to include(I18n.t("shared.credit_hours", count: 15))
       expect(response.body).to include(activities_flow_education_document_uploads_path)
       expect(response.body).to include(I18n.t("activities.education.document_upload_suggestion_text_html"))
+    end
+
+    context "with a self-attested education term" do
+      let(:education_activity) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested,
+          school_name: "Test University", self_attested_term_start: activity_flow.reporting_months.first - 1.month,
+          self_attested_term_end: activity_flow.reporting_months.last,
+          self_attested_enrollment_status: "less_than_half_time", credit_hours: 3.5)
+      end
+      let(:navigation_params) { {} }
+      let(:rendered) { Capybara.string(response.body) }
+
+      before { get :new, params: { education_id: education_activity.id }.merge(navigation_params) }
+
+      it "links back to the term form" do
+        expect(assigns(:back_url)).to eq(edit_activities_flow_education_add_your_term_path(education_id: education_activity))
+      end
+
+      context "when editing from review" do
+        let(:navigation_params) { { from_review: 1, from_edit: 1 } }
+
+        it "preserves review and hub navigation in the back link" do
+          expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"),
+            href: edit_activities_flow_education_add_your_term_path(education_id: education_activity, from_review: 1, from_edit: 1))
+        end
+
+        it "preserves review and hub navigation when saving uploads" do
+          expect(rendered).to have_button(I18n.t("activities.hub.save"))
+          expect(rendered).to have_selector("form[action='#{activities_flow_education_document_uploads_path(education_id: education_activity, from_review: 1, from_edit: 1)}']")
+        end
+      end
+    end
+
+    context "with NSC education" do
+      let(:education_activity) { create(:education_activity, activity_flow: activity_flow, data_source: data_source) }
+      let(:rendered) { Capybara.string(response.body) }
+
+      before { get :new, params: { education_id: education_activity.id } }
+
+      context "when validated" do
+        let(:data_source) { :validated }
+
+        it "links back to the hub" do
+          expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"), href: activities_flow_root_path)
+        end
+
+        context "with sufficient enrollment" do
+          let(:education_activity) do
+            activity = create(:education_activity, activity_flow: activity_flow, data_source: data_source, status: :succeeded)
+            create(:nsc_enrollment_term, education_activity: activity, enrollment_status: "full_time",
+              term_begin: activity_flow.reporting_months.first, term_end: activity_flow.reporting_months.last.end_of_month)
+            activity
+          end
+
+          it "links back to review and submit" do
+            expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"), href: activities_flow_summary_path)
+          end
+        end
+      end
+
+      context "when partially self-attested" do
+        let(:data_source) { :partially_self_attested }
+
+        it "links back to the hub" do
+          expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"), href: activities_flow_root_path)
+        end
+      end
     end
 
     context "employment scope" do

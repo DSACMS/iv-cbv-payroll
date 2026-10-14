@@ -13,11 +13,11 @@ For agencies which have also implemented the **Income Report API** to receive 
 
 The agency must provide the Emmy team three endpoints:
 
-| Environment Name | Emmy Environment | Sample Path | Environment Name | Emmy Environment | Sample Path |
-| :-- | :-- | :-- | :-- | :-- | :-- |
-| Lower | Dev | https://dev.your-agency.gov/api/v1/income-report |  |  |  |
-| UAT | Demo | https://uat.your-agency.gov/api/v1/income-report |  |  |  |
-| Production | Production | https://your-agency.gov/api/v1/income-report |  |  |  |
+| Environment Name | Emmy Environment | Sample Path |
+| :-- | :-- | :-- |
+| Lower | Dev | https://dev.your-agency.gov/api/v1/documents |
+| UAT | Demo | https://uat.your-agency.gov/api/v1/documents |
+| Production | Production | https://your-agency.gov/api/v1/documents |
 
 Each API Environment will have a different keys for authentication.
 
@@ -31,11 +31,11 @@ The endpoint must only accept requests over TLS.
 
 ### Request Headers
 
-| Header Name | Required? | Description | Header Name | Required? | Description |
-| :-- | :-- | :-- | :-- | :-- | :-- |
-| X-IVAAS-Timestamp | Yes | Seconds since the Unix epoch (used to verify the request signature) |  |  |  |
-| X-IVAAS-Signature | Yes | Calculated signature based on the request body.See the documentation for the Income Report API for a description of this algorithm. |  |  |  |
-| X-IVAAS-Confirmation-Code | Yes | Confirmation code of the submitted document, for example ("LALDH00100001") |  |  |  |
+| Header Name | Required? | Description |
+| :-- | :-- | :-- |
+| X-IVAAS-Timestamp | Yes | Seconds since the Unix epoch (used to verify the request signature) |
+| X-IVAAS-Signature | Yes | Calculated signature based on the request body.See the documentation for the Income Report API for a description of this algorithm. |
+| X-IVAAS-Confirmation-Code | Yes | Confirmation code of the submitted document, for example ("LALDH00100001") |
 
 Additional headers used for authentication may be requested by an agency (for example API keys).
 
@@ -60,11 +60,11 @@ It's imperative for Emmy to know whether an income report was correctly received
 
 Agencies must implement semantic HTTP statuses representing the success of the webservice receiving the request. The specific HTTP status codes used can be determined by the agency based on what is feasible to support. The only semantics Emmy relies upon are that a "200 OK" status be returned when the request is successful, and a 400+ status code be used when there is an error.
 
-| HTTP Status Code | Definition | Action | HTTP Status Code | Definition | Action |
-| :-- | :-- | :-- | :-- | :-- | :-- |
-| 200 OK | The income report PDF was successfully received by the agency's system. | Mark successful. |  |  |  |
-| 401 Unauthorized | The X-IVAAS-Signature header verification failed. | Attempt retry. |  |  |  |
-| 500 Internal Server Error | There was a system error while processing the request. | Attempt retry. |  |  |  |
+| HTTP Status Code | Definition | Action |
+| :-- | :-- | :-- |
+| 200 OK | The income report PDF was successfully received by the agency's system. | Mark successful. |
+| 401 Unauthorized | The X-IVAAS-Signature header verification failed. | Attempt retry. |
+| 500 Internal Server Error | There was a system error while processing the request. | Attempt retry. |
 
 In addition to these statuses, we encourage agency web servers to reply with semantic HTTP statuses such as 400 Bad Request, 404 Not Found, 408 Timeout, 413 Payload Too Large, 429 Too Many Requests, and 502 Gateway Timeout according to their built-in web server logic. This will greatly help triaging errors should they arise. Regardless of the error status code, Emmy will retry according to the logic below.
 

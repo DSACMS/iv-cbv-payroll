@@ -17,6 +17,9 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
     click_button I18n.t("continue")
     title = I18n.t("activities.employment_info.unpaid_or_in_kind.title")
     verify_page(page, title: title)
+    %w[employer_name street_address street_address_line_2 city state zip_code contact_name contact_email contact_phone_number].each do |field|
+      expect(page).to have_selector("label[for='employment_activity_#{field}'] strong")
+    end
 
     accordion_title = I18n.t("activities.employment_info.unpaid_or_in_kind.accordion.title")
     accordion_content = I18n.t("activities.employment_info.unpaid_or_in_kind.accordion.item_1")

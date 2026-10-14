@@ -8,6 +8,8 @@
 #                 Set by edit links on the review page. Tells controllers to
 #                 redirect back to review instead of advancing forward.
 class Activities::EmploymentController < Activities::BaseController
+  include NavigationTracking
+
   before_action :set_employment_activity, only: %i[edit update review save_review]
   before_action :ensure_review_ready, only: %i[review save_review]
   before_action :set_back_url, only: %i[new create edit review]
@@ -63,7 +65,7 @@ class Activities::EmploymentController < Activities::BaseController
     @employment_activity.update(review_params)
     @employment_activity.publish!
     track_event(TrackEvent::EmploymentReviewSubmitted, employment_activity_id: @employment_activity.id)
-    redirect_to after_activity_path
+    redirect_to(@flow.employment_focused? ? activities_flow_income_add_jobs_path : after_activity_path)
   end
 
   private

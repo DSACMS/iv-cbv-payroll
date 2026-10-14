@@ -16,6 +16,57 @@ RSpec.describe Activities::EmploymentController, type: :controller do
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :new }
 
+    context "for an employment_focused activity" do
+      before { activity_flow.update!(employment_focused: true) }
+
+      it "bolds the paid field labels and preserves the employer name requirement" do
+        get :new, params: { compensation_type: "paid" }
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("input[name='employment_activity[employer_name]'][required]")
+        %w[employer_name street_address street_address_line_2 city state zip_code contact_name contact_email contact_phone_number].each do |field|
+          expect(rendered).to have_selector("label[for='employment_activity_#{field}'] strong")
+        end
+      end
+
+      it "bolds the unpaid_or_in_kind field labels and preserves the employer name requirement" do
+        get :new, params: { compensation_type: "unpaid_or_in_kind" }
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("input[name='employment_activity[employer_name]'][required]")
+        %w[employer_name street_address street_address_line_2 city state zip_code contact_name contact_email contact_phone_number].each do |field|
+          expect(rendered).to have_selector("label[for='employment_activity_#{field}'] strong")
+        end
+      end
+    end
+
+    context "for a standard CE activity" do
+      before { activity_flow.update!(employment_focused: false) }
+
+      it "bolds the paid field labels and preserves the employer name requirement" do
+        get :new, params: { compensation_type: "paid" }
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_no_selector("input[name='employment_activity[employer_name]'][required]")
+        %w[employer_name street_address street_address_line_2 city state zip_code contact_name contact_email contact_phone_number].each do |field|
+          expect(rendered).to have_selector("label[for='employment_activity_#{field}'] strong")
+        end
+      end
+
+      it "bolds the unpaid_or_in_kind field labels and preserves the employer name requirement" do
+        get :new, params: { compensation_type: "unpaid_or_in_kind" }
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_no_selector("input[name='employment_activity[employer_name]'][required]")
+        %w[employer_name street_address street_address_line_2 city state zip_code contact_name contact_email contact_phone_number].each do |field|
+          expect(rendered).to have_selector("label[for='employment_activity_#{field}'] strong")
+        end
+      end
+    end
+
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :new }
+
     it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed, extra_attributes: -> { { employment_activity_id: nil } }
 
     it "renders the form with the page title" do
@@ -96,9 +147,11 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   end
 
   describe "GET #edit" do
-    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
-    let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { id: employment_activity.id } }
+    let(:tracked_flow) { activity_flow }
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :edit, params: { id: employment_activity.id } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentInfoViewed,
       extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }
@@ -430,15 +483,30 @@ RSpec.describe Activities::EmploymentController, type: :controller do
   end
 
   describe "GET #review" do
-    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
-    let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :review, params: { id: employment_activity.id } }
+    let(:tracked_flow) { activity_flow }
+    let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
 
     before do
       activity_flow.reporting_months.each do |month|
         create(:employment_activity_month, employment_activity: employment_activity, month: month.beginning_of_month, hours: 25, gross_income: 500)
       end
     end
+
+    context "with an employment-focused flow" do
+      before { activity_flow.update!(employment_focused: true) }
+
+      it "shows the employer and agency comment prompt with a blank line between them" do
+        get :review, params: { id: employment_activity.id }
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("h1 + p", text: "Review the information you've added for #{employment_activity.employer_name}.")
+        expect(rendered).to have_selector("h1 + p br", count: 2)
+        expect(rendered).to have_text("If you'd like to provide additional context, add a comment for #{I18n.t('shared.agency_acronym.sandbox')}.")
+      end
+    end
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :review, params: { id: employment_activity.id } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentReviewViewed,
       extra_attributes: -> { { employment_activity_id: kind_of(Integer) } }

@@ -40,7 +40,7 @@ class Api::ArgyleController < ApplicationController
                       when CbvFlow
                         CbvFlowNavigator.new(params)
                       when ActivityFlow
-                        ActivityFlowNavigator.new(params, overall_progress_result: nil)
+                        ActivityFlowNavigator.new(params, @flow, overall_progress_result: nil)
                       end
 
     redirect_to(root_url(cbv_flow_timeout: true)) unless @flow

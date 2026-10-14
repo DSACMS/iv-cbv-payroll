@@ -35,6 +35,8 @@ erDiagram
 		datetime updated_at
 	}
 	ActivityFlowEmploymentSummary {
+		integer compensation_amount
+		string compensation_unit
 		datetime created_at
 		string employer_address
 		string employer_name
@@ -43,6 +45,7 @@ erDiagram
 		string employment_status
 		date employment_termination_date
 		string employment_type
+		string pay_frequency
 		datetime redacted_at
 		datetime updated_at
 	}
@@ -122,24 +125,22 @@ erDiagram
 		string contact_email
 		string contact_name
 		string contact_phone_number
+		string contact_title
 		datetime created_at
-		integer credit_hours
+		decimal credit_hours
 		string data_source
 		boolean draft
 		boolean pre_populated
 		string school_name
+		string self_attested_enrollment_status
+		date self_attested_term_end
+		date self_attested_term_start
 		string state
 		string status
 		string street_address
 		string street_address_line_2
 		datetime updated_at
 		string zip_code
-	}
-	EducationActivityMonth {
-		datetime created_at
-		decimal hours
-		date month
-		datetime updated_at
 	}
 	EmploymentActivity {
 		text additional_comments
@@ -396,7 +397,6 @@ erDiagram
 	User ||--}o CbvFlowInvitation : ""
 	EducationActivity o|..}o "ActiveStorage::Blob" : ""
 	EducationActivity ||--}o NscEnrollmentTerm : ""
-	EducationActivity ||--}o EducationActivityMonth : ""
 	EmploymentActivity o|..}o "ActiveStorage::Blob" : ""
 	EmploymentActivity ||--}o EmploymentActivityMonth : ""
 	Household ||--}o HouseholdMember : ""

@@ -1,10 +1,12 @@
-<% content_for :activity_flow_header do %>
-  <%= render ActivityFlowHeaderComponent.new(
-    title: t("activities.employment.title_singular"),
-    exit_url: activities_flow_root_path,
-    back_url: @back_url,
-    track_event_prefix: "Employment"
-  ) %>
+<% unless @flow.employment_focused? %>
+  <% content_for :activity_flow_header do %>
+    <%= render ActivityFlowHeaderComponent.new(
+      title: t("activities.employment.title_singular"),
+      exit_url: activities_flow_root_path,
+      back_url: @back_url,
+      track_event_prefix: "Employment"
+    ) %>
+  <% end %>
 <% end %>
 
 <% from_review = params[:from_review].present? %>
@@ -45,10 +47,12 @@
         from_review: from_review ? 1 : nil,
         from_edit: from_edit ? 1 : nil
       ),
-      method: :patch
+      method: :patch,
+      html: { novalidate: true }
     ) do |f| %>
   <% unless unpaid %>
     <%= f.currency_field :gross_income,
+          required: true,
           label: t("activities.employment.hours_input.gross_income_label", month: month_label),
           label_class: "text-bold",
           hint: t("activities.employment.hours_input.gross_income_hint") %>

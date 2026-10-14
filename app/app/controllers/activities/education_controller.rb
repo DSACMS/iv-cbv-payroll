@@ -6,8 +6,11 @@
 #
 #   from_review — "User clicked Edit on the review page to fix one thing."
 #                 Set by edit links on the review page. Tells controllers to
-#                 redirect back to review instead of advancing forward.
+#                 return to review when finished. Term edits continue through
+#                 document upload before returning to review.
 class Activities::EducationController < Activities::BaseController
+  include NavigationTracking
+
   # Keep the user on the loading page (the #show action) at least this long.
   ARTIFICIAL_DELAY = 7.seconds
   INDICATOR_COUNT = 3
@@ -55,7 +58,7 @@ class Activities::EducationController < Activities::BaseController
         if params[:from_review].present?
           redirect_to review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence)
         else
-          redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0, from_edit: params[:from_edit].presence)
+          redirect_to edit_activities_flow_education_add_your_term_path(education_id: @education_activity, from_edit: params[:from_edit].presence)
         end
       else
         track_event(
@@ -114,6 +117,14 @@ class Activities::EducationController < Activities::BaseController
 
   def save_review
     @education_activity.update(review_params)
+    if @education_activity.fully_self_attested? && !@education_activity.valid?(:add_your_term)
+      return redirect_to edit_activities_flow_education_add_your_term_path(
+        education_id: @education_activity,
+        from_review: 1,
+        from_edit: params[:from_edit].presence
+      )
+    end
+
     @education_activity.publish!
     # Fires for every data source; see track_review_viewed_event.
     track_event(TrackEvent::EducationReviewSubmitted, education_activity_id: @education_activity.id)
@@ -170,11 +181,7 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def fully_self_attested_education_params
-    params.require(:education_activity).permit(
-      :school_name, :street_address, :street_address_line_2,
-      :city, :state, :zip_code,
-      :contact_name, :contact_email, :contact_phone_number
-    )
+    params.require(:education_activity).permit(*EducationActivity::FIELDS)
   end
 
   def set_completed_indicators
@@ -198,7 +205,7 @@ class Activities::EducationController < Activities::BaseController
     @education_activity.data_source = :fully_self_attested
     if @education_activity.save
       track_event(TrackEvent::EducationInfoSubmitted, education_activity_id: @education_activity.id)
-      redirect_to edit_activities_flow_education_month_path(education_id: @education_activity, id: 0)
+      redirect_to edit_activities_flow_education_add_your_term_path(education_id: @education_activity)
     else
       track_event(
         TrackEvent::EducationInfoValidationFailed,

@@ -13,6 +13,22 @@ RSpec.describe Activities::SuccessController, type: :controller do
   end
 
   describe "GET #show" do
+    context "with a named applicant in a tokenized flow" do
+      let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+      let(:activity_flow) { create(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation, completed_at: Time.current) }
+      let(:reporting_for_text) {
+        I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+      }
+
+      before { get :show }
+
+      it "does not display the reporting banner" do
+        expect(response).to have_http_status(:ok)
+        expect(Capybara.string(response.body)).to have_no_text(reporting_for_text)
+      end
+    end
+
     it "redirects to summary if the flow has not been submitted" do
       get :show
 
@@ -28,6 +44,32 @@ RSpec.describe Activities::SuccessController, type: :controller do
       expect(response.body).to include(activities_flow_submit_path(format: :pdf))
       expect(response.body).to include(I18n.t("activities.success.show.download_pdf"))
       expect(response.body).to include(feedbacks_path(form: "survey"))
+    end
+
+    it "displays the community engagement next steps" do
+      activity_flow.touch(:completed_at)
+
+      get :show
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector(".usa-icon-list__item", count: 1)
+      expect(rendered).to have_text(I18n.t("activities.success.show.whats_next_1_title"))
+      expect(rendered).to have_no_text(I18n.t("activities.success.show.employment_focused.whats_next.head_of_household.heading"))
+    end
+
+    it "displays the employment-focused next steps" do
+      activity_flow.update!(completed_at: Time.current, employment_focused: true)
+
+      get :show
+
+      rendered = Capybara.string(response.body)
+      download_link = rendered.find_link(I18n.t("activities.success.show.download_pdf"))
+
+      expect(rendered).to have_selector(".usa-icon-list__item", count: 3)
+      expect(rendered).to have_text(I18n.t("activities.success.show.employment_focused.whats_next.head_of_household.heading"))
+      expect(rendered).to have_text(I18n.t("activities.success.show.employment_focused.whats_next.household_member.heading"))
+      expect(download_link[:class]).to include("usa-button--outline")
+      expect(download_link[:rel]).to eq("noopener noreferrer")
     end
 
     it "displays the confirmation code" do

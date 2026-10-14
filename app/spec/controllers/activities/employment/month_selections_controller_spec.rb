@@ -27,6 +27,18 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
   describe "GET #edit" do
     let(:perform_tracked_action) { get :edit, params: { employment_id: employment_activity.id } }
 
+    context "with an employment-focused flow" do
+      before { activity_flow.update!(employment_focused: true) }
+
+      it "asks for paid months only" do
+        get :edit, params: { employment_id: employment_activity.id }
+
+        expect(Capybara.string(response.body)).to have_text(
+          I18n.t("activities.employment.month_selections.edit.employment_focused.description")
+        )
+      end
+    end
+
     it_behaves_like "tracks an event", TrackEvent::EmploymentMonthSelectionViewed,
       extra_attributes: -> { { employment_activity_id: employment_activity.id } }
 

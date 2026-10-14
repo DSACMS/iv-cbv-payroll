@@ -174,17 +174,24 @@
         <% activity = entry.activity %>
         <% if activity.fully_self_attested? %>
           <% columns = [
-            t("activities.summary.education.month"),
-            t("activities.summary.education.credit_hours"),
-            t("activities.summary.education.community_engagement_hours")
+            t("activities.education.review.term"),
+            t("components.enrollment_term_table_component.enrollment_status")
           ] %>
-          <% rows = @report.activity_month_records(activity.education_activity_months).map do |month, activity_month|
-            [
-              l(month, format: :month_year),
-              activity_month ? format_decimal_amount(activity_month.hours) : not_provided,
-              activity_month ? format_decimal_amount(activity.community_engagement_hours(activity_month.hours)) : not_provided
-            ]
-          end %>
+          <% row = [
+            activity.self_attested_term_date_display,
+            activity.self_attested_enrollment_status_display
+          ] %>
+          <% if activity.self_attested_credit_hours_applicable? %>
+            <% columns += [
+              t("activities.summary.education.credit_hours"),
+              t("activities.summary.education.community_engagement_hours")
+            ] %>
+            <% row += [
+              activity.credit_hours.nil? ? not_provided : format_decimal_amount(activity.credit_hours),
+              format_decimal_amount(activity.community_engagement_hours(activity.credit_hours))
+            ] %>
+          <% end %>
+          <% rows = [ row ] %>
         <% else %>
           <% enrollment_terms = entry.enrollment_terms %>
           <% show_credit_hours = enrollment_terms.any?(&:less_than_half_time?) %>
@@ -358,6 +365,7 @@
           <% education_details = [
             [ t("activities.submit.pdf.address"), activity.formatted_address ],
             [ t("activities.submit.pdf.school_contact_name"), activity.contact_name ],
+            [ t("activities.submit.pdf.school_contact_title"), activity.contact_title ],
             [ t("activities.submit.pdf.school_contact_email"), activity.contact_email ],
             [
               t("activities.submit.pdf.school_contact_phone_number"),
