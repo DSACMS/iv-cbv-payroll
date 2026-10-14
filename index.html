@@ -264,7 +264,7 @@
                         "first_name": "Jane",
                         "last_name": "Doe"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/5FoVnbD1Ew"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/3nJsbbJ7L4"
                     }
                   },
                   "community_engagement": {
@@ -280,7 +280,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/iSoENW4Geg"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/rxBzYoYYHb"
                     }
                   }
                 },
@@ -1371,7 +1371,13 @@
                     "contact_email": "registrar@example.org",
                     "contact_phone_number": null,
                     "hours": 3.5,
-                    "data_source": "self_attested"
+                    "data_source": "self_attested",
+                    "enrollment_status": "less_than_half_time",
+                    "credit_hours": 3.5,
+                    "term": {
+                      "start_month": "2025-01",
+                      "end_month": "2025-03"
+                    }
                   },
                   {
                     "type": "education",
@@ -1457,7 +1463,13 @@
                     "contact_email": "registrar@example.org",
                     "contact_phone_number": null,
                     "hours": 3.5,
-                    "data_source": "self_attested"
+                    "data_source": "self_attested",
+                    "enrollment_status": "less_than_half_time",
+                    "credit_hours": 3.5,
+                    "term": {
+                      "start_month": "2025-01",
+                      "end_month": "2025-03"
+                    }
                   },
                   {
                     "type": "education",
@@ -2235,7 +2247,7 @@
               "hours": {
                 "type": "number",
                 "minimum": 0,
-                "description": "Academic credit hours reported for this month; may be zero."
+                "description": "Academic credit hours for the term; zero when optional credits are not supplied."
               },
               "additional_comments": {
                 "type": [
@@ -2267,19 +2279,42 @@
                   "education"
                 ]
               },
+              "school_name": {
+                "type": "string"
+              },
+              "enrollment_status": {
+                "type": "string",
+                "enum": [
+                  "full_time",
+                  "half_time",
+                  "less_than_half_time",
+                  "unknown"
+                ],
+                "description": "Self-attested enrollment status."
+              },
+              "credit_hours": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Academic credit hours for the term; null when not supplied."
+              },
+              "term": {
+                "$ref": "#/components/schemas/CeEducationTerm"
+              },
               "data_source": {
                 "type": "string",
                 "enum": [
                   "self_attested"
                 ]
-              },
-              "school_name": {
-                "type": "string"
               }
             },
             "required": [
               "school_name",
-              "hours"
+              "hours",
+              "enrollment_status",
+              "term"
             ]
           }
         ]
