@@ -12,6 +12,8 @@ RSpec.describe Activities::EntriesController do
     context "with generic link" do
       it 'sets session flow type and id' do
         get :show, params: { client_agency_id: 'sandbox' }
+        reporting_for_label = I18n.t("activities.reporting_for.text_html", name: "").strip
+        expect(Capybara.string(response.body)).to have_no_text(reporting_for_label)
         expect(session[:flow_type]).to eq(:activity)
         expect(session[:flow_id]).to be_present
       end
@@ -62,6 +64,22 @@ RSpec.describe Activities::EntriesController do
 
     context "with tokenized link" do
       let(:invitation) { create(:activity_flow_invitation) }
+
+      context "with agency-supplied names" do
+        let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
+        let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+        let(:reporting_for_text) {
+          I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+        }
+
+        before { get :show, params: { token: invitation.auth_token } }
+
+        it "renders the reporting banner once with a bold name" do
+          page = Capybara.string(response.body)
+          expect(page).to have_text(reporting_for_text, count: 1)
+          expect(page).to have_selector("strong", text: "Lisa Williams")
+        end
+      end
 
       it "creates a flow from the invitation and sets session" do
         get :show, params: { token: invitation.auth_token }

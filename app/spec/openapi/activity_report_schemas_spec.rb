@@ -96,7 +96,9 @@ RSpec.describe ActivityReportSchemas do
     let(:self_attested_education) do
       {
         "type" => "education", "month" => "2026-07", "data_source" => "self_attested", "document_ids" => [],
-        "school_name" => "Example Community College", "hours" => 3.5, "contact_email" => nil
+        "school_name" => "Example Community College", "hours" => 3.5, "contact_email" => nil,
+        "enrollment_status" => "less_than_half_time", "credit_hours" => 3.5,
+        "term" => { "start_month" => "2026-05", "end_month" => "2026-08" }
       }
     end
     let(:verified_education) do
@@ -146,6 +148,42 @@ RSpec.describe ActivityReportSchemas do
     it "requires credit hours when the source is fully self-attested" do
       verified_education["data_source"] = "self_attested"
       verified_education["school_name"] = "Example University"
+
+      expect(schema.valid?(report)).to be(false)
+    end
+  end
+
+  context "with a manual education term" do
+    let(:manual_education) do
+      {
+        "type" => "education", "month" => "2026-07", "data_source" => "self_attested", "document_ids" => [],
+        "school_name" => "Example University", "hours" => 0, "credit_hours" => nil,
+        "enrollment_status" => "unknown", "term" => { "start_month" => "2026-05", "end_month" => "2026-08" }
+      }
+    end
+
+    before do
+      report["ce_report"]["activities"]["education"] = { "2026-07" => [ manual_education ] }
+    end
+
+    it "accepts term dates, enrollment, and optional credits" do
+      expect(schema.valid?(report)).to be(true)
+    end
+
+    it "requires term dates" do
+      manual_education.delete("term")
+
+      expect(schema.valid?(report)).to be(false)
+    end
+
+    it "requires enrollment status" do
+      manual_education.delete("enrollment_status")
+
+      expect(schema.valid?(report)).to be(false)
+    end
+
+    it "restricts manual enrollment to the available options" do
+      manual_education["enrollment_status"] = "three_quarter_time"
 
       expect(schema.valid?(report)).to be(false)
     end

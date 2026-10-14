@@ -65,15 +65,25 @@ RSpec.describe Activity do
           expect(klass.activity_type).to be_a(Symbol)
         end
 
-        it "exposes .activity_months_class via HasActivityMonths" do
-          expect(klass.activity_months_class).to be_a(Class)
-        end
-
         it "resolves .flow_association to an ActivityFlow association matching its registered type" do
           expect(ActivityFlow.reflect_on_association(klass.flow_association)).to be_present
           expect(klass.flow_association).to eq(:"#{type}_activities")
         end
       end
+    end
+  end
+
+  describe "monthly activity subclass contract" do
+    it "links employment to its monthly record class" do
+      expect(EmploymentActivity.activity_months_class).to eq(EmploymentActivityMonth)
+    end
+
+    it "links volunteering to its monthly record class" do
+      expect(VolunteeringActivity.activity_months_class).to eq(VolunteeringActivityMonth)
+    end
+
+    it "links job training to its monthly record class" do
+      expect(JobTrainingActivity.activity_months_class).to eq(JobTrainingActivityMonth)
     end
   end
 end

@@ -22,6 +22,23 @@ RSpec.describe Activities::SummaryController, type: :controller do
   end
 
   describe "GET #show" do
+    context "with a tokenized flow" do
+      let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+      let(:reporting_for_text) {
+        I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+      }
+
+      before do
+        activity_flow.update!(cbv_applicant: applicant, activity_flow_invitation: invitation)
+        get :show
+      end
+
+      it "keeps the reporting banner on requests without a token parameter" do
+        expect(Capybara.string(response.body)).to have_text(reporting_for_text, count: 1)
+      end
+    end
+
     it "renders the review progress indicator at table width" do
       activity_flow.update!(reporting_window_months: 2)
       activity = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Scoped")
@@ -136,11 +153,10 @@ RSpec.describe Activities::SummaryController, type: :controller do
       create(:education_activity, activity_flow: activity_flow, status: :no_enrollments)
       fully_self_attested_activity = create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: activity_flow,
-        data_source: :fully_self_attested,
         school_name: "University of Illinois"
       )
-      create(:education_activity_month, education_activity: fully_self_attested_activity, month: activity_flow.reporting_months.first, hours: 6)
 
       get :show
 
@@ -221,13 +237,13 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(second_month.hours, precision: 2, strip_insignificant_zeros: true))
     end
 
-    it "renders fully self-attested education details and monthly details in the summary table" do
+    it "renders manual school information and the term details heading" do
       activity_flow.update!(reporting_window_months: 2)
 
       activity = create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: activity_flow,
-        data_source: :fully_self_attested,
         school_name: "University of Illinois",
         street_address: "601 E John St",
         city: "Champaign",
@@ -236,8 +252,6 @@ RSpec.describe Activities::SummaryController, type: :controller do
         contact_email: "smith@illinois.edu",
         contact_phone_number: "555-1212"
       )
-      first_month = create(:education_activity_month, education_activity: activity, month: activity_flow.reporting_months.first, hours: 4)
-      second_month = create(:education_activity_month, education_activity: activity, month: activity_flow.reporting_months.second, hours: 6)
 
       get :show
 
@@ -246,16 +260,8 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(activity.contact_name)
       expect(response.body).to include(activity.contact_email)
       expect(response.body).to include(activity.contact_phone_number)
-      expect(response.body).to include(I18n.l(first_month.month, format: :month_year))
-      expect(response.body).to include(I18n.l(second_month.month, format: :month_year))
-      expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(first_month.hours, precision: 2, strip_insignificant_zeros: true))
-      expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(second_month.hours, precision: 2, strip_insignificant_zeros: true))
-
       doc = Capybara.string(response.body)
-      monthly_details_headers = doc.all("table").last.all("thead th").map { |cell| cell.text.strip }
-      expect(monthly_details_headers).to include(I18n.t("activities.summary.education.community_engagement_hours"))
-      monthly_detail_rows = doc.all("table").last.all("tbody tr")
-      expect(monthly_detail_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[52 78])
+      expect(doc).to have_selector("h3", text: I18n.t("activities.summary.education.term_details"))
     end
 
     it "renders partially self-attested education in one table with saved term credit hours and community engagement hours" do
@@ -709,11 +715,10 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
         education = create(
           :education_activity,
+          :with_self_attested_term,
           activity_flow: activity_flow,
-          data_source: :fully_self_attested,
           school_name: "University"
         )
-        create(:education_activity_month, education_activity: education, month: activity_flow.reporting_months.first, hours: 4)
         education.document_uploads.attach(
           io: StringIO.new("%PDF-1.4"),
           filename: "transcript.pdf",
