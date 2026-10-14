@@ -4,7 +4,7 @@
       aria-describedby="<%= description_ids.join(" ") %>"
     <% end %>
   >
-    <legend id="<%= legend_id %>"class="usa-legend"><%= legend %></legend>
+    <legend id="<%= legend_id %>" class="usa-legend"><%= legend %></legend>
     <%= form.field_error(attribute, label_id: legend_id) %>
     <% if hint.present? %>
       <div id="<%= "#{attribute}_hint" %>" class="usa-hint"><%= hint %></div>

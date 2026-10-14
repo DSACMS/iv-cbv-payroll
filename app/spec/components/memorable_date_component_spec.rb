@@ -1,10 +1,12 @@
 require "rails_helper"
 
 RSpec.describe MemorableDateComponent, type: :component do
-  class MemorableDateTestModel
-    include ActiveModel::Model
+  before do
+    stub_const("MemorableDateTestModel", Class.new do
+      include ActiveModel::Model
 
-    attr_accessor :date_of_birth
+      attr_accessor :date_of_birth
+    end)
   end
 
   let(:object) { MemorableDateTestModel.new }
