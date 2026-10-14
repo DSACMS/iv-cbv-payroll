@@ -1,6 +1,6 @@
 <div
   class="<%= alert_classes %>"
-  role="<%= @form_id.present? ? "group" : @options.fetch(:role, "alert")%>"
+  role="<%= @form_id.present? ? "group" : @options.fetch(:role, "alert") %>"
   aria-atomic="true"
   <% if @form_id.present? %>
     tabindex="-1"
@@ -15,7 +15,7 @@
   <div class="usa-alert__body">
     <% if @heading %>
       <%# Using div here because screen readers will read it twice if it's a heading %>
-      <div 
+      <div
         class="usa-alert__heading"
         <% if @form_id.present? %>
           id="<%= "#{@form_id}_error_heading" %>"
@@ -24,7 +24,7 @@
         <%= @heading %>
       </div>
     <% end %>
-    <div 
+    <div
       class="usa-alert__text"
       <% if @form_id.present? %>
         id="<%= "#{@form_id}_error_body" %>"
