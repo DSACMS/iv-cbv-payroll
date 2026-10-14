@@ -329,7 +329,7 @@ en:
         college_or_university: College/University
         high_school_ged: High School/GED
         other: Other
-        trade_or_technical: Work/Technical Program
+        trade_or_technical: Trade/Technical Program
       verify:
         continue: Verify enrollment
         date_of_birth: Date of birth
