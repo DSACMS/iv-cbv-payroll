@@ -177,14 +177,14 @@ en:
         continue: Continue to review
         description: 'Upload documents that verify the information you entered for:'
         education:
-          description: 'Upload documents that verify the information you entered:'
-          suggestion_title: Suggested supporting documents
-          term_start: Term start date
-          term_end: Term end date
-          enrollment_status: Enrollment status
           credit_hours: Credit hours
+          description: 'Upload documents that verify the information you entered:'
+          enrollment_status: Enrollment status
           hours_per_term: Hours per term
           if_applicable: "(if applicable):"
+          suggestion_title: Suggested supporting documents
+          term_end: Term end date
+          term_start: Term start date
           transcript: Transcript from most recent enrollment period
         errors:
           empty: That file is empty. Choose a different file.
