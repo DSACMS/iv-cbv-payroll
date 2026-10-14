@@ -153,13 +153,16 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       before { get :new, params: { education_id: education_activity.id } }
 
       it "shows four bullets with bold labels and plain dates, enrollment, and credits" do
-        expect(rendered).to have_text("Upload documents that verify the information you entered:")
-        expect(rendered).to have_selector("li", text: "Term start date: 01/05/2026", normalize_ws: true)
-        expect(rendered).to have_selector("li", text: "Term end date: 05/15/2026", normalize_ws: true)
-        expect(rendered).to have_selector("li", text: "Enrollment status: #{education_activity.self_attested_enrollment_status_display}", normalize_ws: true)
-        expect(rendered).to have_selector("li", text: "Credit hours: 3.5", normalize_ws: true)
+        expect(rendered).to have_text(I18n.t("activities.document_uploads.new.education.description"))
+        expect(rendered).to have_selector("li", text: "#{I18n.t("activities.document_uploads.new.education.term_start")}: 01/05/2026", normalize_ws: true)
+        expect(rendered).to have_selector("li", text: "#{I18n.t("activities.document_uploads.new.education.term_end")}: 05/15/2026", normalize_ws: true)
+        expect(rendered).to have_selector("li", text: "#{I18n.t("activities.document_uploads.new.education.enrollment_status")}: #{education_activity.self_attested_enrollment_status_display}", normalize_ws: true)
+        expect(rendered).to have_selector("li", text: "#{I18n.t("activities.document_uploads.new.education.credit_hours")}: 3.5", normalize_ws: true)
         expect(rendered.all("main li strong").map(&:text)).to eq([
-          "Term start date", "Term end date", "Enrollment status", "Credit hours"
+          I18n.t("activities.document_uploads.new.education.term_start"),
+          I18n.t("activities.document_uploads.new.education.term_end"),
+          I18n.t("activities.document_uploads.new.education.enrollment_status"),
+          I18n.t("activities.document_uploads.new.education.credit_hours")
         ])
       end
 
@@ -180,14 +183,9 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       it "suggests exactly the five supporting documents" do
         suggestions = rendered.find("#document-upload-suggestions", visible: :all)
-        expect(suggestions).to have_text("Suggested supporting documents")
-        expect(suggestions.all("li", visible: :all).map(&:text)).to eq([
-          "Tuition receipt",
-          "Student portal screenshot",
-          "Official course enrollment for the current term from the Office of the Registrar",
-          "Copy of class schedule for the current term",
-          "Transcript from most recent enrollment period"
-        ])
+        expect(suggestions).to have_text(I18n.t("activities.document_uploads.new.education.suggestion_title"))
+        expected_documents = Capybara.string(I18n.t("activities.document_uploads.new.education.suggestions_html"))
+        expect(suggestions.all("li", visible: :all).map(&:text)).to eq(expected_documents.all("li").map(&:text))
       end
     end
 
@@ -374,10 +372,10 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: term.school_name))
       expect(response.body).to include("#{I18n.l(term.term_begin, format: :short)} to #{I18n.l(term.term_end, format: :short)}")
       rendered = Capybara.string(response.body)
-      expect(rendered).to have_text("Upload documents that verify the information you entered for:")
-      expect(rendered).to have_selector("button", text: "Suggested documents", exact_text: true, normalize_ws: true)
+      expect(rendered).to have_text(I18n.t("activities.document_uploads.new.description"))
+      expect(rendered).to have_selector("button", text: I18n.t("activities.document_uploads.new.suggestion_title"), exact_text: true, normalize_ws: true)
       expect(response.body).to include(I18n.t("activities.education.document_upload_suggestion_text_html"))
-      expect(rendered).to have_no_text("Transcript from most recent enrollment period")
+      expect(rendered).to have_no_text(Capybara.string(I18n.t("activities.document_uploads.new.education.suggestions_html")).all("li").last.text)
     end
 
     it "uses the simplified title when partially self-attested education has multiple schools" do
