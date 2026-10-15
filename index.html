@@ -264,7 +264,7 @@
                         "first_name": "Jane",
                         "last_name": "Doe"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/c53GrfRpuF"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/3Xa2eit1s2"
                     }
                   },
                   "community_engagement": {
@@ -280,7 +280,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/nioReDz2Mf"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/H8FpBCPbxY"
                     }
                   }
                 },
@@ -529,7 +529,6 @@
         "description": "Direct the applicant to `tokenized_url` to complete income verification, and\nto `activity_tokenized_url` to complete the corresponding activity flow.\nTreat both tokens as opaque.",
         "required": [
           "tokenized_url",
-          "activity_tokenized_url",
           "expiration_date",
           "language",
           "agency_partner_metadata"
@@ -540,6 +539,10 @@
             "type": "string",
             "format": "uri",
             "description": "Income reporting link. Treat the token as opaque and direct the applicant to this URL unchanged."
+          },
+          "token": {
+            "type": "string",
+            "description": "Opaque auth token for tokenized_url"
           },
           "activity_tokenized_url": {
             "type": "string",
