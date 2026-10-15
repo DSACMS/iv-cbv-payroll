@@ -2,6 +2,7 @@ class EducationActivity < Activity
   include DocumentUploadable
 
   CREDIT_HOUR_CE_MULTIPLIER = 13
+  EDUCATION_TYPES = %w[college_or_university high_school_ged trade_or_technical other].freeze
   SELF_ATTESTED_ENROLLMENT_STATUSES = %w[full_time half_time less_than_half_time unknown].freeze
   SELF_ATTESTED_CREDIT_HOURS_STATUSES = %w[less_than_half_time unknown].freeze
   FIELDS = %w[
@@ -28,6 +29,7 @@ class EducationActivity < Activity
     { "data_source" => "fully_self_attested" }
   end
 
+  validates :education_type, inclusion: { in: EDUCATION_TYPES }, allow_nil: true
   validates :school_name, presence: true, if: :fully_self_attested?
   validates :self_attested_enrollment_status, inclusion: { in: SELF_ATTESTED_ENROLLMENT_STATUSES }, on: :add_your_term
   validates :self_attested_term_start, :self_attested_term_end, presence: true, on: :add_your_term
@@ -57,6 +59,10 @@ class EducationActivity < Activity
     all_months_have_sufficient_enrollment = resolver.reporting_month_enrollments.all?(&:sufficient_enrollment?)
 
     all_months_have_sufficient_enrollment ? :validated : :partially_self_attested
+  end
+
+  def education_type_display
+    education_type.present? ? I18n.t("activities.education.types.#{education_type}") : I18n.t("shared.not_applicable")
   end
 
   def formatted_address

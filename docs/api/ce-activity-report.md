@@ -172,6 +172,7 @@ Only published education activities are included. Manual terms appear in each re
 | Field Name | Required? | Description |
 | :-- | :-- | :-- |
 | school_name | Yes | String. For NSC term entries, the school's name from that term; may be null when unavailable. |
+| education_type | Yes | String (enum) or null. Original applicant selection: `college_or_university` (College/University), `high_school_ged` (High School/GED), `trade_or_technical` (Trade/Technical Program), or `other` (Other). Included for every education data source and preserved when NSC verification falls back to self-attestation. Null for older records without a saved selection; never inferred from data source. |
 | contact_name, contact_email, contact_phone_number | No | String or null. Included on fully and partially self-attested education. |
 | hours | Self-attested variants | Number. Academic credits for the term. Manual terms with no credits use `0`; unknown partial credits may be null. |
 | enrollment_status | Term entries | Manual terms use `full_time`, `half_time`, `less_than_half_time`, or `unknown`. NSC terms also support `three_quarter_time` and `enrolled`. |
