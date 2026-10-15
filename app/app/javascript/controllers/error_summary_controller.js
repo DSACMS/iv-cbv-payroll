@@ -88,6 +88,7 @@ export default class extends Controller {
         ).split(/\s+/)
 
         return (
+          !(control instanceof HTMLFieldSetElement) &&
           descriptionIds.includes(error.id) &&
           !control.matches(":disabled") &&
           control.getClientRects().length > 0
