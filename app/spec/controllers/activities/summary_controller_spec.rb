@@ -22,6 +22,23 @@ RSpec.describe Activities::SummaryController, type: :controller do
   end
 
   describe "GET #show" do
+    context "with a tokenized flow" do
+      let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+      let(:reporting_for_text) {
+        I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+      }
+
+      before do
+        activity_flow.update!(cbv_applicant: applicant, activity_flow_invitation: invitation)
+        get :show
+      end
+
+      it "keeps the reporting banner on requests without a token parameter" do
+        expect(Capybara.string(response.body)).to have_text(reporting_for_text, count: 1)
+      end
+    end
+
     it "renders the review progress indicator at table width" do
       activity_flow.update!(reporting_window_months: 2)
       activity = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Scoped")
