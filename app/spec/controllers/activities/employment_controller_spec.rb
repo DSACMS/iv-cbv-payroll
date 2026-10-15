@@ -62,7 +62,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         get :new, params: { compensation_type: "unpaid_or_in_kind" }
 
         rendered = Capybara.string(response.body)
-        expect(rendered).to have_no_selector("input[name='employment_activity[employer_name]'][required]")
+        expect(rendered).to have_selector("input[name='employment_activity[employer_name]'][required]")
         %w[employer_name street_address street_address_line_2 city state zip_code contact_name contact_email contact_phone_number].each do |field|
           expect(rendered).to have_selector("label[for='employment_activity_#{field}'] strong")
         end
