@@ -249,7 +249,7 @@
                         "first_name": "Jane",
                         "last_name": "Doe"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/ZsrkAbVRM4"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/QnbqtWjDXP"
                     }
                   },
                   "community_engagement": {
@@ -265,7 +265,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/zNfSvPiF2C"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/7ZGAFgNuLL"
                     }
                   }
                 },
@@ -1342,6 +1342,7 @@
                 "2025-02": [
                   {
                     "type": "education",
+                    "education_type": "high_school_ged",
                     "month": "2025-02",
                     "document_ids": [],
                     "additional_comments": null,
@@ -1366,6 +1367,7 @@
                   },
                   {
                     "type": "education",
+                    "education_type": "college_or_university",
                     "month": "2025-02",
                     "document_ids": [],
                     "additional_comments": null,
@@ -1380,6 +1382,7 @@
                   },
                   {
                     "type": "education",
+                    "education_type": "trade_or_technical",
                     "month": "2025-02",
                     "document_ids": [
                       "DOC-6"
@@ -1406,6 +1409,7 @@
                   },
                   {
                     "type": "education",
+                    "education_type": "trade_or_technical",
                     "month": "2025-02",
                     "document_ids": [
                       "DOC-6"
@@ -1434,6 +1438,7 @@
                 "2025-03": [
                   {
                     "type": "education",
+                    "education_type": "high_school_ged",
                     "month": "2025-03",
                     "document_ids": [],
                     "additional_comments": null,
@@ -1458,6 +1463,7 @@
                   },
                   {
                     "type": "education",
+                    "education_type": "college_or_university",
                     "month": "2025-03",
                     "document_ids": [],
                     "additional_comments": null,
@@ -1472,6 +1478,7 @@
                   },
                   {
                     "type": "education",
+                    "education_type": "trade_or_technical",
                     "month": "2025-03",
                     "document_ids": [
                       "DOC-6"
@@ -2258,6 +2265,21 @@
                   "null"
                 ]
               },
+              "education_type": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "college_or_university",
+                  "high_school_ged",
+                  "trade_or_technical",
+                  "other",
+                  null
+                ],
+                "description": "Original education type selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
+                "example": "college_or_university"
+              },
               "type": {
                 "type": "string",
                 "enum": [
@@ -2299,7 +2321,8 @@
               "school_name",
               "hours",
               "enrollment_status",
-              "term"
+              "term",
+              "education_type"
             ]
           }
         ]
@@ -2313,6 +2336,21 @@
             "type": "object",
             "additionalProperties": true,
             "properties": {
+              "education_type": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "college_or_university",
+                  "high_school_ged",
+                  "trade_or_technical",
+                  "other",
+                  null
+                ],
+                "description": "Original education type selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
+                "example": "college_or_university"
+              },
               "type": {
                 "type": "string",
                 "enum": [
@@ -2364,7 +2402,8 @@
             "required": [
               "school_name",
               "enrollment_status",
-              "term"
+              "term",
+              "education_type"
             ]
           }
         ]
@@ -2440,6 +2479,21 @@
                   "null"
                 ]
               },
+              "education_type": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "college_or_university",
+                  "high_school_ged",
+                  "trade_or_technical",
+                  "other",
+                  null
+                ],
+                "description": "Original education type selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
+                "example": "college_or_university"
+              },
               "type": {
                 "type": "string",
                 "enum": [
@@ -2486,7 +2540,8 @@
               "school_name",
               "hours",
               "enrollment_status",
-              "term"
+              "term",
+              "education_type"
             ]
           }
         ]
