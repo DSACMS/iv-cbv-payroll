@@ -1,0 +1,14 @@
+<% rows = [
+  { label: t("activities.education.add_your_term.edit.enrollment_status"), value: activity.self_attested_enrollment_status_display },
+  { label: t("activities.education.add_your_term.edit.term_start"), value: format_date(activity.self_attested_term_start, :month_year) },
+  { label: t("activities.education.add_your_term.edit.term_end"), value: format_date(activity.self_attested_term_end, :month_year) }
+] %>
+<% if activity.self_attested_credit_hours_applicable? && activity.credit_hours.present? %>
+  <% rows << { label: t("activities.education.review.credit_hours"), value: format_decimal_amount(activity.credit_hours) } %>
+<% end %>
+
+<%= render ContactInfoReviewTableComponent.new(
+  field_header: t("shared.table_headers.education_information"),
+  value_header: t("shared.table_headers.your_details"),
+  rows: rows
+) %>

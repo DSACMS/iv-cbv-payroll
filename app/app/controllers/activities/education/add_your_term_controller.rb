@@ -13,11 +13,14 @@ class Activities::Education::AddYourTermController < Activities::BaseController
     assign_term_submission_values
 
     if @education_activity.save(context: :add_your_term)
-      redirect_to new_activities_flow_education_document_upload_path(
-        education_id: @education_activity,
-        from_review: params[:from_review].presence,
-        from_edit: params[:from_edit].presence
-      )
+      if params[:from_review].present?
+        redirect_to review_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence)
+      else
+        redirect_to new_activities_flow_education_document_upload_path(
+          education_id: @education_activity,
+          from_edit: params[:from_edit].presence
+        )
+      end
     else
       add_invalid_term_date_errors
       @error = true
