@@ -3,9 +3,11 @@
     <%= t(".organization_section_title") %>
   </h2>
   <%= f.text_field :organization_name,
+        required: true,
         label: t(".organization_name"),
         hint: t(".organization_name_hint") %>
   <%= f.text_field :program_name,
+        required: true,
         label: t(".program_name"),
         hint: t(".program_name_hint") %>
   <%= f.text_field :street_address, label: t(".street_address") %>
