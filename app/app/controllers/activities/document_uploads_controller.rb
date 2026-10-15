@@ -1,4 +1,6 @@
 class Activities::DocumentUploadsController < Activities::BaseController
+  include NavigationTracking
+
   before_action :set_activity
   before_action :set_back_url, only: %i[new]
   after_action :track_viewed_event, only: :new
@@ -56,11 +58,15 @@ class Activities::DocumentUploadsController < Activities::BaseController
         from_edit: params[:from_edit].presence
       )
     elsif params[:education_id]
-      @back_url = edit_activities_flow_education_month_path(
-        education_id: @activity,
-        id: last_month_index,
-        from_edit: params[:from_edit].presence
-      )
+      @back_url = if @activity.fully_self_attested?
+                    edit_activities_flow_education_add_your_term_path(
+                      education_id: @activity,
+                      from_review: params[:from_review].presence,
+                      from_edit: params[:from_edit].presence
+                    )
+                  else
+                    progress_calculator.overall_result.meets_routing_requirements ? activities_flow_summary_path : activities_flow_root_path
+                  end
     elsif params[:employment_id]
       @back_url = edit_activities_flow_income_employment_month_path(
         employment_id: @activity,

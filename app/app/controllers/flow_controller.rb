@@ -30,7 +30,11 @@ class FlowController < ApplicationController
     case request.path
     when %r{^(/#{locales})?/activities}
       overall_progress_result = progress_calculator&.overall_result
-      ActivityFlowNavigator.new(params, @flow, overall_progress_result: overall_progress_result)
+      ActivityFlowNavigator.new(
+        params,
+        @flow,
+        overall_progress_result: overall_progress_result,
+        employment_focused: @flow&.employment_focused)
     when %r{^(/#{locales})?/cbv}
       CbvFlowNavigator.new(params)
     else
@@ -144,5 +148,11 @@ class FlowController < ApplicationController
     if params[:launcher_timeout].present?
       session[:launcher_timeout] = params[:launcher_timeout].to_i.minutes.to_i
     end
+  end
+
+  def redirect_empty_employment_flow
+    return unless @flow.employment_focused? && !@flow.any_activities_added?
+
+    redirect_to activities_flow_income_add_your_work_path
   end
 end

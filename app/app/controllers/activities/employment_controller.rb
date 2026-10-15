@@ -8,6 +8,8 @@
 #                 Set by edit links on the review page. Tells controllers to
 #                 redirect back to review instead of advancing forward.
 class Activities::EmploymentController < Activities::BaseController
+  include NavigationTracking
+
   before_action :set_employment_activity, only: %i[edit update review save_review]
   before_action :ensure_review_ready, only: %i[review save_review]
   before_action :set_back_url, only: %i[new create edit review]

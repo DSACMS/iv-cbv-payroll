@@ -1,8 +1,10 @@
 class EducationActivity < Activity
-  include HasActivityMonths
   include DocumentUploadable
 
   CREDIT_HOUR_CE_MULTIPLIER = 13
+  EDUCATION_TYPES = %w[college_or_university high_school_ged trade_or_technical other].freeze
+  SELF_ATTESTED_ENROLLMENT_STATUSES = %w[full_time half_time less_than_half_time unknown].freeze
+  SELF_ATTESTED_CREDIT_HOURS_STATUSES = %w[less_than_half_time unknown].freeze
   FIELDS = %w[
     school_name
     street_address
@@ -18,8 +20,6 @@ class EducationActivity < Activity
   PRE_POPULATED_REQUIRED_FIELDS = %w[school_name].freeze
 
   has_many :nsc_enrollment_terms, dependent: :destroy
-  has_many :education_activity_months, dependent: :destroy
-  has_activity_months :education_activity_months
 
   def self.activity_type
     :education
@@ -29,7 +29,14 @@ class EducationActivity < Activity
     { "data_source" => "fully_self_attested" }
   end
 
+  validates :education_type, inclusion: { in: EDUCATION_TYPES }, allow_nil: true
   validates :school_name, presence: true, if: :fully_self_attested?
+  validates :self_attested_enrollment_status, inclusion: { in: SELF_ATTESTED_ENROLLMENT_STATUSES }, on: :add_your_term
+  validates :self_attested_term_start, :self_attested_term_end, presence: true, on: :add_your_term
+  validates :credit_hours, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true,
+    if: :self_attested_credit_hours_applicable?, on: :add_your_term
+  validate :self_attested_term_dates_in_order, on: :add_your_term
+  before_validation :clear_inapplicable_self_attested_credit_hours, on: :add_your_term
 
   enum :data_source, {
     fully_self_attested: "fully_self_attested",
@@ -54,6 +61,10 @@ class EducationActivity < Activity
     all_months_have_sufficient_enrollment ? :validated : :partially_self_attested
   end
 
+  def education_type_display
+    education_type.present? ? I18n.t("activities.education.types.#{education_type}") : I18n.t("shared.not_applicable")
+  end
+
   def formatted_address
     locality = [ city, state ].compact_blank.join(", ")
     locality_zip = [ locality, zip_code ].compact_blank.join(" ")
@@ -62,6 +73,37 @@ class EducationActivity < Activity
 
   def community_engagement_hours(credit_hours)
     (credit_hours || 0) * CREDIT_HOUR_CE_MULTIPLIER
+  end
+
+  def self_attested_term?
+    fully_self_attested? && self_attested_term_start.present? && self_attested_term_end.present? && self_attested_enrollment_status.present?
+  end
+
+  def self_attested_credit_hours_applicable?
+    SELF_ATTESTED_CREDIT_HOURS_STATUSES.include?(self_attested_enrollment_status)
+  end
+
+  def self_attested_sufficient_enrollment?
+    NscEnrollmentTerm::HALF_TIME_OR_ABOVE_STATUSES.include?(self_attested_enrollment_status)
+  end
+
+  def self_attested_enrollment_status_display
+    I18n.t("activities.education.add_your_term.edit.enrollment_status_options.#{self_attested_enrollment_status}")
+  end
+
+  def self_attested_term_overlaps_month?(month_start)
+    self_attested_term? && self_attested_term_start <= month_start.end_of_month && self_attested_term_end >= month_start.beginning_of_month
+  end
+
+  def self_attested_reporting_months
+    activity_flow.reporting_months.select { |month| self_attested_term_overlaps_month?(month) }
+  end
+
+  def self_attested_term_date_display
+    return if self_attested_term_start.blank? || self_attested_term_end.blank?
+
+    start_format = self_attested_term_start.year == self_attested_term_end.year ? :abbreviated_month : :abbreviated_month_year
+    "#{I18n.l(self_attested_term_start, format: start_format)} - #{I18n.l(self_attested_term_end, format: :abbreviated_month_year)}"
   end
 
   def less_than_half_time_terms_in_reporting_window
@@ -102,17 +144,6 @@ class EducationActivity < Activity
     school_name
   end
 
-  def document_upload_months_to_verify
-    education_activity_months.map(&:month)
-  end
-
-  def document_upload_details_for_month(month)
-    activity_month = education_activity_months
-      .find { |activity_month| activity_month.month == month }
-
-    I18n.t("shared.credit_hours", count: ApplicationHelper.format_decimal_amount(activity_month.hours)) if activity_month
-  end
-
   def document_upload_suggestion_text
     "activities.education.document_upload_suggestion_text_html"
   end
@@ -138,7 +169,6 @@ class EducationActivity < Activity
   end
 
   def document_upload_term_credit_hours(term)
-    # Temporary: monthly hours inputs are not implemented yet, so fallback displays 0.
     return I18n.t("shared.credit_hours", count: 0) unless term.has_attribute?(:credit_hours)
 
     credit_hours = term[:credit_hours]
@@ -149,8 +179,6 @@ class EducationActivity < Activity
 
   def document_upload_verification_items
     terms = document_upload_terms_to_verify
-    return super if terms.empty?
-
     terms.map do |term|
       {
         label: "#{term.school_name} #{I18n.l(term.term_begin, format: :short)} to #{I18n.l(term.term_end, format: :short)}:",
@@ -172,6 +200,17 @@ class EducationActivity < Activity
   end
 
   private
+
+  def clear_inapplicable_self_attested_credit_hours
+    self.credit_hours = nil unless self_attested_credit_hours_applicable?
+  end
+
+  def self_attested_term_dates_in_order
+    return if self_attested_term_start.blank? || self_attested_term_end.blank?
+    return if self_attested_term_start < self_attested_term_end
+
+    errors.add(:self_attested_term_end, :invalid)
+  end
 
   # No date column -- skip the inherited date validation from Activity
   def date_within_reporting_window; end

@@ -107,7 +107,7 @@ Rails.application.routes.draw do
         end
         patch "sync", to: "education#sync", as: :sync
         resources :document_uploads, only: %i[new create destroy], controller: "/activities/document_uploads"
-        resources :months, only: %i[edit update], controller: "education/months"
+        resource :add_your_term, only: %i[edit update], controller: "education/add_your_term"
         resources :term_credit_hours, only: %i[edit update], controller: "education/term_credit_hours"
 
         member do

@@ -5,6 +5,14 @@ RSpec.describe Activities::SubmitController, type: :controller do
 
   render_views
 
+  let(:institution_type_row_prefix) do
+    [
+      I18n.t("activities.submit.pdf.institution_information"),
+      I18n.t("shared.table_headers.your_details"),
+      I18n.t("activities.submit.pdf.education_type")
+    ].map { |label| Regexp.escape(label) }.join('\s+')
+  end
+
   let(:identity) do
     create(
       :identity,
@@ -61,6 +69,37 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(response.headers["Expires"]).to eq("#{1.year.ago}")
     end
 
+    context "with a manual education term" do
+      let(:education) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested,
+          school_name: "Manual University", self_attested_term_start: activity_flow.reporting_months.first,
+          self_attested_term_end: activity_flow.reporting_months.last,
+          self_attested_enrollment_status: "less_than_half_time", credit_hours: 3.5)
+      end
+
+      before { education }
+
+      it "renders the term, enrollment status, and fractional credits in the PDF" do
+        get :show, format: :pdf
+
+        pdf_text = extract_pdf_text(response)
+        expect(response).to have_http_status(:ok)
+        expect(pdf_text).to include(education.self_attested_term_date_display)
+        expect(pdf_text).to include(I18n.t("activities.education.add_your_term.edit.enrollment_status_options.less_than_half_time"))
+        expect(pdf_text).to include(ApplicationHelper.format_decimal_amount(education.credit_hours).to_s)
+      end
+
+      context "with full-time enrollment" do
+        before { education.update!(self_attested_enrollment_status: "full_time", credit_hours: nil) }
+
+        it "renders enrollment when credits are not applicable" do
+          get :show, format: :pdf
+
+          expect(extract_pdf_text(response)).to include(I18n.t("activities.education.add_your_term.edit.enrollment_status_options.full_time"))
+        end
+      end
+    end
+
     it "renders the submitted activity summaries and details from the approved design" do
       activity_flow.update!(completed_at: frozen_time, confirmation_code: test_confirmation_code)
       employment = create(
@@ -73,12 +112,13 @@ RSpec.describe Activities::SubmitController, type: :controller do
       create(:employment_activity_month, employment_activity: employment, month: activity_flow.reporting_months.first, hours: 12, gross_income: 240)
       education = create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: activity_flow,
-        data_source: :fully_self_attested,
         school_name: "Bayou College",
-        contact_title: "Registrar"
+        education_type: "college_or_university",
+        contact_title: "Registrar",
+        credit_hours: 3
       )
-      create(:education_activity_month, education_activity: education, month: activity_flow.reporting_months.first, hours: 3)
       volunteering = create(
         :volunteering_activity,
         activity_flow: activity_flow,
@@ -112,6 +152,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(pdf_text).to include("Garden State Market")
       expect(pdf_text).to include("(225) 555-0199")
       expect(pdf_text).to include("Bayou College")
+      expect(pdf_text).to match(/#{institution_type_row_prefix}\s+#{Regexp.escape(I18n.t("activities.education.types.college_or_university"))}/)
       expect(pdf_text).to include(education.contact_title)
       expect(pdf_text).to include("Volunteer Log.pdf")
       expect(pdf_text).to include(test_confirmation_code)
@@ -216,7 +257,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
         "Education details",
         "This schedule covers both institutions"
       )
-      expect(education_details_text).not_to include("Institution information")
+      expect(education_details_text).to include(I18n.t("activities.submit.pdf.institution_information"), I18n.t("activities.submit.pdf.education_type"))
     end
 
     it "omits contact rows that do not apply to self-employed work" do
@@ -251,11 +292,30 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(pdf_text).to match(/Food Pantry.*October 2025\s+17.*November 2025\s+19/)
     end
 
+    context "when the education type is other" do
+      let(:education) do
+        create(:education_activity, :with_self_attested_term, activity_flow: activity_flow,
+          school_name: "Example School", education_type: "other")
+      end
+
+      before do
+        education
+        get :show, format: :pdf
+      end
+
+      it "displays Other as the first institution information row" do
+        pdf_text = extract_pdf_text(response)
+        expect(pdf_text).to match(/#{institution_type_row_prefix}\s+#{Regexp.escape(I18n.t("activities.education.types.other"))}/)
+        expect(pdf_text).not_to include("I'm not sure")
+      end
+    end
+
     it "renders activity-level education data for each NSC school" do
       education = create(
         :education_activity,
         activity_flow: activity_flow,
         data_source: :partially_self_attested,
+        education_type: "trade_or_technical",
         status: :succeeded,
         school_name: nil,
         additional_comments: "Comment for both reported schools"
@@ -284,6 +344,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       )
 
       get :show, format: :pdf
+      expect(extract_pdf_text(response)).to include(I18n.t("activities.education.types.trade_or_technical"))
 
       pdf_text = extract_pdf_text(response)
       expect(pdf_text.scan("Comment for both reported schools").size).to eq(2)

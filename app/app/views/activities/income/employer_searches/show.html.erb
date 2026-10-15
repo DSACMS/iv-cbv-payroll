@@ -17,7 +17,7 @@
   </div>
 
   <% content_for :title, search_results_page ? t(".search_results_header") : t(".header") %>
-  <h1 class="margin-top-0">
+  <h1 class="margin-top-4">
     <%= search_results_page ? t(".search_results_header") : t(".header") %>
   </h1>
 
@@ -70,13 +70,19 @@
          class="usa-sr-only"></div>
 
     <%= turbo_frame_tag "popular" do %>
-      <div class="grid-row maxw-mobile-lg margin-left-0 padding-left-0 margin-top-3">
+      <div class="grid-row maxw-mobile-lg margin-left-0 padding-left-0 margin-top-3" role="group" aria-label="<%= t(".provider_types_label") %>">
         <%= link_to t(".payroll_providers"), @payroll_path,
           class: "grid-col usa-button margin-0 radius-right-0 #{@selected_tab != 'payroll' && 'usa-button--outline'}",
-          data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
+          aria: { current: (@selected_tab == "payroll" ? "page" : nil) },
+          data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false,
+                  action: "click->cbv-employer-search#announceTab",
+                  tab_name: t(".tab_selected", name: t(".payroll_providers")) } %>
         <%= link_to t(".app_based_providers"), @employer_path,
           class: "grid-col usa-button margin-0 radius-left-0 #{@selected_tab != 'employer' && 'usa-button--outline'}",
-          data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false } %>
+          aria: { current: (@selected_tab == "employer" ? "page" : nil) },
+          data: { turbo_frame: "popular", turbo_action: "advance", turbo_prefetch: false,
+                  action: "click->cbv-employer-search#announceTab",
+                  tab_name: t(".tab_selected", name: t(".app_based_providers")) } %>
       </div>
 
       <div class="grid-row grid-gap margin-top-2">

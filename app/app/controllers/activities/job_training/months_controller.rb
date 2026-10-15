@@ -2,6 +2,7 @@ class Activities::JobTraining::MonthsController < Activities::BaseController
   before_action :set_job_training_activity
 
   include MonthlyHoursInput
+  include NavigationTracking
 
   before_action :set_back_url, only: %i[edit update]
 

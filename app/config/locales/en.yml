@@ -72,6 +72,12 @@ en:
           attributes:
             school_name:
               blank: Enter the school or program name.
+            self_attested_term_end:
+              blank: Add term end date to continue
+              invalid: Add a valid date with month and year
+            self_attested_term_start:
+              blank: Add term start date to continue
+              invalid: Add a valid date with month and year
         job_training_activity:
           attributes:
             organization_name:
@@ -91,6 +97,25 @@ en:
             hours:
               greater_than_or_equal_to: Hours must be 0 or more
   activities:
+    activities:
+      employment_focused_review:
+        additional_comments: Additional comments
+        employer_address: Address
+        employer_contact_email: Employer contact email
+        employer_contact_name: Employer contact name
+        employer_contact_phone_number: Employer contact phone number
+        employer_details: Employer details
+        employer_information: Employer information
+        employer_name: Name
+        employment_details: Employment details
+        employment_header: 'Job %{count}: %{employer_name}'
+        gross_income: Gross income
+        header: Review and submit the jobs you've added
+        hours_and_income: Hours and income
+        hours_worked: Hours worked
+        month: Month
+        monthly_details: Monthly details
+        submit: Submit to %{agency_name}
     activity_header_component:
       back: Back
       exit: Exit
@@ -182,6 +207,30 @@ en:
               hint: Add education details about your trade school, vocational school, or career and technical education (CTE) programs.
               label: Enter a trade or technical program
           reporting_period_label: 'Reporting period:'
+      add_your_term:
+        edit:
+          continue: Continue
+          credit_hours: Credit hours
+          credit_hours_hint: If you aren't sure what to put here or your school does not use credits, enter the number of hours you typically spend in class each week
+          description: Review all the information you’ve added for %{school_name} before adding it to your community engagement report.
+          enrollment_status: Enrollment status
+          enrollment_status_options:
+            full_time: Full-time
+            half_time: Half-time
+            less_than_half_time: Less than half-time
+            unknown: I’m not sure
+          multiple_terms_description: If you were enrolled in multiple terms during the reporting period, you’ll need to add each term separately.
+          select_one: "- Select one -"
+          term_date_placeholder: MM/YYYY
+          term_end: Term end date
+          term_end_hint: If you’re not sure, enter when your current classes are expected to end
+          term_start: Term start date
+          title: Add your term for %{school_name}
+        errors:
+          dates_body: Add a valid date with a MM/YYYY format to continue.
+          dates_heading: Check your term dates
+          information_body: Add your term dates and enrollment status to continue.
+          information_heading: No education information added
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (optional)
@@ -201,19 +250,6 @@ en:
         retry_button: Retry student verification
       errors:
         unexpected: An unexpected error occurred. Please try again.
-      hours_input:
-        continue: Continue
-        description: "%{agency_acronym} needs your community engagement for %{reporting_window}. Add the total number of credit hours you were taking."
-        description_multi_month: "%{agency_acronym} needs your community engagement for %{reporting_window}. If you were enrolled as a student in %{month}, add the number of credit hours you were taking."
-        error_body: You need to add credit hours to continue.
-        error_body_multi_month: You need to add credit hours for at least one month to continue.
-        error_heading: No hours entered
-        field_error: Add hours for at least one month
-        heading: Add your %{month} credit hours for %{organization}
-        hours_label: "%{month} credit hours"
-        month_indicator: Month %{current} / %{total}
-        no_hours_checkbox: I didn't take any credit hours at %{organization} in %{month}
-        title: Credit hours
       new:
         city: City
         contact_email: School official’s email
@@ -289,6 +325,11 @@ en:
         term_date_range: 'Term: %{range}'
       title: Education
       title_singular: Education
+      types:
+        college_or_university: College/University
+        high_school_ged: High School/GED
+        other: Other
+        trade_or_technical: Trade/Technical Program
       verify:
         continue: Verify enrollment
         date_of_birth: Date of birth
@@ -328,7 +369,7 @@ en:
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:
         continue: Continue
-        error_body: Add income or hours to continue.
+        error_body: Add income to continue.
         error_heading: No employment information added
         gross_income_hint: How much you made before taxes
         gross_income_label: "%{month} gross income"
@@ -491,11 +532,13 @@ en:
           header: Search for your employer
           payroll_providers: Payroll providers
           popular_providers: Popular providers
+          provider_types_label: Provider type
           query_label: Search for your employer
           search: Search
           search_label: Search for the employer or business you want to add. If you can't find it, you can add it manually.
           search_results_header: Select your employer
           select_employer: Select %{name}
+          tab_selected: "%{name} selected"
       error_no_access: You don't have permission to access that information
       payment_details:
         show:
@@ -555,6 +598,8 @@ en:
       new:
         description: Enter as much information as you can. This will help %{agency_acronym} get in touch with your work program, if needed.
         title: Tell us about your work or training program
+    reporting_for:
+      text_html: Reporting for %{name}
     submit:
       confirm: Share my report
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized agency personnel.'
@@ -578,6 +623,7 @@ en:
         description: We have collected %{activity_types} information with your consent and sent it to %{agency_name}. Any additional income that you weren’t able to add to this report should be shared separately with %{agency_name}.
         education_details: Education details
         education_summary: Education summary
+        education_type: Type
         employer_title: 'Employer %{number}: %{name}'
         employment_details: Employment details
         employment_status: Employment status
@@ -615,6 +661,19 @@ en:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
         done_for_now: You're done for now. %{agency_full_name} will review your information and contact you if needed.
         download_pdf: Download my report
+        employment_focused:
+          subheading: It may take a few moments for them to be reflected in the system.
+          title: Your jobs have been submitted to %{agency_name}
+          whats_next:
+            download_your_report:
+              heading: Download your report
+            head_of_household:
+              heading: If you’re the head of household
+              subheading: Continue your renewal in the Self-Service Portal (SSP) or use the forms mailed to you. You may close this tab.
+            household_member:
+              heading: If you’re a household member
+              subheading: You’re done for now. %{agency_name} will review your information and contact you if needed. You may close this tab.
+            subheading: "%{agency_name} will review your information and contact you if needed."
         survey: Take the 3 question survey
         title: Your community engagement report was successfully sent to %{agency_acronym}
         whats_next: What's next?
@@ -644,10 +703,10 @@ en:
         contact_name: School contact name
         contact_phone: School contact phone number
         credit_hours: Credit hours
-        month: Month
         school_name: School or program
         term_credit_hours: Credit hours
         term_details: Term details
+        type: Type
       employment:
         address: Address
         community_engagement_hours: Community engagement hours
@@ -669,6 +728,7 @@ en:
         program_name: Program name
       legal_agreement: Legal agreement
       monthly_details: Monthly details
+      no_activities_added: Add at least one activity before submitting your report.
       submit: Submit to %{agency_name}
       title: Review and submit your %{benefit} community engagement report
     unpaid_work:
@@ -930,6 +990,7 @@ en:
         no_results_title: We couldn’t find your employer or payroll provider.
         payroll_providers: Payroll providers
         popular_providers: Or choose from popular payroll providers or apps
+        provider_types_label: Provider type
         results:
           one: We found 1 result
           other: We found %{count} results
@@ -939,6 +1000,7 @@ en:
         search_subheader: Select your employer from the list. Then, follow the screens to log in and verify your income.
         select: Select
         select_employer: Select %{name}
+        tab_selected: "%{name} selected"
         to_continue: 'If you still don’t see your employer or payroll provider listed:'
         to_continue_li_1: You’ll need to submit that income information separately.
         to_continue_li_1_html: <a href="%{agency_contact_website}" target="_blank" rel="noopener noreferrer">Go to %{agency_acronym}'s website</a> to learn about other ways to report your income.
@@ -1174,6 +1236,7 @@ en:
         activity:
           community_engagement_hours: Community engagement hours
           gross_income: Gross income
+          hours_worked: Hours worked
           mileage_expenses: Mileage expenses
           payment_information: Payment information
         compact:
