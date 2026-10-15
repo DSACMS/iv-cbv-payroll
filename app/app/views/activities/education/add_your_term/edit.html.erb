@@ -29,18 +29,20 @@
         education_term_credit_hours_statuses_value: EducationActivity::SELF_ATTESTED_CREDIT_HOURS_STATUSES.to_json
       }) do |f| %>
   <%= f.text_field :self_attested_term_start,
+        required: true,
         label: t(".term_start"), label_class: "text-bold",
         placeholder: t(".term_date_placeholder"),
         value: params.dig(:education_activity, :self_attested_term_start) || @education_activity.self_attested_term_start&.strftime("%m/%Y") %>
 
   <%= f.text_field :self_attested_term_end,
+        required: true,
         label: t(".term_end"), label_class: "text-bold", hint: t(".term_end_hint"),
         placeholder: t(".term_date_placeholder"),
         value: params.dig(:education_activity, :self_attested_term_end) || @education_activity.self_attested_term_end&.strftime("%m/%Y") %>
 
   <%= f.select :self_attested_enrollment_status,
         EducationActivity::SELF_ATTESTED_ENROLLMENT_STATUSES.map { |status| [ t(".enrollment_status_options.#{status}"), status ] },
-        { label: t(".enrollment_status"), class: "text-bold", include_blank: t(".select_one"), show_error_message: false },
+        { required: true, label: t(".enrollment_status"), class: "text-bold", include_blank: t(".select_one"), show_error_message: false },
         {
           class: ("usa-input--error text-error" if f.has_error?(:self_attested_enrollment_status)),
           aria: { invalid: f.has_error?(:self_attested_enrollment_status) },

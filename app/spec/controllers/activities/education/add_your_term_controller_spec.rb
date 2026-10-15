@@ -49,6 +49,14 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
       expect(rendered).to have_selector("p", text: I18n.t("activities.education.add_your_term.edit.multiple_terms_description"), exact_text: true)
     end
 
+    it "identifies the term dates and enrollment status as required" do
+      get :edit, params: { education_id: education_activity.id }
+
+      expect(rendered).to have_selector("input[name='education_activity[self_attested_term_start]'][required]")
+      expect(rendered).to have_selector("input[name='education_activity[self_attested_term_end]'][required]")
+      expect(rendered).to have_selector("select[name='education_activity[self_attested_enrollment_status]'][required]")
+    end
+
     it "links back to school information" do
       get :edit, params: { education_id: education_activity.id }
 

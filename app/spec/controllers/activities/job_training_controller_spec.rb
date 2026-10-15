@@ -13,11 +13,18 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
   end
 
   describe "GET #new" do
-    it "renders the form" do
-      get :new
+    before { get :new }
 
+    it "renders the form" do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.job_training.new.title"))
+    end
+
+    it "identifies the organization and program names as required" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_selector("input[name='job_training_activity[organization_name]'][required]")
+      expect(rendered).to have_selector("input[name='job_training_activity[program_name]'][required]")
     end
   end
 

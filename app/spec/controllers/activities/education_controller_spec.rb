@@ -382,6 +382,13 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response.body).to have_content(I18n.t("activities.education.new.title"))
     end
 
+    it "identifies the school name as required" do
+      get :new
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector("input[name='education_activity[school_name]'][required]")
+    end
+
     it "renders the school contact information" do
       get :new
 
