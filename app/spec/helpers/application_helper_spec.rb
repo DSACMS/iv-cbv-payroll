@@ -251,7 +251,7 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  describe "#uswds_form_with" do
+  describe "#uswds_form_with errors" do
     let(:data) { {} }
     let(:result) do
       helper.uswds_form_with(
