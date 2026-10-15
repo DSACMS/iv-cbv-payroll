@@ -131,8 +131,6 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     verify_page(page, title: I18n.t("activities.education.add_your_term.edit.title", school_name: "Updated University of Illinois"))
     expect(page).to have_field(I18n.t("activities.education.add_your_term.edit.term_start"), with: flow.reporting_months.first.strftime("%m/%Y"))
     fill_in I18n.t("activities.education.add_your_term.edit.credit_hours"), with: "6"
-    click_button I18n.t("activities.education.add_your_term.edit.continue")
-    verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: "Updated University of Illinois"), skip_axe_rules: %w[heading-order])
     click_button I18n.t("activities.hub.save")
 
     verify_page(page, title: I18n.t("activities.education.review.title", school_name: "Updated University of Illinois"))

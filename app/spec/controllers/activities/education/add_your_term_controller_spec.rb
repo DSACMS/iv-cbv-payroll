@@ -62,6 +62,12 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
       expect(rendered).to have_selector("form[action='#{activities_flow_education_add_your_term_path(education_id: education_activity, from_review: 1, from_edit: 1)}']")
     end
 
+    it "shows the save button when editing from review" do
+      get :edit, params: { education_id: education_activity.id, from_review: 1 }
+
+      expect(rendered).to have_button(I18n.t("activities.hub.save"))
+    end
+
     it "prefills saved dates, enrollment status, and fractional credits" do
       education_activity.update!(self_attested_term_start: term_start, self_attested_term_end: term_end,
         self_attested_enrollment_status: "less_than_half_time", credit_hours: 3.5)
@@ -136,13 +142,32 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
     end
 
     context "when editing from review" do
-      let(:submission_params) { super().merge(from_review: 1, from_edit: 1) }
+      let(:submission_params) { super().merge(from_review: 1) }
 
-      it "continues to upload with the navigation context" do
+      it "returns to education review" do
         submit_term
 
-        expect(response).to redirect_to(new_activities_flow_education_document_upload_path(
-          education_id: education_activity, from_review: 1, from_edit: 1))
+        expect(response).to redirect_to(review_activities_flow_education_path(id: education_activity))
+      end
+
+      context "when editing from the hub" do
+        let(:submission_params) { super().merge(from_edit: 1) }
+
+        it "preserves hub navigation when returning to review" do
+          submit_term
+
+          expect(response).to redirect_to(review_activities_flow_education_path(id: education_activity, from_edit: 1))
+        end
+      end
+    end
+
+    context "with only hub navigation context" do
+      let(:submission_params) { super().merge(from_edit: 1) }
+
+      it "continues to document upload with the navigation context" do
+        submit_term
+
+        expect(response).to redirect_to(new_activities_flow_education_document_upload_path(education_id: education_activity, from_edit: 1))
       end
     end
 
