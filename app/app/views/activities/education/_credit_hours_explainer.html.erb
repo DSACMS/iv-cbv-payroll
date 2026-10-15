@@ -1,4 +1,6 @@
-<%= render AccordionComponent.new(id: "education-credit-hours-explainer", heading_level: 2) do |accordion| %>
-  <% accordion.with_title { t("activities.education.review.ce_explainer_title") } %>
-  <% accordion.with_accordion_item { t("activities.education.review.ce_explainer_body") } %>
-<% end %>
+<div class="maxw-table">
+  <%= render AccordionComponent.new(id: "education-credit-hours-explainer", heading_level: 2) do |accordion| %>
+    <% accordion.with_title { t("activities.education.review.ce_explainer_title") } %>
+    <% accordion.with_accordion_item { t("activities.education.review.ce_explainer_body") } %>
+  <% end %>
+</div>
