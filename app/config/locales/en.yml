@@ -176,6 +176,14 @@ en:
       new:
         continue: Continue to review
         description: 'Upload documents that verify the information you entered for:'
+        education:
+          credit_hours: Credit hours
+          description: 'Upload documents that verify the information you entered:'
+          enrollment_status: Enrollment status
+          suggestion_title: Suggested supporting documents
+          suggestions_html: "<ul><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li><li>Copy of class schedule for the current term</li><li>Transcript from most recent enrollment period</li></ul>"
+          term_end: Term end date
+          term_start: Term start date
         errors:
           empty: That file is empty. Choose a different file.
           multiple_files: We could not upload one or more files. Check the files and try again.
@@ -325,6 +333,11 @@ en:
         term_date_range: 'Term: %{range}'
       title: Education
       title_singular: Education
+      types:
+        college_or_university: College/University
+        high_school_ged: High School/GED
+        other: Other
+        trade_or_technical: Trade/Technical Program
       verify:
         continue: Verify enrollment
         date_of_birth: Date of birth
@@ -617,6 +630,7 @@ en:
         description: We have collected %{activity_types} information with your consent and sent it to %{agency_name}. Any additional income that you weren’t able to add to this report should be shared separately with %{agency_name}.
         education_details: Education details
         education_summary: Education summary
+        education_type: Type
         employer_title: 'Employer %{number}: %{name}'
         employment_details: Employment details
         employment_status: Employment status
@@ -699,6 +713,7 @@ en:
         school_name: School or program
         term_credit_hours: Credit hours
         term_details: Term details
+        type: Type
       employment:
         address: Address
         community_engagement_hours: Community engagement hours

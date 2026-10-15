@@ -122,6 +122,7 @@ module ApplicationHelper
     data[:controller] = (controllers + [ "error-summary" ]).uniq.join(" ")
     data[:turbo_frame] = "_top"
     options[:data] = data
+    options[:html] = { novalidate: true }.merge(options.fetch(:html, {}))
 
     turbo_frame_tag(model, target: "_top") do
       form_with(model: model, scope: scope, url: url, format: format, **options, &block)
