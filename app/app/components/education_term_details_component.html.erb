@@ -1,0 +1,18 @@
+<ul>
+  <li>
+    <strong><%= t("activities.document_uploads.new.education.term_start") %></strong>:
+    <%= activity.self_attested_term_start&.strftime("%m/%d/%Y") || t("shared.not_applicable") %>
+  </li>
+  <li>
+    <strong><%= t("activities.document_uploads.new.education.term_end") %></strong>:
+    <%= activity.self_attested_term_end&.strftime("%m/%d/%Y") || t("shared.not_applicable") %>
+  </li>
+  <li>
+    <strong><%= t("activities.document_uploads.new.education.enrollment_status") %></strong>:
+    <%= activity.self_attested_enrollment_status.present? ? activity.self_attested_enrollment_status_display : t("shared.not_applicable") %>
+  </li>
+  <li>
+    <strong><%= t("activities.document_uploads.new.education.credit_hours") %></strong>:
+    <%= activity.credit_hours.present? ? helpers.format_decimal_amount(activity.credit_hours) : t("shared.not_applicable") %>
+  </li>
+</ul>

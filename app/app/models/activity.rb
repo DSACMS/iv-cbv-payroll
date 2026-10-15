@@ -28,6 +28,10 @@ class Activity < ApplicationRecord
     draft? && pre_populated?
   end
 
+  def manual_education_upload?
+    false
+  end
+
   validate :date_within_reporting_window
 
   def date=(value)

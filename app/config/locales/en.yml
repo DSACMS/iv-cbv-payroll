@@ -176,6 +176,14 @@ en:
       new:
         continue: Continue to review
         description: 'Upload documents that verify the information you entered for:'
+        education:
+          credit_hours: Credit hours
+          description: 'Upload documents that verify the information you entered:'
+          enrollment_status: Enrollment status
+          suggestion_title: Suggested supporting documents
+          suggestions_html: "<ul><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li><li>Copy of class schedule for the current term</li><li>Transcript from most recent enrollment period</li></ul>"
+          term_end: Term end date
+          term_start: Term start date
         errors:
           empty: That file is empty. Choose a different file.
           multiple_files: We could not upload one or more files. Check the files and try again.
