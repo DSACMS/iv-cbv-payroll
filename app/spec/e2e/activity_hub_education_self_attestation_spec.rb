@@ -25,7 +25,10 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     flow = ActivityFlow.last
 
     # --- Step 1: Create a new self-attested education activity ---
-    visit new_activities_flow_education_path
+    visit activities_flow_education_add_your_education_path
+    verify_page(page, title: I18n.t("activities.education.add_your_education.show.header"))
+    find("label[for='add_education_method_high_school_ged']").click
+    click_button I18n.t("continue")
     verify_page(page, title: I18n.t("activities.education.new.title"))
     fill_in I18n.t("activities.education.new.school_name"), with: "University of Illinois"
     fill_in I18n.t("activities.education.new.street_address"), with: "601 E John St"
@@ -85,6 +88,10 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     click_button I18n.t("activities.education.review.save")
     verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
 
+    expect(education_activity.education_type).to eq("high_school_ged")
+    visit activities_flow_summary_path
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: "Medicaid"))
+    expect(page).to have_selector("tr", text: "#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.high_school_ged")}")
     visit new_activities_flow_education_document_upload_path(education_id: education_activity)
     verify_page(
       page,

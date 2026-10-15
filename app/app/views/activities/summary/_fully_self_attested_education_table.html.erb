@@ -1,5 +1,6 @@
 <h3><%= t("activities.summary.education.details") %></h3>
 <%= render(ContactInfoReviewTableComponent.new(field_header: t("shared.table_headers.education_information"), value_header: t("shared.table_headers.your_details"), rows: [
+  { label: t("activities.summary.education.type"), value: activity.education_type_display },
   { label: t("activities.summary.education.school_name"), value: activity.school_name },
   { label: t("activities.summary.education.address"), value: activity.formatted_address },
   { label: t("activities.summary.education.contact_name"), value: activity.contact_name },

@@ -22,6 +22,23 @@ RSpec.describe Activities::SummaryController, type: :controller do
   end
 
   describe "GET #show" do
+    context "with a tokenized flow" do
+      let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+      let(:reporting_for_text) {
+        I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+      }
+
+      before do
+        activity_flow.update!(cbv_applicant: applicant, activity_flow_invitation: invitation)
+        get :show
+      end
+
+      it "keeps the reporting banner on requests without a token parameter" do
+        expect(Capybara.string(response.body)).to have_text(reporting_for_text, count: 1)
+      end
+    end
+
     it "renders the review progress indicator at table width" do
       activity_flow.update!(reporting_window_months: 2)
       activity = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Scoped")
@@ -225,7 +242,8 @@ RSpec.describe Activities::SummaryController, type: :controller do
       let(:credit_hours) { 3.5 }
       let(:education_activity) do
         create(:education_activity, :with_self_attested_term, activity_flow: activity_flow,
-          school_name: "University of Illinois", street_address: "601 E John St", city: "Champaign", state: "IL",
+          school_name: "University of Illinois", education_type: "high_school_ged",
+          street_address: "601 E John St", city: "Champaign", state: "IL",
           contact_name: "Dr. Smith", contact_title: "Registrar", contact_email: "registrar@example.edu",
           contact_phone_number: "2175550100", self_attested_enrollment_status: enrollment_status, credit_hours: credit_hours)
       end
@@ -236,6 +254,11 @@ RSpec.describe Activities::SummaryController, type: :controller do
         activity_flow.update!(reporting_window_months: 2)
         education_activity
         get :show
+      end
+
+      it "renders the education type as the first row" do
+        school_table = rendered.all("table").first
+        expect(school_table).to have_selector("tbody tr:first-child", text: "#{I18n.t('activities.summary.education.type')} #{education_activity.education_type_display}", normalize_ws: true)
       end
 
       it "renders school information and the term details heading" do
@@ -282,6 +305,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         :education_activity,
         activity_flow: activity_flow,
         data_source: :partially_self_attested,
+        education_type: "trade_or_technical",
         status: :succeeded
       )
       create(
@@ -296,6 +320,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       )
 
       get :show
+      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }.all("tbody tr").first).to have_text("#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.trade_or_technical")}", normalize_ws: true)
 
       doc = Capybara.string(response.body)
       expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
@@ -408,6 +433,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         :education_activity,
         activity_flow: activity_flow,
         data_source: :validated,
+        education_type: "college_or_university",
         status: :succeeded
       )
       first_month = activity_flow.reporting_months.first
@@ -431,6 +457,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       )
 
       get :show
+      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }.all("tbody tr").first).to have_text("#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.college_or_university")}", normalize_ws: true)
 
       doc = Capybara.string(response.body)
       expect(response.body).to include(half_time_school_name)
