@@ -3,6 +3,7 @@
     <% payroll_details.paystubs.each_with_index do |paystub, index| %>
       <div class="activity-report__activity">
         <%= render(TableComponent.new(
+          caption: t("activities.submit.pdf.payment_information", number: index + 1),
           class_names: "activity-report__table font-sans-3xs margin-0 margin-bottom-2 maxw-none"
         )) do |table| %>
           <%= table.with_header_cell(scope: "col").with_content(

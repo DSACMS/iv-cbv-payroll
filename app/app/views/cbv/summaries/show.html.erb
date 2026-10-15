@@ -43,7 +43,11 @@
   <h3><%= t(".application_information") %></h3>
   <%= link_to t(".edit"), cbv_flow_applicant_information_path(force_show: true), class: "usa-link text-bold margin-0" %>
 </div>
-<%= render(TableComponent.new(class_names: "margin-top-2", attributes: { "data-testid" => "paystub-table" })) do |table| %>
+<%= render(TableComponent.new(
+  caption: t(".application_information"),
+  class_names: "margin-top-2",
+  attributes: { "data-testid" => "paystub-table" }
+)) do |table| %>
   <%= table.with_header_cell(colspan: 1, class_names: "border-top-1px")
          .with_content(t(".question")) %>
   <%= table.with_header_cell(colspan: 1, class_names: "border-top-1px")
@@ -69,7 +73,11 @@
   <h3><%= t("cbv.summaries.show.other_jobs") %></h3>
   <%= link_to t("cbv.summaries.show.edit"), cbv_flow_other_job_path, class: "usa-link text-bold margin-0" %>
 </div>
-<%= render(TableComponent.new(class_names: "margin-top-2", attributes: { "data-testid" => "other-jobs-table" })) do |table| %>
+<%= render(TableComponent.new(
+  caption: t(".other_jobs"),
+  class_names: "margin-top-2",
+  attributes: { "data-testid" => "other-jobs-table" }
+)) do |table| %>
   <%= table.with_header_cell(colspan: 1, class_names: "border-top-1px")
          .with_content(t(".question")) %>
   <%= table.with_header_cell(colspan: 1, class_names: "border-top-1px")

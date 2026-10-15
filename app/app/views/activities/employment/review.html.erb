@@ -46,7 +46,10 @@
 ])) %>
 
 <h2><%= unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_hours") : t("activities.summary.monthly_details") %></h2>
-<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+<%= render(TableComponent.new(
+  caption: unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_hours") : t("activities.summary.monthly_details"),
+  activity_hours_review: true
+)) do |table| %>
   <%= table.with_header_cell.with_content(t("activities.summary.employment.month")) %>
   <% unless unpaid %>
     <%= table.with_header_cell.with_content(t("activities.employment.review.gross_income")) %>

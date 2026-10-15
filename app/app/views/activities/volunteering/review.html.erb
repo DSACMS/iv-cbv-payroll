@@ -30,7 +30,10 @@
 ])) %>
 
 <h2><%= t("activities.summary.monthly_details") %></h2>
-<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+<%= render(TableComponent.new(
+  caption: t("activities.summary.monthly_details"),
+  activity_hours_review: true
+)) do |table| %>
   <%= table.with_header_cell(class_names: "text-nowrap")
            .with_content(t("activities.summary.community_service.month")) %>
   <%= table.with_header_cell(class_names: "text-nowrap")

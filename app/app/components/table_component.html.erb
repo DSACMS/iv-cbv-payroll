@@ -1,4 +1,5 @@
 <%= tag.table(**@attributes.merge(class: @class_names)) do %>
+  <caption class="usa-sr-only"><%= @caption %></caption>
   <thead>
     <% if header.present? %>
       <tr>

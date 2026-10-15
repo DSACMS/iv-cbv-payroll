@@ -27,6 +27,11 @@ RSpec.describe "activities/submit/show.pdf.erb", type: :view do
     expect(document).to have_text(ApplicationHelper.format_decimal_amount(education_activity.community_engagement_hours(credit_hours)))
   end
 
+  it "gives the report information table an accessible name" do
+    expect(document).to have_selector("h2#client-and-report-information")
+    expect(document).to have_selector('table[aria-labelledby="client-and-report-information"]')
+  end
+
   context "with full-time enrollment" do
     let(:enrollment_status) { "full_time" }
     let(:credit_hours) { nil }

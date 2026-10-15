@@ -1,4 +1,4 @@
-<%= render(TableComponent.new) do |table| %>
+<%= render(TableComponent.new(caption: t("shared.table_headers.employer_information"))) do |table| %>
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.employer_information") } %>
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
@@ -53,7 +53,7 @@
 <% end %>
 
 <h3><%= t("activities.summary.monthly_details") %></h3>
-<%= render(TableComponent.new(multi_column: true)) do |table| %>
+<%= render(TableComponent.new(caption: t("activities.summary.monthly_details"), multi_column: true)) do |table| %>
   <%= table.with_header_cell(colspan: 1)
          .with_content(t("activities.summary.employment.month")) %>
   <%= table.with_header_cell(colspan: 1)

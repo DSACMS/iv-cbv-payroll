@@ -8,7 +8,12 @@
         <% end %>
         <% accordion.with_accordion_item do %>
           <% summary[:paystubs].each do |paystub| %>
-          <%= render(TableComponent.new(class_names: "payment-details-table")) do |table| %>
+          <%= render(TableComponent.new(
+            caption: @activity_flow_labels ?
+              I18n.t("components.report.monthly_summary_table.activity.payment_information") :
+              I18n.t("cbv.payment_details.show.pay_information"),
+            class_names: "payment-details-table"
+          )) do |table| %>
             <%= table.with_header_cell(scope: "col") do %>
               <% if @activity_flow_labels %>
                 <%= I18n.t("components.report.monthly_summary_table.activity.payment_information") %>
