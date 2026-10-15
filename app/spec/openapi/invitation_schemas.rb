@@ -74,10 +74,11 @@ module InvitationSchemas
       InvitationResponseV2: {
         type: :object,
         description: InvitationDocumentation.read("post-v2-invitations", section: "Response"),
-        required: %w[tokenized_url activity_tokenized_url expiration_date language agency_partner_metadata],
+        required: %w[tokenized_url expiration_date language agency_partner_metadata],
         additionalProperties: true,
         properties: {
           tokenized_url: { type: :string, format: :uri, description: "Income reporting link. Treat the token as opaque and direct the applicant to this URL unchanged." },
+          token: { type: :string, description: "Opaque auth token for tokenized_url" },
           activity_tokenized_url: { type: :string, format: :uri, description: "Activity reporting link for the selected invitation_type." },
           expiration_date: { type: :string, format: :"date-time", description: "Expiration of tokenized_url, at the end of the day in America/New_York after the agency's configured validity period." },
           language: { type: :string, enum: %w[en es] },
