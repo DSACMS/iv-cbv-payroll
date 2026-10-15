@@ -521,19 +521,103 @@ RSpec.describe Activities::EducationController, type: :controller do
           href: edit_activities_flow_education_path(id: education_activity, from_review: 1))
       end
 
-      context "with a self-attested term" do
+      context "with school contact information" do
         let(:rendered) { Capybara.string(response.body) }
+
+        before do
+          education_activity.update!(contact_name: "Dr. Smith", contact_title: "Registrar",
+            contact_email: "registrar@example.edu", contact_phone_number: "2175550100")
+          get :review, params: { id: education_activity.id }
+        end
+
+        it "renders the school official's name and title" do
+          expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.education.review.contact_name')} #{education_activity.contact_name}", normalize_ws: true)
+          expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.education.review.contact_title')} #{education_activity.contact_title}", normalize_ws: true)
+        end
+
+        it "renders the school official's email and school phone number" do
+          phone_number = ActiveSupport::NumberHelper.number_to_phone(education_activity.contact_phone_number, area_code: true)
+          expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.education.review.contact_email')} #{education_activity.contact_email}", normalize_ws: true)
+          expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.education.review.contact_phone')} #{phone_number}", normalize_ws: true)
+        end
+
+        it "renders the comments prompt and add to report button" do
+          expect(rendered).to have_selector("label", text: I18n.t("activities.education.review.additional_comments_description",
+            agency_name: I18n.t("shared.agency_full_name.sandbox")))
+          expect(rendered).to have_button(I18n.t("activities.education.review.save"))
+        end
+
+        it "renders the credit hours explanation in an accordion" do
+          expect(rendered).to have_selector("button[aria-controls='education-credit-hours-explainer-content']",
+            text: I18n.t("activities.education.review.ce_explainer_title"))
+          expect(rendered).to have_selector("#education-credit-hours-explainer-content",
+            text: I18n.t("activities.education.review.ce_explainer_body"))
+        end
+      end
+
+      context "with a self-attested term" do
+        let(:enrollment_status) { "less_than_half_time" }
+        let(:credit_hours) { 3.5 }
+        let(:rendered) { Capybara.string(response.body) }
+        let(:term_table) { rendered.find("table", text: I18n.t("activities.education.add_your_term.edit.term_start")) }
 
         before do
           education_activity.update!(self_attested_term_start: activity_flow.reporting_months.first,
             self_attested_term_end: activity_flow.reporting_months.last,
-            self_attested_enrollment_status: "less_than_half_time", credit_hours: 3.5)
+            self_attested_enrollment_status: enrollment_status, credit_hours: credit_hours)
           get :review, params: { id: education_activity.id, from_edit: 1 }
         end
 
         it "preserves review and hub navigation in the term edit link" do
           expect(rendered).to have_link(I18n.t("activities.hub.edit"),
             href: edit_activities_flow_education_add_your_term_path(education_id: education_activity, from_review: 1, from_edit: 1))
+        end
+
+        it "renders enrollment status and separate term dates" do
+          expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.add_your_term.edit.enrollment_status')} #{education_activity.self_attested_enrollment_status_display}", normalize_ws: true)
+          expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.add_your_term.edit.term_start')} #{I18n.l(education_activity.self_attested_term_start, format: :month_year)}", normalize_ws: true)
+          expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.add_your_term.edit.term_end')} #{I18n.l(education_activity.self_attested_term_end, format: :month_year)}", normalize_ws: true)
+        end
+
+        it "renders fractional credit hours" do
+          expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.review.credit_hours')} #{ApplicationHelper.format_decimal_amount(credit_hours)}", normalize_ws: true)
+        end
+
+        context "with an unsure enrollment status" do
+          let(:enrollment_status) { "unknown" }
+
+          it "renders the enrollment status and entered credits" do
+            expect(term_table).to have_text(education_activity.self_attested_enrollment_status_display)
+            expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.review.credit_hours')} #{ApplicationHelper.format_decimal_amount(credit_hours)}", normalize_ws: true)
+          end
+        end
+
+        context "with full-time enrollment" do
+          let(:enrollment_status) { "full_time" }
+          let(:credit_hours) { nil }
+
+          it "hides credit hours" do
+            expect(term_table).to have_text(education_activity.self_attested_enrollment_status_display)
+            expect(term_table).to have_no_text(I18n.t("activities.education.review.credit_hours"))
+          end
+        end
+
+        context "with half-time enrollment" do
+          let(:enrollment_status) { "half_time" }
+          let(:credit_hours) { nil }
+
+          it "hides credit hours" do
+            expect(term_table).to have_text(education_activity.self_attested_enrollment_status_display)
+            expect(term_table).to have_no_text(I18n.t("activities.education.review.credit_hours"))
+          end
+        end
+
+        context "without entered credit hours" do
+          let(:credit_hours) { nil }
+
+          it "hides credit hours" do
+            expect(term_table).to have_no_text(I18n.t("activities.education.review.credit_hours"))
+          end
         end
       end
 

@@ -68,9 +68,18 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     verify_page(page, title: I18n.t("activities.education.review.title", school_name: "University of Illinois"))
     expect(page).to have_content "601 E John St, Champaign, IL"
     expect(page).to have_content "Dr. Smith"
+    expect(page).to have_selector("tr", text: "#{I18n.t('activities.education.review.contact_title')} Academic advisor", normalize_ws: true)
     expect(page).to have_content "smith@illinois.edu"
     education_activity = EducationActivity.last
     expect(education_activity.credit_hours).to eq(3.5)
+    within("table", text: I18n.t("activities.education.add_your_term.edit.term_start")) do
+      expect(page).to have_text(education_activity.self_attested_enrollment_status_display)
+      expect(page).to have_text(I18n.l(education_activity.self_attested_term_start, format: :month_year))
+      expect(page).to have_text(I18n.l(education_activity.self_attested_term_end, format: :month_year))
+      expect(page).to have_selector("tr", text: "#{I18n.t('activities.education.review.credit_hours')} #{ApplicationHelper.format_decimal_amount(education_activity.credit_hours)}", normalize_ws: true)
+    end
+    click_button I18n.t("activities.education.review.ce_explainer_title")
+    expect(page).to have_text(I18n.t("activities.education.review.ce_explainer_body"))
 
     # --- Step 2: Save and return to the hub ---
     click_button I18n.t("activities.education.review.save")
@@ -121,11 +130,21 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
 
     verify_page(page, title: I18n.t("activities.education.review.title", school_name: "Updated University of Illinois"))
     expect(education_activity.reload.credit_hours).to eq(6)
+    expect(page).to have_selector("tr", text: "#{I18n.t('activities.education.review.credit_hours')} #{ApplicationHelper.format_decimal_amount(education_activity.credit_hours)}", normalize_ws: true)
 
     # --- Step 4: Save and return to the hub ---
     click_button I18n.t("activities.hub.save")
 
     verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
     expect(page).to have_content("Updated University of Illinois")
+
+    visit activities_flow_summary_path
+    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    expect(page).to have_selector("tr", text: "#{I18n.t('activities.summary.education.contact_title')} Academic advisor", normalize_ws: true)
+    within("table", text: I18n.t("activities.education.add_your_term.edit.term_start")) do
+      expect(page).to have_text(I18n.l(education_activity.self_attested_term_start, format: :month_year))
+      expect(page).to have_text(I18n.l(education_activity.self_attested_term_end, format: :month_year))
+      expect(page).to have_selector("tr", text: "#{I18n.t('activities.education.review.credit_hours')} #{ApplicationHelper.format_decimal_amount(education_activity.credit_hours)}", normalize_ws: true)
+    end
   end
 end

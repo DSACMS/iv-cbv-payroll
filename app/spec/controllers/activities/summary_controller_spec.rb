@@ -220,31 +220,61 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(second_month.hours, precision: 2, strip_insignificant_zeros: true))
     end
 
-    it "renders manual school information and the term details heading" do
-      activity_flow.update!(reporting_window_months: 2)
+    context "with a self-attested education term" do
+      let(:enrollment_status) { "less_than_half_time" }
+      let(:credit_hours) { 3.5 }
+      let(:education_activity) do
+        create(:education_activity, :with_self_attested_term, activity_flow: activity_flow,
+          school_name: "University of Illinois", street_address: "601 E John St", city: "Champaign", state: "IL",
+          contact_name: "Dr. Smith", contact_title: "Registrar", contact_email: "registrar@example.edu",
+          contact_phone_number: "2175550100", self_attested_enrollment_status: enrollment_status, credit_hours: credit_hours)
+      end
+      let(:rendered) { Capybara.string(response.body) }
+      let(:term_table) { rendered.find("table", text: I18n.t("activities.education.add_your_term.edit.term_start")) }
 
-      activity = create(
-        :education_activity,
-        :with_self_attested_term,
-        activity_flow: activity_flow,
-        school_name: "University of Illinois",
-        street_address: "601 E John St",
-        city: "Champaign",
-        state: "IL",
-        contact_name: "Dr. Smith",
-        contact_email: "smith@illinois.edu",
-        contact_phone_number: "555-1212"
-      )
+      before do
+        activity_flow.update!(reporting_window_months: 2)
+        education_activity
+        get :show
+      end
 
-      get :show
+      it "renders school information and the term details heading" do
+        expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.summary.education.school_name')} #{education_activity.school_name}", normalize_ws: true)
+        expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.summary.education.address')} #{education_activity.formatted_address}", normalize_ws: true)
+        expect(rendered).to have_selector("h3", text: I18n.t("activities.summary.education.details"))
+        expect(rendered).to have_selector("h3", text: I18n.t("activities.summary.education.term_details"))
+      end
 
-      expect(response.body).to include(activity.school_name)
-      expect(response.body).to include(activity.formatted_address)
-      expect(response.body).to include(activity.contact_name)
-      expect(response.body).to include(activity.contact_email)
-      expect(response.body).to include(activity.contact_phone_number)
-      doc = Capybara.string(response.body)
-      expect(doc).to have_selector("h3", text: I18n.t("activities.summary.education.term_details"))
+      it "renders the school official's name and title" do
+        expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.summary.education.contact_name')} #{education_activity.contact_name}", normalize_ws: true)
+        expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.summary.education.contact_title')} #{education_activity.contact_title}", normalize_ws: true)
+      end
+
+      it "renders the school official's email and school phone number" do
+        phone_number = ActiveSupport::NumberHelper.number_to_phone(education_activity.contact_phone_number, area_code: true)
+        expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.summary.education.contact_email')} #{education_activity.contact_email}", normalize_ws: true)
+        expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.summary.education.contact_phone')} #{phone_number}", normalize_ws: true)
+      end
+
+      it "renders enrollment status and separate term dates" do
+        expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.add_your_term.edit.enrollment_status')} #{education_activity.self_attested_enrollment_status_display}", normalize_ws: true)
+        expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.add_your_term.edit.term_start')} #{I18n.l(education_activity.self_attested_term_start, format: :month_year)}", normalize_ws: true)
+        expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.add_your_term.edit.term_end')} #{I18n.l(education_activity.self_attested_term_end, format: :month_year)}", normalize_ws: true)
+      end
+
+      it "renders fractional credit hours" do
+        expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.review.credit_hours')} #{ApplicationHelper.format_decimal_amount(credit_hours)}", normalize_ws: true)
+      end
+
+      context "with full-time enrollment" do
+        let(:enrollment_status) { "full_time" }
+        let(:credit_hours) { nil }
+
+        it "hides credit hours" do
+          expect(term_table).to have_text(education_activity.self_attested_enrollment_status_display)
+          expect(term_table).to have_no_text(I18n.t("activities.education.review.credit_hours"))
+        end
+      end
     end
 
     it "renders partially self-attested education in one table with saved term credit hours and community engagement hours" do
