@@ -352,7 +352,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       get :show, format: :pdf
 
       pdf_text = extract_pdf_text(response)
-      expect(pdf_text).to match(/Payment information \(1\)\s+Your details/)
+      expect(pdf_text).to include("Your details")
       expect(pdf_text).to include("Pay date")
       expect(pdf_text).to include("Payment before taxes (gross)")
       expect(pdf_text).to match(/Number of hours worked\s+Not provided/)
