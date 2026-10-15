@@ -49,7 +49,7 @@ RSpec.describe UswdsFormBuilder do
       end
 
       it 'adds aria-describedby to the input' do
-        expect(result).to have_css('input[aria-describedby="object_first_name_hint"]')
+        expect(result).to have_css('input[aria-describedby="first_name_hint"]')
       end
     end
 
@@ -149,7 +149,7 @@ RSpec.describe UswdsFormBuilder do
         input = Capybara.string(result).find('input[name="object[first_name]"]')
 
         expect(input['aria-describedby'].split).to contain_exactly(
-          'object_first_name_hint',
+          'first_name_hint',
           'object_first_name_error'
         )
       end

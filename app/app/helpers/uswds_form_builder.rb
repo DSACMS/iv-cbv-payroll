@@ -431,6 +431,6 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def hint_id(attribute)
-    "#{field_id(attribute)}_hint"
+    "#{attribute}_hint"
   end
 end
