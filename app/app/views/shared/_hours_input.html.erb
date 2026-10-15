@@ -38,12 +38,6 @@
   </p>
 <% end %>
 
-<% if months.length > 1 %>
-  <p id="hours-requirement" class="usa-sr-only">
-    <%= t("#{t_scope}.error_body_multi_month") %>
-  </p>
-<% end %>
-
 <% if error %>
   <%= render Uswds::Alert.new(type: :error, heading: t("#{t_scope}.error_heading"), class: "margin-bottom-4") do %>
     <% if months.length > 1 %>
@@ -76,8 +70,6 @@
           value: decimal_input_value(activity_month.hours),
           label: t("#{t_scope}.hours_label", month: l(current_month, format: :month_year)),
           label_class: "text-bold",
-          required: months.one?,
-          aria: { describedby: ("hours-requirement" if months.length > 1) },
           data: { hours_input_target: "hoursField", action: "input->hours-input#input" } %>
 
     <%= f.submit(local_assigns[:submit_label] || t("#{t_scope}.continue")) %>
