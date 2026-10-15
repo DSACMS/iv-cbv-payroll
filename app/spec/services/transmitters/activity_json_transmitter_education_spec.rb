@@ -1,4 +1,4 @@
-require "rails_helper"
+require "swagger_helper"
 
 RSpec.describe Transmitters::ActivityJsonTransmitter do
   include NscApiHelper
@@ -21,10 +21,12 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       completed_at: Time.zone.parse("2026-09-01 14:00:00"), reporting_window_months: 6,
       confirmation_code: "EDUCATION-SAMPLE")
   end
-  let(:education_activity) { create(:education_activity, activity_flow: activity_flow, draft: true, additional_comments: nil) }
+  let(:education_activity) { create(:education_activity, activity_flow: activity_flow, draft: true, education_type: "college_or_university", additional_comments: nil) }
   let(:transmitter) { described_class.new(activity_flow, current_agency) }
   let(:payload) { JSON.parse(transmitter.payload) }
   let(:education_entries) { payload.dig("ce_report", "activities", "education").values.flatten }
+  let(:document) { JSONSchemer.openapi(JSON.parse(RSpec.configuration.openapi_specs.fetch("openapi.json").to_json)) }
+  let(:schema) { document.schema("CeActivityReport") }
 
   before do
     create(:user, :with_access_token, client_agency_id: "sandbox", is_service_account: true)
@@ -32,10 +34,13 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
   end
 
   shared_examples "an education report" do |expected_data_source|
-    it "delivers an education report" do
+    it "validates and delivers an education report" do
+      errors = schema.validate(payload).map { |error| error.slice("data_pointer", "type", "error") }
+      expect(errors).to eq([])
+
       if expected_data_source
         expect(education_entries).to be_present
-        expect(education_entries).to all(include("type" => "education", "data_source" => expected_data_source))
+        expect(education_entries).to all(include("type" => "education", "data_source" => expected_data_source, "education_type" => "college_or_university"))
       else
         expect(payload.dig("ce_report", "activities", "education")).to eq({})
       end
@@ -103,10 +108,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
   end
 
   def add_manual_education!
-    education = create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested,
+    create(:education_activity, :with_self_attested_term, education_type: "college_or_university", activity_flow: activity_flow, credit_hours: 3.5,
       school_name: "Example Community College", contact_email: "registrar@example.org", additional_comments: nil)
-    activity_flow.reporting_months.each do |month|
-      create(:education_activity_month, education_activity: education, month: month, hours: 3.5)
-    end
   end
 end

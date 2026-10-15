@@ -30,21 +30,15 @@ class EducationActivityProgressCalculator
   end
 
   def monthly_hours_for_reporting_month(month_start)
+    return fully_self_attested_monthly_hours(month_start) if @education_activity.fully_self_attested?
+
     reporting_month_enrollment = reporting_month_resolver.result_for(month_start)
     terms = reporting_month_enrollment.terms
 
     # Buckle up, here's the logic to determine how many hours to credit the
     # user for. The routing hours may be different so that we can force the
     # user to always go back through the edit pages if necessary.
-    if @education_activity.fully_self_attested?
-      # For fully self-attested activities, we calculate hours based on how
-      # many credit hours the user was enrolled in for that month.
-      monthly_credit_hours = @education_activity.education_activity_months.find_by(month: month_start)&.hours
-      MonthHours.new(
-        progress: @education_activity.community_engagement_hours(monthly_credit_hours),
-        routing: 0      # Always route to hours entry/doc upload pages.
-      )
-    elsif !@education_activity.sync_succeeded?
+    if !@education_activity.sync_succeeded?
       # For activities where NSC failed, we return empty so that they'll be
       # treated as partially self-attested.
       MonthHours.new(progress: 0, routing: 0)
@@ -63,6 +57,18 @@ class EducationActivityProgressCalculator
     else
       MonthHours.new(progress: 0, routing: 0)
     end
+  end
+
+  def fully_self_attested_monthly_hours(month_start)
+    return MonthHours.new(progress: 0, routing: 0) unless @education_activity.self_attested_term_overlaps_month?(month_start)
+
+    sufficient_enrollment = @education_activity.self_attested_sufficient_enrollment?
+    progress = if sufficient_enrollment
+                 ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD
+               else
+                 @education_activity.community_engagement_hours(@education_activity.credit_hours)
+               end
+    MonthHours.new(progress: progress, routing: 0, sufficient_enrollment: sufficient_enrollment)
   end
 
   def partially_self_attested_monthly_hours(terms)

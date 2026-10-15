@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_28_165029) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -45,6 +45,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_28_165029) do
 
   create_table "activity_flow_employment_summaries", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
+    t.integer "compensation_amount"
+    t.string "compensation_unit"
     t.datetime "created_at", null: false
     t.string "employer_address"
     t.string "employer_name"
@@ -53,6 +55,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_28_165029) do
     t.string "employment_status"
     t.date "employment_termination_date"
     t.string "employment_type"
+    t.string "pay_frequency"
     t.bigint "payroll_account_id", null: false
     t.datetime "redacted_at"
     t.datetime "updated_at", null: false
@@ -187,12 +190,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_28_165029) do
     t.string "contact_email"
     t.string "contact_name"
     t.string "contact_phone_number"
+    t.string "contact_title"
     t.datetime "created_at", null: false
-    t.integer "credit_hours"
+    t.decimal "credit_hours", precision: 10, scale: 2
     t.string "data_source", default: "validated", null: false
     t.boolean "draft", default: false, null: false
+    t.string "education_type"
     t.boolean "pre_populated", default: false, null: false
     t.string "school_name"
+    t.string "self_attested_enrollment_status"
+    t.date "self_attested_term_end"
+    t.date "self_attested_term_start"
     t.string "state"
     t.string "status", default: "unknown"
     t.string "street_address"
@@ -200,15 +208,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_28_165029) do
     t.datetime "updated_at", null: false
     t.string "zip_code"
     t.index ["activity_flow_id"], name: "index_education_activities_on_activity_flow_id"
-  end
-
-  create_table "education_activity_months", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigint "education_activity_id", null: false
-    t.decimal "hours", precision: 10, scale: 2, default: "0.0", null: false
-    t.date "month", null: false
-    t.datetime "updated_at", null: false
-    t.index ["education_activity_id"], name: "index_education_activity_months_on_education_activity_id"
   end
 
   create_table "employment_activities", force: :cascade do |t|
@@ -535,7 +534,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_28_165029) do
   add_foreign_key "cbv_flow_invitations", "users"
   add_foreign_key "cbv_flows", "cbv_flow_invitations"
   add_foreign_key "education_activities", "activity_flows"
-  add_foreign_key "education_activity_months", "education_activities"
   add_foreign_key "employment_activities", "activity_flows"
   add_foreign_key "employment_activity_months", "employment_activities"
   add_foreign_key "household_members", "activity_flow_invitations"

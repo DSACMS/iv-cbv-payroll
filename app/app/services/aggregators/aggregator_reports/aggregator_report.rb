@@ -75,49 +75,53 @@ module Aggregators::AggregatorReports
     end
 
     def income_report
-      {}.tap do |report|
-        report[:has_other_jobs] = flow.has_other_jobs
-        report[:employments] = summarize_by_employer.map do |account_id, summary|
-          cbv_flow = flow
-          payroll_account = cbv_flow.payroll_accounts.find do |account|
-            account.aggregator_account_id == account_id
-          end
-          {
-            applicant_full_name: summary[:identity]&.full_name,
-            applicant_ssn: summary[:identity]&.ssn,
-            applicant_extra_comments: payroll_account&.additional_information,
-            employer_name: summary[:employment]&.employer_name,
-            employer_phone: summary[:employment]&.employer_phone_number,
-            employer_address: summary[:employment]&.employer_address,
-            employment_status: summary[:employment]&.status,
-            employment_type: summary[:employment]&.employment_type,
-            employment_start_date: summary[:employment]&.start_date,
-            employment_end_date: summary[:employment]&.termination_date,
-            pay_frequency: summary[:income]&.pay_frequency,
-            compensation_amount: summary[:income]&.compensation_amount,
-            compensation_unit: summary[:income]&.compensation_unit,
-            paystubs: (summary[:paystubs] || []).map do |paystub|
-              {
-                pay_date: paystub.pay_date,
-                pay_period_start: paystub.pay_period_start,
-                pay_period_end: paystub.pay_period_end,
-                pay_gross: paystub.gross_pay_amount || 0,
-                gross_pay_list: (paystub.earnings || []).filter_map do |earning|
-                  next if earning.amount.nil?
+      {
+        has_other_jobs: flow.has_other_jobs,
+        employments: income_report_employments
+      }
+    end
 
-                  {
-                    type: earning.category,
-                    amount: earning.amount
-                  }
-                end,
-                pay_gross_ytd: paystub.gross_pay_ytd,
-                pay_net: paystub.net_pay_amount,
-                hours_paid: paystub.hours,
-                deductions: (paystub.deductions || []).map(&:to_h)
-              }
-            end
-          }
+    def income_report_employments
+      summarize_by_employer.map do |account_id, summary|
+        cbv_flow = flow
+        payroll_account = cbv_flow.payroll_accounts.find do |account|
+          account.aggregator_account_id == account_id
         end
+        {
+          applicant_full_name: summary[:identity]&.full_name,
+          applicant_ssn: summary[:identity]&.ssn,
+          applicant_extra_comments: payroll_account&.additional_information,
+          employer_name: summary[:employment]&.employer_name,
+          employer_phone: summary[:employment]&.employer_phone_number,
+          employer_address: summary[:employment]&.employer_address,
+          employment_status: summary[:employment]&.status,
+          employment_type: summary[:employment]&.employment_type,
+          employment_start_date: summary[:employment]&.start_date,
+          employment_end_date: summary[:employment]&.termination_date,
+          pay_frequency: summary[:income]&.pay_frequency,
+          compensation_amount: summary[:income]&.compensation_amount,
+          compensation_unit: summary[:income]&.compensation_unit,
+          paystubs: (summary[:paystubs] || []).map do |paystub|
+            {
+              pay_date: paystub.pay_date,
+              pay_period_start: paystub.pay_period_start,
+              pay_period_end: paystub.pay_period_end,
+              pay_gross: paystub.gross_pay_amount || 0,
+              gross_pay_list: (paystub.earnings || []).filter_map do |earning|
+                next if earning.amount.nil?
+
+                {
+                  type: earning.category,
+                  amount: earning.amount
+                }
+              end,
+              pay_gross_ytd: paystub.gross_pay_ytd,
+              pay_net: paystub.net_pay_amount,
+              hours_paid: paystub.hours,
+              deductions: (paystub.deductions || []).map(&:to_h)
+            }
+          end
+        }
       end
     end
 

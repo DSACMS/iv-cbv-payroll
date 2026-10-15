@@ -82,6 +82,16 @@ RSpec.describe UswdsFormBuilder do
       end
     end
 
+    context 'with required set to true' do
+      let(:result) { builder.text_field(:first_name, label: 'Name', required: true) }
+
+      it 'identifies the field as required in its label' do
+        expect(result).to have_element(:label, text: 'Name*')
+        expect(result).to have_selector("span.usa-hint--required[aria-hidden='true']", text: '*', exact_text: true)
+        expect(result).to have_element(:input, required: 'required')
+      end
+    end
+
     context 'with custom class' do
       let(:result) { builder.text_field(:first_name, class: 'custom-class') }
 
@@ -170,6 +180,25 @@ RSpec.describe UswdsFormBuilder do
 
       it 'outputs a label' do
         expect(result).to have_element(:label, text: 'Custom label', class: 'usa-label')
+      end
+    end
+
+    context 'with errors' do
+      before { object.errors.add(:first_name, :invalid) }
+
+      it 'outputs an error message by default' do
+        expect(result).to have_selector('.usa-form-group--error')
+        expect(result).to have_selector('.usa-error-message', text: I18n.t('errors.messages.invalid'))
+      end
+
+      context 'with show_error_message set to false' do
+        let(:result) { builder.select(:first_name, [ 'Option 1', 'Option 2' ], show_error_message: false) }
+
+        it 'keeps the error highlight without an inline message' do
+          expect(result).to have_selector('.usa-form-group--error')
+          expect(result).to have_selector('select.usa-select[name="object[first_name]"]')
+          expect(result).to have_no_selector('.usa-error-message')
+        end
       end
     end
   end

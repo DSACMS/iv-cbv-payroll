@@ -22,6 +22,23 @@ RSpec.describe Activities::SummaryController, type: :controller do
   end
 
   describe "GET #show" do
+    context "with a tokenized flow" do
+      let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+      let(:reporting_for_text) {
+        I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+      }
+
+      before do
+        activity_flow.update!(cbv_applicant: applicant, activity_flow_invitation: invitation)
+        get :show
+      end
+
+      it "keeps the reporting banner on requests without a token parameter" do
+        expect(Capybara.string(response.body)).to have_text(reporting_for_text, count: 1)
+      end
+    end
+
     it "renders the review progress indicator at table width" do
       activity_flow.update!(reporting_window_months: 2)
       activity = create(:volunteering_activity, activity_flow: activity_flow, organization_name: "Scoped")
@@ -136,11 +153,10 @@ RSpec.describe Activities::SummaryController, type: :controller do
       create(:education_activity, activity_flow: activity_flow, status: :no_enrollments)
       fully_self_attested_activity = create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: activity_flow,
-        data_source: :fully_self_attested,
         school_name: "University of Illinois"
       )
-      create(:education_activity_month, education_activity: fully_self_attested_activity, month: activity_flow.reporting_months.first, hours: 6)
 
       get :show
 
@@ -221,14 +237,15 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(second_month.hours, precision: 2, strip_insignificant_zeros: true))
     end
 
-    it "renders fully self-attested education details and monthly details in the summary table" do
+    it "renders manual school information and the term details heading" do
       activity_flow.update!(reporting_window_months: 2)
 
       activity = create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: activity_flow,
-        data_source: :fully_self_attested,
         school_name: "University of Illinois",
+        education_type: "high_school_ged",
         street_address: "601 E John St",
         city: "Champaign",
         state: "IL",
@@ -236,26 +253,18 @@ RSpec.describe Activities::SummaryController, type: :controller do
         contact_email: "smith@illinois.edu",
         contact_phone_number: "555-1212"
       )
-      first_month = create(:education_activity_month, education_activity: activity, month: activity_flow.reporting_months.first, hours: 4)
-      second_month = create(:education_activity_month, education_activity: activity, month: activity_flow.reporting_months.second, hours: 6)
 
       get :show
+
+      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }.all("tbody tr").first).to have_text("#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.high_school_ged")}", normalize_ws: true)
 
       expect(response.body).to include(activity.school_name)
       expect(response.body).to include(activity.formatted_address)
       expect(response.body).to include(activity.contact_name)
       expect(response.body).to include(activity.contact_email)
       expect(response.body).to include(activity.contact_phone_number)
-      expect(response.body).to include(I18n.l(first_month.month, format: :month_year))
-      expect(response.body).to include(I18n.l(second_month.month, format: :month_year))
-      expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(first_month.hours, precision: 2, strip_insignificant_zeros: true))
-      expect(response.body).to include(ActiveSupport::NumberHelper.number_to_rounded(second_month.hours, precision: 2, strip_insignificant_zeros: true))
-
       doc = Capybara.string(response.body)
-      monthly_details_headers = doc.all("table").last.all("thead th").map { |cell| cell.text.strip }
-      expect(monthly_details_headers).to include(I18n.t("activities.summary.education.community_engagement_hours"))
-      monthly_detail_rows = doc.all("table").last.all("tbody tr")
-      expect(monthly_detail_rows.map { |row| row.all("th, td").last.text.strip }).to eq(%w[52 78])
+      expect(doc).to have_selector("h3", text: I18n.t("activities.summary.education.term_details"))
     end
 
     it "renders partially self-attested education in one table with saved term credit hours and community engagement hours" do
@@ -263,6 +272,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         :education_activity,
         activity_flow: activity_flow,
         data_source: :partially_self_attested,
+        education_type: "trade_or_technical",
         status: :succeeded
       )
       create(
@@ -277,6 +287,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       )
 
       get :show
+      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }.all("tbody tr").first).to have_text("#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.trade_or_technical")}", normalize_ws: true)
 
       doc = Capybara.string(response.body)
       expect(doc).to have_selector("table", count: 2) # contact info table + monthly details table
@@ -389,6 +400,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         :education_activity,
         activity_flow: activity_flow,
         data_source: :validated,
+        education_type: "college_or_university",
         status: :succeeded
       )
       first_month = activity_flow.reporting_months.first
@@ -412,6 +424,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       )
 
       get :show
+      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }.all("tbody tr").first).to have_text("#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.college_or_university")}", normalize_ws: true)
 
       doc = Capybara.string(response.body)
       expect(response.body).to include(half_time_school_name)
@@ -709,11 +722,10 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
         education = create(
           :education_activity,
+          :with_self_attested_term,
           activity_flow: activity_flow,
-          data_source: :fully_self_attested,
           school_name: "University"
         )
-        create(:education_activity_month, education_activity: education, month: activity_flow.reporting_months.first, hours: 4)
         education.document_uploads.attach(
           io: StringIO.new("%PDF-1.4"),
           filename: "transcript.pdf",
@@ -750,6 +762,34 @@ RSpec.describe Activities::SummaryController, type: :controller do
   end
 
   describe "PATCH #update" do
+    before do
+      create(:employment_activity, activity_flow: activity_flow)
+    end
+
+    context "when no activities have been added" do
+      let(:empty_flow) do
+        create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      end
+
+      before do
+        session[:flow_id] = empty_flow.id
+        session[:flow_type] = :activity
+      end
+
+      it "redirects to the hub instead of completing submission" do
+        patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+
+        expect(response).to redirect_to(activities_flow_root_path)
+        expect(flash[:slim_alert][:message]).to eq(I18n.t("activities.summary.no_activities_added"))
+      end
+
+      it "does not mark the flow as completed" do
+        patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+
+        expect(empty_flow.reload.completed_at).to be_nil
+      end
+    end
+
     it "marks the flow as completed and redirects to success" do
       expect {
         patch :update, params: { activity_flow: { consent_to_submit: "1" } }
@@ -783,6 +823,34 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(flash.now[:alert]).to eq(I18n.t("activities.submit.consent_required"))
       expect(response.body).to include("Helping Hands")
       expect(response.body).to include(I18n.t("activities.summary.legal_agreement"))
+    end
+
+    context "when the flow is employment-focused" do
+      let(:activity_flow) do
+        create(
+          :activity_flow,
+          employment_focused: true,
+          volunteering_activities_count: 0,
+          job_training_activities_count: 0,
+          education_activities_count: 0
+        )
+      end
+
+      before do
+        create(:employment_activity, activity_flow: activity_flow, employer_name: "Gainesville Wrecking")
+      end
+
+      it "re-renders the employment-focused review page instead of the generic summary when consent is missing" do
+        patch :update
+
+        expect(activity_flow.reload.completed_at).to be_nil
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response).to render_template("activities/activities/employment_focused_review")
+        expect(flash.now[:alert]).to eq(I18n.t("activities.submit.consent_required"))
+        expect(response.body).to include("Gainesville Wrecking")
+        expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.activities.employment_focused_review.header")))
+        expect(response.body).not_to include(CGI.escapeHTML(I18n.t("activities.summary.title", benefit: "Medicaid")))
+      end
     end
 
     it "generates a confirmation code" do

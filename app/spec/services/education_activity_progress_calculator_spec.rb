@@ -7,7 +7,7 @@ RSpec.describe EducationActivityProgressCalculator do
   let(:month_start) { flow.reporting_window_range.begin }
 
   describe "#progress_hours_for_month" do
-    context "when fully self-attested" do
+    context "when a manual term has not been entered" do
       let(:education_activity) do
         create(
           :education_activity,
@@ -18,15 +18,65 @@ RSpec.describe EducationActivityProgressCalculator do
         )
       end
 
-      it "returns credit hours multiplied by the CE conversion value for the month" do
-        create(
-          :education_activity_month,
-          education_activity: education_activity,
-          month: month_start.beginning_of_month,
-          hours: 4
-        )
+      it "returns zero progress hours" do
+        expect(calculator.progress_hours_for_month(month_start)).to eq(0)
+      end
+    end
 
-        expect(calculator.progress_hours_for_month(month_start)).to eq(52)
+    context "with a self-attested term" do
+      let(:flow) { create(:activity_flow, reporting_window_months: 3, education_activities_count: 0) }
+      let(:enrollment_status) { "less_than_half_time" }
+      let(:credit_hours) { 3.5 }
+      let(:term_start) { flow.reporting_months.first }
+      let(:education_activity) do
+        create(:education_activity, activity_flow: flow, data_source: :fully_self_attested, school_name: "Test U",
+          self_attested_term_start: term_start, self_attested_term_end: flow.reporting_months.last,
+          self_attested_enrollment_status: enrollment_status, credit_hours: credit_hours)
+      end
+
+      it "converts fractional term credits into monthly CE hours" do
+        expect(calculator.progress_hours_for_month(month_start)).to eq(credit_hours * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER)
+      end
+
+      context "with full-time enrollment" do
+        let(:enrollment_status) { "full_time" }
+        let(:credit_hours) { nil }
+
+        it "meets the monthly enrollment requirement" do
+          expect(calculator.progress_hours_for_month(month_start)).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
+          expect(calculator).to be_sufficient_enrollment_for_month(month_start)
+        end
+
+        it "keeps self-attested activities in the upload flow" do
+          expect(calculator.routing_hours_for_month(month_start)).to eq(0)
+        end
+      end
+
+      context "with half-time enrollment" do
+        let(:enrollment_status) { "half_time" }
+        let(:credit_hours) { nil }
+
+        it "meets the monthly enrollment requirement" do
+          expect(calculator.progress_hours_for_month(month_start)).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
+          expect(calculator).to be_sufficient_enrollment_for_month(month_start)
+        end
+      end
+
+      context "with unknown enrollment and no credits" do
+        let(:enrollment_status) { "unknown" }
+        let(:credit_hours) { nil }
+
+        it "contributes zero hours" do
+          expect(calculator.progress_hours_for_month(month_start)).to eq(0)
+        end
+      end
+
+      context "outside the term dates" do
+        let(:term_start) { flow.reporting_months.second }
+
+        it "contributes zero hours" do
+          expect(calculator.progress_hours_for_month(month_start)).to eq(0)
+        end
       end
     end
 
@@ -236,14 +286,9 @@ RSpec.describe EducationActivityProgressCalculator do
     end
 
     it "returns false when the month uses self-attested credit hours" do
-      education_activity.update!(data_source: :fully_self_attested, school_name: "Test U", status: "unknown")
-      create(
-        :education_activity_month,
-        education_activity: education_activity,
-        month: month_start.beginning_of_month,
-        # 7 credit hours * CREDIT_HOUR_CE_MULTIPLIER (13) exceeds the 80-hour threshold.
-        hours: 7
-      )
+      education_activity.update!(data_source: :fully_self_attested, school_name: "Test U", status: "unknown",
+        self_attested_term_start: month_start - 1.month, self_attested_term_end: month_start,
+        self_attested_enrollment_status: "less_than_half_time", credit_hours: 7)
 
       expect(calculator).not_to be_sufficient_enrollment_for_month(month_start)
     end

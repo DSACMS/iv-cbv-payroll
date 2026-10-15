@@ -1,0 +1,27 @@
+<% title = t("activities.entries.show.employment_focused.header") %>
+<% content_for :title, title %>
+
+<h1><%= title %></h1>
+<p>
+  <strong><%= t("activities.entries.show.employment_focused.reporting_period_label") %></strong>
+  <%= @flow.reporting_window_display %>
+</p>
+
+<h2><%= t("activities.entries.show.employment_focused.how_it_works") %></h2>
+
+<ol class="usa-process-list">
+<li class="usa-process-list__item">
+    <h2 class="usa-process-list__heading"><%= t("activities.entries.show.employment_focused.step1") %></h2>
+    <p><%= t("activities.entries.show.employment_focused.step1_description") %></p>
+</li>
+<li class="usa-process-list__item">
+    <h2 class="usa-process-list__heading"><%= t("activities.entries.show.employment_focused.step2") %></h2>
+    <p><%= t("activities.entries.show.employment_focused.step2_description", agency_name: agency_translation("shared.agency_full_name")) %></p>
+</li>
+<li class="usa-process-list__item">
+    <h2 class="usa-process-list__heading"><%= t("activities.entries.show.employment_focused.step3", agency_name: agency_translation("shared.agency_full_name")) %></h2>
+    <p><%= t("activities.entries.show.employment_focused.step3_description", agency_name: agency_translation("shared.agency_full_name")) %></p>
+</li>
+</ol>
+
+<%= link_to t("activities.entries.show.employment_focused.get_started"), activities_flow_income_add_your_work_path, class: "btn btn-primary usa-button" %>

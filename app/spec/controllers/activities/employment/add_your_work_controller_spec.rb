@@ -27,6 +27,14 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.employment.add_your_work.show.description")))
     end
 
+    it "uses work in the heading and browser title for other flows" do
+      get :show
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector("h1", text: "Choose how you want to add your work")
+      expect(rendered).to have_title(/Choose how you want to add your work/)
+    end
+
     context "with a three-month reporting period" do
       let(:activity_flow) { create(:activity_flow, reporting_window_months: 3) }
 
@@ -67,11 +75,52 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(response.body).not_to include("hint=")
     end
 
-    it "renders the activity flow header with exit button and no back link" do
+    it "renders the activity flow header for a flow that is not employment-focused" do
       get :show
-      expect(response.body).to include(I18n.t("activities.employment.title_singular"))
-      expect(response.body).to include("exit-confirmation-modal")
-      expect(Capybara.string(response.body)).not_to have_link("Back")
+      expect(Capybara.string(response.body)).to have_selector("[data-controller='activity-flow-header']")
+    end
+
+    context "with an employment-focused flow" do
+      let(:activity_flow) { create(:activity_flow, employment_focused: true) }
+
+      it "explains paid work and reporting unpaid work later" do
+        get :show
+
+        expect(Capybara.string(response.body)).to have_text(
+          I18n.t("activities.employment.add_your_work.show.employment_focused.description")
+        )
+      end
+
+      it "uses job in the heading and browser title" do
+        get :show
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("h1", text: "Choose how you want to add your job")
+        expect(rendered).to have_title(/Choose how you want to add your job/)
+        expect(rendered).to have_no_text("Choose how you want to add your work")
+      end
+
+      it "uses the bold in-kind work label" do
+        get :show
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("label .text-bold", text: "Enter in-kind work", exact_text: true)
+        expect(rendered).to have_no_text("Enter unpaid or in-kind work")
+      end
+
+      it "renders the reporting period with a bold label" do
+        get :show
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("strong", text: "Reporting period:")
+        expect(rendered).to have_text(activity_flow.reporting_window_display)
+      end
+
+      it "does not render the activity flow header" do
+        get :show
+
+        expect(Capybara.string(response.body)).to have_no_selector("[data-controller='activity-flow-header']")
+      end
     end
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentAddYourWorkViewed
@@ -119,6 +168,77 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
         it_behaves_like "tracks an event", TrackEvent::EmploymentAddYourWorkSubmitted,
           extra_attributes: -> { { add_work_method: add_work_method } }
       end
+    end
+  end
+
+  describe "#add_jobs" do
+    it "renders properly" do
+      get :add_jobs
+      expect(response).to be_successful
+    end
+
+    it "renders the header and reporting period" do
+      get :add_jobs
+      expect(response.body).to include(I18n.t("activities.employment.add_your_work.add_jobs.header"))
+      expect(response.body).to include(activity_flow.reporting_window_display)
+    end
+
+    it "does not render a jobs summary box when no jobs have been added" do
+      get :add_jobs
+      expect(response.body).not_to include(I18n.t("activities.employment.add_your_work.add_jobs.jobs_added_heading", count: 0))
+    end
+
+    context "with a manually entered job" do
+      before { create(:employment_activity, activity_flow: activity_flow, employer_name: "Acme Co") }
+
+      it "lists the manually entered job" do
+        get :add_jobs
+        expect(response.body).to include(
+          CGI.escapeHTML(I18n.t("activities.employment.add_your_work.add_jobs.job_manual", name: "Acme Co"))
+        )
+      end
+    end
+
+    context "with a payroll-connected job" do
+      before do
+        payroll_account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow)
+        create(:activity_flow_employment_summary,
+          activity_flow: activity_flow,
+          payroll_account: payroll_account,
+          employer_name: "Connected Co"
+        )
+      end
+
+      it "lists the connected job" do
+        get :add_jobs
+        expect(response.body).to include(
+          CGI.escapeHTML(I18n.t("activities.employment.add_your_work.add_jobs.job_connected", name: "Connected Co"))
+        )
+      end
+    end
+  end
+
+  describe "#create_add_jobs" do
+    it "redirects back to add_your_work when answering yes" do
+      post :create_add_jobs, params: { additional_jobs: "true" }
+      expect(response).to redirect_to(activities_flow_income_add_your_work_path)
+    end
+
+    it "redirects to after_activity_path when answering no" do
+      post :create_add_jobs, params: { additional_jobs: "false" }
+      expect(response).to redirect_to(activities_flow_root_path)
+    end
+
+    it "redirects back with an alert when nothing is selected" do
+      post :create_add_jobs
+      expect(flash[:slim_alert][:message]).to eq(I18n.t("shared.next_path.notice_no_answer"))
+      expect(response).to redirect_to(activities_flow_income_add_jobs_path)
+    end
+
+    it "redirects back with an alert when the value is not recognized" do
+      post :create_add_jobs, params: { additional_jobs: "maybe" }
+      expect(flash[:slim_alert][:message]).to eq(I18n.t("shared.next_path.notice_no_answer"))
+      expect(response).to redirect_to(activities_flow_income_add_jobs_path)
     end
   end
 end

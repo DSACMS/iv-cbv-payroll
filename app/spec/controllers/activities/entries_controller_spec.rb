@@ -1,4 +1,5 @@
 require "rails_helper"
+RSpec::Matchers.define_negated_matcher :not_change, :change
 
 RSpec.describe Activities::EntriesController do
   include_context "activity_hub"
@@ -11,6 +12,8 @@ RSpec.describe Activities::EntriesController do
     context "with generic link" do
       it 'sets session flow type and id' do
         get :show, params: { client_agency_id: 'sandbox' }
+        reporting_for_label = I18n.t("activities.reporting_for.text_html", name: "").strip
+        expect(Capybara.string(response.body)).to have_no_text(reporting_for_label)
         expect(session[:flow_type]).to eq(:activity)
         expect(session[:flow_id]).to be_present
       end
@@ -62,6 +65,22 @@ RSpec.describe Activities::EntriesController do
     context "with tokenized link" do
       let(:invitation) { create(:activity_flow_invitation) }
 
+      context "with agency-supplied names" do
+        let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
+        let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+        let(:reporting_for_text) {
+          I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+        }
+
+        before { get :show, params: { token: invitation.auth_token } }
+
+        it "renders the reporting banner once with a bold name" do
+          page = Capybara.string(response.body)
+          expect(page).to have_text(reporting_for_text, count: 1)
+          expect(page).to have_selector("strong", text: "Lisa Williams")
+        end
+      end
+
       it "creates a flow from the invitation and sets session" do
         get :show, params: { token: invitation.auth_token }
 
@@ -101,6 +120,79 @@ RSpec.describe Activities::EntriesController do
       end
 
       expect(response).to redirect_to(root_url)
+    end
+  end
+
+  describe "employment focused entry page" do
+    context "when the flow is employment_focused" do
+      let(:invitation) { create(:activity_flow_invitation, employment_focused: true) }
+
+      it "renders the employment-focused entry content instead of the default content" do
+        get :show, params: { token: invitation.auth_token }
+
+        expect(response.body).to include(I18n.t("activities.entries.show.employment_focused.header"))
+        expect(response.body).not_to include(I18n.t("activities.entries.show.title", benefit: "Medicaid"))
+      end
+
+      it "links to the employment activity selection screen" do
+        get :show, params: { token: invitation.auth_token }
+
+        expect(response.body).to include(activities_flow_income_add_your_work_path)
+      end
+    end
+
+    context "when the flow is not employment_focused" do
+      let(:invitation) { create(:activity_flow_invitation, employment_focused: false) }
+
+      it "renders the default entry content" do
+        get :show, params: { token: invitation.auth_token }
+        expect(response.body).to include(I18n.t("activities.entries.show.title", benefit: "Medicaid"))
+        expect(response.body).not_to include(I18n.t("activities.entries.show.employment_focused.header"))
+      end
+    end
+
+    context "with an existing activity session" do
+      let(:flow) { create(:activity_flow, employment_focused: true) }
+      let!(:employment_activity) do
+        create(:employment_activity, activity_flow: flow, employer_name: "Example Employer")
+      end
+
+      before do
+        session[:flow_id] = flow.id
+        session[:flow_type] = :activity
+      end
+
+      it "reuses the flow without creating another flow or applicant" do
+        expect {
+          get :show
+        }.to not_change(ActivityFlow, :count)
+          .and not_change(CbvApplicant, :count)
+
+        expect(session[:flow_id]).to eq(flow.id)
+        expect(flow.reload.employment_activities).to include(employment_activity)
+      end
+
+      it "renders the employment-focused entry page" do
+        get :show
+
+        expect(response).to have_http_status(:ok)
+        expect(Capybara.string(response.body)).to have_selector(
+          "h1",
+          text: I18n.t("activities.entries.show.employment_focused.header")
+        )
+      end
+
+      context "when the session flow type is a string" do
+        before { session[:flow_type] = "activity" }
+
+        it "reuses the existing flow" do
+          expect {
+            get :show
+          }.not_to change(ActivityFlow, :count)
+
+          expect(session[:flow_id]).to eq(flow.id)
+        end
+      end
     end
   end
 end

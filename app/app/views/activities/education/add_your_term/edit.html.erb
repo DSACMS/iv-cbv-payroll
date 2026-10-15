@@ -1,0 +1,61 @@
+<% content_for :title, t(".title", school_name: @education_activity.school_name) %>
+
+<% content_for :activity_flow_header do %>
+  <%= render ActivityFlowHeaderComponent.new(
+    title: t("activities.education.title_singular"),
+    exit_url: activities_flow_root_path,
+    back_url: @back_url,
+    track_event_prefix: "Education"
+  ) %>
+<% end %>
+
+<h1><%= t(".title", school_name: @education_activity.school_name) %></h1>
+<p>
+  <strong><%= t("activities.education.add_your_education.show.reporting_period_label") %></strong>
+  <%= @flow.reporting_window_display %>
+</p>
+<p><%= t(".description", school_name: @education_activity.school_name) %></p>
+<p><%= t(".multiple_terms_description") %></p>
+
+<%= uswds_form_with(model: @education_activity,
+      url: activities_flow_education_add_your_term_path(
+        education_id: @education_activity,
+        from_review: params[:from_review].presence,
+        from_edit: params[:from_edit].presence
+      ),
+      method: :patch,
+      data: {
+        controller: "education-term",
+        education_term_credit_hours_statuses_value: EducationActivity::SELF_ATTESTED_CREDIT_HOURS_STATUSES.to_json
+      }) do |f| %>
+  <%= f.text_field :self_attested_term_start,
+        required: true,
+        label: t(".term_start"), label_class: "text-bold",
+        placeholder: t(".term_date_placeholder"),
+        value: params.dig(:education_activity, :self_attested_term_start) || @education_activity.self_attested_term_start&.strftime("%m/%Y") %>
+
+  <%= f.text_field :self_attested_term_end,
+        required: true,
+        label: t(".term_end"), label_class: "text-bold", hint: t(".term_end_hint"),
+        placeholder: t(".term_date_placeholder"),
+        value: params.dig(:education_activity, :self_attested_term_end) || @education_activity.self_attested_term_end&.strftime("%m/%Y") %>
+
+  <%= f.select :self_attested_enrollment_status,
+        EducationActivity::SELF_ATTESTED_ENROLLMENT_STATUSES.map { |status| [ t(".enrollment_status_options.#{status}"), status ] },
+        { required: true, label: t(".enrollment_status"), class: "text-bold", include_blank: t(".select_one"), show_error_message: false },
+        {
+          class: ("usa-input--error text-error" if f.has_error?(:self_attested_enrollment_status)),
+          aria: { invalid: f.has_error?(:self_attested_enrollment_status) },
+          data: { education_term_target: "enrollmentStatus", action: "education-term#toggleCreditHours" }
+        } %>
+
+  <div data-education-term-target="creditHours" <%= "hidden" unless @education_activity.self_attested_credit_hours_applicable? %>>
+    <%= f.text_field :credit_hours, type: :number, min: 0, step: "any",
+          label: tag.strong(t(".credit_hours")), hint: t(".credit_hours_hint"), optional: true,
+          value: params.dig(:education_activity, :credit_hours) || decimal_input_value(@education_activity.credit_hours),
+          disabled: !@education_activity.self_attested_credit_hours_applicable?,
+          data: { education_term_target: "creditHoursField" } %>
+  </div>
+
+  <%= f.submit t(".continue") %>
+<% end %>

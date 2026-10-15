@@ -78,6 +78,8 @@ Rails.application.routes.draw do
       resource :success, only: %i[show], controller: "success"
       scope "/income", as: :income do
         resource :add_your_work, only: %i[show create], controller: "employment/add_your_work"
+        get "add_your_work/add_jobs", to: "employment/add_your_work#add_jobs", as: :add_jobs
+        post "add_your_work/add_jobs", to: "employment/add_your_work#create_add_jobs"
         resource :employer_search, only: %i[show], controller: "income/employer_searches"
         resource :synchronizations, only: %i[show update], controller: "income/synchronizations"
         resource :synchronization_failures, only: %i[show], controller: "income/synchronization_failures"
@@ -105,7 +107,7 @@ Rails.application.routes.draw do
         end
         patch "sync", to: "education#sync", as: :sync
         resources :document_uploads, only: %i[new create destroy], controller: "/activities/document_uploads"
-        resources :months, only: %i[edit update], controller: "education/months"
+        resource :add_your_term, only: %i[edit update], controller: "education/add_your_term"
         resources :term_credit_hours, only: %i[edit update], controller: "education/term_credit_hours"
 
         member do

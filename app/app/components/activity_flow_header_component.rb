@@ -3,7 +3,7 @@
 class ActivityFlowHeaderComponent < ViewComponent::Base
   attr_reader :title, :exit_url, :back_url, :track_event_prefix
 
-  def initialize(title:, exit_url:, back_url: nil, track_event_prefix: nil)
+  def initialize(title:, exit_url: nil, back_url: nil, track_event_prefix: nil)
     @title = title
     @exit_url = exit_url
     @back_url = back_url

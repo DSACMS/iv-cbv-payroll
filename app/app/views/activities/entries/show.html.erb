@@ -1,23 +1,27 @@
-<% title = t(".title", benefit: agency_translation("shared.benefit")) %>
-<% content_for :title, title %>
+<% if @flow.employment_focused? %>
+  <%= render "employment_focused" %>
+<% else %>
+  <% title = t(".title", benefit: agency_translation("shared.benefit")) %>
+  <% content_for :title, title %>
 
-<h1><%= title %></h1>
-<p><%= t(".description", agency_name: agency_translation("shared.agency_full_name"), benefit: agency_translation("shared.benefit")) %></p>
+  <h1><%= title %></h1>
+  <p><%= t(".description", agency_name: agency_translation("shared.agency_full_name"), benefit: agency_translation("shared.benefit")) %></p>
 
-<%= render(Uswds::Card.new(heading_text: t(".card_heading"), class: "measure-5 margin-y-4")) do |card| %>
-  <% card.with_body do %>
-    <%= render(Uswds::IconList.new) do |icon_list| %>
-      <% icon_list.with_item(icon: "work").with_content(t(".card_item_1")) %>
-      <% icon_list.with_item(icon: "school").with_content(t(".card_item_2")) %>
-      <% icon_list.with_item(icon: "people").with_content(t(".card_item_3")) %>
+  <%= render(Uswds::Card.new(heading_text: t(".card_heading"), class: "measure-5 margin-y-4")) do |card| %>
+    <% card.with_body do %>
+      <%= render(Uswds::IconList.new) do |icon_list| %>
+        <% icon_list.with_item(icon: "work").with_content(t(".card_item_1")) %>
+        <% icon_list.with_item(icon: "school").with_content(t(".card_item_2")) %>
+        <% icon_list.with_item(icon: "people").with_content(t(".card_item_3")) %>
+      <% end %>
+    <% end %>
+
+    <% card.with_footer do %>
+      <hr class="margin-bottom-3 border-base-light border-top-0">
+
+      <p><em><%= t(".disclaimer") %></em></p>
     <% end %>
   <% end %>
 
-  <% card.with_footer do %>
-    <hr class="margin-bottom-3 border-base-light border-top-0">
-
-    <p><em><%= t(".disclaimer") %></em></p>
-  <% end %>
+  <%= link_to t(".continue"), next_path, class: "btn btn-primary usa-button" %>
 <% end %>
-
-<%= link_to t(".continue"), next_path, class: "btn btn-primary usa-button" %>

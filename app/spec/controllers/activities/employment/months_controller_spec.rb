@@ -23,8 +23,58 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
   end
 
   describe "GET #edit" do
-    let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
+    let(:tracked_flow) { activity_flow }
+
+    context "for an employment_focused activity" do
+      before { activity_flow.update!(employment_focused: true) }
+
+      it "uses income and hours in the paid-work heading and browser title" do
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        heading = "Add your income and hours for #{employment_activity.employer_name}"
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("h1", text: heading, exact_text: true, normalize_ws: true)
+        expect(rendered).to have_title(/#{Regexp.escape(heading)}/)
+      end
+
+      it "keeps the hours-only heading for unpaid work" do
+        employment_activity.update!(compensation_type: :unpaid_or_in_kind)
+
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        expect(Capybara.string(response.body)).to have_selector("h1", text: "Add your hours for #{employment_activity.employer_name}", exact_text: true, normalize_ws: true)
+      end
+
+      it "requires gross income while keeping paid-work hours optional" do
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_selector(
+          'input[name="employment_activity_month[gross_income]"][required]'
+        )
+        expect(rendered).to have_selector(
+          'input[name="employment_activity_month[hours]"]:not([required])'
+        )
+      end
+    end
+
+    context "for a standard CE activity" do
+      before { activity_flow.update!(employment_focused: false) }
+
+      it "uses income and hours in the paid-work heading and browser title" do
+        get :edit, params: { employment_id: employment_activity.id, id: 0 }
+
+        heading = "Add your income and hours for #{employment_activity.employer_name}"
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector("h1", text: heading, exact_text: true, normalize_ws: true)
+        expect(rendered).to have_title(/#{Regexp.escape(heading)}/)
+      end
+    end
+
+
+    it_behaves_like "an activity header controlled by employment focus", :activity_flow, -> { get :edit, params: { employment_id: employment_activity.id, id: 0 } }
 
     it_behaves_like "tracks an event", TrackEvent::EmploymentMonthViewed,
       extra_attributes: -> { { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String) } }
@@ -195,7 +245,22 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
 
       it_behaves_like "tracks an event", TrackEvent::EmploymentMonthValidationFailed,
         extra_attributes: -> {
-          { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_fields: [ "gross_income", "hours" ] }
+          { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_fields: [ "gross_income" ] }
+        }
+    end
+
+    context "when only hours are provided" do
+      let(:perform_tracked_action) do
+        patch :update, params: {
+          employment_id: employment_activity.id,
+          id: 0,
+          employment_activity_month: { gross_income: "", hours: "10" }
+        }
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EmploymentMonthValidationFailed,
+        extra_attributes: -> {
+          { employment_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_fields: [ "gross_income" ] }
         }
     end
 
@@ -352,7 +417,13 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
           month: I18n.l(first_month, format: :month)
         )
         expect(rendered.find_field(gross_income_label).value).to be_nil
-        expect(rendered).to have_no_selector(".usa-error-message")
+        expect(rendered).to have_selector(".usa-error-message", count: 1)
+        expect(rendered).to have_selector(
+          'input[name="employment_activity_month[gross_income]"].usa-input--error'
+        )
+        expect(rendered).to have_no_selector(
+          'input[name="employment_activity_month[hours]"].usa-input--error'
+        )
       end
 
       context "when validation fails" do
@@ -370,7 +441,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
               employment_activity_id: kind_of(Integer),
               month_index: 0,
               month: kind_of(String),
-              error_fields: [ "gross_income", "hours" ]
+              error_fields: [ "gross_income" ]
             }
           }
       end
@@ -387,15 +458,17 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         )
       end
 
-      it "advances when only hours are entered" do
+      it "rejects missing income even when hours are entered" do
         patch :update, params: {
           employment_id: employment_activity.id,
           id: 0,
           employment_activity_month: { gross_income: "", hours: 10 }
         }
 
-        expect(response).to redirect_to(
-          edit_activities_flow_income_employment_month_path(employment_id: employment_activity, id: 1)
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(employment_activity.activity_months).to be_empty
+        expect(Capybara.string(response.body)).to have_text(
+          I18n.t("activities.employment.hours_input.error_body")
         )
       end
 
@@ -473,6 +546,102 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       month = employment_activity.activity_months.last
       expect(month.gross_income).to eq(BigDecimal("1234.56"))
       expect(month.hours).to eq(BigDecimal("2.5"))
+    end
+
+    context "when gross income is blank but hours are provided" do
+      before do
+        patch :update, params: {
+          employment_id: employment_activity.id,
+          id: 0,
+          employment_activity_month: { gross_income: "", hours: 10 }
+        }
+      end
+
+      it "rejects the submission without saving a month" do
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(employment_activity.activity_months).to be_empty
+      end
+
+      it "shows the paid-work income error banner" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_text(
+          I18n.t("activities.employment.hours_input.error_body")
+        )
+        expect(rendered).to have_no_text(
+          I18n.t("activities.employment.hours_input.unpaid_or_in_kind.error_body")
+        )
+      end
+    end
+
+    context "when gross income is omitted" do
+      before do
+        patch :update, params: {
+          employment_id: employment_activity.id,
+          id: 0,
+          employment_activity_month: { hours: 10 }
+        }
+      end
+
+      it "rejects the submission without saving a month" do
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(employment_activity.activity_months).to be_empty
+      end
+    end
+
+    context "when gross income is provided and hours are blank" do
+      before do
+        patch :update, params: {
+          employment_id: employment_activity.id,
+          id: 0,
+          employment_activity_month: { gross_income: 100, hours: "" }
+        }
+      end
+
+      it "saves the income with zero hours" do
+        month = employment_activity.activity_months.sole
+
+        expect(month.gross_income).to eq(100)
+        expect(month.hours).to eq(0)
+      end
+
+      it "continues to document upload" do
+        expect(response).to redirect_to(
+          new_activities_flow_income_employment_document_upload_path(
+            employment_id: employment_activity
+          )
+        )
+      end
+    end
+
+    context "when unpaid or in-kind work has no gross income" do
+      let(:employment_activity) do
+        create(
+          :employment_activity,
+          activity_flow: activity_flow,
+          compensation_type: :unpaid_or_in_kind
+        )
+      end
+
+      before do
+        patch :update, params: {
+          employment_id: employment_activity.id,
+          id: 0,
+          employment_activity_month: { hours: 10 }
+        }
+      end
+
+      it "continues with hours-only reporting" do
+        expect(response).to redirect_to(
+          new_activities_flow_income_employment_document_upload_path(
+            employment_id: employment_activity
+          )
+        )
+        expect(employment_activity.activity_months.sole).to have_attributes(
+          hours: 10,
+          gross_income: 0
+        )
+      end
     end
   end
 end

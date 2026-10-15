@@ -611,4 +611,36 @@ RSpec.describe LauncherController, type: :controller do
       end
     end
   end
+
+  context "with activity flow, tokenized launch type, and employment_focused" do
+    it "persists employment_focused on the created invitation and excludes it from the url" do
+      post :create, params: {
+        flow_type: "activity",
+        client_agency_id: "sandbox",
+        launch_type: "tokenized",
+        reporting_window: "application",
+        reporting_window_months: "2",
+        employment_focused: "true"
+      }, format: :json
+
+      expect(response).to have_http_status(:success)
+      json = JSON.parse(response.body)
+      expect(json["url"]).to be_present
+      expect(json["url"]).not_to include("employment_focused")
+      expect(ActivityFlowInvitation.last.employment_focused).to be(true)
+    end
+
+    it "defaults employment_focused to false when not provided" do
+      post :create, params: {
+        flow_type: "activity",
+        client_agency_id: "sandbox",
+        launch_type: "tokenized",
+        reporting_window: "application",
+        reporting_window_months: "2"
+      }, format: :json
+
+      expect(response).to have_http_status(:success)
+      expect(ActivityFlowInvitation.last.employment_focused).to be(false)
+    end
+  end
 end

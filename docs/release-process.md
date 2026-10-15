@@ -73,9 +73,29 @@ The script will:
 5. Leave "Set as the latest release" checked.
 6. Click **Publish release**.
 
-## 5. Notify states on a MAJOR release
+## 5. Notify teams
+Send a message to the appropriate channels with a link to this week's release PR, and request a freeze on all merges to main.
+
+## 6. Smoke test
+Merge the release PR before smoke testing, triggering the automatic `dev` deployment. Then, wait for `verify-demo` to show the release SHA, so that you can smoke test that SHA.
+
+## 7. Deploy!
+With smoke tests complete, you can deploy to demo, prod, and CMS deploys, all using the same SHA
+
+## 8. Notify of a succesful deployment
+Let the team know that deployments are complete and the code freeze can end.
+
+## 9. Notify states on a MAJOR release
 
 MAJOR means a state's training materials or integration may no longer match the
 application. Send the notification with before/after screenshots and enough lead
 time for states to update their materials. MINOR and PATCH releases ship on the
 normal cadence and appear in the changelog only.
+
+## Edge cases
+
+### Failed Smoke Testing or Deployment
+In the case of failed smoke testing or problems in deployment requiring code changes, you should cut a new release (for example Release 0.6.1 could be released to fix an issue in Release 0.6.0)
+
+### A long delay in deployment
+If you cut the release PR, and don’t deploy for a couple of days. The team can’t always code freeze from the cut PR to the deploy. The team should only be obeying a code freeze during smoke testing, between that starting and the deploy to prod.
