@@ -1,11 +1,12 @@
+<% monthly_summary = I18n.t("components.report.monthly_summary_table.monthly_summary") %>
 <div class="<%= @show_header ? "margin-top-5" : "" %>">
   <% if @show_header %>
     <h2 class="margin-0">
-      <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
+      <%= monthly_summary %>
     </h2>
   <% end %>
   <%= render(TableComponent.new(
-    caption: I18n.t("components.report.monthly_summary_table.monthly_summary"),
+    caption: monthly_summary,
     multi_column: true
   )) do |table| %>
     <%= table.with_header_cell

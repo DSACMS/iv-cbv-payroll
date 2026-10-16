@@ -45,9 +45,10 @@
   { label: t("activities.employment.review.contact_phone"), value: @employment_activity.contact_phone_number }
 ])) %>
 
-<h2><%= unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_hours") : t("activities.summary.monthly_details") %></h2>
+<% monthly_details = unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_hours") : t("activities.summary.monthly_details") %>
+<h2><%= monthly_details %></h2>
 <%= render(TableComponent.new(
-  caption: unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_hours") : t("activities.summary.monthly_details"),
+  caption: monthly_details,
   activity_hours_review: true
 )) do |table| %>
   <%= table.with_header_cell.with_content(t("activities.summary.employment.month")) %>

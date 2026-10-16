@@ -37,14 +37,16 @@
 
 <!-- Generic link flow, no invitation -->
 <% if @cbv_flow.cbv_flow_invitation.blank? %>
+<% application_information = t(".application_information") %>
+<% other_jobs = t(".other_jobs") %>
 <h2><%= t(".your_information") %></h2>
 <p><%= agency_translation(".must_match", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
 <div class="display-flex flex-justify font-body-md maxw-table">
-  <h3><%= t(".application_information") %></h3>
+  <h3><%= application_information %></h3>
   <%= link_to t(".edit"), cbv_flow_applicant_information_path(force_show: true), class: "usa-link text-bold margin-0" %>
 </div>
 <%= render(TableComponent.new(
-  caption: t(".application_information"),
+  caption: application_information,
   class_names: "margin-top-2",
   attributes: { "data-testid" => "paystub-table" }
 )) do |table| %>
@@ -70,11 +72,11 @@
 
 <!-- Other jobs -->
 <div class="display-flex flex-justify font-body-md maxw-table">
-  <h3><%= t("cbv.summaries.show.other_jobs") %></h3>
+  <h3><%= other_jobs %></h3>
   <%= link_to t("cbv.summaries.show.edit"), cbv_flow_other_job_path, class: "usa-link text-bold margin-0" %>
 </div>
 <%= render(TableComponent.new(
-  caption: t(".other_jobs"),
+  caption: other_jobs,
   class_names: "margin-top-2",
   attributes: { "data-testid" => "other-jobs-table" }
 )) do |table| %>

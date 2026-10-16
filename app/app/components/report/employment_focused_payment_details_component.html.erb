@@ -1,10 +1,11 @@
+<% employment_information = t("activities.income.payment_details.show.employment_focused.employment_information") %>
 <div class="margin-top-5">
-  <h2><%= t("activities.income.payment_details.show.employment_focused.employment_information") %></h2>
+  <h2><%= employment_information %></h2>
   <%= render TableComponent.new(
-    caption: t("activities.income.payment_details.show.employment_focused.employment_information"),
+    caption: employment_information,
     class_names: "maxw-none"
   ) do |table| %>
-    <%= table.with_header_cell(scope: "col").with_content(t("activities.income.payment_details.show.employment_focused.employment_information")) %>
+    <%= table.with_header_cell(scope: "col").with_content(employment_information) %>
     <%= table.with_header_cell(scope: "col").with_content(t("shared.table_headers.your_details")) %>
     <%= table.with_data_point(:employment_start_date, @account_report.employment&.start_date) %>
     <%= table.with_data_point(:employment_end_date, @account_report.employment&.termination_date) %>

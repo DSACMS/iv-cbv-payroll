@@ -38,9 +38,10 @@
   <sup>1</sup><span><%= t(".pdf.caseworker.client_provided_information") %></span>
 <% end %>
 
-<%= render(TableComponent.new(caption: t(".pdf.shared.client_information"))) do |table| %>
+<% client_information = t(".pdf.shared.client_information") %>
+<%= render(TableComponent.new(caption: client_information)) do |table| %>
   <%= table.with_header_cell(colspan: 2) do %>
-    <%= t(".pdf.shared.client_information") %>
+    <%= client_information %>
   <% end %>
 
   <% @cbv_flow.cbv_applicant.applicant_attributes.each do |item| %>
@@ -75,9 +76,10 @@
   <% end %>
 <% end %>
 
-<%= render(TableComponent.new(caption: t(".pdf.shared.report_details"))) do |table| %>
+<% report_details = t(".pdf.shared.report_details") %>
+<%= render(TableComponent.new(caption: report_details)) do |table| %>
   <%= table.with_header_cell(colspan: 2) do %>
-    <h3 class="margin-0"><%= t(".pdf.shared.report_details") %></h3>
+    <h3 class="margin-0"><%= report_details %></h3>
   <% end %>
   <% if @cbv_flow.confirmation_code.present? %>
     <%= table.with_row do |row| %>
@@ -113,10 +115,11 @@
   <% is_gig_worker = employment&.employment_type == :gig %>
   <% is_first_w2_job = is_w2_worker && ((first_w2_job_index ||= index) == index) %>
   <% is_first_gig_job = is_gig_worker && ((first_gig_job_index ||= index) == index) %>
-  <h3><%= t(".table_caption_no_name", number: index + 1) %>: <%= employer_name %></h3>
+  <% job_heading = t(".table_caption_no_name", number: index + 1) %>
+  <h3><%= job_heading %>: <%= employer_name %></h3>
 
   <%= render(TableComponent.new(
-    caption: [ t(".table_caption_no_name", number: index + 1), employer_name ].compact.join(": ")
+    caption: [ job_heading, employer_name ].compact.join(": ")
   )) do |table| %>
     <%= table.with_header_cell(colspan: 2) do %>
       <h4 class="margin-0">
@@ -146,10 +149,11 @@
   <% if is_w2_worker %>
     <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_pdf: true, show_footnote: is_first_w2_job)) %>
     <h3><%= t(".pdf.shared.payments_and_deductions_header", employer_name: employer_name) %></h3>
+    <% pay_information = t(".pdf.shared.pay_information") %>
     <% summary[:paystubs]&.each do |paystub| %>
-      <%= render(TableComponent.new(caption: t(".pdf.shared.pay_information"), subdued_header: true)) do |table| %>
+      <%= render(TableComponent.new(caption: pay_information, subdued_header: true)) do |table| %>
         <%= table.with_header_cell
-              .with_content(t(".pdf.shared.pay_information")) %>
+              .with_content(pay_information) %>
         <%= table.with_header_cell
               .with_content(t(".pdf.shared.details")) %>
 
@@ -175,13 +179,14 @@
       <% end %>
     <% end %>
     <% if summary[:paystubs]&.empty? %>
-      <%= render(TableComponent.new(caption: [ employer_name, t(".none_found") ].compact.join(" — "))) do |table| %>
+      <% none_found = t(".none_found") %>
+      <%= render(TableComponent.new(caption: [ employer_name, none_found ].compact.join(" — "))) do |table| %>
         <%= table.with_header do %>
           <h4 class="margin-0">
             <% if employer_name %>
               <%= employer_name %> &mdash;
             <% end %>
-            <%= t(".none_found") %>
+            <%= none_found %>
           </h4>
         <% end %>
         <%= table.with_row do |row| %>

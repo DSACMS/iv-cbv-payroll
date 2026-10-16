@@ -1,5 +1,6 @@
-<%= render(TableComponent.new(caption: t("shared.table_headers.education_information"))) do |table| %>
-  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.education_information") } %>
+<% education_information = t("shared.table_headers.education_information") %>
+<%= render(TableComponent.new(caption: education_information)) do |table| %>
+  <%= table.with_header_cell(scope: "col") { education_information } %>
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
   <% if @education_activity %>
     <%= table.with_row do |row| %>
