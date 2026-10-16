@@ -58,10 +58,5 @@
 <% end %>
 
 <% if less_than_half_time_terms.any? %>
-  <p>
-    <strong><%= t("activities.education.review.ce_explainer_title") %></strong>
-  </p>
-  <p>
-    <%= t("activities.education.review.ce_explainer_body") %>
-  </p>
+  <%= render "activities/education/credit_hours_explainer" %>
 <% end %>

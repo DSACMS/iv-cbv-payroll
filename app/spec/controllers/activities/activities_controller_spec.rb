@@ -38,6 +38,36 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       )
     end
 
+    context "with unpaid-only employment" do
+      let(:current_flow) { create(:activity_flow, unpaid_work_only: true) }
+
+      it "renders an unpaid work section in place of employment" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_selector("[data-activity-type='unpaid_work'] h2", text: I18n.t("activities.unpaid_work.title"))
+        expect(rendered).to have_text(I18n.t("activities.hub.empty.unpaid_work"))
+        expect(rendered).to have_no_selector("[data-activity-type='employment']")
+      end
+
+      it "uses the existing employment cards for unpaid work" do
+        activity = create(:employment_activity, activity_flow: current_flow, compensation_type: :unpaid_or_in_kind, employer_name: "Example unpaid work")
+        create(:employment_activity_month, employment_activity: activity, month: current_flow.reporting_months.first, hours: 12, gross_income: 0)
+        get :index
+
+        section = Capybara.string(response.body).find("[data-activity-type='unpaid_work']")
+        expect(section).to have_text("Example unpaid work")
+        expect(section).to have_text(I18n.t("activities.hub.cards.hours", count: "12"))
+        expect(section).to have_no_text(I18n.t("activities.hub.cards.gross_income", amount: "$0.00"))
+        expect(section).to have_link(I18n.t("activities.hub.edit"), href: review_activities_flow_income_employment_path(id: activity, from_edit: 1))
+      end
+
+      it "points the employment add button directly at the unpaid work form" do
+        form = Capybara.string(response.body).find("[data-activity-type='unpaid_work'] form")
+
+        expect(form[:action]).to eq(new_activities_flow_income_employment_path(compensation_type: "unpaid_or_in_kind"))
+      end
+    end
+
     it "shows current flow community service activities" do
       expect(
         assigns(:community_service_activities)
