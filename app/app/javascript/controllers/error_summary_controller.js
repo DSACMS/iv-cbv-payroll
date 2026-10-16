@@ -1,5 +1,24 @@
 import { Controller } from "@hotwired/stimulus"
 
+const ERROR_MESSAGE_SELECTOR = ".usa-error-message"
+const CONTROLLER_SELECTOR = '[data-controller~="error-summary"][data-error-summary-form-id-value]'
+
+// An element with zero client rects, or any ancestor hidden
+// via the `hidden` attribute, `display: none`, or `visibility: hidden`,
+// is treated as not visible.
+function isVisible(element) {
+  if (element.getClientRects().length === 0) return false
+
+  for (let node = element; node; node = node.parentElement) {
+    if (node.hidden) return false
+
+    const style = getComputedStyle(node)
+    if (style.display === "none" || style.visibility === "hidden") return false
+  }
+
+  return true
+}
+
 export default class extends Controller {
   static targets = ["body"]
   static values = { formId: String }
@@ -29,7 +48,7 @@ export default class extends Controller {
 
     const descriptionIds = [this.bodyTarget.id]
 
-    form.querySelectorAll(".usa-error-message").forEach((error) => {
+    form.querySelectorAll(ERROR_MESSAGE_SELECTOR).forEach((error) => {
       if (!error.id) {
         console.error("Error summary: inline error is missing an ID", error)
         return
@@ -59,9 +78,7 @@ export default class extends Controller {
 
   focusFirstErrorWithoutSummary() {
     const form = this.element
-    const summaries = document.querySelectorAll(
-      '[data-controller~="error-summary"][data-error-summary-form-id-value]'
-    )
+    const summaries = document.querySelectorAll(CONTROLLER_SELECTOR)
 
     const hasSummary = Array.from(summaries).some(
       (summary) => 
@@ -71,10 +88,12 @@ export default class extends Controller {
 
     if (hasSummary) return
     
-    const errors = form.querySelectorAll(".usa-error-message")
+    const errors = form.querySelectorAll(ERROR_MESSAGE_SELECTOR)
     if (errors.length === 0) return
 
-    const controls = Array.from(form.elements)
+    const controls = Array.from(form.elements).filter(
+      (control) => !(control instanceof HTMLFieldSetElement)
+    )
 
     for (const error of errors) {
       if (!error.id) {
@@ -88,10 +107,9 @@ export default class extends Controller {
         ).split(/\s+/)
 
         return (
-          !(control instanceof HTMLFieldSetElement) &&
           descriptionIds.includes(error.id) &&
           !control.matches(":disabled") &&
-          control.getClientRects().length > 0
+          isVisible(control)
         )
       })
 

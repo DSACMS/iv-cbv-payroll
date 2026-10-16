@@ -241,7 +241,7 @@ describe("ErrorSummaryController", () => {
             <legend id="applicant_date_of_birth_legend">Date of birth</legend>
 
             <span id="applicant_date_of_birth_error"
-                  class="usa-error-message">
+                  class="usa-error-message"
                   data-error-label-id="applicant_date_of_birth_legend">
               is invalid
             </span>
