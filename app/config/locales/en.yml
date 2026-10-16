@@ -425,6 +425,7 @@ en:
           work_hours: Work hours
       title: Employment
       title_singular: Employment
+      unpaid_title: Unpaid work
       unpaid_or_in_kind:
         document_upload_suggestion_text_html: "<ul><li>Letter of employment or contract with role, responsibilities and key dates.</li><li>Proof of employment forms from a work supervisor or employer.</li><li>Invoices sent, if self-employed.</li></ul>"
         document_upload_suggestion_title: Suggested supporting documents
@@ -458,7 +459,7 @@ en:
         contact_information_title: Work contact information
         contact_name: Contact name
         contact_phone_number: Contact phone number
-        description: If you’ve done unpaid or in-kind work, that can still count towards your community engagement requirements.
+        description: "If you’ve done unpaid work, that can still count towards your community engagement requirements.\n\nPaid work, including in-kind work and income from self-employment, should not be re-entered here."
         employer_name: Who you worked for
         employer_name_error: Add who you worked for
         title: Tell us about the work you’ve done
@@ -467,7 +468,7 @@ en:
     entries:
       show:
         card_heading: 'Enter information related to the following activities:'
-        card_item_1: Work or earned income
+        card_item_1: Unpaid work
         card_item_2: School enrollment
         card_item_3: Community service or work program participation
         continue: Report your activities
@@ -506,8 +507,8 @@ en:
         education: No education added
         employment: No employment added
         work_programs: No work programs added
-      empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
-      empty_state_description_single_month: Add employment, education, community service, or work program activities you've done in %{reporting_window}.
+      empty_state_description: "Add unpaid work, education, community service, or work program activities you've done between %{reporting_window}.\n\nEmployment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}."
+      empty_state_description_single_month: "Add unpaid work, education, community service, or work program activities you've done in %{reporting_window}.\n\nEmployment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}."
       empty_state_months_required_all: all %{required_month_count} months in the reporting period
       empty_state_months_required_any: any %{required_month_count} months in the reporting period
       empty_state_months_required_label: 'Months required:'

@@ -4,7 +4,7 @@
 <% unless @flow.employment_focused? %>
   <% content_for :activity_flow_header do %>
     <%= render ActivityFlowHeaderComponent.new(
-      title: t("activities.employment.title_singular"),
+      title: @employment_activity.unpaid_or_in_kind? ? t("activities.employment.unpaid_title") : t("activities.employment.title_singular"),
       exit_url: activities_flow_root_path,
       back_url: @back_url,
       track_event_prefix: "Employment"
