@@ -18,6 +18,7 @@
 <p><%= t(".multiple_terms_description") %></p>
 
 <%= uswds_form_with(model: @education_activity,
+      id: "education-term-form",
       url: activities_flow_education_add_your_term_path(
         education_id: @education_activity,
         from_review: params[:from_review].presence,

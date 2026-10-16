@@ -55,4 +55,68 @@ RSpec.describe Uswds::Alert, type: :component do
       expect(result).to have_element(:div, class: 'usa-alert usa-alert--info usa-alert--slim')
     end
   end
+
+  context "with an associated form" do
+    let(:result) do
+      render_inline(
+        described_class.new(
+          type: :error,
+          heading: "Check your entries",
+          form_id: "work-form"
+        )
+      ) { "Correct the errors below." }
+    end
+
+    it "renders a focusable summary instead of a live alert" do
+      expect(result).to have_css(
+        '.usa-alert[role="group"][tabindex="-1"]' \
+        '[data-controller="error-summary"]' \
+        '[data-error-summary-form-id-value="work-form"]'
+      )
+      expect(result).to have_no_css('[role="alert"]')
+    end
+
+    it "connects the summary to its heading and body" do
+      expect(result).to have_css(
+        '.usa-alert[aria-labelledby="work-form_error_heading"]' \
+        '[aria-describedby="work-form_error_body"]'
+      )
+      expect(result).to have_css(
+        "#work-form_error_heading",
+        text: "Check your entries"
+      )
+      expect(result).to have_css(
+        '#work-form_error_body[data-error-summary-target="body"]',
+        text: "Correct the errors below."
+      )
+    end
+
+    it "renders the heading once without exposing attribute text" do
+      expect(result).to have_text("Check your entries", count: 1)
+      expect(result).to have_no_text('id="work-form_error_heading"')
+    end
+
+    context "without a heading" do
+      let(:result) do
+        render_inline(
+          described_class.new(type: :error, form_id: "work-form")
+        ) { "Correct the errors below." }
+      end
+
+      it "does not reference a missing heading" do
+        expect(result).to have_no_css("[aria-labelledby]")
+        expect(result).to have_css(
+          '.usa-alert[aria-describedby="work-form_error_body"]'
+        )
+      end
+    end
+  end
+
+  context "without an associated form" do
+    it "does not attach summary focus behavior" do
+      expect(result).to have_css('.usa-alert[role="alert"]')
+      expect(result).to have_no_css('[data-controller~="error-summary"]')
+      expect(result).to have_no_css("[tabindex]")
+    end
+  end
 end
