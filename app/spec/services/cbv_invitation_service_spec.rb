@@ -121,6 +121,19 @@ RSpec.describe CbvInvitationService, type: :service do
       expect(invitation.employment_focused).to be(true)
     end
 
+    it "persists unpaid_work_only when requested" do
+      invitation = service.invite_to_activity_flow(cbv_flow_invitation, unpaid_work_only: true)
+
+      expect(invitation).to be_persisted
+      expect(invitation).to be_unpaid_work_only
+    end
+
+    it "defaults unpaid_work_only to false" do
+      invitation = service.invite_to_activity_flow(cbv_flow_invitation)
+
+      expect(invitation).not_to be_unpaid_work_only
+    end
+
     it "defaults employment_focused to false" do
       invitation = service.invite_to_activity_flow(cbv_flow_invitation)
 

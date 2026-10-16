@@ -84,36 +84,73 @@
         persisted_report:,
         employment_activities:
       ) %>
-      <%= render "activities/activities/activity_section",
-            activity_type: "employment",
-            section_title: t("activities.employment.title"),
-            add_path: activities_flow_income_add_your_work_path,
-            empty_message: t("activities.hub.empty.employment"),
-            cards: employment_card_data do %>
-        <% employment_card_data.each do |card_data| %>
-          <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
-            <% card.with_header do %>
-              <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
+      <% if @flow.unpaid_work_only? %>
+        <%= render "activities/activities/activity_section",
+              activity_type: "unpaid_work",
+              section_title: t("activities.unpaid_work.title"),
+              add_path: new_activities_flow_income_employment_path(compensation_type: "unpaid_or_in_kind"),
+              empty_message: t("activities.hub.empty.unpaid_work"),
+              cards: employment_card_data do %>
+          <% employment_card_data.each do |card_data| %>
+            <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+              <% card.with_header do %>
+                <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
+              <% end %>
+              <% card.with_body do %>
+                <% if card_data[:pre_populated] %>
+                  <p class="margin-y-0"><%= t("activities.hub.cards.pre_populated_notice") %></p>
+                <% end %>
+                <% if card_data[:months].none? %>
+                  <div class="margin-top-2">
+                    <%= t("activities.hub.cards.no_employment_data") %>
+                  </div>
+                <% end %>
+                <% card_data[:months].each do |month_data| %>
+                  <div class="activity-month-details">
+                    <div class="activity-month-details__month">
+                      <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
+                    </div>
+                    <div class="activity-month-details__data">
+                      <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
             <% end %>
-            <% card.with_body do %>
-              <% if card_data[:pre_populated] %>
-                <p class="margin-y-0"><%= t("activities.hub.cards.pre_populated_notice") %></p>
+          <% end %>
+        <% end %>
+      <% else %>
+        <%= render "activities/activities/activity_section",
+              activity_type: "employment",
+              section_title: t("activities.employment.title"),
+              add_path: activities_flow_income_add_your_work_path,
+              empty_message: t("activities.hub.empty.employment"),
+              cards: employment_card_data do %>
+          <% employment_card_data.each do |card_data| %>
+            <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
+              <% card.with_header do %>
+                <%= link_to (card_data[:pre_populated] ? t("activities.hub.cards.complete_action") : t("activities.hub.edit")), card_data[:edit_path], class: "usa-link" %>
               <% end %>
-              <% if card_data[:months].none? %>
-                <div class="margin-top-2">
-                  <%= t("activities.hub.cards.no_employment_data") %>
-                </div>
-              <% end %>
-              <% card_data[:months].each do |month_data| %>
-                <div class="activity-month-details">
-                  <div class="activity-month-details__month">
-                    <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
+              <% card.with_body do %>
+                <% if card_data[:pre_populated] %>
+                  <p class="margin-y-0"><%= t("activities.hub.cards.pre_populated_notice") %></p>
+                <% end %>
+                <% if card_data[:months].none? %>
+                  <div class="margin-top-2">
+                    <%= t("activities.hub.cards.no_employment_data") %>
                   </div>
-                  <div class="activity-month-details__data">
-                    <p class="margin-y-0"><%= t("activities.hub.cards.gross_income", amount: number_to_currency(month_data[:gross_earnings] / 100.0)) %></p>
-                    <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                <% end %>
+                <% card_data[:months].each do |month_data| %>
+                  <div class="activity-month-details">
+                    <div class="activity-month-details__month">
+                      <strong><%= I18n.l(month_data[:month], format: :month_year) %></strong>
+                    </div>
+                    <div class="activity-month-details__data">
+                      <p class="margin-y-0"><%= t("activities.hub.cards.gross_income", amount: number_to_currency(month_data[:gross_earnings] / 100.0)) %></p>
+                      <p class="margin-y-0"><%= t("activities.hub.cards.hours", count: month_data[:hours]) %></p>
+                    </div>
                   </div>
-                </div>
+                <% end %>
               <% end %>
             <% end %>
           <% end %>

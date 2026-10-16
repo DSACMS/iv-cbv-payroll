@@ -70,6 +70,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.string "client_agency_id"
     t.datetime "created_at", null: false
     t.string "reference_id"
+    t.boolean "unpaid_work_only", default: false
     t.datetime "updated_at", null: false
     t.string "verification_range"
     t.boolean "employment_focused", default: false, null: false
@@ -109,6 +110,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.integer "renewal_required_months"
     t.integer "reporting_window_months"
     t.string "reporting_window_type"
+    t.boolean "unpaid_work_only", default: false
     t.datetime "updated_at", null: false
     t.datetime "documents_deleted_at"
     t.datetime "transmitted_at"
