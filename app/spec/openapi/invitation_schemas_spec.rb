@@ -137,6 +137,73 @@ RSpec.describe InvitationSchemas do
     expect(schemas.keys.grep(/InvitationActivity$/)).to be_empty
   end
 
+  describe "community engagement invitations" do
+    let(:schema) { document.schema("CommunityEngagementInvitationRequest") }
+    let(:request) do
+      {
+        "language" => "en",
+        "verification_range" => "last_complete_month",
+        "agency_partner_metadata" => {
+          "individual_id" => "EXAMPLE-123", "first_name" => "Jane", "last_name" => "Doe", "date_of_birth" => "1990-01-15"
+        }
+      }
+    end
+
+    it "references each agency's V2 community engagement metadata" do
+      metadata = described_class.schemas[:CommunityEngagementInvitationRequest][:properties][:agency_partner_metadata]
+
+      expect(metadata[:anyOf]).to contain_exactly(
+        { "$ref" => "#/components/schemas/AgencyMetadataV2SandboxCommunityEngagement" },
+        { "$ref" => "#/components/schemas/AgencyMetadataV2NewHampshireCommunityEngagement" },
+        { "$ref" => "#/components/schemas/AgencyMetadataV2LouisianaCommunityEngagement" },
+        { "$ref" => "#/components/schemas/AgencyMetadataV2ResearchCommunityEngagement" },
+        { "$ref" => "#/components/schemas/AgencyMetadataV2AccentureCommunityEngagement" }
+      )
+    end
+
+    it "requires community engagement metadata even when employment metadata is valid" do
+      request["agency_partner_metadata"].delete("date_of_birth")
+
+      expect(schema.valid?(request)).to be(false)
+    end
+
+    context "when an agency's community engagement metadata changes" do
+      let(:agency) { Rails.application.config.client_agencies["sandbox"] }
+      let(:request) { super().merge("agency_partner_metadata" => { "individual_id" => "EXAMPLE-123", "case_number" => "CASE-123" }) }
+
+      before do
+        allow(agency).to receive(:api_metadata).and_call_original
+        allow(agency).to receive(:api_required_metadata).and_call_original
+        allow(agency).to receive(:api_metadata).with("community_engagement").and_return(%i[individual_id case_number])
+        allow(agency).to receive(:api_required_metadata).with("community_engagement").and_return(%i[individual_id case_number])
+      end
+
+      it "validates requests using the updated agency configuration" do
+        expect(schema.valid?(request)).to be(true)
+      end
+    end
+
+    it "allows the optional unpaid-work restriction to be omitted" do
+      expect(schema.valid?(request)).to be(true)
+    end
+
+    it "allows a true restriction" do
+      expect(schema.valid?(request.merge("unpaid_work_only" => true))).to be(true)
+    end
+
+    it "allows a false restriction" do
+      expect(schema.valid?(request.merge("unpaid_work_only" => false))).to be(true)
+    end
+
+    it "allows a null restriction" do
+      expect(schema.valid?(request.merge("unpaid_work_only" => nil))).to be(true)
+    end
+
+    it "rejects a string restriction" do
+      expect(schema.valid?(request.merge("unpaid_work_only" => "true"))).to be(false)
+    end
+  end
+
   it "accepts future fields in requests, responses, metadata, and errors" do
     metadata = sandbox.merge("future_metadata" => { "value" => true })
     request = { "language" => "en", "agency_partner_metadata" => metadata, "future_request" => true }
