@@ -37,7 +37,7 @@
     <%= t(".accordion.internship.body") %>
   <% end %>
   <% accordion.with_accordion_item do %>
-    <%= link_to t(".accordion.internship.link"), activities_flow_income_add_your_work_path, class: "usa-link" %>
+    <%= link_to t(".accordion.internship.link"), new_activities_flow_income_employment_path(compensation_type: "unpaid_or_in_kind"), class: "usa-link" %>
   <% end %>
 <% end %>
 
