@@ -76,7 +76,9 @@ RSpec.describe Activities::SubmitController, type: :controller do
 
         pdf_text = extract_pdf_text(response)
         expect(response).to have_http_status(:ok)
-        expect(pdf_text).to include(education.self_attested_term_date_display)
+        expect(pdf_text).to include(I18n.t("activities.submit.pdf.term_date_range",
+          start_date: I18n.l(education.self_attested_term_start, format: :month_year),
+          end_date: I18n.l(education.self_attested_term_end, format: :month_year)))
         expect(pdf_text).to include(I18n.t("activities.education.add_your_term.edit.enrollment_status_options.less_than_half_time"))
         expect(pdf_text).to include(ApplicationHelper.format_decimal_amount(education.credit_hours).to_s)
       end

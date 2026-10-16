@@ -6,8 +6,7 @@
 #
 #   from_review — "User clicked Edit on the review page to fix one thing."
 #                 Set by edit links on the review page. Tells controllers to
-#                 return to review when finished. Term edits continue through
-#                 document upload before returning to review.
+#                 return to review when finished.
 class Activities::EducationController < Activities::BaseController
   include NavigationTracking
 

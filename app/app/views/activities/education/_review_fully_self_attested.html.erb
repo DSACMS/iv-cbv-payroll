@@ -8,8 +8,9 @@
   { label: t("activities.education.review.school_name"), value: @education_activity.school_name },
   { label: t("activities.education.review.address"), value: @education_activity.formatted_address },
   { label: t("activities.education.review.contact_name"), value: @education_activity.contact_name },
+  { label: t("activities.education.review.contact_title"), value: @education_activity.contact_title },
   { label: t("activities.education.review.contact_email"), value: @education_activity.contact_email },
-  { label: t("activities.education.review.contact_phone"), value: @education_activity.contact_phone_number }
+  { label: t("activities.education.review.contact_phone"), value: number_to_phone(@education_activity.contact_phone_number, area_code: true) }
 ])) %>
 
 <div class="display-flex flex-justify activity-review-edit-header">
@@ -19,9 +20,6 @@
         class: "usa-link" %>
 </div>
 
-<p>
-  <strong><%= t("activities.education.review.ce_explainer_title") %></strong>
-</p>
-<p>
-  <%= t("activities.education.review.ce_explainer_body") %>
-</p>
+<%= render "activities/education/self_attested_term_table", activity: @education_activity %>
+
+<%= render "activities/education/credit_hours_explainer" %>

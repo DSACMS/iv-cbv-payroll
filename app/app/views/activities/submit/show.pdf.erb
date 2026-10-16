@@ -175,21 +175,25 @@
         <% if activity.fully_self_attested? %>
           <% columns = [
             t("activities.education.review.term"),
-            t("components.enrollment_term_table_component.enrollment_status")
+            t("components.enrollment_term_table_component.enrollment_status"),
+            t("activities.summary.education.credit_hours"),
+            t("activities.summary.education.community_engagement_hours")
           ] %>
           <% row = [
-            activity.self_attested_term_date_display,
+            t(
+              "activities.submit.pdf.term_date_range",
+              start_date: format_date(activity.self_attested_term_start, :month_year),
+              end_date: format_date(activity.self_attested_term_end, :month_year)
+            ),
             activity.self_attested_enrollment_status_display
           ] %>
           <% if activity.self_attested_credit_hours_applicable? %>
-            <% columns += [
-              t("activities.summary.education.credit_hours"),
-              t("activities.summary.education.community_engagement_hours")
-            ] %>
             <% row += [
               activity.credit_hours.nil? ? not_provided : format_decimal_amount(activity.credit_hours),
               format_decimal_amount(activity.community_engagement_hours(activity.credit_hours))
             ] %>
+          <% else %>
+            <% row += [ t("shared.not_applicable"), t("shared.not_applicable") ] %>
           <% end %>
           <% rows = [ row ] %>
         <% else %>
