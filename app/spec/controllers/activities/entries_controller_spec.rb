@@ -65,6 +65,40 @@ RSpec.describe Activities::EntriesController do
     context "with tokenized link" do
       let(:invitation) { create(:activity_flow_invitation) }
 
+      context "when the invitation reports that it has expired" do
+        before do
+          allow(ActivityFlowInvitation).to receive(:find_by).with(auth_token: invitation.auth_token).and_return(invitation)
+          allow(invitation).to receive(:expired?).and_return(true)
+        end
+
+        it "redirects to the CE expired-link page without creating a flow" do
+          expect { get :show, params: { token: invitation.auth_token } }.not_to change(ActivityFlow, :count)
+
+          expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+        end
+      end
+
+      context "when a report has already been submitted for the invitation" do
+        before { create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current) }
+
+        it "redirects to the CE expired-link page without creating another flow" do
+          expect { get :show, params: { token: invitation.auth_token } }.not_to change(ActivityFlow, :count)
+
+          expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+        end
+      end
+
+      context "when the previous flow was not submitted" do
+        before { create(:activity_flow, activity_flow_invitation: invitation) }
+
+        it "continues to allow the invitation to be used" do
+          get :show, params: { token: invitation.auth_token }
+
+          expect(response).to have_http_status(:ok)
+          expect(session[:flow_type]).to eq(:activity)
+        end
+      end
+
       context "with agency-supplied names" do
         let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
         let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }

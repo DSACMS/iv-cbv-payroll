@@ -50,6 +50,7 @@ Rails.application.routes.draw do
 
     scope "/activities", as: :activities_flow, module: :activities do
       root to: "activities#index"
+      resource :expired_invitation, only: %i[show]
       resource :entry, only: %i[show], controller: "entries"
       post "presigned_uploads", to: "presigned_uploads#create", as: :presigned_uploads
       if ENV["UNSCANNED_BUCKET_NAME"].blank?

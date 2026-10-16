@@ -1,0 +1,15 @@
+<% content_for :title, t(".title") %>
+<% agency_acronym = agency_translation("shared.agency_acronym") || t(".agency_fallback") %>
+
+<h1>
+  <%= t(".title") %>
+</h1>
+<p>
+  <%= t(".body", agency_acronym: agency_acronym) %>
+</p>
+
+<% if current_agency&.agency_contact_website.present? %>
+  <div class="margin-top-5">
+    <%= link_to t(".visit_agency", agency_acronym: agency_acronym), current_agency.agency_contact_website, class: "usa-button" %>
+  </div>
+<% end %>
