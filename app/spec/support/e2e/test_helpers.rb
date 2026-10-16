@@ -17,6 +17,9 @@ module E2e
       # Wait for the expected page first, then for that visit to complete.
       wait_for_idle(page, wait: wait)
 
+      # Prevent ARIA attribute names with underscores instead of dashes (PR #2183).
+      expect(page).to have_no_selector(:xpath, "//*[@*[starts-with(name(), 'aria_')]]", visible: :all)
+
       # Verify page has no missing translations
       Capybara.using_wait_time(0) do
         missing_translations = page.all("span", class: "translation_missing")

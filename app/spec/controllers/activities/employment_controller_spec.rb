@@ -87,12 +87,14 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response.body).to include(I18n.t("activities.employment_info.employer_name"))
     end
 
-    it "renders the self-employed helper texts" do
+    it "associates the self-employed instructions with their fields" do
       get :new
 
       rendered = Capybara.string(response.body)
-      expect(rendered).to have_text(I18n.t("activities.employment_info.employer_name_hint"))
-      expect(rendered).to have_text(I18n.t("activities.employment_info.street_address_hint"))
+      expect(rendered).to have_selector("#employment_activity_employer_name[aria-describedby='employer_name_hint']")
+      expect(rendered).to have_selector("#employer_name_hint.usa-hint", text: I18n.t("activities.employment_info.employer_name_hint"))
+      expect(rendered).to have_selector("#employment_activity_street_address[aria-describedby='street_address_hint']")
+      expect(rendered).to have_selector("#street_address_hint.usa-hint", text: I18n.t("activities.employment_info.street_address_hint"))
     end
 
     it "renders the combobox for state selection" do

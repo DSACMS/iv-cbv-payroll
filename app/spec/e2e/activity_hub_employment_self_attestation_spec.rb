@@ -58,6 +58,10 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     verify_page(page, title: I18n.t("activities.employment_info.title"))
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_selector("input[name='employment_activity[employer_name]'][required]")
+    expect(page).to have_selector("#employment_activity_employer_name[aria-describedby='employer_name_hint']")
+    expect(page).to have_selector("#employer_name_hint.usa-hint", text: I18n.t("activities.employment_info.employer_name_hint"))
+    expect(page).to have_selector("#employment_activity_street_address[aria-describedby='street_address_hint']")
+    expect(page).to have_selector("#street_address_hint.usa-hint", text: I18n.t("activities.employment_info.street_address_hint"))
     expect(page).to have_selector("label[for='employment_activity_street_address'] strong", text: I18n.t("activities.employment_info.street_address"))
     %w[employer_name street_address_line_2 city state zip_code contact_name contact_email contact_phone_number].each do |field|
       expect(page).to have_selector("label[for='employment_activity_#{field}'] strong", text: I18n.t("activities.employment_info.#{field}"))
