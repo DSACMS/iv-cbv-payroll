@@ -46,6 +46,12 @@ RSpec.describe Activity do
     end
   end
 
+  describe "#manual_education_upload?" do
+    it "returns false for other activities" do
+      expect(VolunteeringActivity.new).not_to be_manual_education_upload
+    end
+  end
+
   describe ".activity_type" do
     it "raises NotImplementedError on the abstract base" do
       expect { described_class.activity_type }.to raise_error(NotImplementedError)

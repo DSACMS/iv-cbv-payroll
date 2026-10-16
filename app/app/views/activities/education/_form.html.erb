@@ -2,6 +2,7 @@
 <%= uswds_form_with(model: education_activity, url: form_url, html: { class: "usa-form usa-form--large education-information-form" }) do |f| %>
   <h2><%= t("activities.education.new.school_section_title") %></h2>
   <%= f.text_field :school_name,
+        required: true,
         label: t("activities.education.new.school_name"),
         hint: t("activities.education.new.school_name_hint") %>
   <%= f.text_field :street_address, label: t("activities.education.new.street_address") %>

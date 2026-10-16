@@ -1,6 +1,26 @@
 require "rails_helper"
 
 RSpec.describe ApplicationHelper do
+  describe "#uswds_form_with" do
+    it "disables native browser validation by default" do
+      rendered = Capybara.string(helper.uswds_form_with(url: "/") { "" })
+
+      expect(rendered).to have_selector("form[novalidate]")
+    end
+
+    it "preserves other HTML options" do
+      rendered = Capybara.string(helper.uswds_form_with(url: "/", html: { class: "custom-form" }) { "" })
+
+      expect(rendered).to have_selector("form.custom-form[novalidate]")
+    end
+
+    it "allows native browser validation to be enabled explicitly" do
+      rendered = Capybara.string(helper.uswds_form_with(url: "/", html: { novalidate: false }) { "" })
+
+      expect(rendered).to have_no_selector("form[novalidate]")
+    end
+  end
+
   describe "#agency_translation" do
     let(:current_agency) { Rails.application.config.client_agencies["sandbox"] }
     let(:available_translations) { <<~YAML }

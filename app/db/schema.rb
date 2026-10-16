@@ -45,20 +45,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
 
   create_table "activity_flow_employment_summaries", force: :cascade do |t|
     t.bigint "activity_flow_id", null: false
+    t.bigint "payroll_account_id", null: false
+    t.string "employer_name"
+    t.string "employment_type"
+    t.string "employer_phone_number"
+    t.string "employer_address"
+    t.string "employment_status"
+    t.date "employment_start_date"
+    t.date "employment_termination_date"
+    t.datetime "redacted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "pay_frequency"
     t.integer "compensation_amount"
     t.string "compensation_unit"
-    t.datetime "created_at", null: false
-    t.string "employer_address"
-    t.string "employer_name"
-    t.string "employer_phone_number"
-    t.date "employment_start_date"
-    t.string "employment_status"
-    t.date "employment_termination_date"
-    t.string "employment_type"
-    t.string "pay_frequency"
-    t.bigint "payroll_account_id", null: false
-    t.datetime "redacted_at"
-    t.datetime "updated_at", null: false
     t.index ["activity_flow_id", "payroll_account_id"], name: "index_activity_flow_employment_summaries_on_flow_account", unique: true
     t.index ["activity_flow_id"], name: "index_activity_flow_employment_summaries_on_activity_flow_id"
     t.index ["payroll_account_id"], name: "index_activity_flow_employment_summaries_on_payroll_account_id"
@@ -69,11 +69,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.bigint "cbv_applicant_id"
     t.string "client_agency_id"
     t.datetime "created_at", null: false
-    t.boolean "employment_focused", default: false, null: false
     t.string "reference_id"
     t.boolean "unpaid_work_only", default: false
     t.datetime "updated_at", null: false
     t.string "verification_range"
+    t.boolean "employment_focused", default: false, null: false
     t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
     t.index ["cbv_applicant_id"], name: "index_activity_flow_invitations_on_cbv_applicant_id"
   end
@@ -105,16 +105,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.string "confirmation_code"
     t.datetime "created_at", null: false
     t.string "device_id"
-    t.datetime "documents_deleted_at"
-    t.boolean "employment_focused", default: false, null: false
     t.uuid "end_user_id", default: -> { "gen_random_uuid()" }, null: false
     t.bigint "identity_id"
     t.integer "renewal_required_months"
     t.integer "reporting_window_months"
     t.string "reporting_window_type"
-    t.datetime "transmitted_at"
     t.boolean "unpaid_work_only", default: false
     t.datetime "updated_at", null: false
+    t.datetime "documents_deleted_at"
+    t.datetime "transmitted_at"
+    t.boolean "employment_focused", default: false, null: false
     t.index ["activity_flow_invitation_id"], name: "index_activity_flows_on_activity_flow_invitation_id"
     t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"
     t.index ["identity_id"], name: "index_activity_flows_on_identity_id"
@@ -139,12 +139,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.string "doc_id"
     t.string "first_name"
     t.jsonb "income_changes"
-    t.string "individual_id"
     t.string "last_name"
     t.string "middle_name"
     t.datetime "redacted_at"
     t.date "snap_application_date"
     t.datetime "updated_at", null: false
+    t.string "individual_id"
   end
 
   create_table "cbv_flow_invitations", force: :cascade do |t|
@@ -192,23 +192,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.string "contact_email"
     t.string "contact_name"
     t.string "contact_phone_number"
-    t.string "contact_title"
     t.datetime "created_at", null: false
     t.decimal "credit_hours", precision: 10, scale: 2
     t.string "data_source", default: "validated", null: false
     t.boolean "draft", default: false, null: false
-    t.string "education_type"
-    t.boolean "pre_populated", default: false, null: false
     t.string "school_name"
-    t.string "self_attested_enrollment_status"
-    t.date "self_attested_term_end"
-    t.date "self_attested_term_start"
     t.string "state"
     t.string "status", default: "unknown"
     t.string "street_address"
     t.string "street_address_line_2"
     t.datetime "updated_at", null: false
     t.string "zip_code"
+    t.boolean "pre_populated", default: false, null: false
+    t.string "contact_title"
+    t.string "self_attested_enrollment_status"
+    t.date "self_attested_term_start"
+    t.date "self_attested_term_end"
+    t.string "education_type"
     t.index ["activity_flow_id"], name: "index_education_activities_on_activity_flow_id"
   end
 
@@ -216,7 +216,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.bigint "activity_flow_id", null: false
     t.text "additional_comments"
     t.string "city"
-    t.string "compensation_type", default: "paid", null: false
     t.string "contact_email"
     t.string "contact_name"
     t.string "contact_phone_number"
@@ -225,13 +224,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.boolean "draft", default: false, null: false
     t.string "employer_name"
     t.boolean "is_self_employed", default: false
-    t.boolean "pre_populated", default: false, null: false
-    t.date "selected_months", default: [], null: false, array: true
     t.string "state"
     t.string "street_address"
     t.string "street_address_line_2"
     t.datetime "updated_at", null: false
     t.string "zip_code"
+    t.boolean "pre_populated", default: false, null: false
+    t.date "selected_months", default: [], null: false, array: true
+    t.string "compensation_type", default: "paid", null: false
     t.index ["activity_flow_id"], name: "index_employment_activities_on_activity_flow_id"
   end
 
@@ -246,12 +246,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
   end
 
   create_table "household_members", force: :cascade do |t|
-    t.bigint "activity_flow_invitation_id", null: false
-    t.datetime "created_at", null: false
-    t.string "display_name", null: false
     t.bigint "household_id", null: false
+    t.bigint "activity_flow_invitation_id", null: false
     t.string "reference_id", null: false
+    t.string "display_name", null: false
     t.string "role_label", null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["activity_flow_invitation_id"], name: "index_household_members_on_activity_flow_invitation_id", unique: true
     t.index ["household_id", "reference_id"], name: "index_household_members_on_household_id_and_reference_id", unique: true
@@ -260,11 +260,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
 
   create_table "households", force: :cascade do |t|
     t.string "auth_token", null: false
+    t.string "reference_id", null: false
     t.string "client_agency_id", null: false
     t.datetime "created_at", null: false
-    t.jsonb "launcher_overrides", default: {}, null: false
-    t.string "reference_id", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "launcher_overrides", default: {}, null: false
     t.index ["auth_token"], name: "index_households_on_auth_token", unique: true
     t.index ["reference_id"], name: "index_households_on_reference_id", unique: true
   end
@@ -290,13 +290,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.boolean "draft", default: false, null: false
     t.string "organization_address"
     t.string "organization_name"
-    t.boolean "pre_populated", default: false, null: false
     t.string "program_name"
     t.string "state"
     t.string "street_address"
     t.string "street_address_line_2"
     t.datetime "updated_at", null: false
     t.string "zip_code"
+    t.boolean "pre_populated", default: false, null: false
     t.index ["activity_flow_id"], name: "index_job_training_activities_on_activity_flow_id"
   end
 
@@ -496,12 +496,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.boolean "draft", default: false, null: false
     t.integer "hours"
     t.string "organization_name"
-    t.boolean "pre_populated", default: false, null: false
     t.string "state"
     t.string "street_address"
     t.string "street_address_line_2"
     t.datetime "updated_at", null: false
     t.string "zip_code"
+    t.boolean "pre_populated", default: false, null: false
     t.index ["activity_flow_id"], name: "index_volunteering_activities_on_activity_flow_id"
   end
 
