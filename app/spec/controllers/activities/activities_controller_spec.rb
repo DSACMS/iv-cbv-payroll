@@ -187,52 +187,23 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
     end
 
-    it "surfaces only pre-populated community service drafts, not self-attested user drafts" do
-      api_draft = create(:volunteering_activity, :pre_populated_draft, activity_flow: current_flow)
-      _user_draft = create(:volunteering_activity, activity_flow: current_flow, draft: true, pre_populated: false)
+    context "with drafts of every activity type" do
+      before do
+        create(:volunteering_activity, activity_flow: current_flow, draft: true, organization_name: "Draft Food Pantry")
+        create(:employment_activity, activity_flow: current_flow, draft: true, employer_name: "Draft Employer")
+        create(:education_activity, activity_flow: current_flow, draft: true, data_source: :fully_self_attested, school_name: "Draft College")
+        create(:job_training_activity, activity_flow: current_flow, draft: true, program_name: "Draft Training")
+        get :index
+      end
 
-      get :index
+      it "does not render draft activity cards" do
+        rendered = Capybara.string(response.body)
 
-      expect(assigns(:community_service_draft_activities)).to contain_exactly(api_draft)
-    end
-
-    it "surfaces only pre-populated employment drafts, not self-attested user drafts" do
-      api_draft = create(:employment_activity, :pre_populated_draft, activity_flow: current_flow)
-      _user_draft = create(:employment_activity, activity_flow: current_flow, draft: true, pre_populated: false)
-
-      get :index
-
-      expect(assigns(:employment_draft_activities)).to contain_exactly(api_draft)
-    end
-
-    it "surfaces only pre-populated education drafts, not self-attested user drafts" do
-      api_draft = create(
-        :education_activity,
-        :pre_populated_draft,
-        activity_flow: current_flow,
-        school_name: "Springfield Community College"
-      )
-      _user_draft = create(
-        :education_activity,
-        activity_flow: current_flow,
-        school_name: "State College",
-        data_source: "fully_self_attested",
-        draft: true,
-        pre_populated: false
-      )
-
-      get :index
-
-      expect(assigns(:education_draft_activities)).to contain_exactly(api_draft)
-    end
-
-    it "surfaces only pre-populated work program drafts, not self-attested user drafts" do
-      api_draft = create(:job_training_activity, :pre_populated_draft, activity_flow: current_flow)
-      _user_draft = create(:job_training_activity, activity_flow: current_flow, draft: true, pre_populated: false)
-
-      get :index
-
-      expect(assigns(:work_programs_draft_activities)).to contain_exactly(api_draft)
+        expect(rendered).to have_no_text("Draft Food Pantry")
+        expect(rendered).to have_no_text("Draft Employer")
+        expect(rendered).to have_no_text("Draft College")
+        expect(rendered).to have_no_text("Draft Training")
+      end
     end
   end
 
@@ -995,101 +966,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
   end
 
-  context "when a pre-populated employment activity exists" do
-    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
-
-    before do
-      create(:employment_activity, :pre_populated_draft, activity_flow: current_flow, employer_name: "Acme Corp")
-      session[:flow_id] = current_flow.id
-      session[:flow_type] = :activity
-      get :index
-    end
-
-    it "assigns the draft employment activity" do
-      expect(assigns(:employment_draft_activities)).not_to be_empty
-      expect(assigns(:employment_draft_activities).first.employer_name).to eq("Acme Corp")
-    end
-
-    it "renders the pre-populated notice on the hub" do
-      expect(response.body).to include(I18n.t("activities.hub.cards.pre_populated_notice"))
-    end
-
-    it "renders the Complete CTA instead of Edit for the draft card" do
-      employment_cards = Nokogiri::HTML.parse(response.body).css("[data-activity-type='employment'] .activity-hub-card")
-      expect(employment_cards.text).to include(I18n.t("activities.hub.cards.complete_action"))
-      expect(employment_cards.text).not_to include(I18n.t("activities.hub.edit"))
-    end
-  end
-
-  context "when a pre-populated education activity exists" do
-    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
-
-    before do
-      create(:education_activity, :pre_populated_draft, activity_flow: current_flow, school_name: "Springfield Community College")
-      session[:flow_id] = current_flow.id
-      session[:flow_type] = :activity
-      get :index
-    end
-
-    it "assigns the draft education activity" do
-      expect(assigns(:education_draft_activities)).not_to be_empty
-      expect(assigns(:education_draft_activities).first.school_name).to eq("Springfield Community College")
-    end
-
-    it "renders the pre-populated notice on the hub" do
-      expect(response.body).to include(I18n.t("activities.hub.cards.pre_populated_notice"))
-    end
-
-    it "renders the Complete CTA instead of Edit for the draft card" do
-      rendered = Capybara.string(response.body)
-      education_cards = rendered.find("[data-activity-type='education']")
-
-      expect(education_cards).to have_text(I18n.t("activities.hub.cards.complete_action"))
-      expect(education_cards).to have_no_text(I18n.t("activities.hub.edit"))
-    end
-
-    it "renders the pre-populated school name" do
-      rendered = Capybara.string(response.body)
-      education_cards = rendered.find("[data-activity-type='education']")
-
-      expect(education_cards).to have_text("Springfield Community College")
-    end
-  end
-
-  context "when a pre-populated work program activity exists" do
-    let(:current_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
-
-    before do
-      activity = create(:job_training_activity, :pre_populated_draft, activity_flow: current_flow, program_name: "Career Prep")
-      create(:job_training_activity_month, job_training_activity: activity, month: current_flow.reporting_months.first.beginning_of_month, hours: 10)
-      session[:flow_id] = current_flow.id
-      session[:flow_type] = :activity
-      get :index
-    end
-
-    it "assigns the draft work program activity" do
-      expect(assigns(:work_programs_draft_activities)).not_to be_empty
-      expect(assigns(:work_programs_draft_activities).first.program_name).to eq("Career Prep")
-    end
-
-    it "renders the Complete CTA instead of Edit for the draft card" do
-      rendered = Capybara.string(response.body)
-      work_program_cards = rendered.find("[data-activity-type='work_programs']")
-
-      expect(work_program_cards).to have_text(I18n.t("activities.hub.cards.complete_action"))
-      expect(work_program_cards).to have_no_text(I18n.t("activities.hub.edit"))
-    end
-
-    it "renders work program month data" do
-      rendered = Capybara.string(response.body)
-      work_program_cards = rendered.find("[data-activity-type='work_programs']")
-
-      expect(work_program_cards).to have_text("Career Prep")
-      expect(work_program_cards).to have_text(I18n.t("activities.hub.cards.hours", count: 10))
-    end
-  end
-
-  context "when the session is not pre-populated" do
+  context "when the flow has no activities" do
     let(:current_flow) do
       create(
         :activity_flow,

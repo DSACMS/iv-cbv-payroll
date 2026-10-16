@@ -139,53 +139,6 @@ module ActivitiesHelper
     end
   end
 
-  def employment_activity_draft_cards(activities)
-    activities.map do |activity|
-      months = activity.employment_activity_months.sort_by(&:month).filter_map do |month|
-        next unless month.gross_income.positive? || month.hours.positive?
-
-        {
-          month: month.month,
-          gross_earnings: month.gross_income * 100,
-          hours: format_decimal_amount(month.hours)
-        }
-      end
-      {
-        name: activity.employer_name,
-        months: months,
-        edit_path: edit_activities_flow_income_employment_path(id: activity.id),
-        pre_populated: true
-      }
-    end
-  end
-
-  def education_activity_draft_cards(activities)
-    activities.map do |activity|
-      {
-        name: activity.school_name,
-        months: [],
-        edit_path: edit_activities_flow_education_path(id: activity.id),
-        pre_populated: true
-      }
-    end
-  end
-
-  def community_service_draft_cards(activities)
-    activities.map do |activity|
-      months = activity.volunteering_activity_months.sort_by(&:month).filter_map do |activity_month|
-        next unless activity_month.hours.positive?
-
-        { month: activity_month.month, hours: format_decimal_amount(activity_month.hours) }
-      end
-      {
-        name: activity.organization_name,
-        months: months,
-        edit_path: edit_activities_flow_community_service_path(id: activity.id),
-        pre_populated: true
-      }
-    end
-  end
-
   def work_program_cards(activities)
     activities.map do |activity|
       months = activity.job_training_activity_months.sort_by(&:month).filter_map do |activity_month|
@@ -197,22 +150,6 @@ module ActivitiesHelper
         name: activity.program_name,
         months: months,
         edit_path: review_activities_flow_job_training_path(id: activity.id, from_edit: 1)
-      }
-    end
-  end
-
-  def work_program_draft_cards(activities)
-    activities.map do |activity|
-      months = activity.job_training_activity_months.sort_by(&:month).filter_map do |activity_month|
-        next unless activity_month.hours.positive?
-
-        { month: activity_month.month, hours: format_decimal_amount(activity_month.hours) }
-      end
-      {
-        name: activity.program_name,
-        months: months,
-        edit_path: edit_activities_flow_job_training_path(id: activity.id),
-        pre_populated: true
       }
     end
   end

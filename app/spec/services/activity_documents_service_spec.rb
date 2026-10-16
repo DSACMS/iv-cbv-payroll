@@ -100,7 +100,7 @@ RSpec.describe ActivityDocumentsService do
   end
 
   it "excludes documents attached to draft activities" do
-    draft = create(:volunteering_activity, :pre_populated_draft, activity_flow: activity_flow)
+    draft = create(:volunteering_activity, draft: true, activity_flow: activity_flow)
     attach_document(draft, "Draft Document.pdf")
 
     expect(described_class.new(activity_flow).all).to be_empty
