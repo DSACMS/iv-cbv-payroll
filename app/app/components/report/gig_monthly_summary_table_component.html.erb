@@ -1,13 +1,17 @@
 <% show_table = has_monthly_summary_results? || @is_pdf %>
+<% monthly_summary = I18n.t("components.report.monthly_summary_table.monthly_summary") %>
 
 <% if show_table %>
   <div class="<%= @show_header ? "margin-top-5" : "" %>">
     <% if @show_header %>
       <h2 class="margin-0">
-        <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
+        <%= monthly_summary %>
       </h2>
     <% end %>
-    <%= render(TableComponent.new(multi_column: true)) do |table| %>
+    <%= render(TableComponent.new(
+      caption: monthly_summary,
+      multi_column: true
+    )) do |table| %>
       <%= table.with_header_cell
                .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
       <%= table.with_header_cell

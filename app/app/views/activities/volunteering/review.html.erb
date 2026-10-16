@@ -29,8 +29,12 @@
   { label: t("activities.community_service.review.coordinator_phone"), value: @volunteering_activity.coordinator_phone_number }
 ])) %>
 
-<h2><%= t("activities.summary.monthly_details") %></h2>
-<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+<% monthly_details = t("activities.summary.monthly_details") %>
+<h2><%= monthly_details %></h2>
+<%= render(TableComponent.new(
+  caption: monthly_details,
+  activity_hours_review: true
+)) do |table| %>
   <%= table.with_header_cell(class_names: "text-nowrap")
            .with_content(t("activities.summary.community_service.month")) %>
   <%= table.with_header_cell(class_names: "text-nowrap")

@@ -37,14 +37,14 @@
   </header>
 
   <section class="margin-top-4">
-    <h2>
+    <h2 id="client-and-report-information">
       <%= t(
         "activities.submit.pdf.client_and_report_information",
         client_name: @report.client_name.presence || not_provided
       ) %>
     </h2>
 
-    <table class="activity-report__report-information activity-report__table width-full">
+    <table class="activity-report__report-information activity-report__table width-full" aria-labelledby="client-and-report-information">
       <tbody>
         <tr>
           <th scope="row">

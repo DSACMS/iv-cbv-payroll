@@ -4,10 +4,11 @@
 <% @employment_payroll_accounts.each_with_index do |job, index| %>
     <% account_report = @persisted_report&.find_account_report(job.aggregator_account_id) %>
     <% if account_report.present? %>
+        <% employment_details = t(".employment_details") %>
         <h2><%= t(".employment_header", count: index + 1, employer_name: account_report.employment.employer_name) %></h2>
-        <h3><%= t(".employment_details") %></h3>
-        <%= render(TableComponent.new) do |table| %>
-            <%= table.with_header_cell(scope: "col") { t(".employment_details") } %>
+        <h3><%= employment_details %></h3>
+        <%= render(TableComponent.new(caption: employment_details)) do |table| %>
+            <%= table.with_header_cell(scope: "col") { employment_details } %>
             <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
             <%= table.with_data_point(:employment_start_date, account_report.employment.start_date) %>
             <%= table.with_data_point(:employment_end_date, account_report.employment.termination_date) %>
@@ -38,6 +39,7 @@
     <% end %>
 <% end %>
 <% @employment_activities.each_with_index do |activity, index| %>
+    <% hours_and_income = t(".hours_and_income") %>
     <h2><%= t(".employment_header", count: @employment_payroll_accounts.size + index + 1, employer_name: activity.employer_name) %></h2>
     <h3><%= t(".employer_information") %></h3>
     <%= render(ContactInfoReviewTableComponent.new(
@@ -52,8 +54,8 @@
           ]
         )) %>
 
-    <h2><%= t(".hours_and_income") %></h2>
-    <%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+    <h2><%= hours_and_income %></h2>
+    <%= render(TableComponent.new(caption: hours_and_income, activity_hours_review: true)) do |table| %>
         <%= table.with_header_cell(scope: "col") { t(".month") } %>
         <%= table.with_header_cell(scope: "col") { t(".gross_income") } %>
         <%= table.with_header_cell(scope: "col") { t(".hours_worked") } %>
