@@ -26,6 +26,117 @@
     }
   ],
   "paths": {
+    "/api/v2/community-engagement/invitations": {
+      "post": {
+        "summary": "Create community engagement reporting links",
+        "tags": [
+          "Invitations"
+        ],
+        "operationId": "createCommunityEngagementInvitation",
+        "description": "Create a community engagement invitation. Set unpaid_work_only to true to limit employment reporting to unpaid work; null, false, and omission leave employment unrestricted.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Invitations created",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "community_engagement": {
+                    "summary": "Community engagement invitation",
+                    "value": {
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/en/start/IncomeExampleToken",
+                      "token": "IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "individual_id": "EXAMPLE-123",
+                        "first_name": "Jane",
+                        "last_name": "Doe",
+                        "date_of_birth": "1990-01-15"
+                      },
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/ActivityExampleToken"
+                    }
+                  },
+                  "unpaid_work_only": {
+                    "summary": "Community engagement with unpaid work only",
+                    "value": {
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/en/start/IncomeExampleToken",
+                      "token": "IncomeExampleToken",
+                      "expiration_date": "2026-10-07T23:59:59.999-04:00",
+                      "language": "en",
+                      "agency_partner_metadata": {
+                        "individual_id": "EXAMPLE-123",
+                        "first_name": "Jane",
+                        "last_name": "Doe",
+                        "date_of_birth": "1990-01-15"
+                      },
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/ActivityExampleToken"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityEngagementInvitationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid unpaid-work restriction or invitation fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationErrors"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommunityEngagementInvitationRequest"
+              },
+              "examples": {
+                "community_engagement": {
+                  "summary": "Community engagement invitation",
+                  "value": {
+                    "language": "en",
+                    "verification_range": "last_complete_month",
+                    "agency_partner_metadata": {
+                      "individual_id": "EXAMPLE-123",
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "date_of_birth": "1990-01-15"
+                    }
+                  }
+                },
+                "unpaid_work_only": {
+                  "summary": "Community engagement with unpaid work only",
+                  "value": {
+                    "language": "en",
+                    "verification_range": "last_complete_month",
+                    "agency_partner_metadata": {
+                      "individual_id": "EXAMPLE-123",
+                      "first_name": "Jane",
+                      "last_name": "Doe",
+                      "date_of_birth": "1990-01-15"
+                    },
+                    "unpaid_work_only": true
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
     "/api/v1/invitations": {
       "post": {
         "summary": "Create a Tokenized Link to Emmy Income",
@@ -249,7 +360,7 @@
                         "first_name": "Jane",
                         "last_name": "Doe"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/6WU5zLLGNu"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/8AxJWz7ZCK"
                     }
                   },
                   "community_engagement": {
@@ -265,7 +376,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/epfkXz75z6"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/qivPxgQweh"
                     }
                   }
                 },
@@ -1106,6 +1217,122 @@
           "first_name",
           "last_name"
         ]
+      },
+      "CommunityEngagementInvitationRequest": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "language",
+          "verification_range",
+          "agency_partner_metadata"
+        ],
+        "properties": {
+          "language": {
+            "type": "string",
+            "pattern": "^([eE][nN]|[eE][sS])$",
+            "example": "en",
+            "description": "Preferred language: en (English) or es (Spanish), case insensitive. Required; omitted or unsupported values return 422. Returned in lowercase."
+          },
+          "verification_range": {
+            "type": "string",
+            "enum": [
+              "last_complete_month",
+              "last_12_complete_months"
+            ],
+            "example": "last_complete_month"
+          },
+          "unpaid_work_only": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "default": false,
+            "description": "Optional. Only true restricts employment reporting to unpaid work. False, null, or omission leaves employment unrestricted. Null is stored as null. Accepted only by the community-engagement invitations endpoint; the employment invitations endpoint rejects this field."
+          },
+          "agency_partner_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AgencyMetadataV2SandboxCommunityEngagement"
+              },
+              {
+                "$ref": "#/components/schemas/AgencyMetadataV2NewHampshireCommunityEngagement"
+              },
+              {
+                "$ref": "#/components/schemas/AgencyMetadataV2LouisianaCommunityEngagement"
+              },
+              {
+                "$ref": "#/components/schemas/AgencyMetadataV2ResearchCommunityEngagement"
+              },
+              {
+                "$ref": "#/components/schemas/AgencyMetadataV2AccentureCommunityEngagement"
+              }
+            ]
+          }
+        }
+      },
+      "CommunityEngagementInvitationResponse": {
+        "type": "object",
+        "description": "Direct the applicant to activity_tokenized_url to start community engagement reporting.",
+        "required": [
+          "tokenized_url",
+          "token",
+          "expiration_date",
+          "language",
+          "agency_partner_metadata",
+          "activity_tokenized_url"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "tokenized_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Income reporting link. Treat the token as opaque and direct the applicant to this URL unchanged."
+          },
+          "expiration_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Expiration of tokenized_url, at the end of the day in America/New_York after the agency's configured validity period."
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "es"
+            ]
+          },
+          "agency_partner_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AgencyMetadataV2SandboxCommunityEngagement"
+              },
+              {
+                "$ref": "#/components/schemas/AgencyMetadataV2NewHampshireCommunityEngagement"
+              },
+              {
+                "$ref": "#/components/schemas/AgencyMetadataV2LouisianaCommunityEngagement"
+              },
+              {
+                "$ref": "#/components/schemas/AgencyMetadataV2ResearchCommunityEngagement"
+              },
+              {
+                "$ref": "#/components/schemas/AgencyMetadataV2AccentureCommunityEngagement"
+              }
+            ]
+          },
+          "token": {
+            "type": "string",
+            "description": "Opaque token for the income reporting link."
+          },
+          "activity_tokenized_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Community engagement reporting link, including any unpaid-work restriction stored on the invitation."
+          }
+        }
       },
       "CeActivityReport": {
         "type": "object",
