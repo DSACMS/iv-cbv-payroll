@@ -35,6 +35,33 @@ RSpec.describe Redactable, type: :model do
       end
     end
 
+    context "when fields have unique database constraints" do
+      let!(:first_identity) { create(:identity, activity_flows_count: 0) }
+      let!(:second_identity) { create(:identity, activity_flows_count: 0) }
+      let!(:first_household) { create(:household) }
+      let!(:second_household) { create(:household) }
+
+      before do
+        first_identity.redact!
+        second_identity.redact!
+        first_household.redact!
+        second_household.redact!
+      end
+
+      it "persists distinct identity placeholders" do
+        expect(first_identity.reload.first_name).to start_with("REDACTED-")
+        expect(second_identity.reload.first_name).to start_with("REDACTED-")
+        expect(first_identity.first_name).not_to eq(second_identity.first_name)
+      end
+
+      it "persists distinct household reference and token placeholders" do
+        expect(first_household.reload.reference_id).to start_with("REDACTED-")
+        expect(second_household.reload.reference_id).to start_with("REDACTED-")
+        expect(first_household.reference_id).not_to eq(second_household.reference_id)
+        expect(first_household.auth_token).not_to eq(second_household.auth_token)
+      end
+    end
+
     it "raises when the model has no fields configured and none are passed" do
       allow(invitation.class).to receive(:fields_to_redact).and_return(nil)
 
