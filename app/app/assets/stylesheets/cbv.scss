@@ -293,28 +293,12 @@ html {
 }
 
 /*
-* Copy link button
-*/
-input#invitation_link {
-  border-right: none;
-  height: 3rem;
-
-  // hide on smaller screens
-  display: none;
-
-  @include at-media("tablet") {
-    display: block;
-  }
-}
-
-.copy-link-button {
-  height: 3rem;
-  margin-top: 0 !important;
-
-  @include at-media("tablet") {
-    border-radius: 0 0.25rem 0.25rem 0;
-    border-left: none;
-  }
+ * Income completion page
+ */
+.cbv-success-steps h3 {
+  @include u-minh(6);
+  @include u-display("flex");
+  @include u-flex("align-center");
 }
 
 .usa-button--success {

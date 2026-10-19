@@ -6,7 +6,6 @@ import SessionTimeoutModalController from "./cbv/sessions_controller.js"
 import HelpController from "./help"
 import PollingController from "./polling_controller.js"
 import LanguageController from "./language_controller.js"
-import CopyLinkController from "./copy_link_controller.js"
 import CommonQuestionsController from "./common_questions_controller.js"
 import CbvEntryPageController from "./cbv/entry_page_controller.js"
 import AdvancedLauncherController from "./advanced_launcher_controller.js"
@@ -23,7 +22,6 @@ application.register("polling", PollingController)
 application.register("session", SessionTimeoutModalController)
 application.register("help", HelpController)
 application.register("language", LanguageController)
-application.register("copy-link", CopyLinkController)
 application.register("cbv-entry-page", CbvEntryPageController)
 application.register("common-questions", CommonQuestionsController)
 application.register("session-timeout", SessionTimeoutPageController)

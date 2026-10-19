@@ -24,7 +24,6 @@ module TrackEvent
   ApplicantConsentedToTerms = "ApplicantConsentedToTerms"
   ApplicantContinuedFromAddJobsPage = "ApplicantContinuedFromAddJobsPage"
   ApplicantContinuedFromOtherJobsPage = "ApplicantContinuedFromOtherJobsPage"
-  ApplicantCopiedInvitationLink = "ApplicantCopiedInvitationLink"
   ApplicantCreatedArgyleAccount = "ApplicantCreatedArgyleAccount"
   ApplicantCreatedPinwheelAccount = "ApplicantCreatedPinwheelAccount"
   ApplicantDownloadedIncomePDF = "ApplicantDownloadedIncomePDF"

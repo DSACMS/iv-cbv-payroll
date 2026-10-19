@@ -1,92 +1,69 @@
-<% title = t(".header", agency_acronym: agency_translation("shared.agency_acronym")) %>
+<% agency_name = agency_translation("shared.agency_full_name") %>
+<% title = t(".header", agency_name: agency_name) %>
 <% content_for :title, title %>
+
 <div class="grid-col tablet:grid-col-8">
-  <div class="margin-bottom-4">
-    <h1><%= title %></h1>
-    <p><%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %></p>
-    <div class="maxw-card-lg">
+  <div class="grid-row flex-justify-center">
+    <svg class="usa-icon usa-icon--size-9 text-success-dark" aria-hidden="true" role="img">
+      <use href="<%= uswds_sprite_icon_href("check_circle") %>"></use>
+    </svg>
+  </div>
+
+  <h1 class="margin-top-2">
+    <%= title %>
+  </h1>
+  <p>
+    <%= t(".confirmation_code_html", confirmation_code: @cbv_flow.confirmation_code) %>
+  </p>
+
+  <h2>
+    <%= t(".whats_next") %>
+  </h2>
+  <p>
+    <%= t(".next_steps_description", agency_name: agency_name) %>
+  </p>
+
+  <%= render(Uswds::IconList.new(class_names: "cbv-success-steps margin-top-3", item_class_names: "margin-bottom-3")) do |icon_list| %>
+    <%= icon_list.with_item(icon: "file_download") do %>
+      <h3><%= t(".download_title") %></h3>
+      <p><%= t(".download_description") %></p>
+
       <%= render(LinkWithIconComponent.new(
         t(".download"),
         icon: "file_download",
-        class: "usa-button",
+        class: "usa-button usa-button--outline margin-top-2",
         icon_position: :leading,
         variant: :primary,
-        url: cbv_flow_submit_path(format: "pdf"),
+        url: cbv_flow_submit_path(format: :pdf),
         target: "_blank",
         rel: "noopener noreferrer"
       )) %>
-    </div>
-  </div>
+    <% end %>
 
-  <div class="margin-bottom-5">
-    <h2><%= t(".whats_next") %></h2>
-    <ul class="usa-icon-list margin-top-3">
-      <li class="usa-icon-list__item margin-bottom-3">
-        <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill margin-right-1">
-          <svg class="usa-icon" aria-hidden="true" role="img">
-            <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#attach_money") %>"></use>
-          </svg>
-        </div>
-        <div class="usa-icon-list__content">
-          <h3 class="margin-bottom-1"><%= t(".whats_next_1_title") %></h3>
-          <p><%= t(".whats_next_1_li_1", agency_acronym: agency_translation("shared.agency_acronym")) %></p>
-          <p><%= t(".whats_next_1_li_2_html", agency_acronym: agency_translation("shared.agency_acronym"), agency_website: current_agency.agency_contact_website) %></p>
-        </div>
-      </li>
-      <li class="usa-icon-list__item">
-        <div class="usa-icon-list__icon display-flex flex-justify-center flex-align-center width-6 minw-6 height-6 bg-primary-lighter radius-top-pill radius-bottom-pill margin-right-1">
-          <svg class="usa-icon" aria-hidden="true" role="img">
-            <use href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#groups") %>"></use>
-          </svg>
-        </div>
-        <div class="usa-icon-list__content">
-          <h3 class="margin-bottom-1"><%= t(".share_invitation_link_title") %></h3>
-          <p><%= t(".share_invitation_link_content") %></p>
+    <%= icon_list.with_item(icon: "groups") do %>
+      <h3><%= t(".head_of_household_title") %></h3>
+      <p><%= t(".head_of_household_description_html", agency_website: current_agency.agency_contact_website) %></p>
+    <% end %>
 
-          <div data-controller="copy-link" class="display-flex">
-            <%= form_with(builder: UswdsFormBuilder, html: { class: "display-contents" }) do |f| %>
-              <%= f.label :invitation_link, t(".invitation_link_label"), class: "usa-sr-only" %>
-              <input value="<%= @invitation_link %>" autocomplete="off" readonly class="usa-input margin-top-0 maxw-card-lg" data-copy-link-target="input" type="text" name="invitation_link" id="invitation_link">
-              <%= f.button_with_icon(t(".copy_link"),
-                class: "copy-link-button usa-button--outline maxw-card",
-                icon: "content_copy",
-                icon_position: :leading,
-                variant: :primary,
-                type: "button",
-                data: {
-                  copy_link_target: "copyLinkButton",
-                  action: "click->copy-link#copy"
-                }) %>
-
-              <%= f.button_with_icon(t(".copied_link"),
-                class: "copy-link-button invisible maxw-card",
-                icon: "check_circle",
-                icon_position: :leading,
-                variant: :success,
-                type: "button",
-                data: {
-                  copy_link_target: "successButton"
-                }) %>
-            <% end %>
-          </div>
-        </div>
-      </li>
-    </ul>
-  </div>
+    <%= icon_list.with_item(icon: "person") do %>
+      <h3><%= t(".household_member_title") %></h3>
+      <p><%= t(".household_member_description", agency_name: agency_name) %></p>
+    <% end %>
+  <% end %>
 
   <div class="divider margin-top-5"></div>
 
   <div>
     <h2 class="margin-top-5"><%= t(".whats_next_2_title") %></h2>
-      <p class="line-height-sans-4"><%= t(".whats_next_2_li_1_html") %></p>
-      <%= render(LinkWithIconComponent.new(
-        t(".survey"),
-        icon: "launch",
-        class: "usa-button usa-button--outline",
-        icon_position: :trailing,
-        url: feedbacks_path(form: "survey", referer: request.original_url),
-        target: "_blank",
-        rel: "noopener noreferrer"
-      )) %>
+    <p class="line-height-sans-4"><%= t(".whats_next_2_li_1_html") %></p>
+    <%= render(LinkWithIconComponent.new(
+      t(".survey"),
+      icon: "launch",
+      class: "usa-button usa-button--outline",
+      icon_position: :trailing,
+      url: feedbacks_path(form: "survey", referer: request.original_url),
+      target: "_blank",
+      rel: "noopener noreferrer"
+    )) %>
   </div>
 </div>

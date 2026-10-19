@@ -3,18 +3,9 @@ class Cbv::SuccessesController < Cbv::BaseController
   skip_before_action :ensure_cbv_flow_not_yet_complete
 
   def show
-    @invitation_link = invitation_link
   end
 
   private
-
-  def invitation_link
-    if @cbv_flow.cbv_flow_invitation.present?
-      @cbv_flow.cbv_flow_invitation.to_url(origin: "shared")
-    else
-      @cbv_flow.to_generic_url(origin: "shared")
-    end
-  end
 
   def track_accessed_success_event
     track_event("ApplicantAccessedSuccessPage")

@@ -79,7 +79,10 @@ RSpec.describe "e2e CBV flow pinwheel test", :js, type: :feature do
     click_on I18n.t("cbv.submits.show.share_report_button", agency_acronym: I18n.t("shared.agency_acronym.sandbox"))
 
     # /cbv/success
-    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: I18n.t("shared.agency_acronym.sandbox")), wait: 20)
+    verify_page(page, title: I18n.t("cbv.successes.show.header", agency_name: I18n.t("shared.agency_full_name.sandbox")), wait: 20)
+    expect(page).to have_link(I18n.t("cbv.successes.show.download"), href: cbv_flow_submit_path(format: :pdf))
+    expect(page).to have_text(I18n.t("cbv.successes.show.head_of_household_title"))
+    expect(page).to have_text(I18n.t("cbv.successes.show.household_member_title"))
     # TODO: Test PDF rendering by writing it to a file
   end
 end
