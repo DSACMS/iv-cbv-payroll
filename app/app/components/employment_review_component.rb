@@ -15,6 +15,6 @@ class EmploymentReviewComponent < ViewComponent::Base
   end
 
   def summary_partial
-    unpaid ? "activities/employment/review/unpaid_summary" : "activities/employment/review/paid_summary"
+    unpaid? ? "activities/employment/review/unpaid_summary" : "activities/employment/review/paid_summary"
   end
 end
