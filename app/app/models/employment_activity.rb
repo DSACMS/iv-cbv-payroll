@@ -1,4 +1,19 @@
 class EmploymentActivity < Activity
+  include Redactable
+
+  has_redactable_fields(
+    employer_name: :string,
+    contact_name: :string,
+    contact_email: :email,
+    contact_phone_number: :string,
+    street_address: :string,
+    street_address_line_2: :string,
+    city: :string,
+    state: :string,
+    zip_code: :string,
+    additional_comments: :string
+  )
+
   include HasActivityMonths
   include DocumentUploadable
 

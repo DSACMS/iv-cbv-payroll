@@ -1,4 +1,11 @@
 class ActivityFlowInvitation < ApplicationRecord
+  include Redactable
+
+  has_redactable_fields(
+    auth_token: :unique_string,
+    reference_id: :string
+  )
+
   ACTIVITY_TYPES = {
     "volunteering" => VolunteeringActivity,
     "employment" => EmploymentActivity,

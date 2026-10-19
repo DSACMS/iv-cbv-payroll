@@ -1,4 +1,14 @@
 class ActivityFlow < Flow
+  include Redactable
+
+  has_redactable_fields(
+    argyle_user_id: :string,
+    device_id: :uuid,
+    end_user_id: :uuid,
+    additional_information: :object,
+    confirmation_code: :string
+  )
+
   include LauncherOverrides
 
   DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS = 6
