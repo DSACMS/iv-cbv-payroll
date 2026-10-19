@@ -1,7 +1,8 @@
+<% unpaid = @employment_activity.unpaid_or_in_kind? %>
 <% unless @flow.employment_focused? %>
   <% content_for :activity_flow_header do %>
     <%= render ActivityFlowHeaderComponent.new(
-      title: t("activities.employment.title_singular"),
+      title: unpaid ? t("activities.employment.unpaid_title") : t("activities.employment.title_singular"),
       exit_url: activities_flow_root_path,
       back_url: @back_url,
       track_event_prefix: "Employment"
@@ -12,7 +13,6 @@
 <% from_review = params[:from_review].present? %>
 <% from_edit = params[:from_edit].present? %>
 <% month_label = l(@current_month, format: :month) %>
-<% unpaid = @employment_activity.unpaid_or_in_kind? %>
 <% input_scope = unpaid ? "activities.employment.hours_input.unpaid_or_in_kind" : "activities.employment.hours_input" %>
 <% heading = t("#{input_scope}.heading",
   organization: @employment_activity.employer_name) %>
@@ -24,7 +24,11 @@
         heading: t("#{input_scope}.error_heading"),
         class: "margin-bottom-4"
       ) do %>
-    <%= t("#{input_scope}.error_body") %>
+    <% if unpaid %>
+      <%= t("#{input_scope}.error_body_html", month_selection_url: edit_activities_flow_income_employment_month_selection_path(id: @employment_activity.id)) %>
+    <% else %>
+      <%= t("#{input_scope}.error_body") %>
+    <% end %>
   <% end %>
 <% end %>
 

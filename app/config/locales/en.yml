@@ -386,8 +386,8 @@ en:
         hours_label: "%{month} hours worked"
         month_indicator: 'Month %{current} of %{total}:'
         unpaid_or_in_kind:
-          error_body: Add hours to continue.
-          error_heading: No hours entered
+          error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>.
+          error_heading: No work hours added
           field_error: Add hours to continue.
           heading: Add your hours for %{organization}
           hours_hint: If you performed in-kind work, provide an estimate
@@ -417,12 +417,17 @@ en:
           description: Review the information you've added for %{employer_name}.
         gross_income: Gross income
         name: Name
-        save: Save and add to my report
+        save: Add to my report
         title: Review your employment information for %{employer_name}
         unpaid_or_in_kind:
           additional_comments_description: Share any comments or additional information about your unpaid or in-kind work that you’d like %{agency_name} to know.
           description: Review the information you’ve added for %{employer_name} before adding it to your Community Engagement Report.
           work_hours: Work hours
+          work_information: Work information
+          who_you_worked_for: Who you worked for
+          work_contact_name: Work contact name
+          work_contact_email: Work contact email
+          work_contact_phone: Work contact phone number
       title: Employment
       title_singular: Employment
       unpaid_title: Unpaid work

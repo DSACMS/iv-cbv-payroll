@@ -1,10 +1,11 @@
 <% title = t(".title", employer_name: @employment_activity.employer_name) %>
+<% unpaid = @employment_activity.unpaid_or_in_kind? %>
 <% content_for :title, title %>
 
 <% unless @flow.employment_focused? %>
   <% content_for :activity_flow_header do %>
     <%= render ActivityFlowHeaderComponent.new(
-      title: t("activities.employment.title_singular"),
+      title: unpaid ? t("activities.employment.unpaid_title") : t("activities.employment.title_singular"),
       exit_url: activities_flow_root_path,
       back_url: edit_activities_flow_income_employment_path(
         id: @employment_activity,
