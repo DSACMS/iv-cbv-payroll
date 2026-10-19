@@ -1,9 +1,10 @@
 <% enrollment_terms = activity.nsc_enrollment_terms.order(:term_begin, :term_end, :school_name) %>
 <% first_term = enrollment_terms.first %>
 <% student_name = [ first_term&.first_name, first_term&.middle_name, first_term&.last_name ].compact_blank.join(" ").presence || t("shared.not_applicable") %>
+<% education_information = t("shared.table_headers.education_information") %>
 
-<%= render(TableComponent.new) do |table| %>
-  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.education_information") } %>
+<%= render(TableComponent.new(caption: education_information)) do |table| %>
+  <%= table.with_header_cell(scope: "col") { education_information } %>
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true).with_content(t("activities.summary.education.type")) %>
@@ -55,8 +56,12 @@
   <% end %>
 <% end %>
 
-<h3><%= t("activities.summary.education.term_details") %></h3>
-<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+<% term_details = t("activities.summary.education.term_details") %>
+<h3><%= term_details %></h3>
+<%= render(TableComponent.new(
+  caption: term_details,
+  activity_hours_review: true
+)) do |table| %>
   <%= table.with_header_cell(class_names: "text-nowrap")
          .with_content(t("activities.education.review.term")) %>
   <%= table.with_header_cell(class_names: "text-nowrap")

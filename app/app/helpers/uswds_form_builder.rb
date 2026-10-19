@@ -39,7 +39,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
       field_options = options.except(:label, :hint, :label_class)
 
       if options[:hint]
-        field_options[:aria_describedby] = hint_id(attribute)
+        field_options[:"aria-describedby"] = hint_id(attribute)
       end
 
       form_group(attribute, options[:group_options] || {}) do

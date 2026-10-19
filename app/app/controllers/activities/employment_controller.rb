@@ -65,7 +65,7 @@ class Activities::EmploymentController < Activities::BaseController
     @employment_activity.update(review_params)
     @employment_activity.publish!
     track_event(TrackEvent::EmploymentReviewSubmitted, employment_activity_id: @employment_activity.id)
-    redirect_to(@flow.employment_focused? ? activities_flow_income_add_jobs_path : after_activity_path)
+    redirect_to next_path
   end
 
   private
@@ -134,6 +134,8 @@ class Activities::EmploymentController < Activities::BaseController
   end
 
   def compensation_type
+    return "unpaid_or_in_kind" if @flow.unpaid_work_only?
+
     return params[:compensation_type] if EmploymentActivity.compensation_types.key?(params[:compensation_type])
 
     "paid"

@@ -11,3 +11,6 @@ production:
   unattached_upload_cleanup:
     class: UnattachedUploadCleanupJob
     schedule: every hour
+  check_nsc_certificate:
+    class: NscCertificateCheckJob
+    schedule: every day at 13:00 UTC

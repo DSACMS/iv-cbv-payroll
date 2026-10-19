@@ -79,6 +79,10 @@ module Aggregators
         }
 
         normalize_response(get_education_enrollment_v1(payload))
+      rescue ApiError => e
+        NewRelic::Agent.increment_metric("Custom/NSC/Failure")
+        NewRelic::Agent.notice_error(e)
+        raise
       end
 
       def get_education_enrollment_v1(payload)

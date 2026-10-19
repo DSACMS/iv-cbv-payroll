@@ -2,7 +2,7 @@
 
 class TableComponentPreview < ApplicationPreview
   def default
-    render(TableComponent.new) do |table|
+    render(TableComponent.new(caption: "Employer information")) do |table|
       table.with_header_cell { "Field" }
       table.with_header_cell { "Value" }
 
@@ -19,7 +19,7 @@ class TableComponentPreview < ApplicationPreview
   end
 
   def subdued_header
-    render(TableComponent.new(subdued_header: true)) do |table|
+    render(TableComponent.new(caption: "Employer information", subdued_header: true)) do |table|
       table.with_header_cell { "Field" }
       table.with_header_cell { "Value" }
 
@@ -36,7 +36,7 @@ class TableComponentPreview < ApplicationPreview
   end
 
   def multi_column
-    render(TableComponent.new(multi_column: true)) do |table|
+    render(TableComponent.new(caption: "Monthly income", multi_column: true)) do |table|
       table.with_header_cell { "Month" }
       table.with_header_cell { "Gross income" }
       table.with_header_cell { "Hours worked" }
@@ -56,7 +56,7 @@ class TableComponentPreview < ApplicationPreview
   end
 
   def activity_hours_review
-    render(TableComponent.new(activity_hours_review: true)) do |table|
+    render(TableComponent.new(caption: "Monthly community engagement hours", activity_hours_review: true)) do |table|
       table.with_header_cell { "Month" }
       table.with_header_cell { "Community engagement hours" }
       table.with_header_cell { "Edit" }
