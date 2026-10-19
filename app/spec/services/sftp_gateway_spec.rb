@@ -29,7 +29,7 @@ RSpec.describe SftpGateway do
           "test-user",
           password: "secret",
           port: 22
-        ).and_return(ssh_session)
+        ).and_yield(ssh_session)
 
         gateway.upload_data(local_file, remote_file_location)
       end
@@ -50,7 +50,7 @@ RSpec.describe SftpGateway do
           "test-user",
           key_data: [ "PRIVATE KEY DATA" ],
           port: 22
-        ).and_return(ssh_session)
+        ).and_yield(ssh_session)
 
         gateway.upload_data(local_file, remote_file_location)
       end
