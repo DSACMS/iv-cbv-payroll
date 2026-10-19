@@ -36,17 +36,17 @@
 </p>
 
 <div class="display-flex flex-justify activity-review-edit-header">
-  <h2 class="margin-y-0"><%= unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_information") : t("activities.employment.review.employer_info") %></h2>
+  <h2 class="margin-y-0">
+    <%= unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_information") : t("activities.employment.review.employer_info") %>
+  </h2>
   <%= link_to t("activities.hub.edit"),
         edit_activities_flow_income_employment_path(id: @employment_activity, from_review: 1, from_edit: params[:from_edit].presence),
         class: "usa-link" %>
 </div>
-<%
-  review_name = unpaid ? t("activities.employment.review.unpaid_or_in_kind.who_you_worked_for") : t("activities.employment.review.name")
-  contact_name = unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_contact_name") : t("activities.employment.review.contact_name")
-  contact_email = unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_contact_email") : t("activities.employment.review.contact_email")
-  contact_phone = unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_contact_phone") : t("activities.employment.review.contact_phone")
-%>
+<% review_name = unpaid ? t("activities.employment.review.unpaid_or_in_kind.who_you_worked_for") : t("activities.employment.review.name")
+   contact_name = unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_contact_name") : t("activities.employment.review.contact_name")
+   contact_email = unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_contact_email") : t("activities.employment.review.contact_email")
+   contact_phone = unpaid ? t("activities.employment.review.unpaid_or_in_kind.work_contact_phone") : t("activities.employment.review.contact_phone") %>
 <%= render(ContactInfoReviewTableComponent.new(field_header: t("shared.table_headers.employer_information"), value_header: t("shared.table_headers.your_details"), rows: [
   { label: review_name, value: @employment_activity.employer_name },
   { label: t("activities.employment.review.address"), value: @employment_activity.formatted_address },
