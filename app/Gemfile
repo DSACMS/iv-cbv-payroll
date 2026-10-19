@@ -127,7 +127,7 @@ group :development do
 end
 
 group :test do
-  gem "axe-core-rspec", "~> 4.13"
+  gem "axe-core-rspec", "~> 4.14"
   gem "climate_control", "~> 1.0"
   gem "webmock", ">= 3.24.0"
   gem "factory_bot", "~> 6.6"
