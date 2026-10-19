@@ -117,6 +117,31 @@ RSpec.describe ActivityFlow, type: :model do
     end
   end
 
+  describe "unpaid-only invitations" do
+    let(:invitation) { create(:activity_flow_invitation, unpaid_work_only: true) }
+
+    it "persists the restriction from the invitation despite conflicting URL parameters" do
+      flow = described_class.create_from_invitation(invitation, "device", unpaid_work_only: "false")
+
+      expect(flow.reload).to be_unpaid_work_only
+    end
+
+    it "does not enable the restriction through URL parameters" do
+      invitation.update!(unpaid_work_only: false)
+      flow = described_class.create_from_invitation(invitation, "device", unpaid_work_only: "true")
+
+      expect(flow.reload).not_to be_unpaid_work_only
+    end
+
+    it "preserves the restriction when resuming the flow" do
+      flow = described_class.create_from_invitation(invitation, "device")
+      resumed_flow = described_class.resume_or_create_from_invitation(invitation, "other-device", unpaid_work_only: "false")
+
+      expect(resumed_flow).to eq(flow)
+      expect(resumed_flow).to be_unpaid_work_only
+    end
+  end
+
   describe ".resume_or_create_from_invitation" do
     let(:device_id) { "device123" }
     let(:invitation) { create(:activity_flow_invitation) }

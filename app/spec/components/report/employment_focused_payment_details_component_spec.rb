@@ -23,7 +23,8 @@ RSpec.describe Report::EmploymentFocusedPaymentDetailsComponent, type: :componen
     expect(rendered).to have_selector("h2", text: "Employment information")
     expect(rendered).to have_selector("h2", text: "Monthly details")
     expect(rendered).to have_selector("table", count: 3)
-    expect(rendered).to have_selector("table.maxw-none[aria-label]", count: 2)
+    expect(rendered).to have_selector("table.maxw-none caption", text: "January 2026")
+    expect(rendered).to have_selector("table.maxw-none caption", text: "February 2026")
     employment_table = rendered.css("table").first
     expect(employment_table.css("tbody th").map { |cell| cell.text.strip }).to eq([
       "Employment start date", "Employment end date", "Employment status", "Pay frequency", "Compensation amount"
@@ -32,17 +33,18 @@ RSpec.describe Report::EmploymentFocusedPaymentDetailsComponent, type: :componen
     expect(employment_table).to have_text("$25.00")
     expect(rendered).to have_no_text("Employer address")
 
-    january = rendered.at_css('table[aria-label="January 2026"]')
+    january = rendered.css("table").find { |table| table.at_css("caption")&.text&.strip == "January 2026" }
     expect(january.css("th").map { |cell| cell.text.strip }).to eq([ "Month", "Gross income", "Number of paychecks", "Hours worked" ])
     expect(january.css("td").map { |cell| cell.text.strip }).to eq([ "January 2026", "$1,500.00", "2", "80.0" ])
-    february = rendered.at_css('table[aria-label="February 2026"]')
+    february = rendered.css("table").find { |table| table.at_css("caption")&.text&.strip == "February 2026" }
     expect(february.css("td").map { |cell| cell.text.strip }).to eq([ "February 2026", "N/A", "0", "N/A" ])
   end
 
   it "uses gig hours for gig workers" do
     rendered = render_inline(described_class.new(report, payroll_account, is_w2_worker: false))
 
-    expect(rendered.at_css('table[aria-label="January 2026"]').css("td").last.text).to eq("12.5")
+    january = rendered.css("table").find { |table| table.at_css("caption")&.text&.strip == "January 2026" }
+    expect(january.css("td").last.text).to eq("12.5")
   end
 
   it "does not format missing compensation as zero" do

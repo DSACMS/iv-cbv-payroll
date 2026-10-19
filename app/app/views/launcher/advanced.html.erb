@@ -240,6 +240,14 @@
               >
             </div>
           <% end %>
+          <%= render AdvancedLauncher::SettingComponent.new(title: t(".unpaid_work_only.title"), hint: t(".unpaid_work_only.hint")) do %>
+            <div class="usa-checkbox">
+              <input class="usa-checkbox__input" type="checkbox" name="unpaid_work_only" id="unpaid_work_only" value="true">
+              <label class="usa-checkbox__label" for="unpaid_work_only">
+                <%= t(".unpaid_work_only.label") %>
+              </label>
+            </div>
+          <% end %>
           <%= render AdvancedLauncher::SettingComponent.new(title: "Employment focused", hint: "Requests the Employment focused ActivityFlow variant.") do %>
             <div class="usa-checkbox">
               <input class="usa-checkbox__input" type="checkbox" name="employment_focused" id="employment_focused" value="true">

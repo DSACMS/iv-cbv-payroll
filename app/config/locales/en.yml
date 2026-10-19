@@ -422,17 +422,17 @@ en:
         unpaid_or_in_kind:
           additional_comments_description: Share any comments or additional information about your unpaid or in-kind work that you’d like %{agency_name} to know.
           description: Review the information you’ve added for %{employer_name} before adding it to your Community Engagement Report.
+          who_you_worked_for: Who you worked for
+          work_contact_email: Work contact email
+          work_contact_name: Work contact name
+          work_contact_phone: Work contact phone number
+          work_hours: Work hours
+          work_information: Work information
       title: Employment
       title_singular: Employment
       unpaid_or_in_kind:
         document_upload_suggestion_text_html: "<ul><li>Letter of employment or contract with role, responsibilities and key dates.</li><li>Proof of employment forms from a work supervisor or employer.</li><li>Invoices sent, if self-employed.</li></ul>"
         document_upload_suggestion_title: Suggested supporting documents
-        who_you_worked_for: Who you worked for
-        work_contact_email: Work contact email
-        work_contact_name: Work contact name
-        work_contact_phone: Work contact phone number
-        work_hours: Work hours
-        work_information: Work information
       unpaid_title: Unpaid work
     employment_info:
       city: City
@@ -514,6 +514,7 @@ en:
         community_service: No community service added
         education: No education added
         employment: No employment added
+        unpaid_work: No unpaid work added
         work_programs: No work programs added
       empty_state_description: |-
         Add unpaid work, education, community service, or work program activities you've done between %{reporting_window}.
@@ -759,6 +760,8 @@ en:
       no_activities_added: Add at least one activity before submitting your report.
       submit: Submit to %{agency_name}
       title: Review and submit your %{benefit} community engagement report
+    unpaid_work:
+      title: Unpaid work
     work_programs:
       hours_input:
         continue: Continue
@@ -868,6 +871,9 @@ en:
           blank: individual_id is required
         last_name:
           blank: last_name is required
+        unpaid_work_only:
+          invalid: unpaid_work_only must be a boolean or null
+          unsupported: unpaid_work_only is only supported for community-engagement invitations
   applicant_mailer:
     invitation_email:
       body_1:
@@ -1403,6 +1409,10 @@ en:
         title: Launch configuration
       settings:
         title: Agency settings
+      unpaid_work_only:
+        hint: Limit employment reporting to unpaid work in tokenized community engagement flows.
+        label: Unpaid work only
+        title: Unpaid work
   maintenance:
     body_1: The site is not available right now. Any information you entered will not be saved.
     body_2: Visit your agency's website for more information on how to submit proof of income for your benefits.

@@ -87,12 +87,14 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response.body).to include(I18n.t("activities.employment_info.employer_name"))
     end
 
-    it "renders the self-employed helper texts" do
+    it "associates the self-employed instructions with their fields" do
       get :new
 
       rendered = Capybara.string(response.body)
-      expect(rendered).to have_text(I18n.t("activities.employment_info.employer_name_hint"))
-      expect(rendered).to have_text(I18n.t("activities.employment_info.street_address_hint"))
+      expect(rendered).to have_selector("#employment_activity_employer_name[aria-describedby='employer_name_hint']")
+      expect(rendered).to have_selector("#employer_name_hint.usa-hint", text: I18n.t("activities.employment_info.employer_name_hint"))
+      expect(rendered).to have_selector("#employment_activity_street_address[aria-describedby='street_address_hint']")
+      expect(rendered).to have_selector("#street_address_hint.usa-hint", text: I18n.t("activities.employment_info.street_address_hint"))
     end
 
     it "renders the combobox for state selection" do
@@ -148,6 +150,38 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_phone_number"))
         expect(rendered).to have_no_text(I18n.t("activities.employment_info.self_employed"))
       end
+    end
+  end
+
+  context "with unpaid-only employment" do
+    before { activity_flow.update!(unpaid_work_only: true) }
+
+    it "shows the unpaid form even when the URL requests paid employment" do
+      get :new, params: { compensation_type: "paid" }
+
+      expect(Capybara.string(response.body)).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.title"))
+    end
+
+    it "returns to the hub when going back from a validation error" do
+      post :create, params: { employment_activity: { employer_name: "" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(Capybara.string(response.body)).to have_link("Back", href: activities_flow_root_path)
+    end
+
+    it "creates unpaid work when the compensation type is omitted" do
+      post :create, params: { employment_activity: { employer_name: "Example work" } }
+
+      expect(activity_flow.employment_activities.last).to be_unpaid_or_in_kind
+    end
+
+    it "does not allow submitted compensation types to bypass the restriction" do
+      post :create, params: {
+        compensation_type: "paid",
+        employment_activity: { employer_name: "Example work", compensation_type: "paid" }
+      }
+
+      expect(activity_flow.employment_activities.last).to be_unpaid_or_in_kind
     end
   end
 
@@ -615,7 +649,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         expect(rendered).to have_text(
           I18n.t("activities.employment.review.unpaid_or_in_kind.description", employer_name: employment_activity.employer_name)
         )
-        expect(rendered).to have_selector("h2", text: I18n.t("activities.employment.unpaid_or_in_kind.work_hours"))
+        expect(rendered).to have_selector("h2", text: I18n.t("activities.employment.review.unpaid_or_in_kind.work_hours"))
         expect(rows.length).to eq(2)
         expect(rows[0]).to have_text(I18n.l(first_month, format: :month_year))
         expect(rows[0]).to have_selector("td[data-label='#{hours_label}']", text: ApplicationHelper.format_decimal_amount(25))

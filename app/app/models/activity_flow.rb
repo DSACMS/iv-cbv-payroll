@@ -27,6 +27,7 @@ class ActivityFlow < Flow
     attrs = flow_attributes_from_params(params)
     # Keep the employment_focused value from the invitation if it exists, don't let params override it
     attrs[:employment_focused] = invitation.employment_focused if invitation.respond_to?(:employment_focused)
+    attrs[:unpaid_work_only] = invitation.unpaid_work_only
 
     create(
       activity_flow_invitation: invitation,

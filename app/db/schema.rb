@@ -73,6 +73,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.datetime "updated_at", null: false
     t.string "verification_range"
     t.boolean "employment_focused", default: false, null: false
+    t.boolean "unpaid_work_only", default: false
     t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
     t.index ["cbv_applicant_id"], name: "index_activity_flow_invitations_on_cbv_applicant_id"
   end
@@ -113,6 +114,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_162254) do
     t.datetime "documents_deleted_at"
     t.datetime "transmitted_at"
     t.boolean "employment_focused", default: false, null: false
+    t.boolean "unpaid_work_only", default: false
     t.index ["activity_flow_invitation_id"], name: "index_activity_flows_on_activity_flow_invitation_id"
     t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"
     t.index ["identity_id"], name: "index_activity_flows_on_identity_id"

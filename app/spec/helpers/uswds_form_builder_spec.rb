@@ -45,11 +45,11 @@ RSpec.describe UswdsFormBuilder do
       let(:result) { builder.text_field(:first_name, hint: 'Enter your name') }
 
       it 'outputs a hint' do
-        expect(result).to have_element(:div, text: 'Enter your name', class: 'usa-hint')
+        expect(result).to have_selector('#first_name_hint.usa-hint', text: 'Enter your name')
       end
 
       it 'adds aria-describedby to the input' do
-        expect(result).to have_element(:input, aria_describedby: 'first_name_hint')
+        expect(result).to have_selector('input[aria-describedby="first_name_hint"]')
       end
     end
 

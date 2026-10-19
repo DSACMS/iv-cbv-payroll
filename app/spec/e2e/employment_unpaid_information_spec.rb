@@ -91,7 +91,7 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
     click_button I18n.t("activities.document_uploads.new.continue")
 
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Example work"))
-    expect(page).to have_selector("h2", text: I18n.t("activities.employment.unpaid_or_in_kind.work_hours"))
+    expect(page).to have_selector("h2", text: I18n.t("activities.employment.review.unpaid_or_in_kind.work_hours"))
     expect(page).to have_text(I18n.l(first_month, format: :month_year))
     expect(page).to have_text(I18n.l(third_month, format: :month_year))
     expect(page).to have_no_text(I18n.t("activities.employment.review.gross_income"))
