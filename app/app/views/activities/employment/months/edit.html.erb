@@ -22,6 +22,7 @@
   <%= render Uswds::Alert.new(
         type: :error,
         heading: t("#{input_scope}.error_heading"),
+        form_id: "employment_month_form",
         class: "margin-bottom-4"
       ) do %>
     <% if unpaid && @employment_activity.requires_month_selection? %>
@@ -47,6 +48,7 @@
 
 <%= uswds_form_with(
       model: @activity_month,
+      id: "employment_month_form",
       url: activities_flow_income_employment_month_path(
         employment_id: @employment_activity,
         id: @month_index,

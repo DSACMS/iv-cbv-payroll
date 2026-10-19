@@ -1,14 +1,36 @@
 <div
   class="<%= alert_classes %>"
-  role="alert"
+  role="<%= @form_id.present? ? "group" : @options.fetch(:role, "alert") %>"
   aria-atomic="true"
+  <% if @form_id.present? %>
+    tabindex="-1"
+    data-controller="error-summary"
+    data-error-summary-form-id-value="<%= @form_id %>"
+    <% if @heading %>
+      aria-labelledby="<%= "#{@form_id}_error_heading" %>"
+    <% end %>
+    aria-describedby="<%= "#{@form_id}_error_body" %>"
+  <% end %>
 >
   <div class="usa-alert__body">
     <% if @heading %>
       <%# Using div here because screen readers will read it twice if it's a heading %>
-      <div class="usa-alert__heading"><%= @heading %></div>
+      <div
+        class="usa-alert__heading"
+        <% if @form_id.present? %>
+          id="<%= "#{@form_id}_error_heading" %>"
+        <% end %>
+      >
+        <%= @heading %>
+      </div>
     <% end %>
-    <div class="usa-alert__text">
+    <div
+      class="usa-alert__text"
+      <% if @form_id.present? %>
+        id="<%= "#{@form_id}_error_body" %>"
+        data-error-summary-target="body"
+      <% end %>
+    >
       <%= content %>
     </div>
   </div>

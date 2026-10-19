@@ -260,6 +260,18 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
         I18n.t("activities.employment.month_selections.edit.error_heading")
       )
       expect(employment_activity.reload.selected_months).to be_empty
+      expect(rendered).to have_css(
+        'form#employment_month_selection_form[data-controller~="error-summary"]'
+      )
+      expect(rendered).to have_css(
+        '.usa-alert[data-error-summary-form-id-value="employment_month_selection_form"]' \
+        '[aria-labelledby="employment_month_selection_form_error_heading"]'
+      )
+      expect(rendered).to have_css(
+        "#employment_month_selection_form_error_heading",
+        text: I18n.t("activities.employment.month_selections.edit.error_heading")
+      )
+      expect(rendered).to have_no_css(".usa-error-message")
     end
 
     it "ignores months outside the reporting period" do
