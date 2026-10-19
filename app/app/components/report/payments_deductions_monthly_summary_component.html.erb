@@ -1,4 +1,7 @@
 <% if has_monthly_summary_results? && has_any_paystubs? %>
+  <% payment_information = @activity_flow_labels ?
+       I18n.t("components.report.monthly_summary_table.activity.payment_information") :
+       I18n.t("cbv.payment_details.show.pay_information") %>
   <h2 class="margin-top-5"><%= t("cbv.payment_details.show.payments_and_deductions_table_header") %></h2>
   <% @monthly_summary_data.each do |(month_string, summary)| %>
     <% if summary[:paystubs].any? %>
@@ -8,13 +11,12 @@
         <% end %>
         <% accordion.with_accordion_item do %>
           <% summary[:paystubs].each do |paystub| %>
-          <%= render(TableComponent.new(class_names: "payment-details-table")) do |table| %>
+          <%= render(TableComponent.new(
+            caption: payment_information,
+            class_names: "payment-details-table"
+          )) do |table| %>
             <%= table.with_header_cell(scope: "col") do %>
-              <% if @activity_flow_labels %>
-                <%= I18n.t("components.report.monthly_summary_table.activity.payment_information") %>
-              <% else %>
-                <%= I18n.t("cbv.payment_details.show.pay_information") %>
-              <% end %>
+              <%= payment_information %>
             <% end %>
             <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
             <%= table.with_data_point(:pay_date, paystub.pay_date) %>

@@ -1,5 +1,6 @@
-<%= render(TableComponent.new) do |table| %>
-  <%= table.with_header_cell(scope: "col") { t("shared.table_headers.work_program_information") } %>
+<% work_program_information = t("shared.table_headers.work_program_information") %>
+<%= render(TableComponent.new(caption: work_program_information)) do |table| %>
+  <%= table.with_header_cell(scope: "col") { work_program_information } %>
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
   <%= table.with_row do |row| %>
     <%= row.with_data_cell(is_header: true) do %>
@@ -57,8 +58,12 @@
 
 <% end %>
 
-<h3><%= t("activities.summary.monthly_details") %></h3>
-<%= render(TableComponent.new(activity_hours_review: true)) do |table| %>
+<% monthly_details = t("activities.summary.monthly_details") %>
+<h3><%= monthly_details %></h3>
+<%= render(TableComponent.new(
+  caption: monthly_details,
+  activity_hours_review: true
+)) do |table| %>
   <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.job_training.month") } %>
   <%= table.with_header_cell(is_header: true, scope: "col") { t("activities.summary.job_training.community_engagement_hours") } %>
 
