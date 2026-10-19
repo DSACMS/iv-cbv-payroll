@@ -33,6 +33,11 @@ RSpec.describe "activities/submit/show.pdf.erb", type: :view do
     expect(document).to have_text(ApplicationHelper.format_decimal_amount(education_activity.community_engagement_hours(credit_hours)))
   end
 
+  it "gives the report information table an accessible name" do
+    expect(document).to have_selector("h2#client-and-report-information")
+    expect(document).to have_selector('table[aria-labelledby="client-and-report-information"]')
+  end
+
   it "renders all four education summary columns" do
     expect(term_table).to have_selector("thead th", text: I18n.t("activities.education.review.term"))
     expect(term_table).to have_selector("thead th", text: I18n.t("components.enrollment_term_table_component.enrollment_status"))

@@ -1,15 +1,16 @@
 <div class="<%= @container_class %>">
+  <% employer_information = I18n.t("shared.table_headers.employer_information") %>
   <% if @show_header %>
     <h2 class="margin-0">
       <% if @activity_flow_labels %>
-        <%= I18n.t("shared.table_headers.employer_information") %>
+        <%= employer_information %>
       <% else %>
         <%= I18n.t("cbv.payment_details.show.employment_information_table_header") %>
       <% end %>
     </h2>
   <% end %>
-  <%= render(TableComponent.new) do |table| %>
-    <%= table.with_header_cell(scope: "col") { I18n.t("shared.table_headers.employer_information") } %>
+  <%= render(TableComponent.new(caption: employer_information)) do |table| %>
+    <%= table.with_header_cell(scope: "col") { employer_information } %>
     <%= table.with_header_cell(scope: "col") { I18n.t("shared.table_headers.your_details") } %>
     <% if @show_identity %>
       <%= table.with_data_point(:client_full_name, @identity.full_name) %>

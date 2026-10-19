@@ -24,6 +24,7 @@
 
   <% if details.any? %>
     <%= render(TableComponent.new(
+      caption: information_heading,
       class_names: "activity-report__table font-sans-3xs margin-0 margin-top-2 maxw-none"
     )) do |table| %>
       <%= table.with_header_cell(scope: "col").with_content(information_heading) %>
