@@ -20,12 +20,6 @@ FactoryBot.define do
       self_attested_enrollment_status { "less_than_half_time" }
     end
 
-    trait :pre_populated_draft do
-      draft { true }
-      pre_populated { true }
-      data_source { "fully_self_attested" }
-    end
-
     trait :partially_self_attested do
       data_source { "partially_self_attested" }
       status { "succeeded" }

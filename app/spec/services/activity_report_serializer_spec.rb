@@ -188,7 +188,7 @@ RSpec.describe ActivityReportSerializer do
   end
 
   it "excludes draft activities" do
-    draft = create(:volunteering_activity, :pre_populated_draft, activity_flow: activity_flow)
+    draft = create(:volunteering_activity, draft: true, activity_flow: activity_flow)
     create(:volunteering_activity_month, volunteering_activity: draft, month: first_month, hours: 40)
 
     expect(report["ce_report"]["activities"]["community_service"]).to eq({})
@@ -576,7 +576,7 @@ RSpec.describe ActivityReportSerializer do
     end
 
     it "excludes drafts and does not fetch unsuccessful or unpublished payroll connections" do
-      draft = create(:employment_activity, :pre_populated_draft, activity_flow: activity_flow)
+      draft = create(:employment_activity, draft: true, activity_flow: activity_flow)
       create(:employment_activity_month, employment_activity: draft, month: first_month)
       create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, draft: true)
       create(:payroll_account, flow: activity_flow, synchronization_status: :failed)
