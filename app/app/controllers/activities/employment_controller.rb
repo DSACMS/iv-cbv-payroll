@@ -117,6 +117,8 @@ class Activities::EmploymentController < Activities::BaseController
   end
 
   def back_url_for_new
+    return activities_flow_root_path if @flow.unpaid_work_only?
+
     case params[:back_url]
     when "education_other"
       activities_flow_education_other_path
