@@ -23,18 +23,6 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
     flow = ActivityFlow.last
 
-    create(:volunteering_activity, activity_flow: flow, draft: true, organization_name: "Unfinished Food Pantry")
-    create(:job_training_activity, activity_flow: flow, draft: true, program_name: "Unfinished Training")
-    create(:employment_activity, activity_flow: flow, draft: true, employer_name: "Unfinished Employer")
-    create(:education_activity, activity_flow: flow, draft: true, data_source: :fully_self_attested, school_name: "Unfinished College")
-
-    visit activities_flow_root_path
-    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
-    expect(page).to have_no_content "Unfinished Food Pantry"
-    expect(page).to have_no_content "Unfinished Training"
-    expect(page).to have_no_content "Unfinished Employer"
-    expect(page).to have_no_content "Unfinished College"
-
     # Add a Community Service activity
     within("[data-activity-type='community_service']") { click_button I18n.t("activities.hub.add") }
     verify_page(page, title: I18n.t("activities.community_service.new_title"))

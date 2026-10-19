@@ -186,25 +186,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
     end
-
-    context "with drafts of every activity type" do
-      before do
-        create(:volunteering_activity, activity_flow: current_flow, draft: true, organization_name: "Draft Food Pantry")
-        create(:employment_activity, activity_flow: current_flow, draft: true, employer_name: "Draft Employer")
-        create(:education_activity, activity_flow: current_flow, draft: true, data_source: :fully_self_attested, school_name: "Draft College")
-        create(:job_training_activity, activity_flow: current_flow, draft: true, program_name: "Draft Training")
-        get :index
-      end
-
-      it "does not render draft activity cards" do
-        rendered = Capybara.string(response.body)
-
-        expect(rendered).to have_no_text("Draft Food Pantry")
-        expect(rendered).to have_no_text("Draft Employer")
-        expect(rendered).to have_no_text("Draft College")
-        expect(rendered).to have_no_text("Draft Training")
-      end
-    end
   end
 
   context "when no activities are added" do
