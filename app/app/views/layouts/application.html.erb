@@ -27,7 +27,12 @@
             <% end %>
           <% end %>
           <% if flash[:alert] %>
-            <%= render Uswds::Alert.new(type: :error, heading: flash[:alert_heading] || "Error", class: "margin-bottom-4") do %>
+            <%= render Uswds::Alert.new(
+              type: :error,
+              heading: flash[:alert_heading] || "Error",
+              form_id: flash[:alert_form_id],
+              class: "margin-bottom-4"
+            ) do %>
               <%= flash[:alert].html_safe %>
             <% end %>
           <% end %>
@@ -39,6 +44,9 @@
                 <%= flash[:slim_alert]["message"] %>
               <% end %>
             <% end %>
+          <% end %>
+          <% if show_activity_reporting_banner? %>
+            <%= render "activities/reporting_for", flow: @flow %>
           <% end %>
           <%= yield %>
         </section>

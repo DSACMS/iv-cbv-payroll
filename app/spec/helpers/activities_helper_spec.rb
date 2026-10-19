@@ -3,6 +3,56 @@ require "rails_helper"
 RSpec.describe ActivitiesHelper do
   include ActiveSupport::Testing::TimeHelpers
 
+  describe "#activity_reporting_name" do
+    let(:applicant) { build_stubbed(:cbv_applicant, first_name: " Lisa ", last_name: " Williams ") }
+    let(:invitation) { build_stubbed(:activity_flow_invitation, cbv_applicant: applicant) }
+    let(:flow) { build_stubbed(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation) }
+
+    it "uses both indexing fields without surrounding whitespace" do
+      expect(helper.activity_reporting_name(flow)).to eq("Lisa Williams")
+    end
+
+    context "without a first name" do
+      before { applicant.first_name = nil }
+
+      it "omits the name" do
+        expect(helper.activity_reporting_name(flow)).to be_nil
+      end
+    end
+
+    context "with an empty last name" do
+      before { applicant.last_name = "" }
+
+      it "omits the name" do
+        expect(helper.activity_reporting_name(flow)).to be_nil
+      end
+    end
+
+    context "with a whitespace-only first name" do
+      before { applicant.first_name = "  " }
+
+      it "omits the name" do
+        expect(helper.activity_reporting_name(flow)).to be_nil
+      end
+    end
+
+    context "without an invitation" do
+      before { flow.activity_flow_invitation = nil }
+
+      it "omits the name even when the applicant has both names" do
+        expect(helper.activity_reporting_name(flow)).to be_nil
+      end
+    end
+
+    it "omits the name without a loaded flow" do
+      expect(helper.activity_reporting_name(nil)).to be_nil
+    end
+
+    it "omits the name for an income flow" do
+      expect(helper.activity_reporting_name(build_stubbed(:cbv_flow))).to be_nil
+    end
+  end
+
   describe "#document_upload_allowed_types_sentence" do
     it "formats the agency's configured types for user-facing copy" do
       client_agency = instance_double(
@@ -154,113 +204,6 @@ RSpec.describe ActivitiesHelper do
     end
   end
 
-  describe "#employment_activity_draft_cards" do
-    let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
-
-    it "returns a card with pre_populated: true and edit path pointing to employment edit page" do
-      activity = create(:employment_activity, :pre_populated_draft, activity_flow: flow, employer_name: "Acme Corp")
-
-      result = helper.employment_activity_draft_cards([ activity ])
-
-      expect(result.length).to eq(1)
-      expect(result.first).to include(
-        name: "Acme Corp",
-        months: [],
-        pre_populated: true
-      )
-      expect(result.first[:edit_path]).to eq(
-        helper.edit_activities_flow_income_employment_path(id: activity.id)
-      )
-    end
-
-    it "returns empty array for empty input" do
-      expect(helper.employment_activity_draft_cards([])).to eq([])
-    end
-
-    it "includes month data when employment_activity_months have hours or gross_income" do
-      activity = create(:employment_activity, :pre_populated_draft, activity_flow: flow, employer_name: "Acme Corp")
-      first_month = flow.reporting_months.first.beginning_of_month
-      create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 20, gross_income: 500)
-
-      result = helper.employment_activity_draft_cards([ activity ])
-
-      expect(result.first[:months]).to eq([
-        { month: first_month, gross_earnings: 50_000, hours: 20 }
-      ])
-    end
-
-    it "excludes months where both hours and gross_income are zero" do
-      activity = create(:employment_activity, :pre_populated_draft, activity_flow: flow, employer_name: "Acme Corp")
-      first_month = flow.reporting_months.first.beginning_of_month
-      create(:employment_activity_month, employment_activity: activity, month: first_month, hours: 0, gross_income: 0)
-
-      result = helper.employment_activity_draft_cards([ activity ])
-
-      expect(result.first[:months]).to be_empty
-    end
-  end
-
-  describe "#education_activity_draft_cards" do
-    let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
-    let(:first_month) { flow.reporting_months.first.beginning_of_month }
-
-    it "returns a card with pre_populated: true and edit path pointing to education edit page" do
-      activity = create(:education_activity, :pre_populated_draft, activity_flow: flow, school_name: "Springfield Community College")
-
-      result = helper.education_activity_draft_cards([ activity ])
-
-      expect(result.length).to eq(1)
-      expect(result.first).to include(
-        name: "Springfield Community College",
-        months: [],
-        pre_populated: true
-      )
-      expect(result.first[:edit_path]).to eq(
-        helper.edit_activities_flow_education_path(id: activity.id)
-      )
-    end
-
-    it "includes month data when education_activity_months have hours" do
-      activity = create(:education_activity, :pre_populated_draft, activity_flow: flow, school_name: "Springfield Community College")
-      create(:education_activity_month, education_activity: activity, month: first_month, hours: 6)
-
-      result = helper.education_activity_draft_cards([ activity ])
-
-      expect(result.first[:months]).to eq([
-        { month: first_month, credit_hours: 6, community_engagement_hours: 78 }
-      ])
-    end
-
-    it "excludes months where hours are zero" do
-      activity = create(:education_activity, :pre_populated_draft, activity_flow: flow, school_name: "Springfield Community College")
-      create(:education_activity_month, education_activity: activity, month: first_month, hours: 0)
-
-      result = helper.education_activity_draft_cards([ activity ])
-
-      expect(result.first[:months]).to be_empty
-    end
-  end
-
-  describe "#community_service_draft_cards" do
-    let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
-    let(:first_month) { flow.reporting_window_range.begin.beginning_of_month }
-
-    it "filters out months with no hours" do
-      activity = create(:volunteering_activity, :pre_populated_draft, activity_flow: flow, organization_name: "Food Pantry")
-      create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 0)
-      create(:volunteering_activity_month, volunteering_activity: activity, month: first_month + 1.month, hours: 5)
-
-      result = helper.community_service_draft_cards([ activity ])
-
-      expect(result.first).to include(
-        name: "Food Pantry",
-        months: [ { month: first_month + 1.month, hours: 5 } ],
-        edit_path: helper.edit_activities_flow_community_service_path(id: activity.id),
-        pre_populated: true
-      )
-    end
-  end
-
   describe "#work_program_cards" do
     let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
     let(:first_month) { flow.reporting_months.first.beginning_of_month }
@@ -308,47 +251,6 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:edit_path]).to eq(
         helper.review_activities_flow_job_training_path(id: activity.id, from_edit: 1)
       )
-    end
-  end
-
-  describe "#work_program_draft_cards" do
-    let(:flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0) }
-    let(:first_month) { flow.reporting_months.first.beginning_of_month }
-
-    it "returns a card with pre_populated: true and edit path pointing to job training edit page" do
-      activity = create(:job_training_activity, :pre_populated_draft, activity_flow: flow, program_name: "Career Prep")
-
-      result = helper.work_program_draft_cards([ activity ])
-
-      expect(result.length).to eq(1)
-      expect(result.first).to include(
-        name: "Career Prep",
-        months: [],
-        pre_populated: true
-      )
-      expect(result.first[:edit_path]).to eq(
-        helper.edit_activities_flow_job_training_path(id: activity.id)
-      )
-    end
-
-    it "includes month data when job_training_activity_months have hours" do
-      activity = create(:job_training_activity, :pre_populated_draft, activity_flow: flow, program_name: "Career Prep")
-      create(:job_training_activity_month, job_training_activity: activity, month: first_month, hours: 10)
-
-      result = helper.work_program_draft_cards([ activity ])
-
-      expect(result.first[:months]).to eq([
-        { month: first_month, hours: 10 }
-      ])
-    end
-
-    it "excludes months where hours are zero" do
-      activity = create(:job_training_activity, :pre_populated_draft, activity_flow: flow, program_name: "Career Prep")
-      create(:job_training_activity_month, job_training_activity: activity, month: first_month, hours: 0)
-
-      result = helper.work_program_draft_cards([ activity ])
-
-      expect(result.first[:months]).to be_empty
     end
   end
 
@@ -601,15 +503,14 @@ RSpec.describe ActivitiesHelper do
       ])
     end
 
-    it "builds a fully self-attested card from activity months" do
+    it "builds a fully self-attested card from term credits" do
       activity = create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: flow,
-        data_source: :fully_self_attested,
-        school_name: "Updated University of Illinois"
+        school_name: "Updated University of Illinois",
+        credit_hours: 4
       )
-      create(:education_activity_month, education_activity: activity, month: first_month.beginning_of_month, hours: 4)
-      create(:education_activity_month, education_activity: activity, month: second_month.beginning_of_month, hours: 6)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
@@ -618,27 +519,27 @@ RSpec.describe ActivitiesHelper do
           name: "Updated University of Illinois",
           months: [
             { month: first_month, credit_hours: 4, community_engagement_hours: 52 },
-            { month: second_month, credit_hours: 6, community_engagement_hours: 78 }
+            { month: second_month, credit_hours: 4, community_engagement_hours: 52 }
           ],
           edit_path: helper.review_activities_flow_education_path(id: activity.id, from_edit: 1)
         }
       )
     end
 
-    it "filters out fully self-attested education months with no credit hours" do
+    it "includes only reporting months covered by the manual term" do
       activity = create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: flow,
-        data_source: :fully_self_attested,
-        school_name: "Updated University of Illinois"
+        school_name: "Updated University of Illinois",
+        self_attested_term_end: first_month,
+        credit_hours: 6
       )
-      create(:education_activity_month, education_activity: activity, month: first_month.beginning_of_month, hours: 0)
-      create(:education_activity_month, education_activity: activity, month: second_month.beginning_of_month, hours: 6)
 
       result = helper.education_cards([ activity.reload ], reporting_months)
 
       expect(result.first[:months]).to eq([
-        { month: second_month, credit_hours: 6, community_engagement_hours: 78 }
+        { month: first_month, credit_hours: 6, community_engagement_hours: 78 }
       ])
     end
 

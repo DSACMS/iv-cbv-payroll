@@ -1,6 +1,26 @@
 require "rails_helper"
 
 RSpec.describe ApplicationHelper do
+  describe "#uswds_form_with" do
+    it "disables native browser validation by default" do
+      rendered = Capybara.string(helper.uswds_form_with(url: "/") { "" })
+
+      expect(rendered).to have_selector("form[novalidate]")
+    end
+
+    it "preserves other HTML options" do
+      rendered = Capybara.string(helper.uswds_form_with(url: "/", html: { class: "custom-form" }) { "" })
+
+      expect(rendered).to have_selector("form.custom-form[novalidate]")
+    end
+
+    it "allows native browser validation to be enabled explicitly" do
+      rendered = Capybara.string(helper.uswds_form_with(url: "/", html: { novalidate: false }) { "" })
+
+      expect(rendered).to have_no_selector("form[novalidate]")
+    end
+  end
+
   describe "#agency_translation" do
     let(:current_agency) { Rails.application.config.client_agencies["sandbox"] }
     let(:available_translations) { <<~YAML }
@@ -228,6 +248,60 @@ RSpec.describe ApplicationHelper do
     it "returns '90+' for a date of birth 95 years ago" do
       date_of_birth = (now - 95.years)
       expect(helper.get_age_range(date_of_birth, now: now)).to eq("90+")
+    end
+  end
+
+  describe "#uswds_form_with errors" do
+    let(:data) { {} }
+    let(:result) do
+      helper.uswds_form_with(
+        scope: :example,
+        url: "/example",
+        id: "example-form",
+        data: data
+      ) { |form| form.text_field(:name, label: "Name") }
+    end
+    let(:rendered) { Capybara.string(result) }
+    let(:form) { rendered.find("form") }
+
+    it "attaches the error-summary controller and preserves Turbo targeting" do
+      expect(form["data-controller"].split).to eq([ "error-summary" ])
+      expect(form["data-turbo-frame"]).to eq("_top")
+    end
+
+    context "with another controller" do
+      let(:data) { { controller: "hours-input" } }
+
+      it "preserves the existing controller" do
+        expect(form["data-controller"].split).to eq(
+          [ "hours-input", "error-summary" ]
+        )
+      end
+
+      it "does not mutate the caller's data" do
+        result
+        expect(data).to eq(controller: "hours-input")
+      end
+    end
+
+    context "with an existing error-summary controller" do
+      let(:data) { { controller: "error-summary hours-input" } }
+
+      it "does not duplicate the controller" do
+        expect(form["data-controller"].split).to eq(
+          [ "error-summary", "hours-input" ]
+        )
+      end
+    end
+
+    context "with a string controller key" do
+      let(:data) { { "controller" => "hours-input" } }
+
+      it "preserves the existing controller" do
+        expect(form["data-controller"].split).to eq(
+          [ "hours-input", "error-summary" ]
+        )
+      end
     end
   end
 end

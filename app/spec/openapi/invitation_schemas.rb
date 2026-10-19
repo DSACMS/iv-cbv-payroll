@@ -74,10 +74,11 @@ module InvitationSchemas
       InvitationResponseV2: {
         type: :object,
         description: InvitationDocumentation.read("invitations-v2", section: "Response"),
-        required: %w[tokenized_url activity_tokenized_url expiration_date language agency_partner_metadata],
+        required: %w[tokenized_url expiration_date language agency_partner_metadata],
         additionalProperties: true,
         properties: {
           tokenized_url: { type: :string, format: :uri, description: "Income reporting link. Treat the token as opaque and direct the applicant to this URL unchanged." },
+          token: { type: :string, description: "Opaque auth token for tokenized_url" },
           activity_tokenized_url: { type: :string, format: :uri, description: "Activity reporting link for the selected invitation_type." },
           expiration_date: { type: :string, format: :"date-time", description: "Expiration of tokenized_url, at the end of the day in America/New_York after the agency's configured validity period." },
           language: { type: :string, enum: %w[en es] },
@@ -162,6 +163,36 @@ module InvitationSchemas
         schemas[v2_schema_name] = v2_schema
       end
     end
+
+    schemas[:CommunityEngagementInvitationRequest] = {
+      type: :object,
+      additionalProperties: true,
+      required: %w[language verification_range agency_partner_metadata],
+      properties: {
+        language: schemas[:InvitationRequest][:properties][:language],
+        verification_range: { type: :string, enum: Flow::VALID_VERIFICATION_RANGES, example: "last_complete_month" },
+        unpaid_work_only: {
+          type: %w[boolean null], default: false,
+          description: "Optional. Only true restricts employment reporting to unpaid work. False, null, or omission leaves employment unrestricted. Null is stored as null. Accepted only by the community-engagement invitations endpoint; the employment invitations endpoint rejects this field."
+        },
+        agency_partner_metadata: {
+          type: :object,
+          additionalProperties: true,
+          anyOf: %w[Sandbox NewHampshire Louisiana Research Accenture].map do |agency|
+            { "$ref" => "#/components/schemas/AgencyMetadataV2#{agency}CommunityEngagement" }
+          end
+        }
+      }
+    }
+    schemas[:CommunityEngagementInvitationResponse] = schemas[:InvitationResponse].merge(
+      description: "Direct the applicant to activity_tokenized_url to start community engagement reporting.",
+      required: %w[tokenized_url token expiration_date language agency_partner_metadata activity_tokenized_url],
+      properties: schemas[:InvitationResponse][:properties].merge(
+        token: { type: :string, description: "Opaque token for the income reporting link." },
+        activity_tokenized_url: { type: :string, format: :uri, description: "Community engagement reporting link, including any unpaid-work restriction stored on the invitation." },
+        agency_partner_metadata: schemas[:CommunityEngagementInvitationRequest][:properties][:agency_partner_metadata]
+      )
+    )
 
     schemas
   end

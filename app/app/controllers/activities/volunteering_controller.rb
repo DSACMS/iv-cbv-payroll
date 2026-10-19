@@ -8,6 +8,8 @@
 #                 Set by edit links on the review page. Tells controllers to
 #                 redirect back to review instead of advancing forward.
 class Activities::VolunteeringController < Activities::BaseController
+  include NavigationTracking
+
   before_action :set_volunteering_activity, only: %i[edit update destroy review save_review]
   before_action :set_back_url, only: %i[edit review]
 

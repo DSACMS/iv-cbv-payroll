@@ -18,16 +18,6 @@ RSpec.describe Activity do
     end
   end
 
-  describe ".pre_populated_drafts" do
-    it "returns only pre-populated draft records" do
-      pre_populated_draft = create(:volunteering_activity, :pre_populated_draft, activity_flow: flow)
-      create(:volunteering_activity, activity_flow: flow, draft: true, pre_populated: false)
-      create(:volunteering_activity, activity_flow: flow, draft: false, pre_populated: true)
-
-      expect(flow.volunteering_activities.pre_populated_drafts).to contain_exactly(pre_populated_draft)
-    end
-  end
-
   describe "#publish!" do
     it "sets draft to false" do
       activity = create(:volunteering_activity, activity_flow: flow, draft: true)
@@ -38,11 +28,9 @@ RSpec.describe Activity do
     end
   end
 
-  describe "#pre_populated_draft?" do
-    it "returns true only for a pre-populated draft record" do
-      expect(build(:volunteering_activity, activity_flow: flow, draft: true, pre_populated: true)).to be_pre_populated_draft
-      expect(build(:volunteering_activity, activity_flow: flow, draft: false, pre_populated: true)).not_to be_pre_populated_draft
-      expect(build(:volunteering_activity, activity_flow: flow, draft: true, pre_populated: false)).not_to be_pre_populated_draft
+  describe "#manual_education_upload?" do
+    it "returns false for other activities" do
+      expect(VolunteeringActivity.new).not_to be_manual_education_upload
     end
   end
 
@@ -52,28 +40,17 @@ RSpec.describe Activity do
     end
   end
 
-  describe "activity type subclass contract" do
-    ActivityFlowInvitation::ACTIVITY_TYPES.each do |type, klass|
-      context "#{klass}" do
-        it "defines FIELDS and PRE_POPULATED_REQUIRED_FIELDS (a subset of FIELDS)" do
-          expect(klass::FIELDS).to be_an(Array)
-          expect(klass::PRE_POPULATED_REQUIRED_FIELDS).to be_an(Array)
-          expect(klass::FIELDS).to include(*klass::PRE_POPULATED_REQUIRED_FIELDS)
-        end
+  describe "monthly activity subclass contract" do
+    it "links employment to its monthly record class" do
+      expect(EmploymentActivity.activity_months_class).to eq(EmploymentActivityMonth)
+    end
 
-        it "defines a Symbol .activity_type" do
-          expect(klass.activity_type).to be_a(Symbol)
-        end
+    it "links volunteering to its monthly record class" do
+      expect(VolunteeringActivity.activity_months_class).to eq(VolunteeringActivityMonth)
+    end
 
-        it "exposes .activity_months_class via HasActivityMonths" do
-          expect(klass.activity_months_class).to be_a(Class)
-        end
-
-        it "resolves .flow_association to an ActivityFlow association matching its registered type" do
-          expect(ActivityFlow.reflect_on_association(klass.flow_association)).to be_present
-          expect(klass.flow_association).to eq(:"#{type}_activities")
-        end
-      end
+    it "links job training to its monthly record class" do
+      expect(JobTrainingActivity.activity_months_class).to eq(JobTrainingActivityMonth)
     end
   end
 end

@@ -17,7 +17,9 @@ class TableComponent < ViewComponent::Base
     }
   }
 
-  def initialize(multi_column: false, subdued_header: false, activity_hours_review: false, class_names: "", attributes: {})
+  def initialize(caption:, multi_column: false, subdued_header: false, activity_hours_review: false, class_names: "", attributes: {})
+    raise ArgumentError, "caption is required" if caption.blank?
+
     @class_names = "usa-table usa-table--borderless"
     @class_names = [ @class_names, "usa-table--multi-column" ].join(" ") if multi_column
     @class_names = [ @class_names, "usa-table--subdued-header" ].join(" ") if subdued_header
@@ -25,6 +27,7 @@ class TableComponent < ViewComponent::Base
     @class_names = [ @class_names, class_names ].join(" ") if class_names.present?
 
     @attributes = attributes
+    @caption = caption
   end
 
   def before_render

@@ -10,6 +10,7 @@
   </h3>
 
   <%= render(TableComponent.new(
+    caption: title,
     multi_column: columns.length > 2,
     class_names: "activity-report__table border-top-0 font-sans-3xs margin-0 maxw-none"
   )) do |table| %>

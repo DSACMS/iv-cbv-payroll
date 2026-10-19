@@ -12,10 +12,12 @@ FactoryBot.define do
     credit_hours { Faker::Number.within(range: 0..6).to_i }
     additional_comments { Faker::Lorem.paragraph }
 
-    trait :pre_populated_draft do
-      draft { true }
-      pre_populated { true }
+    trait :with_self_attested_term do
       data_source { "fully_self_attested" }
+      school_name { "Test University" }
+      self_attested_term_start { activity_flow.reporting_months.first - 1.month }
+      self_attested_term_end { activity_flow.reporting_months.last }
+      self_attested_enrollment_status { "less_than_half_time" }
     end
 
     trait :partially_self_attested do

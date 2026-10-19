@@ -37,14 +37,14 @@
   </header>
 
   <section class="margin-top-4">
-    <h2>
+    <h2 id="client-and-report-information">
       <%= t(
         "activities.submit.pdf.client_and_report_information",
         client_name: @report.client_name.presence || not_provided
       ) %>
     </h2>
 
-    <table class="activity-report__report-information activity-report__table width-full">
+    <table class="activity-report__report-information activity-report__table width-full" aria-labelledby="client-and-report-information">
       <tbody>
         <tr>
           <th scope="row">
@@ -174,17 +174,28 @@
         <% activity = entry.activity %>
         <% if activity.fully_self_attested? %>
           <% columns = [
-            t("activities.summary.education.month"),
+            t("activities.education.review.term"),
+            t("components.enrollment_term_table_component.enrollment_status"),
             t("activities.summary.education.credit_hours"),
             t("activities.summary.education.community_engagement_hours")
           ] %>
-          <% rows = @report.activity_month_records(activity.education_activity_months).map do |month, activity_month|
-            [
-              l(month, format: :month_year),
-              activity_month ? format_decimal_amount(activity_month.hours) : not_provided,
-              activity_month ? format_decimal_amount(activity.community_engagement_hours(activity_month.hours)) : not_provided
-            ]
-          end %>
+          <% row = [
+            t(
+              "activities.submit.pdf.term_date_range",
+              start_date: format_date(activity.self_attested_term_start, :month_year),
+              end_date: format_date(activity.self_attested_term_end, :month_year)
+            ),
+            activity.self_attested_enrollment_status_display
+          ] %>
+          <% if activity.self_attested_credit_hours_applicable? %>
+            <% row += [
+              activity.credit_hours.nil? ? not_provided : format_decimal_amount(activity.credit_hours),
+              format_decimal_amount(activity.community_engagement_hours(activity.credit_hours))
+            ] %>
+          <% else %>
+            <% row += [ t("shared.not_applicable"), t("shared.not_applicable") ] %>
+          <% end %>
+          <% rows = [ row ] %>
         <% else %>
           <% enrollment_terms = entry.enrollment_terms %>
           <% show_credit_hours = enrollment_terms.any?(&:less_than_half_time?) %>
@@ -375,7 +386,7 @@
           ),
           comments: entry.comments,
           information_heading: t("activities.submit.pdf.institution_information"),
-          details: education_details %>
+          details: [ [ t("activities.submit.pdf.education_type"), activity.education_type_display ] ] + education_details %>
       <% end %>
     </section>
   <% end %>

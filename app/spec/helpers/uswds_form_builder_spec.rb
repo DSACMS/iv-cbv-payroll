@@ -45,11 +45,11 @@ RSpec.describe UswdsFormBuilder do
       let(:result) { builder.text_field(:first_name, hint: 'Enter your name') }
 
       it 'outputs a hint' do
-        expect(result).to have_element(:div, text: 'Enter your name', class: 'usa-hint')
+        expect(result).to have_selector('#first_name_hint.usa-hint', text: 'Enter your name')
       end
 
       it 'adds aria-describedby to the input' do
-        expect(result).to have_element(:input, aria_describedby: 'first_name_hint')
+        expect(result).to have_selector('input[aria-describedby="first_name_hint"]')
       end
     end
 
@@ -82,6 +82,16 @@ RSpec.describe UswdsFormBuilder do
       end
     end
 
+    context 'with required set to true' do
+      let(:result) { builder.text_field(:first_name, label: 'Name', required: true) }
+
+      it 'identifies the field as required in its label' do
+        expect(result).to have_element(:label, text: 'Name*')
+        expect(result).to have_selector("span.usa-hint--required[aria-hidden='true']", text: '*', exact_text: true)
+        expect(result).to have_element(:input, required: 'required')
+      end
+    end
+
     context 'with custom class' do
       let(:result) { builder.text_field(:first_name, class: 'custom-class') }
 
@@ -97,13 +107,62 @@ RSpec.describe UswdsFormBuilder do
         expect(result).to have_element(:label, class: 'usa-label custom-label-class')
       end
     end
+
+    context 'with an error and a custom input ID' do
+      let(:result) do
+        builder.text_field(
+          :first_name,
+          id: 'custom-name',
+          label: 'Name',
+          aria: { describedby: 'existing-description' }
+        )
+      end
+
+      before do
+        object.errors.add(:first_name, 'is invalid')
+      end
+
+      it 'keeps the label associated with the custom input' do
+        expect(result).to have_css(
+          'label#object_first_name_label[for="custom-name"]',
+          text: 'Name'
+        )
+      end
+
+      it 'preserves existing descriptions and includes the error' do
+        input = Capybara.string(result).find('#custom-name')
+
+        expect(input['aria-invalid']).to eq('true')
+        expect(input['aria-describedby'].split).to contain_exactly(
+          'existing-description',
+          'object_first_name_error'
+        )
+      end
+
+      it 'connects the error to the rendered label' do
+        expect(result).to have_css(
+          '#object_first_name_error[data-error-label-id="object_first_name_label"]'
+        )
+      end
+    end
   end
 
   describe '#hint' do
-    let(:result) { builder.hint('Enter your name') }
+    context 'when attribute has both a hint and an error' do
+      let(:result) { builder.text_field(:first_name, hint: 'Enter your name') }
 
-    it 'outputs a hint' do
-      expect(result).to have_element(:div, text: 'Enter your name', class: 'usa-hint')
+      before do
+        object.errors.add(:first_name, 'is invalid')
+      end
+
+      it 'includes both the hint and error IDs in aria-describedby' do
+        input = Capybara.string(result).find('input[name="object[first_name]"]')
+
+        expect(input['aria-describedby'].split).to contain_exactly(
+          'first_name_hint',
+          'object_first_name_error'
+        )
+      end
     end
   end
 
@@ -170,6 +229,25 @@ RSpec.describe UswdsFormBuilder do
 
       it 'outputs a label' do
         expect(result).to have_element(:label, text: 'Custom label', class: 'usa-label')
+      end
+    end
+
+    context 'with errors' do
+      before { object.errors.add(:first_name, :invalid) }
+
+      it 'outputs an error message by default' do
+        expect(result).to have_selector('.usa-form-group--error')
+        expect(result).to have_selector('.usa-error-message', text: I18n.t('errors.messages.invalid'))
+      end
+
+      context 'with show_error_message set to false' do
+        let(:result) { builder.select(:first_name, [ 'Option 1', 'Option 2' ], show_error_message: false) }
+
+        it 'keeps the error highlight without an inline message' do
+          expect(result).to have_selector('.usa-form-group--error')
+          expect(result).to have_selector('select.usa-select[name="object[first_name]"]')
+          expect(result).to have_no_selector('.usa-error-message')
+        end
       end
     end
   end
@@ -406,6 +484,60 @@ RSpec.describe UswdsFormBuilder do
         expect(result).to have_element(:button, class: 'usa-button usa-button--big')
         expect(result).to have_element(:svg, class: 'usa-icon')
         expect(result).to have_element(:use, href: /.svg#save_alt/)
+      end
+    end
+  end
+
+  describe '#field_error' do
+    let(:result) do
+      builder.field_error(:first_name, label_id: 'object_first_name_label')
+    end
+
+    it 'returns nothing when the field has no errors' do
+      expect(result).to be_nil
+    end
+
+    context 'with errors' do
+      before do
+        object.errors.add(:first_name, 'is invalid')
+      end
+
+      it 'identifies the error and its field label' do
+        expect(result).to have_css(
+          '#object_first_name_error.usa-error-message' \
+          '[data-error-label-id="object_first_name_label"]',
+          text: 'is invalid'
+        )
+      end
+
+      it 'does not create a competing live region or focus target' do
+        expect(result).to have_no_css('[role="alert"]')
+        expect(result).to have_no_css('[aria-live]')
+        expect(result).to have_no_css('[tabindex]')
+      end
+
+      context 'with multiple errors' do
+        before do
+          object.errors.add(:first_name, 'is required')
+        end
+
+        it 'includes both messages in one error element' do
+          expect(result).to have_css('.usa-error-message', count: 1)
+          expect(result).to have_text('is invalid')
+          expect(result).to have_text('is required')
+          expect(result).to have_css('br', count: 1)
+        end
+      end
+
+      context 'with HTML in an error message' do
+        before do
+          object.errors.add(:first_name, '<strong>invalid value</strong>')
+        end
+
+        it 'escapes the message' do
+          expect(result).to have_no_css('strong')
+          expect(result).to have_text('<strong>invalid value</strong>')
+        end
       end
     end
   end

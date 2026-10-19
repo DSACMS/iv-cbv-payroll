@@ -38,9 +38,12 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
       })
       field_options = options.except(:label, :hint, :label_class)
 
-      if options[:hint]
-        field_options[:aria_describedby] = hint_id(attribute)
-      end
+      field_options[:aria] = build_aria_options(
+        attribute,
+        field_options,
+        existing_aria: field_options[:aria] || {},
+        hint: options[:hint]
+      )
 
       form_group(attribute, options[:group_options] || {}) do
         us_text_field_label(attribute, label_text, label_options) + super(attribute, field_options)
@@ -74,9 +77,10 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     append_to_option(html_options, :class, " usa-select")
 
     label_text = options.delete(:label)
+    show_error_message = options.delete(:show_error_message) { true }
 
     form_group(attribute) do
-      us_text_field_label(attribute, label_text, options) + super(attribute, choices, options, html_options)
+      us_text_field_label(attribute, label_text, options, show_error_message: show_error_message) + super(attribute, choices, options, html_options)
     end
   end
 
@@ -85,6 +89,8 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     data = options.delete(:data) || {}
     input_class = has_error?(attribute) ? "usa-input usa-input--error" : "usa-input"
 
+    aria_options = build_aria_options(attribute, options)
+
     form_group(attribute) do
       us_text_field_label(attribute, label_text, options) +
         @template.render(Uswds::PhoneInput.new(
@@ -92,7 +98,8 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
           id: field_id(attribute),
           value: object&.send(attribute),
           input_class: input_class,
-          data: data
+          data: data,
+          aria: aria_options
         ))
     end
   end
@@ -105,6 +112,8 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
     label_options = { class: label_class }
 
+    aria_options = build_aria_options(attribute, options)
+
     form_group(attribute) do
       us_text_field_label(attribute, label_text, options.merge(label_options)) +
         @template.render(Uswds::CurrencyInput.new(
@@ -112,7 +121,9 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
           id: field_id(attribute),
           value: object&.send(attribute),
           input_class: input_class,
-          data: data
+          data: data,
+          required: options[:required],
+          aria: aria_options
         ))
     end
   end
@@ -120,13 +131,16 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   def combo_box(attribute, choices, options = {})
     label_text = options.delete(:label)
 
+    aria_options = build_aria_options(attribute, options)
+
     form_group(attribute) do
       us_text_field_label(attribute, label_text, options) +
         @template.render(Uswds::ComboBox.new(
           name: field_name(attribute),
           id: field_id(attribute),
           options: choices,
-          selected: object&.send(attribute)
+          selected: object&.send(attribute),
+          aria: aria_options
         ))
     end
   end
@@ -184,11 +198,17 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     @template.render(MemorableDateComponent.new(form: self, attribute: attribute, legend: legend, hint: hint))
   end
 
-  def field_error(attribute)
+  def field_error(attribute, label_id: nil)
     return unless has_error?(attribute)
     error_messages = object.errors.messages_for(attribute)
-    error_sentence = error_messages.join("<br>").html_safe
-    @template.content_tag(:span, error_sentence, class: "usa-error-message")
+
+    @template.content_tag(
+      :span,
+      @template.safe_join(error_messages, @template.tag.br),
+      id: "#{field_id(attribute)}_error",
+      class: "usa-error-message",
+      data: { error_label_id: label_id }
+    )
   end
 
   def fieldset(legend, options = {}, &block)
@@ -305,6 +325,26 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
   private
 
+  # Build the list of description element IDs (error + hint) and the
+  # resulting aria-describedby/aria-invalid options for a field.
+  def build_aria_options(attribute, options, existing_aria: {}, hint: options[:hint])
+    aria_options = existing_aria.dup
+
+    description_ids = [
+      aria_options[:describedby],
+      options.delete(:aria_describedby),
+      options.delete(:"aria-describedby")
+    ].compact.flat_map { |value| value.to_s.split }
+
+    description_ids << "#{field_id(attribute)}_error" if has_error?(attribute)
+    description_ids << hint_id(attribute) if hint
+
+    aria_options[:describedby] = description_ids.uniq.join(" ") if description_ids.any?
+    aria_options[:invalid] = "true" if has_error?(attribute)
+
+    aria_options
+  end
+
   def append_to_option(options, key, value)
     current_value = options[key] || ""
 
@@ -333,7 +373,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   # Render the label, hint text, and error message for a form field
-  def us_text_field_label(attribute, text = nil, options = {})
+  def us_text_field_label(attribute, text = nil, options = {}, show_error_message: true)
     hint_option = options.delete(:hint)
     classes = "usa-label"
     for_attr = options[:for] || field_id(attribute)
@@ -350,6 +390,10 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
       text += @template.content_tag(:span, " (#{I18n.t('us_form_with.optional').downcase})", class: "usa-hint")
     end
 
+    if options[:required]
+      text += @template.content_tag(:span, "*", class: "usa-hint--required", "aria-hidden": true)
+    end
+
     if hint_option
       if hint_option.is_a?(Proc)
         hint_content = @template.capture(&hint_option)
@@ -360,7 +404,20 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
       hint = @template.content_tag(:div, hint_content, id: hint_id(attribute), class: "usa-hint")
     end
 
-    label(attribute, @template.raw(text), { class: classes, for: for_attr }) + field_error(attribute) + hint
+    label_id = "#{field_id(attribute)}_label"
+    error = show_error_message ? field_error(attribute, label_id: label_id) : nil
+
+    @template.safe_join([
+      label(
+        attribute,
+        @template.raw(text),
+        class: classes,
+        for: for_attr,
+        id: label_id
+      ),
+      error,
+      hint
+    ].compact)
   end
 
   # Label for a checkbox or radio

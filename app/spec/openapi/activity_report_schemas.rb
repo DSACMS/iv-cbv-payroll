@@ -20,6 +20,7 @@ module ActivityReportSchemas
       additional_comments: comments
     )
     education_term = {
+      education_type: education_type,
       type: { type: :string, enum: %w[education] },
       school_name: nullable_string.merge(description: "School name from the NSC enrollment term; null when unavailable."),
       enrollment_status: { type: :string, enum: NscEnrollmentTerm.enrollment_statuses.keys, description: "NSC enrollment status for this term, including unknown when the status is unavailable." },
@@ -36,7 +37,8 @@ module ActivityReportSchemas
         agency_partner_metadata: ref("AgencyPartnerMetadata").merge(description: "Agency-specific fields used to associate the report with the correct case, as agreed in the integration plan and shared with the Income Report API. Examples include case_number (string), date_of_birth (date string), and doc_id (string); which fields are required depends on the agency."),
         ce_report: ref("CeReport").merge(description: "Community engagement report containing the review period, supporting document metadata, and activities.")
       }).merge(description: InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Model")),
-      CeReport: object(%w[review_period documents activities], {
+      CeReport: object(%w[report_variant review_period documents activities], {
+        report_variant: { type: :string, enum: %w[employment community_engagement], description: "Reporting flow used to complete this report." },
         review_period: ref("CeReviewPeriod").merge(description: "Full date range covered by this CE compliance determination, expressed as inclusive calendar months."),
         documents: { type: :array, items: ref("CeDocument"), description: "All supporting documents uploaded for the activities in this report. The files are transmitted separately by the document transmission integration; this array describes what to expect." },
         activities: ref("CeActivities").merge(description: "Activities grouped first by type, then by reporting month in YYYY-MM format.")
@@ -126,16 +128,17 @@ module ActivityReportSchemas
           }
         }
       },
-      CeSelfAttestedEducationActivity: activity(%w[school_name hours], self_attested.merge(contact).merge(
+      CeSelfAttestedEducationActivity: activity(%w[school_name hours enrollment_status term education_type], self_attested.merge(contact).merge(education_term).merge(
         type: { type: :string, enum: %w[education] },
         data_source: { type: :string, enum: %w[self_attested] },
         school_name: { type: :string, description: "Name of the school reported by the applicant." },
-        hours: { type: :number, minimum: 0, description: "Academic credit hours reported for this month; fractions are preserved and zero is allowed." }
-      )).merge(description: "School details and monthly academic credits reported by the applicant, including address and contact fields."),
-      CeVerifiedEducationActivity: activity(%w[school_name enrollment_status term], education_term.merge(
+        hours: { type: :number, minimum: 0, description: "Academic credit hours for the term; zero when optional credits are not supplied." },
+        enrollment_status: { type: :string, enum: EducationActivity::SELF_ATTESTED_ENROLLMENT_STATUSES, description: "Self-attested enrollment status." }
+      )).merge(description: "School details, term dates, enrollment status, and optional academic credits reported by the applicant, including address and contact fields. Manual terms appear in each reporting month covered by their dates."),
+      CeVerifiedEducationActivity: activity(%w[school_name enrollment_status term education_type], education_term.merge(
         data_source: { type: :string, enum: %w[verified], description: "NSC-verified enrollment." }
       )).merge(description: "NSC-verified enrollment and original term details. NSC does not provide academic credit hours, so credit_hours is null."),
-      CeVerifiedEnrollmentOnlyEducationActivity: activity(%w[school_name hours enrollment_status term], self_attested.merge(contact).merge(education_term).merge(
+      CeVerifiedEnrollmentOnlyEducationActivity: activity(%w[school_name hours enrollment_status term education_type], self_attested.merge(contact).merge(education_term).merge(
         data_source: { type: :string, enum: %w[verified_enrollment_only], description: "NSC-verified enrollment with self-attested academic credits." },
         hours: { type: %w[number null], minimum: 0, description: "Self-attested academic credit hours for the term, matching credit_hours. Fractions and zero are preserved; null when not reported." }
       )).merge(description: "Partially self-attested education combines NSC enrollment and term details with applicant-reported academic credits, retaining self-attested address and contact fields. Every term entry uses verified_enrollment_only, including terms with half-time or greater enrollment."),
@@ -195,6 +198,13 @@ module ActivityReportSchemas
 
   def self.nullable_string
     { type: %w[string null] }
+  end
+
+  def self.education_type
+    nullable_enum(EducationActivity::EDUCATION_TYPES).merge(
+      description: "Original education type selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
+      example: "college_or_university"
+    )
   end
 
   def self.nullable_enum(values)

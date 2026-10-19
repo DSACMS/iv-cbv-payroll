@@ -55,16 +55,32 @@ RSpec.describe ActivityFlowProgressCalculator do
         expect(result.meets_routing_requirements).to be(false)
       end
 
-      it "meets routing requirements when threshold is met via a pre-populated work program" do
-        create(:job_training_activity, activity_flow: flow, pre_populated: true, hours: 80)
+      it "meets routing requirements when threshold is met via a validated work program" do
+        create(:job_training_activity, activity_flow: flow, data_source: :validated, hours: 80)
 
         expect(result.meets_routing_requirements).to be(true)
       end
 
-      it "does not meet routing requirements from a pre-populated draft work program" do
-        create(:job_training_activity, :pre_populated_draft, activity_flow: flow, hours: 80)
+      it "does not meet routing requirements from a validated draft work program" do
+        create(:job_training_activity, draft: true, data_source: :validated, activity_flow: flow, hours: 80)
 
         expect(result.meets_routing_requirements).to be(false)
+      end
+
+      context "when the threshold is met by self-attested volunteering" do
+        let(:activity) { create(:volunteering_activity, activity_flow: flow) }
+
+        before do
+          create(:volunteering_activity_month, volunteering_activity: activity, month: first_month, hours: 80)
+        end
+
+        it "counts hours toward progress" do
+          expect(result.meets_requirements).to be(true)
+        end
+
+        it "still requires verification" do
+          expect(result.meets_routing_requirements).to be(false)
+        end
       end
 
       context "when threshold is met via validated data" do
@@ -146,16 +162,16 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
 
       it "applies the required-month threshold to routing requirements" do
-        pre_populated_activity = create(:volunteering_activity, activity_flow: flow, pre_populated: true)
-        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
-        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.second.beginning_of_month, hours: 80)
+        validated_activity = create(:volunteering_activity, activity_flow: flow, data_source: :validated)
+        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
+        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.second.beginning_of_month, hours: 80)
 
         expect(result.meets_routing_requirements).to be(true)
       end
 
       it "does not meet routing requirements when validated months are below the required count" do
-        pre_populated_activity = create(:volunteering_activity, activity_flow: flow, pre_populated: true)
-        create(:volunteering_activity_month, volunteering_activity: pre_populated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
+        validated_activity = create(:volunteering_activity, activity_flow: flow, data_source: :validated)
+        create(:volunteering_activity_month, volunteering_activity: validated_activity, month: reporting_months.first.beginning_of_month, hours: 80)
 
         expect(result.meets_routing_requirements).to be(false)
       end
@@ -570,21 +586,13 @@ RSpec.describe ActivityFlowProgressCalculator do
       let(:education_activity) do
         create(
           :education_activity,
+          :with_self_attested_term,
           activity_flow: flow,
-          data_source: :fully_self_attested,
-          status: "unknown",
-          school_name: "Test U"
+          credit_hours: 7
         )
       end
 
-      before do
-        create(
-          :education_activity_month,
-          education_activity: education_activity,
-          month: flow.reporting_months.first.beginning_of_month,
-          hours: 7
-        )
-      end
+      before { education_activity }
 
       it "does not mark the monthly result with sufficient enrollment" do
         expect(result.first).to have_attributes(
@@ -819,35 +827,19 @@ RSpec.describe ActivityFlowProgressCalculator do
 
     context "when education is fully self-attested" do
       let(:flow) { create(:activity_flow, reporting_window_months: 2, education_activities_count: 0) }
-      let(:fully_self_attested_monthly_credit_hours) do
-        {
-          flow.reporting_months.first.beginning_of_month => 4,
-          flow.reporting_months.second.beginning_of_month => 5
-        }
-      end
+      let(:credit_hours) { 4 }
       let(:education_activity) do
         create(
           :education_activity,
+          :with_self_attested_term,
           activity_flow: flow,
-          data_source: :fully_self_attested,
           school_name: "University of Illinois",
-          status: "unknown"
+          credit_hours: credit_hours
         )
       end
 
-      before do
-        fully_self_attested_monthly_credit_hours.each do |month, hours|
-          create(
-            :education_activity_month,
-            education_activity: education_activity,
-            month: month,
-            hours: hours
-          )
-        end
-      end
-
-      it "converts monthly credit hours to CE hours and applies them for each reporting month" do
-        expected_hours = fully_self_attested_monthly_credit_hours.values.sum * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER
+      it "converts term credit hours to CE hours for each reporting month" do
+        expected_hours = credit_hours * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER * flow.reporting_months.length
         expect(progress.total_hours).to eq(expected_hours)
       end
 

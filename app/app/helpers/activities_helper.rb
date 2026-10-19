@@ -1,4 +1,13 @@
 module ActivitiesHelper
+  def activity_reporting_name(flow)
+    return unless flow.is_a?(ActivityFlow) && flow.activity_flow_invitation.present?
+
+    applicant = flow.cbv_applicant
+    return unless applicant.first_name.present? && applicant.last_name.present?
+
+    [ applicant.first_name.strip, applicant.last_name.strip ].join(" ")
+  end
+
   # i18n-tasks-use t('activities.document_uploads.new.errors.empty')
   # i18n-tasks-use t('activities.document_uploads.new.errors.too_large')
   # i18n-tasks-use t('activities.document_uploads.new.errors.unsupported_type')
@@ -130,63 +139,6 @@ module ActivitiesHelper
     end
   end
 
-  def employment_activity_draft_cards(activities)
-    activities.map do |activity|
-      months = activity.employment_activity_months.sort_by(&:month).filter_map do |month|
-        next unless month.gross_income.positive? || month.hours.positive?
-
-        {
-          month: month.month,
-          gross_earnings: month.gross_income * 100,
-          hours: format_decimal_amount(month.hours)
-        }
-      end
-      {
-        name: activity.employer_name,
-        months: months,
-        edit_path: edit_activities_flow_income_employment_path(id: activity.id),
-        pre_populated: true
-      }
-    end
-  end
-
-  def education_activity_draft_cards(activities)
-    activities.map do |activity|
-      months = activity.education_activity_months.sort_by(&:month).filter_map do |activity_month|
-        credit_hours = activity_month.hours.to_i
-        next unless credit_hours.positive?
-
-        {
-          month: activity_month.month,
-          credit_hours: credit_hours,
-          community_engagement_hours: activity.community_engagement_hours(credit_hours)
-        }
-      end
-      {
-        name: activity.school_name,
-        months: months,
-        edit_path: edit_activities_flow_education_path(id: activity.id),
-        pre_populated: true
-      }
-    end
-  end
-
-  def community_service_draft_cards(activities)
-    activities.map do |activity|
-      months = activity.volunteering_activity_months.sort_by(&:month).filter_map do |activity_month|
-        next unless activity_month.hours.positive?
-
-        { month: activity_month.month, hours: format_decimal_amount(activity_month.hours) }
-      end
-      {
-        name: activity.organization_name,
-        months: months,
-        edit_path: edit_activities_flow_community_service_path(id: activity.id),
-        pre_populated: true
-      }
-    end
-  end
-
   def work_program_cards(activities)
     activities.map do |activity|
       months = activity.job_training_activity_months.sort_by(&:month).filter_map do |activity_month|
@@ -198,22 +150,6 @@ module ActivitiesHelper
         name: activity.program_name,
         months: months,
         edit_path: review_activities_flow_job_training_path(id: activity.id, from_edit: 1)
-      }
-    end
-  end
-
-  def work_program_draft_cards(activities)
-    activities.map do |activity|
-      months = activity.job_training_activity_months.sort_by(&:month).filter_map do |activity_month|
-        next unless activity_month.hours.positive?
-
-        { month: activity_month.month, hours: format_decimal_amount(activity_month.hours) }
-      end
-      {
-        name: activity.program_name,
-        months: months,
-        edit_path: edit_activities_flow_job_training_path(id: activity.id),
-        pre_populated: true
       }
     end
   end

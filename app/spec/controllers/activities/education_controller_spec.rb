@@ -42,6 +42,62 @@ RSpec.describe Activities::EducationController, type: :controller do
   end
 
   describe "POST #create" do
+    context "with an education type parameter" do
+      it "saves the category on the NSC activity" do
+        post :create, params: { education_type: "college_or_university" }
+
+        expect(activity_flow.education_activities.last.education_type).to eq("college_or_university")
+      end
+
+      context "when the NSC request fails" do
+        before do
+          post :create, params: { education_type: "college_or_university" }
+          activity_flow.education_activities.last.update!(status: :failed)
+          get :show, params: { id: activity_flow.education_activities.last.id }
+        end
+
+        it "routes the applicant to the fallback page" do
+          expect(response).to redirect_to(activities_flow_education_error_path(education_type: "college_or_university"))
+        end
+
+        it "preserves the original type when the applicant enters education manually" do
+          post :create, params: { education_type: "college_or_university", education_activity: { school_name: "Example College" } }
+
+          activity = activity_flow.education_activities.last
+          expect(activity.data_source).to eq("fully_self_attested")
+          expect(activity.education_type).to eq("college_or_university")
+        end
+      end
+
+      context "when NSC finds no enrollment records" do
+        before do
+          post :create, params: { education_type: "college_or_university" }
+          activity_flow.education_activities.last.update!(status: :no_enrollments)
+        end
+
+        it "preserves the original type when the applicant enters education manually" do
+          post :create, params: { education_type: "college_or_university", education_activity: { school_name: "Example College" } }
+
+          activity = activity_flow.education_activities.last
+          expect(activity.data_source).to eq("fully_self_attested")
+          expect(activity.education_type).to eq("college_or_university")
+        end
+      end
+
+      it "preserves the selection after an invalid manual form" do
+        post :create, params: { education_type: "college_or_university", education_activity: { school_name: "" } }
+        post :create, params: { education_type: "college_or_university", education_activity: { school_name: "Example College" } }
+
+        expect(activity_flow.education_activities.last.education_type).to eq("college_or_university")
+      end
+
+      it "does not save an unrecognized education type" do
+        post :create, params: { education_type: "invalid" }
+
+        expect(activity_flow.education_activities.last.education_type).to be_nil
+      end
+    end
+
     context "self-attested tracking" do
       let(:tracked_flow) { activity_flow }
       let(:perform_tracked_action) do
@@ -89,7 +145,7 @@ RSpec.describe Activities::EducationController, type: :controller do
 
           activity = EducationActivity.last
           expect(activity.data_source).to eq("fully_self_attested")
-          expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: activity.id, id: 0))
+          expect(response).to redirect_to(edit_activities_flow_education_add_your_term_path(education_id: activity.id))
         end
       end
     end
@@ -101,7 +157,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(activity.draft).to be(true)
     end
 
-    it "creates a self-attested EducationActivity and redirects to month 0" do
+    it "creates a self-attested EducationActivity and redirects to the term form" do
       expect {
         post :create, params: { education_activity: { school_name: "Test University", city: "Springfield", state: "IL", zip_code: "62701", street_address: "123 Main St", contact_title: "Registrar" } }
       }.to change(EducationActivity, :count).by(1)
@@ -110,7 +166,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(activity.data_source).to eq("fully_self_attested")
       expect(activity.school_name).to eq("Test University")
       expect(activity.contact_title).to eq("Registrar")
-      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: activity.id, id: 0))
+      expect(response).to redirect_to(edit_activities_flow_education_add_your_term_path(education_id: activity.id))
     end
 
     it "creates the self-attested activity as a draft" do
@@ -144,25 +200,6 @@ RSpec.describe Activities::EducationController, type: :controller do
       get :show, params: { id: education_activity.id }
 
       expect(response).to have_http_status(:ok)
-    end
-
-    context "when the EducationActivity is a pre-populated draft" do
-      let(:education_activity) do
-        create(
-          :education_activity,
-          :pre_populated_draft,
-          activity_flow: activity_flow,
-          school_name: "Springfield Community College"
-        )
-      end
-
-      it "redirects to education edit instead of treating it as an NSC sync result" do
-        get :show, params: { id: education_activity.id }
-
-        expect(response).to redirect_to(
-          edit_activities_flow_education_path(id: education_activity.id)
-        )
-      end
     end
 
     it "does not render activity flow navigation" do
@@ -324,6 +361,13 @@ RSpec.describe Activities::EducationController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to have_content(I18n.t("activities.education.new.title"))
+    end
+
+    it "identifies the school name as required" do
+      get :new
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector("input[name='education_activity[school_name]'][required]")
     end
 
     it "renders the school contact information" do
@@ -491,7 +535,7 @@ RSpec.describe Activities::EducationController, type: :controller do
   describe "GET #review" do
     context "when fully self-attested" do
       let(:education_activity) do
-        create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
+        create(:education_activity, :with_self_attested_term, activity_flow: activity_flow, school_name: "University of Illinois")
       end
       let(:tracked_flow) { activity_flow }
       let(:perform_tracked_action) { get :review, params: { id: education_activity.id } }
@@ -506,31 +550,119 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response.body).to include(education_activity.school_name)
       end
 
-      it "displays education activity months" do
-        create(:education_activity_month, education_activity: education_activity, month: activity_flow.reporting_months.first, hours: 4)
-
+      it "links to the term form" do
         get :review, params: { id: education_activity.id }
 
-        expect(response.body).to include("4")
-        expect(response.body).to include("52")
-      end
-
-      it "includes an edit link for each month" do
-        create(:education_activity_month, education_activity: education_activity, month: activity_flow.reporting_months.first, hours: 4)
-
-        get :review, params: { id: education_activity.id }
-
-        expect(response.body).to include(
-          edit_activities_flow_education_month_path(education_id: education_activity, id: 0, from_review: 1)
-        )
+        expect(Capybara.string(response.body)).to have_link(I18n.t("activities.education.review.edit"),
+          href: edit_activities_flow_education_add_your_term_path(education_id: education_activity, from_review: 1))
       end
 
       it "renders an edit link to school info with from_review" do
         get :review, params: { id: education_activity.id }
 
         doc = Capybara.string(response.body)
-        edit_link = doc.find("a", text: I18n.t("activities.hub.edit"))
-        expect(edit_link[:href]).to include("from_review=1")
+        expect(doc).to have_link(I18n.t("activities.hub.edit"),
+          href: edit_activities_flow_education_path(id: education_activity, from_review: 1))
+      end
+
+      context "with school contact information" do
+        let(:rendered) { Capybara.string(response.body) }
+
+        before do
+          education_activity.update!(contact_name: "Dr. Smith", contact_title: "Registrar",
+            contact_email: "registrar@example.edu", contact_phone_number: "2175550100")
+          get :review, params: { id: education_activity.id }
+        end
+
+        it "renders the school official's name and title" do
+          expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.education.review.contact_name')} #{education_activity.contact_name}", normalize_ws: true)
+          expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.education.review.contact_title')} #{education_activity.contact_title}", normalize_ws: true)
+        end
+
+        it "renders the school official's email and school phone number" do
+          phone_number = ActiveSupport::NumberHelper.number_to_phone(education_activity.contact_phone_number, area_code: true)
+          expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.education.review.contact_email')} #{education_activity.contact_email}", normalize_ws: true)
+          expect(rendered).to have_selector("tr", text: "#{I18n.t('activities.education.review.contact_phone')} #{phone_number}", normalize_ws: true)
+        end
+
+        it "renders the comments prompt and add to report button" do
+          expect(rendered).to have_selector("label", text: I18n.t("activities.education.review.additional_comments_description",
+            agency_name: I18n.t("shared.agency_full_name.sandbox")))
+          expect(rendered).to have_button(I18n.t("activities.education.review.save"))
+        end
+
+        it "renders the credit hours explanation in an accordion" do
+          expect(rendered).to have_selector("button[aria-controls='education-credit-hours-explainer-content']",
+            text: I18n.t("activities.education.review.ce_explainer_title"))
+          expect(rendered).to have_selector("#education-credit-hours-explainer-content",
+            text: I18n.t("activities.education.review.ce_explainer_body"))
+        end
+      end
+
+      context "with a self-attested term" do
+        let(:enrollment_status) { "less_than_half_time" }
+        let(:credit_hours) { 3.5 }
+        let(:rendered) { Capybara.string(response.body) }
+        let(:term_table) { rendered.find("table", text: I18n.t("activities.education.add_your_term.edit.term_start")) }
+
+        before do
+          education_activity.update!(self_attested_term_start: activity_flow.reporting_months.first,
+            self_attested_term_end: activity_flow.reporting_months.last,
+            self_attested_enrollment_status: enrollment_status, credit_hours: credit_hours)
+          get :review, params: { id: education_activity.id, from_edit: 1 }
+        end
+
+        it "preserves review and hub navigation in the term edit link" do
+          expect(rendered).to have_link(I18n.t("activities.hub.edit"),
+            href: edit_activities_flow_education_add_your_term_path(education_id: education_activity, from_review: 1, from_edit: 1))
+        end
+
+        it "renders enrollment status and separate term dates" do
+          expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.add_your_term.edit.enrollment_status')} #{education_activity.self_attested_enrollment_status_display}", normalize_ws: true)
+          expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.add_your_term.edit.term_start')} #{I18n.l(education_activity.self_attested_term_start, format: :month_year)}", normalize_ws: true)
+          expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.add_your_term.edit.term_end')} #{I18n.l(education_activity.self_attested_term_end, format: :month_year)}", normalize_ws: true)
+        end
+
+        it "renders fractional credit hours" do
+          expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.review.credit_hours')} #{ApplicationHelper.format_decimal_amount(credit_hours)}", normalize_ws: true)
+        end
+
+        context "with an unsure enrollment status" do
+          let(:enrollment_status) { "unknown" }
+
+          it "renders the enrollment status and entered credits" do
+            expect(term_table).to have_text(education_activity.self_attested_enrollment_status_display)
+            expect(term_table).to have_selector("tr", text: "#{I18n.t('activities.education.review.credit_hours')} #{ApplicationHelper.format_decimal_amount(credit_hours)}", normalize_ws: true)
+          end
+        end
+
+        context "with full-time enrollment" do
+          let(:enrollment_status) { "full_time" }
+          let(:credit_hours) { nil }
+
+          it "hides credit hours" do
+            expect(term_table).to have_text(education_activity.self_attested_enrollment_status_display)
+            expect(term_table).to have_no_text(I18n.t("activities.education.review.credit_hours"))
+          end
+        end
+
+        context "with half-time enrollment" do
+          let(:enrollment_status) { "half_time" }
+          let(:credit_hours) { nil }
+
+          it "hides credit hours" do
+            expect(term_table).to have_text(education_activity.self_attested_enrollment_status_display)
+            expect(term_table).to have_no_text(I18n.t("activities.education.review.credit_hours"))
+          end
+        end
+
+        context "without entered credit hours" do
+          let(:credit_hours) { nil }
+
+          it "hides credit hours" do
+            expect(term_table).to have_no_text(I18n.t("activities.education.review.credit_hours"))
+          end
+        end
       end
 
       context "with previously uploaded documents" do
@@ -762,7 +894,7 @@ RSpec.describe Activities::EducationController, type: :controller do
 
   describe "PATCH #save_review" do
     let(:education_activity) do
-      create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested, school_name: "University of Illinois")
+      create(:education_activity, :with_self_attested_term, activity_flow: activity_flow, draft: true, school_name: "University of Illinois")
     end
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) do
@@ -780,11 +912,29 @@ RSpec.describe Activities::EducationController, type: :controller do
     end
 
     it "publishes the activity" do
-      education_activity.update!(draft: true)
-
       patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
 
       expect(education_activity.reload.draft).to be(false)
+    end
+
+    context "with incomplete manual term details" do
+      let(:education_activity) do
+        create(:education_activity, draft: true, data_source: :fully_self_attested, activity_flow: activity_flow, school_name: "University of Illinois")
+      end
+
+      before do
+        patch :save_review, params: { id: education_activity.id, from_edit: 1, education_activity: { additional_comments: "Some notes" } }
+      end
+
+      it "returns to the term form with review navigation" do
+        expect(response).to redirect_to(edit_activities_flow_education_add_your_term_path(
+          education_id: education_activity, from_review: 1, from_edit: 1
+        ))
+      end
+
+      it "keeps the activity as a draft with its comments" do
+        expect(education_activity.reload).to have_attributes(draft: true, additional_comments: "Some notes")
+      end
     end
 
     context "when validated mixed enrollment has half-time-or-above in each reporting month" do
@@ -1075,7 +1225,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       end
     end
 
-    it "updates fully self-attested education info and redirects to month 0" do
+    it "updates fully self-attested education info and redirects to the term form" do
       fully_self_attested_activity = create(
         :education_activity,
         activity_flow: activity_flow,
@@ -1097,7 +1247,7 @@ RSpec.describe Activities::EducationController, type: :controller do
 
       expect(fully_self_attested_activity.reload.school_name).to eq("New School")
       expect(fully_self_attested_activity.contact_title).to eq("Academic advisor")
-      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: fully_self_attested_activity, id: 0))
+      expect(response).to redirect_to(edit_activities_flow_education_add_your_term_path(education_id: fully_self_attested_activity))
     end
 
     it "redirects self-attested to review when from_review is present" do
@@ -1167,7 +1317,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         }
       }
 
-      expect(response).to redirect_to(edit_activities_flow_education_month_path(education_id: self_attested_activity, id: 0, from_edit: 1))
+      expect(response).to redirect_to(edit_activities_flow_education_add_your_term_path(education_id: self_attested_activity, from_edit: 1))
     end
   end
 end

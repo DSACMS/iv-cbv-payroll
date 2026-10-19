@@ -5,10 +5,12 @@ RSpec.describe ActivityReportSerializer do
     create(:cbv_applicant, client_agency_id: "sandbox", first_name: "Jane", middle_name: "A", last_name: "Doe",
       case_number: "CASE-2026-00987", date_of_birth: Date.new(1990, 4, 15))
   end
+  let(:employment_focused) { true }
   let(:activity_flow) do
     create(
       :activity_flow,
       cbv_applicant: cbv_applicant,
+      employment_focused: employment_focused,
       volunteering_activities_count: 0,
       job_training_activities_count: 0,
       education_activities_count: 0,
@@ -63,6 +65,8 @@ RSpec.describe ActivityReportSerializer do
     job_training = create(:job_training_activity, activity_flow: activity_flow)
     create(:job_training_activity_month, job_training_activity: job_training, month: second_month, hours: 8)
 
+    expect(report["ce_report"].keys).to include("report_variant")
+    expect(report["ce_report"]["report_variant"]).to eq("employment")
     expect(report["ce_report"]["activities"].keys).to eq(%w[community_service work_program employment education])
     expect(report["ce_report"]["activities"]["community_service"].keys).to eq(%w[2026-06 2026-07])
     expect(report["ce_report"]["activities"]["work_program"].keys).to eq(%w[2026-07])
@@ -184,7 +188,7 @@ RSpec.describe ActivityReportSerializer do
   end
 
   it "excludes draft activities" do
-    draft = create(:volunteering_activity, :pre_populated_draft, activity_flow: activity_flow)
+    draft = create(:volunteering_activity, draft: true, activity_flow: activity_flow)
     create(:volunteering_activity_month, volunteering_activity: draft, month: first_month, hours: 40)
 
     expect(report["ce_report"]["activities"]["community_service"]).to eq({})
@@ -226,11 +230,58 @@ RSpec.describe ActivityReportSerializer do
   describe "education" do
     let(:education_entries) { JSON.parse(report.to_json).dig("ce_report", "activities", "education") }
 
-    it "reports monthly self-attested credit hours with school and contact information" do
-      education = create(
+    context "with a manual term" do
+      let(:education) do
+        create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested,
+          school_name: "Manual University", self_attested_term_start: first_month,
+          self_attested_term_end: second_month, self_attested_enrollment_status: "less_than_half_time", credit_hours: 3.5)
+      end
+
+      before { education }
+
+      it "includes term dates, enrollment, and credits in each covered month" do
+        expect(education_entries.keys).to eq([ first_month, second_month ].map { |month| month.strftime("%Y-%m") })
+        expect(education_entries[first_month.strftime("%Y-%m")].sole).to include(
+          "data_source" => "self_attested", "school_name" => education.school_name,
+          "enrollment_status" => education.self_attested_enrollment_status, "credit_hours" => 3.5, "hours" => 3.5,
+          "term" => { "start_month" => first_month.strftime("%Y-%m"), "end_month" => second_month.strftime("%Y-%m") }
+        )
+      end
+
+      it "limits entries to months within the term" do
+        education.update!(self_attested_term_start: first_month - 1.month, self_attested_term_end: first_month)
+
+        expect(education_entries.keys).to eq([ first_month.strftime("%Y-%m") ])
+      end
+
+      it "represents separate manual activities for the same school" do
+        create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested,
+          school_name: education.school_name, self_attested_term_start: first_month,
+          self_attested_term_end: second_month, self_attested_enrollment_status: "half_time", credit_hours: nil)
+
+        expect(education_entries[first_month.strftime("%Y-%m")].pluck("enrollment_status")).to eq(%w[less_than_half_time half_time])
+      end
+
+      context "with optional credits left blank" do
+        before { education.update!(self_attested_enrollment_status: "unknown", credit_hours: nil) }
+
+        it "retains the enrollment and term with null credits" do
+          expect(education_entries[first_month.strftime("%Y-%m")].sole).to include(
+            "enrollment_status" => "unknown", "credit_hours" => nil, "hours" => 0.0,
+            "term" => { "start_month" => first_month.strftime("%Y-%m"), "end_month" => second_month.strftime("%Y-%m") }
+          )
+        end
+      end
+    end
+
+    it "reports manual term credits with school and contact information" do
+      create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: activity_flow,
-        data_source: :fully_self_attested,
+        self_attested_term_start: first_month,
+        self_attested_term_end: second_month,
+        credit_hours: 3.5,
         school_name: "City Community College",
         street_address: "2 Main St",
         street_address_line_2: "",
@@ -243,12 +294,11 @@ RSpec.describe ActivityReportSerializer do
         contact_phone_number: "5045555678",
         additional_comments: "Evening classes"
       )
-      create(:education_activity_month, education_activity: education, month: second_month, hours: 0)
-      create(:education_activity_month, education_activity: education, month: first_month, hours: 3.5)
 
       expect(education_entries.keys).to eq(%w[2026-06 2026-07])
       expect(education_entries["2026-06"].sole).to eq(
         "type" => "education",
+        "education_type" => nil,
         "month" => "2026-06",
         "school_name" => "City Community College",
         "street_address" => "2 Main St",
@@ -262,16 +312,18 @@ RSpec.describe ActivityReportSerializer do
         "contact_phone_number" => "5045555678",
         "additional_comments" => "Evening classes",
         "hours" => 3.5,
+        "enrollment_status" => "less_than_half_time",
+        "credit_hours" => 3.5,
+        "term" => { "start_month" => "2026-06", "end_month" => "2026-07" },
         "data_source" => "self_attested",
         "document_ids" => []
       )
-      expect(education_entries["2026-07"].sole["hours"]).to eq(0.0)
+      expect(education_entries["2026-07"].sole["hours"]).to eq(3.5)
     end
 
     it "reports an omitted school official title as null" do
-      education = create(:education_activity, activity_flow: activity_flow,
-        data_source: :fully_self_attested, school_name: "City Community College")
-      create(:education_activity_month, education_activity: education, month: first_month, hours: 3.5)
+      create(:education_activity, :with_self_attested_term, activity_flow: activity_flow,
+        school_name: "City Community College", credit_hours: 3.5)
 
       expect(education_entries["2026-06"].sole).to include("contact_title" => nil)
     end
@@ -295,6 +347,7 @@ RSpec.describe ActivityReportSerializer do
       expect(education_entries.keys).to eq(%w[2026-06 2026-07])
       expect(education_entries["2026-06"].sole).to eq(
         "type" => "education",
+        "education_type" => nil,
         "month" => "2026-06",
         "school_name" => "State University",
         "enrollment_status" => "three_quarter_time",
@@ -311,13 +364,13 @@ RSpec.describe ActivityReportSerializer do
     end
 
     it "collects multiple education activities into one month bucket" do
-      first = create(
+      create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: activity_flow,
-        data_source: :fully_self_attested,
-        school_name: "City Community College"
+        school_name: "City Community College",
+        credit_hours: 3.5
       )
-      create(:education_activity_month, education_activity: first, month: first_month, hours: 3.5)
       second = create(:education_activity, activity_flow: activity_flow, status: :succeeded)
       create(
         :nsc_enrollment_term,
@@ -523,7 +576,7 @@ RSpec.describe ActivityReportSerializer do
     end
 
     it "excludes drafts and does not fetch unsuccessful or unpublished payroll connections" do
-      draft = create(:employment_activity, :pre_populated_draft, activity_flow: activity_flow)
+      draft = create(:employment_activity, draft: true, activity_flow: activity_flow)
       create(:employment_activity_month, employment_activity: draft, month: first_month)
       create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, draft: true)
       create(:payroll_account, flow: activity_flow, synchronization_status: :failed)
@@ -656,13 +709,11 @@ RSpec.describe ActivityReportSerializer do
     it "lists education documents and references them from each reported month" do
       education = create(
         :education_activity,
+        :with_self_attested_term,
         activity_flow: activity_flow,
-        data_source: :fully_self_attested,
-        school_name: "City Community College"
+        school_name: "City Community College",
+        credit_hours: 3
       )
-      activity_flow.reporting_months.each do |month|
-        create(:education_activity_month, education_activity: education, month: month, hours: 3)
-      end
       document = attach_document(education, "Transcript.pdf")
 
       expect(report["ce_report"]["documents"]).to include(
@@ -694,6 +745,24 @@ RSpec.describe ActivityReportSerializer do
       expect(report["ce_report"]["activities"]["education"].keys).to eq(%w[2026-06 2026-07])
       report["ce_report"]["activities"]["education"].each_value do |entries|
         expect(entries.sole).to include("data_source" => "verified", "document_ids" => [ "DOC-#{document.id}" ])
+      end
+    end
+  end
+
+  describe "report variant" do
+    context "when the flow is employment-focused" do
+      let(:employment_focused) { true }
+
+      it "identifies the report as employment" do
+        expect(report.dig("ce_report", "report_variant")).to eq("employment")
+      end
+    end
+
+    context "when the flow is not employment-focused" do
+      let(:employment_focused) { false }
+
+      it "identifies the report as community engagement" do
+        expect(report.dig("ce_report", "report_variant")).to eq("community_engagement")
       end
     end
   end

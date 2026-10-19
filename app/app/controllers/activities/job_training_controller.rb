@@ -8,6 +8,8 @@
 #                 Set by edit links on the review page. Tells controllers to
 #                 redirect back to review instead of advancing forward.
 class Activities::JobTrainingController < Activities::BaseController
+  include NavigationTracking
+
   before_action :set_job_training_activity, only: %i[edit update destroy review save_review]
   before_action :set_back_url, only: %i[edit review]
 

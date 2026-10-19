@@ -22,6 +22,7 @@
   <%= render Uswds::Alert.new(
         type: :error,
         heading: t("#{input_scope}.error_heading"),
+        form_id: "employment_month_form",
         class: "margin-bottom-4"
       ) do %>
     <%= t("#{input_scope}.error_body") %>
@@ -41,6 +42,7 @@
 
 <%= uswds_form_with(
       model: @activity_month,
+      id: "employment_month_form",
       url: activities_flow_income_employment_month_path(
         employment_id: @employment_activity,
         id: @month_index,
@@ -51,6 +53,7 @@
     ) do |f| %>
   <% unless unpaid %>
     <%= f.currency_field :gross_income,
+          required: true,
           label: t("activities.employment.hours_input.gross_income_label", month: month_label),
           label_class: "text-bold",
           hint: t("activities.employment.hours_input.gross_income_hint") %>

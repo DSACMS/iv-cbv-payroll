@@ -18,18 +18,6 @@
 <%# i18n-tasks-use t('activities.work_programs.hours_input.no_hours_checkbox') %>
 <%# i18n-tasks-use t('activities.work_programs.hours_input.hours_label') %>
 <%# i18n-tasks-use t('activities.work_programs.hours_input.continue') %>
-<%# i18n-tasks-use t('activities.education.hours_input.title') %>
-<%# i18n-tasks-use t('activities.education.hours_input.month_indicator') %>
-<%# i18n-tasks-use t('activities.education.hours_input.heading') %>
-<%# i18n-tasks-use t('activities.education.hours_input.error_heading') %>
-<%# i18n-tasks-use t('activities.education.hours_input.error_body') %>
-<%# i18n-tasks-use t('activities.education.hours_input.error_body_multi_month') %>
-<%# i18n-tasks-use t('activities.education.hours_input.field_error') %>
-<%# i18n-tasks-use t('activities.education.hours_input.no_hours_checkbox') %>
-<%# i18n-tasks-use t('activities.education.hours_input.hours_label') %>
-<%# i18n-tasks-use t('activities.education.hours_input.continue') %>
-<%# i18n-tasks-use t('activities.education.hours_input.description') %>
-<%# i18n-tasks-use t('activities.education.hours_input.description_multi_month') %>
 <% content_for :title, t("#{t_scope}.title") %>
 
 <% if months.length > 1 %>
@@ -51,7 +39,12 @@
 <% end %>
 
 <% if error %>
-  <%= render Uswds::Alert.new(type: :error, heading: t("#{t_scope}.error_heading"), class: "margin-bottom-4") do %>
+  <%= render Uswds::Alert.new(
+    type: :error,
+    heading: t("#{t_scope}.error_heading"),
+    form_id: "hours_input_form",
+    class: "margin-bottom-4"
+  ) do %>
     <% if months.length > 1 %>
       <%= t("#{t_scope}.error_body_multi_month") %>
     <% else %>
@@ -61,6 +54,7 @@
 <% end %>
 
 <%= uswds_form_with(model: activity_month,
+      id: "hours_input_form",
       url: form_url,
       method: :patch) do |f| %>
 

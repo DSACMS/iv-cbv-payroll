@@ -74,11 +74,13 @@ RSpec.describe "Employment-focused payment details copy", :js, type: :feature do
       end
     end
     ActivityFlow.last.reporting_months.each do |month|
-      within("table[aria-label='#{I18n.l(month, format: :month_year)}']") do
+      caption = I18n.l(month, format: :month_year)
+      table = page.find("caption", text: caption, exact_text: true, visible: :all).find(:xpath, "..")
+      within(table) do
         [ "Month", "Gross income", "Number of paychecks", "Hours worked" ].each do |label|
           expect(page).to have_text(label)
         end
-        expect(page).to have_text(I18n.l(month, format: :month_year))
+        expect(page).to have_text(caption)
       end
     end
     expect(page).to have_field("payroll_account[additional_information]")
