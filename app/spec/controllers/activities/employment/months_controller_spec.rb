@@ -571,6 +571,25 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         expect(rendered).to have_no_text(
           I18n.t("activities.employment.hours_input.unpaid_or_in_kind.error_body")
         )
+        expect(rendered).to have_css(
+          'form#employment_month_form[data-controller~="error-summary"]'
+        )
+        expect(rendered).to have_css(
+          '.usa-alert[data-error-summary-form-id-value="employment_month_form"]'
+        )
+
+        input = rendered.find(
+          'input[name="employment_activity_month[gross_income]"]'
+        )
+        expect(input["aria-invalid"]).to eq("true")
+        expect(input["aria-describedby"]).to include(
+          "employment_activity_month_gross_income_error",
+          "gross_income_hint"
+        )
+        expect(rendered).to have_css(
+          "#employment_activity_month_gross_income_error" \
+          '[data-error-label-id="employment_activity_month_gross_income_label"]'
+        )
       end
     end
 

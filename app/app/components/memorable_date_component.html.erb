@@ -1,7 +1,11 @@
 <div class="usa-form-group <%= "usa-form-group--error" if form.has_error?(attribute) %>">
-  <fieldset class="usa-fieldset" aria-describedby="<%= form.field_error(attribute) ? "#{attribute}_error" : "" %> <%= hint.present? ? "#{attribute}_hint" : "" %>">
-    <legend class="usa-legend"><%= legend %></legend>
-    <%= form.field_error(attribute) %>
+  <fieldset class="usa-fieldset"
+    <% if description_ids.any? %>
+      aria-describedby="<%= description_ids.join(" ") %>"
+    <% end %>
+  >
+    <legend id="<%= legend_id %>" class="usa-legend"><%= legend %></legend>
+    <%= form.field_error(attribute, label_id: legend_id) %>
     <% if hint.present? %>
       <div id="<%= "#{attribute}_hint" %>" class="usa-hint"><%= hint %></div>
     <% end %>
@@ -17,7 +21,8 @@
               },
               {
                 class: "usa-select",
-                id: "#{field_name}_#{attribute}_month"
+                id: "#{field_name}_#{attribute}_month",
+                aria: control_aria
               },
             ) %>
       </div>
@@ -30,7 +35,8 @@
               maxlength: 2,
               minlength: 1,
               id: "#{field_name}_#{attribute}_day",
-              autocomplete: "off"
+              autocomplete: "off",
+              aria: control_aria
             ) %>
       </div>
       <div class="usa-form-group usa-form-group--year">
@@ -42,7 +48,8 @@
               maxlength: 4,
               minlength: 4,
               id: "#{field_name}_#{attribute}_year",
-              autocomplete: "off"
+              autocomplete: "off",
+              aria: control_aria
             ) %>
       </div>
     </div>
