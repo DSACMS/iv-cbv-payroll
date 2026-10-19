@@ -26,4 +26,26 @@ class MemorableDateComponent < ViewComponent::Base
       day: raw_value.day
     }
   end
+
+  def error_id
+    "#{form.field_id(attribute)}_error"
+  end
+
+  def legend_id
+    "#{form.field_id(attribute)}_legend"
+  end
+
+  def description_ids
+    ids = []
+    ids << error_id if form.has_error?(attribute)
+    ids << "#{attribute}_hint" if hint.present?
+    ids
+  end
+
+  def control_aria
+    {
+      describedby: description_ids.presence&.join(" "),
+      invalid: (form.has_error?(attribute) ? "true" : nil)
+    }
+  end
 end

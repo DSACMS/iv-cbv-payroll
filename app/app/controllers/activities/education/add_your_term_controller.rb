@@ -27,6 +27,7 @@ class Activities::Education::AddYourTermController < Activities::BaseController
       error_type = (@invalid_dates.any? || @education_activity.errors.of_kind?(:self_attested_term_end, :invalid)) ? "dates" : "information"
       flash.now[:alert_heading] = t("activities.education.add_your_term.errors.#{error_type}_heading")
       flash.now[:alert] = t("activities.education.add_your_term.errors.#{error_type}_body")
+      flash.now[:alert_form_id] = "education-term-form"
       render :edit, status: :unprocessable_content
     end
   end
