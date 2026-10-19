@@ -268,7 +268,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       I18n.t(
         "activities.hub.empty_state_description",
         reporting_window: current_flow.reporting_window_display,
-        type: I18n.t("activities.hub.empty_state_type.#{current_flow.renewal_reporting_window? ? 'renewal' : 'application'}")
+        type: current_flow.renewal_reporting_window? ? 'renewal' : 'application'
       ).split("\n\n").each do |paragraph|
         expect(page_text).to include(paragraph)
       end

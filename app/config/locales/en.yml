@@ -529,9 +529,6 @@ en:
       empty_state_months_required_label: 'Months required:'
       empty_state_reporting_period_label: 'Reporting period:'
       empty_state_title: Build your community engagement report
-      empty_state_type:
-        application: application
-        renewal: renewal
       in_progress_state_description: "%{agency_name} will determine your eligibility based on the activities you add to your report."
       in_progress_state_title: Add more activities or continue to review and submit your report
       reporting_window: 'Reporting window: %{range}'
