@@ -39,7 +39,7 @@ See [COMMUNITY.md](./COMMUNITY.md)
 
 Nava describes the existing process here.
 
-(We describe an ideal future state we would like to get to in the future, and point to a specific section [CONTRIBUTING.md](http://CONTRIBUTING.md) or other doc here, e.g. [Release Format and Platform](https://github.com/DSACMS/iv-cbv-payroll/blob/main/CONTRIBUTING.md#writing-pull-requests))
+(We describe an ideal future state we would like to get to in the future, and point to a specific section [CONTRIBUTING.md](./CONTRIBUTING.md) or other doc here, e.g. [Release Format and Platform](https://github.com/DSACMS/iv-cbv-payroll/blob/main/CONTRIBUTING.md#writing-pull-requests))
 
 ### Release Format & Platform
 
@@ -47,7 +47,7 @@ Nava describes the existing process here.
 - A git tag will be made for each release, the tag will be the version string prefixed with a ‘v’ (i.e. ‘vX.Y.Z’)
 - Each git tag will also correspond to a github “release”: [https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases)
 - Pre-built docker images will be pushed to DockerHub for each release, tagged with the version string. Additionally, the ‘latest’ tag will be updated with each release and each major / minor versions will have tags corresponding to the most recent sub-version
-- Releases will update the [CHANGELOG.md](http://CHANGELOG.md) file to appropriately describe important updates
+- Releases will update the [CHANGELOG.md](./CHANGELOG.md) file to appropriately describe important updates
 
 ### Accessibility Standards
 
