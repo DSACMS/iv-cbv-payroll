@@ -422,18 +422,18 @@ en:
         unpaid_or_in_kind:
           additional_comments_description: Share any comments or additional information about your unpaid or in-kind work that you’d like %{agency_name} to know.
           description: Review the information you’ve added for %{employer_name} before adding it to your Community Engagement Report.
-          work_hours: Work hours
-          work_information: Work information
-          who_you_worked_for: Who you worked for
-          work_contact_name: Work contact name
-          work_contact_email: Work contact email
-          work_contact_phone: Work contact phone number
       title: Employment
       title_singular: Employment
-      unpaid_title: Unpaid work
       unpaid_or_in_kind:
         document_upload_suggestion_text_html: "<ul><li>Letter of employment or contract with role, responsibilities and key dates.</li><li>Proof of employment forms from a work supervisor or employer.</li><li>Invoices sent, if self-employed.</li></ul>"
         document_upload_suggestion_title: Suggested supporting documents
+        who_you_worked_for: Who you worked for
+        work_contact_email: Work contact email
+        work_contact_name: Work contact name
+        work_contact_phone: Work contact phone number
+        work_hours: Work hours
+        work_information: Work information
+      unpaid_title: Unpaid work
     employment_info:
       city: City
       contact_email: Employer contact email
@@ -464,7 +464,10 @@ en:
         contact_information_title: Work contact information
         contact_name: Contact name
         contact_phone_number: Contact phone number
-        description: "If you’ve done unpaid work, that can still count towards your community engagement requirements.\n\nPaid work, including in-kind work and income from self-employment, should not be re-entered here."
+        description: |-
+          If you’ve done unpaid work, that can still count towards your community engagement requirements.
+
+          Paid work, including in-kind work and income from self-employment, should not be re-entered here.
         employer_name: Who you worked for
         employer_name_error: Add who you worked for
         title: Tell us about the work you’ve done
@@ -512,13 +515,22 @@ en:
         education: No education added
         employment: No employment added
         work_programs: No work programs added
-      empty_state_description: "Add unpaid work, education, community service, or work program activities you've done between %{reporting_window}.\n\nEmployment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}."
-      empty_state_description_single_month: "Add unpaid work, education, community service, or work program activities you've done in %{reporting_window}.\n\nEmployment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}."
+      empty_state_description: |-
+        Add unpaid work, education, community service, or work program activities you've done between %{reporting_window}.
+
+        Employment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}.
+      empty_state_description_single_month: |-
+        Add unpaid work, education, community service, or work program activities you've done in %{reporting_window}.
+
+        Employment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}.
       empty_state_months_required_all: all %{required_month_count} months in the reporting period
       empty_state_months_required_any: any %{required_month_count} months in the reporting period
       empty_state_months_required_label: 'Months required:'
       empty_state_reporting_period_label: 'Reporting period:'
       empty_state_title: Build your community engagement report
+      empty_state_type:
+        application: application
+        renewal: renewal
       in_progress_state_description: "%{agency_name} will determine your eligibility based on the activities you add to your report."
       in_progress_state_title: Add more activities or continue to review and submit your report
       reporting_window: 'Reporting window: %{range}'

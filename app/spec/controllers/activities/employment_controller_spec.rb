@@ -615,7 +615,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         expect(rendered).to have_text(
           I18n.t("activities.employment.review.unpaid_or_in_kind.description", employer_name: employment_activity.employer_name)
         )
-        expect(rendered).to have_selector("h2", text: I18n.t("activities.employment.review.unpaid_or_in_kind.work_hours"))
+        expect(rendered).to have_selector("h2", text: I18n.t("activities.employment.unpaid_or_in_kind.work_hours"))
         expect(rows.length).to eq(2)
         expect(rows[0]).to have_text(I18n.l(first_month, format: :month_year))
         expect(rows[0]).to have_selector("td[data-label='#{hours_label}']", text: ApplicationHelper.format_decimal_amount(25))

@@ -57,9 +57,14 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
     expect(page).to have_no_selector('input[type="checkbox"]')
 
     click_button I18n.t("activities.employment.hours_input.continue")
-    error = I18n.t("activities.employment.hours_input.unpaid_or_in_kind.error_body")
+    error = ActionView::Base.full_sanitizer.sanitize(
+      I18n.t(
+        "activities.employment.hours_input.unpaid_or_in_kind.error_body_html",
+        month_selection_url: edit_activities_flow_income_employment_month_selection_path(employment_id: activity)
+      )
+    )
     expect(page).to have_selector(".usa-alert--error", text: error)
-    expect(page).to have_selector(".usa-error-message", text: error)
+    expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error"))
 
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(first_month, format: :month)), with: "12"
     click_button I18n.t("activities.employment.hours_input.continue")
@@ -86,7 +91,7 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
     click_button I18n.t("activities.document_uploads.new.continue")
 
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Example work"))
-    expect(page).to have_selector("h2", text: I18n.t("activities.employment.review.unpaid_or_in_kind.work_hours"))
+    expect(page).to have_selector("h2", text: I18n.t("activities.employment.unpaid_or_in_kind.work_hours"))
     expect(page).to have_text(I18n.l(first_month, format: :month_year))
     expect(page).to have_text(I18n.l(third_month, format: :month_year))
     expect(page).to have_no_text(I18n.t("activities.employment.review.gross_income"))

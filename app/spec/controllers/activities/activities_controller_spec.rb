@@ -235,12 +235,13 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(page_text).to include(I18n.t("activities.hub.empty_state_title"))
       expect(page_text).to include(I18n.t("activities.hub.empty_state_reporting_period_label"))
       expect(page_text).to include(current_flow.reporting_window_display)
-      expect(page_text).to include(
-        I18n.t(
-          "activities.hub.empty_state_description",
-          reporting_window: current_flow.reporting_window_display
-        )
-      )
+      I18n.t(
+        "activities.hub.empty_state_description",
+        reporting_window: current_flow.reporting_window_display,
+        type: I18n.t("activities.hub.empty_state_type.#{current_flow.renewal_reporting_window? ? 'renewal' : 'application'}")
+      ).split("\n\n").each do |paragraph|
+        expect(page_text).to include(paragraph)
+      end
     end
 
     context "with a single-month reporting window" do
@@ -260,12 +261,13 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
         expect(page_text).to include(I18n.t("activities.hub.empty_state_reporting_period_label"))
         expect(page_text).to include(reporting_month)
-        expect(page_text).to include(
-          I18n.t(
-            "activities.hub.empty_state_description_single_month",
-            reporting_window: reporting_month
-          )
-        )
+        I18n.t(
+          "activities.hub.empty_state_description_single_month",
+          reporting_window: reporting_month,
+          type: current_flow.renewal_reporting_window? ? "renewal" : "application"
+        ).split("\n\n").each do |paragraph|
+          expect(page_text).to include(paragraph)
+        end
       end
     end
 
