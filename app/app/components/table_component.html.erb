@@ -1,4 +1,10 @@
 <%= tag.table(**@attributes.merge(class: @class_names)) do %>
+  <% if @caption.present? %>
+    <caption class="font-sans-3xs font-bold text-left padding-1"><%= @caption %></caption>
+  <% end %>
+  <% if header.present? %>
+    <colgroup span="<%= header.colspan %>"></colgroup>
+  <% end %>
   <thead>
     <% if header.present? %>
       <tr>

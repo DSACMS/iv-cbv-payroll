@@ -6,7 +6,7 @@ RSpec.describe TableComponent, type: :component do
   include ViewComponent::TestHelpers
 
   subject(:result) do
-    table = described_class.new(multi_column: multi_column, subdued_header: subdued_header, attributes: table_attributes)
+    table = described_class.new(multi_column: multi_column, subdued_header: subdued_header, attributes: table_attributes, caption: caption)
     rows.each do |row_data|
       table.with_row do |row|
         row.with_data_cell.with_content(row_data)
@@ -16,6 +16,7 @@ RSpec.describe TableComponent, type: :component do
   end
 
   let(:table_attributes) { {} }
+  let(:caption) { nil }
   let(:multi_column) { false }
   let(:subdued_header) { false }
   let(:rows) { [] }
@@ -36,6 +37,15 @@ RSpec.describe TableComponent, type: :component do
       expect(result.css("table")).to be_present
       expect(result.text).to include("Cell content")
       expect(result.css("table").first["class"]).to include(base_class)
+    end
+  end
+
+  context "when a caption is provided" do
+    let(:caption) { "Monthly income summary for Garden State Market" }
+    let(:rows) { [ "Cell content" ] }
+
+    it "renders a visible table caption" do
+      expect(result.css("table > caption").text).to eq(caption)
     end
   end
 

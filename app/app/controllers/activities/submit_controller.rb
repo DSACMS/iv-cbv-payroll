@@ -18,15 +18,21 @@ class Activities::SubmitController < Activities::BaseController
       caseworker: internal_environment? && params[:is_caseworker] == "true"
     )
 
-    render pdf: pdf_filename,
-      layout: "pdf",
+    html = render_to_string(
       template: "activities/submit/show",
-      margin: pdf_margins,
-      disposition: "inline"
+      formats: [ :pdf ],
+      layout: "layouts/pdf"
+    )
+    pdf = TaggedPdfRenderer.render(html, margin: pdf_margins)
+
+    send_data pdf,
+      filename: pdf_filename,
+      type: "application/pdf",
+      disposition: "attachment"
   end
 
   def pdf_filename
-    "HR1_Report_#{Time.zone.today.strftime("%Y-%m-%d")}"
+    "HR1_report_#{Time.zone.today.iso8601}.pdf"
   end
 
   def pdf_margins

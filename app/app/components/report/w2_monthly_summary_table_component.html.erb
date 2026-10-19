@@ -4,7 +4,10 @@
       <%= I18n.t("components.report.monthly_summary_table.monthly_summary") %>
     </h2>
   <% end %>
-  <%= render(TableComponent.new(multi_column: true)) do |table| %>
+  <%= render(TableComponent.new(
+    multi_column: true,
+    caption: @is_pdf ? I18n.t("components.report.monthly_summary_table.monthly_summary_table_caption", employer_name: employer_name.presence || I18n.t("shared.not_applicable")) : nil
+  )) do |table| %>
     <%= table.with_header_cell
            .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
     <%= table.with_header_cell

@@ -7,10 +7,10 @@
 
     <%= yield :head %>
 
-    <%= wicked_pdf_stylesheet_link_tag "application" %>
+    <%= pdf_stylesheet_tag "application" %>
   </head>
 
-  <body class="wkhtmltopdf">
+  <body>
     <div id="root">
       <main id="main-content">
         <section class="<%= content_for?(:pdf_section_class) ? yield(:pdf_section_class) : "grid-container usa-section" %>">

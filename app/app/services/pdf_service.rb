@@ -41,7 +41,7 @@ class PdfService
     end
 
     begin
-      pdf_content = WickedPdf.new.pdf_from_string(html_content)
+      pdf_content = TaggedPdfRenderer.render(html_content)
       Rails.logger.debug "PDF content generated. Size: #{pdf_content.bytesize} bytes"
 
       if pdf_content.nil? || pdf_content.empty?

@@ -6,11 +6,11 @@
   </span>
 
   <% if current_agency.present? %>
-    <span class="cbv-header__separator text-primary font-sans-md text-middle">|</span>
+    <span class="cbv-header__separator text-primary font-sans-md text-middle" aria-hidden="true">|</span>
 
     <% if current_agency&.logo_path.present? %>
       <div class="display-inline-block text-middle cbv-header__agency-logo--<%= current_agency.id %>">
-        <%= image_tag wicked_pdf_asset_base64(current_agency.logo_path) %>
+        <%= image_tag pdf_asset_data_uri(current_agency.logo_path), alt: agency_translation(".pdf.agency_header_name") %>
       </div>
     <% else %>
       <span class="text-middle font-sans-md"><%= agency_translation(".pdf.agency_header_name") %></span>
@@ -38,7 +38,7 @@
   <sup>1</sup><span><%= t(".pdf.caseworker.client_provided_information") %></span>
 <% end %>
 
-<%= render(TableComponent.new) do |table| %>
+<%= render(TableComponent.new(caption: t(".pdf.shared.client_information_table_caption"))) do |table| %>
   <%= table.with_header_cell(colspan: 2) do %>
     <%= t(".pdf.shared.client_information") %>
   <% end %>
@@ -47,12 +47,12 @@
     <% if @cbv_flow.cbv_applicant[item].present? %>
       <% if item == :date_of_birth %>
         <%= table.with_row do |row| %>
-          <% row.with_data_cell.with_content(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html")) %>
+          <% row.with_data_cell(is_header: true).with_content(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html")) %>
           <% row.with_data_cell.with_content(format_date(@cbv_flow.cbv_applicant[item])) %>
         <% end %>
       <% else %>
         <%= table.with_row do |row| %>
-          <% row.with_data_cell.with_content(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html")) %>
+          <% row.with_data_cell(is_header: true).with_content(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html")) %>
           <% row.with_data_cell.with_content(@cbv_flow.cbv_applicant[item]) %>
         <% end %>
       <% end %>
@@ -62,40 +62,40 @@
   <% if is_caseworker %>
     <% ClientAgency::CaseworkerReportSpecificFieldDecider.caseworker_specific_fields(@cbv_flow).each do |field_name, field_value| %>
       <%= table.with_row do |row| %>
-        <% row.with_data_cell.with_content(t(field_name)) %>
+        <% row.with_data_cell(is_header: true).with_content(t(field_name)) %>
         <% row.with_data_cell.with_content(field_value) %>
       <% end %>
     <% end %>
   <% end %>
   <% ClientAgency::CaseworkerReportSpecificFieldDecider.applicant_specific_fields(@cbv_flow).each do |field, value| %>
     <%= table.with_row do |row| %>
-      <% row.with_data_cell.with_content(t(field)) %>
+      <% row.with_data_cell(is_header: true).with_content(t(field)) %>
       <% row.with_data_cell.with_content(value) %>
     <% end %>
   <% end %>
 <% end %>
 
-<%= render(TableComponent.new) do |table| %>
+<%= render(TableComponent.new(caption: t(".pdf.shared.report_details_table_caption"))) do |table| %>
   <%= table.with_header_cell(colspan: 2) do %>
     <h3 class="margin-0"><%= t(".pdf.shared.report_details") %></h3>
   <% end %>
   <% if @cbv_flow.confirmation_code.present? %>
     <%= table.with_row do |row| %>
-      <% row.with_data_cell.with_content(t(".pdf.shared.confirmation_code")) %>
+      <% row.with_data_cell(is_header: true).with_content(t(".pdf.shared.confirmation_code")) %>
       <% row.with_data_cell.with_content(@cbv_flow.confirmation_code) %>
     <% end %>
   <% end %>
   <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t(".pdf.client.date_created")) %>
+    <% row.with_data_cell(is_header: true).with_content(t(".pdf.client.date_created")) %>
     <% row.with_data_cell.with_content(format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
   <% end %>
   <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t(".pdf.client.date_range")) %>
+    <% row.with_data_cell(is_header: true).with_content(t(".pdf.client.date_range")) %>
     <% row.with_data_cell.with_content("#{format_parsed_date(aggregator_report.from_date)} to #{format_parsed_date(aggregator_report.to_date)}") %>
   <% end %>
   <% if is_caseworker %>
     <%= table.with_row do |row| %>
-      <% row.with_data_cell.with_content(t(".pdf.caseworker.agreement_consent_timestamp")) %>
+      <% row.with_data_cell(is_header: true).with_content(t(".pdf.caseworker.agreement_consent_timestamp")) %>
       <% row.with_data_cell.with_content(@cbv_flow.consented_to_authorized_use_at) %>
     <% end %>
   <% end %>
@@ -115,7 +115,7 @@
   <% is_first_gig_job = is_gig_worker && ((first_gig_job_index ||= index) == index) %>
   <h3><%= t(".table_caption_no_name", number: index + 1) %>: <%= employer_name %></h3>
 
-  <%= render(TableComponent.new) do |table| %>
+  <%= render(TableComponent.new(caption: t(".pdf.shared.employment_information_table_caption", employer_name: employer_name.presence || t("shared.not_applicable")))) do |table| %>
     <%= table.with_header_cell(colspan: 2) do %>
       <h4 class="margin-0">
         <% if employer_name %>
@@ -145,7 +145,10 @@
     <%= render(Report::W2MonthlySummaryTableComponent.new(@aggregator_report, account_id, is_caseworker: is_caseworker, is_pdf: true, show_footnote: is_first_w2_job)) %>
     <h3><%= t(".pdf.shared.payments_and_deductions_header", employer_name: employer_name) %></h3>
     <% summary[:paystubs]&.each do |paystub| %>
-      <%= render(TableComponent.new(subdued_header: true)) do |table| %>
+      <%= render(TableComponent.new(
+        subdued_header: true,
+        caption: t(".pdf.shared.paystub_table_caption", employer_name: employer_name.presence || t("shared.not_applicable"), pay_date: format_parsed_date(paystub.pay_date))
+      )) do |table| %>
         <%= table.with_header_cell
               .with_content(t(".pdf.shared.pay_information")) %>
         <%= table.with_header_cell
@@ -173,7 +176,7 @@
       <% end %>
     <% end %>
     <% if summary[:paystubs]&.empty? %>
-      <%= render(TableComponent.new) do |table| %>
+      <%= render(TableComponent.new(caption: t(".pdf.shared.no_payments_table_caption", employer_name: employer_name.presence || t("shared.not_applicable")))) do |table| %>
         <%= table.with_header do %>
           <h4 class="margin-0">
             <% if employer_name %>

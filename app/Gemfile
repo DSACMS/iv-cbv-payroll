@@ -76,7 +76,8 @@ gem "mission_control-jobs"
 
 gem "faraday", "~> 2.14.4"
 
-gem "wicked_pdf"
+gem "grover", "~> 1.2"
+gem "hexapdf", "~> 1.8"
 gem "actioncable-enhanced-postgresql-adapter"
 gem "aws-sdk-rails"
 gem "aws-sdk-s3"
@@ -143,7 +144,6 @@ gem "devise", "~> 5.0"
 
 gem "view_component"
 gem "lookbook"
-gem "wkhtmltopdf-binary"
 
 gem "net-sftp"
 gem "net-ssh"

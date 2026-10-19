@@ -528,6 +528,10 @@ en:
         address: Address
         agreement_consent_timestamp: Agreement consent timestamp
         client_and_report_information: 'Client and report information: %{client_name}'
+        client_information_table_caption: 'Client and report information for %{client_name}'
+        activity_summary_table_caption: 'Summary for %{title}'
+        activity_details_table_caption: 'Details for %{title}'
+        payments_table_caption: 'Payment details for %{employer_name}, payment %{number}'
         community_service_details: Community service
         community_service_summary: Community service summary
         confirmation_code: Confirmation code
@@ -1044,12 +1048,17 @@ en:
             additional_jobs_to_report: Reporting any income from work separately?
             additional_jobs_to_report_html: Reporting any income from work separately?<sup>1</sup>
             client_information: Client information
+            client_information_table_caption: Client information
             confirmation_code: Confirmation code
             details: Details
             employment_information: Employment information
+            employment_information_table_caption: Employment information for %{employer_name}
             pay_information: Pay information
+            paystub_table_caption: 'Paystub details for %{employer_name}, paid %{pay_date}'
+            no_payments_table_caption: 'Payment status for %{employer_name}'
             payments_and_deductions_header: Payments and deductions from %{employer_name}
             report_details: Report details
+            report_details_table_caption: Income report details
         share_report_button: Share my report with %{agency_acronym}
         table_caption_no_name: Employer %{number}
         warning_1: Your income report will be sent to %{agency_acronym}.
@@ -1142,6 +1151,7 @@ en:
         dollars_times_miles: "(%{dollar_amount} x %{number_of_miles} miles)"
         month: Month
         monthly_summary: Monthly summary
+        monthly_summary_table_caption: Monthly summary for %{employer_name}
         partial_month_text: "(Partial month: from %{start_date}-%{end_date})"
         partial_month_text_simple: "(Partial month)"
         payments_from_header: Payments from %{employer_name}

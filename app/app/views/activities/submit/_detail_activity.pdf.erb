@@ -10,7 +10,7 @@
   </h3>
 
   <% if comments.present? %>
-    <div class="usa-summary-box font-sans-3xs margin-y-2">
+    <div class="usa-summary-box activity-report__comments font-sans-3xs margin-y-2">
       <div class="usa-summary-box__body">
         <h4 class="usa-summary-box__heading font-sans-3xs line-height-sans-5">
           <%= t("activities.submit.pdf.activity_comments") %>
@@ -24,6 +24,7 @@
 
   <% if details.any? %>
     <%= render(TableComponent.new(
+      caption: t("activities.submit.pdf.activity_details_table_caption", title: title),
       class_names: "activity-report__table font-sans-3xs margin-0 margin-top-2 maxw-none"
     )) do |table| %>
       <%= table.with_header_cell(scope: "col").with_content(information_heading) %>

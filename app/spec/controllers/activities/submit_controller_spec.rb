@@ -61,6 +61,13 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(response.headers["Expires"]).to eq("#{1.year.ago}")
     end
 
+    it "downloads the PDF using the dated HR1 report filename" do
+      get :show, format: :pdf
+
+      expect(response.headers["Content-Disposition"]).to start_with("attachment;")
+      expect(response.headers["Content-Disposition"]).to include("HR1_report_2025-12-01.pdf")
+    end
+
     it "renders the submitted activity summaries and details from the approved design" do
       activity_flow.update!(completed_at: frozen_time, confirmation_code: test_confirmation_code)
       employment = create(

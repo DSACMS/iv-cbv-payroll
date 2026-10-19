@@ -46,7 +46,9 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
   it "renders the existing CE report as a PDF" do
     allow(transmitter).to receive(:pdf_content).and_call_original
     expect(destination_s3_service).to receive(:upload_directory) do |directory, _prefix|
-      expect(File.binread(File.join(directory, report_file_name))).to start_with("%PDF")
+      pdf = File.binread(File.join(directory, report_file_name))
+      expect(pdf).to start_with("%PDF")
+      expect(pdf).to include("/StructTreeRoot", "/MarkInfo", "/Lang", "/Title")
     end
 
     transmitter.deliver

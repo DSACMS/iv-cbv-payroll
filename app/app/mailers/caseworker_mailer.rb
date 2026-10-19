@@ -31,9 +31,16 @@ class CaseworkerMailer < ApplicationMailer
   def generate_pdf
     I18n.with_locale(:en) do
       # caseworkers should receive the report in English
-      WickedPdf.new.pdf_from_string(
-        render_to_string(template: "cbv/submits/show", layout: "pdf", formats: [ :pdf ], locals: { is_caseworker: true, aggregator_report: @aggregator_report }),
-        footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 }
+      html = render_to_string(
+        template: "cbv/submits/show",
+        layout: "layouts/pdf",
+        formats: [ :pdf ],
+        locals: { is_caseworker: true, aggregator_report: @aggregator_report }
+      )
+      TaggedPdfRenderer.render(
+        html,
+        margin: { bottom: 12 },
+        footer: { text: "Income Verification Report", font_size: 10 }
       )
     end
   end

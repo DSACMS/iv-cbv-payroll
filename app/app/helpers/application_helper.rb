@@ -1,4 +1,10 @@
+require "base64"
+require "uri"
+
 module ApplicationHelper
+  PDF_CSS_ASSET_URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/
+  PDF_EXTERNAL_ASSET_URL_REGEX = %r{\A(?:[a-z][a-z0-9+.-]*:|//)}i
+
   US_STATES_AND_TERRITORIES = [
     [ "Alabama", "AL" ], [ "Alaska", "AK" ], [ "Arizona", "AZ" ], [ "Arkansas", "AR" ],
     [ "California", "CA" ], [ "Colorado", "CO" ], [ "Connecticut", "CT" ], [ "Delaware", "DE" ],
@@ -41,6 +47,65 @@ module ApplicationHelper
 
   def uswds_icon_image_path(icon_name)
     asset_path("@uswds/uswds/dist/img/usa-icons/#{icon_name}.svg")
+  end
+
+  def pdf_asset_data_uri(source)
+    asset_pathname = pdf_asset_pathname(source)
+    content_type = Rack::Mime.mime_type(File.extname(asset_pathname))
+    encoded_asset = Base64.strict_encode64(File.binread(asset_pathname))
+    "data:#{content_type};base64,#{encoded_asset}"
+  end
+
+  def pdf_stylesheet_tag(*sources)
+    styles = sources.map do |source|
+      source = "#{source}.css" unless source.end_with?(".css")
+      stylesheet = pdf_asset_content(source).gsub(PDF_CSS_ASSET_URL_REGEX) do
+        asset_url = Regexp.last_match(1)
+        if asset_url.empty? || asset_url.match?(PDF_EXTERNAL_ASSET_URL_REGEX)
+          "url(#{asset_url})"
+        else
+          "url(#{pdf_asset_file_uri(asset_url)})"
+        end
+      end
+      content_tag(:style, stylesheet.html_safe, type: "text/css")
+    end
+
+    safe_join(styles, "\n")
+  end
+
+  def pdf_asset_content(source)
+    asset = Rails.application.assets&.find_asset(source)
+    return asset.to_s if asset
+
+    File.binread(pdf_asset_pathname(source))
+  end
+
+  def pdf_asset_file_uri(source)
+    return source if source.match?(PDF_EXTERNAL_ASSET_URL_REGEX)
+
+    URI::File.build(path: pdf_asset_pathname(source)).to_s
+  end
+
+  def pdf_asset_pathname(source)
+    asset_url = source.start_with?("/assets/") ? source : asset_path(source)
+    public_path = Rails.public_path.join(URI.parse(asset_url).path.delete_prefix("/"))
+    return public_path.to_s if public_path.file?
+
+    logical_source = pdf_asset_logical_source(asset_url)
+    asset = Rails.application.assets&.find_asset(logical_source)
+    if asset&.respond_to?(:filename) && File.file?(asset.filename)
+      return asset.filename.to_s
+    end
+
+    raise "PDF asset '#{source}' was not found or precompiled"
+  end
+
+  def pdf_asset_logical_source(asset_url)
+    compiled_path = URI.parse(asset_url).path.delete_prefix("/assets/")
+    manifest_assets = Rails.application.assets_manifest&.assets || {}
+    manifest_source = manifest_assets.find { |_source, compiled| compiled == compiled_path }&.first
+
+    manifest_source || compiled_path.sub(/-[a-f0-9]{64}(?=\.[^.]+\z)/i, "")
   end
 
   # Render a translation that is specific to the current client agency. Define

@@ -45,6 +45,12 @@
     </h2>
 
     <table class="activity-report__report-information activity-report__table width-full">
+      <caption class="font-sans-3xs font-bold text-left padding-1">
+        <%= t(
+          "activities.submit.pdf.client_information_table_caption",
+          client_name: @report.client_name.presence || not_provided
+        ) %>
+      </caption>
       <tbody>
         <tr>
           <th scope="row">

@@ -68,6 +68,9 @@ RSpec.describe CaseworkerMailer, type: :mailer do
     it 'attaches a PDF which has a file name prefix of {case_number}_timestamp_' do
       expect(mail.attachments.any? { |attachment| attachment.filename =~ /\A#{cbv_flow.cbv_applicant.case_number}_\d{14}_income_verification\.pdf\z/ }).to be true
       expect(mail.attachments.first.content_type).to start_with('application/pdf')
+
+      pdf = mail.attachments.first.body.decoded
+      expect(pdf).to include("/StructTreeRoot", "/MarkInfo", "/Lang", "/Title")
     end
   end
 end

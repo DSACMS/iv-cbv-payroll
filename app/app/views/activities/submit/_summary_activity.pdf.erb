@@ -11,10 +11,18 @@
 
   <%= render(TableComponent.new(
     multi_column: columns.length > 2,
+    caption: t("activities.submit.pdf.activity_summary_table_caption", title: title),
     class_names: "activity-report__table border-top-0 font-sans-3xs margin-0 maxw-none"
   )) do |table| %>
+    <% community_hours_headers = %w[
+      activities.summary.employment.community_engagement_hours
+      activities.summary.education.community_engagement_hours
+      activities.summary.community_service.community_engagement_hours
+      activities.summary.job_training.community_engagement_hours
+    ].map { |key| t(key) } %>
     <% columns.each do |column| %>
-      <%= table.with_header_cell(scope: "col").with_content(column) %>
+      <% header_content = community_hours_headers.include?(column) ? content_tag(:span, column, class: "activity-report__no-wrap-header") : column %>
+      <%= table.with_header_cell(scope: "col").with_content(header_content) %>
     <% end %>
 
     <% rows.each do |cells| %>

@@ -12,11 +12,19 @@
   }
 }
 
-.activity-report__activity {
-  page-break-inside: avoid;
-}
-
 .activity-report__table {
   table-layout: fixed;
   word-break: break-word;
+}
+
+@media print {
+  .activity-report__comments {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+.activity-report__no-wrap-header {
+  white-space: nowrap;
+  word-break: normal;
 }

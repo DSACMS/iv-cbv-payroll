@@ -11,9 +11,9 @@
 #      * Remove manual security upgrades (if any)
 # 4. Ensure that docker build pasess:
 #      > make release-build OPTS="--tag iv-cbv-payroll:latest"
-# 5. Ensure that `wkhtmltopdf` runs:
-#      > docker run iv-cbv-payroll:latest bundle exec wkhtmltopdf --version
 ARG RUBY_VERSION=3.4.9
+
+FROM node:24.11.1-slim AS node
 
 
 ##########################################################################################
@@ -41,6 +41,7 @@ RUN apt-get update -qq && \
       libc-bin libc-dev-bin libc6 libc6-dev \
       # CVE-2025-68431 CVE-2026-32740 CVE-2026-32882 CVE-2026-47178 \
       libheif1 \
+        chromium \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -136,12 +137,14 @@ RUN apt-get update -qq && \
 
 # Rails app lives here
 WORKDIR /rails
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
 
 # Set production environment
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLER_VERSION='2.4'
+    BUNDLER_VERSION='2.4' \
+    CHROME_BIN="/usr/bin/chromium"
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
@@ -274,11 +277,6 @@ COPY --from=release-build /rails /rails
 # Clean up any unused gems and ensure we have the correct versions
 RUN bundle clean --force && \
     bundle install --no-cache
-
-# Pre-decompress the wkhtmltopdf binary so it doesn't need to happen at runtime
-# Prevents sporadic 500s on report generation, similar to known issue documented here:
-# https://github.com/zakird/wkhtmltopdf_binary_gem/issues/57
-RUN bundle exec wkhtmltopdf --version
 
 # Ensure all necessary directories exist
 RUN mkdir -p /rails/tmp/pids /rails/log /rails/db

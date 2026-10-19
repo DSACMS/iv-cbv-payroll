@@ -6,7 +6,7 @@ class TableCellComponent < ViewComponent::Base
     @is_header = is_header
     @colspan = colspan
     @data_label = data_label
-    @scope = scope
+    @scope = scope || ("row" if is_header)
     @attributes = attributes
   end
 
