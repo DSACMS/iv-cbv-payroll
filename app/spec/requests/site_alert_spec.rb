@@ -69,11 +69,27 @@ RSpec.describe "Site Alert Banner", type: :request do
     end
   end
 
-  context "with the whitespace-only SSM value" do
+  context "with a whitespace-only value" do
     let(:enabled_alerts) { " " }
 
     it "does not display the banner" do
       expect(response.body).not_to include(en_title, "usa-alert")
+    end
+  end
+
+  context "with the none sentinel" do
+    let(:enabled_alerts) { "none" }
+
+    it "does not display the banner" do
+      expect(response.body).not_to include(en_title, "usa-alert")
+    end
+  end
+
+  context "with mixed-case none entries alongside an enabled alert" do
+    let(:enabled_alerts) { " None, site_alert, NONE " }
+
+    it "displays the enabled banner" do
+      expect(response.body).to include(en_title, en_body)
     end
   end
 

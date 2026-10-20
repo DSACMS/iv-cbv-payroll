@@ -219,7 +219,8 @@ class ApplicationController < ActionController::Base
   end
 
   def alert_enabled?(type)
-    ENV.fetch("ENABLED_ALERTS", "").split(",").map(&:strip).include?(type.to_s)
+    ENV.fetch("ENABLED_ALERTS", "none").split(",").map(&:strip)
+      .reject { |alert| alert.casecmp?("none") }.include?(type.to_s)
   end
 
   def get_site_alert_title

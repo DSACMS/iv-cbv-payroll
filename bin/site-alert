@@ -142,9 +142,16 @@ read_enabled_alerts() {
   # A missing parameter returns None; authorization/network errors still abort.
   value="$(aws ssm get-parameters --no-cli-pager --region "${region}" \
     --names "$(parameter_name ENABLED_ALERTS)" --query 'Parameters[0].Value' --output text)" || return
-  if [[ "${value}" != "None" ]]; then
-    printf '%s' "${value}"
-  fi
+  printf '%s' "${value}" | awk '
+    BEGIN { RS = ","; separator = "" }
+    {
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "")
+      if ($0 != "" && tolower($0) != "none") {
+        printf "%s%s", separator, $0
+        separator = ","
+      }
+    }
+  '
 }
 
 other_enabled_alerts() {
@@ -153,7 +160,7 @@ other_enabled_alerts() {
     BEGIN { RS = ","; separator = "" }
     {
       gsub(/^[[:space:]]+|[[:space:]]+$/, "")
-      if ($0 != "" && $0 != target) {
+      if ($0 != "" && tolower($0) != "none" && $0 != target) {
         printf "%s%s", separator, $0
         separator = ","
       }
@@ -162,8 +169,8 @@ other_enabled_alerts() {
 }
 
 write_enabled_alerts() {
-  # SSM rejects empty strings. Rails ignores this whitespace-only value.
-  put_parameter ENABLED_ALERTS "${1:- }"
+  # SSM rejects empty strings. Use the explicit no-alert sentinel.
+  put_parameter ENABLED_ALERTS "${1:-none}"
 }
 
 terraform_checkpoint() {
@@ -223,8 +230,10 @@ enable_alert() {
   check_aws_credentials
   current_alerts="$(read_enabled_alerts)"
   other_alerts="$(other_enabled_alerts "${current_alerts}")"
-  # Disable this alert first so a partial update cannot display mixed copy.
-  write_enabled_alerts "${other_alerts}"
+  # Temporarily remove this alert before updating copy, unless none are active.
+  if [[ -n "${current_alerts}" ]]; then
+    write_enabled_alerts "${other_alerts}"
+  fi
   put_parameter SITE_ALERT_TITLE_EN "${title_en}"
   put_parameter SITE_ALERT_BODY_EN "${body_en}"
   put_parameter SITE_ALERT_TITLE_ES "${title_es}"
