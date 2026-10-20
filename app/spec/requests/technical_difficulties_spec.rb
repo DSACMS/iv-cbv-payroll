@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe "Technical difficulties outage", type: :request do
   let(:alerts) { "technical_difficulties" }
-  let(:maintenance) { nil }
   let(:website) { "https://agency.example.test/report" }
   let(:locale) { :en }
   let(:heading) { I18n.t("maintenance.technical_difficulties.header", locale: locale) }
@@ -17,9 +16,7 @@ RSpec.describe "Technical difficulties outage", type: :request do
   let(:rendered) { Capybara.string(response.body) }
 
   around do |example|
-    stub_environment_variable("ENABLED_ALERTS", alerts) do
-      stub_environment_variable("MAINTENANCE_MODE", maintenance, &example)
-    end
+    stub_environment_variable("ENABLED_ALERTS", alerts, &example)
   end
 
   before do
@@ -166,8 +163,8 @@ RSpec.describe "Technical difficulties outage", type: :request do
     end
   end
 
-  context "when legacy maintenance is also enabled" do
-    let(:maintenance) { "true" }
+  context "when maintenance is also enabled" do
+    let(:alerts) { "maintenance,technical_difficulties" }
 
     it "gives maintenance precedence on ordinary routes" do
       get "/help"
@@ -192,9 +189,27 @@ RSpec.describe "Technical difficulties outage", type: :request do
     end
   end
 
-  context "when only legacy maintenance is enabled" do
-    let(:alerts) { "none" }
-    let(:maintenance) { "true" }
+  context "when maintenance is disabled after an outage" do
+    let(:alerts) { "maintenance,technical_difficulties" }
+
+    before do
+      get "/help"
+      follow_redirect!
+    end
+
+    it "returns to technical difficulties using the requested agency" do
+      stub_environment_variable("ENABLED_ALERTS", "technical_difficulties") do
+        get "/help", params: { client_agency_id: "la_ldh" }
+        expect(response).to redirect_to(outage_path)
+        follow_redirect!
+        expect(rendered).to have_selector("h1", text: heading)
+        expect(rendered).to have_link("Visit LDH's website", href: website)
+      end
+    end
+  end
+
+  context "when only maintenance is enabled" do
+    let(:alerts) { "maintenance" }
 
     it "preserves the maintenance page" do
       get "/help"
