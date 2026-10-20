@@ -6,8 +6,8 @@ class ApplicationController < ActionController::Base
   helper :view
   helper_method :alert_enabled?, :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?, :nsc_disabled?, :show_activity_reporting_banner?
   around_action :switch_locale
-  before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :set_device_id_cookie
-  after_action :apply_iframe_embedding
+  before_action :redirect_if_maintenance_mode, :add_newrelic_metadata, :set_device_id_cookie
+  after_action :apply_iframe_embedding, :remember_outage_agency
 
   rescue_from ActionController::InvalidAuthenticityToken do
     redirect_to root_url, flash: { slim_alert: { type: "info", message_html: t("cbv.error_missing_token_html") } }
@@ -165,6 +165,10 @@ class ApplicationController < ActionController::Base
   end
 
   def set_flow_session(flow_id, type)
+    if session[:flow_id] != flow_id || session[:flow_type].to_s != type.to_s
+      session.delete(:outage_agency_id)
+    end
+    @flow_session_ended = flow_id.nil?
     session[:flow_id] = flow_id
     session[:flow_type] = type
   end
@@ -215,7 +219,35 @@ class ApplicationController < ActionController::Base
   def redirect_if_maintenance_mode
     if ENV["MAINTENANCE_MODE"] == "true"
       redirect_to maintenance_path
+    elsif alert_enabled?(:technical_difficulties)
+      agency = outage_agency
+      session[:outage_agency_id] = agency&.id
+      redirect_to technical_difficulties_path(
+        client_agency_id: agency&.id,
+        reporting_flow: outage_reporting_flow,
+        locale: I18n.locale
+      )
     end
+  end
+
+  def outage_reporting_flow
+    return "activity" if controller_path.start_with?("activities/")
+    return "income" if controller_path.start_with?("cbv/")
+
+    activity_flow? ? "activity" : "income"
+  end
+
+  def outage_agency
+    # A supplied agency or hostname takes precedence over previous session context.
+    return current_agency if params[:client_agency_id].present? || params[:token].present? || current_agency.present?
+
+    agency_config[session[:outage_agency_id]]
+  end
+
+  def remember_outage_agency
+    return if @flow_session_ended || ENV["MAINTENANCE_MODE"] == "true" || alert_enabled?(:technical_difficulties)
+
+    session[:outage_agency_id] = current_agency&.id
   end
 
   def alert_enabled?(type)
