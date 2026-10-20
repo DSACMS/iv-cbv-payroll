@@ -12,6 +12,7 @@ class DataRetentionService
 
   def redact_all!
     redact_invitations
+    redact_activity_invitations
     redact_incomplete_cbv_flows
     redact_complete_cbv_flows
     # Run before flow redaction updates ActivityFlow#updated_at.
@@ -78,12 +79,24 @@ class DataRetentionService
       end
   end
 
-  # CE invitations do not currently expire. Retain invitations and their
-  # incomplete flows until an invitation expiration policy is defined.
+  def redact_activity_invitations
+    ActivityFlowInvitation.unredacted
+      .where("expires_at < ?", REDACT_UNUSED_INVITATIONS_AFTER.ago)
+      .find_each { |invitation| redact_activity_invitation(invitation) }
+  end
+
   def redact_incomplete_activity_flows
-    ActivityFlow.incomplete.unredacted.where(activity_flow_invitation_id: nil)
-      .where("updated_at < ?", REDACT_UNUSED_INVITATIONS_AFTER.ago)
-      .find_each { |flow| redact_activity_flow(flow) }
+    ActivityFlow.incomplete.unredacted.includes(:activity_flow_invitation).find_each do |flow|
+      invitation = flow.activity_flow_invitation
+      # Legacy invitations without expires_at have no retention deadline yet.
+      retention_start = invitation ? invitation.expires_at : flow.updated_at
+      next unless retention_start && Time.current.after?(retention_start + REDACT_UNUSED_INVITATIONS_AFTER)
+
+      flow.transaction do
+        redact_activity_invitation(invitation) if invitation
+        redact_activity_flow(flow)
+      end
+    end
   end
 
   def redact_complete_activity_flows
@@ -252,7 +265,7 @@ class DataRetentionService
     return if applicant.cbv_flow_invitations.unredacted.where("expires_at >= ?", Time.current).exists?
     return if applicant.cbv_flows.unredacted.exists?
     return if applicant.activity_flows.unredacted.exists?
-    return if ActivityFlowInvitation.where(cbv_applicant: applicant).unredacted.exists?
+    return if ActivityFlowInvitation.where(cbv_applicant: applicant).unredacted.where("expires_at >= ?", Time.current).exists?
 
     applicant.redact!
   end

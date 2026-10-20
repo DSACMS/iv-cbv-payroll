@@ -80,16 +80,137 @@ RSpec.describe DataRetentionService do
     end
 
     context "with an invitation" do
-      let(:invitation) { create(:activity_flow_invitation, created_at: 1.year.ago, updated_at: 1.year.ago) }
+      let(:invitation) { create(:activity_flow_invitation, expires_at: 8.days.ago) }
       let!(:member) { create(:household_member, activity_flow_invitation: invitation) }
 
-      it "retains invitation-linked flows until an invitation expiration policy exists" do
+      it "redacts the invitation, flow, and related records after the expiration grace period" do
         service.redact_all!
 
-        expect(flow.reload.redacted_at).to be_nil
-        expect(invitation.reload.redacted_at).to be_nil
-        expect(member.reload.redacted_at).to be_nil
-        expect(member.household.reload.redacted_at).to be_nil
+        expect_redacted(flow)
+        expect_redacted(invitation)
+        expect_redacted(member)
+        expect_redacted(member.household)
+        expect_redacted(flow.identity)
+        expect_redacted(flow.cbv_applicant)
+        expect_redacted(education)
+        expect_redacted(employment)
+        expect_redacted(training)
+        expect_redacted(volunteering)
+        expect_redacted(term)
+        expect_redacted(month)
+      end
+
+      context "before the expiration grace period ends" do
+        before do
+          invitation.update!(expires_at: 7.days.ago + 1.minute)
+          flow.update_columns(updated_at: 1.year.ago)
+        end
+
+        it "preserves the flow regardless of its inactivity" do
+          expect { service.redact_all! }
+            .not_to change { [ flow, flow.identity, education, employment, training, volunteering, term, month, invitation, member, member.household ].map { |record| record.reload.attributes } }
+        end
+      end
+
+      context "at the expiration threshold" do
+        before { invitation.update!(expires_at: 7.days.ago) }
+
+        it "waits until the threshold has passed" do
+          expect { service.redact_all! }
+            .not_to change { [ flow, invitation, member, member.household ].map { |record| record.reload.attributes } }
+        end
+      end
+
+      context "when the flow was recently updated" do
+        before { flow.update_columns(updated_at: now) }
+
+        it "uses the invitation deadline rather than flow inactivity" do
+          service.redact_incomplete_activity_flows
+
+          expect_redacted(flow)
+          expect_redacted(invitation)
+          expect_redacted(member)
+          expect_redacted(member.household)
+        end
+      end
+
+      context "when the invitation is already redacted" do
+        before { invitation.redact! }
+
+        it "still redacts the incomplete flow and its household records" do
+          service.redact_incomplete_activity_flows
+
+          expect_redacted(flow)
+          expect_redacted(member)
+          expect_redacted(member.household)
+        end
+      end
+
+      context "when the invitation has no expiration" do
+        before { invitation.update_columns(expires_at: nil) }
+
+        it "preserves records without a known retention deadline" do
+          expect { service.redact_all! }
+            .not_to change { [ flow, invitation, member, member.household ].map { |record| record.reload.attributes } }
+        end
+      end
+
+      context "when multiple incomplete flows share the invitation and identity" do
+        let!(:other_flow) do
+          create(:activity_flow, activity_flow_invitation: invitation,
+            cbv_applicant: flow.cbv_applicant, identity: flow.identity,
+            volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+        end
+
+        it "redacts every flow before scrubbing the shared records" do
+          service.redact_incomplete_activity_flows
+
+          expect_redacted(flow)
+          expect_redacted(other_flow)
+          expect_redacted(flow.identity)
+          expect_redacted(flow.cbv_applicant)
+          expect_redacted(member)
+          expect_redacted(member.household)
+        end
+      end
+
+      context "when a submitted flow shares the invitation and identity" do
+        let!(:submitted_flow) do
+          create(:activity_flow, activity_flow_invitation: invitation,
+            cbv_applicant: flow.cbv_applicant, identity: flow.identity, completed_at: 1.day.ago,
+            volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+        end
+
+        it "preserves shared records until the submitted flow is eligible" do
+          service.redact_all!
+
+          expect_redacted(flow)
+          expect_redacted(invitation)
+          expect(submitted_flow.reload.redacted_at).to be_nil
+          expect(flow.identity.reload.redacted_at).to be_nil
+          expect(flow.cbv_applicant.reload.redacted_at).to be_nil
+          expect(member.reload.redacted_at).to be_nil
+          expect(member.household.reload.redacted_at).to be_nil
+        end
+
+        it "redacts shared records when the last flow is eligible" do
+          service.redact_all!
+          submitted_flow.update_columns(transmitted_at: 8.days.ago)
+          service.redact_all!
+
+          expect_redacted(submitted_flow)
+          expect_redacted(flow.identity)
+          expect_redacted(flow.cbv_applicant)
+          expect_redacted(member)
+          expect_redacted(member.household)
+        end
+      end
+
+      it "does not repeat redaction" do
+        service.redact_all!
+
+        expect { service.redact_all! }
+          .not_to change { [ flow, invitation, member, member.household, flow.identity, education, employment, training, volunteering, term, month ].map { |record| record.reload.attributes } }
       end
     end
 
@@ -192,12 +313,24 @@ RSpec.describe DataRetentionService do
       let(:invitation) { create(:activity_flow_invitation, cbv_applicant: flow_applicant) }
       let(:flow_applicant) { create(:cbv_applicant) }
 
-      it "keeps the invitation available under the current non-expiring policy" do
+      it "keeps the invitation and applicant available while the invitation is valid" do
         service.redact_complete_activity_flows
 
         expect_redacted(flow)
         expect(invitation.reload.redacted_at).to be_nil
         expect(flow_applicant.reload.redacted_at).to be_nil
+      end
+
+      context "when the invitation has expired but is still within its retention window" do
+        before { invitation.update!(expires_at: 1.day.ago) }
+
+        it "redacts the applicant without prematurely redacting the invitation" do
+          service.redact_complete_activity_flows
+
+          expect_redacted(flow)
+          expect_redacted(flow_applicant)
+          expect(invitation.reload.redacted_at).to be_nil
+        end
       end
     end
 
@@ -275,6 +408,30 @@ RSpec.describe DataRetentionService do
         expect_redacted(employment_summary, employer_name: "REDACTED")
         expect_redacted(payroll_account)
       end
+
+      context "with an expired household invitation" do
+        let(:invitation) { create(:activity_flow_invitation, expires_at: 8.days.ago, reference_id: "Example reference") }
+        let!(:member) { create(:household_member, activity_flow_invitation: invitation) }
+
+        it "redacts the full CE record set through the rake task" do
+          Rake::Task["data_deletion:redact_all"].invoke
+
+          expect_redacted(invitation, reference_id: "REDACTED")
+          expect_redacted(flow)
+          expect_redacted(flow.cbv_applicant)
+          expect_redacted(flow.identity)
+          expect_redacted(member, display_name: "REDACTED")
+          expect_redacted(member.household)
+          expect_redacted(education)
+          expect_redacted(employment)
+          expect_redacted(training)
+          expect_redacted(volunteering)
+          expect_redacted(term)
+          expect_redacted(month)
+          expect_redacted(summary)
+          expect_redacted(employment_summary)
+        end
+      end
     end
   end
 
@@ -336,11 +493,147 @@ RSpec.describe DataRetentionService do
     end
   end
 
-  describe "unused CE invitations" do
-    let!(:unused_invitation) { create(:activity_flow_invitation, created_at: 1.year.ago, updated_at: 1.year.ago) }
+  describe "#redact_activity_invitations" do
+    let(:invitation_applicant) { create(:cbv_applicant) }
+    let!(:unused_invitation) do
+      create(:activity_flow_invitation, cbv_applicant: invitation_applicant,
+        expires_at: 8.days.ago, reference_id: "Example reference")
+    end
+    let!(:member) { create(:household_member, activity_flow_invitation: unused_invitation) }
+    let(:household) { member.household }
 
-    it "retains unused invitations until an expiration policy exists" do
-      expect { service.redact_all! }.not_to change { unused_invitation.reload.attributes }
+    it "scrubs the invitation and its household records after the expiration grace period" do
+      service.redact_activity_invitations
+
+      expect_redacted(unused_invitation, reference_id: "REDACTED", auth_token: start_with("REDACTED-"))
+      expect_redacted(invitation_applicant, first_name: "REDACTED")
+      expect_redacted(member, display_name: "REDACTED", reference_id: start_with("REDACTED-"))
+      expect_redacted(household, auth_token: start_with("REDACTED-"), reference_id: start_with("REDACTED-"))
+    end
+
+    context "before the expiration threshold" do
+      before { unused_invitation.update!(expires_at: 7.days.ago + 1.minute) }
+
+      it "preserves the invitation and its related records" do
+        expect { service.redact_activity_invitations }
+          .not_to change { [ unused_invitation, invitation_applicant, member, household ].map { |record| record.reload.attributes } }
+      end
+    end
+
+    context "at the expiration threshold" do
+      before { unused_invitation.update!(expires_at: 7.days.ago) }
+
+      it "waits until the threshold has passed" do
+        expect { service.redact_activity_invitations }
+          .not_to change { [ unused_invitation, invitation_applicant, member, household ].map { |record| record.reload.attributes } }
+      end
+    end
+
+    context "with an active invitation" do
+      before { unused_invitation.update!(expires_at: 1.day.from_now) }
+
+      it "preserves the invitation and its related records" do
+        expect { service.redact_activity_invitations }
+          .not_to change { [ unused_invitation, invitation_applicant, member, household ].map { |record| record.reload.attributes } }
+      end
+    end
+
+    context "without an expiration" do
+      before { unused_invitation.update_columns(expires_at: nil) }
+
+      it "preserves records without a known retention deadline" do
+        expect { service.redact_activity_invitations }
+          .not_to change { [ unused_invitation, invitation_applicant, member, household ].map { |record| record.reload.attributes } }
+      end
+    end
+
+    context "with another active CE invitation for the applicant" do
+      let!(:active_invitation) { create(:activity_flow_invitation, cbv_applicant: invitation_applicant) }
+
+      it "preserves the shared applicant" do
+        service.redact_activity_invitations
+
+        expect_redacted(unused_invitation)
+        expect(active_invitation.reload.redacted_at).to be_nil
+        expect(invitation_applicant.reload.redacted_at).to be_nil
+      end
+    end
+
+    context "with an active Income invitation for the applicant" do
+      let!(:active_invitation) { create(:cbv_flow_invitation, cbv_applicant: invitation_applicant) }
+
+      it "preserves the shared applicant" do
+        service.redact_activity_invitations
+
+        expect_redacted(unused_invitation)
+        expect(active_invitation.reload.redacted_at).to be_nil
+        expect(invitation_applicant.reload.redacted_at).to be_nil
+      end
+    end
+
+    context "with an active Income flow for the applicant" do
+      let!(:active_flow) { create(:cbv_flow, cbv_applicant: invitation_applicant, cbv_flow_invitation: nil) }
+
+      it "preserves the shared applicant" do
+        service.redact_activity_invitations
+
+        expect_redacted(unused_invitation)
+        expect(active_flow.reload.redacted_at).to be_nil
+        expect(invitation_applicant.reload.redacted_at).to be_nil
+      end
+    end
+
+    context "with a submitted CE flow awaiting transmission" do
+      let!(:submitted_flow) do
+        create(:activity_flow, cbv_applicant: invitation_applicant, activity_flow_invitation: unused_invitation,
+          completed_at: 1.day.ago, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      end
+
+      it "preserves the flow, applicant, and household records" do
+        service.redact_all!
+
+        expect_redacted(unused_invitation)
+        expect(submitted_flow.reload.redacted_at).to be_nil
+        expect(invitation_applicant.reload.redacted_at).to be_nil
+        expect(member.reload.redacted_at).to be_nil
+        expect(household.reload.redacted_at).to be_nil
+      end
+    end
+
+    context "with another active household member" do
+      let!(:other_member) { create(:household_member, household: household) }
+
+      it "preserves the shared household" do
+        service.redact_activity_invitations
+
+        expect_redacted(member)
+        expect(other_member.reload.redacted_at).to be_nil
+        expect(household.reload.redacted_at).to be_nil
+      end
+
+      it "redacts the household after the last member becomes eligible" do
+        service.redact_activity_invitations
+        other_member.activity_flow_invitation.update!(expires_at: 8.days.ago)
+        service.redact_activity_invitations
+
+        expect_redacted(other_member)
+        expect_redacted(household)
+      end
+    end
+
+    it "does not repeat redaction" do
+      service.redact_activity_invitations
+
+      expect { service.redact_activity_invitations }
+        .not_to change { [ unused_invitation, invitation_applicant, member, household ].map { |record| record.reload.attributes } }
+    end
+
+    it "is included in scheduled redaction" do
+      service.redact_all!
+
+      expect_redacted(unused_invitation)
+      expect_redacted(member)
+      expect_redacted(household)
     end
   end
 
@@ -354,6 +647,34 @@ RSpec.describe DataRetentionService do
 
       expect_redacted(income_flow)
       expect(flow.cbv_applicant.reload.redacted_at).to be_nil
+    end
+
+    context "with an active CE invitation but no CE flow" do
+      let!(:active_invitation) { create(:activity_flow_invitation, cbv_applicant: flow.cbv_applicant) }
+
+      before { flow.destroy! }
+
+      it "preserves the applicant while the invitation is valid" do
+        service.redact_incomplete_cbv_flows
+
+        expect_redacted(income_flow)
+        expect(active_invitation.reload.redacted_at).to be_nil
+        expect(income_flow.cbv_applicant.reload.redacted_at).to be_nil
+      end
+    end
+
+    context "with an expired CE invitation but no CE flow" do
+      let!(:expired_invitation) { create(:activity_flow_invitation, cbv_applicant: flow.cbv_applicant, expires_at: 1.day.ago) }
+
+      before { flow.destroy! }
+
+      it "redacts the applicant without waiting for invitation retention" do
+        service.redact_incomplete_cbv_flows
+
+        expect_redacted(income_flow)
+        expect_redacted(income_flow.cbv_applicant)
+        expect(expired_invitation.reload.redacted_at).to be_nil
+      end
     end
   end
 end
