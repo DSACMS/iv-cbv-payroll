@@ -26,7 +26,7 @@ Message options for enable --type site_alert:
   --severity SEVERITY   info, success, warning, or error (default: warning)
 
 Other options:
-  --type TYPE           site_alert (default) or aggregator_outage
+  --type TYPE           site_alert (default), aggregator_outage, or sync_delays
   --region REGION       AWS region (default: ${DEFAULT_REGION})
   --no-wait             Do not wait for the ECS service to stabilize
   --help                Show this help
@@ -315,8 +315,8 @@ esac
 [[ -n "${environment}" ]] || die "--environment is required"
 validate_target
 case "${alert_type}" in
-  site_alert|aggregator_outage) ;;
-  *) die "unsupported alert type '${alert_type}'; use site_alert or aggregator_outage" ;;
+  site_alert|aggregator_outage|sync_delays) ;;
+  *) die "unsupported alert type '${alert_type}'; use site_alert, aggregator_outage, or sync_delays" ;;
 esac
 if [[ "${alert_type}" != "site_alert" ]]; then
   [[ -z "${preset}${title_en}${body_en}${title_es}${body_es}" && "${severity_provided}" == "false" ]] ||

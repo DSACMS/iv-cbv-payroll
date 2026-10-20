@@ -1,8 +1,4 @@
-<% content_for :title, t(".header") %>
-
-<h1>
-  <%= t(".header") %>
-</h1>
+<% content_for :title, sync_delayed? ? t("application.sync_delay_alert.heading") : t(".header") %>
 
 <div data-controller="polling" data-polling-url-value="<%= @polling_url %>">
   <%= render "status" %>

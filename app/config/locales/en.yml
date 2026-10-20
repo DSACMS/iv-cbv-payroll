@@ -877,6 +877,9 @@ en:
       heading: We're experiencing technical difficulties
       income_body: Some parts of the site may not work properly. If you aren't able to search for your employer or login to your payroll provider, please try again later.
       manual_entry: add your employment details manually
+    sync_delay_alert:
+      body: We're currently experiencing technical difficulties. If we are unable to sync your employment information, please try again later.
+      heading: Syncing is taking longer than normal
   caseworker_mailer:
     summary_email:
       greeting: Hello,
