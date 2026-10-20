@@ -19,10 +19,8 @@ RSpec.describe "Expired CE links", :js, type: :feature do
     end
   end
 
-  context "when expiration is reported by the invitation" do
-    before do
-      allow_any_instance_of(ActivityFlowInvitation).to receive(:expired?).and_return(true)
-    end
+  context "when the invitation is manually expired" do
+    before { invitation.update!(expires_at: 1.second.ago) }
 
     it "shows the expired-link page" do
       visit URI(invitation.to_url).request_uri

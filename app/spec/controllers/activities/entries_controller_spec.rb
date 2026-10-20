@@ -65,16 +65,39 @@ RSpec.describe Activities::EntriesController do
     context "with tokenized link" do
       let(:invitation) { create(:activity_flow_invitation) }
 
-      context "when the invitation reports that it has expired" do
-        before do
-          allow(ActivityFlowInvitation).to receive(:find_by).with(auth_token: invitation.auth_token).and_return(invitation)
-          allow(invitation).to receive(:expired?).and_return(true)
+      context "when the invitation expires naturally" do
+        let(:agency) { Rails.application.config.client_agencies["sandbox"] }
+        let(:invitation) do
+          create(:activity_flow_invitation, created_at: (agency.invitation_valid_days + 1).days.ago)
         end
 
         it "redirects to the CE expired-link page without creating a flow" do
           expect { get :show, params: { token: invitation.auth_token } }.not_to change(ActivityFlow, :count)
 
           expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+          expect(session[:flow_id]).to be_nil
+        end
+      end
+
+      context "when the invitation is manually expired" do
+        before { invitation.update!(expires_at: 1.second.ago) }
+
+        it "redirects to the CE expired-link page without creating a flow" do
+          expect { get :show, params: { token: invitation.auth_token } }.not_to change(ActivityFlow, :count)
+
+          expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+          expect(session[:flow_id]).to be_nil
+        end
+      end
+
+      context "when the invitation has no expiration" do
+        before { invitation.update_columns(expires_at: nil) }
+
+        it "redirects to the CE expired-link page without creating a flow" do
+          expect { get :show, params: { token: invitation.auth_token } }.not_to change(ActivityFlow, :count)
+
+          expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+          expect(session[:flow_id]).to be_nil
         end
       end
 
