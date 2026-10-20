@@ -161,7 +161,7 @@
 
         <%= render "activities/submit/summary_activity",
           section_heading: index.zero? ? t("activities.submit.pdf.employment_summary") : nil,
-          title: unpaid ? t("activities.review.unpaid_or_in_kind.who_you_worked_for_title", number: index + 1, name: employer_name) : t("activities.submit.pdf.employer_title", number: index + 1, name: employer_name),
+          title: unpaid ? t("activities.review.unpaid_or_in_kind.who_you_worked_for", number: index + 1, name: employer_name) : t("activities.submit.pdf.employer_title", number: index + 1, name: employer_name),
           columns: columns,
           rows: rows,
           documents: documents %>
@@ -346,7 +346,7 @@
 
         <%= render "activities/submit/detail_activity",
           section_heading: index.zero? ? t("activities.submit.pdf.employment_details") : nil,
-          title: unpaid ? t("activities.review.unpaid_or_in_kind.who_you_worked_for_title", number: index + 1, name: employer_name) : t("activities.submit.pdf.employer_title", number: index + 1, name: employer_name),
+          title: unpaid ? t("activities.review.unpaid_or_in_kind.who_you_worked_for", number: index + 1, name: employer_name) : t("activities.submit.pdf.employer_title", number: index + 1, name: employer_name),
           comments: comments,
           information_heading: unpaid ? t("activities.review.unpaid_or_in_kind.work_information") : t("shared.table_headers.employer_information"),
           details: details %>
