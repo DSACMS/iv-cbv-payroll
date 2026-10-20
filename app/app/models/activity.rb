@@ -6,26 +6,13 @@ class Activity < ApplicationRecord
   enum :data_source, { self_attested: "self_attested", validated: "validated" }, default: :self_attested
 
   scope :published, -> { where(draft: false) }
-  scope :pre_populated_drafts, -> { where(draft: true, pre_populated: true) }
 
   def self.activity_type
     raise NotImplementedError, "#{name} must define .#{__method__}"
   end
 
-  def self.flow_association
-    model_name.plural.to_sym
-  end
-
-  def self.pre_populated_defaults
-    {}
-  end
-
   def publish!
     update!(draft: false)
-  end
-
-  def pre_populated_draft?
-    draft? && pre_populated?
   end
 
   def manual_education_upload?

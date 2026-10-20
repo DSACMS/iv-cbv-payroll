@@ -6,7 +6,12 @@ RSpec.describe TableComponent, type: :component do
   include ViewComponent::TestHelpers
 
   subject(:result) do
-    table = described_class.new(multi_column: multi_column, subdued_header: subdued_header, attributes: table_attributes)
+    table = described_class.new(
+      multi_column: multi_column,
+      subdued_header: subdued_header,
+      attributes: table_attributes,
+      caption: "Test table"
+    )
     rows.each do |row_data|
       table.with_row do |row|
         row.with_data_cell.with_content(row_data)
@@ -24,7 +29,7 @@ RSpec.describe TableComponent, type: :component do
 
   context "when no rows are provided" do
     it "does not render the table" do
-      result = render_inline(described_class.new)
+      result = render_inline(described_class.new(caption: "Test table"))
       expect(result.to_html).to be_empty
     end
   end
@@ -76,7 +81,7 @@ RSpec.describe TableComponent, type: :component do
 
   context "when header_cells are provided" do
     subject(:result) do
-      render_inline(described_class.new) do |table|
+      render_inline(described_class.new(caption: "Column information")) do |table|
         table.with_header_cell(scope: "col") { "Col 1" }
         table.with_header_cell(scope: "col") { "Col 2" }
         table.with_row { |row| row.with_data_cell.with_content("cell") }
@@ -88,11 +93,15 @@ RSpec.describe TableComponent, type: :component do
       expect(result.css("thead tr th[scope='col']").first.text.strip).to eq("Col 1")
       expect(result.css("thead tr th[scope='col']").last.text.strip).to eq("Col 2")
     end
+
+    it "renders the supplied caption" do
+      expect(result).to have_selector("table caption.usa-sr-only", text: "Column information")
+    end
   end
 
   context "when header cell content is provided without is_header" do
     subject(:result) do
-      render_inline(described_class.new) do |table|
+      render_inline(described_class.new(caption: "Header information")) do |table|
         table.with_header_cell { "Header" }
         table.with_row { |row| row.with_data_cell.with_content("cell") }
       end
@@ -101,6 +110,30 @@ RSpec.describe TableComponent, type: :component do
     it "renders the slot as a table header cell" do
       expect(result.css("thead tr th").text).to include("Header")
       expect(result.css("thead tr td")).to be_empty
+    end
+  end
+
+  context "when a caption is provided" do
+    subject(:result) do
+      render_inline(described_class.new(caption: "Payment details")) do |table|
+        table.with_row { |row| row.with_data_cell.with_content("cell") }
+      end
+    end
+
+    it "renders it as a visually hidden table caption" do
+      expect(result).to have_selector("table caption.usa-sr-only", text: "Payment details")
+    end
+  end
+
+  context "when no caption is provided" do
+    it "requires one" do
+      expect { described_class.new }.to raise_error(ArgumentError, /caption/)
+    end
+  end
+
+  context "when the caption is blank" do
+    it "rejects it" do
+      expect { described_class.new(caption: nil) }.to raise_error(ArgumentError, "caption is required")
     end
   end
 end

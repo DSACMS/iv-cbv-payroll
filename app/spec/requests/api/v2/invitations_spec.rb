@@ -39,7 +39,7 @@ RSpec.describe "Tokenized Link API V2", type: :request do
     post "Create a Tokenized Link to Emmy Community Engagement" do
       tags "Invitations"
       operationId "createInvitationV2"
-      description InvitationDocumentation.read("post-v2-invitations", section: "Description")
+      description InvitationDocumentation.read("invitations-v2", section: "Description")
       consumes "application/json"
       produces "application/json"
       security [ bearerAuth: [] ]
