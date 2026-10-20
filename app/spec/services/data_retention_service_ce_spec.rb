@@ -234,10 +234,10 @@ RSpec.describe DataRetentionService do
 
     context "with draft activities" do
       before do
-        education.update_columns(draft: true, pre_populated: true)
-        employment.update_columns(draft: true, pre_populated: true)
-        training.update_columns(draft: true, pre_populated: true)
-        volunteering.update_columns(draft: true, pre_populated: true)
+        education.update_columns(draft: true)
+        employment.update_columns(draft: true)
+        training.update_columns(draft: true)
+        volunteering.update_columns(draft: true)
       end
 
       it "redacts drafts as well as published activities" do

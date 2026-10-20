@@ -32,7 +32,6 @@ class JobTrainingActivity < Activity
     contact_email
     contact_phone_number
   ].freeze
-  PRE_POPULATED_REQUIRED_FIELDS = %w[program_name organization_name].freeze
 
   validates :organization_name, :program_name, presence: true
 

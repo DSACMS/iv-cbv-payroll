@@ -200,7 +200,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_000000) do
     t.string "data_source", default: "validated", null: false
     t.boolean "draft", default: false, null: false
     t.string "education_type"
-    t.boolean "pre_populated", default: false, null: false
     t.string "school_name"
     t.string "state"
     t.string "status", default: "unknown"
@@ -228,7 +227,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_000000) do
     t.boolean "draft", default: false, null: false
     t.string "employer_name"
     t.boolean "is_self_employed", default: false
-    t.boolean "pre_populated", default: false, null: false
     t.date "selected_months", default: [], null: false, array: true
     t.string "state"
     t.string "street_address"
@@ -298,7 +296,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_000000) do
     t.boolean "draft", default: false, null: false
     t.string "organization_address"
     t.string "organization_name"
-    t.boolean "pre_populated", default: false, null: false
     t.string "program_name"
     t.string "state"
     t.string "street_address"
@@ -506,7 +503,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_000000) do
     t.boolean "draft", default: false, null: false
     t.integer "hours"
     t.string "organization_name"
-    t.boolean "pre_populated", default: false, null: false
     t.string "state"
     t.string "street_address"
     t.string "street_address_line_2"

@@ -42,6 +42,7 @@ Which AI Tool(s) did you use:
 - [ ] Claude Code
 - [ ] Claude
 - [ ] Gemini
+- [ ] OpenAI Codex
 - [ ] Google Search AI assist
 - [ ] Other ______________________________
 
