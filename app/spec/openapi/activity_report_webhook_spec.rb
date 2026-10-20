@@ -17,7 +17,7 @@ RSpec.describe ActivityReportWebhook do
 
   it "reads the receiving section, delivery guidance, and samples from Markdown" do
     tag = document[:tags].find { |item| item[:name] == described_class::TAG }
-    expect(tag[:description]).to eq(InvitationDocumentation.read("receiving-data/README"))
+    expect(tag[:description]).to eq(InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Overview"))
     expect(operation[:description]).to include("[Webhook signatures](#tag/webhook-signatures)")
     expect(operation[:description]).not_to include("## cURL example", "## Signing headers")
     signatures = document[:tags].find { |item| item[:name] == "Webhook signatures" }
@@ -25,5 +25,12 @@ RSpec.describe ActivityReportWebhook do
     receiving = document["x-tagGroups"].find { |group| group[:name] == "Receiving data from the Emmy Platform" }
     expect(receiving[:tags]).to include("Webhook signatures", described_class::TAG)
     expect(operation[:responses]["200"][:description]).to eq(InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Response"))
+  end
+
+  it "starts the receiving-data section with the shared Markdown overview" do
+    receiving = document["x-tagGroups"].find { |group| group[:name] == "Receiving data from the Emmy Platform" }
+    expect(receiving[:tags].first).to eq("Overview")
+    overview = document[:tags].find { |tag| tag[:name] == "Overview" }
+    expect(overview[:description]).to eq(InvitationDocumentation.read("receiving-data/README", section: "Overview"))
   end
 end

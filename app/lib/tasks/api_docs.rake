@@ -68,7 +68,7 @@ namespace :api_docs do
       FileUtils.rm_f(output.join(file))
     end
     FileUtils.cp(assets.join("dist/browser/standalone.js"), output.join("scalar.js"))
-    FileUtils.cp(Rails.root.join("../docs/api/api-flow.png"), output.join("api-flow.png"))
+    FileUtils.cp(Rails.root.join("../docs/api/receiving-data/api-flow.png"), output.join("api-flow.png"))
 
     # Embed the spec so index.html also works directly from disk, without fetch,
     # a running Rails app, a CDN, or a separate static web server.

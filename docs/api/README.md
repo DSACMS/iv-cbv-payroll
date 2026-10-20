@@ -17,14 +17,14 @@ The Dev environment is `https://verify-demo.navapbc.cloud`; the Demo environment
 is `https://demo.reportmyincome.org`. Production access is arranged during onboarding.
 
 The generated reference covers `POST /api/v1/invitations`,
-`POST /api/v2/{invitation_type}/invitations`, and the CE Activity Report webhook, including self-attested and validated employment and
+`POST /api/v2/{invitation_type}/invitations`, the document delivery webhook, and the CE Activity Report webhook, including self-attested and validated employment and
 self-attested, verified, and partially self-attested education. Find the webhook under **Receiving data from the Emmy Platform** in the left navigation,
 with request and response examples and a signed cURL delivery sample.
 CE reports are outbound payloads sent to an agency; their component schemas
-also appear under Models. Document transmission interfaces
-will be added separately.
+also appear under Models. The Documents section includes the document delivery
+contract, with retry behavior in a shared section; Income Reports (JSON) remains a placeholder.
 For those APIs, see the [CE activity report transmission guide](receiving-data/ce-activity-json.md)
-and [PDF document transmission guide](pdf-transmission.md).
+and [document transmission guide](receiving-data/pdf-transmission.md).
 The generated OpenAPI document is the source for current schemas and tested
 request and response examples.
 
@@ -37,12 +37,19 @@ The Markdown files follow the generated reference's navigation:
 | Introduction and its subsections | [introduction.md](introduction.md) |
 | V1 invitations | [invitations.md](invitations.md) |
 | V2 invitations | [invitations-v2.md](invitations-v2.md) |
-| Receiving data from the Emmy Platform | [receiving-data/README.md](receiving-data/README.md) |
+| Receiving data overview | [receiving-data/README.md](receiving-data/README.md#overview) |
+| Report delivery flow | [receiving-data/report-delivery-flow.md](receiving-data/report-delivery-flow.md) |
+| Retry logic | [receiving-data/retry-logic.md](receiving-data/retry-logic.md) |
 | Webhook signatures | [receiving-data/webhook-signatures.md](receiving-data/webhook-signatures.md) |
 | Receive a CE Activity Report (JSON) | [receiving-data/ce-activity-json.md](receiving-data/ce-activity-json.md) |
+| Income Reports (JSON) | [receiving-data/income-reports.md](receiving-data/income-reports.md) |
+| Receive a Document | [receiving-data/pdf-transmission.md](receiving-data/pdf-transmission.md) |
 
 Level-two headings in `introduction.md` appear as subsections under Introduction.
-The introduction embeds [api-flow.png](api-flow.png), which is included in the
+The receiving-data group starts with an Overview sourced from the Overview
+heading in `receiving-data/README.md`. Each report's own guide supplies its
+specific introduction.
+The report delivery flow embeds [api-flow.png](receiving-data/api-flow.png), which is included in the
 generated site. Add future delivery-method documents under `receiving-data/`
 and connect their contracts to the receiving-data tag.
 
@@ -69,8 +76,10 @@ Edit [V1 request specs](../../app/spec/requests/api/invitations_spec.rb),
 [invitation schemas](../../app/spec/openapi/invitation_schemas.rb),
 [CE report models](../../app/spec/openapi/activity_report_schemas.rb),
 [webhook contract](../../app/spec/openapi/activity_report_webhook.rb),
+[document webhook contract](../../app/spec/openapi/document_webhook.rb),
 [receiving data introduction](receiving-data/README.md),
 [CE report description](receiving-data/ce-activity-json.md#model),
+[document transmission guide](receiving-data/pdf-transmission.md),
 [introduction](introduction.md), [invitation operation description](invitations.md#description),
 [V2 invitation description](invitations-v2.md),
 [agency metadata description](agency-partner-metadata.md),
@@ -78,6 +87,10 @@ Edit [V1 request specs](../../app/spec/requests/api/invitations_spec.rb),
 [document settings](../../app/spec/swagger_helper.rb), not generated files.
 The build reads these Markdown descriptions directly from `docs/api/`; Markdown
 changes also trigger the publication workflow after merge.
+The document webhook reads sections of `receiving-data/pdf-transmission.md`
+directly, so its endpoint, headers, request body, and response handling are
+maintained in Markdown. Shared retry guidance lives in
+[receiving-data/retry-logic.md](receiving-data/retry-logic.md).
 Keep endpoint descriptions and responses together, using level-two headings
 to identify the sections included in the generated reference.
 V2 agency metadata fields and required fields are read from each agency's

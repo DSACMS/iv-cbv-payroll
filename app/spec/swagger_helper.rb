@@ -2,6 +2,7 @@ require "rails_helper"
 require_relative "openapi/invitation_schemas"
 require_relative "openapi/activity_report_schemas"
 require_relative "openapi/activity_report_webhook"
+require_relative "openapi/document_webhook"
 
 RSpec.configure do |config|
   config.openapi_root = Rails.root.join("tmp/api-docs").to_s
@@ -21,15 +22,23 @@ RSpec.configure do |config|
       externalDocs: { description: "Emmy Platform API Documentation", url: InvitationDocumentation::SITE_URL },
       tags: [
         { name: "Invitations", description: "Generate links for an applicant to begin reporting." },
+        { name: "Overview", description: InvitationDocumentation.read("receiving-data/README", section: "Overview") },
+        { name: "Report delivery flow", description: InvitationDocumentation.read("receiving-data/report-delivery-flow") },
         { name: "Webhook signatures", description: InvitationDocumentation.read("receiving-data/webhook-signatures") },
-        { name: ActivityReportWebhook::TAG, description: InvitationDocumentation.read("receiving-data/README") }
+        { name: "Retry logic", description: InvitationDocumentation.read("receiving-data/retry-logic") },
+        { name: ActivityReportWebhook::TAG, description: InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Overview") },
+        { name: "Income Reports (JSON)", description: InvitationDocumentation.read("receiving-data/income-reports") },
+        { name: DocumentWebhook::TAG, description: InvitationDocumentation.read("receiving-data/pdf-transmission", section: "Overview") }
       ],
       "x-tagGroups" => [
         { name: "Emmy API", tags: [ "Invitations" ] },
-        { name: "Receiving data from the Emmy Platform", tags: [ "Webhook signatures", ActivityReportWebhook::TAG ] }
+        { name: "Receiving data from the Emmy Platform", tags: [ "Overview", "Report delivery flow", "Webhook signatures", "Retry logic", ActivityReportWebhook::TAG, "Income Reports (JSON)", DocumentWebhook::TAG ] }
       ],
       paths: {},
-      webhooks: { ActivityReportWebhook::PATH => { post: ActivityReportWebhook.operation } },
+      webhooks: {
+        ActivityReportWebhook::PATH => { post: ActivityReportWebhook.operation },
+        DocumentWebhook::PATH => { post: DocumentWebhook.operation }
+      },
       components: {
         securitySchemes: {
           bearerAuth: { type: :http, scheme: :bearer, description: "Agency API key. Send Authorization: Bearer API_KEY. The key determines the agency; do not send a client_agency_id." }

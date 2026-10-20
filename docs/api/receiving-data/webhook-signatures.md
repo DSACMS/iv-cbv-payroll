@@ -1,6 +1,6 @@
 Emmy signs outbound webhook requests with your agency's API key. Verify the
 signature before processing the report. This signing scheme is shared by the
-CE Activity Report and Income Report JSON deliveries.
+CE Activity Report, Income Report JSON, and PDF document deliveries.
 
 ## Signing headers
 
