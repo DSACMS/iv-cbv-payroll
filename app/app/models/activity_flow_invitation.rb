@@ -1,13 +1,6 @@
 class ActivityFlowInvitation < ApplicationRecord
   include InvitationExpiration
 
-  ACTIVITY_TYPES = {
-    "volunteering" => VolunteeringActivity,
-    "employment" => EmploymentActivity,
-    "education" => EducationActivity,
-    "job_training" => JobTrainingActivity
-  }.freeze
-
   belongs_to :cbv_applicant, optional: true
   has_many :activity_flows
   has_one :household_member
