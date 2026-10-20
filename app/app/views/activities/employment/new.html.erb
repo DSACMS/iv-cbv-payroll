@@ -17,7 +17,9 @@
 </h1>
 
 <% if @employment_activity.unpaid_or_in_kind? %>
-  <p><%= t("activities.employment_info.unpaid_or_in_kind.description") %></p>
+  <% t("activities.employment_info.unpaid_or_in_kind.description").split("\n\n").each do |paragraph| %>
+    <p><%= paragraph %></p>
+  <% end %>
 <% end %>
 
 <%= render "form", employment_activity: @employment_activity %>

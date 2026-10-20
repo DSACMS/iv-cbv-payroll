@@ -37,13 +37,12 @@
       <% end %>
 
       <p class="activity-hub-subheading">
-        <% type = variant == :renewal ? "renewal" : "application" %>
         <% if @flow.reporting_window_months == 1 %>
-          <% t("activities.hub.empty_state_description_single_month", reporting_window: reporting_window_display, type: type).split("\n\n").each do |paragraph| %>
+          <% t("activities.hub.empty_state_description_single_month", reporting_window: reporting_window_display, type: variant.to_s).each do |paragraph| %>
             <p><%= paragraph %></p>
           <% end %>
         <% else %>
-          <% t("activities.hub.empty_state_description", reporting_window: reporting_window_display, type: type).split("\n\n").each do |paragraph| %>
+          <% t("activities.hub.empty_state_description", reporting_window: reporting_window_display, type: variant.to_s).split("\n\n").each do |paragraph| %>
             <p><%= paragraph %></p>
           <% end %>
         <% end %>

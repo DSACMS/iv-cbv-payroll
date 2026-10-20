@@ -677,6 +677,12 @@ en:
         term_date_range: "%{start_date} to %{end_date}"
         title: Community Engagement Report
         total_hours_worked: Total hours worked
+        unpaid_or_in_kind:
+          who_you_worked_for_title: "%{number}. %{name}"
+          work_information: Work information
+          work_contact_name: Work contact name
+          work_contact_email: Work contact email
+          work_contact_phone: Work contact phone number
         work_program_details: Work program
         work_program_summary: Work program summary
       title: Submit your Medicaid community engagement report

@@ -186,4 +186,30 @@ RSpec.describe ActivityPdfReport do
       ])
     end
   end
+
+  describe "#employment_entries" do
+    context "when the employment activity is paid" do
+      it "does not mark the entry as unpaid or in-kind" do
+        activity = create(:employment_activity, activity_flow: activity_flow, compensation_type: :paid)
+
+        report = described_class.new(flow: activity_flow, caseworker: false)
+        entry = report.employment_entries.find { |e| e.record == activity }
+
+        expect(entry).not_to be_nil
+        expect(entry.record.unpaid_or_in_kind?).to eq(false)
+      end
+    end
+
+    context "when the employment activity is unpaid or in-kind" do
+      it "marks the entry as unpaid or in-kind" do
+        activity = create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
+
+        report = described_class.new(flow: activity_flow, caseworker: false)
+        entry = report.employment_entries.find { |e| e.record == activity }
+
+        expect(entry).not_to be_nil
+        expect(entry.record.unpaid_or_in_kind?).to eq(true)
+      end
+    end
+  end
 end
