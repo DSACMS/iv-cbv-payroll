@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_16_120100) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_120100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -204,7 +204,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_120100) do
     t.string "street_address_line_2"
     t.datetime "updated_at", null: false
     t.string "zip_code"
-    t.boolean "pre_populated", default: false, null: false
     t.string "contact_title"
     t.string "self_attested_enrollment_status"
     t.date "self_attested_term_start"
@@ -230,7 +229,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_120100) do
     t.string "street_address_line_2"
     t.datetime "updated_at", null: false
     t.string "zip_code"
-    t.boolean "pre_populated", default: false, null: false
     t.date "selected_months", default: [], null: false, array: true
     t.string "compensation_type", default: "paid", null: false
     t.index ["activity_flow_id"], name: "index_employment_activities_on_activity_flow_id"
@@ -297,7 +295,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_120100) do
     t.string "street_address_line_2"
     t.datetime "updated_at", null: false
     t.string "zip_code"
-    t.boolean "pre_populated", default: false, null: false
     t.index ["activity_flow_id"], name: "index_job_training_activities_on_activity_flow_id"
   end
 
@@ -502,7 +499,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_120100) do
     t.string "street_address_line_2"
     t.datetime "updated_at", null: false
     t.string "zip_code"
-    t.boolean "pre_populated", default: false, null: false
     t.index ["activity_flow_id"], name: "index_volunteering_activities_on_activity_flow_id"
   end
 
