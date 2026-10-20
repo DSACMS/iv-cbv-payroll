@@ -1,13 +1,15 @@
 <% content_for :title, t(".header") %>
+<% content_for :head do %>
+  <meta name="turbo-visit-control" content="reload">
+<% end %>
 <h1>
   <%= t(".header") %>
 </h1>
 
 <% if current_agency&.agency_contact_website.present? %>
   <% agency_acronym = agency_translation("shared.agency_acronym") || current_agency.agency_name %>
-  <% reporting_purpose = activity_flow? ? t(".activity_purpose") : t(".income_purpose") %>
   <p>
-    <%= t(".body", reporting_purpose: reporting_purpose, agency_acronym: agency_acronym) %>
+    <%= t(".body", reporting_purpose: agency_translation("shared.reporting_purpose"), agency_acronym: agency_acronym) %>
   </p>
   <%= link_to t(".agency_link", agency_acronym: agency_acronym), current_agency.agency_contact_website, class: "usa-button" %>
 <% else %>

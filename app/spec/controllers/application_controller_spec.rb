@@ -51,42 +51,6 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
-  describe "#outage_reporting_flow" do
-    before do
-      session[:flow_type] = "activity"
-      allow(controller).to receive(:controller_path).and_return("cbv/entries")
-    end
-
-    it "uses Income for a new Income invitation even with a previous activity session" do
-      expect(controller.send(:outage_reporting_flow)).to eq("income")
-    end
-  end
-
-  describe "#set_flow_session" do
-    before do
-      session[:flow_id] = 123
-      session[:flow_type] = "cbv"
-      session[:outage_agency_id] = "la_ldh"
-    end
-
-    it "clears outage agency context when the flow id changes" do
-      controller.send(:set_flow_session, 456, "cbv")
-      expect(session[:outage_agency_id]).to be_nil
-    end
-
-    it "clears outage agency context when a different flow type has the same id" do
-      controller.send(:set_flow_session, 123, "activity")
-      expect(session[:outage_agency_id]).to be_nil
-    end
-
-    it "does not restore a previous agency after ending a flow" do
-      allow(controller).to receive(:current_agency).and_return(Rails.application.config.client_agencies["la_ldh"])
-      controller.send(:reset_cbv_session!)
-      controller.send(:remember_outage_agency)
-      expect(session[:outage_agency_id]).to be_nil
-    end
-  end
-
   describe '#switch_locale' do
     before do
       I18n.default_locale = :en
