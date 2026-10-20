@@ -196,7 +196,7 @@ RSpec.describe ActivityPdfReport do
         entry = report.employment_entries.find { |e| e.record == activity }
 
         expect(entry).not_to be_nil
-        expect(entry.record.unpaid_or_in_kind?).to eq(false)
+        expect(entry.record.unpaid_or_in_kind?).to be(false)
       end
     end
 
@@ -208,7 +208,7 @@ RSpec.describe ActivityPdfReport do
         entry = report.employment_entries.find { |e| e.record == activity }
 
         expect(entry).not_to be_nil
-        expect(entry.record.unpaid_or_in_kind?).to eq(true)
+        expect(entry.record.unpaid_or_in_kind?).to be(true)
       end
     end
   end

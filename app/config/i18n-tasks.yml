@@ -179,6 +179,7 @@ ignore_unused:
     - "cbv.submits.show.pdf.shared.additional_jobs_to_report_html" #dynamically used when applicant supplies additional jobs
     - "activities.employment.hours_input.*" # scope passed as t_scope in shared _hours_input partial
     - "activities.employment.unpaid_or_in_kind.*" # dynamically used on employment screens
+    - "activities.submit.pdf.unpaid_or_in_kind.*"
     - "api.v2.*"
 
 csv:

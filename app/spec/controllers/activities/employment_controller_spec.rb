@@ -118,7 +118,9 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         rendered = Capybara.string(response.body)
 
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.title"))
-        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.description"))
+        I18n.t("activities.employment_info.unpaid_or_in_kind.description").split("\n\n").each do |paragraph|
+          expect(rendered).to have_text(paragraph)
+        end
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_information_description"))
       end
 
