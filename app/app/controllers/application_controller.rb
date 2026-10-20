@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
   helper :view
-  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?, :nsc_disabled?, :show_activity_reporting_banner?
+  helper_method :alert_enabled?, :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?, :nsc_disabled?, :show_activity_reporting_banner?
   around_action :switch_locale
   before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :set_device_id_cookie
   after_action :apply_iframe_embedding
@@ -216,6 +216,10 @@ class ApplicationController < ActionController::Base
     if ENV["MAINTENANCE_MODE"] == "true"
       redirect_to maintenance_path
     end
+  end
+
+  def alert_enabled?(type)
+    ENV.fetch("ENABLED_ALERTS", "").split(",").map(&:strip).include?(type.to_s)
   end
 
   def get_site_alert_title

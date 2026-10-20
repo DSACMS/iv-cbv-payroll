@@ -23,9 +23,10 @@ Message options for enable:
   --body-en TEXT        Custom English body
   --title-es TEXT       Custom Spanish title
   --body-es TEXT        Custom Spanish body
-  --type TYPE           info, success, warning, or error (default: warning)
+  --severity SEVERITY   info, success, warning, or error (default: warning)
 
 Other options:
+  --type TYPE           Alert identifier (default: site_alert; only site_alert supported)
   --region REGION       AWS region (default: ${DEFAULT_REGION})
   --no-wait             Do not wait for the ECS service to stabilize
   --help                Show this help
@@ -69,10 +70,10 @@ validate_target() {
   esac
 }
 
-validate_type() {
+validate_severity() {
   case "$1" in
     info|success|warning|error) ;;
-    *) die "unsupported alert type '${1}'; use info, success, warning, or error" ;;
+    *) die "unsupported alert severity '${1}'; use info, success, warning, or error" ;;
   esac
 }
 
@@ -136,6 +137,35 @@ put_parameter() {
     --value "${value}" --overwrite >/dev/null
 }
 
+read_enabled_alerts() {
+  local value
+  # A missing parameter returns None; authorization/network errors still abort.
+  value="$(aws ssm get-parameters --no-cli-pager --region "${region}" \
+    --names "$(parameter_name ENABLED_ALERTS)" --query 'Parameters[0].Value' --output text)" || return
+  if [[ "${value}" != "None" ]]; then
+    printf '%s' "${value}"
+  fi
+}
+
+other_enabled_alerts() {
+  # Match entire identifiers and preserve all unrelated alert types.
+  printf '%s' "$1" | awk -v target="${alert_type}" '
+    BEGIN { RS = ","; separator = "" }
+    {
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "")
+      if ($0 != "" && $0 != target) {
+        printf "%s%s", separator, $0
+        separator = ","
+      }
+    }
+  '
+}
+
+write_enabled_alerts() {
+  # SSM rejects empty strings. Rails ignores this whitespace-only value.
+  put_parameter ENABLED_ALERTS "${1:- }"
+}
+
 terraform_checkpoint() {
   log "Terraform configuration must be applied before deploying containers"
   echo "Note: the Terraform plan may not show changes to environment variables."
@@ -189,22 +219,27 @@ enable_alert() {
     die "custom messages require --title-en, --body-en, --title-es, and --body-es"
   fi
 
+  local current_alerts other_alerts
   check_aws_credentials
-  # Disable first so a partial update cannot display mixed copy.
-  put_parameter SITE_ALERT_ENABLED false
+  current_alerts="$(read_enabled_alerts)"
+  other_alerts="$(other_enabled_alerts "${current_alerts}")"
+  # Disable this alert first so a partial update cannot display mixed copy.
+  write_enabled_alerts "${other_alerts}"
   put_parameter SITE_ALERT_TITLE_EN "${title_en}"
   put_parameter SITE_ALERT_BODY_EN "${body_en}"
   put_parameter SITE_ALERT_TITLE_ES "${title_es}"
   put_parameter SITE_ALERT_BODY_ES "${body_es}"
-  put_parameter SITE_ALERT_TYPE "${alert_type}"
-  put_parameter SITE_ALERT_ENABLED true
+  put_parameter SITE_ALERT_TYPE "${severity}"
+  write_enabled_alerts "${other_alerts:+${other_alerts},}${alert_type}"
   update_service
   echo "Enabled ${preset:-custom} site alert on ${platform}/${environment}."
 }
 
 disable_alert() {
+  local current_alerts
   check_aws_credentials
-  put_parameter SITE_ALERT_ENABLED false
+  current_alerts="$(read_enabled_alerts)"
+  write_enabled_alerts "$(other_enabled_alerts "${current_alerts}")"
   update_service
   echo "Disabled site alert on ${platform}/${environment}."
 }
@@ -212,12 +247,11 @@ disable_alert() {
 show_status() {
   local enabled type
   check_aws_credentials
-  enabled="$(aws ssm get-parameter --no-cli-pager --region "${region}" \
-    --name "$(parameter_name SITE_ALERT_ENABLED)" --query 'Parameter.Value' --output text)"
+  enabled="$(read_enabled_alerts)"
   type="$(aws ssm get-parameter --no-cli-pager --region "${region}" \
     --name "$(parameter_name SITE_ALERT_TYPE)" --query 'Parameter.Value' \
     --output text 2>/dev/null || echo "unset")"
-  echo "platform=${platform} environment=${environment} enabled=${enabled} type=${type}"
+  echo "platform=${platform} environment=${environment} enabled_alerts=${enabled} severity=${type}"
 }
 
 command="${1:-}"
@@ -228,7 +262,8 @@ elif [[ -n "${command}" ]]; then
 fi
 
 platform="" environment="" preset="" title_en="" body_en="" title_es="" body_es=""
-alert_type="warning"
+alert_type="site_alert"
+severity="warning"
 region="${AWS_REGION:-${DEFAULT_REGION}}"
 aws_account_id=""
 wait_for_stability="true"
@@ -243,6 +278,7 @@ while (($#)); do
     --title-es) require_value "$@"; title_es="$2"; shift 2 ;;
     --body-es) require_value "$@"; body_es="$2"; shift 2 ;;
     --type) require_value "$@"; alert_type="$2"; shift 2 ;;
+    --severity) require_value "$@"; severity="$2"; shift 2 ;;
     --region) require_value "$@"; region="$2"; shift 2 ;;
     --no-wait) wait_for_stability="false"; shift ;;
     --help|-h) usage; exit 0 ;;
@@ -260,7 +296,8 @@ esac
 [[ -n "${platform}" ]] || die "--platform is required"
 [[ -n "${environment}" ]] || die "--environment is required"
 validate_target
-validate_type "${alert_type}"
+[[ "${alert_type}" == "site_alert" ]] || die "unsupported alert type '${alert_type}'; use site_alert"
+validate_severity "${severity}"
 
 case "${command}" in
   enable) enable_alert ;;
