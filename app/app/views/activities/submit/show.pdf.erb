@@ -161,7 +161,7 @@
 
         <%= render "activities/submit/summary_activity",
           section_heading: index.zero? ? t("activities.submit.pdf.employment_summary") : nil,
-          title: unpaid ? t("activities.submit.pdf.unpaid_or_in_kind.who_you_worked_for_title", number: index + 1, name: employer_name) : t("activities.submit.pdf.employer_title", number: index + 1, name: employer_name),
+          title: unpaid ? t("activities.review.unpaid_or_in_kind.who_you_worked_for_title", number: index + 1, name: employer_name) : t("activities.submit.pdf.employer_title", number: index + 1, name: employer_name),
           columns: columns,
           rows: rows,
           documents: documents %>
@@ -333,10 +333,10 @@
           ] %>
           <% unless activity.is_self_employed %>
             <% details += [
-              [ unpaid ? t("activities.summary.unpaid_or_in_kind.work_contact_name") : t("activities.summary.employment.contact_name"), activity.contact_name ],
-              [ unpaid ? t("activities.summary.unpaid_or_in_kind.work_contact_email") : t("activities.summary.employment.contact_email"), activity.contact_email ],
+              [ unpaid ? t("activities.review.unpaid_or_in_kind.work_contact_name") : t("activities.summary.employment.contact_name"), activity.contact_name ],
+              [ unpaid ? t("activities.review.unpaid_or_in_kind.work_contact_email") : t("activities.summary.employment.contact_email"), activity.contact_email ],
               [
-                unpaid ? t("activities.summary.unpaid_or_in_kind.work_contact_phone") : t("activities.summary.employment.contact_phone"),
+                unpaid ? t("activities.review.unpaid_or_in_kind.work_contact_phone") : t("activities.summary.employment.contact_phone"),
                 number_to_phone(activity.contact_phone_number, area_code: true)
               ]
             ] %>
@@ -346,9 +346,9 @@
 
         <%= render "activities/submit/detail_activity",
           section_heading: index.zero? ? t("activities.submit.pdf.employment_details") : nil,
-          title: unpaid ? t("activities.submit.pdf.unpaid_or_in_kind.who_you_worked_for_title", number: index + 1, name: employer_name) : t("activities.submit.pdf.employer_title", number: index + 1, name: employer_name),
+          title: unpaid ? t("activities.review.unpaid_or_in_kind.who_you_worked_for_title", number: index + 1, name: employer_name) : t("activities.submit.pdf.employer_title", number: index + 1, name: employer_name),
           comments: comments,
-          information_heading: unpaid ? t("activities.submit.pdf.unpaid_or_in_kind.work_information") : t("shared.table_headers.employer_information"),
+          information_heading: unpaid ? t("activities.review.unpaid_or_in_kind.work_information") : t("shared.table_headers.employer_information"),
           details: details %>
 
         <% if entry.payroll? && payroll_details&.paystubs&.any? %>

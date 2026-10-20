@@ -519,12 +519,12 @@ en:
         work_programs: No work programs added
       empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
       empty_state_description_single_month: Add employment, education, community service, or work program activities you've done in %{reporting_window}.
-      empty_state_description_unpaid: |-
-        Add unpaid work, education, community service, or work program activities you've done between %{reporting_window}.
-
-        Employment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}.
       empty_state_description_single_month_unpaid: |-
         Add unpaid work, education, community service, or work program activities you've done in %{reporting_window}.
+
+        Employment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}.
+      empty_state_description_unpaid: |-
+        Add unpaid work, education, community service, or work program activities you've done between %{reporting_window}.
 
         Employment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}.
       empty_state_months_required_all: all %{required_month_count} months in the reporting period
@@ -680,12 +680,6 @@ en:
         term_date_range: "%{start_date} to %{end_date}"
         title: Community Engagement Report
         total_hours_worked: Total hours worked
-        unpaid_or_in_kind:
-          who_you_worked_for_title: "%{number}. %{name}"
-          work_contact_email: Work contact email
-          work_contact_name: Work contact name
-          work_contact_phone: Work contact phone number
-          work_information: Work information
         work_program_details: Work program
         work_program_summary: Work program summary
       title: Submit your Medicaid community engagement report
