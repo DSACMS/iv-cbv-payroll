@@ -2,22 +2,8 @@ import { Controller } from "@hotwired/stimulus"
 import CSRF from "../utilities/csrf"
 
 export default class extends Controller {
-  static targets = ["status"]
   static values = { url: String }
   headers = { Accept: "text/vnd.turbo-stream.html" }
-
-  statusTargetConnected(element) {
-    const title = element.dataset.title
-    if (this.currentTitle && this.currentTitle !== title) {
-      element.querySelector("h1")?.focus()
-    }
-    document.title = title
-    this.currentTitle = title
-  }
-
-  disconnect() {
-    clearInterval(this.interval)
-  }
 
   connect() {
     this.interval = setInterval(() => {

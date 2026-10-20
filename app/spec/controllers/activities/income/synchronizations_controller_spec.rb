@@ -60,6 +60,8 @@ RSpec.describe Activities::Income::SynchronizationsController do
     let(:heading) { I18n.t("application.sync_delay_alert.heading", locale: locale) }
     let(:body) { I18n.t("application.sync_delay_alert.body", locale: locale) }
     let(:alerts) { "" }
+    let(:progress_heading) { I18n.t("activities.income.synchronizations.show.header", locale: locale) }
+    let(:rendered) { Capybara.string(Nokogiri::HTML.fragment(response.body).at_css("template")&.inner_html || response.body) }
 
     around do |example|
       Timecop.freeze(Time.current.change(usec: 0)) do
@@ -88,19 +90,25 @@ RSpec.describe Activities::Income::SynchronizationsController do
     context "after five minutes" do
       let(:started_at) { 5.minutes.ago - 1.second }
 
-      it "renders a full-page message and document title on initial load" do
+      it "shows the alert above the existing heading and progress on initial load" do
         get :show, params: params
 
-        expect(Capybara.string(response.body)).to have_selector("h1", text: heading, count: 1)
+        expect(rendered).to have_selector(".usa-alert--warning", text: heading)
+        expect(rendered).to have_selector("h1", text: progress_heading, count: 1)
+        expect(rendered).to have_selector(".synchronizations-indicator")
+        expect(rendered).to have_selector(".usa-alert ~ h1", text: progress_heading)
         expect(Capybara.string(response.body)).to have_text(body)
-        expect(Capybara.string(response.body)).to have_selector("title", text: heading, visible: :all)
+        expect(rendered).to have_selector("title", text: progress_heading, visible: :all)
       end
 
-      it "replaces progress and supplies the new document title on the next poll" do
+      it "adds the alert above the existing heading and progress on the next poll" do
         patch :update, params: params
 
         expect(response.body).to include('turbo-stream action="replace" target="synchronization"')
-        expect(response.body).to include(heading, ERB::Util.html_escape(body), 'data-polling-target="status"')
+        expect(rendered).to have_selector(".usa-alert--warning", text: heading)
+        expect(rendered).to have_text(body)
+        expect(rendered).to have_selector(".usa-alert ~ h1", text: progress_heading)
+        expect(rendered).to have_selector(".synchronizations-indicator")
         expect(response.body).not_to include('action="redirect"')
       end
 
@@ -109,7 +117,7 @@ RSpec.describe Activities::Income::SynchronizationsController do
 
         it "uses the approved Spanish heading and body on initial load and polling" do
           get :show, params: params
-          expect(Capybara.string(response.body)).to have_selector("h1", text: "La sincronización está tardando más de lo normal")
+          expect(rendered).to have_selector(".usa-alert--warning", text: "La sincronización está tardando más de lo normal")
           expect(Capybara.string(response.body)).to have_text(body)
 
           patch :update, params: params
@@ -146,7 +154,7 @@ RSpec.describe Activities::Income::SynchronizationsController do
 
       it "shows the message immediately on initial load and polling" do
         get :show, params: params
-        expect(Capybara.string(response.body)).to have_selector("h1", text: heading)
+        expect(rendered).to have_selector(".usa-alert--warning", text: heading)
 
         patch :update, params: params
         expect(response.body).to include(heading)
@@ -157,7 +165,7 @@ RSpec.describe Activities::Income::SynchronizationsController do
 
         it "shows the manual message while waiting for the account" do
           get :show, params: params
-          expect(Capybara.string(response.body)).to have_selector("h1", text: heading)
+          expect(rendered).to have_selector(".usa-alert--warning", text: heading)
         end
       end
 

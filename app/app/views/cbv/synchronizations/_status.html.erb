@@ -1,19 +1,18 @@
-<% heading = sync_delayed? ? t("application.sync_delay_alert.heading") : t("cbv.synchronizations.show.header") %>
-<%= turbo_frame_tag "synchronization", data: { polling_target: "status", title: "#{heading} | #{t(activity_flow? ? 'shared.pilot_name_hr1_full' : 'shared.pilot_name')}" } do %>
+<%= turbo_frame_tag "synchronization" do %>
   <% if sync_delayed? %>
     <%= render "application/sync_delay_alert" %>
-  <% else %>
-    <h1 tabindex="-1">
-      <%= heading %>
-    </h1>
-
-    <p>
-      <%= t(".fetching_payroll_description") %>
-    </p>
-    <div class="grid-container">
-      <% if @payroll_account.present? %>
-        <%= render partial: "cbv/synchronizations/indicators", locals: { payroll_account: @payroll_account } %>
-      <% end %>
-    </div>
   <% end %>
+
+  <h1>
+    <%= t("cbv.synchronizations.show.header") %>
+  </h1>
+
+  <p>
+    <%= t(".fetching_payroll_description") %>
+  </p>
+  <div class="grid-container">
+    <% if @payroll_account.present? %>
+      <%= render partial: "cbv/synchronizations/indicators", locals: { payroll_account: @payroll_account } %>
+    <% end %>
+  </div>
 <% end %>
