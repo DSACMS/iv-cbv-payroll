@@ -10,6 +10,6 @@
 
 <% if current_agency&.agency_contact_website.present? %>
   <div class="margin-top-5">
-    <%= link_to t(".visit_agency", agency_acronym: agency_acronym), current_agency.agency_contact_website, class: "usa-button" %>
+    <%= link_to t(".visit_agency", agency_acronym: agency_acronym), current_agency.agency_contact_website, class: "usa-button", target: "_blank", rel: "noopener noreferrer" %>
   </div>
 <% end %>

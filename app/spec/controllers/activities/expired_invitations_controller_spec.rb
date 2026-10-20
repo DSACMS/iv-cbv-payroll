@@ -17,8 +17,9 @@ RSpec.describe Activities::ExpiredInvitationsController, type: :controller do
       expect(document).to have_text("This can happen if you've already submitted information via LDH's self-service portal or if the time to submit has expired. Please reach out to LDH for assistance.")
     end
 
-    it "links to the agency website" do
-      expect(document).to have_link("Visit LDH website", href: agency.agency_contact_website)
+    it "opens the agency website in a new tab with secure link attributes" do
+      expect(document).to have_link("Visit LDH website", href: agency.agency_contact_website, target: "_blank")
+      expect(document.find_link("Visit LDH website")[:rel].split).to contain_exactly("noopener", "noreferrer")
     end
 
     it "uses the Emmy layout" do
