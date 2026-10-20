@@ -3,12 +3,7 @@
   "id": "https://reportmyincome.org/schema/income-report",
   "title": "EMMY Income Report API (2026-06-18)",
   "type": "object",
-  "required": [
-    "confirmation_code",
-    "completed_at",
-    "agency_partner_metadata",
-    "income_report"
-  ],
+  "required": ["confirmation_code", "completed_at", "agency_partner_metadata", "income_report"],
   "properties": {
     "confirmation_code": {
       "type": "string",
@@ -25,10 +20,7 @@
     },
     "income_report": {
       "type": "object",
-      "required": [
-        "has_other_jobs",
-        "employments"
-      ],
+      "required": ["has_other_jobs", "employments"],
       "properties": {
         "has_other_jobs": {
           "type": "boolean"
@@ -37,11 +29,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": [
-              "applicant_full_name",
-              "employer_name",
-              "paystubs"
-            ],
+            "required": ["applicant_full_name", "employer_name", "paystubs"],
             "properties": {
               "applicant_full_name": {
                 "type": "string"
@@ -95,11 +83,7 @@
                 "anyOf": [
                   {
                     "type": "string",
-                    "enum": [
-                      "employed",
-                      "inactive",
-                      "terminated"
-                    ]
+                    "enum": ["employed", "inactive", "terminated"]
                   },
                   {
                     "type": "null"
@@ -110,10 +94,7 @@
                 "anyOf": [
                   {
                     "type": "string",
-                    "enum": [
-                      "w2",
-                      "gig"
-                    ]
+                    "enum": ["w2", "gig"]
                   },
                   {
                     "type": "null"
@@ -200,10 +181,7 @@
                 "type": "array",
                 "items": {
                   "type": "object",
-                  "required": [
-                    "pay_date",
-                    "pay_gross"
-                  ],
+                  "required": ["pay_date", "pay_gross"],
                   "properties": {
                     "pay_date": {
                       "type": "string",
@@ -271,11 +249,7 @@
                       "type": "array",
                       "items": {
                         "type": "object",
-                        "required": [
-                          "category",
-                          "tax",
-                          "amount"
-                        ],
+                        "required": ["category", "tax", "amount"],
                         "properties": {
                           "category": {
                             "anyOf": [
@@ -289,11 +263,7 @@
                           },
                           "tax": {
                             "type": "string",
-                            "enum": [
-                              "pre_tax",
-                              "post_tax",
-                              "unknown"
-                            ]
+                            "enum": ["pre_tax", "post_tax", "unknown"]
                           },
                           "amount": {
                             "anyOf": [
@@ -315,10 +285,7 @@
                       "items": {
                         "type": "object",
                         "additionalProperties": true,
-                        "required": [
-                          "type",
-                          "amount"
-                        ],
+                        "required": ["type", "amount"],
                         "properties": {
                           "type": {
                             "type": "string",
