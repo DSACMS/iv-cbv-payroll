@@ -162,15 +162,6 @@ ignore_missing:
     - "api.v2.fields.*" # FFS-4797
     - "cbv.employer_searches.employer.select_employer"
     - "cbv.employer_searches.show.select_employer"
-    # FFS-4872 Income completion copy
-    - "cbv.successes.show.download_description"
-    - "cbv.successes.show.download_title"
-    - "cbv.successes.show.head_of_household_description_html"
-    - "cbv.successes.show.head_of_household_title"
-    - "cbv.successes.show.header"
-    - "cbv.successes.show.household_member_description"
-    - "cbv.successes.show.household_member_title"
-    - "cbv.successes.show.next_steps_description"
 
 ## Consider these keys used:
 ignore_unused:

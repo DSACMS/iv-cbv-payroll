@@ -363,6 +363,14 @@ es:
       show:
         confirmation_code_html: "<strong>Su código de confirmación</strong>: %{confirmation_code}"
         download: Descargar mi informe
+        download_description: Le recomendamos guardar una copia de su informe.
+        download_title: Descargue su informe
+        head_of_household_description_html: Continúe su renovación en el <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">sitio web de la agencia</a> o use los formularios que recibió por correo postal. Puede cerrar esta pestaña.
+        head_of_household_title: Si es jefe de familia
+        header: Sus trabajos han sido enviados a %{agency_name}
+        household_member_description: Ha terminado por ahora. %{agency_name} revisará su información y se comunicará con usted si es necesario. Puede cerrar esta pestaña.
+        household_member_title: Si es miembro de un hogar
+        next_steps_description: "%{agency_name} revisará su información y se comunicará con usted si es necesario."
         survey: Responda esta encuesta de 3 preguntas
         whats_next: "¿Qué sigue?"
         whats_next_2_li_1_html: Nos gustaría saber más sobre su experiencia al usar este sitio.
