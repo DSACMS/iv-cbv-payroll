@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_19_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_120100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -74,6 +74,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_000000) do
     t.datetime "updated_at", null: false
     t.string "verification_range"
     t.boolean "unpaid_work_only", default: false
+    t.datetime "expires_at"
     t.datetime "redacted_at"
     t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
     t.index ["cbv_applicant_id"], name: "index_activity_flow_invitations_on_cbv_applicant_id"

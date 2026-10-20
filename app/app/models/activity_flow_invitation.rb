@@ -1,5 +1,6 @@
 class ActivityFlowInvitation < ApplicationRecord
   include Redactable
+  include InvitationExpiration
 
   has_redactable_fields(
     auth_token: :unique_string,
@@ -23,6 +24,6 @@ class ActivityFlowInvitation < ApplicationRecord
   end
 
   def expired?
-    false
+    expires_at.nil? || Time.current.after?(expires_at)
   end
 end
