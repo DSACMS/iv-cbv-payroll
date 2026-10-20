@@ -3,7 +3,6 @@ class EmploymentReviewComponent < ViewComponent::Base
     @employment_activity = employment_activity
     @flow = flow
     @params = params
-    @unpaid = employment_activity.unpaid_or_in_kind?
   end
 
   private
@@ -11,7 +10,7 @@ class EmploymentReviewComponent < ViewComponent::Base
   attr_reader :employment_activity, :flow, :params
 
   def unpaid?
-    @unpaid
+    employment_activity.unpaid_or_in_kind?
   end
 
   def summary_partial

@@ -476,7 +476,8 @@ en:
     entries:
       show:
         card_heading: 'Enter information related to the following activities:'
-        card_item_1: Unpaid work
+        card_item_1: Work or earned income
+        card_item_1_unpaid: Unpaid work
         card_item_2: School enrollment
         card_item_3: Community service or work program participation
         continue: Report your activities
@@ -516,11 +517,13 @@ en:
         employment: No employment added
         unpaid_work: No unpaid work added
         work_programs: No work programs added
-      empty_state_description: |-
+      empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
+      empty_state_description_single_month: Add employment, education, community service, or work program activities you've done in %{reporting_window}.
+      empty_state_description_unpaid: |-
         Add unpaid work, education, community service, or work program activities you've done between %{reporting_window}.
 
         Employment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}.
-      empty_state_description_single_month: |-
+      empty_state_description_single_month_unpaid: |-
         Add unpaid work, education, community service, or work program activities you've done in %{reporting_window}.
 
         Employment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}.
