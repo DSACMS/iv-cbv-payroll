@@ -3,6 +3,7 @@ require "swagger_helper"
 RSpec.describe DocumentWebhook do
   let(:document) { RSpec.configuration.openapi_specs.fetch("openapi.json") }
   let(:operation) { document[:webhooks].fetch(described_class::PATH).fetch(:post) }
+  let(:headers) { operation[:parameters].index_by { |parameter| parameter[:name] } }
 
   it "publishes a valid agency-hosted webhook in the receiving-data navigation" do
     expect(JSONSchemer.openapi(JSON.parse(document.merge(paths: {}).to_json)).validate.to_a).to be_empty
@@ -23,10 +24,20 @@ RSpec.describe DocumentWebhook do
   end
 
   it "requires content headers, signing headers, and the report confirmation code" do
-    expect(operation[:parameters]).to all(include(in: :header, required: true))
-    expect(operation[:parameters].pluck(:name)).to contain_exactly(
+    expect(headers.values).to all(include(in: :header))
+    expect(headers.values.select { |header| header[:required] }.pluck(:name)).to contain_exactly(
       "Content-Type", "Content-Length", "X-IVAAS-Timestamp", "X-IVAAS-Signature", "X-IVAAS-Confirmation-Code"
     )
+  end
+
+  it "documents activity document headers without requiring them for income report PDFs" do
+    expect(headers.values.reject { |header| header[:required] }.pluck(:name)).to contain_exactly(
+      "Content-Disposition", "X-IVAAS-Document-Id"
+    )
+    expect(headers["Content-Disposition"][:description])
+      .to eq(InvitationDocumentation.read("receiving-data/pdf-transmission", section: "Content-Disposition"))
+    expect(headers["X-IVAAS-Document-Id"][:description])
+      .to eq(InvitationDocumentation.read("receiving-data/pdf-transmission", section: "X-IVAAS-Document-Id"))
   end
 
   it "reads the overview, delivery details, request, and response guidance from Markdown" do

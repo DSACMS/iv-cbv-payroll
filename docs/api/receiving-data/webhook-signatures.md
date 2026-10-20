@@ -8,7 +8,11 @@ CE Activity Report, Income Report JSON, and PDF document deliveries.
 | :-- | :-- |
 | `X-IVAAS-Timestamp` | Unix timestamp the request was signed at. |
 | `X-IVAAS-Signature` | HMAC-SHA512 hexdigest of `"<timestamp>:<request body>"`, keyed with the agency's API key. |
-| `X-IVAAS-Confirmation-Code` | The report's confirmation code, repeated for convenience. |
+| `X-IVAAS-Confirmation-Code` | The report's confirmation code. Sent with CE Activity Reports and document deliveries; omitted from Income Report JSON POSTs. |
+
+Income Report JSON POSTs include `confirmation_code` in the JSON body but do not
+send the `X-IVAAS-Confirmation-Code` header. They still include
+`X-IVAAS-Timestamp` and `X-IVAAS-Signature`.
 
 Any additional headers the agency requires (for example an API gateway key) can be configured per-agency and are sent verbatim.
 

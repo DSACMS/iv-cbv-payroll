@@ -36,6 +36,17 @@ MIME type of the document. Any MIME type is supported; income report PDFs use
 
 Size of the document in bytes.
 
+## Content-Disposition
+
+Sent with supporting activity documents as `attachment; filename="<filename>"`
+to identify the transmitted file's name. Not sent with income report PDFs.
+
+## X-IVAAS-Document-Id
+
+Sent with supporting activity documents to identify the document, matching its
+`document_id` in the CE Activity Report. For example, `DOC-123`. Not sent with
+income report PDFs.
+
 ## Response and error handling
 
 Return `200 OK` when the document has been successfully received by your agency's
