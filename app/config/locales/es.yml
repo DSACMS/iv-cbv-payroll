@@ -81,6 +81,12 @@ es:
         sandbox: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
       subject:
         default: Verifique sus ingresos para su solicitud o renovación de SNAP
+  application:
+    aggregator_outage_alert:
+      activity_body_html: Es posible que algunas partes del sitio no funcionen correctamente. Si no puede buscar a su empleador o iniciar sesión con su proveedor de nómina, inténtelo de nuevo más tarde o %{manual_entry_link}.
+      heading: Estamos experimentando dificultades técnicas
+      income_body: Es posible que algunas partes del sitio no funcionen correctamente. Si no puede buscar a su empleador o iniciar sesión con su proveedor de nómina, inténtelo de nuevo más tarde.
+      manual_entry: agregue los detalles de su empleo manualmente
   cbv:
     add_jobs:
       show:

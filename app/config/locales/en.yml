@@ -871,6 +871,12 @@ en:
         sandbox: Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
+  application:
+    aggregator_outage_alert:
+      activity_body_html: Some parts of the site may not work properly. If you aren't able to search for your employer or login to your payroll provider, please try again later or %{manual_entry_link}.
+      heading: We're experiencing technical difficulties
+      income_body: Some parts of the site may not work properly. If you aren't able to search for your employer or login to your payroll provider, please try again later.
+      manual_entry: add your employment details manually
   caseworker_mailer:
     summary_email:
       greeting: Hello,
