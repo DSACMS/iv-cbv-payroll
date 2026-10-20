@@ -18,7 +18,7 @@
 <% unless @flow.employment_focused? %>
   <% content_for :activity_flow_header do %>
     <%= render ActivityFlowHeaderComponent.new(
-      title: unpaid ? t("activities.employment.unpaid_title") : t(@activity.document_upload_header_title_i18n_key),
+      title: t(@activity.document_upload_header_title_i18n_key),
       exit_url: activities_flow_root_path,
       back_url: @back_url,
       track_event_prefix: track_event_prefix

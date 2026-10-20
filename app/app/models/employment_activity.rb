@@ -109,6 +109,6 @@ class EmploymentActivity < Activity
   end
 
   def document_upload_header_title_i18n_key
-    "activities.employment.title_singular"
+    unpaid_or_in_kind? ? "activities.employment.unpaid_title" : "activities.employment.title_singular"
   end
 end
