@@ -37,6 +37,14 @@ RSpec.describe ActivityFlowInvitation, type: :model do
       it { is_expected.to be(false) }
     end
 
+    context "without an expiration" do
+      let(:now) { Time.new(2024, 8, 14, 12, 0, 0, "-04:00") }
+
+      before { invitation.update_columns(expires_at: nil) }
+
+      it { is_expected.to be(true) }
+    end
+
     context "at 11:59pm ET on the 14th day after the invitation was sent" do
       let(:now) { Time.new(2024, 8, 15, 23, 59, 59, "-04:00") }
 

@@ -18,6 +18,6 @@ class ActivityFlowInvitation < ApplicationRecord
   end
 
   def expired?
-    Time.current.after?(expires_at)
+    expires_at.nil? || Time.current.after?(expires_at)
   end
 end
