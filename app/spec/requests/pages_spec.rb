@@ -57,7 +57,7 @@ RSpec.describe "Pages", type: :request do
     end
 
     context "when maintenance is disabled" do
-      let(:alerts) { " " }
+      let(:alerts) { "none" }
 
       it "renders the normal page" do
         get "/"
