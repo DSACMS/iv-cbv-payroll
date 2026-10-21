@@ -1,10 +1,5 @@
 class ActivityFlowInvitation < ApplicationRecord
-  ACTIVITY_TYPES = {
-    "volunteering" => VolunteeringActivity,
-    "employment" => EmploymentActivity,
-    "education" => EducationActivity,
-    "job_training" => JobTrainingActivity
-  }.freeze
+  include InvitationExpiration
 
   belongs_to :cbv_applicant, optional: true
   has_many :activity_flows
@@ -23,6 +18,6 @@ class ActivityFlowInvitation < ApplicationRecord
   end
 
   def expired?
-    false
+    expires_at.nil? || Time.current.after?(expires_at)
   end
 end

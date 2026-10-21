@@ -211,7 +211,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       end
     end
 
-    it "publishes a complete CE model example with mixed employment and education" do
+    it "publishes a complete CE model and webhook example with mixed employment and education" do
       account = create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow, aggregator_account_id: "account1")
       payroll_report = build(:pinwheel_report, :hydrated, payroll_accounts: [ account ], has_fetched: true)
       payroll_report.incomes.first.compensation_unit = "hourly"
@@ -231,6 +231,10 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       populate_education_activities!
       payload = verify_employment_report
       RSpec.configuration.openapi_specs.fetch("openapi.json")[:components][:schemas][:CeActivityReport][:example] = payload
+      webhook = RSpec.configuration.openapi_specs.fetch("openapi.json")[:webhooks][ActivityReportWebhook::PATH][:post]
+      webhook[:requestBody][:content]["application/json"][:examples] = {
+        mixed_report: { summary: "Community service, work programs, mixed employment, and education", value: payload }
+      }
       expect(payload.dig("ce_report", "activities", "employment", "2025-03").map { |entry| entry["employment_type"] })
         .to eq(%w[self_employed unpaid gig])
       expect(payload.dig("ce_report", "activities", "education", "2025-03").map { |entry| entry["data_source"] }.uniq)
