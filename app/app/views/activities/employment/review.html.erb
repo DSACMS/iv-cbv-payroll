@@ -31,7 +31,7 @@
   <% end %>
 </p>
 
-<%= render EmploymentReviewComponent.new(employment_activity: @employment_activity, flow: @flow, params: params) %>
+<%= render EmploymentReviewComponent.new(employment_activity: @employment_activity, params: params) %>
 
 <% if @employment_activity.document_uploads.any? %>
   <%= render DocumentUploadsComponent.new(
