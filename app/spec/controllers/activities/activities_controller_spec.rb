@@ -4,6 +4,72 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
   include_context "activity_hub"
   render_views
 
+  describe "common questions" do
+    let(:current_flow) do
+      create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
+        education_activities_count: 0, reporting_window_months: 1)
+    end
+    let(:rendered) { Capybara.string(response.body) }
+    let(:required_month_count) { 1 }
+    let(:reporting_purpose) { I18n.t("activities.hub.common_questions.reporting_purposes.application") }
+    let(:requirements_body) do
+      ActionController::Base.helpers.strip_tags(
+        I18n.t("activities.hub.common_questions.requirements_body_html", count: required_month_count, hours: 80)
+      )
+    end
+    let(:income_body) { I18n.t("activities.hub.common_questions.income_body", reporting_purpose: reporting_purpose) }
+
+    before do
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+    end
+
+    it "shows both questions on an empty hub" do
+      get :index
+
+      expect(rendered).to have_selector("h2", text: I18n.t("activities.hub.common_questions.heading"))
+      expect(rendered).to have_button(I18n.t("activities.hub.common_questions.requirements_title"))
+      expect(rendered).to have_button(I18n.t("activities.hub.common_questions.income_title"))
+      expect(rendered).to have_no_button(I18n.t("activities.hub.review_and_submit"))
+    end
+
+    it "uses the application requirements and reporting purpose" do
+      get :index
+
+      expect(rendered).to have_text(requirements_body)
+      expect(rendered).to have_text(income_body)
+    end
+
+    context "with activities to review" do
+      before { create(:volunteering_activity, activity_flow: current_flow) }
+
+      it "shows a single review button" do
+        get :index
+
+        expect(rendered).to have_button(I18n.t("activities.hub.review_and_submit"), count: 1)
+        expect(rendered).to have_selector("form[action='#{controller.next_path}'][method='get']")
+      end
+    end
+
+    context "with a renewal requiring a subset of months" do
+      let(:required_month_count) { 2 }
+      let(:reporting_purpose) { I18n.t("activities.hub.common_questions.reporting_purposes.renewal") }
+
+      let(:current_flow) do
+        create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
+          education_activities_count: 0, reporting_window_type: "renewal", reporting_window_months: 6,
+          renewal_required_months: 2)
+      end
+
+      it "uses the required month count and renewal purpose" do
+        get :index
+
+        expect(rendered).to have_text(requirements_body)
+        expect(rendered).to have_text(income_body)
+      end
+    end
+  end
+
   describe "#index" do
     let(:current_flow) { create(:activity_flow) }
     let(:tracked_flow) { current_flow }
