@@ -17,26 +17,30 @@
       <% end %>
     </div>
 
-    <div class="cbv-footer__partner">
-      <div class="cbv-footer__logos" role="group" aria-label="<%= t("shared.footer.partners_label") %>">
-        <%= image_tag "emmy-footer-cms-logo.svg",
-                      alt: t("shared.footer.cms_logo_alt"),
-                      class: "cbv-footer__cms-logo" %>
-        <% if current_agency&.id == "la_ldh" %>
-          <div class="cbv-footer__agency-logo" role="img" aria-label="<%= agency_translation("shared.agency_full_name") %>">
-            <%= image_tag "emmy-footer-agency-mark.svg", alt: "", class: "cbv-footer__agency-mark" %>
-            <%= image_tag "emmy-footer-agency-title.svg", alt: "", class: "cbv-footer__agency-title" %>
-            <%= image_tag "emmy-footer-agency-wordmark.svg", alt: "", class: "cbv-footer__agency-wordmark" %>
-          </div>
-        <% elsif current_agency&.logo_path.present? %>
-          <%= image_tag current_agency.logo_path,
-                        alt: agency_translation("shared.agency_full_name"),
-                        class: "cbv-footer__other-agency-logo" %>
-        <% end %>
+    <% if activity_flow? %>
+      <div class="cbv-footer__partner">
+        <div class="cbv-footer__logos" role="group" aria-label="<%= t("shared.footer.partners_label") %>">
+          <%= image_tag "emmy-footer-cms-logo.svg",
+                        alt: t("shared.footer.cms_logo_alt"),
+                        class: "cbv-footer__cms-logo" %>
+          <% if current_agency&.id == "la_ldh" %>
+            <div class="cbv-footer__agency-logo" role="img" aria-label="<%= agency_translation("shared.agency_full_name") %>">
+              <%= image_tag "emmy-footer-agency-mark.svg", alt: "", class: "cbv-footer__agency-mark" %>
+              <%= image_tag "emmy-footer-agency-title.svg", alt: "", class: "cbv-footer__agency-title" %>
+              <%= image_tag "emmy-footer-agency-wordmark.svg", alt: "", class: "cbv-footer__agency-wordmark" %>
+            </div>
+          <% elsif current_agency&.logo_path.present? %>
+            <%= image_tag current_agency.logo_path,
+                          alt: agency_translation("shared.agency_full_name"),
+                          class: "cbv-footer__other-agency-logo" %>
+          <% end %>
+        </div>
+        <p class="cbv-footer__partnership">
+          <% if current_agency.present? %>
+            <%= t("shared.footer.partnership", agency: agency_translation("shared.agency_full_name")) %>
+          <% end %>
+        </p>
       </div>
-      <p class="cbv-footer__partnership">
-        <%= t("shared.footer.partnership", agency: agency_translation("shared.agency_full_name")) %>
-      </p>
-    </div>
+    <% end %>
   </div>
 </footer>
