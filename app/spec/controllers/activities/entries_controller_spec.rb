@@ -65,6 +65,32 @@ RSpec.describe Activities::EntriesController do
     context "with tokenized link" do
       let(:invitation) { create(:activity_flow_invitation) }
 
+      context "with an expired invitation" do
+        let(:invitation) { create(:activity_flow_invitation, expires_at: 1.second.ago) }
+
+        it "redirects to the expired invitation page without creating a flow" do
+          expect {
+            get :show, params: { token: invitation.auth_token }
+          }.not_to change(ActivityFlow, :count)
+
+          expect(response).to redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+          expect(session[:flow_id]).to be_nil
+        end
+      end
+
+      context "with an invitation without an expiration" do
+        before { invitation.update_columns(expires_at: nil) }
+
+        it "redirects to the expired invitation page without creating a flow" do
+          expect {
+            get :show, params: { token: invitation.auth_token }
+          }.not_to change(ActivityFlow, :count)
+
+          expect(response).to redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+          expect(session[:flow_id]).to be_nil
+        end
+      end
+
       context "with agency-supplied names" do
         let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
         let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
