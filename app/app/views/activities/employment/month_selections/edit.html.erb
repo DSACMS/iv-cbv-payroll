@@ -29,13 +29,19 @@
 </p>
 
 <% if @error %>
-  <%= render Uswds::Alert.new(type: :error, heading: t(".error_heading"), class: "margin-bottom-4") do %>
+  <%= render Uswds::Alert.new(
+    type: :error,
+    heading: t(".error_heading"),
+    form_id: "employment_month_selection_form",
+    class: "margin-bottom-4"
+  ) do %>
     <%= t(".error_body") %>
   <% end %>
 <% end %>
 
 <%= uswds_form_with(
       model: @employment_activity,
+      id: "employment_month_selection_form",
       url: activities_flow_income_employment_month_selection_path(
         employment_id: @employment_activity,
         from_edit: params[:from_edit].presence

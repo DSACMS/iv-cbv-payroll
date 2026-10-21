@@ -9,13 +9,14 @@ class SftpGateway
   end
 
   def upload_data(local_file, remote_file_location)
-    session = Net::SSH.start(url, user, **ssh_options)
-    sftp = Net::SFTP::Session.new(session)
-    sftp.connect!
-    sftp.upload! local_file, remote_file_location
-    sftp.channel.eof!
-    # https://github.com/net-ssh/net-ssh/issues/716
-    sftp.close_channel
+    Net::SSH.start(url, user, **ssh_options) do |session|
+      sftp = Net::SFTP::Session.new(session)
+      sftp.connect!
+      sftp.upload! local_file, remote_file_location
+      sftp.channel.eof!
+      # https://github.com/net-ssh/net-ssh/issues/716
+      sftp.close_channel
+    end
   end
 
   private
