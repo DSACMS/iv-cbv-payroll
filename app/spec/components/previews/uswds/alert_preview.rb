@@ -14,6 +14,22 @@ module Uswds
       end
     end
 
+    # Set a nonblank `dismiss_key` to enable the Dismiss button and controller.
+    # Dismissal is remembered in `sessionStorage` for the browser tab's session,
+    # including reloads and navigation. Use a stable key for each alert; include
+    # the flow ID when dismissal should apply only to that flow.
+    #
+    # To show this preview again, paste this JavaScript into the browser console:
+    #
+    # ```javascript
+    # sessionStorage.removeItem("dismissible-alert:lookbook-dismissible-alert");
+    # ```
+    def dismissible
+      render(Uswds::Alert.new(type: :info, slim: true, dismiss_key: "lookbook-dismissible-alert")) do
+        "This informative alert stays dismissed for the rest of your browser session."
+      end
+    end
+
     def warning_slim
       render(Uswds::Alert.new(type: :warning, slim: true)) do
         "Check the details below before continuing."
