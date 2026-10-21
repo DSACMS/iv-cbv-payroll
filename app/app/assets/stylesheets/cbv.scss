@@ -145,17 +145,16 @@ html {
 
 .cbv-footer__content {
   color: color("white");
-
-  @include at-media-max($theme-header-min-width) {
-    margin-left: units($theme-site-margins-mobile-width);
-  }
+  display: flex;
+  flex-direction: column;
+  gap: units(3);
+  padding: 20px units(2);
 
   @include at-media($theme-header-min-width) {
     @include clearfix;
     @include grid-container($theme-header-max-width);
+    padding: units(3) 0;
   }
-  @include u-font("sans", 4);
-  @include u-padding-y(2);
 
   a,
   a:visited {
@@ -167,19 +166,112 @@ html {
   @include u-margin-y(2);
 }
 
+.cbv-footer__primary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: units(2);
+  padding-bottom: units(2);
+  border-bottom: 1px solid #1a4480;
+}
+
 .cbv-footer__logo-text {
   display: flex;
   flex-direction: column;
-  gap: units(1);
+  gap: 0;
 }
 
 .cbv-footer__logo-line1 {
-  @include u-font("heading", 8);
+  @include u-font("heading", 5);
+  line-height: 1.45;
 }
 
 .cbv-footer__logo-line2 {
-  @include u-font("heading", 5);
+  @include u-font("sans", 3);
   font-weight: normal;
+  line-height: 1.5;
+}
+
+.cbv-footer__feedback {
+  display: inline-flex;
+  align-items: center;
+  gap: units(1);
+  min-height: 44px;
+  padding: units(1) units(2);
+  border: 2px solid color("gray-10");
+  border-radius: 4px;
+  color: color("gray-10") !important;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.cbv-footer__feedback-icon {
+  width: 11.6667px;
+  height: 11.6667px;
+}
+
+.cbv-footer__partner {
+  display: flex;
+  flex-direction: column;
+  gap: units(0.5);
+}
+
+.cbv-footer__logos {
+  display: flex;
+  align-items: center;
+  gap: units(1);
+  min-height: 27px;
+}
+
+.cbv-footer__cms-logo {
+  width: 69.2056px;
+  height: 24.3906px;
+  transform: rotate(180deg) scaleX(-1);
+}
+
+.cbv-footer__agency-logo {
+  position: relative;
+  flex: 0 0 191px;
+  width: 191px;
+  height: 27px;
+}
+
+.cbv-footer__agency-mark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 26.7894px;
+  height: 26.9328px;
+}
+
+.cbv-footer__agency-title {
+  position: absolute;
+  top: 4.89px;
+  left: 31.13px;
+  width: 62.1969px;
+  height: 5.58764px;
+}
+
+.cbv-footer__agency-wordmark {
+  position: absolute;
+  top: 12.36px;
+  left: 31.0px;
+  width: 160.002px;
+  height: 9.80597px;
+}
+
+.cbv-footer__other-agency-logo {
+  max-width: 191px;
+  max-height: 27px;
+}
+
+.cbv-footer__partnership {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.1;
 }
 
 .cbv-row-highlight td,

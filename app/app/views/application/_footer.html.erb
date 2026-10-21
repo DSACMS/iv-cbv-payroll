@@ -1,25 +1,42 @@
 <footer class="cbv-footer">
-  <div class="cbv-footer__content grid-row desktop:display-flex desktop:flex-justify">
-    <div class="cbv-footer__item grid-col-12 tablet:grid-col-8">
-      <% if activity_flow? %>
-        <div class="cbv-footer__logo-text">
+  <div class="cbv-footer__content">
+    <div class="cbv-footer__primary">
+      <div class="cbv-footer__logo-text">
+        <% if activity_flow? %>
           <strong class="cbv-footer__logo-line1"><%= t("shared.pilot_name_hr1_footer_line1") %></strong>
           <span class="cbv-footer__logo-line2"><%= t("shared.pilot_name_hr1") %></span>
-        </div>
-      <% else %>
-        <div class="display-table-cell text-middle height-5">
-          <strong><%= t("shared.pilot_name") %></strong>
-        </div>
+        <% else %>
+          <strong class="cbv-footer__logo-line1"><%= t("shared.pilot_name") %></strong>
+        <% end %>
+      </div>
+      <%= link_to feedbacks_path(referer: request.original_url),
+                  class: "cbv-footer__feedback",
+                  target: "_blank" do %>
+        <%= image_tag "emmy-footer-feedback-icon.svg", alt: "", class: "cbv-footer__feedback-icon" %>
+        <span><%= t("shared.footer.feedback") %></span>
       <% end %>
     </div>
-    <div class="cbv-footer__item grid-col-12 tablet:grid-col-4 desktop:display-flex desktop:flex-justify-end">
-      <%= render LinkWithIconComponent.new(
-            t("shared.footer.feedback"),
-            url: feedbacks_path(referer: request.original_url),
-            icon: "forum",
-            class: "usa-button usa-button--outline usa-button--inverse maxw-mobile margin-right-0",
-            target: "_blank"
-          ) %>
+
+    <div class="cbv-footer__partner">
+      <div class="cbv-footer__logos" role="group" aria-label="<%= t("shared.footer.partners_label") %>">
+        <%= image_tag "emmy-footer-cms-logo.svg",
+                      alt: t("shared.footer.cms_logo_alt"),
+                      class: "cbv-footer__cms-logo" %>
+        <% if current_agency&.id == "la_ldh" %>
+          <div class="cbv-footer__agency-logo" role="img" aria-label="<%= agency_translation("shared.agency_full_name") %>">
+            <%= image_tag "emmy-footer-agency-mark.svg", alt: "", class: "cbv-footer__agency-mark" %>
+            <%= image_tag "emmy-footer-agency-title.svg", alt: "", class: "cbv-footer__agency-title" %>
+            <%= image_tag "emmy-footer-agency-wordmark.svg", alt: "", class: "cbv-footer__agency-wordmark" %>
+          </div>
+        <% elsif current_agency&.logo_path.present? %>
+          <%= image_tag current_agency.logo_path,
+                        alt: agency_translation("shared.agency_full_name"),
+                        class: "cbv-footer__other-agency-logo" %>
+        <% end %>
+      </div>
+      <p class="cbv-footer__partnership">
+        <%= t("shared.footer.partnership", agency: agency_translation("shared.agency_full_name")) %>
+      </p>
     </div>
   </div>
 </footer>

@@ -1471,6 +1471,8 @@ en:
     footer:
       feedback: Share feedback
       partnership: Emmy is provided by the Centers for Medicare & Medicaid Services (CMS) in partnership with %{agency}.
+      partners_label: Federal and state partners
+      cms_logo_alt: Centers for Medicare & Medicaid Services
     header:
       aria_label: Main navigation
       cbv_flow_title:
