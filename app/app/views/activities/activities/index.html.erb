@@ -250,34 +250,34 @@
         <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
       </div>
     <% end %>
-
-    <div class="divider margin-top-5 margin-bottom-4" aria-hidden="true"></div>
-
-    <section aria-labelledby="activity-hub-common-questions-heading" class="usa-accordion--icon-end">
-      <h2 id="activity-hub-common-questions-heading" class="margin-top-0 margin-bottom-3">
-        <%= t("activities.hub.common_questions.heading") %>
-      </h2>
-
-      <%= render AccordionComponent.new(id: "activity-hub-requirements", heading_level: 3) do |accordion| %>
-        <% accordion.with_title do %>
-          <%= t("activities.hub.common_questions.requirements_title") %>
-        <% end %>
-        <% accordion.with_accordion_item do %>
-          <%= t("activities.hub.common_questions.requirements_body_html",
-            count: required_month_count,
-            hours: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD) %>
-        <% end %>
-      <% end %>
-
-      <% reporting_purpose = variant == :renewal ? t("activities.hub.common_questions.reporting_purposes.renewal") : t("activities.hub.common_questions.reporting_purposes.application") %>
-      <%= render AccordionComponent.new(id: "activity-hub-income", heading_level: 3) do |accordion| %>
-        <% accordion.with_title do %>
-          <%= t("activities.hub.common_questions.income_title") %>
-        <% end %>
-        <% accordion.with_accordion_item do %>
-          <%= t("activities.hub.common_questions.income_body", reporting_purpose: reporting_purpose) %>
-        <% end %>
-      <% end %>
-    </section>
   </div>
 </div>
+
+<div class="divider margin-bottom-4" aria-hidden="true"></div>
+
+<section aria-labelledby="activity-hub-common-questions-heading" class="usa-accordion--icon-end margin-bottom-4">
+  <h2 id="activity-hub-common-questions-heading" class="margin-top-0 margin-bottom-3">
+    <%= t("activities.hub.common_questions.heading") %>
+  </h2>
+
+  <%= render AccordionComponent.new(id: "activity-hub-requirements", heading_level: 3) do |accordion| %>
+    <% accordion.with_title do %>
+      <%= t("activities.hub.common_questions.requirements_title") %>
+    <% end %>
+    <% accordion.with_accordion_item do %>
+      <%= t("activities.hub.common_questions.requirements_body_html",
+        count: required_month_count,
+        hours: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD) %>
+    <% end %>
+  <% end %>
+
+  <% reporting_purpose = variant == :renewal ? t("activities.hub.common_questions.reporting_purposes.renewal") : t("activities.hub.common_questions.reporting_purposes.application") %>
+  <%= render AccordionComponent.new(id: "activity-hub-income", heading_level: 3) do |accordion| %>
+    <% accordion.with_title do %>
+      <%= t("activities.hub.common_questions.income_title") %>
+    <% end %>
+    <% accordion.with_accordion_item do %>
+      <%= t("activities.hub.common_questions.income_body", reporting_purpose: reporting_purpose) %>
+    <% end %>
+  <% end %>
+</section>
