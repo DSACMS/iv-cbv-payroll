@@ -1,4 +1,6 @@
 class ActivityFlowInvitation < ApplicationRecord
+  include InvitationExpiration
+
   belongs_to :cbv_applicant, optional: true
   has_many :activity_flows
   has_one :household_member
@@ -16,6 +18,6 @@ class ActivityFlowInvitation < ApplicationRecord
   end
 
   def expired?
-    false
+    expires_at.nil? || Time.current.after?(expires_at)
   end
 end

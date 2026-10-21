@@ -92,15 +92,6 @@ class Cbv::BaseController < FlowController
     })
   end
 
-  def track_expired_event(invitation)
-    event_logger.track(TrackEvent::ApplicantAccessedExpiredLinkPage, request, {
-      invitation_id: invitation.id,
-      cbv_applicant_id: invitation.cbv_applicant_id,
-      client_agency_id: current_agency&.id,
-      time: Time.now.to_i
-    })
-  end
-
   def track_invitation_clicked_event(invitation, cbv_flow)
     event_logger.track(TrackEvent::ApplicantClickedCBVInvitationLink, request, {
       time: Time.now.to_i,
