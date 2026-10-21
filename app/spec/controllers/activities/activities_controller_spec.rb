@@ -43,10 +43,10 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     context "with activities to review" do
       before { create(:volunteering_activity, activity_flow: current_flow) }
 
-      it "shows a single review button" do
+      it "provides the review action when activities have been added" do
         get :index
 
-        expect(rendered).to have_button(I18n.t("activities.hub.review_and_submit"), count: 1)
+        expect(rendered).to have_button(I18n.t("activities.hub.review_and_submit"))
         expect(rendered).to have_selector("form[action='#{controller.next_path}'][method='get']")
       end
     end

@@ -67,6 +67,9 @@
           <%#= t("activities.hub.verification_info_link") %>
         </p>
       <% end %>
+      <div class="display-none tablet:display-block">
+        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+      </div>
     <% end %>
 
   </div>
@@ -243,7 +246,9 @@
     <% end %>
 
     <% if any_activities_added %>
-      <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+      <div class="tablet:display-none">
+        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+      </div>
     <% end %>
 
     <div class="divider margin-top-5 margin-bottom-4" aria-hidden="true"></div>
