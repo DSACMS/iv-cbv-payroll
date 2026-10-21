@@ -182,7 +182,7 @@ RSpec.describe Cbv::SynchronizationsController do
       it "shows the alert above the existing heading and progress on initial load" do
         get :show, params: params
 
-        expect(rendered).to have_selector(".usa-alert--warning", text: heading)
+        expect(rendered).to have_selector(".usa-alert--info", text: heading)
         expect(rendered).to have_selector("h1", text: progress_heading, count: 1)
         expect(rendered).to have_selector(".synchronizations-indicator")
         expect(rendered).to have_selector(".usa-alert ~ h1", text: progress_heading)
@@ -194,7 +194,7 @@ RSpec.describe Cbv::SynchronizationsController do
         patch :update, params: params
 
         expect(response.body).to include('turbo-stream action="replace" target="synchronization"')
-        expect(rendered).to have_selector(".usa-alert--warning", text: heading)
+        expect(rendered).to have_selector(".usa-alert--info", text: heading)
         expect(rendered).to have_text(body)
         expect(rendered).to have_selector(".usa-alert ~ h1", text: progress_heading)
         expect(rendered).to have_selector(".synchronizations-indicator")
@@ -206,7 +206,7 @@ RSpec.describe Cbv::SynchronizationsController do
 
         it "uses the approved Spanish heading and body on initial load and polling" do
           get :show, params: params
-          expect(rendered).to have_selector(".usa-alert--warning", text: "La sincronización está tardando más de lo normal")
+          expect(rendered).to have_selector(".usa-alert--info", text: "La sincronización está tardando más de lo normal")
           expect(Capybara.string(response.body)).to have_text(body)
 
           patch :update, params: params
@@ -243,7 +243,7 @@ RSpec.describe Cbv::SynchronizationsController do
 
       it "shows the message immediately on initial load and polling" do
         get :show, params: params
-        expect(rendered).to have_selector(".usa-alert--warning", text: heading)
+        expect(rendered).to have_selector(".usa-alert--info", text: heading)
 
         patch :update, params: params
         expect(response.body).to include(heading)
@@ -254,7 +254,7 @@ RSpec.describe Cbv::SynchronizationsController do
 
         it "shows the manual message while waiting for the account" do
           get :show, params: params
-          expect(rendered).to have_selector(".usa-alert--warning", text: heading)
+          expect(rendered).to have_selector(".usa-alert--info", text: heading)
         end
       end
 
