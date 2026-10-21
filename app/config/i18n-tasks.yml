@@ -158,6 +158,7 @@ ignore_missing:
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
+    - "components.uswds.alert.dismiss" # FFS-4930
     - "api.v2.la_ldh.fields.*" # FFS-4797
     - "api.v2.fields.*" # FFS-4797
     - "cbv.employer_searches.employer.select_employer"
