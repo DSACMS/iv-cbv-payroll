@@ -16,9 +16,12 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     invitation = create(:activity_flow_invitation, client_agency_id: "sandbox", verification_range: "last_12_complete_months")
     visit activities_flow_start_path(token: invitation.auth_token)
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
+    verify_page(page, title: I18n.t("activities.hub.title"))
 
     flow = ActivityFlow.last
+    expect(page).to have_selector("p",
+      text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", required_month_count: flow.required_month_count)}",
+      normalize_ws: true)
     flow.update!(employment_focused: true)
     expect(flow.reporting_months.size).to eq(12)
     first_selected_month = flow.reporting_months.first

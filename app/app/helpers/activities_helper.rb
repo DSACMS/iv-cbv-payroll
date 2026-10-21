@@ -37,26 +37,6 @@ module ActivitiesHelper
     complete_month_count >= required_month_count ? :completed : :in_progress
   end
 
-  def activity_hub_title_key(state)
-    case state
-    when :empty
-      "activities.hub.empty_state_title"
-    when :completed
-      "activities.hub.completed_state_title"
-    else
-      "activities.hub.in_progress_state_title"
-    end
-  end
-
-  def activity_hub_description_key(state)
-    case state
-    when :completed
-      "activities.hub.completed_state_description"
-    else
-      "activities.hub.in_progress_state_description"
-    end
-  end
-
   def employment_cards(payroll_accounts, aggregator_report, reporting_range)
     return [] unless aggregator_report
 

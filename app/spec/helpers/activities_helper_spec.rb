@@ -107,34 +107,6 @@ RSpec.describe ActivitiesHelper do
         expect(state).to eq(:completed)
       end
     end
-
-    describe "#activity_hub_title_key" do
-      it "maps empty state to empty-state title key" do
-        expect(helper.activity_hub_title_key(:empty)).to eq("activities.hub.empty_state_title")
-      end
-
-      it "maps completed state to completed-state title key" do
-        expect(helper.activity_hub_title_key(:completed)).to eq("activities.hub.completed_state_title")
-      end
-
-      it "maps in-progress state to in-progress title key" do
-        expect(helper.activity_hub_title_key(:in_progress)).to eq("activities.hub.in_progress_state_title")
-      end
-    end
-
-    describe "#activity_hub_description_key" do
-      it "maps completed state to completed-state description key" do
-        expect(helper.activity_hub_description_key(:completed)).to eq("activities.hub.completed_state_description")
-      end
-
-      it "maps in-progress state to in-progress description key" do
-        expect(helper.activity_hub_description_key(:in_progress)).to eq("activities.hub.in_progress_state_description")
-      end
-
-      it "maps empty state to in-progress description key" do
-        expect(helper.activity_hub_description_key(:empty)).to eq("activities.hub.in_progress_state_description")
-      end
-    end
   end
 
   describe "#community_service_cards" do

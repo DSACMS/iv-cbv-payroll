@@ -217,6 +217,44 @@ RSpec.describe ActivityFlow, type: :model do
     end
   end
 
+  describe "#months_required_display" do
+    let(:flow) { build_stubbed(:activity_flow, reporting_window_months: 2) }
+
+    it "shows the required month count for an application" do
+      expect(flow.months_required_display).to eq(flow.required_month_count.to_s)
+    end
+
+    context "with a renewal" do
+      let(:flow) { build_stubbed(:activity_flow, reporting_window_type: "renewal", reporting_window_months: 6, renewal_required_months: 3) }
+
+      it "shows how many months can be chosen from the reporting period" do
+        expect(flow.months_required_display).to eq(
+          I18n.t("activities.hub.months_required_any", required_month_count: flow.required_month_count)
+        )
+      end
+    end
+
+    context "with an invitation for the last twelve complete months" do
+      let(:invitation) { build_stubbed(:activity_flow_invitation, verification_range: "last_12_complete_months") }
+      let(:flow) { build_stubbed(:activity_flow, activity_flow_invitation: invitation, reporting_window_months: 12) }
+
+      it "uses renewal wording without an explicit renewal type" do
+        expect(flow.months_required_display).to eq(
+          I18n.t("activities.hub.months_required_any", required_month_count: flow.required_month_count)
+        )
+      end
+    end
+
+    context "with an invitation for the last complete month" do
+      let(:invitation) { build_stubbed(:activity_flow_invitation, verification_range: "last_complete_month") }
+      let(:flow) { build_stubbed(:activity_flow, activity_flow_invitation: invitation, reporting_window_type: "renewal", reporting_window_months: 1) }
+
+      it "returns no months-required text" do
+        expect(flow.months_required_display).to be_nil
+      end
+    end
+  end
+
   it 'marked as complete when completed_at timestamp is set' do
     flow = create(:activity_flow, completed_at: nil)
     expect(flow).not_to be_complete
