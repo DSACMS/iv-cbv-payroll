@@ -148,7 +148,7 @@ html {
   display: flex;
   flex-direction: column;
   gap: units(3);
-  padding: 20px units(2);
+  padding: 20px units($theme-site-margins-mobile-width);
 
   @include at-media($theme-header-min-width) {
     @include clearfix;
@@ -269,9 +269,10 @@ html {
 }
 
 .cbv-footer__partnership {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.1;
+  @include u-font("sans", 2);
+  margin: units(1) 0 0;
+  font-size: 12px;
+  line-height: 1.2;
 }
 
 .cbv-row-highlight td,
