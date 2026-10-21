@@ -2,7 +2,6 @@
 <% monthly_results = progress_calculator.monthly_results %>
 <% required_month_count = progress_calculator.required_month_count %>
 <% state = activity_hub_state(any_activities_added:, monthly_results:, required_month_count:) %>
-<% variant = @flow.renewal_reporting_window? ? :renewal : :application %>
 <% title_key = activity_hub_title_key(state) %>
 <% description_key = activity_hub_description_key(state) %>
 <% reporting_window_display = @flow.reporting_window_display %>
@@ -28,7 +27,7 @@
         <%= reporting_window_display %>
       </p>
 
-      <% if variant == :renewal %>
+      <% if @flow.renewal_reporting_window? %>
         <% months_required_key = required_month_count < @flow.reporting_window_months ? "activities.hub.empty_state_months_required_any" : "activities.hub.empty_state_months_required_all" %>
         <p class="activity-hub-subheading">
           <strong><%= t("activities.hub.empty_state_months_required_label") %></strong>
@@ -50,17 +49,6 @@
     <% end %>
 
     <% if any_activities_added %>
-      <% show_progress_unit_toggle = @employment_activities.any? || @employment_payroll_accounts.any? %>
-      <div class="margin-top-4">
-        <%= render(
-          ActivityFlowProgressIndicator.from_calculator(
-            progress_calculator,
-            variant: variant,
-            show_unit_toggle: show_progress_unit_toggle
-          )
-        ) %>
-      </div>
-
       <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
 
       <% if state == :in_progress %>
