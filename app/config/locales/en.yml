@@ -1469,10 +1469,10 @@ en:
       one: "%{count} credit hour"
       other: "%{count} credit hours"
     footer:
-      feedback: Share feedback
-      partnership: Emmy is provided by the Centers for Medicare & Medicaid Services (CMS) in partnership with %{agency}.
-      partners_label: Federal and state partners
       cms_logo_alt: Centers for Medicare & Medicaid Services
+      feedback: Share feedback
+      partners_label: Federal and state partners
+      partnership: Emmy is provided by the Centers for Medicare & Medicaid Services (CMS) in partnership with %{agency}.
     header:
       aria_label: Main navigation
       cbv_flow_title:
@@ -1507,7 +1507,6 @@ en:
     pilot_name_hr1: Eligibility Made Easy
     pilot_name_hr1_footer_line1: Emmy
     pilot_name_hr1_full: Emmy | Eligibility Made Easy
-    subheader_agency_text: In partnership with %{agency}
     report_data_range:
       ninety_days: 90 days
       six_months: 6 months
@@ -1519,6 +1518,7 @@ en:
       sandbox: benefits
     select_placeholder: "- Select -"
     skip_link: Skip to main content
+    subheader_agency_text: In partnership with %{agency}
     table_headers:
       community_service_information: Community service information
       education_information: Education information
