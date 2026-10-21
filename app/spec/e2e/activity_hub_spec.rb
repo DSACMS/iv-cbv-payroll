@@ -17,7 +17,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     let(:income_question) { I18n.t("activities.hub.common_questions.income_title") }
     let(:requirements_body) do
       ActionController::Base.helpers.strip_tags(
-        I18n.t("activities.hub.common_questions.requirements_body_html", count: 1, hours: 80)
+        I18n.t("activities.hub.common_questions.requirements_body_html")
       )
     end
     let(:income_body) do

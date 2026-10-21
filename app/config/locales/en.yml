@@ -503,9 +503,7 @@ en:
         reporting_purposes:
           application: application
           renewal: renewal
-        requirements_body_html:
-          one: Report at least <strong>%{hours} hours</strong> of activity for <strong>one month</strong> within the reporting period to meet community engagement requirements.
-          other: Report at least <strong>%{hours} hours</strong> of activity in each of <strong>%{count} months</strong> within the reporting period to meet community engagement requirements.
+        requirements_body_html: Report at least <strong>80 hours</strong> of activity for at least <strong>one month</strong> in the reporting period to meet community engagement requirements.
         requirements_title: What do I need to meet community engagement requirements?
       completed_state_description: "%{agency_name} will determine your eligibility based on the activities you've added to your report."
       completed_state_title: You're ready to review and submit your report

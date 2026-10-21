@@ -265,9 +265,7 @@
       <%= t("activities.hub.common_questions.requirements_title") %>
     <% end %>
     <% accordion.with_accordion_item do %>
-      <%= t("activities.hub.common_questions.requirements_body_html",
-        count: required_month_count,
-        hours: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD) %>
+      <%= t("activities.hub.common_questions.requirements_body_html") %>
     <% end %>
   <% end %>
 
