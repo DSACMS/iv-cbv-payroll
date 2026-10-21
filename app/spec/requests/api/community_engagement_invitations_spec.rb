@@ -1,6 +1,7 @@
 require "swagger_helper"
 
-RSpec.describe "Community engagement invitations API", type: :request do
+# The parameterized V2 invitation operation documents this endpoint.
+RSpec.describe "Community engagement invitations API", document: false, type: :request do
   let(:user) { create(:user, :with_access_token, client_agency_id: "sandbox", is_service_account: true) }
   let(:Authorization) { "Bearer #{user.api_access_tokens.first.access_token}" } # rubocop:disable RSpec/VariableName -- rswag uses the HTTP header name.
   let(:invitation) do

@@ -1,6 +1,12 @@
 module InvitationDocumentation
   SITE_URL = "https://DSACMS.github.io/iv-cbv-payroll/index.html".freeze
 
+  def self.code_block(name, section:, language:)
+    markdown = read(name, section: section)
+    markdown.match(/^```#{Regexp.escape(language)}\n(.*?)^```/m)&.captures&.first ||
+      raise(ArgumentError, "Missing #{language} code block in docs/api/#{name}.md section #{section}")
+  end
+
   def self.read(name, section: nil)
     markdown = Rails.root.join("../docs/api", "#{name}.md").read
     return markdown.strip unless section
