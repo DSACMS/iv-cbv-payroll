@@ -233,39 +233,11 @@ html {
 }
 
 .cbv-footer__agency-logo {
-  position: relative;
-  flex: 0 0 191px;
-  width: 191px;
-  height: 27px;
-}
-
-.cbv-footer__agency-mark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 26.7894px;
-  height: 26.9328px;
-}
-
-.cbv-footer__agency-title {
-  position: absolute;
-  top: 4.89px;
-  left: 31.13px;
-  width: 62.1969px;
-  height: 5.58764px;
-}
-
-.cbv-footer__agency-wordmark {
-  position: absolute;
-  top: 12.36px;
-  left: 31.0px;
-  width: 160.002px;
-  height: 9.80597px;
-}
-
-.cbv-footer__other-agency-logo {
-  max-width: 191px;
-  max-height: 27px;
+  display: block;
+  flex-shrink: 0;
+  width: 11.9375rem;
+  height: auto;
+  filter: brightness(0) invert(1);
 }
 
 .cbv-footer__partnership {
