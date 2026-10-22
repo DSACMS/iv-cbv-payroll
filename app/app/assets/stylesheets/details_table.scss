@@ -1,0 +1,31 @@
+@use "uswds" as *;
+
+// A key/value table with horizontal rules, shared by current details and history.
+.usa-table.details-table {
+  border: 0;
+
+  thead {
+    display: none;
+  }
+
+  tbody tr {
+    border: 0;
+    border-top: 2px solid color("ink");
+  }
+
+  tbody tr:last-child {
+    border-bottom: 1px solid color("base-light");
+  }
+
+  th,
+  td {
+    background-color: transparent;
+    border: 0;
+    padding: units(1);
+  }
+
+  td[data-label]::before {
+    margin: 0 0 units(0.5);
+    padding: 0;
+  }
+}
