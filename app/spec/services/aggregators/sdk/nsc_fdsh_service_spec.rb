@@ -57,8 +57,7 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
               {
                 enrollmentStatusCode: "Y",
                 termBeginDate: "2024-05-31",
-                termEndDate: "2024-11-19",
-                schoolCertifiedOnDate: "2024-07-16"
+                termEndDate: "2024-11-19"
               }
             ]
           }
@@ -115,8 +114,7 @@ RSpec.describe Aggregators::Sdk::NscFdshService, type: :service do
             include(
               "enrollmentStatus" => "Y",
               "termBeginDate" => "2024-05-31",
-              "termEndDate" => "2024-11-19",
-              "schoolCertifiedOnDate" => "2024-07-16"
+              "termEndDate" => "2024-11-19"
             )
           )
         )

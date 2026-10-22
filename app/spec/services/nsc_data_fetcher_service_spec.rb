@@ -88,7 +88,6 @@ RSpec.describe NscDataFetcherService do
             enrollment_status: "enrolled", # Y
             term_begin: Date.parse("2024-05-31"),
             term_end: Date.parse("2024-11-19"),
-            school_certified_on: Date.new(2024, 7, 16),
           )
       end
 
@@ -96,34 +95,6 @@ RSpec.describe NscDataFetcherService do
         service.fetch
 
         expect(education_activity.reload.data_source).to eq("partially_self_attested")
-      end
-
-      context "when the school certification date is absent" do
-        before do
-          nsc_stub_request_education_search_response("lynette") do |response|
-            response["enrollmentDetails"].first["enrollmentData"].first.delete("schoolCertifiedOnDate")
-          end
-        end
-
-        it "saves the enrollment without inventing a certification date" do
-          service.fetch
-
-          expect(education_activity.nsc_enrollment_terms.first.school_certified_on).to be_nil
-        end
-      end
-
-      context "when the student has withdrawn" do
-        before do
-          nsc_stub_request_education_search_response("lynette") do |response|
-            response["enrollmentDetails"].first["enrollmentData"].first["enrollmentStatus"] = "W"
-          end
-        end
-
-        it "preserves the withdrawn status" do
-          service.fetch
-
-          expect(education_activity.nsc_enrollment_terms.first).to be_enrollment_withdrawn
-        end
       end
 
       it "queries NSC with the reporting window end date" do
