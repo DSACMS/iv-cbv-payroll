@@ -167,6 +167,7 @@ module Launcher
             {
               "termBeginDate" => term[:term_begin].strftime("%Y-%m-%d"),
               "termEndDate" => term[:term_end].strftime("%Y-%m-%d"),
+              "schoolCertifiedOnDate" => term[:term_begin].strftime("%Y-%m-%d"),
               "enrollmentStatus" => STATUS_CODES.fetch(term[:enrollment_status].to_sym)
             }
           ]

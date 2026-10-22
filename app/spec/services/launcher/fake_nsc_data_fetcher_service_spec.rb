@@ -24,6 +24,13 @@ RSpec.describe Launcher::FakeNscDataFetcherService do
   let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
 
   describe "#fetch" do
+    it "saves certification dates so launcher enrollments show the status as-of date" do
+      service.fetch
+
+      terms = education_activity.nsc_enrollment_terms
+      expect(terms.pluck(:school_certified_on)).to eq([ Date.new(2026, 1, 1), Date.new(2026, 1, 1) ])
+    end
+
     it "saves fake enrollment terms and derives data_source from those terms" do
       expect { service.fetch }
         .to change { education_activity.reload.status }
