@@ -158,7 +158,7 @@ RSpec.describe Api::InvitationsController do
   end
 
   describe "#expire" do
-    subject(:expire_invitation) do
+    def expire_invitation
       delete :expire, params: { token: cbv_flow_invitation.auth_token }
     end
 
@@ -177,11 +177,71 @@ RSpec.describe Api::InvitationsController do
     it "expires the invitation" do
       expire_invitation
       expect(response).to have_http_status(:ok)
-      expect(CbvFlowInvitation.find_by(id: cbv_flow_invitation.id).expires_at).to be_within(1.second).of(Time.current)
+      expect(CbvFlowInvitation.find_by(id: cbv_flow_invitation.id)).to have_attributes(
+        expires_at: be_within(1.second).of(Time.current),
+        manually_expired: true
+      )
+    end
+
+    it "succeeds when the invitation was already manually expired" do
+      expire_invitation
+
+      expect { expire_invitation }.not_to change { cbv_flow_invitation.reload.manually_expired }
+      expect(response).to have_http_status(:ok)
+    end
+
+    context "when the token belongs to a community engagement invitation" do
+      let(:activity_flow_invitation) do
+        create(:activity_flow_invitation, client_agency_id: client_agency_id.to_s)
+      end
+
+      def expire_invitation
+        delete :expire, params: { flow_type: "community-engagement", token: activity_flow_invitation.auth_token }
+      end
+
+      it "expires the invitation" do
+        expire_invitation
+
+        expect(response).to have_http_status(:ok)
+        expect(activity_flow_invitation.reload).to have_attributes(
+          expires_at: be_within(1.second).of(Time.current),
+          manually_expired: true
+        )
+      end
+
+      it "succeeds when the invitation was already manually expired" do
+        expire_invitation
+
+        expect { expire_invitation }.not_to change { activity_flow_invitation.reload.manually_expired }
+        expect(response).to have_http_status(:ok)
+      end
+
+      context "when the invitation belongs to another agency" do
+        let(:activity_flow_invitation) { create(:activity_flow_invitation, client_agency_id: "la_ldh") }
+
+        it "returns not_found without expiring the invitation" do
+          expire_invitation
+
+          expect(response).to have_http_status(:not_found)
+          expect(activity_flow_invitation.reload).not_to be_expired
+        end
+      end
+    end
+
+    context "when the flow type is unrecognized" do
+      def expire_invitation
+        delete :expire, params: { flow_type: "other", token: "any-token" }
+      end
+
+      it "returns not_found" do
+        expire_invitation
+
+        expect(response).to have_http_status(:not_found)
+      end
     end
 
     context "when the token does not match any invitation" do
-      subject(:expire_invitation) do
+      def expire_invitation
         delete :expire, params: { token: "nonexistent-token" }
       end
 

@@ -26,3 +26,13 @@ Direct the applicant to `tokenized_url` to report income. Its `expiration_date`
 is the end of the day in `America/New_York` after the agency's configured
 validity period (14 days for the sandbox). Request a new invitation when a
 link expires.
+
+## Expiring a link
+
+Use `DELETE /api/v1/income/invitations/{token}` to expire an income link, or
+`DELETE /api/v1/community-engagement/invitations/{token}` to expire a community
+engagement link. The API key must belong to the agency that created the link.
+The operation is idempotent: repeat calls for a manually expired link also
+return `200`. Unknown tokens, tokens belonging to another agency, and unknown
+flow types return `404`. The legacy `DELETE /api/v1/invitations/{token}` route
+continues to expire income links.

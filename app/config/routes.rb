@@ -143,6 +143,7 @@ Rails.application.routes.draw do
     scope :v1 do
       post "/invitations", to: "invitations#create"
       delete "/invitations/:token", to: "invitations#expire"
+      delete "/:flow_type/invitations/:token", to: "invitations#expire"
     end
 
     scope :v2, module: :v2 do
