@@ -488,6 +488,12 @@ en:
     error_no_identity: Please provide your name and date of birth
     errors:
       invalid_token: The link you used is invalid.
+    expired_invitations:
+      show:
+        agency_fallback: your benefits agency
+        body: This can happen if you've already submitted information via %{agency_acronym}'s self-service portal or if the time to submit has expired. Please reach out to %{agency_acronym} for assistance.
+        title: Your verification link is no longer valid
+        visit_agency: Visit %{agency_acronym} website
     hub:
       add: Add
       cards:
