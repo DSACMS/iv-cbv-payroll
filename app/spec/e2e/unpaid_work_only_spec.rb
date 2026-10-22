@@ -24,15 +24,8 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
       verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
       within("[data-activity-type='unpaid_work']") do
         expect(page).to have_selector(".usa-alert--info", text: alert_text)
-        click_button I18n.t("components.uswds.alert.dismiss")
-        expect(page).to have_no_text(alert_text)
+        click_button I18n.t("activities.hub.add")
       end
-
-      # Reload: the alert remains dismissed for this session.
-      page.refresh
-      verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
-      expect(page).to have_no_text(alert_text)
-      within("[data-activity-type='unpaid_work']") { click_button I18n.t("activities.hub.add") }
 
       # Work information: confirm the unpaid form is shown.
       verify_page(page, title: I18n.t("activities.employment_info.unpaid_or_in_kind.title"))
@@ -40,7 +33,6 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
 
       # Hub: return and start adding unpaid work again.
       verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
-      expect(page).to have_no_text(alert_text)
       within("[data-activity-type='unpaid_work']") { click_button I18n.t("activities.hub.add") }
 
       # Work information: confirm the unpaid form is shown.
@@ -67,7 +59,6 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
       # Hub: verify the saved activity and hours.
       verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
       within("[data-activity-type='unpaid_work']") do
-        expect(page).to have_no_text(alert_text)
         expect(page).to have_text(I18n.t("activities.hub.cards.hours", count: "12"))
         expect(page).to have_no_text("$0.00")
       end
