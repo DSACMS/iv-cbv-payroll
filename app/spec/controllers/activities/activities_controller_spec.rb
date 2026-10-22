@@ -92,14 +92,23 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
            )
     end
 
-    it "shows in progress hub heading and description" do
-      expect(response.body).to include(I18n.t("activities.hub.in_progress_state_title"))
-      expect(response.body).to include(
-        I18n.t(
-          "activities.hub.in_progress_state_description",
-          agency_name: I18n.t("shared.agency_full_name.sandbox")
-        )
-      )
+    it "shows the hub heading, reporting period, and months required" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_selector("h1", text: I18n.t("activities.hub.title"))
+      expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.empty_state_reporting_period_label")} #{current_flow.reporting_window_display}", exact_text: true, normalize_ws: true)
+      expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.months_required_label")} #{current_flow.required_month_count}", exact_text: true, normalize_ws: true)
+    end
+
+    context "with an invitation for the last twelve complete months" do
+      let(:invitation) { create(:activity_flow_invitation, verification_range: "last_12_complete_months") }
+      let(:current_flow) { create(:activity_flow, activity_flow_invitation: invitation) }
+
+      it "shows renewal months-required wording with activities added" do
+        expect(Capybara.string(response.body)).to have_selector("p",
+          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: current_flow.required_month_count)}",
+          exact_text: true, normalize_ws: true)
+      end
     end
   end
 
@@ -184,18 +193,12 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).not_to include(I18n.t("activities.hub.review_and_submit"))
     end
 
-    it "shows empty-state hub heading and description" do
-      page_text = Capybara.string(response.body).text
+    it "shows the hub heading, reporting period, and months required" do
+      rendered = Capybara.string(response.body)
 
-      expect(page_text).to include(I18n.t("activities.hub.empty_state_title"))
-      expect(page_text).to include(I18n.t("activities.hub.empty_state_reporting_period_label"))
-      expect(page_text).to include(current_flow.reporting_window_display)
-      expect(page_text).to include(
-        I18n.t(
-          "activities.hub.empty_state_description",
-          reporting_window: current_flow.reporting_window_display
-        )
-      )
+      expect(rendered).to have_selector("h1", text: I18n.t("activities.hub.title"))
+      expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.empty_state_reporting_period_label")} #{current_flow.reporting_window_display}", exact_text: true, normalize_ws: true)
+      expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.months_required_label")} #{current_flow.required_month_count}", exact_text: true, normalize_ws: true)
     end
 
     context "with a single-month reporting window" do
@@ -210,17 +213,10 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       end
 
       it "shows the empty-state reporting period with one month label" do
-        page_text = Capybara.string(response.body).text
+        rendered = Capybara.string(response.body)
         reporting_month = I18n.l(current_flow.reporting_window_range.begin, format: :month_year)
 
-        expect(page_text).to include(I18n.t("activities.hub.empty_state_reporting_period_label"))
-        expect(page_text).to include(reporting_month)
-        expect(page_text).to include(
-          I18n.t(
-            "activities.hub.empty_state_description_single_month",
-            reporting_window: reporting_month
-          )
-        )
+        expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.empty_state_reporting_period_label")} #{reporting_month}", exact_text: true, normalize_ws: true)
       end
     end
 
@@ -243,12 +239,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).not_to include(I18n.t("activities.hub.empty.community_service"))
       expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
     end
-
-    # Commenting out until verification info page is implemented, FFS-4642
-    # it "shows the verification info link in the in-progress state" do
-    #   page_text = Capybara.string(response.body).text
-    #   expect(page_text).to include(I18n.t("activities.hub.verification_info_link"))
-    # end
   end
 
   context "when activity requirements are completed" do
@@ -275,17 +265,12 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows completed hub heading and description and hides the verification info link" do
-      page_text = Capybara.string(response.body).text
+    it "shows the hub heading, reporting period, and months required" do
+      rendered = Capybara.string(response.body)
 
-      expect(page_text).to include(I18n.t("activities.hub.completed_state_title"))
-      expect(page_text).to include(
-        I18n.t(
-          "activities.hub.completed_state_description",
-          agency_name: I18n.t("shared.agency_full_name.sandbox")
-        )
-      )
-      expect(page_text).not_to include(I18n.t("activities.hub.verification_info_link"))
+      expect(rendered).to have_selector("h1", text: I18n.t("activities.hub.title"))
+      expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.empty_state_reporting_period_label")} #{current_flow.reporting_window_display}", exact_text: true, normalize_ws: true)
+      expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.months_required_label")} #{current_flow.required_month_count}", exact_text: true, normalize_ws: true)
     end
   end
 
@@ -314,11 +299,11 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows the hub in completed state" do
-      page_text = Capybara.string(response.body).text
+    it "shows the hub heading and reporting period" do
+      rendered = Capybara.string(response.body)
 
-      expect(page_text).to include(I18n.t("activities.hub.completed_state_title"))
-      expect(page_text).not_to include(I18n.t("activities.hub.in_progress_state_title"))
+      expect(rendered).to have_selector("h1", text: I18n.t("activities.hub.title"))
+      expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.empty_state_reporting_period_label")} #{current_flow.reporting_window_display}", exact_text: true, normalize_ws: true)
     end
   end
 
@@ -356,11 +341,12 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
         get :index
       end
 
-      it "shows the completed hub state when required months are complete" do
-        page_text = Capybara.string(response.body).text
+      it "shows renewal months-required copy when required months are complete" do
+        rendered = Capybara.string(response.body)
 
-        expect(page_text).to include(I18n.t("activities.hub.completed_state_title"))
-        expect(page_text).not_to include(I18n.t("activities.hub.in_progress_state_title"))
+        expect(rendered).to have_selector("p",
+          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: current_flow.required_month_count)}",
+          exact_text: true, normalize_ws: true)
       end
     end
   end
@@ -385,11 +371,9 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       end
 
       it "shows renewal months-required copy in the empty state" do
-        page_text = Capybara.string(response.body).text
-
-        expect(page_text).to include(
-          I18n.t("activities.hub.empty_state_months_required_all", required_month_count: 6)
-        )
+        expect(Capybara.string(response.body)).to have_selector("p",
+          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: current_flow.required_month_count)}",
+          exact_text: true, normalize_ws: true)
       end
     end
 
@@ -413,11 +397,9 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       end
 
       it "shows the renewal 'any months' copy in the empty state" do
-        page_text = Capybara.string(response.body).text
-
-        expect(page_text).to include(
-          I18n.t("activities.hub.empty_state_months_required_any", required_month_count: 3)
-        )
+        expect(Capybara.string(response.body)).to have_selector("p",
+          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: current_flow.required_month_count)}",
+          exact_text: true, normalize_ws: true)
       end
     end
   end
