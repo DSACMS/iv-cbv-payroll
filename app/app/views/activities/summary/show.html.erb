@@ -29,17 +29,6 @@
   <% end %>
 </p>
 
-<% show_progress_unit_toggle = @self_attested_employment_activities.any? || @employment_payroll_accounts.any? %>
-
-<%= render(
-  ActivityFlowProgressIndicator.from_calculator(
-    progress_calculator,
-    variant: @flow.renewal_reporting_window? ? :renewal : :application,
-    show_unit_toggle: show_progress_unit_toggle,
-    display_variant: :review
-  )
-) %>
-
 <div class="margin-top-4">
 <% @all_activities.each_with_index do |activity_data, index| %>
   <section>
