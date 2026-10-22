@@ -4,7 +4,15 @@ RSpec.describe "Technical difficulties outage", type: :request do
   let(:alerts) { "technical_difficulties" }
   let(:maintenance) { nil }
   let(:website) { "https://agency.example.test/report" }
-  let(:heading) { "We're currently experiencing technical difficulties" }
+  let(:locale) { :en }
+  let(:heading) { I18n.t("maintenance.technical_difficulties.header", locale: locale) }
+  let(:agency_acronym) { I18n.t("shared.agency_acronym.la_ldh", locale: locale) }
+  let(:agency_name) { I18n.t("shared.agency_full_name.la_ldh", locale: locale) }
+  let(:reporting_purpose) { I18n.t("shared.reporting_purpose.la_ldh", locale: locale) }
+  let(:body) { I18n.t("maintenance.technical_difficulties.body", locale: locale, agency_acronym: agency_acronym, reporting_purpose: reporting_purpose) }
+  let(:agency_link) { I18n.t("maintenance.technical_difficulties.agency_link", locale: locale, agency_acronym: agency_acronym) }
+  let(:body_without_agency) { I18n.t("maintenance.technical_difficulties.body_without_agency", locale: locale) }
+  let(:maintenance_heading) { I18n.t("maintenance.header", locale: locale) }
   let(:outage_path) { technical_difficulties_path(client_agency_id: "la_ldh", locale: :en) }
   let(:rendered) { Capybara.string(response.body) }
 
@@ -30,22 +38,24 @@ RSpec.describe "Technical difficulties outage", type: :request do
       follow_redirect!
       expect(response).to be_successful
       expect(rendered).to have_selector("h1", text: heading)
-      expect(rendered).to have_text("submit your benefits information by visiting LDH's website")
-      expect(rendered).to have_link("Visit LDH's website", href: website)
-      expect(rendered).to have_selector("img[alt='Louisiana Department of Health']")
+      expect(rendered).to have_text(body)
+      expect(rendered).to have_link(agency_link, href: website)
+      expect(rendered).to have_selector("img[alt='#{agency_name}']")
     end
   end
 
   context "with a Spanish locale" do
+    let(:locale) { :es }
+
     before do
-      get "/activities/income/employer_search", params: { client_agency_id: "la_ldh", locale: "es" }
+      get "/activities/income/employer_search", params: { client_agency_id: "la_ldh", locale: locale }
       follow_redirect!
     end
 
     it "uses the approved Spanish copy and agency reporting purpose" do
-      expect(rendered).to have_selector("h1", text: "Estamos experimentando dificultades técnicas en estos momentos")
-      expect(rendered).to have_text("enviar su información de beneficios visitando el sitio web de LDH")
-      expect(rendered).to have_link("Visite el sitio web de LDH", href: website)
+      expect(rendered).to have_selector("h1", text: heading)
+      expect(rendered).to have_text(body)
+      expect(rendered).to have_link(agency_link, href: website)
     end
   end
 
@@ -101,7 +111,7 @@ RSpec.describe "Technical difficulties outage", type: :request do
     it "passes the domain's agency explicitly to the outage page" do
       expect(response).to redirect_to(outage_path)
       follow_redirect!
-      expect(rendered).to have_link("Visit LDH's website", href: website)
+      expect(rendered).to have_link(agency_link, href: website)
     end
 
     it "uses an explicit agency instead of the hostname" do
@@ -111,8 +121,8 @@ RSpec.describe "Technical difficulties outage", type: :request do
 
     it "does not infer the static page's agency when its URL has no agency parameter" do
       get "/technical_difficulties"
-      expect(rendered).to have_no_link("Visit LDH's website")
-      expect(rendered).to have_text("You can try again later.")
+      expect(rendered).to have_no_link(agency_link)
+      expect(rendered).to have_text(body_without_agency)
     end
   end
 
@@ -124,7 +134,7 @@ RSpec.describe "Technical difficulties outage", type: :request do
     it "renders a generic message without a broken link or redirect loop" do
       expect(response).to be_successful
       expect(rendered).to have_selector("h1", text: heading)
-      expect(rendered).to have_text("We were unable to connect due to an error. You can try again later.")
+      expect(rendered).to have_text(body_without_agency)
       expect(rendered).to have_no_selector("main a.usa-button")
       expect(response.body).not_to include("%{", "translation_missing")
     end
@@ -138,7 +148,7 @@ RSpec.describe "Technical difficulties outage", type: :request do
     it "renders the fallback without a broken CTA" do
       expect(response).to be_successful
       expect(rendered).to have_no_selector("main a.usa-button")
-      expect(rendered).to have_text("You can try again later.")
+      expect(rendered).to have_text(body_without_agency)
     end
   end
 
@@ -152,7 +162,7 @@ RSpec.describe "Technical difficulties outage", type: :request do
     it "renders the fallback without an empty CTA" do
       expect(response).to be_successful
       expect(rendered).to have_no_selector("main a.usa-button")
-      expect(rendered).to have_text("You can try again later.")
+      expect(rendered).to have_text(body_without_agency)
     end
   end
 
@@ -165,7 +175,7 @@ RSpec.describe "Technical difficulties outage", type: :request do
       expect(response).to redirect_to(maintenance_path)
       follow_redirect!
       expect(response).to be_successful
-      expect(rendered).to have_selector("h1", text: "We're undergoing maintenance")
+      expect(rendered).to have_selector("h1", text: maintenance_heading)
     end
 
     it "gives maintenance precedence on the technical difficulties endpoint" do
@@ -190,7 +200,7 @@ RSpec.describe "Technical difficulties outage", type: :request do
       get "/help"
       expect(response).to redirect_to(maintenance_path)
       follow_redirect!
-      expect(rendered).to have_selector("h1", text: "We're undergoing maintenance")
+      expect(rendered).to have_selector("h1", text: maintenance_heading)
     end
   end
 
