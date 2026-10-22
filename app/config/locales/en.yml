@@ -509,8 +509,6 @@ en:
         employment: No employment added
         unpaid_work: No unpaid work added
         work_programs: No work programs added
-      empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
-      empty_state_description_single_month: Add employment, education, community service, or work program activities you've done in %{reporting_window}.
       empty_state_reporting_period_label: 'Reporting period:'
       months_required_any: any %{required_month_count} months in the reporting period
       months_required_label: 'Months required:'

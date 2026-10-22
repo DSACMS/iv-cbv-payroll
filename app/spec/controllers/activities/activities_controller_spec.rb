@@ -193,18 +193,12 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).not_to include(I18n.t("activities.hub.review_and_submit"))
     end
 
-    it "shows the hub heading, reporting period, and empty-state description" do
+    it "shows the hub heading, reporting period, and months required" do
       rendered = Capybara.string(response.body)
 
       expect(rendered).to have_selector("h1", text: I18n.t("activities.hub.title"))
       expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.empty_state_reporting_period_label")} #{current_flow.reporting_window_display}", exact_text: true, normalize_ws: true)
       expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.months_required_label")} #{current_flow.required_month_count}", exact_text: true, normalize_ws: true)
-      expect(rendered).to have_text(
-        I18n.t(
-          "activities.hub.empty_state_description",
-          reporting_window: current_flow.reporting_window_display
-        )
-      )
     end
 
     context "with a single-month reporting window" do
@@ -223,12 +217,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
         reporting_month = I18n.l(current_flow.reporting_window_range.begin, format: :month_year)
 
         expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.empty_state_reporting_period_label")} #{reporting_month}", exact_text: true, normalize_ws: true)
-        expect(rendered).to have_text(
-          I18n.t(
-            "activities.hub.empty_state_description_single_month",
-            reporting_window: reporting_month
-          )
-        )
       end
     end
 
@@ -251,12 +239,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).not_to include(I18n.t("activities.hub.empty.community_service"))
       expect(response.body).to include(I18n.t("activities.hub.review_and_submit"))
     end
-
-    # Commenting out until verification info page is implemented, FFS-4642
-    # it "shows the verification info link in the in-progress state" do
-    #   page_text = Capybara.string(response.body).text
-    #   expect(page_text).to include(I18n.t("activities.hub.verification_info_link"))
-    # end
   end
 
   context "when activity requirements are completed" do

@@ -1,7 +1,3 @@
-<% any_activities_added = @flow.any_activities_added? %>
-<% monthly_results = progress_calculator.monthly_results %>
-<% required_month_count = progress_calculator.required_month_count %>
-<% state = activity_hub_state(any_activities_added:, monthly_results:, required_month_count:) %>
 <% reporting_window_display = @flow.reporting_window_display %>
 <% months_required_display = @flow.months_required_display %>
 
@@ -25,27 +21,9 @@
       </p>
     <% end %>
 
-    <% if state == :empty %>
-      <p class="activity-hub-subheading">
-        <% if @flow.reporting_window_months == 1 %>
-          <%= t("activities.hub.empty_state_description_single_month", reporting_window: reporting_window_display) %>
-        <% else %>
-          <%= t("activities.hub.empty_state_description", reporting_window: reporting_window_display) %>
-        <% end %>
-      </p>
-    <% end %>
-
-    <% if any_activities_added %>
+    <% if @flow.any_activities_added? %>
       <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
-
-      <% if state == :in_progress %>
-        <p class="margin-top-2 text-center text-primary font-sans-sm text-underline">
-        <%# Commented out for now, will be added back in when we have a verification info page %>
-          <%#= t("activities.hub.verification_info_link") %>
-        </p>
-      <% end %>
     <% end %>
-
   </div>
   <div class="activity-hub-columns__activities">
     <% if show_activity?(:employment) %>

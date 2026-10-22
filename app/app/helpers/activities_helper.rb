@@ -30,13 +30,6 @@ module ActivitiesHelper
     activity_type_enabled?(type)
   end
 
-  def activity_hub_state(any_activities_added:, monthly_results:, required_month_count: monthly_results.length)
-    return :empty unless any_activities_added
-
-    complete_month_count = monthly_results.count(&:meets_requirements)
-    complete_month_count >= required_month_count ? :completed : :in_progress
-  end
-
   def employment_cards(payroll_accounts, aggregator_report, reporting_range)
     return [] unless aggregator_report
 
