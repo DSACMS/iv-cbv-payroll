@@ -602,6 +602,11 @@ es:
     body_1: El sitio no está disponible en este momento. Cualquier información que haya ingresado no se guardará.
     body_2: Visite el sitio web de su agencia para obtener más información sobre cómo enviar comprobantes de ingresos para optar por beneficios.
     header: Se están realizando algunas tareas de mantenimiento
+    technical_difficulties:
+      agency_link: Visite el sitio web de %{agency_acronym}
+      body: No pudimos establecer la conexión debido a un error. Puede intentarlo de nuevo más tarde o enviar su información de %{reporting_purpose} visitando el sitio web de %{agency_acronym}.
+      body_without_agency: No pudimos establecer la conexión debido a un error. Puede intentarlo de nuevo más tarde.
+      header: Estamos experimentando dificultades técnicas en estos momentos
   pages:
     error_404:
       error_code_html: 'Código de error: <strong>404</strong>'
