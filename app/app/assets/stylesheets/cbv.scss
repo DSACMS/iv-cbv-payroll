@@ -153,8 +153,9 @@ html {
   @include at-media($theme-header-min-width) {
     @include clearfix;
     @include grid-container($theme-header-max-width);
-    padding: units(3) 0;
   }
+  @include u-font("sans", 4);
+  @include u-padding-y(2);
 
   a,
   a:visited {
@@ -190,27 +191,6 @@ html {
   @include u-font("sans", 3);
   font-weight: normal;
   line-height: 1.5;
-}
-
-.cbv-footer__feedback {
-  display: inline-flex;
-  align-items: center;
-  gap: units(1);
-  min-height: 44px;
-  padding: units(1) units(2);
-  border: 2px solid color("gray-10");
-  border-radius: 4px;
-  color: color("gray-10") !important;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
-  text-decoration: none;
-}
-
-.cbv-footer__feedback-icon {
-  width: 11.6667px;
-  height: 11.6667px;
 }
 
 .cbv-footer__partner {
