@@ -14,10 +14,6 @@ class Activities::ExpiredInvitationsController < ApplicationController
     true
   end
 
-  def show_menu?
-    true
-  end
-
   def session_timeout_enabled?
     false
   end

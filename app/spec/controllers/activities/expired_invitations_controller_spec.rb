@@ -25,6 +25,30 @@ RSpec.describe Activities::ExpiredInvitationsController, type: :controller do
     it "uses the Emmy layout" do
       expect(document).to have_selector("title", text: "Your verification link is no longer valid | Emmy | Eligibility Made Easy", visible: :all)
     end
+
+    it "does not show an applicant navigation menu" do
+      expect(document).to have_no_selector("button.usa-menu-btn")
+    end
+
+    it "uses CE branding without an existing flow session" do
+      expect(document).to have_selector(".cbv-header__pilot-name", text: I18n.t("shared.pilot_name_hr1_full"))
+      expect(document).to have_no_link(I18n.t("shared.header.help"))
+    end
+  end
+
+  context "with an existing Income session" do
+    before do
+      session[:flow_id] = create(:cbv_flow).id
+      session[:flow_type] = :cbv
+      get :show, params: { client_agency_id: "la_ldh" }
+    end
+
+    it "keeps CE branding and navigation instead of using the Income session" do
+      expect(document).to have_selector(".cbv-header__pilot-name", text: I18n.t("shared.pilot_name_hr1_full"))
+      expect(document).to have_no_link(I18n.t("shared.header.help"))
+      expect(document).to have_no_selector("button.usa-menu-btn")
+      expect(document).to have_no_selector("#session-timeout-modal", visible: :all)
+    end
   end
 
   context "with an existing session from another agency" do
