@@ -75,7 +75,7 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
 
       # Submit: complete the tokenized community engagement flow.
       visit activities_flow_root_path
-      verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
+      verify_page(page, title: I18n.t("activities.hub.title"))
       click_button I18n.t("activities.hub.review_and_submit")
       verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
       find("label[for='activity_flow_consent_to_submit']").click
