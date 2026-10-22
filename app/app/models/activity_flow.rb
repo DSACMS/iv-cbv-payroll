@@ -104,7 +104,7 @@ class ActivityFlow < Flow
     return if verification_range == "last_complete_month"
 
     if verification_range == "last_12_complete_months" || renewal_reporting_window?
-      I18n.t("activities.hub.months_required_any", required_month_count: required_month_count)
+      I18n.t("activities.hub.months_required_any", count: required_month_count)
     else
       required_month_count.to_s
     end

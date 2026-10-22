@@ -225,12 +225,19 @@ RSpec.describe ActivityFlow, type: :model do
     end
 
     context "with a renewal" do
-      let(:flow) { build_stubbed(:activity_flow, reporting_window_type: "renewal", reporting_window_months: 6, renewal_required_months: 3) }
+      let(:renewal_required_months) { 3 }
+      let(:flow) { build_stubbed(:activity_flow, reporting_window_type: "renewal", reporting_window_months: 6, renewal_required_months: renewal_required_months) }
 
       it "shows how many months can be chosen from the reporting period" do
-        expect(flow.months_required_display).to eq(
-          I18n.t("activities.hub.months_required_any", required_month_count: flow.required_month_count)
-        )
+        expect(flow.months_required_display).to eq("any 3 months in the reporting period")
+      end
+
+      context "when one month is required" do
+        let(:renewal_required_months) { 1 }
+
+        it "uses the singular month" do
+          expect(flow.months_required_display).to eq("any 1 month in the reporting period")
+        end
       end
     end
 
@@ -240,7 +247,7 @@ RSpec.describe ActivityFlow, type: :model do
 
       it "uses renewal wording without an explicit renewal type" do
         expect(flow.months_required_display).to eq(
-          I18n.t("activities.hub.months_required_any", required_month_count: flow.required_month_count)
+          I18n.t("activities.hub.months_required_any", count: flow.required_month_count)
         )
       end
     end

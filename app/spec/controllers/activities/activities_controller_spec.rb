@@ -106,7 +106,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       it "shows renewal months-required wording with activities added" do
         expect(Capybara.string(response.body)).to have_selector("p",
-          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", required_month_count: current_flow.required_month_count)}",
+          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: current_flow.required_month_count)}",
           exact_text: true, normalize_ws: true)
       end
     end
@@ -345,7 +345,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
         rendered = Capybara.string(response.body)
 
         expect(rendered).to have_selector("p",
-          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", required_month_count: current_flow.required_month_count)}",
+          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: current_flow.required_month_count)}",
           exact_text: true, normalize_ws: true)
       end
     end
@@ -372,7 +372,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       it "shows renewal months-required copy in the empty state" do
         expect(Capybara.string(response.body)).to have_selector("p",
-          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", required_month_count: current_flow.required_month_count)}",
+          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: current_flow.required_month_count)}",
           exact_text: true, normalize_ws: true)
       end
     end
@@ -398,7 +398,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       it "shows the renewal 'any months' copy in the empty state" do
         expect(Capybara.string(response.body)).to have_selector("p",
-          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", required_month_count: current_flow.required_month_count)}",
+          text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: current_flow.required_month_count)}",
           exact_text: true, normalize_ws: true)
       end
     end

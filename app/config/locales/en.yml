@@ -510,7 +510,9 @@ en:
         unpaid_work: No unpaid work added
         work_programs: No work programs added
       empty_state_reporting_period_label: 'Reporting period:'
-      months_required_any: any %{required_month_count} months in the reporting period
+      months_required_any:
+        one: any %{count} month in the reporting period
+        other: any %{count} months in the reporting period
       months_required_label: 'Months required:'
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit

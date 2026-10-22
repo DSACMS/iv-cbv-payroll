@@ -20,7 +20,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     flow = ActivityFlow.last
     expect(page).to have_selector("p",
-      text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", required_month_count: flow.required_month_count)}",
+      text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: flow.required_month_count)}",
       normalize_ws: true)
     flow.update!(employment_focused: true)
     expect(flow.reporting_months.size).to eq(12)
