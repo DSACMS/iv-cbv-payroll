@@ -1,5 +1,6 @@
 class Activities::BaseController < FlowController
   before_action :redirect_unless_activity_hub_enabled, :set_flow
+  before_action :redirect_used_invitation_for_flow
 
   helper_method :current_identity, :progress_calculator
 
@@ -75,7 +76,19 @@ class Activities::BaseController < FlowController
   end
 
   def invitation_unusable?(invitation)
-    super || invitation.activity_flows.completed.exists?
+    super || invitation.used?
+  end
+
+  def redirect_used_invitation_for_flow
+    return unless @flow
+
+    invitation = @flow.activity_flow_invitation
+    redirect_used_invitation(invitation) if invitation&.used?
+  end
+
+  def redirect_used_invitation(invitation)
+    track_expired_event(invitation)
+    redirect_to expired_invitation_path(invitation)
   end
 
   def expired_invitation_path(invitation)

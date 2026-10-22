@@ -1,4 +1,5 @@
 class Activities::SuccessController < Activities::BaseController
+  skip_before_action :redirect_used_invitation_for_flow, only: :show
   before_action :ensure_completed
 
   def show

@@ -32,6 +32,20 @@ RSpec.describe Cbv::EntriesController do
         expect(response).to be_successful
       end
 
+      context "when activity invitation reuse is disabled" do
+        before do
+          allow(Rails.application.config.client_agencies["sandbox"])
+            .to receive(:allow_activity_invitation_reuse).and_return(false)
+          create(:cbv_flow, :completed, cbv_flow_invitation: invitation)
+        end
+
+        it "still allows Income invitations to start another flow" do
+          expect { get :show, params: { token: invitation.auth_token } }.to change(CbvFlow, :count).by(1)
+
+          expect(response).to be_successful
+        end
+      end
+
       context 'when unreserved, non-alphanumeric characters are appended to a valid auth_token' do
         # rfc3986 allows for any of these to be used in a URL "-" / "." / "_" / "~"
         [ "-", ".", "_", "~", "._~" ].each do |char|
