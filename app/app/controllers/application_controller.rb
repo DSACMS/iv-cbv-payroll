@@ -213,7 +213,7 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_if_maintenance_mode
-    if ENV["MAINTENANCE_MODE"] == "true"
+    if alert_enabled?(:maintenance)
       redirect_to_outage maintenance_path
     elsif alert_enabled?(:technical_difficulties)
       agency_id = params[:client_agency_id].presence || client_agency_from_domain

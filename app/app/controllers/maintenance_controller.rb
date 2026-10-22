@@ -6,7 +6,7 @@ class MaintenanceController < ApplicationController
 
   def technical_difficulties
     # Planned maintenance takes precedence when both full-site alerts are active.
-    redirect_to_outage maintenance_path if ENV["MAINTENANCE_MODE"] == "true"
+    redirect_to_outage maintenance_path if alert_enabled?(:maintenance)
   end
 
   private

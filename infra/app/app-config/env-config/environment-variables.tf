@@ -76,10 +76,6 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/new-relic-env"
     },
-    MAINTENANCE_MODE = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/maintenance-mode"
-    },
     ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/active-record-encryption-primary-key"
