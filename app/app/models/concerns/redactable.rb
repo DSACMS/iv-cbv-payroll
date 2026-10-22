@@ -44,7 +44,7 @@ module Redactable
     end
   end
 
-  def redact!(fields = nil)
+  def redact!(fields = nil, touch: true)
     fields_to_redact = fields || self.class.fields_to_redact
     raise "No fields to redact in #{self.class}" unless fields_to_redact.present?
 
@@ -54,6 +54,6 @@ module Redactable
     end
     self[REDACTED_TIMESTAMP_COLUMN] = Time.now
 
-    save(validate: false)
+    save(validate: false, touch: touch)
   end
 end

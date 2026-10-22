@@ -49,6 +49,26 @@ RSpec.describe DataRetentionService do
   end
 
   describe "#redact_incomplete_activity_flows" do
+    context "with persisted payroll summaries" do
+      let!(:payroll_account) { create(:payroll_account, flow: flow) }
+      let!(:summary) { create(:activity_flow_monthly_summary, activity_flow: flow, payroll_account: payroll_account, total_w2_hours: 40) }
+      let!(:employment_summary) { create(:activity_flow_employment_summary, activity_flow: flow, payroll_account: payroll_account, employer_name: "Example Employer") }
+
+      it "preserves the inactivity timestamp during flow redaction" do
+        expect { service.redact_incomplete_activity_flows }.not_to change { flow.reload.updated_at }
+        expect_redacted(flow)
+      end
+
+      it "keeps summaries eligible when flow redaction runs first" do
+        service.redact_incomplete_activity_flows
+        service.redact_activity_flow_summaries
+
+        expect_redacted(summary, total_w2_hours: 0)
+        expect_redacted(employment_summary, employer_name: "REDACTED")
+        expect_redacted(payroll_account)
+      end
+    end
+
     it "redacts an inactive standalone flow and its related records" do
       service.redact_incomplete_activity_flows
 

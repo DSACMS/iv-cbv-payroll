@@ -57,6 +57,12 @@
         required: false
     v2:
       <<: *la_ldh_applicant_attributes_v1
+      first_name:
+        required: false
+        redaction_type: string
+      last_name:
+        required: false
+        redaction_type: string
       individual_id:
         required: false
   api:

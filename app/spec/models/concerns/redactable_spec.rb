@@ -4,6 +4,21 @@ RSpec.describe Redactable, type: :model do
   let(:invitation) { create(:cbv_flow_invitation) }
 
   describe "#redact!" do
+    context "with timestamp handling" do
+      let(:original_updated_at) { 8.days.ago.change(usec: 0) }
+
+      before { invitation.update_columns(updated_at: original_updated_at) }
+
+      it "updates updated_at by default" do
+        expect { invitation.redact! }.to change { invitation.reload.updated_at }
+      end
+
+      it "preserves updated_at when touch is false" do
+        expect { invitation.redact!(touch: false) }.not_to change { invitation.reload.updated_at }
+        expect(invitation).to have_attributes(redacted_at: be_present, email_address: "REDACTED@example.com")
+      end
+    end
+
     context "when an integer field is configured" do
       let(:redactable_model) do
         Class.new(ApplicationRecord) do

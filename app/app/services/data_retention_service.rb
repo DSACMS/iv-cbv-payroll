@@ -15,7 +15,6 @@ class DataRetentionService
     redact_activity_invitations
     redact_incomplete_cbv_flows
     redact_complete_cbv_flows
-    # Run before flow redaction updates ActivityFlow#updated_at.
     redact_activity_flow_summaries
     redact_incomplete_activity_flows
     redact_complete_activity_flows
@@ -130,7 +129,7 @@ class DataRetentionService
       end
       flow.job_training_activities.unredacted.each(&:redact!)
       flow.volunteering_activities.unredacted.each(&:redact!)
-      flow.redact! unless flow.redacted_at?
+      flow.redact!(touch: false) unless flow.redacted_at?
 
       identity = flow.identity
       identity.redact! if identity && !identity.redacted_at? && !identity.activity_flows.unredacted.exists?
