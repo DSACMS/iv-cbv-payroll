@@ -28,6 +28,22 @@ RSpec.describe EducationActivityCardBuilder do
     end
   end
 
+  context "with the NSC withdrawn flag" do
+    let(:activity) do
+      create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded)
+    end
+
+    before do
+      create(:nsc_enrollment_term, education_activity: activity, enrollment_status: "unknown",
+        nsc_withdrawn: true, credit_hours: 3,
+        term_begin: reporting_months.first, term_end: reporting_months.first.end_of_month)
+    end
+
+    it "continues to show N/A on the activity hub" do
+      expect(card[:months].sole[:enrollment_status]).to eq(I18n.t("shared.not_applicable"))
+    end
+  end
+
   context "with a subset of reporting months" do
     let(:reporting_months) { [ flow.reporting_months.last ] }
 

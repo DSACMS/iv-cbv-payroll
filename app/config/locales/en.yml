@@ -1238,7 +1238,6 @@ en:
         half_time: Half-time
         less_than_half_time: Less than half-time
         three_quarter_time: Three-quarter Time
-        withdrawn: Withdrawn
       student_name_label: Name on school record
     report:
       monthly_summary_table:

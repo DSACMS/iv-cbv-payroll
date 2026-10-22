@@ -320,6 +320,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_000000) do
     t.date "term_end"
     t.datetime "updated_at", null: false
     t.date "school_certified_on"
+    t.boolean "nsc_withdrawn"
     t.index ["education_activity_id"], name: "index_nsc_enrollment_terms_on_education_activity_id"
   end
 

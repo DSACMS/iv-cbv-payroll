@@ -8,7 +8,6 @@ class NscEnrollmentTerm < ApplicationRecord
     half_time: "half_time",                     # H
     less_than_half_time: "less_than_half_time", # L
     enrolled: "enrolled",                       # Y
-    withdrawn: "withdrawn",                     # W
     unknown: "unknown"
   }, default: :unknown, prefix: :enrollment
 
@@ -42,8 +41,6 @@ class NscEnrollmentTerm < ApplicationRecord
       I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
     when :enrolled
       I18n.t("components.enrollment_term_table_component.status.enrolled")
-    when :withdrawn
-      I18n.t("components.enrollment_term_table_component.status.withdrawn")
     else
       I18n.t("shared.not_applicable")
     end

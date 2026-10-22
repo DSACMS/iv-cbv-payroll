@@ -89,6 +89,7 @@ RSpec.describe NscDataFetcherService do
             term_begin: Date.parse("2024-05-31"),
             term_end: Date.parse("2024-11-19"),
             school_certified_on: Date.new(2024, 7, 16),
+            nsc_withdrawn: false,
           )
       end
 
@@ -119,10 +120,44 @@ RSpec.describe NscDataFetcherService do
           end
         end
 
-        it "preserves the withdrawn status" do
+        it "flags withdrawal while keeping the normalized status unknown" do
           service.fetch
 
-          expect(education_activity.nsc_enrollment_terms.first).to be_enrollment_withdrawn
+          expect(education_activity.nsc_enrollment_terms.first).to have_attributes(
+            enrollment_status: "unknown", nsc_withdrawn: true
+          )
+        end
+      end
+
+      context "when NSC returns an unrecognized status code" do
+        before do
+          nsc_stub_request_education_search_response("lynette") do |response|
+            response["enrollmentDetails"].first["enrollmentData"].first["enrollmentStatus"] = "NEW"
+          end
+        end
+
+        it "sets withdrawal to false without changing the existing unknown fallback" do
+          service.fetch
+
+          expect(education_activity.nsc_enrollment_terms.first).to have_attributes(
+            enrollment_status: "unknown", nsc_withdrawn: false
+          )
+        end
+      end
+
+      context "when NSC omits the status code" do
+        before do
+          nsc_stub_request_education_search_response("lynette") do |response|
+            response["enrollmentDetails"].first["enrollmentData"].first.delete("enrollmentStatus")
+          end
+        end
+
+        it "keeps the normalized status unknown and withdrawal unspecified" do
+          service.fetch
+
+          expect(education_activity.nsc_enrollment_terms.first).to have_attributes(
+            enrollment_status: "unknown", nsc_withdrawn: nil
+          )
         end
       end
 

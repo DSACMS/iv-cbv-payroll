@@ -16,8 +16,6 @@ class EnrollmentTermTableComponent < ViewComponent::Base
       I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
     when :enrolled
       I18n.t("components.enrollment_term_table_component.status.enrolled")
-    when :withdrawn
-      I18n.t("components.enrollment_term_table_component.status.withdrawn")
     when :unknown
       I18n.t("shared.not_applicable")
     end
