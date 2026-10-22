@@ -42,6 +42,8 @@
     - tiff
   max_document_upload_size_mb: 40
   invitation_valid_days: 75
+  # Applies to tokenized CE and Employment links only; Income links are unaffected.
+  allow_activity_invitation_reuse: false
   weekly_report:
     recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
     report_variant: flows
