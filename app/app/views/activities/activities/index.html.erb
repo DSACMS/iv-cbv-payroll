@@ -269,7 +269,7 @@
     <% end %>
   <% end %>
 
-  <% reporting_purpose = variant == :renewal ? t("activities.hub.common_questions.reporting_purposes.renewal") : t("activities.hub.common_questions.reporting_purposes.application") %>
+  <% reporting_purpose = @flow.reporting_window_months >= 12 ? t("activities.hub.common_questions.reporting_purposes.renewal") : t("activities.hub.common_questions.reporting_purposes.application") %>
   <%= render AccordionComponent.new(id: "activity-hub-income", heading_level: 3) do |accordion| %>
     <% accordion.with_title do %>
       <%= t("activities.hub.common_questions.income_title") %>

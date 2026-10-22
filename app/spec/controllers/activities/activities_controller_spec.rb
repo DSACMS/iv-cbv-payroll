@@ -50,19 +50,45 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       end
     end
 
-    context "with a renewal requiring a subset of months" do
-      let(:reporting_purpose) { I18n.t("activities.hub.common_questions.reporting_purposes.renewal") }
-
+    context "with an 11-month renewal requiring a subset of months" do
       let(:current_flow) do
         create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
-          education_activities_count: 0, reporting_window_type: "renewal", reporting_window_months: 6,
+          education_activities_count: 0, reporting_window_type: "renewal", reporting_window_months: 11,
           renewal_required_months: 2)
       end
 
-      it "keeps the same requirements text and uses the renewal purpose" do
+      it "keeps the same requirements text and uses the application purpose" do
         get :index
 
         expect(rendered).to have_text(requirements_body)
+        expect(rendered).to have_text(income_body)
+      end
+    end
+
+    context "with a 12-month application" do
+      let(:reporting_purpose) { I18n.t("activities.hub.common_questions.reporting_purposes.renewal") }
+      let(:current_flow) do
+        create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
+          education_activities_count: 0, reporting_window_type: "application", reporting_window_months: 12)
+      end
+
+      it "uses the renewal purpose based on the lookback period" do
+        get :index
+
+        expect(rendered).to have_text(income_body)
+      end
+    end
+
+    context "with a lookback period greater than 12 months" do
+      let(:reporting_purpose) { I18n.t("activities.hub.common_questions.reporting_purposes.renewal") }
+      let(:current_flow) do
+        create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
+          education_activities_count: 0, reporting_window_type: "application", reporting_window_months: 13)
+      end
+
+      it "uses the renewal purpose" do
+        get :index
+
         expect(rendered).to have_text(income_body)
       end
     end
