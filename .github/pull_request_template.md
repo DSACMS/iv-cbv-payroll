@@ -43,6 +43,8 @@ Which AI Tool(s) did you use:
 - [ ] Claude
 - [ ] Gemini
 - [ ] OpenAI Codex
+- [ ] Grok
+- [ ] Muse
 - [ ] Google Search AI assist
 - [ ] Other ______________________________
 
