@@ -4,6 +4,11 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
   include E2e::TestHelpers
   include_context "activity_hub"
 
+  let(:agency_name) { I18n.t("shared.agency_full_name.sandbox") }
+  let(:agency_website) { Rails.application.config.client_agencies["sandbox"].agency_contact_website }
+  let(:renewal_instructions) { I18n.t("activities.success.show.head_of_household_description_html", agency_website: agency_website) }
+  let(:agency_website_link_text) { Capybara.string(renewal_instructions).find("a").text }
+
   it "launches and completes unpaid work using the employment activity flow" do
     # Launcher: create a tokenized unpaid-work flow.
     visit launcher_advanced_path
@@ -67,6 +72,20 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
       visit edit_activities_flow_income_employment_path(id: activity, from_edit: 1)
       verify_page(page, title: I18n.t("activities.employment_info.unpaid_or_in_kind.title"))
       expect(page).to have_field(I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name"), with: "Example unpaid work")
+
+      # Submit: complete the tokenized community engagement flow.
+      visit activities_flow_root_path
+      verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
+      click_button I18n.t("activities.hub.review_and_submit")
+      verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+      find("label[for='activity_flow_consent_to_submit']").click
+      click_button I18n.t("activities.summary.submit", agency_name: agency_name)
+
+      verify_page(page, title: I18n.t("activities.success.show.title", agency_name: agency_name))
+      expect(page).to have_selector("p", text: I18n.t("activities.success.show.next_steps_description", agency_name: agency_name), exact_text: true, normalize_ws: true)
+      expect(page).to have_link(I18n.t("activities.success.show.download_pdf"), href: activities_flow_submit_path(format: :pdf))
+      expect(page).to have_text(I18n.t("activities.success.show.household_member_description", agency_name: agency_name))
+      expect(page).to have_link(agency_website_link_text, href: agency_website)
     end
   end
 end
