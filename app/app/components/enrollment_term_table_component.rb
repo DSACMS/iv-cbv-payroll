@@ -1,7 +1,10 @@
 class EnrollmentTermTableComponent < ViewComponent::Base
-  def initialize(nsc_enrollment_term:, education_activity: nil)
+  renders_one :enrollment_status
+
+  def initialize(nsc_enrollment_term:, education_activity: nil, class_names: "")
     @education_activity = education_activity
     @nsc_enrollment_term = nsc_enrollment_term
+    @class_names = class_names
   end
 
   def enrollment_status_text(enrollment_status)
@@ -16,6 +19,8 @@ class EnrollmentTermTableComponent < ViewComponent::Base
       I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
     when :enrolled
       I18n.t("components.enrollment_term_table_component.status.enrolled")
+    when :withdrawn
+      I18n.t("components.enrollment_term_table_component.status.withdrawn")
     when :unknown
       I18n.t("shared.not_applicable")
     end
