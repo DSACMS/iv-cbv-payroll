@@ -203,7 +203,7 @@ RSpec.describe "Technical difficulties outage", type: :request do
         expect(response).to redirect_to(outage_path)
         follow_redirect!
         expect(rendered).to have_selector("h1", text: heading)
-        expect(rendered).to have_link("Visit LDH's website", href: website)
+        expect(rendered).to have_link(agency_link, href: website)
       end
     end
   end
