@@ -109,6 +109,17 @@ class ActivityFlow < Flow
     "#{start_display} - #{end_display}"
   end
 
+  def months_required_display
+    verification_range = activity_flow_invitation&.verification_range
+    return if verification_range == "last_complete_month"
+
+    if verification_range == "last_12_complete_months" || renewal_reporting_window?
+      I18n.t("activities.hub.months_required_any", count: required_month_count)
+    else
+      required_month_count.to_s
+    end
+  end
+
   def any_activities_added?
     volunteering_activities.published.exists? ||
       job_training_activities.published.exists? ||

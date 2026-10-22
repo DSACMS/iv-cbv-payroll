@@ -16,6 +16,41 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
+  describe "#alert_enabled?" do
+    let(:enabled_alerts) { "none" }
+
+    around do |example|
+      stub_environment_variable("ENABLED_ALERTS", enabled_alerts, &example)
+    end
+
+    it "does not treat none as an alert identifier" do
+      expect(controller.send(:alert_enabled?, :none)).to be(false)
+    end
+
+    context "when ENABLED_ALERTS is unset" do
+      let(:enabled_alerts) { nil }
+
+      it "defaults to no enabled alerts" do
+        expect(controller.send(:alert_enabled?, :none)).to be(false)
+        expect(controller.send(:alert_enabled?, :site_alert)).to be(false)
+      end
+    end
+
+    context "when mixed-case none identifiers appear in a list" do
+      let(:enabled_alerts) { " None, site_alert, NONE ,none" }
+
+      it "ignores none regardless of its casing" do
+        expect(controller.send(:alert_enabled?, "None")).to be(false)
+        expect(controller.send(:alert_enabled?, "NONE")).to be(false)
+        expect(controller.send(:alert_enabled?, :none)).to be(false)
+      end
+
+      it "preserves real alert identifiers" do
+        expect(controller.send(:alert_enabled?, :site_alert)).to be(true)
+      end
+    end
+  end
+
   describe '#switch_locale' do
     before do
       I18n.default_locale = :en
