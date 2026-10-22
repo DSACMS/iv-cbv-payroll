@@ -23,14 +23,27 @@ class Activities::SummaryController < Activities::BaseController
       return render :show, status: :unprocessable_content
     end
 
-    ensure_confirmation_code
-    mark_as_completed
-    enqueue_transmission
+    return unless finalize_submission
 
     redirect_to after_submit_path
   end
 
   private
+
+  def finalize_submission
+    invitation = @flow.activity_flow_invitation
+    (invitation || @flow).with_lock do
+      if invitation&.used?
+        redirect_used_invitation(invitation)
+        return false
+      end
+
+      ensure_confirmation_code
+      mark_as_completed
+      enqueue_transmission
+    end
+    true
+  end
 
   def after_submit_path
     household = @flow.household_member&.household
@@ -53,7 +66,8 @@ class Activities::SummaryController < Activities::BaseController
   def enqueue_transmission
     return if @flow.activity_flow_invitation_id.blank?
 
-    ActivityFlowTransmitterJob.perform_later(@flow.id)
+    job = ActivityFlowTransmitterJob.perform_later(@flow.id)
+    raise ActiveJob::EnqueueError, "Activity report could not be queued" unless job
   end
 
   def load_summary_data

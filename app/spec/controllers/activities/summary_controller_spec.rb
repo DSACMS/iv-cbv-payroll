@@ -790,6 +790,88 @@ RSpec.describe Activities::SummaryController, type: :controller do
     end
 
     context "for tokenized flows" do
+      context "when the agency disallows invitation reuse" do
+        let(:invitation) do
+          create(:activity_flow_invitation, cbv_applicant: activity_flow.cbv_applicant, client_agency_id: "sandbox")
+        end
+
+        before do
+          allow(Rails.application.config.client_agencies["sandbox"])
+            .to receive(:allow_activity_invitation_reuse).and_return(false)
+          activity_flow.update!(activity_flow_invitation: invitation)
+        end
+
+        it "consumes the invitation when the finalized report is queued, before delivery" do
+          expect {
+            patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+          }.to have_enqueued_job(ActivityFlowTransmitterJob).with(activity_flow.id)
+
+          expect(invitation).to be_used
+          expect(activity_flow.reload).to have_attributes(completed_at: be_present, confirmation_code: be_present, transmitted_at: nil)
+          expect(response).to redirect_to(activities_flow_success_path)
+        end
+
+        it "leaves the invitation usable when consent is missing" do
+          expect { patch :update }.not_to have_enqueued_job(ActivityFlowTransmitterJob)
+
+          expect(invitation).not_to be_used
+          expect(activity_flow.reload.completed_at).to be_nil
+        end
+
+        it "rolls back completion when enqueueing raises an error" do
+          allow(ActivityFlowTransmitterJob).to receive(:perform_later).and_raise(ActiveJob::EnqueueError)
+
+          expect {
+            patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+          }.to raise_error(ActiveJob::EnqueueError)
+
+          expect(invitation).not_to be_used
+          expect(activity_flow.reload).to have_attributes(completed_at: nil, confirmation_code: nil)
+        end
+
+        it "rolls back completion when enqueueing is aborted" do
+          allow(ActivityFlowTransmitterJob).to receive(:perform_later).and_return(false)
+
+          expect {
+            patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+          }.to raise_error(ActiveJob::EnqueueError)
+
+          expect(invitation).not_to be_used
+          expect(activity_flow.reload.completed_at).to be_nil
+        end
+
+        context "when another session has already submitted" do
+          before do
+            create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current)
+          end
+
+          it "rejects submission without queuing a second report" do
+            expect {
+              patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+            }.not_to have_enqueued_job(ActivityFlowTransmitterJob)
+
+            expect(activity_flow.reload.completed_at).to be_nil
+            expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: "sandbox"))
+          end
+        end
+
+        context "for Employment" do
+          before do
+            invitation.update!(employment_focused: true)
+            activity_flow.update!(employment_focused: true)
+          end
+
+          it "consumes the invitation on submission before delivery" do
+            expect {
+              patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+            }.to have_enqueued_job(ActivityFlowTransmitterJob).with(activity_flow.id)
+
+            expect(invitation).to be_used
+            expect(activity_flow.reload.transmitted_at).to be_nil
+          end
+        end
+      end
+
       it "enqueues transmission for a tokenized flow" do
         invitation = create(
           :activity_flow_invitation,
