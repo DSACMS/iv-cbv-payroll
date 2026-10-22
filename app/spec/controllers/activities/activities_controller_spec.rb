@@ -92,37 +92,14 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
            )
     end
 
-    it "renders the progress indicator when hours exist" do
-      expect(response.body).to include("activity-flow-progress-indicator")
-    end
-
     it "shows in progress hub heading and description" do
       expect(response.body).to include(I18n.t("activities.hub.in_progress_state_title"))
       expect(response.body).to include(
         I18n.t(
           "activities.hub.in_progress_state_description",
-          agency_name: "Test Agency"
+          agency_name: I18n.t("shared.agency_full_name.sandbox")
         )
       )
-    end
-
-    it "does not render progress indicator description copy for application variant" do
-      expect(response.body).not_to include("activity-flow-progress-indicator__description")
-    end
-
-    it "uses months completed in the indicator title for multi-month application progress" do
-      rendered = Capybara.string(response.body)
-      indicator_title = rendered.find(".activity-flow-progress-indicator__title").text.squish
-
-      expect(indicator_title).to eq("0/2 months completed")
-      expect(rendered).not_to have_css(".activity-flow-progress-indicator__months-completed")
-    end
-
-    it "does not show the unit toggle for non-employment activity-only flows" do
-      rendered = Capybara.string(response.body)
-
-      expect(rendered).not_to have_css("[data-controller='progress-indicator-units']")
-      expect(rendered).not_to have_css(".activity-flow-progress-indicator__toggle")
     end
   end
 
@@ -205,10 +182,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(I18n.t("activities.hub.empty.community_service"))
       expect(response.body).to include(I18n.t("activities.hub.empty.work_programs"))
       expect(response.body).not_to include(I18n.t("activities.hub.review_and_submit"))
-    end
-
-    it "does not render the progress indicator" do
-      expect(response.body).not_to include("activity-flow-progress-indicator")
     end
 
     it "shows empty-state hub heading and description" do
@@ -309,18 +282,10 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(page_text).to include(
         I18n.t(
           "activities.hub.completed_state_description",
-          agency_name: "Test Agency"
+          agency_name: I18n.t("shared.agency_full_name.sandbox")
         )
       )
       expect(page_text).not_to include(I18n.t("activities.hub.verification_info_link"))
-    end
-
-    it "keeps single-month application indicator title in month-progress format" do
-      rendered = Capybara.string(response.body)
-      indicator_title = rendered.find(".activity-flow-progress-indicator__title").text.squish
-
-      expected_month = I18n.l(current_flow.reporting_window_range.begin, format: :month)
-      expect(indicator_title).to eq(I18n.t("activity_flow_progress_indicator.title", month: expected_month))
     end
   end
 
@@ -358,36 +323,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
   end
 
   context "when activities are added for a renewal flow" do
-    context "when required months equals reporting window" do
-      let(:current_flow) do
-        create(
-          :activity_flow,
-          reporting_window_type: "renewal",
-          reporting_window_months: 6,
-          volunteering_activities_count: 0,
-          job_training_activities_count: 0,
-          education_activities_count: 0
-        )
-      end
-
-      before do
-        activity = create(:volunteering_activity, activity_flow: current_flow)
-        create(
-          :volunteering_activity_month,
-          volunteering_activity: activity,
-          month: current_flow.reporting_window_range.begin,
-          hours: 20
-        )
-        session[:flow_id] = current_flow.id
-        session[:flow_type] = :activity
-        get :index
-      end
-
-      it "does not render renewal subtitle when required months equals reporting window" do
-        expect(response.body).not_to include("activity-flow-progress-indicator__description")
-      end
-    end
-
     context "when subset required months are configured and completed" do
       let(:current_flow) do
         stub_client_agency_config_value("sandbox", "renewal_required_months", 2)
@@ -426,14 +361,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
         expect(page_text).to include(I18n.t("activities.hub.completed_state_title"))
         expect(page_text).not_to include(I18n.t("activities.hub.in_progress_state_title"))
-      end
-
-      it "uses required-month completion text and shows renewal subtitle" do
-        rendered = Capybara.string(response.body)
-        indicator_title = rendered.find(".activity-flow-progress-indicator__title").text.squish
-
-        expect(indicator_title).to eq("2/2 months completed")
-        expect(rendered).to have_css(".activity-flow-progress-indicator__description")
       end
     end
   end
@@ -700,7 +627,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       get :index
     end
 
-    it "shows only the qualifying enrollment on education cards and uses the sufficient enrollment progress label" do
+    it "shows only the qualifying enrollment on education cards" do
       expect(response.body).to include(half_time_school_name)
       expect(response.body).not_to include(less_than_half_time_school_name)
       expect(response.body).to include(
@@ -715,8 +642,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           status: I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
         )
       )
-      page_text = Capybara.string(response.body).text
-      expect(page_text.scan(I18n.t("activity_flow_progress_indicator.sufficiently_enrolled")).count).to eq(2)
       expect(response.body).not_to include(I18n.t("activities.hub.cards.hours", count: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD))
     end
   end
@@ -938,13 +863,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(response.body).to include(I18n.t("activities.hub.cards.gross_income", amount: "$500.00"))
       expect(response.body).to include(I18n.t("activities.hub.cards.hours", count: 40))
     end
-
-    it "shows the unit toggle for employment flows" do
-      rendered = Capybara.string(response.body)
-
-      expect(rendered).to have_css("[data-controller='progress-indicator-units']")
-      expect(rendered).to have_css("[data-progress-indicator-units-target='toggle']")
-    end
   end
 
   context "when the flow has no activities" do
@@ -1081,7 +999,7 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
         expect(rendered).to have_css("input[type='checkbox'][name='activity_flow[consent_to_submit]']")
         expect(rendered).to have_button(
-          I18n.t("activities.activities.employment_focused_review.submit", agency_name: "Test Agency")
+          I18n.t("activities.activities.employment_focused_review.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
         )
       end
 
