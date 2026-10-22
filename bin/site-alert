@@ -17,7 +17,7 @@ Platforms and environments:
   nava  dev, demo, prod
   cms   dev, test, sandbox, demo, uat, prod
 
-Message options for enable:
+Message options for enable --type site_alert:
   --preset PRESET       scheduled-maintenance
   --title-en TEXT       Custom English title
   --body-en TEXT        Custom English body
@@ -26,7 +26,7 @@ Message options for enable:
   --severity SEVERITY   info, success, warning, or error (default: warning)
 
 Other options:
-  --type TYPE           Alert identifier (default: site_alert; only site_alert supported)
+  --type TYPE           site_alert (default) or aggregator_outage
   --region REGION       AWS region (default: ${DEFAULT_REGION})
   --no-wait             Do not wait for the ECS service to stabilize
   --help                Show this help
@@ -37,6 +37,7 @@ Examples:
     --title-en "Service update" --body-en "Please try again later." \\
     --title-es "Actualización del servicio" --body-es "Inténtelo de nuevo más tarde."
   ${SCRIPT_NAME} disable --platform cms --environment prod
+  ${SCRIPT_NAME} enable --platform cms --environment prod --type aggregator_outage
 EOF
 }
 
@@ -212,7 +213,7 @@ update_service() {
   fi
 }
 
-enable_alert() {
+prepare_site_alert_message() {
   if [[ -n "${preset}" ]]; then
     [[ -z "${title_en}${body_en}${title_es}${body_es}" ]] ||
       die "do not combine --preset with custom message options"
@@ -225,23 +226,30 @@ enable_alert() {
   elif [[ -z "${title_en}" || -z "${body_en}" || -z "${title_es}" || -z "${body_es}" ]]; then
     die "custom messages require --title-en, --body-en, --title-es, and --body-es"
   fi
+}
 
+enable_alert() {
+  if [[ "${alert_type}" == "site_alert" ]]; then
+    prepare_site_alert_message
+  fi
   local current_alerts other_alerts
   check_aws_credentials
   current_alerts="$(read_enabled_alerts)"
   other_alerts="$(other_enabled_alerts "${current_alerts}")"
-  # Temporarily remove this alert before updating copy, unless none are active.
-  if [[ -n "${current_alerts}" ]]; then
-    write_enabled_alerts "${other_alerts}"
+  if [[ "${alert_type}" == "site_alert" ]]; then
+    # Temporarily remove this alert before updating copy, unless none are active.
+    if [[ -n "${current_alerts}" ]]; then
+      write_enabled_alerts "${other_alerts}"
+    fi
+    put_parameter SITE_ALERT_TITLE_EN "${title_en}"
+    put_parameter SITE_ALERT_BODY_EN "${body_en}"
+    put_parameter SITE_ALERT_TITLE_ES "${title_es}"
+    put_parameter SITE_ALERT_BODY_ES "${body_es}"
+    put_parameter SITE_ALERT_TYPE "${severity}"
   fi
-  put_parameter SITE_ALERT_TITLE_EN "${title_en}"
-  put_parameter SITE_ALERT_BODY_EN "${body_en}"
-  put_parameter SITE_ALERT_TITLE_ES "${title_es}"
-  put_parameter SITE_ALERT_BODY_ES "${body_es}"
-  put_parameter SITE_ALERT_TYPE "${severity}"
   write_enabled_alerts "${other_alerts:+${other_alerts},}${alert_type}"
   update_service
-  echo "Enabled ${preset:-custom} site alert on ${platform}/${environment}."
+  echo "Enabled ${alert_type} on ${platform}/${environment}."
 }
 
 disable_alert() {
@@ -250,7 +258,7 @@ disable_alert() {
   current_alerts="$(read_enabled_alerts)"
   write_enabled_alerts "$(other_enabled_alerts "${current_alerts}")"
   update_service
-  echo "Disabled site alert on ${platform}/${environment}."
+  echo "Disabled ${alert_type} on ${platform}/${environment}."
 }
 
 show_status() {
@@ -273,6 +281,7 @@ fi
 platform="" environment="" preset="" title_en="" body_en="" title_es="" body_es=""
 alert_type="site_alert"
 severity="warning"
+severity_provided="false"
 region="${AWS_REGION:-${DEFAULT_REGION}}"
 aws_account_id=""
 wait_for_stability="true"
@@ -287,7 +296,7 @@ while (($#)); do
     --title-es) require_value "$@"; title_es="$2"; shift 2 ;;
     --body-es) require_value "$@"; body_es="$2"; shift 2 ;;
     --type) require_value "$@"; alert_type="$2"; shift 2 ;;
-    --severity) require_value "$@"; severity="$2"; shift 2 ;;
+    --severity) require_value "$@"; severity="$2"; severity_provided="true"; shift 2 ;;
     --region) require_value "$@"; region="$2"; shift 2 ;;
     --no-wait) wait_for_stability="false"; shift ;;
     --help|-h) usage; exit 0 ;;
@@ -305,7 +314,14 @@ esac
 [[ -n "${platform}" ]] || die "--platform is required"
 [[ -n "${environment}" ]] || die "--environment is required"
 validate_target
-[[ "${alert_type}" == "site_alert" ]] || die "unsupported alert type '${alert_type}'; use site_alert"
+case "${alert_type}" in
+  site_alert|aggregator_outage) ;;
+  *) die "unsupported alert type '${alert_type}'; use site_alert or aggregator_outage" ;;
+esac
+if [[ "${alert_type}" != "site_alert" ]]; then
+  [[ -z "${preset}${title_en}${body_en}${title_es}${body_es}" && "${severity_provided}" == "false" ]] ||
+    die "message and severity options are only valid with --type site_alert"
+fi
 validate_severity "${severity}"
 
 case "${command}" in
