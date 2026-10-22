@@ -87,6 +87,9 @@ es:
       heading: Estamos experimentando dificultades técnicas
       income_body: Es posible que algunas partes del sitio no funcionen correctamente. Si no puede buscar a su empleador o iniciar sesión con su proveedor de nómina, inténtelo de nuevo más tarde.
       manual_entry: agregue los detalles de su empleo manualmente
+    sync_delay_alert:
+      body: Estamos experimentando dificultades técnicas en estos momentos. Si no podemos sincronizar su información de empleo, inténtelo de nuevo más tarde.
+      heading: La sincronización está tardando más de lo normal
   cbv:
     add_jobs:
       show:
