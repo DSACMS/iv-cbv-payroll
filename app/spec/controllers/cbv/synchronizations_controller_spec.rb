@@ -206,7 +206,7 @@ RSpec.describe Cbv::SynchronizationsController do
 
         it "uses the approved Spanish heading and body on initial load and polling" do
           get :show, params: params
-          expect(rendered).to have_selector(".usa-alert--info", text: "La sincronización está tardando más de lo normal")
+          expect(rendered).to have_selector(".usa-alert--info", text: heading)
           expect(Capybara.string(response.body)).to have_text(body)
 
           patch :update, params: params
