@@ -245,9 +245,11 @@ en:
         additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         continue: Save and continue
         description: We have gathered your student enrollment details from %{reporting_window}.
-        enrollment_information: Enrollment information
+        enrollment_history: View enrollment history
+        enrollment_history_description: Below is your most recent enrollment status. If it changed during a term, you can view your full enrollment history.
         enrollment_information_numbered: 'Enrollment #%{number} information'
         header: Review your student enrollment details
+        status_as_of: "(As of %{date})"
         summer_logic_description: If you don’t have enough summer enrollment, we’ll use your spring enrollment to meet the community engagement requirement for the summer.
       error:
         description: 'We were unable to verify your student status with National Student Clearinghouse. To continue, you can:'
@@ -1238,6 +1240,7 @@ en:
         half_time: Half-time
         less_than_half_time: Less than half-time
         three_quarter_time: Three-quarter Time
+        withdrawn: Withdrawn
       student_name_label: Name on school record
     report:
       monthly_summary_table:

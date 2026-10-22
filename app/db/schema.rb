@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_20_120100) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -319,6 +319,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_120100) do
     t.date "term_begin"
     t.date "term_end"
     t.datetime "updated_at", null: false
+    t.date "school_certified_on"
     t.index ["education_activity_id"], name: "index_nsc_enrollment_terms_on_education_activity_id"
   end
 

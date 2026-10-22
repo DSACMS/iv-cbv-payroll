@@ -8,7 +8,8 @@ class NscDataFetcherService
     "Q" => :three_quarter_time,
     "H" => :half_time,
     "L" => :less_than_half_time,
-    "Y" => :enrolled
+    "Y" => :enrolled,
+    "W" => :withdrawn
   }
 
   def initialize(
@@ -82,6 +83,7 @@ class NscDataFetcherService
           enrollment_status: enrollment_status(enrollment_data),
           term_begin: term_begin,
           term_end: term_end,
+          school_certified_on: enrollment_data["schoolCertifiedOnDate"].presence,
         )
       end
     end
