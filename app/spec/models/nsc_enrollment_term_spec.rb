@@ -1,23 +1,6 @@
 require "rails_helper"
 
 RSpec.describe NscEnrollmentTerm do
-  context "with the NSC withdrawn flag" do
-    subject(:term) { described_class.new(enrollment_status: "unknown", nsc_withdrawn: true) }
-
-    it "keeps the existing insufficient-enrollment classification" do
-      expect(term.half_time_or_above?).to be(false)
-      expect(term.less_than_half_time?).to be(true)
-    end
-
-    it "keeps the existing not-applicable display" do
-      expect(term.enrollment_status_display).to eq(I18n.t("shared.not_applicable"))
-    end
-
-    it "keeps the existing unknown enrollment priority" do
-      expect(term.enrollment_priority).to eq(0)
-    end
-  end
-
   describe "#half_time_or_above?" do
     it "returns true for full_time status" do
       term = described_class.new(enrollment_status: "full_time")

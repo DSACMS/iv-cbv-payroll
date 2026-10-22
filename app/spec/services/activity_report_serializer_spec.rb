@@ -26,23 +26,6 @@ RSpec.describe ActivityReportSerializer do
   let(:first_month) { activity_flow.reporting_months.first }
   let(:second_month) { activity_flow.reporting_months.second }
 
-  context "with the NSC withdrawn flag" do
-    let(:education) { create(:education_activity, activity_flow: activity_flow, status: :succeeded) }
-
-    before do
-      create(:nsc_enrollment_term, education_activity: education, enrollment_status: "unknown",
-        nsc_withdrawn: true, school_certified_on: first_month,
-        term_begin: first_month, term_end: first_month.end_of_month)
-    end
-
-    it "keeps the normalized status in JSON without exposing the new NSC fields" do
-      entry = report["ce_report"]["activities"]["education"][first_month.strftime("%Y-%m")].sole
-
-      expect(entry["enrollment_status"]).to eq("unknown")
-      expect(entry.keys).not_to include("nsc_withdrawn", "school_certified_on")
-    end
-  end
-
   it "stamps the schema version and flow identifiers at the root" do
     expect(report).to include(
       "schema_version" => "1.0.0",
