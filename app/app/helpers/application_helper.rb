@@ -35,6 +35,10 @@ module ApplicationHelper
     Nsc.disabled?
   end
 
+  def show_government_banner?
+    request.ssl? && request.host.downcase.delete_suffix(".").end_with?(".gov")
+  end
+
   def uswds_sprite_icon_href(icon_name)
     "#{asset_path("@uswds/uswds/dist/img/sprite.svg")}##{icon_name}"
   end

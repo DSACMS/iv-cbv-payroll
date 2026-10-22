@@ -6,12 +6,15 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload", preload_links_header: false %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
   <body>
     <div id="root">
       <a class="usa-skipnav" href="#main-content"><%= t("shared.skip_link") %></a>
+      <% if show_government_banner? %>
+        <%= render "application/government_banner" %>
+      <% end %>
       <%= render "application/header" %>
       <main id="main-content">
         <%= yield :activity_flow_header %>

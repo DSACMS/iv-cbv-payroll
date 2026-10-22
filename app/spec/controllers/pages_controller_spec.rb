@@ -3,6 +3,33 @@ require "rails_helper"
 RSpec.describe PagesController do
   render_views
 
+  describe "government banner" do
+    let(:rendered) { Capybara.string(response.body) }
+
+    before do
+      request.host = "example.gov"
+      request.env["HTTPS"] = "on"
+    end
+
+    it "renders the banner in the application layout" do
+      get :home
+
+      expect(rendered).to have_selector("section.usa-banner", count: 1)
+      expect(rendered).to have_button(I18n.t("application.government_banner.how_you_know"))
+      expect(rendered).to have_text(I18n.t("application.government_banner.gov_heading"))
+    end
+
+    context "on a non-government host" do
+      before { request.host = "example.org" }
+
+      it "omits the banner" do
+        get :home
+
+        expect(rendered).to have_no_selector("section.usa-banner")
+      end
+    end
+  end
+
   describe "#home" do
     it "renders" do
       get :home

@@ -871,6 +871,15 @@ en:
         sandbox: Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
+  application:
+    government_banner:
+      aria_label: Official website of the United States government
+      gov_body_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.
+      gov_heading: Official websites use .gov
+      how_you_know: Here’s how you know
+      https_body_html: A <strong>lock</strong> (%{lock_icon}) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
+      https_heading: Secure .gov websites use HTTPS
+      official_website: An official website of the United States government
   caseworker_mailer:
     summary_email:
       greeting: Hello,
