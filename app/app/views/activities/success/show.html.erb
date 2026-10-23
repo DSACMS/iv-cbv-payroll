@@ -19,11 +19,9 @@
     <%= title %>
   </h1>
 
-  <% if employment_focused %>
-    <p>
-      <%= t(".employment_focused.subheading") %>
-    </p>
-  <% end %>
+  <p>
+    <%= t(".subheading") %>
+  </p>
 
   <p>
     <%= t(".confirmation_code_html", confirmation_code: @flow.confirmation_code) %>

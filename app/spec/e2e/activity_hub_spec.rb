@@ -339,6 +339,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
 
     verify_page(page, title: I18n.t("activities.success.show.title", agency_name: agency_name))
+    expect(page).to have_text(I18n.t("activities.success.show.subheading"))
     expect(page).to have_link(I18n.t("activities.success.show.download_pdf"), href: activities_flow_submit_path(format: :pdf))
     expect(page).to have_selector("p", text: I18n.t("activities.success.show.next_steps_description", agency_name: agency_name), exact_text: true, normalize_ws: true)
     expect(page).to have_selector("h3", text: I18n.t("activities.success.show.head_of_household_title"))

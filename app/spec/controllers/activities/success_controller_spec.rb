@@ -65,10 +65,11 @@ RSpec.describe Activities::SuccessController, type: :controller do
           expect(rendered).to have_selector("h1", text: I18n.t("activities.success.show.title", agency_name: agency_name))
         end
 
-        it "shows the confirmation code" do
+        it "shows the processing message above the confirmation code" do
           confirmation = I18n.t("activities.success.show.confirmation_code_html", confirmation_code: activity_flow.confirmation_code)
 
-          expect(rendered).to have_text(Capybara.string(confirmation).text)
+          expect(rendered).to have_selector("h1 + p", text: I18n.t("activities.success.show.subheading"))
+          expect(rendered).to have_selector("h1 + p + p", text: Capybara.string(confirmation).text)
         end
 
         it "shows the agency review next step" do
@@ -105,7 +106,7 @@ RSpec.describe Activities::SuccessController, type: :controller do
         end
 
         context "with another agency" do
-          let(:client_agency_id) { "nh_dhhs" }
+          let(:client_agency_id) { "la_ldh" }
 
           it "uses that agency's name and website" do
             expect(rendered).to have_selector("h1", text: I18n.t("activities.success.show.title", agency_name: agency_name))
@@ -137,7 +138,7 @@ RSpec.describe Activities::SuccessController, type: :controller do
 
         it "shows the submitted jobs heading and processing message" do
           expect(rendered).to have_selector("h1", text: I18n.t("activities.success.show.employment_focused.title", agency_name: agency_name))
-          expect(rendered).to have_text(I18n.t("activities.success.show.employment_focused.subheading"))
+          expect(rendered).to have_text(I18n.t("activities.success.show.subheading"))
         end
 
         it "shows the employment next steps" do
@@ -161,7 +162,7 @@ RSpec.describe Activities::SuccessController, type: :controller do
 
           it "shows the employment heading and renewal instructions" do
             expect(rendered).to have_selector("h1", text: I18n.t("activities.success.show.employment_focused.title", agency_name: agency_name))
-            expect(rendered).to have_text(I18n.t("activities.success.show.employment_focused.subheading"))
+            expect(rendered).to have_text(I18n.t("activities.success.show.subheading"))
             expect(rendered).to have_text(I18n.t("activities.success.show.employment_focused.whats_next.head_of_household.subheading"))
           end
         end
