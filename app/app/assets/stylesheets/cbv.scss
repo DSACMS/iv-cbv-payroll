@@ -145,10 +145,10 @@ html {
 
 .cbv-footer__content {
   color: color("white");
-  display: flex;
-  flex-direction: column;
-  gap: units(3);
-  padding: 20px units($theme-site-margins-mobile-width);
+
+  @include at-media-max($theme-header-min-width) {
+    margin-left: units($theme-site-margins-mobile-width);
+  }
 
   @include at-media($theme-header-min-width) {
     @include clearfix;
@@ -167,36 +167,27 @@ html {
   @include u-margin-y(2);
 }
 
-.cbv-footer__primary {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: units(2);
-  padding-bottom: units(2);
-  border-bottom: 1px solid #1a4480;
-}
-
 .cbv-footer__logo-text {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: units(1);
 }
 
 .cbv-footer__logo-line1 {
-  @include u-font("heading", 5);
-  line-height: 1.45;
+  @include u-font("heading", 8);
 }
 
 .cbv-footer__logo-line2 {
-  @include u-font("sans", 3);
+  @include u-font("heading", 5);
   font-weight: normal;
-  line-height: 1.5;
 }
 
 .cbv-footer__partner {
   display: flex;
   flex-direction: column;
   gap: units(0.5);
+  padding-block: units(2);
+  border-top: 1px solid color("primary");
 }
 
 .cbv-footer__logos {

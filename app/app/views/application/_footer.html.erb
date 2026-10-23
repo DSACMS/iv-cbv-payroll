@@ -1,23 +1,25 @@
 <footer class="cbv-footer">
-  <div class="cbv-footer__content">
-    <div class="cbv-footer__primary">
-      <div class="cbv-footer__logo-text">
-        <% if activity_flow? %>
+  <div class="cbv-footer__content grid-row desktop:display-flex desktop:flex-justify">
+    <div class="cbv-footer__item grid-col-12 tablet:grid-col-8">
+      <% if activity_flow? %>
+        <div class="cbv-footer__logo-text">
           <strong class="cbv-footer__logo-line1"><%= t("shared.pilot_name_hr1_footer_line1") %></strong>
           <span class="cbv-footer__logo-line2"><%= t("shared.pilot_name_hr1") %></span>
-        <% else %>
-          <strong class="cbv-footer__logo-line1"><%= t("shared.pilot_name") %></strong>
-        <% end %>
-      </div>
-      <div class="cbv-footer__item grid-col-12 tablet:grid-col-4 desktop:display-flex desktop:flex-justify-end">
-        <%= render LinkWithIconComponent.new(
-              t("shared.footer.feedback"),
-              url: feedbacks_path(referer: request.original_url),
-              icon: "forum",
-              class: "usa-button usa-button--outline usa-button--inverse maxw-mobile margin-right-0",
-              target: "_blank"
-            ) %>
-      </div>
+        </div>
+      <% else %>
+        <div class="display-table-cell text-middle height-5">
+          <strong><%= t("shared.pilot_name") %></strong>
+        </div>
+      <% end %>
+    </div>
+    <div class="cbv-footer__item cbv-footer__feedback grid-col-12 tablet:grid-col-4 desktop:display-flex desktop:flex-justify-end">
+      <%= render LinkWithIconComponent.new(
+        t("shared.footer.feedback"),
+        url: feedbacks_path(referer: request.original_url),
+        icon: "forum",
+        class: "usa-button usa-button--outline usa-button--inverse maxw-mobile margin-right-0",
+        target: "_blank"
+      ) %>
     </div>
 
     <% if activity_flow? %>
