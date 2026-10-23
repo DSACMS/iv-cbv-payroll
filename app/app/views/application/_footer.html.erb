@@ -12,14 +12,18 @@
         </div>
       <% end %>
     </div>
-    <div class="cbv-footer__item grid-col-12 tablet:grid-col-4 desktop:display-flex desktop:flex-justify-end">
+    <div class="cbv-footer__item cbv-footer__feedback grid-col-12 tablet:grid-col-4 desktop:display-flex desktop:flex-justify-end">
       <%= render LinkWithIconComponent.new(
-            t("shared.footer.feedback"),
-            url: feedbacks_path(referer: request.original_url),
-            icon: "forum",
-            class: "usa-button usa-button--outline usa-button--inverse maxw-mobile margin-right-0",
-            target: "_blank"
-          ) %>
+        t("shared.footer.feedback"),
+        url: feedbacks_path(referer: request.original_url),
+        icon: "forum",
+        class: "usa-button usa-button--outline usa-button--inverse maxw-mobile margin-right-0",
+        target: "_blank"
+      ) %>
     </div>
+
+    <% if activity_flow? %>
+      <%= render "application/footer_partner" %>
+    <% end %>
   </div>
 </footer>

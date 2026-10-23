@@ -182,6 +182,42 @@ html {
   font-weight: normal;
 }
 
+.cbv-footer__partner {
+  display: flex;
+  flex-direction: column;
+  gap: units(0.5);
+  padding-block: units(2);
+  border-top: 1px solid color("primary");
+}
+
+.cbv-footer__logos {
+  display: flex;
+  align-items: center;
+  gap: units(1);
+  min-height: 27px;
+}
+
+.cbv-footer__cms-logo {
+  width: 69.2056px;
+  height: 24.3906px;
+  transform: rotate(180deg) scaleX(-1);
+}
+
+.cbv-footer__agency-logo {
+  display: block;
+  flex-shrink: 0;
+  width: 11.9375rem;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+
+.cbv-footer__partnership {
+  @include u-font("sans", 2);
+  margin: units(1) 0 0;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
 .cbv-row-highlight td,
 .cbv-row-highlight th {
   @include u-bg("yellow-5v");

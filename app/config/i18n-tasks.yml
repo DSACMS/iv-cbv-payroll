@@ -154,6 +154,10 @@ ignore_missing:
     - "activerecord.errors.models.volunteering_activity_month.*" # Self attestation hours entry error messages
     - "activerecord.errors.models.job_training_activity_month.*" # Self attestation hours entry error messages
     - "shared.header.logo_alt_text.nh_dhhs"
+    - "shared.footer.cms_logo_alt"
+    - "shared.footer.partners_label"
+    - "shared.footer.partnership"
+    - "shared.subheader_agency_text"
     - "households.*"
 
     # Currently awaiting translation:

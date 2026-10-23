@@ -1484,7 +1484,10 @@ en:
       one: "%{count} credit hour"
       other: "%{count} credit hours"
     footer:
+      cms_logo_alt: Centers for Medicare & Medicaid Services
       feedback: Share feedback
+      partners_label: Federal and state partners
+      partnership: Emmy is provided by the Centers for Medicare & Medicaid Services (CMS) in partnership with %{agency}.
     header:
       aria_label: Main navigation
       cbv_flow_title:
@@ -1530,6 +1533,7 @@ en:
       sandbox: benefits
     select_placeholder: "- Select -"
     skip_link: Skip to main content
+    subheader_agency_text: In partnership with %{agency}
     table_headers:
       community_service_information: Community service information
       education_information: Education information
