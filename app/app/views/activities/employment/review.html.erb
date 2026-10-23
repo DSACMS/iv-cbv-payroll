@@ -3,6 +3,7 @@
 <%# i18n-tasks-use t('activities.employment.review.unpaid_or_in_kind.description') %>
 <%# i18n-tasks-use t('activities.employment.review.additional_comments_description') %>
 <%# i18n-tasks-use t('activities.employment.review.unpaid_or_in_kind.additional_comments_description') %>
+<%# i18n-tasks-use t('activities.employment.review.unpaid_or_in_kind.additional_comments_description_unpaid') %>
 <% content_for :title, t("activities.employment.review.title", employer_name: @employment_activity.employer_name) %>
 
 <% unless @flow.employment_focused? %>
@@ -51,7 +52,7 @@
       class: "usa-form usa-form--large" do |form| %>
   <h2><%= t("activities.employment.review.additional_comments_title") %></h2>
   <%= form.label :additional_comments,
-        t(unpaid ? "activities.employment.review.unpaid_or_in_kind.additional_comments_description" : "activities.employment.review.additional_comments_description",
+        t(@flow.unpaid_work_only? ? "activities.employment.review.unpaid_or_in_kind.additional_comments_description_unpaid" : unpaid ? "activities.employment.review.unpaid_or_in_kind.additional_comments_description" : "activities.employment.review.additional_comments_description",
           agency_name: agency_translation("shared.agency_full_name")),
         class: "usa-label" %>
   <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>

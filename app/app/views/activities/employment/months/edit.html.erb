@@ -71,7 +71,7 @@
         value: decimal_input_value(@activity_month.hours),
         label: t("activities.employment.hours_input.hours_label", month: month_label),
         label_class: "text-bold",
-        hint: unpaid ? t("#{input_scope}.hours_hint") : nil %>
+        hint: @flow.unpaid_work_only? ? nil : unpaid ? t("#{input_scope}.hours_hint") : nil %>
 
   <%= f.submit(from_review ? t("activities.hub.save") : t("activities.employment.hours_input.continue")) %>
 <% end %>
