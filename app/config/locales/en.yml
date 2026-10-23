@@ -386,8 +386,8 @@ en:
         hours_label: "%{month} hours worked"
         month_indicator: 'Month %{current} of %{total}:'
         unpaid_or_in_kind:
-          error_body: Add hours to continue.
-          error_heading: No hours entered
+          error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>.
+          error_heading: No work hours added
           field_error: Add hours to continue.
           heading: Add your hours for %{organization}
           hours_hint: If you performed in-kind work, provide an estimate
@@ -417,17 +417,24 @@ en:
           description: Review the information you've added for %{employer_name}.
         gross_income: Gross income
         name: Name
-        save: Save and add to my report
+        save: Add to my report
         title: Review your employment information for %{employer_name}
         unpaid_or_in_kind:
           additional_comments_description: Share any comments or additional information about your unpaid or in-kind work that you’d like %{agency_name} to know.
+          additional_comments_description_unpaid: Share any comments or additional information about your unpaid work that you’d like %{agency_name} to know.
           description: Review the information you’ve added for %{employer_name} before adding it to your Community Engagement Report.
+          who_you_worked_for: Who you worked for
+          work_contact_email: Work contact email
+          work_contact_name: Work contact name
+          work_contact_phone: Work contact phone number
           work_hours: Work hours
+          work_information: Work information
       title: Employment
       title_singular: Employment
       unpaid_or_in_kind:
         document_upload_suggestion_text_html: "<ul><li>Letter of employment or contract with role, responsibilities and key dates.</li><li>Proof of employment forms from a work supervisor or employer.</li><li>Invoices sent, if self-employed.</li></ul>"
         document_upload_suggestion_title: Suggested supporting documents
+      unpaid_title: Unpaid work
     employment_info:
       city: City
       contact_email: Employer contact email
@@ -453,12 +460,17 @@ en:
           item_3: In-kind work is work done for non-monetary goods or services, like housing, meals, or utilities.
           item_4: If you volunteered for an organization or cause, you may need to report that as community service instead.
           title: What is unpaid or in-kind work?
+          unpaid_title: What is unpaid work?
         contact_email: Contact email
         contact_information_description: For unpaid or in-kind work, please provide the contact details for who you worked for or can verify your hours.
+        contact_information_description_unpaid: For unpaid work, please provide the contact details for who you worked for or can verify your hours.
         contact_information_title: Work contact information
         contact_name: Contact name
         contact_phone_number: Contact phone number
-        description: If you’ve done unpaid or in-kind work, that can still count towards your community engagement requirements.
+        description: |-
+          If you’ve done unpaid work, that can still count towards your community engagement requirements.
+
+          Paid work, including in-kind work and income from self-employment, should not be re-entered here.
         employer_name: Who you worked for
         employer_name_error: Add who you worked for
         title: Tell us about the work you’ve done
@@ -468,6 +480,7 @@ en:
       show:
         card_heading: 'Enter information related to the following activities:'
         card_item_1: Work or earned income
+        card_item_1_unpaid: Unpaid work
         card_item_2: School enrollment
         card_item_3: Community service or work program participation
         continue: Report your activities

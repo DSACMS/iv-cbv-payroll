@@ -123,6 +123,6 @@ class EmploymentActivity < Activity
   end
 
   def document_upload_header_title_i18n_key
-    "activities.employment.title_singular"
+    activity_flow.unpaid_work_only? ? "activities.employment.unpaid_title" : "activities.employment.title_singular"
   end
 end
