@@ -189,10 +189,13 @@ class ClientAgencyConfig
       applicant_attributes(version: version).compact.keys.map(&:to_sym)
     end
 
-    def redactable_applicant_fields(version: :v1)
-      applicant_attributes(version: version).each_with_object({}) do |(name, options), fields|
-        next unless options.is_a?(Hash) && options["redaction_type"]
-        fields[name.to_sym] = options["redaction_type"].to_sym
+    def redactable_applicant_fields(version: nil)
+      attribute_sets = version ? [ applicant_attributes(version: version) ] : @applicant_attributes.values
+      attribute_sets.each_with_object({}) do |attributes, fields|
+        attributes.each do |name, options|
+          next unless options.is_a?(Hash) && options["redaction_type"]
+          fields[name.to_sym] = options["redaction_type"].to_sym
+        end
       end
     end
 

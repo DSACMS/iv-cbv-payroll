@@ -681,5 +681,39 @@ RSpec.describe ClientAgencyConfig do
       expect(config["foo"].redactable_applicant_fields)
         .to eq({ first_name: :string, date_of_birth: :date })
     end
+
+    context "with different attributes across API versions" do
+      let(:sample_config) { <<~YAML }
+        - id: foo
+          agency_name: foo
+          pinwheel:
+            environment: foo
+          argyle:
+            environment: foo
+          income_flow_transmission_method: shared_email
+          applicant_attributes:
+            v1:
+              case_number:
+                redaction_type: string
+            v2:
+              first_name:
+                redaction_type: string
+              last_name:
+                redaction_type: string
+      YAML
+
+      it "redacts fields from every version by default" do
+        config = described_class.new(sample_config_path)
+
+        expect(config["foo"].redactable_applicant_fields)
+          .to eq(case_number: :string, first_name: :string, last_name: :string)
+      end
+
+      it "can select fields for an explicit version" do
+        config = described_class.new(sample_config_path)
+
+        expect(config["foo"].redactable_applicant_fields(version: :v1)).to eq(case_number: :string)
+      end
+    end
   end
 end

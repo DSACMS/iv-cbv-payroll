@@ -502,6 +502,17 @@ en:
         gross_income: 'Gross income: %{amount}'
         hours: 'Community engagement hours: %{count}'
         no_employment_data: No payments found from this employer.
+      common_questions:
+        heading: Common questions
+        income_body: Yes. Any income you reported earlier in your %{reporting_purpose} will contribute towards meeting community engagement requirements in addition to the activities you submit here.
+        income_title: Does income count toward meeting requirements?
+        reporting_purposes:
+          application: application
+          renewal: renewal
+        requirements_body_html:
+          one: Report at least <strong>80 hours</strong> of activity for at least <strong>%{required_month_count} month</strong> in the reporting period to meet community engagement requirements.
+          other: Report at least <strong>80 hours</strong> of activity for at least <strong>%{required_month_count} months</strong> in the reporting period to meet community engagement requirements.
+        requirements_title: What do I need to meet community engagement requirements?
       edit: Edit
       empty:
         community_service: No community service added

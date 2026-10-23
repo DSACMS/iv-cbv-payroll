@@ -11,6 +11,53 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     end
   end
 
+  context "common questions" do
+    let(:invitation) { create(:activity_flow_invitation, client_agency_id: "sandbox") }
+    let(:requirements_question) { I18n.t("activities.hub.common_questions.requirements_title") }
+    let(:income_question) { I18n.t("activities.hub.common_questions.income_title") }
+    let(:required_month_count) { ActivityFlow.last.required_month_count }
+    let(:requirements_body) do
+      ActionController::Base.helpers.strip_tags(
+        I18n.t("activities.hub.common_questions.requirements_body_html",
+          count: required_month_count, required_month_count: required_month_count)
+      )
+    end
+    let(:income_body) do
+      I18n.t("activities.hub.common_questions.income_body",
+        reporting_purpose: I18n.t("activities.hub.common_questions.reporting_purposes.application"))
+    end
+
+    def open_hub
+      visit activities_flow_start_path(token: invitation.auth_token, reporting_window_months: 1)
+      verify_page(page, title: I18n.t("activities.entries.show.title", benefit: I18n.t("shared.benefit.sandbox")))
+      click_link I18n.t("activities.entries.show.continue")
+      verify_page(page, title: I18n.t("activities.hub.title"))
+    end
+
+    it "shows the correct answers when both questions are opened" do
+      open_hub
+
+      expect(page).to have_no_text(income_body)
+      click_button requirements_question
+      expect(page).to have_text(requirements_body)
+      click_button income_question
+      expect(page).to have_text(income_body)
+      expect(page).to have_text(requirements_body)
+      verify_page(page, title: I18n.t("activities.hub.common_questions.heading"))
+    end
+
+    it "opens the review page when activities have been added" do
+      open_hub
+      create(:volunteering_activity, activity_flow: ActivityFlow.last)
+      visit activities_flow_root_path
+      verify_page(page, title: I18n.t("activities.hub.title"))
+
+      expect(page).to have_button(I18n.t("activities.hub.review_and_submit"))
+      click_button I18n.t("activities.hub.review_and_submit")
+      verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    end
+  end
+
   it "completes the generic flow for all self-attestation activities" do # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
     upload_path = Rails.root.join("spec/fixtures/files/document_upload.pdf")
 
