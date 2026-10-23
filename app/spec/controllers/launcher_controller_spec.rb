@@ -64,6 +64,10 @@ RSpec.describe LauncherController, type: :controller do
       expect(body).to include("Enrolled half-time")
       expect(body).to include("Enrolled less-than-half-time")
       expect(body).to include("No NSC enrollment found")
+      expect(Capybara.string(body)).to have_selector(
+        '[role="radio"][data-value="enrollment_only_jordan"]',
+        text: "Enrollment Only"
+      )
       expect(body).to include('value="lynette"')
       expect(body).to include('value="renewal_half_time_last_4_of_6_avery"')
       expect(body).to include('value="partial_enrollment_maya"')
@@ -188,6 +192,26 @@ RSpec.describe LauncherController, type: :controller do
   end
 
   describe "POST #simple_create" do
+    context "with enrolled but unknown intensity" do
+      before do
+        post :simple_create, params: {
+          flow_type: "activity",
+          client_agency_id: "sandbox",
+          launch_type: "tokenized",
+          test_scenario: "enrollment_only_jordan"
+        }, format: :json
+      end
+
+      it "creates an invitation for the stubbed student" do
+        expect(response).to have_http_status(:success)
+        expect(JSON.parse(response.body)["url"]).to be_present
+        expect(ActivityFlowInvitation.last).to have_attributes(reference_id: "demo-enrollment_only_jordan")
+        expect(ActivityFlowInvitation.last.cbv_applicant).to have_attributes(
+          first_name: "Jordan", last_name: "Testuser", date_of_birth: Date.new(1995, 6, 12)
+        )
+      end
+    end
+
     context "with valid activity/tokenized params" do
       it "returns 200 with a url" do
         post :simple_create, params: {
