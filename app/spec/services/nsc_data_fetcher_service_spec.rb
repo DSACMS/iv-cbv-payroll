@@ -152,11 +152,11 @@ RSpec.describe NscDataFetcherService do
           end
         end
 
-        it "keeps the normalized status unknown and withdrawal unspecified" do
+        it "keeps the normalized status unknown and defaults withdrawal to false" do
           service.fetch
 
           expect(education_activity.nsc_enrollment_terms.first).to have_attributes(
-            enrollment_status: "unknown", nsc_withdrawn: nil
+            enrollment_status: "unknown", nsc_withdrawn: false
           )
         end
       end
