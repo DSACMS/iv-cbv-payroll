@@ -1,4 +1,11 @@
 class HouseholdMember < ApplicationRecord
+  include Redactable
+
+  has_redactable_fields(
+    display_name: :string,
+    reference_id: :unique_string
+  )
+
   belongs_to :household
   belongs_to :activity_flow_invitation
   has_many :activity_flows, through: :activity_flow_invitation

@@ -1,4 +1,10 @@
 class EmploymentActivityMonth < ApplicationRecord
+  include Redactable
+
+  has_redactable_fields(
+    gross_income: :decimal
+  )
+
   FIELDS = %w[month hours gross_income].freeze
 
   belongs_to :employment_activity
