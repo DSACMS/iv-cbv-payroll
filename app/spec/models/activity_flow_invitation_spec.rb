@@ -58,6 +58,45 @@ RSpec.describe ActivityFlowInvitation, type: :model do
     end
   end
 
+  describe "#used?" do
+    let(:invitation) { create(:activity_flow_invitation) }
+    let(:agency) { Rails.application.config.client_agencies[invitation.client_agency_id] }
+
+    before { allow(agency).to receive(:allow_activity_invitation_reuse).and_return(false) }
+
+    it "does not consume an invitation before submission" do
+      create(:activity_flow, activity_flow_invitation: invitation)
+
+      expect(invitation).not_to be_used
+    end
+
+    context "with a completed report awaiting delivery" do
+      before { create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current) }
+
+      it "treats the invitation as used" do
+        expect(invitation).to be_used
+      end
+
+      context "when reuse is allowed" do
+        before { allow(agency).to receive(:allow_activity_invitation_reuse).and_return(true) }
+
+        it "allows the invitation to be reused" do
+          expect(invitation).not_to be_used
+        end
+      end
+    end
+
+    context "for Employment" do
+      let(:invitation) { create(:activity_flow_invitation, employment_focused: true) }
+
+      before { create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current, employment_focused: true) }
+
+      it "applies the same single-use policy" do
+        expect(invitation).to be_used
+      end
+    end
+  end
+
   describe "#expires_at" do
     subject(:expires_at) { invitation.reload.expires_at.in_time_zone("America/New_York") }
 

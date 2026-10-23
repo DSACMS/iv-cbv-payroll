@@ -9,5 +9,7 @@ class Activities::EntriesController < Activities::BaseController
     else
       set_generic_flow
     end
+
+    redirect_used_invitation_for_flow unless performed?
   end
 end

@@ -49,6 +49,23 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
     expect(activity_flow.reload.transmitted_at).to be_nil
   end
 
+  context "with a used invitation" do
+    let(:invitation) { create(:activity_flow_invitation, cbv_applicant: activity_flow.cbv_applicant, expires_at: 1.day.from_now) }
+
+    before do
+      allow(current_agency).to receive(:allow_activity_invitation_reuse).and_return(false)
+      activity_flow.update!(activity_flow_invitation: invitation)
+      allow(transmitter).to receive(:deliver).and_raise(StandardError, "upload failed")
+    end
+
+    it "does not re-enable the invitation when delivery fails" do
+      expect { described_class.new.perform(activity_flow.id) }.to raise_error(StandardError, "upload failed")
+
+      expect(activity_flow.reload.transmitted_at).to be_nil
+      expect(invitation).to be_used
+    end
+  end
+
   context "when no activity flow transmitter is configured" do
     let(:transmission_method) { nil }
 

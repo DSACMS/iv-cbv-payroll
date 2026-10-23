@@ -2,6 +2,11 @@ class HouseholdMembersController < ApplicationController
   before_action :redirect_unless_activity_hub_enabled, :set_household, :set_household_member
 
   def create
+    invitation = @household_member.activity_flow_invitation
+    if invitation.used?
+      return redirect_to activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id)
+    end
+
     # Completed household members should not re-enter an activity flow
     if @household_member.completed_activity_flow?
       set_flow_session(nil, :activity)

@@ -17,6 +17,8 @@ Inside `app/app/`, expect the usual Rails neighborhoods: `controllers`, `models`
 
 `app/config/` is where routes, environments, initializers, locales, queue settings, New Relic config, and the client-agency configuration live. That agency config matters because Emmy is designed to support multiple jurisdictions with agency-specific behavior and copy.
 
+See [client agency configuration](app/client-agency-configuration.md) for invitation lifetime and reuse settings.
+
 `app/spec/` contains RSpec coverage for Ruby code and includes folders for controllers, models, jobs, services, requests, helpers, factories, fixtures, and E2E tests. JavaScript tests live under `spec/javascript` and run with Vitest. The repository guidance emphasizes adding test coverage and running tests after changes.
 
 The dependency files show the platform shape: `app/Gemfile` uses Rails 8, PostgreSQL, Puma, Redis, Solid Queue, Hotwire, Mixpanel, New Relic, AWS libraries, PDF tooling, RSpec, Capybara, Brakeman, RuboCop, and i18n tooling. `app/package.json` adds USWDS, Stimulus, Turbo, esbuild, PostCSS, Sass, Webpack, Prettier, Vite, and Vitest.

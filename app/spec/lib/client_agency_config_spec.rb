@@ -45,6 +45,42 @@ RSpec.describe ClientAgencyConfig do
       end
     end
 
+    describe "#allow_activity_invitation_reuse" do
+      let(:config) { described_class.new(sample_config_path) }
+
+      it "defaults to allowing reuse" do
+        expect(config["foo"].allow_activity_invitation_reuse).to be(true)
+      end
+
+      context "when explicitly disabled" do
+        let(:sample_config) { super().sub("agency_name: Foo Agency Name", "agency_name: Foo Agency Name\n  allow_activity_invitation_reuse: false") }
+
+        it "preserves false" do
+          expect(config["foo"].allow_activity_invitation_reuse).to be(false)
+        end
+      end
+
+      context "when explicitly enabled" do
+        let(:sample_config) { super().sub("agency_name: Foo Agency Name", "agency_name: Foo Agency Name\n  allow_activity_invitation_reuse: true") }
+
+        it "allows reuse" do
+          expect(config["foo"].allow_activity_invitation_reuse).to be(true)
+        end
+      end
+
+      context "when the value is not a boolean" do
+        let(:sample_config) { super().sub("agency_name: Foo Agency Name", "agency_name: Foo Agency Name\n  allow_activity_invitation_reuse: 'false'") }
+
+        it "rejects the config" do
+          expect { config }.to raise_error(ArgumentError, /allow_activity_invitation_reuse/)
+        end
+      end
+
+      it "disables reuse for Louisiana" do
+        expect(Rails.application.config.client_agencies["la_ldh"].allow_activity_invitation_reuse).to be(false)
+      end
+    end
+
     describe "#client_agency_ids" do
       it "returns the IDs" do
         config = described_class.new(sample_config_path)

@@ -46,6 +46,23 @@ RSpec.describe Activities::SubmitController, type: :controller do
   end
 
   describe "GET #show" do
+    context "with a used invitation" do
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: cbv_applicant) }
+
+      before do
+        allow(Rails.application.config.client_agencies["sandbox"])
+          .to receive(:allow_activity_invitation_reuse).and_return(false)
+        activity_flow.update!(activity_flow_invitation: invitation, completed_at: Time.current, confirmation_code: test_confirmation_code)
+      end
+
+      it "keeps the submitted report downloadable in the existing session" do
+        get :show, format: :pdf
+
+        expect(response).to have_http_status(:ok)
+        expect(extract_pdf_text(response)).to include(test_confirmation_code)
+      end
+    end
+
     it "renders successfully" do
       get :show
 

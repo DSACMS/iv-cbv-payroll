@@ -59,6 +59,22 @@ RSpec.describe HouseholdMembersController, type: :controller do
       expect(response).to redirect_to(household_start_path(token: household.auth_token))
     end
 
+    context "when the member's invitation has been used" do
+      before do
+        allow(Rails.application.config.client_agencies["sandbox"])
+          .to receive(:allow_activity_invitation_reuse).and_return(false)
+        create(:activity_flow, activity_flow_invitation: member.activity_flow_invitation, completed_at: Time.current)
+      end
+
+      it "shows the expiration page instead of launching a flow" do
+        expect {
+          post :create, params: { token: household.auth_token, member_id: member.id }
+        }.not_to change(ActivityFlow, :count)
+
+        expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: "sandbox"))
+      end
+    end
+
     it "does not use another member's incomplete activity flow" do
       member_a = create(:household_member, household: household)
       member_b = create(:household_member, household: household)

@@ -102,12 +102,54 @@ RSpec.describe Activities::EntriesController do
       end
 
       context "when a report has already been submitted for the invitation" do
-        before { create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current) }
+        before do
+          allow(Rails.application.config.client_agencies["sandbox"])
+            .to receive(:allow_activity_invitation_reuse).and_return(false)
+          create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current)
+        end
 
         it "redirects to the CE expired-link page without creating another flow" do
           expect { get :show, params: { token: invitation.auth_token } }.not_to change(ActivityFlow, :count)
 
           expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+        end
+
+        context "when reuse is allowed" do
+          before do
+            allow(Rails.application.config.client_agencies["sandbox"])
+              .to receive(:allow_activity_invitation_reuse).and_return(true)
+          end
+
+          it "starts another flow from the invitation" do
+            expect { get :show, params: { token: invitation.auth_token } }.to change(ActivityFlow, :count).by(1)
+
+            expect(response).to have_http_status(:ok)
+          end
+        end
+
+        context "with an older incomplete session" do
+          let!(:incomplete_flow) { create(:activity_flow, activity_flow_invitation: invitation) }
+
+          before do
+            session[:flow_id] = incomplete_flow.id
+            session[:flow_type] = :activity
+          end
+
+          it "prevents resuming the flow without a token parameter" do
+            get :show
+
+            expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+          end
+        end
+
+        context "for Employment" do
+          let(:invitation) { create(:activity_flow_invitation, employment_focused: true) }
+
+          it "shows the same expiration page" do
+            expect { get :show, params: { token: invitation.auth_token } }.not_to change(ActivityFlow, :count)
+
+            expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+          end
         end
       end
 

@@ -1,4 +1,6 @@
 class Activities::SubmitController < Activities::BaseController
+  skip_before_action :redirect_used_invitation_for_flow, only: :show
+
   def show
     respond_to do |format|
       format.html

@@ -26,4 +26,9 @@ class ActivityFlowInvitation < ApplicationRecord
   def expired?
     expires_at.nil? || Time.current.after?(expires_at)
   end
+
+  def used?
+    agency = Rails.application.config.client_agencies[client_agency_id]
+    !agency.allow_activity_invitation_reuse && activity_flows.completed.exists?
+  end
 end

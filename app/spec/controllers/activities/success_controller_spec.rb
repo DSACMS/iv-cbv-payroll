@@ -13,6 +13,23 @@ RSpec.describe Activities::SuccessController, type: :controller do
   end
 
   describe "GET #show" do
+    context "with a single-use invitation" do
+      let(:invitation) { create(:activity_flow_invitation) }
+
+      before do
+        allow(Rails.application.config.client_agencies["sandbox"])
+          .to receive(:allow_activity_invitation_reuse).and_return(false)
+        activity_flow.update!(activity_flow_invitation: invitation, completed_at: Time.current)
+      end
+
+      it "keeps the success page and download link available after submission" do
+        get :show
+
+        expect(response).to have_http_status(:ok)
+        expect(Capybara.string(response.body)).to have_link(href: activities_flow_submit_path(format: :pdf))
+      end
+    end
+
     context "with a named applicant in a tokenized flow" do
       let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
       let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
