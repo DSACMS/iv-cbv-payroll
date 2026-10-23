@@ -28,7 +28,7 @@
     <br>
     <%= t(".employment_focused.comment_prompt", agency_initials: agency_translation("shared.agency_acronym")) %>
   <% else %>
-    <%= t(unpaid ? "activities.employment.review.unpaid_or_in_kind.description" : "activities.employment.review.description",
+    <%= t(other ? "activities.employment.review.unpaid_or_in_kind.description" : "activities.employment.review.description",
           employer_name: @employment_activity.employer_name) %>
   <% end %>
 </p>
