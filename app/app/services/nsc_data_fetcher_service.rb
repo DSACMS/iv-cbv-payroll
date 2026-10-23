@@ -75,13 +75,14 @@ class NscDataFetcherService
         term_end = Date.parse(enrollment_data["termEndDate"])
         next unless activity_flow.within_reporting_window?(term_begin, term_end)
 
+        status_code = enrollment_data["enrollmentStatus"].presence
         @education_activity.nsc_enrollment_terms.create!(
           school_name: enrollment_detail["officialSchoolName"],
           first_name: enrollment_detail["nameOnSchoolRecord"]["firstName"],
           middle_name: enrollment_detail["nameOnSchoolRecord"]["middleName"],
           last_name: enrollment_detail["nameOnSchoolRecord"]["lastName"],
           enrollment_status: enrollment_status(enrollment_data),
-          nsc_withdrawn: enrollment_data["enrollmentStatus"].presence&.==("W"),
+          nsc_withdrawn: status_code.nil? ? nil : status_code == "W",
           term_begin: term_begin,
           term_end: term_end,
           school_certified_on: enrollment_data["schoolCertifiedOnDate"].presence,
