@@ -889,6 +889,14 @@ en:
       heading: We're experiencing technical difficulties
       income_body: Some parts of the site may not work properly. If you aren't able to search for your employer or login to your payroll provider, please try again later.
       manual_entry: add your employment details manually
+    government_banner:
+      aria_label: Official website of the United States government
+      gov_body_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.
+      gov_heading: Official websites use .gov
+      how_you_know: Here’s how you know
+      https_body_html: A <strong>lock</strong> (%{lock_icon}) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
+      https_heading: Secure .gov websites use HTTPS
+      official_website: An official website of the United States government
     sync_delay_alert:
       body: We're currently experiencing technical difficulties. If we are unable to sync your employment information, please try again later.
       heading: Syncing is taking longer than normal
