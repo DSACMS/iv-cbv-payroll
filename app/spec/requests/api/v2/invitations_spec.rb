@@ -36,7 +36,7 @@ RSpec.describe "Tokenized Link API V2", type: :request do
       type: :string, enum: [ "community-engagement", "employment" ]
     }, description: "Selects which activity flow is created alongside the income invitation."
 
-    post "Create a Tokenized Link to Emmy Community Engagement" do
+    post "Create a Tokenized Link to Emmy Community Engagement or Emmy Employment" do
       tags "Invitations"
       operationId "createInvitationV2"
       description InvitationDocumentation.read("invitations-v2", section: "Description")

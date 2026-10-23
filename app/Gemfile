@@ -10,11 +10,6 @@ gem "rails", "~> 8.1.4"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
 
-# Remove this pin once Active Support includes the fix from
-# https://github.com/rails/rails/pull/58601.
-gem "json", "~> 2.9"
-
-
 # as of ruby 3.4, csv is no longer a default gem
 gem "csv"
 
@@ -116,8 +111,11 @@ group :development, :test do
 end
 
 group :development do
-  gem "debase-ruby_core_source", "~> 4.0"
-  gem "debase", "~> 0.2.9", require: false
+  # RubyMine's native debugger is only needed locally.
+  install_if -> { ENV["CI"] != "true" } do
+    gem "debase-ruby_core_source", "~> 4.0"
+    gem "debase", "~> 0.2.9", require: false
+  end
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 
