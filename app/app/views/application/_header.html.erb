@@ -31,7 +31,7 @@
             <% has_square_logo = current_agency && current_agency.logo_square_path.present? %>
             <% logo_path = has_square_logo ? current_agency.logo_square_path : (has_logo ? current_agency.logo_path : nil) %>
             <% show_agency_text = has_square_logo || !has_logo %>
-            <% logo_alt_text = agency_translation("shared.header.logo_alt_text") %>
+            <% logo_alt_text = agency_translation("shared.header.logo_alt_text") || agency_translation("shared.agency_full_name") %>
             <div class="<%= has_logo ?
                               "display-none tablet:display-flex" : "display-flex" %> flex-align-center">
               <% if logo_path %>

@@ -488,6 +488,12 @@ en:
     error_no_identity: Please provide your name and date of birth
     errors:
       invalid_token: The link you used is invalid.
+    expired_invitations:
+      show:
+        agency_fallback: your benefits agency
+        body: This can happen if you've already submitted information via %{agency_acronym}'s self-service portal or if the time to submit has expired. Please reach out to %{agency_acronym} for assistance.
+        title: Your verification link is no longer valid
+        visit_agency: Visit %{agency_acronym} website
     hub:
       add: Add
       cards:
@@ -496,8 +502,17 @@ en:
         gross_income: 'Gross income: %{amount}'
         hours: 'Community engagement hours: %{count}'
         no_employment_data: No payments found from this employer.
-      completed_state_description: "%{agency_name} will determine your eligibility based on the activities you've added to your report."
-      completed_state_title: You're ready to review and submit your report
+      common_questions:
+        heading: Common questions
+        income_body: Yes. Any income you reported earlier in your %{reporting_purpose} will contribute towards meeting community engagement requirements in addition to the activities you submit here.
+        income_title: Does income count toward meeting requirements?
+        reporting_purposes:
+          application: application
+          renewal: renewal
+        requirements_body_html:
+          one: Report at least <strong>80 hours</strong> of activity for at least <strong>%{required_month_count} month</strong> in the reporting period to meet community engagement requirements.
+          other: Report at least <strong>80 hours</strong> of activity for at least <strong>%{required_month_count} months</strong> in the reporting period to meet community engagement requirements.
+        requirements_title: What do I need to meet community engagement requirements?
       edit: Edit
       empty:
         community_service: No community service added
@@ -505,18 +520,15 @@ en:
         employment: No employment added
         unpaid_work: No unpaid work added
         work_programs: No work programs added
-      empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
-      empty_state_description_single_month: Add employment, education, community service, or work program activities you've done in %{reporting_window}.
-      empty_state_months_required_all: all %{required_month_count} months in the reporting period
-      empty_state_months_required_any: any %{required_month_count} months in the reporting period
-      empty_state_months_required_label: 'Months required:'
       empty_state_reporting_period_label: 'Reporting period:'
-      empty_state_title: Build your community engagement report
-      in_progress_state_description: "%{agency_name} will determine your eligibility based on the activities you add to your report."
-      in_progress_state_title: Add more activities or continue to review and submit your report
+      months_required_any:
+        one: any %{count} month in the reporting period
+        other: any %{count} months in the reporting period
+      months_required_label: 'Months required:'
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit
       save: Save changes
+      title: Add your community engagement activities
     income:
       employer_searches:
         employer:
@@ -872,6 +884,11 @@ en:
       subject:
         default: Verify your income for your SNAP application or renewal
   application:
+    aggregator_outage_alert:
+      activity_body_html: Some parts of the site may not work properly. If you aren't able to search for your employer or login to your payroll provider, please try again later or %{manual_entry_link}.
+      heading: We're experiencing technical difficulties
+      income_body: Some parts of the site may not work properly. If you aren't able to search for your employer or login to your payroll provider, please try again later.
+      manual_entry: add your employment details manually
     government_banner:
       aria_label: Official website of the United States government
       gov_body_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.
@@ -880,6 +897,9 @@ en:
       https_body_html: A <strong>lock</strong> (%{lock_icon}) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
       https_heading: Secure .gov websites use HTTPS
       official_website: An official website of the United States government
+    sync_delay_alert:
+      body: We're currently experiencing technical difficulties. If we are unable to sync your employment information, please try again later.
+      heading: Syncing is taking longer than normal
   caseworker_mailer:
     summary_email:
       greeting: Hello,
@@ -1406,6 +1426,11 @@ en:
     body_1: The site is not available right now. Any information you entered will not be saved.
     body_2: Visit your agency's website for more information on how to submit proof of income for your benefits.
     header: We're undergoing maintenance
+    technical_difficulties:
+      agency_link: Visit %{agency_acronym}'s website
+      body: We were unable to connect due to an error. You can try again later or submit your %{reporting_purpose} information by visiting %{agency_acronym}'s website.
+      body_without_agency: We were unable to connect due to an error. You can try again later.
+      header: We're currently experiencing technical difficulties
   pages:
     activity_flow_timeout:
       description: Sessions end after 30 minutes of inactivity. This helps keep your information safe. Any information not submitted was not saved.
