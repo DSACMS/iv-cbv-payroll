@@ -9,6 +9,8 @@
 
 <% search_results_page = @query.present? && @employers.any? %>
 
+<%= render "application/aggregator_outage_alert" %>
+
 <div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @flow.id %>">
   <div data-cbv-employer-search-target="helpAlert" class="display-none margin-bottom-4">
     <%= render Uswds::Alert.new(type: :info, heading: t(".alert.heading")) do %>

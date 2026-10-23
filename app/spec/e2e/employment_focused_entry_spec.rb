@@ -32,7 +32,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
     expect(page).to have_no_content(I18n.t("activities.employ.show.employment_focused.header"))
 
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
+    verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_text(reporting_for_text, count: 1)
     within("[data-activity-type='employment']") { click_button I18n.t("activities.hub.add") }
     verify_page(page, title: "Choose how you want to add your work")
