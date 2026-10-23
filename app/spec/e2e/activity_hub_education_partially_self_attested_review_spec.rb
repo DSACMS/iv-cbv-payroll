@@ -71,7 +71,7 @@ RSpec.describe "e2e Education mixed enrollment review flow", :js, type: :feature
     )
     # --- Step 2: Save and continue to review and submit ---
     click_button I18n.t("activities.education.review.save")
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
   end
 
   it "shows same-school less-than-half-time enrollments in one collapsed table on review and submit" do
@@ -112,7 +112,7 @@ RSpec.describe "e2e Education mixed enrollment review flow", :js, type: :feature
     visit activities_flow_root_path
     verify_page(page, title: I18n.t("activities.hub.title"))
     click_button I18n.t("activities.hub.review_and_submit")
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
 
     expect(page).to have_selector(
       "table tr",
