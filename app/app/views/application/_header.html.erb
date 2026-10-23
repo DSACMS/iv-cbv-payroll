@@ -1,6 +1,6 @@
 <div class="usa-overlay"></div>
 <header class="usa-header usa-header--basic" aria-label="<%= t("shared.header.aria_label") %>" data-controller="language">
-  <% if current_agency.present? %>
+  <% if current_agency.present? && !government_host? %>
     <div class="cbv-header__preheader">
       <div class="cbv-header__preheader__text">
         <%= agency_translation("shared.header.preheader") %>

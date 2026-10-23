@@ -3,6 +3,41 @@ require "rails_helper"
 RSpec.describe PagesController do
   render_views
 
+  describe "agency partnership heading" do
+    let(:host) { "example.gov" }
+    let(:rendered) { Capybara.string(response.body) }
+
+    before do
+      request.host = host
+      request.env["HTTPS"] = "on"
+      allow(controller).to receive(:current_agency).and_return(Rails.application.config.client_agencies["sandbox"])
+      get :home
+    end
+
+    it "shows only the government banner on a government host" do
+      expect(rendered).to have_button(I18n.t("application.government_banner.how_you_know"))
+      expect(rendered).to have_no_text(I18n.t("shared.header.preheader.default"))
+    end
+
+    context "on a non-government host" do
+      let(:host) { "example.org" }
+
+      it "shows only the partnership heading" do
+        expect(rendered).to have_text(I18n.t("shared.header.preheader.default"))
+        expect(rendered).to have_no_selector("section.usa-banner")
+      end
+    end
+
+    context "with gov in a subdomain" do
+      let(:host) { "example.gov.com" }
+
+      it "shows only the partnership heading" do
+        expect(rendered).to have_text(I18n.t("shared.header.preheader.default"))
+        expect(rendered).to have_no_selector("section.usa-banner")
+      end
+    end
+  end
+
   describe "government banner" do
     let(:rendered) { Capybara.string(response.body) }
 
