@@ -20,7 +20,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     visit activities_flow_start_path(token: invitation.auth_token)
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
+    verify_page(page, title: I18n.t("activities.hub.title"))
 
     flow = ActivityFlow.last
 
@@ -86,7 +86,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
 
     # --- Step 2: Save and return to the hub ---
     click_button I18n.t("activities.education.review.save")
-    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
+    verify_page(page, title: I18n.t("activities.hub.title"))
 
     expect(education_activity.education_type).to eq("high_school_ged")
     visit activities_flow_summary_path
@@ -140,7 +140,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     # --- Step 4: Save and return to the hub ---
     click_button I18n.t("activities.hub.save")
 
-    verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
+    verify_page(page, title: I18n.t("activities.hub.title"))
     expect(page).to have_content("Updated University of Illinois")
 
     visit activities_flow_summary_path

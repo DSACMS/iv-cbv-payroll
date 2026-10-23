@@ -1,6 +1,10 @@
 require "rails_helper"
 
 RSpec.describe NscEnrollmentTerm do
+  it "defaults the NSC withdrawn flag to false" do
+    expect(create(:nsc_enrollment_term).reload.nsc_withdrawn).to be(false)
+  end
+
   describe "#half_time_or_above?" do
     it "returns true for full_time status" do
       term = described_class.new(enrollment_status: "full_time")

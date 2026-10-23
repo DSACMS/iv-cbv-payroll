@@ -24,7 +24,7 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
       click_link I18n.t("activities.entries.show.continue")
 
       # Hub: add unpaid work directly.
-      verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
+      verify_page(page, title: I18n.t("activities.hub.title"))
       within("[data-activity-type='unpaid_work']") { click_button I18n.t("activities.hub.add") }
 
       # Work information: confirm the unpaid form is shown.
@@ -32,7 +32,7 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
       click_link I18n.t("activities.activity_header_component.back")
 
       # Hub: return and start adding unpaid work again.
-      verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
+      verify_page(page, title: I18n.t("activities.hub.title"))
       within("[data-activity-type='unpaid_work']") { click_button I18n.t("activities.hub.add") }
 
       # Work information: confirm the unpaid form is shown.
@@ -57,7 +57,7 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
       click_button I18n.t("activities.employment.review.save")
 
       # Hub: verify the saved activity and hours.
-      verify_page(page, title: I18n.t("activities.hub.in_progress_state_title"))
+      verify_page(page, title: I18n.t("activities.hub.title"))
       within("[data-activity-type='unpaid_work']") do
         expect(page).to have_text(I18n.t("activities.hub.cards.hours", count: "12"))
         expect(page).to have_no_text("$0.00")
