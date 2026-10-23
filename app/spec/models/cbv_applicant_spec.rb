@@ -34,6 +34,19 @@ RSpec.describe CbvApplicant, type: :model do
       expect(applicant.redacted_at).to be_present
     end
 
+    context "for LA" do
+      let(:applicant) { create(:cbv_applicant, :la_ldh, first_name: "Jane", last_name: "Doe") }
+
+      it "redacts names along with case number and date of birth" do
+        applicant.redact!
+
+        expect(applicant.reload).to have_attributes(
+          first_name: "REDACTED", last_name: "REDACTED", case_number: "REDACTED",
+          date_of_birth: Date.new(1990, 1, 1), redacted_at: be_present
+        )
+      end
+    end
+
     it "honors explicitly-passed fields over the config" do
       applicant.redact!({ case_number: :string })
 
