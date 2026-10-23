@@ -717,8 +717,7 @@ en:
         month: Month
         organization: Organization name
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
-      description: The report below has your community engagement information from %{start_date} to %{end_date}. Please review before sending to %{agency_name}.
-      description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
+      description: Report what you have. %{agency_name} will follow up with next steps if anything else is needed.
       education:
         address: School address
         community_engagement_hours: Community engagement hours
@@ -755,7 +754,7 @@ en:
       monthly_details: Monthly details
       no_activities_added: Add at least one activity before submitting your report.
       submit: Submit to %{agency_name}
-      title: Review and submit your %{benefit} community engagement report
+      title: Review and submit your community engagement activities
     unpaid_work:
       title: Unpaid work
     work_programs:

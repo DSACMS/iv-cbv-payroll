@@ -59,7 +59,10 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
       expect(page).to have_button(I18n.t("activities.hub.review_and_submit"))
       click_button I18n.t("activities.hub.review_and_submit")
-      verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+      verify_page(page, title: I18n.t("activities.summary.title"))
+      expect(page).to have_selector("h1 + p",
+        text: I18n.t("activities.summary.description", agency_name: I18n.t("shared.agency_full_name.sandbox")),
+        exact_text: true, normalize_ws: true)
     end
   end
 
@@ -175,7 +178,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 4)
 
     click_button I18n.t("activities.hub.review_and_submit")
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
 
     volunteering = flow.volunteering_activities.last
     job_training = flow.job_training_activities.last
@@ -193,7 +196,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_content I18n.t("activities.submit.consent_required")
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
@@ -300,11 +303,11 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     fill_in "payroll_account[additional_information]",
       with: "Some kind of additional information"
     click_button I18n.t("activities.income.payment_details.show.continue")
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_content I18n.t("activities.submit.consent_required")
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
@@ -373,11 +376,11 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Test University"
 
     click_button I18n.t("activities.hub.review_and_submit")
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_content "Test University"
 
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_content I18n.t("activities.submit.consent_required")
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
