@@ -1,3 +1,4 @@
+<% any_activities_added = @flow.any_activities_added? %>
 <% reporting_window_display = @flow.reporting_window_display %>
 <% months_required_display = @flow.months_required_display %>
 
@@ -21,8 +22,10 @@
       </p>
     <% end %>
 
-    <% if @flow.any_activities_added? %>
-      <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+    <% if any_activities_added %>
+      <div class="display-none tablet:display-block">
+        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+      </div>
     <% end %>
   </div>
   <div class="activity-hub-columns__activities">
@@ -196,5 +199,15 @@
         <% end %>
       <% end %>
     <% end %>
+
+    <% if any_activities_added %>
+      <div class="tablet:display-none">
+        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+      </div>
+    <% end %>
   </div>
 </div>
+
+<%= render "activities/activities/common_questions",
+      reporting_purpose: @flow.reporting_window_months >= 12 ? :renewal : :application,
+      required_month_count: @flow.required_month_count %>
