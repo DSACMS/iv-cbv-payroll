@@ -132,6 +132,21 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       )
     end
 
+    context "with Louisiana" do
+      let(:applicant) { create(:cbv_applicant, client_agency_id: "la_ldh") }
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant, client_agency_id: "la_ldh") }
+      let(:current_flow) { create(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation) }
+
+      it "shows all four community engagement activity types" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_selector("[data-activity-type='employment'] h2", text: I18n.t("activities.employment.title"))
+        expect(rendered).to have_selector("[data-activity-type='education'] h2", text: I18n.t("activities.education.title"))
+        expect(rendered).to have_selector("[data-activity-type='community_service'] h2", text: I18n.t("activities.community_service.title"))
+        expect(rendered).to have_selector("[data-activity-type='work_programs'] h2", text: I18n.t("activities.work_programs.title"))
+      end
+    end
+
     context "with unpaid-only employment" do
       let(:current_flow) { create(:activity_flow, unpaid_work_only: true) }
 

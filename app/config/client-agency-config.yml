@@ -65,6 +65,11 @@
         redaction_type: string
       individual_id:
         required: false
+  activity_types:
+    education: true
+    community_service: true
+    work_programs: true
+    employment: true
   api:
     v2:
       community_engagement:

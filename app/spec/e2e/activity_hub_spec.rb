@@ -4,6 +4,11 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
   include E2e::TestHelpers
   include_context "activity_hub"
 
+  let(:agency_name) { I18n.t("shared.agency_full_name.sandbox") }
+  let(:agency_website) { Rails.application.config.client_agencies["sandbox"].agency_contact_website }
+  let(:renewal_instructions) { I18n.t("activities.success.show.head_of_household_description_html", agency_website: agency_website) }
+  let(:agency_website_link_text) { Capybara.string(renewal_instructions).find("a").text }
+
   around do |ex|
     override_supported_providers([ :argyle ]) do
       @e2e = E2e::MockingService.new(server_url: URI(page.server_url))
@@ -54,7 +59,10 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
       expect(page).to have_button(I18n.t("activities.hub.review_and_submit"))
       click_button I18n.t("activities.hub.review_and_submit")
-      verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+      verify_page(page, title: I18n.t("activities.summary.title"))
+      expect(page).to have_selector("h1 + p",
+        text: I18n.t("activities.summary.description", agency_name: I18n.t("shared.agency_full_name.sandbox")),
+        exact_text: true, normalize_ws: true)
     end
   end
 
@@ -170,7 +178,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 4)
 
     click_button I18n.t("activities.hub.review_and_submit")
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
 
     volunteering = flow.volunteering_activities.last
     job_training = flow.job_training_activities.last
@@ -188,13 +196,13 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_content I18n.t("activities.submit.consent_required")
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
 
     # /activities/success
-    verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
+    verify_page(page, title: I18n.t("activities.success.show.title", agency_name: agency_name))
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
   end
 
@@ -295,17 +303,17 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     fill_in "payroll_account[additional_information]",
       with: "Some kind of additional information"
     click_button I18n.t("activities.income.payment_details.show.continue")
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
 
     # /activities/summary
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_content I18n.t("activities.submit.consent_required")
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
 
     # /activities/success
-    verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
+    verify_page(page, title: I18n.t("activities.success.show.title", agency_name: agency_name))
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
   end
 
@@ -349,10 +357,11 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.hub.empty.education")
   end
 
-  it "completes submission flow when education enrollment data exists" do
+  it "completes the tokenized submission flow when education enrollment data exists" do
     visit URI(root_url).request_uri
 
-    visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
+    invitation = create(:activity_flow_invitation, client_agency_id: "sandbox")
+    visit activities_flow_start_path(token: invitation.auth_token)
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     click_link I18n.t("activities.entries.show.continue")
 
@@ -367,17 +376,22 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Test University"
 
     click_button I18n.t("activities.hub.review_and_submit")
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_content "Test University"
 
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_content I18n.t("activities.submit.consent_required")
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
 
-    verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
-    expect(page).to have_content I18n.t("activities.success.show.download_pdf")
+    verify_page(page, title: I18n.t("activities.success.show.title", agency_name: agency_name))
+    expect(page).to have_text(I18n.t("activities.success.show.subheading"))
+    expect(page).to have_link(I18n.t("activities.success.show.download_pdf"), href: activities_flow_submit_path(format: :pdf))
+    expect(page).to have_selector("p", text: I18n.t("activities.success.show.next_steps_description", agency_name: agency_name), exact_text: true, normalize_ws: true)
+    expect(page).to have_selector("h3", text: I18n.t("activities.success.show.head_of_household_title"))
+    expect(page).to have_text(I18n.t("activities.success.show.household_member_description", agency_name: agency_name))
+    expect(page).to have_link(agency_website_link_text, href: agency_website)
   end
 
   it "shows less-than-half-time education enrollment on the hub" do
