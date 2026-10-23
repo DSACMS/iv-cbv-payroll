@@ -209,4 +209,5 @@
 </div>
 
 <%= render "activities/activities/common_questions",
-      reporting_purpose: @flow.reporting_window_months >= 12 ? :renewal : :application %>
+      reporting_purpose: @flow.reporting_window_months >= 12 ? :renewal : :application,
+      required_month_count: @flow.required_month_count %>

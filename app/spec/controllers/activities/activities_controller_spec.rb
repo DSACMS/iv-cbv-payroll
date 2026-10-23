@@ -11,9 +11,11 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
     let(:rendered) { Capybara.string(response.body) }
     let(:reporting_purpose) { I18n.t("activities.hub.common_questions.reporting_purposes.application") }
+    let(:required_month_count) { 1 }
     let(:requirements_body) do
       ActionController::Base.helpers.strip_tags(
-        I18n.t("activities.hub.common_questions.requirements_body_html")
+        I18n.t("activities.hub.common_questions.requirements_body_html",
+          count: required_month_count, required_month_count: required_month_count)
       )
     end
     let(:income_body) { I18n.t("activities.hub.common_questions.income_body", reporting_purpose: reporting_purpose) }
@@ -51,13 +53,15 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
 
     context "with an 11-month renewal requiring a subset of months" do
+      let(:required_month_count) { 2 }
+
       let(:current_flow) do
         create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
           education_activities_count: 0, reporting_window_type: "renewal", reporting_window_months: 11,
           renewal_required_months: 2)
       end
 
-      it "keeps the same requirements text and uses the application purpose" do
+      it "uses the required month count and the application purpose" do
         get :index
 
         expect(rendered).to have_text(requirements_body)

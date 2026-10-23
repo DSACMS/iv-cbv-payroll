@@ -15,9 +15,11 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     let(:invitation) { create(:activity_flow_invitation, client_agency_id: "sandbox") }
     let(:requirements_question) { I18n.t("activities.hub.common_questions.requirements_title") }
     let(:income_question) { I18n.t("activities.hub.common_questions.income_title") }
+    let(:required_month_count) { ActivityFlow.last.required_month_count }
     let(:requirements_body) do
       ActionController::Base.helpers.strip_tags(
-        I18n.t("activities.hub.common_questions.requirements_body_html")
+        I18n.t("activities.hub.common_questions.requirements_body_html",
+          count: required_month_count, required_month_count: required_month_count)
       )
     end
     let(:income_body) do
