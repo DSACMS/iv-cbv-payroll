@@ -1,4 +1,5 @@
-<% unpaid = @employment_activity.unpaid_or_in_kind? %>
+<% other = @employment_activity.unpaid_or_in_kind? %>
+<% unpaid = @flow.unpaid_work_only? %>
 <% unless @flow.employment_focused? %>
   <% content_for :activity_flow_header do %>
     <%= render ActivityFlowHeaderComponent.new(
@@ -13,7 +14,7 @@
 <% from_review = params[:from_review].present? %>
 <% from_edit = params[:from_edit].present? %>
 <% month_label = l(@current_month, format: :month) %>
-<% input_scope = unpaid ? "activities.employment.hours_input.unpaid_or_in_kind" : "activities.employment.hours_input" %>
+<% input_scope = other ? "activities.employment.hours_input.unpaid_or_in_kind" : "activities.employment.hours_input" %>
 <% heading = t("#{input_scope}.heading",
   organization: @employment_activity.employer_name) %>
 <% content_for :title, heading %>
@@ -57,7 +58,7 @@
       ),
       method: :patch
     ) do |f| %>
-  <% unless unpaid %>
+  <% unless other %>
     <%= f.currency_field :gross_income,
           required: true,
           label: t("activities.employment.hours_input.gross_income_label", month: month_label),
@@ -71,7 +72,7 @@
         value: decimal_input_value(@activity_month.hours),
         label: t("activities.employment.hours_input.hours_label", month: month_label),
         label_class: "text-bold",
-        hint: @flow.unpaid_work_only? ? nil : unpaid ? t("#{input_scope}.hours_hint") : nil %>
+        hint: @flow.unpaid_work_only? ? nil : other ? t("#{input_scope}.hours_hint") : nil %>
 
   <%= f.submit(from_review ? t("activities.hub.save") : t("activities.employment.hours_input.continue")) %>
 <% end %>

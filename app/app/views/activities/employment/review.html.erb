@@ -1,4 +1,5 @@
-<% unpaid = @employment_activity.unpaid_or_in_kind? %>
+<% other = @employment_activity.unpaid_or_in_kind? %>
+<% unpaid = @flow.unpaid_work_only? %>
 <%# i18n-tasks-use t('activities.employment.review.description') %>
 <%# i18n-tasks-use t('activities.employment.review.unpaid_or_in_kind.description') %>
 <%# i18n-tasks-use t('activities.employment.review.additional_comments_description') %>
@@ -52,7 +53,7 @@
       class: "usa-form usa-form--large" do |form| %>
   <h2><%= t("activities.employment.review.additional_comments_title") %></h2>
   <%= form.label :additional_comments,
-        t(@flow.unpaid_work_only? ? "activities.employment.review.unpaid_or_in_kind.additional_comments_description_unpaid" : unpaid ? "activities.employment.review.unpaid_or_in_kind.additional_comments_description" : "activities.employment.review.additional_comments_description",
+        t(unpaid ? "activities.employment.review.unpaid_or_in_kind.additional_comments_description_unpaid" : other ? "activities.employment.review.unpaid_or_in_kind.additional_comments_description" : "activities.employment.review.additional_comments_description",
           agency_name: agency_translation("shared.agency_full_name")),
         class: "usa-label" %>
   <%= form.text_area :additional_comments, class: "usa-textarea", rows: 5 %>
