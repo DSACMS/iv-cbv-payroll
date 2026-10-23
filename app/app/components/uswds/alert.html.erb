@@ -2,9 +2,14 @@
   class="<%= alert_classes %>"
   role="<%= @form_id.present? ? "group" : @options.fetch(:role, "alert") %>"
   aria-atomic="true"
+  <% if controllers.present? %>
+    data-controller="<%= controllers %>"
+  <% end %>
+  <% if @dismiss_key.present? %>
+    data-dismissible-alert-key-value="<%= @dismiss_key %>"
+  <% end %>
   <% if @form_id.present? %>
     tabindex="-1"
-    data-controller="error-summary"
     data-error-summary-form-id-value="<%= @form_id %>"
     <% if @heading %>
       aria-labelledby="<%= "#{@form_id}_error_heading" %>"
@@ -33,5 +38,10 @@
     >
       <%= content %>
     </div>
+    <% if @dismiss_key.present? %>
+      <button type="button" class="usa-button usa-button--unstyled margin-top-1 flex-align-self-start" data-action="dismissible-alert#dismiss">
+        <%= t("components.uswds.alert.dismiss") %>
+      </button>
+    <% end %>
   </div>
 </div>

@@ -4,6 +4,7 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
   include E2e::TestHelpers
   include_context "activity_hub"
 
+  let(:alert_text) { I18n.t("activities.activities.activity_section.unpaid_work_alert") }
   let(:agency_name) { I18n.t("shared.agency_full_name.sandbox") }
   let(:agency_website) { Rails.application.config.client_agencies["sandbox"].agency_contact_website }
   let(:renewal_instructions) { I18n.t("activities.success.show.head_of_household_description_html", agency_website: agency_website) }
@@ -25,7 +26,10 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
 
       # Hub: add unpaid work directly.
       verify_page(page, title: I18n.t("activities.hub.title"))
-      within("[data-activity-type='unpaid_work']") { click_button I18n.t("activities.hub.add") }
+      within("[data-activity-type='unpaid_work']") do
+        expect(page).to have_selector(".usa-alert--info", text: alert_text)
+        click_button I18n.t("activities.hub.add")
+      end
 
       # Work information: confirm the unpaid form is shown.
       verify_page(page, title: I18n.t("activities.employment_info.unpaid_or_in_kind.title"))

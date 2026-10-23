@@ -98,6 +98,8 @@ en:
               greater_than_or_equal_to: Hours must be 0 or more
   activities:
     activities:
+      activity_section:
+        unpaid_work_alert: Paid work you reported separately also counts towards your community engagement.
       employment_focused_review:
         additional_comments: Additional comments
         employer_address: Address
@@ -1296,6 +1298,9 @@ en:
           title_gross_income: Gross income
           title_number_of_paychecks: Number of paychecks
           title_total_hours_worked: Total hours worked
+    uswds:
+      alert:
+        dismiss: Dismiss
   continue: Continue
   date:
     formats:

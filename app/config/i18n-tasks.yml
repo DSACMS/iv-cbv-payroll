@@ -149,6 +149,7 @@ ignore_missing:
     - "activerecord.errors.models.activity_flow_invitation.*"
     - "components.enrollment_term_table_component.*"
     - "components.report.monthly_summary_table.activity.*"
+    - "components.uswds.alert.dismiss" # FFS-4930
     - "shared.table_headers.*"
     - "activity_flow_progress_indicator.*"
     - "activerecord.errors.models.volunteering_activity_month.*" # Self attestation hours entry error messages
@@ -158,6 +159,7 @@ ignore_missing:
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
+    - "components.uswds.alert.dismiss" # FFS-4930
     - "api.v2.la_ldh.fields.*" # FFS-4797
     - "api.v2.fields.*" # FFS-4797
     - "cbv.employer_searches.employer.select_employer"
