@@ -15,6 +15,15 @@ module Launcher
 
     USER_PROFILES = [
       UserProfile.new(
+        scenario_key: "enrollment_only_jordan",
+        first_name: "Jordan",
+        last_name: "Testuser",
+        date_of_birth: Date.parse("1995-06-12"),
+        enrollments: [
+          { school_name: "Maple Grove College", enrollment_status: :enrolled }
+        ]
+      ),
+      UserProfile.new(
         scenario_key: "partial_enrollment_sam",
         first_name: "Sam",
         last_name: "Testuser",
