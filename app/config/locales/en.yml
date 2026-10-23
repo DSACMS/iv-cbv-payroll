@@ -533,19 +533,6 @@ en:
         employment: No employment added
         unpaid_work: No unpaid work added
         work_programs: No work programs added
-      empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
-      empty_state_description_single_month: Add employment, education, community service, or work program activities you've done in %{reporting_window}.
-      empty_state_description_single_month_unpaid: |-
-        Add unpaid work, education, community service, or work program activities you've done in %{reporting_window}.
-
-        Employment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}.
-      empty_state_description_unpaid: |-
-        Add unpaid work, education, community service, or work program activities you've done between %{reporting_window}.
-
-        Employment other than unpaid work also counts toward your community engagement requirements, but was already reported earlier in your %{type}.
-      empty_state_months_required_all: all %{required_month_count} months in the reporting period
-      empty_state_months_required_any: any %{required_month_count} months in the reporting period
-      empty_state_months_required_label: 'Months required:'
       empty_state_reporting_period_label: 'Reporting period:'
       months_required_any:
         one: any %{count} month in the reporting period

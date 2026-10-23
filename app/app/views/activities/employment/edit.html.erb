@@ -1,4 +1,4 @@
-<% unpaid = @employment_activity.unpaid_or_in_kind? %>
+<% unpaid = @flow.unpaid_work_only? %>
 <% title = unpaid ? t("activities.employment_info.unpaid_or_in_kind.title") : t("activities.employment_info.edit_title") %>
 <% content_for :title, title %>
 

@@ -2,7 +2,6 @@
 <% upload_max_file_size = current_agency.max_document_upload_size_bytes %>
 <% upload_allowed_content_types = current_agency.allowed_document_content_types.join(",") %>
 <% upload_allowed_types_sentence = document_upload_allowed_types_sentence(current_agency) %>
-<% unpaid = @activity.respond_to?(:unpaid_or_in_kind?) && @activity.unpaid_or_in_kind? %>
 <% content_for :title, title %>
 <%# i18n-tasks-use t('activities.document_uploads.new.title', name: 'name') %>
 <%# i18n-tasks-use t('activities.document_uploads.new.title_generic') %>

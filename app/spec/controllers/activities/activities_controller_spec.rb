@@ -290,19 +290,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     it "shows the hub heading, reporting period, and months required" do
       rendered = Capybara.string(response.body)
 
-    it "shows empty-state hub heading and description" do
-      page_text = Capybara.string(response.body).text
-
-      expect(page_text).to include(I18n.t("activities.hub.empty_state_title"))
-      expect(page_text).to include(I18n.t("activities.hub.empty_state_reporting_period_label"))
-      expect(page_text).to include(current_flow.reporting_window_display)
-      I18n.t(
-        "activities.hub.empty_state_description",
-        reporting_window: current_flow.reporting_window_display,
-        type: current_flow.renewal_reporting_window? ? 'renewal' : 'application'
-      ).split("\n\n").each do |paragraph|
-        expect(page_text).to include(paragraph)
-      end
       expect(rendered).to have_selector("h1", text: I18n.t("activities.hub.title"))
       expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.empty_state_reporting_period_label")} #{current_flow.reporting_window_display}", exact_text: true, normalize_ws: true)
       expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.months_required_label")} #{current_flow.required_month_count}", exact_text: true, normalize_ws: true)
@@ -323,15 +310,6 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
         rendered = Capybara.string(response.body)
         reporting_month = I18n.l(current_flow.reporting_window_range.begin, format: :month_year)
 
-        expect(page_text).to include(I18n.t("activities.hub.empty_state_reporting_period_label"))
-        expect(page_text).to include(reporting_month)
-        I18n.t(
-          "activities.hub.empty_state_description_single_month",
-          reporting_window: reporting_month,
-          type: current_flow.renewal_reporting_window? ? "renewal" : "application"
-        ).split("\n\n").each do |paragraph|
-          expect(page_text).to include(paragraph)
-        end
         expect(rendered).to have_selector("p", text: "#{I18n.t("activities.hub.empty_state_reporting_period_label")} #{reporting_month}", exact_text: true, normalize_ws: true)
       end
     end
