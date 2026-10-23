@@ -62,20 +62,6 @@ and linked models in the reference for field descriptions, required and nullable
 fields, monthly reporting rules, and the employment and education variants.
 The generated request example shows a complete report with all activity types.
 
-## Validating the Model
-
-From `app/`, run the contract specs or build the complete API reference:
-
-```bash
-rbenv exec ruby bin/rspec spec/services/transmitters/activity_json_transmitter_spec.rb spec/services/transmitters/activity_json_transmitter_education_spec.rb spec/openapi
-RAILS_ENV=test rbenv exec bundle exec rake api_docs:build
-```
-
-The build validates the OpenAPI model and its generated example. Contract tests
-also exercise Argyle's Bob, Joe, and Kim sandbox fixtures and a mixed report with
-Pinwheel payroll, self-employment, unpaid work, and all education variants. Tests
-make no live payroll, NSC, or agency requests.
-
 # **Design Principles**
 
 | Design | Description |

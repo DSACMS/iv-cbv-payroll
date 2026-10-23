@@ -8,7 +8,7 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
     invitation = create(:activity_flow_invitation, client_agency_id: "sandbox")
     visit activities_flow_start_path(token: invitation.auth_token, reporting_window_months: 3)
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
+    verify_page(page, title: I18n.t("activities.hub.title"))
     within("[data-activity-type='employment']") do
       click_button I18n.t("activities.hub.add")
     end
