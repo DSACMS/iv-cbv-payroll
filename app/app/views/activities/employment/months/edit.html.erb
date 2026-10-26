@@ -1,7 +1,9 @@
+<% other = @employment_activity.unpaid_or_in_kind? %>
+<% unpaid = @flow.unpaid_work_only? %>
 <% unless @flow.employment_focused? %>
   <% content_for :activity_flow_header do %>
     <%= render ActivityFlowHeaderComponent.new(
-      title: t("activities.employment.title_singular"),
+      title: unpaid ? t("activities.employment.unpaid_title") : t("activities.employment.title_singular"),
       exit_url: activities_flow_root_path,
       back_url: @back_url,
       track_event_prefix: "Employment"
@@ -12,8 +14,7 @@
 <% from_review = params[:from_review].present? %>
 <% from_edit = params[:from_edit].present? %>
 <% month_label = l(@current_month, format: :month) %>
-<% unpaid = @employment_activity.unpaid_or_in_kind? %>
-<% input_scope = unpaid ? "activities.employment.hours_input.unpaid_or_in_kind" : "activities.employment.hours_input" %>
+<% input_scope = other ? "activities.employment.hours_input.unpaid_or_in_kind" : "activities.employment.hours_input" %>
 <% heading = t("#{input_scope}.heading",
   organization: @employment_activity.employer_name) %>
 <% content_for :title, heading %>
@@ -25,7 +26,13 @@
         form_id: "employment_month_form",
         class: "margin-bottom-4"
       ) do %>
-    <%= t("#{input_scope}.error_body") %>
+    <% if other && @employment_activity.requires_month_selection? %>
+       <%= t("#{input_scope}.error_body_html", month_selection_url: edit_activities_flow_income_employment_month_selection_path(employment_id: @employment_activity, from_edit: params[:from_edit].presence)) %>
+     <% elsif unpaid %>
+       <%= t("#{input_scope}.field_error") %>
+     <% else %>
+       <%= t("#{input_scope}.error_body") %>
+     <% end %>
   <% end %>
 <% end %>
 
@@ -51,7 +58,7 @@
       ),
       method: :patch
     ) do |f| %>
-  <% unless unpaid %>
+  <% unless other %>
     <%= f.currency_field :gross_income,
           required: true,
           label: t("activities.employment.hours_input.gross_income_label", month: month_label),
@@ -65,7 +72,7 @@
         value: decimal_input_value(@activity_month.hours),
         label: t("activities.employment.hours_input.hours_label", month: month_label),
         label_class: "text-bold",
-        hint: unpaid ? t("#{input_scope}.hours_hint") : nil %>
+        hint: @flow.unpaid_work_only? ? nil : other ? t("#{input_scope}.hours_hint") : nil %>
 
   <%= f.submit(from_review ? t("activities.hub.save") : t("activities.employment.hours_input.continue")) %>
 <% end %>
