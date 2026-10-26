@@ -677,7 +677,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
     end
 
     context "when the report was completed in another tab" do
-      let(:completed_at) { 1.minute.ago }
+      let(:completed_at) { 1.minute.ago.change(usec: 0) }
 
       before { activity_flow.update!(completed_at: completed_at, confirmation_code: test_confirmation_code) }
 
