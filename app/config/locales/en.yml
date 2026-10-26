@@ -756,7 +756,7 @@ en:
       monthly_details: Monthly details
       no_activities_added: Add at least one activity before submitting your report.
       submit: Submit to %{agency_name}
-      title: Review and submit your community engagement activities
+      title: Review and submit your community engagement report
     unpaid_work:
       title: Unpaid work
     work_programs:
