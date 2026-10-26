@@ -7,6 +7,39 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.12.0
+
+### User facing changes to Emmy Income + Emmy CE
+- Readable error alerts and inline errors [(#2178)](https://github.com/DSACMS/iv-cbv-payroll/pull/2178) - Chris [[FFS-4893]](https://jiraent.cms.gov/browse/FFS-4893)
+- Tables have an associated accessible name [(#2180)](https://github.com/DSACMS/iv-cbv-payroll/pull/2180) - Jake Wheeler [[FFS-4891]](https://jiraent.cms.gov/browse/FFS-4891)
+- Use `aria-describedby` for form hint text [(#2183)](https://github.com/DSACMS/iv-cbv-payroll/pull/2183) - Daphne Gold [[FFS-4890]](https://jiraent.cms.gov/browse/FFS-4890)
+- Required form fields should be identifiable [(#2165)](https://github.com/DSACMS/iv-cbv-payroll/pull/2165) - Jake Wheeler [[FFS-4892]](https://jiraent.cms.gov/browse/FFS-4892)
+- Employer search assitive tech tab reading [(#2163)](https://github.com/DSACMS/iv-cbv-payroll/pull/2163) - Chris [[FFS-4889]](https://jiraent.cms.gov/browse/FFS-4889)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Add unpaid-only community engagement reporting [(#2157)](https://github.com/DSACMS/iv-cbv-payroll/pull/2157) - Tom Dooner [[FFS-4860]](https://jiraent.cms.gov/browse/FFS-4860)
+- Update Education Review, Review and Submit, PDF [(#2179)](https://github.com/DSACMS/iv-cbv-payroll/pull/2179) - Daphne Gold [[FFS-4871]](https://jiraent.cms.gov/browse/FFS-4871)
+- Update upload supporting docs page [(#2154)](https://github.com/DSACMS/iv-cbv-payroll/pull/2154) - krista-skylight [[FFS-4870]](https://jiraent.cms.gov/browse/FFS-4870)
+- Ensure "Reporting for (name)" header appears throughout Emmy CE and Employment flows [(#2161)](https://github.com/DSACMS/iv-cbv-payroll/pull/2161) - Jake Wheeler [[FFS-4862]](https://jiraent.cms.gov/browse/FFS-4862)
+- Create 'Add a term' for education activity [(#2164)](https://github.com/DSACMS/iv-cbv-payroll/pull/2164) - Daphne Gold [[FFS-4868]](https://jiraent.cms.gov/browse/FFS-4868)
+- Make gross_income required [(#2160)](https://github.com/DSACMS/iv-cbv-payroll/pull/2160) - Chris [[FFS-4895]](https://jiraent.cms.gov/browse/FFS-4895)
+
+### Other/Maintenance (Not user facing)
+- Bump @scalar/api-reference, net-imap, faraday, selenium-webdriver, webpack, vitest, postcss, axe-core-rspec, prettier, vite, css_parser, rails, postcss-nesting, aws-sdk-s3, test-prof, vitest, net-ssh, happy-dom
+- Remove remnants of pre-populated activities [(#2188)](https://github.com/DSACMS/iv-cbv-payroll/pull/2188) - Tom Dooner
+- Add OpenAI Codex to the PR template [(#2189)](https://github.com/DSACMS/iv-cbv-payroll/pull/2189) - Tom Dooner
+- Close SFTP session connection [(#2191)](https://github.com/DSACMS/iv-cbv-payroll/pull/2191) - Jake Wheeler
+- Align schema column order with Rails 8.1.4 [(#2186)](https://github.com/DSACMS/iv-cbv-payroll/pull/2186) - Daphne Gold
+- Add monitoring and alerting for CMS Data Services Hub connectivity failures (e.g. NSC API errors, cert expiry). [(#2075)](https://github.com/DSACMS/iv-cbv-payroll/pull/2075) - krista-skylight
+- Update reviewer lottery [(#2185)](https://github.com/DSACMS/iv-cbv-payroll/pull/2185) - Daphne Gold
+- Commit schema update [(#2182)](https://github.com/DSACMS/iv-cbv-payroll/pull/2182) - Daphne Gold
+- Update schema to match implementation [(#2181)](https://github.com/DSACMS/iv-cbv-payroll/pull/2181) - Chris [[FFS-4896]](https://jiraent.cms.gov/browse/FFS-4896)
+- Add education_type field to 3 places [(#2158)](https://github.com/DSACMS/iv-cbv-payroll/pull/2158) - krista-skylight [[FFS-4903]](https://jiraent.cms.gov/browse/FFS-4903)
+- fix: patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore [(#2162)](https://github.com/DSACMS/iv-cbv-payroll/pull/2162) - github-actions[bot]
+
 ## 0.11.0
 
 ### Emmy Income only user facing changes

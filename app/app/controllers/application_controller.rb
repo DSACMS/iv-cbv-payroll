@@ -4,9 +4,9 @@ class ApplicationController < ActionController::Base
   ALPHANUMERIC_PREFIX_REGEXP = /^([a-zA-Z0-9]+)[^a-zA-Z0-9]*$/
 
   helper :view
-  helper_method :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?, :nsc_disabled?, :show_activity_reporting_banner?
+  helper_method :alert_enabled?, :current_agency, :show_menu?, :pilot_ended?, :get_site_alert_title, :get_site_alert_body, :activity_flow?, :session_timeout_enabled?, :session_timeout_duration, :internal_environment?, :nsc_disabled?, :show_activity_reporting_banner?
   around_action :switch_locale
-  before_action :add_newrelic_metadata, :redirect_if_maintenance_mode, :set_device_id_cookie
+  before_action :redirect_if_maintenance_mode, :add_newrelic_metadata, :set_device_id_cookie
   after_action :apply_iframe_embedding
 
   rescue_from ActionController::InvalidAuthenticityToken do
@@ -213,9 +213,28 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_if_maintenance_mode
-    if ENV["MAINTENANCE_MODE"] == "true"
-      redirect_to maintenance_path
+    if alert_enabled?(:maintenance)
+      redirect_to_outage maintenance_path
+    elsif alert_enabled?(:technical_difficulties)
+      agency_id = params[:client_agency_id].presence || client_agency_from_domain
+      redirect_to_outage technical_difficulties_path(
+        client_agency_id: agency_config[agency_id]&.id,
+        locale: I18n.locale
+      )
     end
+  end
+
+  def redirect_to_outage(url)
+    if request.accepts.include?(Mime[:turbo_stream])
+      render turbo_stream: turbo_stream.action(:redirect, url)
+    else
+      redirect_to url, status: :see_other
+    end
+  end
+
+  def alert_enabled?(type)
+    ENV.fetch("ENABLED_ALERTS", "none").split(",").map(&:strip)
+      .reject { |alert| alert.casecmp?("none") }.include?(type.to_s)
   end
 
   def get_site_alert_title

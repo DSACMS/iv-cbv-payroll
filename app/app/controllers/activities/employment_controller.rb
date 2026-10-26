@@ -103,7 +103,7 @@ class Activities::EmploymentController < Activities::BaseController
 
   def set_back_url
     if action_name.in?(%w[new create])
-      @back_url = @flow.unpaid_work_only? ? activities_flow_root_path : activities_flow_income_add_your_work_path
+      @back_url = back_url_for_new
     elsif action_name == "edit" && params[:from_review].present?
       @back_url = review_activities_flow_income_employment_path(
         id: @employment_activity,
@@ -113,6 +113,17 @@ class Activities::EmploymentController < Activities::BaseController
       @back_url = new_activities_flow_income_employment_document_upload_path(
         employment_id: @employment_activity
       )
+    end
+  end
+
+  def back_url_for_new
+    return activities_flow_root_path if @flow.unpaid_work_only?
+
+    case params[:back_url]
+    when "education_other"
+      activities_flow_education_other_path
+    else
+      activities_flow_income_add_your_work_path
     end
   end
 

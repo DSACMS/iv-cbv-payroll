@@ -74,6 +74,23 @@ class Activities::BaseController < FlowController
     t("activities.errors.invalid_token")
   end
 
+  def invitation_unusable?(invitation)
+    super || invitation.activity_flows.completed.exists?
+  end
+
+  def expired_invitation_path(invitation)
+    activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id)
+  end
+
+  def track_expired_event(invitation)
+    event_logger.track(TrackEvent::ApplicantAccessedExpiredLinkPage, request, {
+      invitation_id: invitation.id,
+      cbv_applicant_id: invitation.cbv_applicant_id,
+      client_agency_id: invitation.client_agency_id,
+      time: Time.now.to_i
+    })
+  end
+
   def track_invitation_clicked_event(invitation, flow)
     # No-op for activities currently
   end

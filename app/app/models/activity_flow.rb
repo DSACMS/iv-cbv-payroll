@@ -1,4 +1,14 @@
 class ActivityFlow < Flow
+  include Redactable
+
+  has_redactable_fields(
+    argyle_user_id: :string,
+    device_id: :uuid,
+    end_user_id: :uuid,
+    additional_information: :object,
+    confirmation_code: :string
+  )
+
   include LauncherOverrides
 
   DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS = 6
@@ -97,6 +107,17 @@ class ActivityFlow < Flow
     end
 
     "#{start_display} - #{end_display}"
+  end
+
+  def months_required_display
+    verification_range = activity_flow_invitation&.verification_range
+    return if verification_range == "last_complete_month"
+
+    if verification_range == "last_12_complete_months" || renewal_reporting_window?
+      I18n.t("activities.hub.months_required_any", count: required_month_count)
+    else
+      required_month_count.to_s
+    end
   end
 
   def any_activities_added?

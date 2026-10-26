@@ -221,6 +221,6 @@ RSpec.describe ActivityReportSchemas do
 
   it "uses the CE report guide for the standalone model description" do
     expect(described_class.schemas[:CeActivityReport][:description])
-      .to eq(InvitationDocumentation.read("ce-activity-report", section: "Model"))
+      .to eq(InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Model"))
   end
 end

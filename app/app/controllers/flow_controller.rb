@@ -62,9 +62,9 @@ class FlowController < ApplicationController
         return redirect_to(root_url, flash: { alert: invalid_token_message })
       end
 
-      if invitation.expired?
+      if invitation_unusable?(invitation)
         track_expired_event(invitation)
-        return redirect_to(cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+        return redirect_to(expired_invitation_path(invitation))
       end
 
       flow_class = flow_class(flow_param)
@@ -116,6 +116,23 @@ class FlowController < ApplicationController
       cbv_flow_id: flow.id, # TODO: Genericize/migrate key, it could be activity or cbv
       client_agency_id: flow.cbv_applicant.client_agency_id,
       origin: params[:origin]
+    })
+  end
+
+  def invitation_unusable?(invitation)
+    invitation.expired?
+  end
+
+  def expired_invitation_path(invitation)
+    cbv_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id)
+  end
+
+  def track_expired_event(invitation)
+    event_logger.track(TrackEvent::ApplicantAccessedExpiredLinkPage, request, {
+      invitation_id: invitation.id,
+      cbv_applicant_id: invitation.cbv_applicant_id,
+      client_agency_id: current_agency&.id,
+      time: Time.now.to_i
     })
   end
 

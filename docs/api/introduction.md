@@ -1,9 +1,12 @@
+# Introduction
+
 Integrate your agency's systems with the Emmy platform. This reference currently
 covers the Tokenized Link API (v1 and v2) for creating personalized reporting links and the
-`CeActivityReport` model for outbound community engagement reports. Find the CE
-report and its activity types under Models, including self-attested employment,
-validated payroll, and education. This model describes data Emmy sends to an
-agency, not an endpoint hosted by Emmy.
+CE Activity Report webhook for outbound community engagement reports. Find the
+webhook under **Receiving data from the Emmy Platform**, including its JSON
+request example, signing headers, expected response, and signed cURL sample.
+Its component models include self-attested employment, validated payroll, and education.
+Your agency hosts this receiver.
 Examples use synthetic applicant data and nonfunctional tokens.
 
 Object schemas allow additional properties for forward compatibility. Integrations
@@ -22,6 +25,9 @@ The JSON and this reference are generated together from executable API tests.
 | Dev | https://verify-demo.navapbc.cloud | Develop and test integrations. |
 | Demo | https://demo.reportmyincome.org | Demonstrate and evaluate the platform. |
 
+These URLs host the invitation API. Report webhooks use your agency's configured
+receiver URL instead.
+
 Use HTTPS for every request and the API key issued for the selected environment.
 Your production hostname and credentials are provided during agency onboarding.
 
@@ -31,7 +37,7 @@ Contact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) to request an agency API key
 for each environment. The Tokenized Link API uses a 32-character secret API key.
 Keep it on your server, never in browser code or public repositories.
 
-Each key identifies an agency and its configured metadata and invitation settings.
+For invitation requests, each key identifies an agency and its configured metadata and invitation settings.
 Sending a `client_agency_id` cannot select another agency. Include these headers:
 
 ```http
@@ -42,3 +48,7 @@ Content-Type: application/json
 A missing or invalid key returns `401 Unauthorized` with the plain-text body
 `HTTP Token: Access denied.` and a `WWW-Authenticate` header. If a key is
 compromised, contact emmy@cms.hhs.gov to have it replaced.
+
+Outbound report webhooks use HMAC signing headers instead of Bearer
+authentication. See **Receiving data from the Emmy Platform** for verification
+details and an example delivery to your agency.

@@ -55,7 +55,7 @@ RSpec.describe Activities::Education::OtherController, type: :controller do
       expect(response.body).to include(I18n.t("activities.education.other.show.accordion.internship.body"))
       expect(page).to have_link(
         I18n.t("activities.education.other.show.accordion.internship.link"),
-        href: activities_flow_income_add_your_work_path
+        href: new_activities_flow_income_employment_path(compensation_type: "unpaid_or_in_kind", back_url: "education_other")
       )
     end
 

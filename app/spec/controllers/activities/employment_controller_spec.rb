@@ -118,7 +118,9 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         rendered = Capybara.string(response.body)
 
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.title"))
-        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.description"))
+        I18n.t("activities.employment_info.unpaid_or_in_kind.description").split("\n\n").each do |paragraph|
+          expect(rendered).to have_text(paragraph)
+        end
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_information_description"))
       end
 
@@ -149,6 +151,30 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_email"))
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_phone_number"))
         expect(rendered).to have_no_text(I18n.t("activities.employment_info.self_employed"))
+      end
+    end
+
+    context "when back_url is education_other" do
+      before { get :new, params: { compensation_type: "unpaid_or_in_kind", back_url: "education_other" } }
+
+      it "sets back_url to the education other path" do
+        expect(controller.view_assigns["back_url"]).to eq(activities_flow_education_other_path)
+      end
+    end
+
+    context "when back_to is absent" do
+      before { get :new, params: { compensation_type: "unpaid_or_in_kind" } }
+
+      it "sets back_url to the default add your work path" do
+        expect(controller.view_assigns["back_url"]).to eq(activities_flow_income_add_your_work_path)
+      end
+    end
+
+    context "when back_to is an unrecognized value" do
+      before { get :new, params: { compensation_type: "unpaid_or_in_kind", back_to: "https://evil.com" } }
+
+      it "falls back to the default add your work path, ignoring the untrusted value" do
+        expect(controller.view_assigns["back_url"]).to eq(activities_flow_income_add_your_work_path)
       end
     end
   end

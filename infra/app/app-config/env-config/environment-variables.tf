@@ -21,7 +21,7 @@ locals {
   ssm_environment_variables = {
     ACTIVITY_HUB_ENABLED       = "/service/${var.app_name}-${var.environment}/activity-hub-enabled"
     LA_LDH_PILOT_ENABLED       = "/service/${var.app_name}-${var.environment}/la-ldh-pilot-enabled"
-    SITE_ALERT_ENABLED         = "/service/${var.app_name}-${var.environment}/site-alert-enabled"
+    ENABLED_ALERTS             = "/service/${var.app_name}-${var.environment}/enabled-alerts"
     SITE_ALERT_TITLE_EN        = "/service/${var.app_name}-${var.environment}/site-alert-title-en"
     SITE_ALERT_BODY_EN         = "/service/${var.app_name}-${var.environment}/site-alert-body-en"
     SITE_ALERT_TITLE_ES        = "/service/${var.app_name}-${var.environment}/site-alert-title-es"
@@ -75,10 +75,6 @@ locals {
     NEW_RELIC_ENV = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/new-relic-env"
-    },
-    MAINTENANCE_MODE = {
-      manage_method     = "manual"
-      secret_store_name = "/service/${var.app_name}-${var.environment}/maintenance-mode"
     },
     ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY = {
       manage_method     = "manual"

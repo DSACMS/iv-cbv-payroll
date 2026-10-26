@@ -1,76 +1,32 @@
 <% any_activities_added = @flow.any_activities_added? %>
-<% monthly_results = progress_calculator.monthly_results %>
-<% required_month_count = progress_calculator.required_month_count %>
-<% state = activity_hub_state(any_activities_added:, monthly_results:, required_month_count:) %>
-<% variant = @flow.renewal_reporting_window? ? :renewal : :application %>
-<% title_key = activity_hub_title_key(state) %>
-<% description_key = activity_hub_description_key(state) %>
 <% reporting_window_display = @flow.reporting_window_display %>
-<%# i18n-tasks-use t("activities.hub.empty_state_title") %>
-<%# i18n-tasks-use t("activities.hub.completed_state_title") %>
-<%# i18n-tasks-use t("activities.hub.in_progress_state_title") %>
-<%# i18n-tasks-use t("activities.hub.completed_state_description", agency_name: "Test Agency") %>
-<%# i18n-tasks-use t("activities.hub.in_progress_state_description", agency_name: "Test Agency") %>
-<%# i18n-tasks-use t("activities.hub.empty_state_months_required_any", required_month_count: 3) %>
-<%# i18n-tasks-use t("activities.hub.empty_state_months_required_all", required_month_count: 6) %>
+<% months_required_display = @flow.months_required_display %>
 
-<% content_for :title, t(title_key) %>
+<% content_for :title, t("activities.hub.title") %>
 
 <div class="activity-hub-columns">
   <div class="activity-hub-columns__progress">
     <h1>
-      <%= t(title_key) %>
+      <%= t("activities.hub.title") %>
     </h1>
 
-    <% if state == :empty %>
-      <p class="activity-hub-subheading margin-top-2">
-        <strong><%= t("activities.hub.empty_state_reporting_period_label") %></strong>
-        <%= reporting_window_display %>
-      </p>
+    <p class="activity-hub-subheading margin-top-2">
+      <strong><%= t("activities.hub.empty_state_reporting_period_label") %></strong>
+      <%= reporting_window_display %>
+    </p>
 
-      <% if variant == :renewal %>
-        <% months_required_key = required_month_count < @flow.reporting_window_months ? "activities.hub.empty_state_months_required_any" : "activities.hub.empty_state_months_required_all" %>
-        <p class="activity-hub-subheading">
-          <strong><%= t("activities.hub.empty_state_months_required_label") %></strong>
-          <%= t(months_required_key, required_month_count: required_month_count) %>
-        </p>
-      <% end %>
-
+    <% if months_required_display %>
       <p class="activity-hub-subheading">
-        <% if @flow.reporting_window_months == 1 %>
-          <%= t("activities.hub.empty_state_description_single_month", reporting_window: reporting_window_display) %>
-        <% else %>
-          <%= t("activities.hub.empty_state_description", reporting_window: reporting_window_display) %>
-        <% end %>
-      </p>
-    <% else %>
-      <p class="activity-hub-subheading margin-top-2">
-        <%= t(description_key, agency_name: agency_translation("shared.agency_full_name")) %>
+        <strong><%= t("activities.hub.months_required_label") %></strong>
+        <%= months_required_display %>
       </p>
     <% end %>
 
     <% if any_activities_added %>
-      <% show_progress_unit_toggle = @employment_activities.any? || @employment_payroll_accounts.any? %>
-      <div class="margin-top-4">
-        <%= render(
-          ActivityFlowProgressIndicator.from_calculator(
-            progress_calculator,
-            variant: variant,
-            show_unit_toggle: show_progress_unit_toggle
-          )
-        ) %>
+      <div class="display-none tablet:display-block">
+        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
       </div>
-
-      <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
-
-      <% if state == :in_progress %>
-        <p class="margin-top-2 text-center text-primary font-sans-sm text-underline">
-        <%# Commented out for now, will be added back in when we have a verification info page %>
-          <%#= t("activities.hub.verification_info_link") %>
-        </p>
-      <% end %>
     <% end %>
-
   </div>
   <div class="activity-hub-columns__activities">
     <% if show_activity?(:employment) %>
@@ -243,5 +199,15 @@
         <% end %>
       <% end %>
     <% end %>
+
+    <% if any_activities_added %>
+      <div class="tablet:display-none">
+        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+      </div>
+    <% end %>
   </div>
 </div>
+
+<%= render "activities/activities/common_questions",
+      reporting_purpose: @flow.reporting_window_months >= 12 ? :renewal : :application,
+      required_month_count: @flow.required_month_count %>

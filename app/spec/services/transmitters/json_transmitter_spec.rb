@@ -36,7 +36,7 @@ RSpec.describe Transmitters::JsonTransmitter do
   end
 
   describe "#payload" do
-    let(:schema_path) { Rails.root.parent.join("docs/api/schemas/income-report-2026-06-18.json") }
+    let(:schema_path) { Rails.root.join("spec/fixtures/income-report-2026-06-18.json") }
     let(:schema) { JSON.parse(schema_path.read) }
     let(:schema_report) { build(:pinwheel_report, :hydrated, :with_pinwheel_account) }
 
@@ -46,7 +46,8 @@ RSpec.describe Transmitters::JsonTransmitter do
       schema_report.incomes.first.compensation_unit = "hourly"
     end
 
-    it "matches the published income report JSON Schema" do
+    it "matches the legacy income report contract" do
+      expect(JSONSchemer.validate_schema(schema).to_a).to be_empty
       payload = JSON.parse(described_class.new(cbv_flow, mock_client_agency, schema_report).payload)
       errors = JSONSchemer.schema(schema).validate(payload).map do |error|
         error.slice("data_pointer", "type", "error")

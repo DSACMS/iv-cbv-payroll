@@ -28,6 +28,7 @@ erDiagram
 		datetime documents_deleted_at
 		boolean employment_focused
 		uuid end_user_id
+		datetime redacted_at
 		integer renewal_required_months
 		integer reporting_window_months
 		string reporting_window_type
@@ -55,6 +56,8 @@ erDiagram
 		string client_agency_id
 		datetime created_at
 		boolean employment_focused
+		datetime expires_at
+		datetime redacted_at
 		string reference_id
 		boolean unpaid_work_only
 		datetime updated_at
@@ -133,6 +136,7 @@ erDiagram
 		string data_source
 		boolean draft
 		string education_type
+		datetime redacted_at
 		string school_name
 		string self_attested_enrollment_status
 		date self_attested_term_end
@@ -156,6 +160,7 @@ erDiagram
 		boolean draft
 		string employer_name
 		boolean is_self_employed
+		datetime redacted_at
 		date selected_months
 		string state
 		string street_address
@@ -168,6 +173,7 @@ erDiagram
 		decimal gross_income
 		decimal hours
 		date month
+		datetime redacted_at
 		datetime updated_at
 	}
 	Household {
@@ -175,12 +181,14 @@ erDiagram
 		string client_agency_id
 		datetime created_at
 		jsonb launcher_overrides
+		datetime redacted_at
 		string reference_id
 		datetime updated_at
 	}
 	HouseholdMember {
 		datetime created_at
 		string display_name
+		datetime redacted_at
 		string reference_id
 		string role_label
 		datetime updated_at
@@ -190,6 +198,7 @@ erDiagram
 		date date_of_birth
 		string first_name
 		string last_name
+		datetime redacted_at
 		datetime updated_at
 	}
 	JobTrainingActivity {
@@ -204,6 +213,7 @@ erDiagram
 		string organization_address
 		string organization_name
 		string program_name
+		datetime redacted_at
 		string state
 		string street_address
 		string street_address_line_2
@@ -223,6 +233,9 @@ erDiagram
 		string first_name
 		string last_name
 		string middle_name
+		boolean nsc_withdrawn
+		datetime redacted_at
+		date school_certified_on
 		string school_name
 		date term_begin
 		date term_end
@@ -343,6 +356,7 @@ erDiagram
 		boolean draft
 		integer hours
 		string organization_name
+		datetime redacted_at
 		string state
 		string street_address
 		string street_address_line_2

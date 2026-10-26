@@ -166,7 +166,7 @@ Then point the Emmy App at the receiver (running on port 4567) by adding the
 `SANDBOX_ACTIVITY_DOCUMENTS_API_URL=http://localhost:4567/documents`.
 
 To transmit the community engagement activity report (see
-[the CE activity report API documentation](/docs/api/ce-activity-report.md)) instead, set
+[the CE activity report API documentation](/docs/api/receiving-data/ce-activity-json.md)) instead, set
 `SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=json` and
 `SANDBOX_ACTIVITY_JSON_API_URL=http://localhost:4567/activities`. The receiver
 writes the report to `app/tmp/transmitted_activity_report.json`.

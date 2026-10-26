@@ -1,4 +1,19 @@
 class VolunteeringActivity < Activity
+  include Redactable
+
+  has_redactable_fields(
+    organization_name: :string,
+    coordinator_name: :string,
+    coordinator_email: :email,
+    coordinator_phone_number: :string,
+    street_address: :string,
+    street_address_line_2: :string,
+    city: :string,
+    state: :string,
+    zip_code: :string,
+    additional_comments: :string
+  )
+
   include HasActivityMonths
   include DocumentUploadable
 
