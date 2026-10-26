@@ -151,5 +151,5 @@ gem "bcrypt_pbkdf" # Necessary for SSH Key support in Net::SSH
 # Sinatra for JSON API reference implementation
 gem "sinatra", "~> 4.2"
 
-gem "pry", "~> 0.16.0", group: :development
+gem "pry", "~> 0.16.1", group: :development
 gem "pry-doc", "~> 1.7", group: :development
