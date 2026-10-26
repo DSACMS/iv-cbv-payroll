@@ -111,8 +111,11 @@ group :development, :test do
 end
 
 group :development do
-  gem "debase-ruby_core_source", "~> 4.0"
-  gem "debase", "~> 0.2.9", require: false
+  # RubyMine's native debugger is only needed locally.
+  install_if -> { ENV["CI"] != "true" } do
+    gem "debase-ruby_core_source", "~> 4.0"
+    gem "debase", "~> 0.2.9", require: false
+  end
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 

@@ -22,7 +22,9 @@ module Redactable
     email: "REDACTED@example.com",
     object: {},
     uuid: "00000000-0000-0000-0000-000000000000",
-    integer: nil
+    integer: nil,
+    decimal: 0,
+    unique_string: -> { "REDACTED-#{SecureRandom.uuid}" }
   }
 
   included do
@@ -42,15 +44,16 @@ module Redactable
     end
   end
 
-  def redact!(fields = nil)
+  def redact!(fields = nil, touch: true)
     fields_to_redact = fields || self.class.fields_to_redact
     raise "No fields to redact in #{self.class}" unless fields_to_redact.present?
 
     fields_to_redact.each do |field, type|
-      self[field] = REDACTION_REPLACEMENTS[type]
+      replacement = REDACTION_REPLACEMENTS[type]
+      self[field] = replacement.respond_to?(:call) ? replacement.call : replacement
     end
     self[REDACTED_TIMESTAMP_COLUMN] = Time.now
 
-    save(validate: false)
+    save(validate: false, touch: touch)
   end
 end

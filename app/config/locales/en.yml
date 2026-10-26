@@ -98,6 +98,8 @@ en:
               greater_than_or_equal_to: Hours must be 0 or more
   activities:
     activities:
+      activity_section:
+        unpaid_work_alert: Paid work you reported separately also counts towards your community engagement.
       employment_focused_review:
         additional_comments: Additional comments
         employer_address: Address
@@ -488,6 +490,12 @@ en:
     error_no_identity: Please provide your name and date of birth
     errors:
       invalid_token: The link you used is invalid.
+    expired_invitations:
+      show:
+        agency_fallback: your benefits agency
+        body: This can happen if you've already submitted information via %{agency_acronym}'s self-service portal or if the time to submit has expired. Please reach out to %{agency_acronym} for assistance.
+        title: Your verification link is no longer valid
+        visit_agency: Visit %{agency_acronym} website
     hub:
       add: Add
       cards:
@@ -496,8 +504,17 @@ en:
         gross_income: 'Gross income: %{amount}'
         hours: 'Community engagement hours: %{count}'
         no_employment_data: No payments found from this employer.
-      completed_state_description: "%{agency_name} will determine your eligibility based on the activities you've added to your report."
-      completed_state_title: You're ready to review and submit your report
+      common_questions:
+        heading: Common questions
+        income_body: Yes. Any income you reported earlier in your %{reporting_purpose} will contribute towards meeting community engagement requirements in addition to the activities you submit here.
+        income_title: Does income count toward meeting requirements?
+        reporting_purposes:
+          application: application
+          renewal: renewal
+        requirements_body_html:
+          one: Report at least <strong>80 hours</strong> of activity for at least <strong>%{required_month_count} month</strong> in the reporting period to meet community engagement requirements.
+          other: Report at least <strong>80 hours</strong> of activity for at least <strong>%{required_month_count} months</strong> in the reporting period to meet community engagement requirements.
+        requirements_title: What do I need to meet community engagement requirements?
       edit: Edit
       empty:
         community_service: No community service added
@@ -505,18 +522,15 @@ en:
         employment: No employment added
         unpaid_work: No unpaid work added
         work_programs: No work programs added
-      empty_state_description: Add employment, education, community service, or work program activities you've done between %{reporting_window}.
-      empty_state_description_single_month: Add employment, education, community service, or work program activities you've done in %{reporting_window}.
-      empty_state_months_required_all: all %{required_month_count} months in the reporting period
-      empty_state_months_required_any: any %{required_month_count} months in the reporting period
-      empty_state_months_required_label: 'Months required:'
       empty_state_reporting_period_label: 'Reporting period:'
-      empty_state_title: Build your community engagement report
-      in_progress_state_description: "%{agency_name} will determine your eligibility based on the activities you add to your report."
-      in_progress_state_title: Add more activities or continue to review and submit your report
+      months_required_any:
+        one: any %{count} month in the reporting period
+        other: any %{count} months in the reporting period
+      months_required_label: 'Months required:'
       reporting_window: 'Reporting window: %{range}'
       review_and_submit: Review and Submit
       save: Save changes
+      title: Add your community engagement activities
     income:
       employer_searches:
         employer:
@@ -666,10 +680,8 @@ en:
     success:
       show:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
-        done_for_now: You're done for now. %{agency_full_name} will review your information and contact you if needed.
         download_pdf: Download my report
         employment_focused:
-          subheading: It may take a few moments for them to be reflected in the system.
           title: Your jobs have been submitted to %{agency_name}
           whats_next:
             download_your_report:
@@ -681,11 +693,17 @@ en:
               heading: If you’re a household member
               subheading: You’re done for now. %{agency_name} will review your information and contact you if needed. You may close this tab.
             subheading: "%{agency_name} will review your information and contact you if needed."
+        head_of_household_description_html: Continue your renewal in the <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">agency website</a> or use the forms mailed to you. You may close this tab.
+        head_of_household_title: If you’re the head of household
+        household_member_description: You’re done for now. %{agency_name} will review your information and contact you if needed. You may close this tab.
+        household_member_title: If you’re a household member
+        next_steps_description: "%{agency_name} will review your information and contact you if needed."
+        subheading: It may take a few moments for them to be reflected in the system.
         survey: Take the 3 question survey
-        title: Your community engagement report was successfully sent to %{agency_acronym}
+        title: Your community engagement activities have been submitted to %{agency_name}
         whats_next: What's next?
         whats_next_1_li_1: We recommend saving your report for your records.
-        whats_next_1_title: Download your report for your records.
+        whats_next_1_title: Download your report
         whats_next_2_li_1: We’d like to hear more about your experience using this site.
         whats_next_2_title: Help make this experience better.
     summary:
@@ -701,8 +719,7 @@ en:
         month: Month
         organization: Organization name
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
-      description: The report below has your community engagement information from %{start_date} to %{end_date}. Please review before sending to %{agency_name}.
-      description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
+      description: Report what you have. %{agency_name} will follow up with next steps if anything else is needed.
       education:
         address: School address
         community_engagement_hours: Community engagement hours
@@ -739,7 +756,7 @@ en:
       monthly_details: Monthly details
       no_activities_added: Add at least one activity before submitting your report.
       submit: Submit to %{agency_name}
-      title: Review and submit your %{benefit} community engagement report
+      title: Review and submit your community engagement activities
     unpaid_work:
       title: Unpaid work
     work_programs:
@@ -871,6 +888,15 @@ en:
         sandbox: Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
+  application:
+    aggregator_outage_alert:
+      activity_body_html: Some parts of the site may not work properly. If you aren't able to search for your employer or login to your payroll provider, please try again later or %{manual_entry_link}.
+      heading: We're experiencing technical difficulties
+      income_body: Some parts of the site may not work properly. If you aren't able to search for your employer or login to your payroll provider, please try again later.
+      manual_entry: add your employment details manually
+    sync_delay_alert:
+      body: We're currently experiencing technical difficulties. If we are unable to sync your employment information, please try again later.
+      heading: Syncing is taking longer than normal
   caseworker_mailer:
     summary_email:
       greeting: Hello,
@@ -1272,6 +1298,9 @@ en:
           title_gross_income: Gross income
           title_number_of_paychecks: Number of paychecks
           title_total_hours_worked: Total hours worked
+    uswds:
+      alert:
+        dismiss: Dismiss
   continue: Continue
   date:
     formats:
@@ -1397,6 +1426,11 @@ en:
     body_1: The site is not available right now. Any information you entered will not be saved.
     body_2: Visit your agency's website for more information on how to submit proof of income for your benefits.
     header: We're undergoing maintenance
+    technical_difficulties:
+      agency_link: Visit %{agency_acronym}'s website
+      body: We were unable to connect due to an error. You can try again later or submit your %{reporting_purpose} information by visiting %{agency_acronym}'s website.
+      body_without_agency: We were unable to connect due to an error. You can try again later.
+      header: We're currently experiencing technical difficulties
   pages:
     activity_flow_timeout:
       description: Sessions end after 30 minutes of inactivity. This helps keep your information safe. Any information not submitted was not saved.
