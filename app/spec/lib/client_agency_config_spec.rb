@@ -11,22 +11,20 @@ RSpec.describe ClientAgencyConfig do
       .and_return(sample_config)
   end
 
-  describe "the single-use Sandbox agency" do
-    let(:agency) { Rails.application.config.client_agencies["sandbox_no_reuse"] }
-    let(:sandbox) { Rails.application.config.client_agencies["sandbox"] }
+  describe "Louisiana acceptance testing configuration" do
+    let(:agency) { Rails.application.config.client_agencies["la_ldh"] }
 
-    it "disables invitation reuse without changing Sandbox" do
+    it "allows CE activities to be added with invitation reuse disabled" do
       expect(agency.allow_activity_invitation_reuse).to be(false)
-      expect(sandbox.allow_activity_invitation_reuse).to be(true)
+      expect(agency.activity_types).to include(
+        education: true, community_service: true, work_programs: true, employment: true
+      )
     end
 
-    it "inherits Sandbox's activities, applicant fields, and delivery settings" do
-      expect(agency.activity_types).to eq(sandbox.activity_types)
-      expect(agency.applicant_attributes).to eq(sandbox.applicant_attributes)
-      expect(agency.activity_transmission_method_configuration).to eq(sandbox.activity_transmission_method_configuration)
+    it "keeps Sandbox invitation reuse enabled" do
+      expect(Rails.application.config.client_agencies["sandbox"].allow_activity_invitation_reuse).to be(true)
     end
   end
-
 
   context 'valid config' do
     let(:sample_config) { <<~YAML }

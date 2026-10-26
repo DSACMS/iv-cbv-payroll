@@ -65,6 +65,28 @@ RSpec.describe Activities::EntriesController do
     context "with tokenized link" do
       let(:invitation) { create(:activity_flow_invitation) }
 
+      context "for Louisiana" do
+        let(:invitation) { create(:activity_flow_invitation, client_agency_id: "la_ldh") }
+
+        before { create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current) }
+
+        it "rejects a used CE link using the configured policy" do
+          expect { get :show, params: { token: invitation.auth_token } }.not_to change(ActivityFlow, :count)
+
+          expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: "la_ldh"))
+        end
+
+        context "for Employment" do
+          let(:invitation) { create(:activity_flow_invitation, client_agency_id: "la_ldh", employment_focused: true) }
+
+          it "rejects a used Employment link using the configured policy" do
+            expect { get :show, params: { token: invitation.auth_token } }.not_to change(ActivityFlow, :count)
+
+            expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: "la_ldh"))
+          end
+        end
+      end
+
       context "when the invitation expires naturally" do
         let(:agency) { Rails.application.config.client_agencies["sandbox"] }
         let(:invitation) do
@@ -135,10 +157,11 @@ RSpec.describe Activities::EntriesController do
             session[:flow_type] = :activity
           end
 
-          it "prevents resuming the flow without a token parameter" do
+          it "allows a separate in-progress flow to continue" do
             get :show
 
-            expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+            expect(response).to have_http_status(:ok)
+            expect(session[:flow_id]).to eq(incomplete_flow.id)
           end
         end
 
