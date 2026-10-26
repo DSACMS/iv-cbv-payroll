@@ -24,6 +24,24 @@ RSpec.describe Launcher::FakeNscDataFetcherService do
   let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
 
   describe "#fetch" do
+    context "with Robin's enrollment history" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("enrollment_history_robin") }
+      let(:identity) do
+        create(:identity, first_name: profile.first_name, last_name: profile.last_name, date_of_birth: profile.date_of_birth)
+      end
+
+      it "persists enrolled and withdrawn statuses with distinct certifications for one term" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms).to contain_exactly(
+          have_attributes(school_name: "Harborview College", term_begin: Date.new(2026, 1, 1), term_end: Date.new(2026, 2, 28),
+            enrollment_status: "enrolled", nsc_withdrawn: false, school_certified_on: Date.new(2026, 1, 1)),
+          have_attributes(school_name: "Harborview College", term_begin: Date.new(2026, 1, 1), term_end: Date.new(2026, 2, 28),
+            enrollment_status: "unknown", nsc_withdrawn: true, school_certified_on: Date.new(2026, 2, 1))
+        )
+      end
+    end
+
     it "saves certification dates so launcher enrollments show the status as-of date" do
       service.fetch
 

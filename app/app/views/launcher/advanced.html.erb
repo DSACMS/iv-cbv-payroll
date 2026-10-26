@@ -72,6 +72,11 @@
               </h4>
               <div id="fake-test-scenarios-content" class="usa-accordion__content" aria-labelledby="fake-test-scenarios-button">
                 <div class="advanced-launcher__scenario-radios">
+                  <%= render "test_scenario",
+                    scenario_key: "enrollment_history_robin",
+                    title: t(".enrollment_history.title"),
+                    description: t(".enrollment_history.description"),
+                    reporting_window_months: 2 %>
             <div class="usa-radio">
               <input class="usa-radio__input usa-radio__input--tile" type="radio"
                      name="test_scenario" id="test_scenario_partial_enrollment_sam" value="partial_enrollment_sam"

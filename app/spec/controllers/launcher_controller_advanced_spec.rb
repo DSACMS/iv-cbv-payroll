@@ -46,6 +46,7 @@ RSpec.describe LauncherController, type: :controller do
       get :advanced
       rendered = response.body
       expect(rendered).to include('Fake Test Scenarios')
+      expect(rendered).to include('id="test_scenario_enrollment_history_robin"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_multi_term"')
       expect(rendered).to include('id="test_scenario_partial_enrollment_taylor"')
       expect(rendered).to include('id="test_scenario_renewal_half_time_last_4_of_6_avery"')
@@ -427,6 +428,23 @@ RSpec.describe LauncherController, type: :controller do
     end
 
     context "with a fake test scenario" do
+      context "with enrollment history" do
+        let(:profile) { Launcher::FakeNscScenarios.by_key("enrollment_history_robin") }
+
+        before do
+          post :create, params: { client_agency_id: "sandbox", test_scenario: profile.scenario_key }
+        end
+
+        it "creates a tokenized invitation for Robin" do
+          invitation = ActivityFlowInvitation.last
+
+          expect(invitation.cbv_applicant).to have_attributes(
+            first_name: profile.first_name, last_name: profile.last_name, date_of_birth: profile.date_of_birth
+          )
+          expect(response).to redirect_to(%r{/activities/start/#{invitation.auth_token}})
+        end
+      end
+
       it "creates a tokenized invitation and redirects to /activities/start" do
         expect {
           post :create, params: {

@@ -15,6 +15,16 @@ module Launcher
 
     USER_PROFILES = [
       UserProfile.new(
+        scenario_key: "enrollment_history_robin",
+        first_name: "Robin",
+        last_name: "Testuser",
+        date_of_birth: Date.parse("1990-01-01"),
+        terms: [
+          { school_name: "Harborview College", enrollment_status: :withdrawn, certification_month_offset: 1 },
+          { school_name: "Harborview College", enrollment_status: :enrolled, certification_month_offset: 0 }
+        ]
+      ),
+      UserProfile.new(
         scenario_key: "partial_enrollment_sam",
         first_name: "Sam",
         last_name: "Testuser",
@@ -127,7 +137,8 @@ module Launcher
       three_quarter_time: "Q",
       half_time: "H",
       less_than_half_time: "L",
-      enrolled: "Y"
+      enrolled: "Y",
+      withdrawn: "W"
     }.freeze
 
     module_function
@@ -167,7 +178,7 @@ module Launcher
             {
               "termBeginDate" => term[:term_begin].strftime("%Y-%m-%d"),
               "termEndDate" => term[:term_end].strftime("%Y-%m-%d"),
-              "schoolCertifiedOnDate" => term[:term_begin].strftime("%Y-%m-%d"),
+              "schoolCertifiedOnDate" => term[:school_certified_on].strftime("%Y-%m-%d"),
               "enrollmentStatus" => STATUS_CODES.fetch(term[:enrollment_status].to_sym)
             }
           ]
@@ -185,7 +196,8 @@ module Launcher
             school_name: term_data[:school_name],
             enrollment_status: term_data[:enrollment_status],
             term_begin: covered_window.begin,
-            term_end: covered_window.end
+            term_end: covered_window.end,
+            school_certified_on: covered_window.begin + term_data.fetch(:certification_month_offset, 0).months
           }
         end
       end
@@ -197,7 +209,8 @@ module Launcher
           school_name: enrollment[:school_name],
           enrollment_status: enrollment[:enrollment_status],
           term_begin: reporting_window.begin,
-          term_end: reporting_window.end
+          term_end: reporting_window.end,
+          school_certified_on: reporting_window.begin
         }
       end
     end

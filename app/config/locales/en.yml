@@ -1430,6 +1430,9 @@ en:
       title: Who are you reporting for?
   launcher:
     advanced:
+      enrollment_history:
+        description: Withdrawn enrollment with an earlier Enrolled status for the same school and term. Expand enrollment history to see the earlier status and certification date.
+        title: Robin Testuser — enrollment history
       launch_configuration:
         title: Launch configuration
       settings:
