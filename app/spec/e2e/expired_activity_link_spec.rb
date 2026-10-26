@@ -20,7 +20,7 @@ RSpec.describe "Expired CE links", :js, type: :feature do
       verify_page(page, title: I18n.t("activities.summary.title", benefit: "Medicaid"))
       find("label[for='activity_flow_consent_to_submit']").click
       click_button I18n.t("activities.summary.submit", agency_name: "Test Agency")
-      verify_page(page, title: I18n.t("activities.success.show.title", agency_acronym: "TA"))
+      verify_page(page, title: I18n.t("activities.success.show.title", agency_name: "Test Agency", agency_acronym: "TA"))
 
       expect(flow.reload.transmitted_at).to be_nil
 

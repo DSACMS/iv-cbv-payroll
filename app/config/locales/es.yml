@@ -79,6 +79,7 @@ es:
       header:
         accenture: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
         sandbox: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
+        sandbox_no_reuse: La Agencia de pruebas le ha enviado una invitación para verificar sus ingresos
       subject:
         default: Verifique sus ingresos para su solicitud o renovación de SNAP
   application:
@@ -178,6 +179,18 @@ es:
             blank: Escriba su segundo nombre.
             prompt: Segundo nombre
             super_one_html: Segundo nombre<sup>1</sup>
+      sandbox_no_reuse:
+        fields:
+          case_number:
+            blank: Escriba su número de caso.
+          date_of_birth:
+            blank: Escriba su fecha de nacimiento.
+          first_name:
+            blank: Escriba su nombre.
+          last_name:
+            blank: Escriba su apellido.
+          middle_name:
+            blank: Escriba su segundo nombre.
       show:
         continue: Continuar
         explanation: Esta información se utilizará para conectar su información de ingresos con sus beneficios de %{agency_acronym}. Por favor, asegúrese de que la información que ingrese sea la misma que se muestra en su solicitud.
@@ -338,6 +351,7 @@ es:
             nh_dhhs: NH DHHS Bureau of Family Assistance
             research: Example Department of Health
             sandbox: Test Agency
+            sandbox_no_reuse: Test Agency
           caseworker:
             doc_id: Doc ID
             pay_period: Período de pago (%{pay_frequency})
@@ -651,12 +665,14 @@ es:
       nh_dhhs: NH DHHS
       research: EDOH
       sandbox: TA
+      sandbox_no_reuse: TA
     agency_full_name:
       accenture: Agencia de pruebas
       la_ldh: Departamento de Salud de Luisiana
       nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
       research: Departamento de Salud de Ejemplo
       sandbox: Agencia de pruebas
+      sandbox_no_reuse: Agencia de pruebas
     app_name:
       default: TAApp
     banner:
@@ -668,6 +684,7 @@ es:
       nh_dhhs: Medicaid
       research: Medicaid
       sandbox: Medicaid
+      sandbox_no_reuse: Medicaid
     footer:
       feedback: Compartir comentarios
     header:
@@ -678,6 +695,7 @@ es:
         nh_dhhs: NH DHHS Oficina de Asistencia Familiar (BFA)
         research: Departamento de Salud de Ejemplo
         sandbox: Agencia de pruebas
+        sandbox_no_reuse: Agencia de pruebas
       close: Cerrar
       help: Ayuda
       log_out: Cerrar sesión
@@ -710,6 +728,7 @@ es:
       nh_dhhs: beneficios
       research: beneficios
       sandbox: beneficios
+      sandbox_no_reuse: beneficios
     select_placeholder: "- Seleccione -"
     skip_link: Saltar al contenido principal
   time:

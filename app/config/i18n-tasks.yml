@@ -128,8 +128,6 @@ ignore_missing:
     - "time.*"    # Defaults provided by rails-i18n
     - "payment_frequencies.*"   # Helper method uses English values directly
   es:
-    - "*.sandbox_no_reuse"
-    - "cbv.applicant_informations.sandbox_no_reuse.*"
     # Internal advanced launcher
     - "launcher.advanced.*"
     # Caseworker emails that are only supported in English:
