@@ -145,6 +145,26 @@
     color: color("base");
   }
 
+  .advanced-launcher__scenario-with-details {
+    margin-top: units(1);
+    border: units($theme-input-tile-border-width) solid color("gray-20");
+    border-radius: radius($theme-input-tile-border-radius);
+
+    .usa-radio__input--tile + .usa-radio__label {
+      background: transparent;
+      border: 0;
+      margin-top: 0;
+    }
+
+    &:has(> .usa-radio__input:checked) {
+      @include active-tile-colors("primary");
+    }
+
+    details {
+      padding: 0 units(2) units(1.5) units(5);
+    }
+  }
+
   .advanced-launcher__archetypes {
     .usa-checkbox + .usa-checkbox {
       margin-top: units(1);
