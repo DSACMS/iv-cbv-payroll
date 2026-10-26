@@ -28,7 +28,6 @@ class ActivityFlowInvitation < ApplicationRecord
   end
 
   def used?
-    agency = Rails.application.config.client_agencies[client_agency_id]
-    !agency.allow_activity_invitation_reuse && activity_flows.completed.exists?
+    activity_flows.completed.exists?
   end
 end

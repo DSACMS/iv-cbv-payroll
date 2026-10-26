@@ -1,5 +1,5 @@
 class Activities::SubmitController < Activities::BaseController
-  skip_before_action :redirect_used_invitation_for_flow, only: :show
+  skip_before_action :ensure_activity_flow_not_yet_complete, only: :show
 
   def show
     respond_to do |format|

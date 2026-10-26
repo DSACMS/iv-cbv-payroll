@@ -676,6 +676,21 @@ RSpec.describe Activities::SummaryController, type: :controller do
       create(:employment_activity, activity_flow: activity_flow)
     end
 
+    context "when the report was completed in another tab" do
+      let(:completed_at) { 1.minute.ago }
+
+      before { activity_flow.update!(completed_at: completed_at, confirmation_code: test_confirmation_code) }
+
+      it "keeps the submitted report unchanged without queueing it again" do
+        expect {
+          patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+        }.not_to have_enqueued_job(ActivityFlowTransmitterJob)
+
+        expect(activity_flow.reload).to have_attributes(completed_at: completed_at, confirmation_code: test_confirmation_code)
+        expect(response).to redirect_to(activities_flow_success_path)
+      end
+    end
+
     context "when no activities have been added" do
       let(:empty_flow) do
         create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
@@ -829,29 +844,18 @@ RSpec.describe Activities::SummaryController, type: :controller do
           expect(activity_flow.reload).to have_attributes(completed_at: nil, confirmation_code: nil)
         end
 
-        it "rolls back completion when enqueueing is aborted" do
-          allow(ActivityFlowTransmitterJob).to receive(:perform_later).and_return(false)
-
-          expect {
-            patch :update, params: { activity_flow: { consent_to_submit: "1" } }
-          }.to raise_error(ActiveJob::EnqueueError)
-
-          expect(invitation).not_to be_used
-          expect(activity_flow.reload.completed_at).to be_nil
-        end
-
         context "when another session has already submitted" do
           before do
             create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current)
           end
 
-          it "rejects submission without queuing a second report" do
+          it "accepts the report from a separate in-progress flow" do
             expect {
               patch :update, params: { activity_flow: { consent_to_submit: "1" } }
-            }.not_to have_enqueued_job(ActivityFlowTransmitterJob)
+            }.to have_enqueued_job(ActivityFlowTransmitterJob).with(activity_flow.id)
 
-            expect(activity_flow.reload.completed_at).to be_nil
-            expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: "sandbox"))
+            expect(activity_flow.reload.completed_at).to be_present
+            expect(response).to redirect_to(activities_flow_success_path)
           end
         end
 
