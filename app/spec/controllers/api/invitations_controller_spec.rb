@@ -190,6 +190,16 @@ RSpec.describe Api::InvitationsController do
       expect(response).to have_http_status(:ok)
     end
 
+    context "when the invitation already expired naturally" do
+      before { cbv_flow_invitation.update!(expires_at: 1.day.ago) }
+
+      it "succeeds without moving the expiration date forward" do
+        expect { expire_invitation }.not_to change { cbv_flow_invitation.reload.expires_at }
+        expect(response).to have_http_status(:ok)
+        expect(cbv_flow_invitation.reload.manually_expired).to be true
+      end
+    end
+
     context "when the token belongs to a community engagement invitation" do
       let(:activity_flow_invitation) do
         create(:activity_flow_invitation, client_agency_id: client_agency_id.to_s)
