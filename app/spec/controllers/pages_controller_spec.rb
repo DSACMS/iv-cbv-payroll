@@ -5,18 +5,32 @@ RSpec.describe PagesController do
 
   describe "agency partnership heading" do
     let(:host) { "example.gov" }
+    let(:development) { false }
     let(:rendered) { Capybara.string(response.body) }
 
     before do
       request.host = host
-      request.env["HTTPS"] = "on"
-      allow(controller).to receive(:current_agency).and_return(Rails.application.config.client_agencies["sandbox"])
+      allow(Rails.env).to receive(:development?).and_return(development)
+      allow(controller).to receive_messages(
+        client_agency_from_domain: nil,
+        current_agency: Rails.application.config.client_agencies["sandbox"]
+      )
       get :home
     end
 
     it "shows only the government banner on a government host" do
       expect(rendered).to have_button(I18n.t("application.government_banner.how_you_know"))
       expect(rendered).to have_no_text(I18n.t("shared.header.preheader.default"))
+    end
+
+    context "in local development" do
+      let(:host) { "localhost" }
+      let(:development) { true }
+
+      it "shows only the government banner" do
+        expect(rendered).to have_button(I18n.t("application.government_banner.how_you_know"))
+        expect(rendered).to have_no_text(I18n.t("shared.header.preheader.default"))
+      end
     end
 
     context "on a non-government host" do
@@ -43,7 +57,6 @@ RSpec.describe PagesController do
 
     before do
       request.host = "example.gov"
-      request.env["HTTPS"] = "on"
     end
 
     it "renders the banner in the application layout" do

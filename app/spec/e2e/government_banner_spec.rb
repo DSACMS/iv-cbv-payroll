@@ -4,7 +4,6 @@ RSpec.describe "Government banner", :js, type: :feature do
   include E2e::TestHelpers
 
   before do
-    allow_any_instance_of(ActionDispatch::Request).to receive(:ssl?).and_return(true)
     allow_any_instance_of(ActionDispatch::Request).to receive(:host).and_return("example.gov")
   end
 

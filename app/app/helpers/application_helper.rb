@@ -35,14 +35,10 @@ module ApplicationHelper
     Nsc.disabled?
   end
 
-  def government_host?
-    request.host.downcase.delete_suffix(".").end_with?(".gov")
-  end
-
   def show_government_banner?
-    # This follows USWDS guidance
-    # https://designsystem.digital.gov/components/banner/#guidance
-    request.ssl? && government_host?
+    return true if Rails.env.development?
+
+    request.host.downcase.delete_suffix(".").end_with?(".gov")
   end
 
   def uswds_sprite_icon_href(icon_name)

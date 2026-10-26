@@ -5,13 +5,20 @@ RSpec.describe ApplicationHelper do
     subject(:show_banner) { helper.show_government_banner? }
 
     before do
-      allow(helper.request).to receive_messages(host: host, ssl?: secure)
+      allow(helper.request).to receive(:host).and_return(host)
     end
 
     let(:host) { "example.gov" }
-    let(:secure) { true }
 
     it { is_expected.to be true }
+
+    context "in local development" do
+      let(:host) { "localhost" }
+
+      before { allow(Rails.env).to receive(:development?).and_return(true) }
+
+      it { is_expected.to be true }
+    end
 
     context "on a government subdomain" do
       let(:host) { "benefits.example.gov" }
@@ -23,12 +30,6 @@ RSpec.describe ApplicationHelper do
       let(:host) { "Benefits.Example.GOV." }
 
       it { is_expected.to be true }
-    end
-
-    context "over HTTP" do
-      let(:secure) { false }
-
-      it { is_expected.to be false }
     end
 
     context "on a non-government domain" do
