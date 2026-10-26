@@ -98,6 +98,8 @@ en:
               greater_than_or_equal_to: Hours must be 0 or more
   activities:
     activities:
+      activity_section:
+        unpaid_work_alert: Paid work you reported separately also counts towards your community engagement.
       employment_focused_review:
         additional_comments: Additional comments
         employer_address: Address
@@ -678,10 +680,8 @@ en:
     success:
       show:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
-        done_for_now: You're done for now. %{agency_full_name} will review your information and contact you if needed.
         download_pdf: Download my report
         employment_focused:
-          subheading: It may take a few moments for them to be reflected in the system.
           title: Your jobs have been submitted to %{agency_name}
           whats_next:
             download_your_report:
@@ -693,11 +693,17 @@ en:
               heading: If you’re a household member
               subheading: You’re done for now. %{agency_name} will review your information and contact you if needed. You may close this tab.
             subheading: "%{agency_name} will review your information and contact you if needed."
+        head_of_household_description_html: Continue your renewal in the <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">agency website</a> or use the forms mailed to you. You may close this tab.
+        head_of_household_title: If you’re the head of household
+        household_member_description: You’re done for now. %{agency_name} will review your information and contact you if needed. You may close this tab.
+        household_member_title: If you’re a household member
+        next_steps_description: "%{agency_name} will review your information and contact you if needed."
+        subheading: It may take a few moments for them to be reflected in the system.
         survey: Take the 3 question survey
-        title: Your community engagement report was successfully sent to %{agency_acronym}
+        title: Your community engagement activities have been submitted to %{agency_name}
         whats_next: What's next?
         whats_next_1_li_1: We recommend saving your report for your records.
-        whats_next_1_title: Download your report for your records.
+        whats_next_1_title: Download your report
         whats_next_2_li_1: We’d like to hear more about your experience using this site.
         whats_next_2_title: Help make this experience better.
     summary:
@@ -713,8 +719,7 @@ en:
         month: Month
         organization: Organization name
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
-      description: The report below has your community engagement information from %{start_date} to %{end_date}. Please review before sending to %{agency_name}.
-      description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
+      description: Report what you have. %{agency_name} will follow up with next steps if anything else is needed.
       education:
         address: School address
         community_engagement_hours: Community engagement hours
@@ -751,7 +756,7 @@ en:
       monthly_details: Monthly details
       no_activities_added: Add at least one activity before submitting your report.
       submit: Submit to %{agency_name}
-      title: Review and submit your %{benefit} community engagement report
+      title: Review and submit your community engagement activities
     unpaid_work:
       title: Unpaid work
     work_programs:
@@ -1301,6 +1306,9 @@ en:
           title_gross_income: Gross income
           title_number_of_paychecks: Number of paychecks
           title_total_hours_worked: Total hours worked
+    uswds:
+      alert:
+        dismiss: Dismiss
   continue: Continue
   date:
     formats:

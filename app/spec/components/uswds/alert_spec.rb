@@ -30,6 +30,48 @@ RSpec.describe Uswds::Alert, type: :component do
     end
   end
 
+  context "when dismissible" do
+    let(:result) do
+      render_inline(described_class.new(dismiss_key: "example-alert")) { "Helpful guidance" }
+    end
+
+    it "renders a dismiss button without submitting a form" do
+      expect(result).to have_button(I18n.t("components.uswds.alert.dismiss"), type: "button")
+      expect(result).to have_text("Helpful guidance")
+    end
+
+    it "connects dismissal to the provided storage key" do
+      expect(result).to have_css('[data-controller="dismissible-alert"][data-dismissible-alert-key-value="example-alert"]')
+    end
+
+    context "with an associated form" do
+      let(:result) do
+        render_inline(described_class.new(type: :error, form_id: "example-form", dismiss_key: "example-alert")) { "Correct your entries" }
+      end
+
+      it "preserves error summary behavior" do
+        expect(result).to have_css('[data-controller~="error-summary"][data-controller~="dismissible-alert"]')
+        expect(result).to have_css('[data-error-summary-form-id-value="example-form"]')
+      end
+    end
+  end
+
+  it "does not bind dismissal behavior by default" do
+    expect(result).to have_no_button(I18n.t("components.uswds.alert.dismiss"))
+    expect(result).to have_no_css('[data-controller]')
+    expect(result).to have_no_css('[data-dismissible-alert-key-value]')
+  end
+
+  context "with a blank dismissal key" do
+    let(:result) { render_inline(described_class.new(dismiss_key: "")) { "Alert message" } }
+
+    it "does not bind dismissal behavior" do
+      expect(result).to have_no_button(I18n.t("components.uswds.alert.dismiss"))
+      expect(result).to have_no_css('[data-controller]')
+      expect(result).to have_no_css('[data-dismissible-alert-key-value]')
+    end
+  end
+
   context 'with heading' do
     let(:result) { render_inline(described_class.new(heading: 'Important Notice')) { 'Alert content' } }
 
@@ -70,10 +112,11 @@ RSpec.describe Uswds::Alert, type: :component do
     it "renders a focusable summary instead of a live alert" do
       expect(result).to have_css(
         '.usa-alert[role="group"][tabindex="-1"]' \
-        '[data-controller="error-summary"]' \
+        '[data-controller~="error-summary"]' \
         '[data-error-summary-form-id-value="work-form"]'
       )
       expect(result).to have_no_css('[role="alert"]')
+      expect(result).to have_no_css('[data-controller~="dismissible-alert"]')
     end
 
     it "connects the summary to its heading and body" do
