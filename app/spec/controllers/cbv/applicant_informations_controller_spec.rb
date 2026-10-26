@@ -11,6 +11,20 @@ RSpec.describe Cbv::ApplicantInformationsController, type: :controller do
       session[:flow_id] = cbv_flow.id
     end
 
+    context "for the single-use Sandbox agency" do
+      let(:applicant) { create(:cbv_applicant, client_agency_id: "sandbox_no_reuse") }
+      let(:cbv_flow) { create(:cbv_flow, cbv_applicant: applicant) }
+
+      render_views
+
+      it "uses the shared Sandbox applicant form" do
+        get :show, params: { force_show: "true" }
+
+        expect(response).to have_http_status(:ok)
+        expect(Capybara.string(response.body)).to have_field("First name", with: applicant.first_name)
+      end
+    end
+
     context "when the user is uninvited" do
       let(:cbv_flow) { create(:cbv_flow) }
 

@@ -85,6 +85,20 @@ RSpec.describe LauncherController, type: :controller do
   end
 
   describe "POST #create" do
+    context "for the single-use Sandbox agency" do
+      it "creates a tokenized invitation for the selected agency" do
+        post :create, params: {
+          flow_type: "activity", client_agency_id: "sandbox_no_reuse", launch_type: "tokenized"
+        }, format: :json
+
+        expect(response).to have_http_status(:success)
+        invitation = ActivityFlowInvitation.find_by!(auth_token: URI(response.parsed_body.fetch("url")).path.split("/").last)
+        expect(invitation.client_agency_id).to eq("sandbox_no_reuse")
+        flow = ActivityFlow.create_from_invitation(invitation, SecureRandom.uuid)
+        expect(flow.cbv_applicant).to be_a(CbvApplicant::SandboxNoReuse)
+      end
+    end
+
     [ nil, "lynette", "partial_enrollment_maya" ].each do |test_scenario|
       [ "true", "false", nil ].each do |employment_focused|
         it "persists employment focus #{employment_focused.inspect} for scenario #{test_scenario.inspect}" do

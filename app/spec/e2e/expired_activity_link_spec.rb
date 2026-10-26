@@ -8,10 +8,7 @@ RSpec.describe "Expired CE links", :js, type: :feature do
   let(:expired_title) { I18n.t("activities.expired_invitations.show.title") }
 
   context "when submitting a report with reuse disabled" do
-    before do
-      allow(Rails.application.config.client_agencies["sandbox"])
-        .to receive(:allow_activity_invitation_reuse).and_return(false)
-    end
+    let(:invitation) { create(:activity_flow_invitation, client_agency_id: "sandbox_no_reuse") }
 
     it "shows success, then the expiration page when the link is reopened" do
       visit URI(invitation.to_url).request_uri
@@ -33,12 +30,7 @@ RSpec.describe "Expired CE links", :js, type: :feature do
   end
 
   context "when submitting an Employment report with reuse disabled" do
-    let(:invitation) { create(:activity_flow_invitation, employment_focused: true) }
-
-    before do
-      allow(Rails.application.config.client_agencies["sandbox"])
-        .to receive(:allow_activity_invitation_reuse).and_return(false)
-    end
+    let(:invitation) { create(:activity_flow_invitation, client_agency_id: "sandbox_no_reuse", employment_focused: true) }
 
     it "shows success, then the expiration page when the link is reopened" do
       visit URI(invitation.to_url).request_uri

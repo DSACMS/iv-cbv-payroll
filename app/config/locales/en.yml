@@ -881,6 +881,7 @@ en:
       header:
         accenture: Test Agency has sent you an invitation to verify your income
         sandbox: Test Agency has sent you an invitation to verify your income
+        sandbox_no_reuse: Test Agency has sent you an invitation to verify your income
       subject:
         default: Verify your income for your SNAP application or renewal
   application:
@@ -986,6 +987,18 @@ en:
             blank: Enter your middle name.
             prompt: Middle name
             super_one_html: Middle name<sup>1</sup>
+      sandbox_no_reuse:
+        fields:
+          case_number:
+            blank: Enter your case number.
+          date_of_birth:
+            blank: Enter your date of birth.
+          first_name:
+            blank: Enter your first name.
+          last_name:
+            blank: Enter your last name.
+          middle_name:
+            blank: Enter your middle name.
       show:
         continue: Continue
         explanation: This information will be used to connect your income information to your %{agency_acronym} benefits. Please make sure the information you enter is the same as what is shown on your application.
@@ -1149,6 +1162,7 @@ en:
             nh_dhhs: NH DHHS Bureau of Family Assistance
             research: Example Department of Health
             sandbox: Test Agency
+            sandbox_no_reuse: Test Agency
           caseworker:
             agreement_consent_timestamp: Agreement Consent Timestamp
             case_number: Case number
@@ -1474,12 +1488,14 @@ en:
       nh_dhhs: NH DHHS
       research: EDOH
       sandbox: TA
+      sandbox_no_reuse: TA
     agency_full_name:
       accenture: Test Agency
       la_ldh: Louisiana Department of Health
       nh_dhhs: NH DHHS Bureau of Family Assistance
       research: Example Department of Health
       sandbox: Test Agency
+      sandbox_no_reuse: Test Agency
     app_name:
       default: TAApp
     banner:
@@ -1491,6 +1507,7 @@ en:
       nh_dhhs: Medicaid
       research: Medicaid
       sandbox: Medicaid
+      sandbox_no_reuse: Medicaid
     credit_hours:
       one: "%{count} credit hour"
       other: "%{count} credit hours"
@@ -1504,6 +1521,7 @@ en:
         nh_dhhs: NH DHHS Bureau of Family Assistance
         research: Example Department of Health
         sandbox: Test Agency
+        sandbox_no_reuse: Test Agency
       close: Close
       help: Help
       log_out: Log out
@@ -1539,6 +1557,7 @@ en:
       nh_dhhs: benefits
       research: benefits
       sandbox: benefits
+      sandbox_no_reuse: benefits
     select_placeholder: "- Select -"
     skip_link: Skip to main content
     table_headers:

@@ -176,7 +176,8 @@
           - first_name
           - last_name
 
-- id: sandbox
+- &sandbox
+  id: sandbox
   agency_name: Test Agency
   agency_contact_website: https://www.example.com/contact
   agency_missing_employers_website: https://www.example.com/contact
@@ -268,6 +269,13 @@
 # Uncomment for local testing:
 #    - http://localhost:8000
 #    - https://*.ngrok-free.app
+
+- <<: *sandbox
+  id: sandbox_no_reuse
+  allow_activity_invitation_reuse: false
+  agency_domain:
+  staff_portal_enabled: false
+  sso:
 
 - id: research
   agency_name: Example State Department of Health

@@ -128,6 +128,8 @@ ignore_missing:
     - "time.*"    # Defaults provided by rails-i18n
     - "payment_frequencies.*"   # Helper method uses English values directly
   es:
+    - "*.sandbox_no_reuse"
+    - "cbv.applicant_informations.sandbox_no_reuse.*"
     # Internal advanced launcher
     - "launcher.advanced.*"
     # Caseworker emails that are only supported in English:
@@ -166,7 +168,7 @@ ignore_missing:
 ## Consider these keys used:
 ignore_unused:
   all:
-    - "*.{sandbox,accenture,la_ldh,default,nh_dhhs,research}" # site-specific translations
+    - "*.{sandbox,sandbox_no_reuse,accenture,la_ldh,default,nh_dhhs,research}" # site-specific translations
     - "activerecord.errors.*"                     # model errors are not always explicitly used
     - "date.*"                                    # date formats are not always explicitly used
     - "time.*"                                    # time formats are not always explicitly used

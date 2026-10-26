@@ -4,6 +4,27 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
   include_context "activity_hub"
   render_views
 
+  context "for the single-use Sandbox agency" do
+    let(:applicant) { create(:cbv_applicant, client_agency_id: "sandbox_no_reuse") }
+    let(:flow) { create(:activity_flow, cbv_applicant: applicant) }
+
+    before do
+      session[:flow_id] = flow.id
+      session[:flow_type] = :activity
+    end
+
+    it "shows all activity sections with Sandbox branding" do
+      get :index
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_text("Test Agency")
+      expect(rendered).to have_selector("[data-activity-type='employment']")
+      expect(rendered).to have_selector("[data-activity-type='education']")
+      expect(rendered).to have_selector("[data-activity-type='community_service']")
+      expect(rendered).to have_selector("[data-activity-type='work_programs']")
+    end
+  end
+
   describe "common questions" do
     let(:current_flow) do
       create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
