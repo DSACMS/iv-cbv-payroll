@@ -18,6 +18,44 @@ RSpec.describe Activities::Income::EmployerSearchesController do
 
     render_views
 
+    context "with an aggregator outage alert" do
+      let(:enabled_alerts) { "aggregator_outage" }
+      let(:locale) { :en }
+      let(:rendered) { Capybara.string(response.body) }
+
+      around do |example|
+        stub_environment_variable("ENABLED_ALERTS", enabled_alerts, &example)
+      end
+
+      before do
+        get :show, params: { locale: locale }
+      end
+
+      it "shows the CE warning and links to manual employment entry" do
+        expect(rendered).to have_selector(".usa-alert--warning", text: I18n.t("application.aggregator_outage_alert.heading"))
+        expect(rendered).to have_text(I18n.t("application.aggregator_outage_alert.activity_body_html", manual_entry_link: I18n.t("application.aggregator_outage_alert.manual_entry")))
+        expect(rendered).to have_link("add your employment details manually", href: new_activities_flow_income_employment_path)
+      end
+
+      context "in Spanish" do
+        let(:locale) { :es }
+
+        it "shows the approved Spanish copy and translated manual-entry link" do
+          expect(rendered).to have_text("Estamos experimentando dificultades técnicas")
+          expect(rendered).to have_text(I18n.t("application.aggregator_outage_alert.activity_body_html", locale: :es, manual_entry_link: I18n.t("application.aggregator_outage_alert.manual_entry", locale: :es)))
+          expect(rendered).to have_link("agregue los detalles de su empleo manualmente", href: new_activities_flow_income_employment_path)
+        end
+      end
+
+      context "when disabled" do
+        let(:enabled_alerts) { "" }
+
+        it "does not show the warning" do
+          expect(rendered).to have_no_text(I18n.t("application.aggregator_outage_alert.heading"))
+        end
+      end
+    end
+
     it "renders properly" do
       get :show
       expect(response).to be_successful

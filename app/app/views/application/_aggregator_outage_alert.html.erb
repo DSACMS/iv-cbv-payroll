@@ -1,0 +1,9 @@
+<% if alert_enabled?(:aggregator_outage) %>
+  <%= render Uswds::Alert.new(type: :warning, heading: t(".heading"), class: "margin-bottom-4") do %>
+    <% if activity_flow? %>
+      <%= t(".activity_body_html", manual_entry_link: link_to(t(".manual_entry"), new_activities_flow_income_employment_path, class: "usa-link", data: { turbo_frame: "_top" })) %>
+    <% else %>
+      <%= t(".income_body") %>
+    <% end %>
+  <% end %>
+<% end %>

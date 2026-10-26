@@ -1,5 +1,11 @@
 class ActivityFlowInvitation < ApplicationRecord
+  include Redactable
   include InvitationExpiration
+
+  has_redactable_fields(
+    auth_token: :unique_string,
+    reference_id: :string
+  )
 
   belongs_to :cbv_applicant, optional: true
   has_many :activity_flows

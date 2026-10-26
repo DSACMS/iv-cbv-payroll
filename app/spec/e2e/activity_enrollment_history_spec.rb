@@ -12,7 +12,7 @@ RSpec.describe "Student enrollment history", :js, type: :feature do
     visit activities_flow_start_path(token: invitation.auth_token)
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
     create(:nsc_enrollment_term, :full_time, education_activity: education, school_certified_on: Date.new(2026, 9, 1))
-    create(:nsc_enrollment_term, education_activity: education, enrollment_status: :withdrawn, school_certified_on: Date.new(2026, 9, 15))
+    create(:nsc_enrollment_term, education_activity: education, enrollment_status: :unknown, nsc_withdrawn: true, school_certified_on: Date.new(2026, 9, 15))
   end
 
   it "shows the latest status and lets the user expand and collapse history on mobile" do

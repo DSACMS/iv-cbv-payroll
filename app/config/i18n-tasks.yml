@@ -149,15 +149,21 @@ ignore_missing:
     - "activerecord.errors.models.activity_flow_invitation.*"
     - "components.enrollment_term_table_component.*"
     - "components.report.monthly_summary_table.activity.*"
+    - "components.uswds.alert.dismiss" # FFS-4930
     - "shared.table_headers.*"
     - "activity_flow_progress_indicator.*"
     - "activerecord.errors.models.volunteering_activity_month.*" # Self attestation hours entry error messages
     - "activerecord.errors.models.job_training_activity_month.*" # Self attestation hours entry error messages
     - "shared.header.logo_alt_text.nh_dhhs"
+    - "shared.footer.cms_logo_alt"
+    - "shared.footer.partners_label"
+    - "shared.footer.partnership"
+    - "shared.subheader_agency_text"
     - "households.*"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
+    - "components.uswds.alert.dismiss" # FFS-4930
     - "api.v2.la_ldh.fields.*" # FFS-4797
     - "api.v2.fields.*" # FFS-4797
     - "cbv.employer_searches.employer.select_employer"
@@ -178,6 +184,8 @@ ignore_unused:
     - "cbv.submits.show.pdf.shared.additional_jobs_to_report" #dynamically used when applicant does not supply additional jobs
     - "cbv.submits.show.pdf.shared.additional_jobs_to_report_html" #dynamically used when applicant supplies additional jobs
     - "activities.employment.hours_input.*" # scope passed as t_scope in shared _hours_input partial
+    - "activities.employment.unpaid_or_in_kind.*" # dynamically used on employment screens
+    - "activities.submit.pdf.unpaid_or_in_kind.*"
     - "api.v2.*"
 
 csv:

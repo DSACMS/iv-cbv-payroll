@@ -16,6 +16,52 @@ RSpec.describe Cbv::EmployerSearchesController do
     context "when rendering views" do
       render_views
 
+      context "with an aggregator outage alert" do
+        let(:enabled_alerts) { "site_alert, aggregator_outage " }
+        let(:locale) { :en }
+        let(:rendered) { Capybara.string(response.body) }
+
+        around do |example|
+          stub_environment_variable("ENABLED_ALERTS", enabled_alerts, &example)
+        end
+
+        before do
+          get :show, params: { locale: locale }
+        end
+
+        it "shows the warning and Income copy without a manual-entry link" do
+          expect(rendered).to have_selector(".usa-alert--warning", text: I18n.t("application.aggregator_outage_alert.heading"))
+          expect(rendered).to have_text(I18n.t("application.aggregator_outage_alert.income_body"))
+          expect(rendered).to have_no_link(I18n.t("application.aggregator_outage_alert.manual_entry"))
+        end
+
+        context "in Spanish" do
+          let(:locale) { :es }
+
+          it "shows the approved Spanish title and body" do
+            expect(rendered).to have_text("Estamos experimentando dificultades técnicas")
+            expect(rendered).to have_text(I18n.t("application.aggregator_outage_alert.income_body", locale: :es))
+            expect(rendered).to have_no_text(I18n.t("application.aggregator_outage_alert.heading", locale: :en))
+          end
+        end
+
+        context "when the alert is disabled" do
+          let(:enabled_alerts) { "site_alert" }
+
+          it "does not show the outage warning" do
+            expect(rendered).to have_no_text(I18n.t("application.aggregator_outage_alert.heading"))
+          end
+        end
+
+        context "with a partial identifier match" do
+          let(:enabled_alerts) { "not_aggregator_outage,aggregator_outage_extra" }
+
+          it "does not show the outage warning" do
+            expect(rendered).to have_no_text(I18n.t("application.aggregator_outage_alert.heading"))
+          end
+        end
+      end
+
       it "renders properly" do
         get :show
         expect(response).to be_successful

@@ -4,11 +4,11 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
   include E2e::TestHelpers
   include_context "activity_hub"
 
-  it "preserves unpaid work through validation, upload, review, and editing" do # rubocop:disable RSpec/MultipleExpectations
+  it "preserves unpaid work through validation, upload, review, and editing" do # rubocop:disable RSpec/MultipleExpectations,RSpec/ExampleLength
     invitation = create(:activity_flow_invitation, client_agency_id: "sandbox")
     visit activities_flow_start_path(token: invitation.auth_token, reporting_window_months: 3)
     click_link I18n.t("activities.entries.show.continue")
-    verify_page(page, title: I18n.t("activities.hub.empty_state_title"))
+    verify_page(page, title: I18n.t("activities.hub.title"))
     within("[data-activity-type='employment']") do
       click_button I18n.t("activities.hub.add")
     end
@@ -57,9 +57,14 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
     expect(page).to have_no_selector('input[type="checkbox"]')
 
     click_button I18n.t("activities.employment.hours_input.continue")
-    error = I18n.t("activities.employment.hours_input.unpaid_or_in_kind.error_body")
+    error = ActionView::Base.full_sanitizer.sanitize(
+      I18n.t(
+        "activities.employment.hours_input.unpaid_or_in_kind.error_body_html",
+        month_selection_url: edit_activities_flow_income_employment_month_selection_path(employment_id: activity)
+      )
+    )
     expect(page).to have_selector(".usa-alert--error", text: error)
-    expect(page).to have_selector(".usa-error-message", text: error)
+    expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error"))
 
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(first_month, format: :month)), with: "12"
     click_button I18n.t("activities.employment.hours_input.continue")

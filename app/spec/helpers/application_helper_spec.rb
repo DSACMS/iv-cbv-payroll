@@ -150,7 +150,7 @@ RSpec.describe ApplicationHelper do
     end
 
     context "when agency has activity types configured" do
-      let(:current_agency) { Rails.application.config.client_agencies["sandbox"] }
+      let(:current_agency) { Rails.application.config.client_agencies["la_ldh"] }
 
       it "returns true for enabled types" do
         expect(helper.activity_type_enabled?(:education)).to be true
@@ -158,7 +158,7 @@ RSpec.describe ApplicationHelper do
     end
 
     context "when agency has no activity types configured" do
-      let(:current_agency) { Rails.application.config.client_agencies["la_ldh"] }
+      let(:current_agency) { instance_double(ClientAgencyConfig::ClientAgency, activity_types: {}) }
 
       it "returns nil" do
         expect(helper.activity_type_enabled?(:education)).to be_nil

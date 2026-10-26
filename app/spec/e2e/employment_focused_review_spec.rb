@@ -95,5 +95,8 @@ RSpec.describe "e2e Employment-focused review page", :js, type: :feature do
     click_button I18n.t("activities.activities.employment_focused_review.submit", agency_name: "Test Agency")
 
     verify_page(page, title: I18n.t("activities.success.show.employment_focused.title", agency_name: "Test Agency"))
+    expect(page).to have_text(I18n.t("activities.success.show.subheading"))
+    expect(page).to have_text(I18n.t("activities.success.show.employment_focused.whats_next.head_of_household.subheading"))
+    expect(page).to have_link(I18n.t("activities.success.show.download_pdf"), href: activities_flow_submit_path(format: :pdf))
   end
 end

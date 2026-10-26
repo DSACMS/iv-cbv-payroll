@@ -1,6 +1,12 @@
 @forward "uswds";
 @use "uswds" as *;
 
+.ce-completion-steps h3 {
+  @include u-minh(6);
+  @include u-display("flex");
+  @include u-flex("align-center");
+}
+
 // Activity Hub two-column layout
 // Figma spec: 320px progress | units(8) | 1px divider | units(8) | activities (flex)
 .activity-hub-columns {

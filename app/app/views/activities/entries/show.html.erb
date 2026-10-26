@@ -10,7 +10,8 @@
   <%= render(Uswds::Card.new(heading_text: t(".card_heading"), class: "measure-5 margin-y-4")) do |card| %>
     <% card.with_body do %>
       <%= render(Uswds::IconList.new) do |icon_list| %>
-        <% icon_list.with_item(icon: "work").with_content(t(".card_item_1")) %>
+        <% work_content = @flow.unpaid_work_only? ? t(".card_item_1_unpaid") : t(".card_item_1") %>
+        <% icon_list.with_item(icon: "work").with_content(work_content) %>
         <% icon_list.with_item(icon: "school").with_content(t(".card_item_2")) %>
         <% icon_list.with_item(icon: "people").with_content(t(".card_item_3")) %>
       <% end %>
