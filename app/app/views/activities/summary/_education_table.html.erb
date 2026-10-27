@@ -3,7 +3,9 @@
 <% elsif activity.partially_self_attested? %>
   <%= render "activities/summary/partially_self_attested_education_table", activity: activity %>
 <% else %>
-  <%= render "activities/summary/validated_education_table", activity: activity %>
+  <% activity.nsc_enrollment_terms.order(:term_begin, :term_end).group_by(&:school_name).each do |school_name, enrollment_terms| %>
+    <%= render "activities/summary/validated_education_table", enrollment_terms: enrollment_terms %>
+  <% end %>
 <% end %>
 
 <% if activity.document_uploads.any? %>

@@ -1,6 +1,14 @@
-<% enrollment_terms = activity.nsc_enrollment_terms.order(:term_begin, :term_end) %>
 <% first_term = enrollment_terms.first %>
 <% student_name = [ first_term&.first_name, first_term&.middle_name, first_term&.last_name ].compact_blank.join(" ") %>
+<% enrollment_status_text = lambda do |term| 
+  if term.school_certified_on.present?
+    t("components.enrollment_term_table_component.status_as_of_date",
+      status: term.enrollment_status_display,
+      date: I18n.l(term.school_certified_on, format: :long))
+  else
+    term.enrollment_status_display
+  end
+end %>
 
 <h3><%= t("activities.summary.education.details") %></h3>
 <%= render(ContactInfoReviewTableComponent.new(field_header: t("shared.table_headers.education_information"), value_header: t("shared.table_headers.your_details"), rows: [
@@ -25,10 +33,7 @@
       <% end %>
       <% terms_for_range.each do |term| %>
         <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_status")) do %>
-          <%= t("components.enrollment_term_table_component.status_as_of_date",
-            status: term.enrollment_status_display,
-            date: I18n.l(term.school_certified_on, format: :long))
-          %>
+          <%= enrollment_status_text.call(term) %>
         <% end %>
       <% end %>
     <% end %>
