@@ -7,7 +7,6 @@ module Launcher
       :first_name,
       :last_name,
       :date_of_birth,
-      :enrollments,
       :terms,
       :coverage_months,
       keyword_init: true
@@ -15,21 +14,11 @@ module Launcher
 
     USER_PROFILES = [
       UserProfile.new(
-        scenario_key: "enrollment_history_robin",
-        first_name: "Robin",
-        last_name: "Testuser",
-        date_of_birth: Date.parse("1990-01-01"),
-        terms: [
-          { school_name: "Harborview College", enrollment_status: :withdrawn, certification_month_offset: 1 },
-          { school_name: "Harborview College", enrollment_status: :enrolled, certification_month_offset: 0 }
-        ]
-      ),
-      UserProfile.new(
         scenario_key: "partial_enrollment_sam",
         first_name: "Sam",
         last_name: "Testuser",
         date_of_birth: Date.parse("1990-05-15"),
-        enrollments: [
+        terms: [
           { school_name: "Greenfield Community College", enrollment_status: :less_than_half_time },
           { school_name: "North Valley College", enrollment_status: :less_than_half_time }
         ]
@@ -50,7 +39,7 @@ module Launcher
         first_name: "Ziggy",
         last_name: "Testuser",
         date_of_birth: Date.parse("1992-07-19"),
-        enrollments: [
+        terms: [
           { school_name: "Sunrise Community College", enrollment_status: :less_than_half_time }
         ]
       ),
@@ -59,7 +48,7 @@ module Launcher
         first_name: "Casey",
         last_name: "Testuser",
         date_of_birth: Date.parse("1991-04-22"),
-        enrollments: [
+        terms: [
           { school_name: "Pine Valley College", enrollment_status: :half_time },
           { school_name: "Riverside Community College", enrollment_status: :less_than_half_time }
         ]
@@ -90,7 +79,7 @@ module Launcher
         last_name: "Testuser",
         date_of_birth: Date.parse("1993-09-11"),
         terms: [
-          { school_name: "River College", enrollment_status: :less_than_half_time },
+          { school_name: "River College", enrollment_status: :less_than_half_time, coverage_months: 1, coverage_position: :start },
           { school_name: "River College", enrollment_status: :less_than_half_time }
         ]
       ),
@@ -128,6 +117,17 @@ module Launcher
             enrollment_status: :half_time,
             term_type: :fall_half_time
           }
+        ]
+      ),
+      UserProfile.new(
+        scenario_key: "duplicate_enrollments_dedupe",
+        first_name: "Dedupe",
+        last_name: "Testuser",
+        date_of_birth: Date.parse("1990-01-01"),
+        terms: [
+          { school_name: "Harborview College", enrollment_status: :withdrawn, certification_month_offset: 2, expected_dedupe_result: :keep },
+          { school_name: "Harborview College", enrollment_status: :full_time, certification_month_offset: 1, expected_dedupe_result: :keep },
+          { school_name: "Harborview College", enrollment_status: :full_time, certification_month_offset: 0, expected_dedupe_result: :remove }
         ]
       )
     ].freeze
@@ -178,8 +178,8 @@ module Launcher
             {
               "termBeginDate" => term[:term_begin].strftime("%Y-%m-%d"),
               "termEndDate" => term[:term_end].strftime("%Y-%m-%d"),
-              "schoolCertifiedOnDate" => term[:school_certified_on].strftime("%Y-%m-%d"),
-              "enrollmentStatus" => STATUS_CODES.fetch(term[:enrollment_status].to_sym)
+              "enrollmentStatus" => STATUS_CODES.fetch(term[:enrollment_status].to_sym),
+              "schoolCertifiedOnDate" => term[:school_certified_on].strftime("%Y-%m-%d")
             }
           ]
         }
@@ -189,28 +189,14 @@ module Launcher
     end
 
     def terms_for_profile(profile, reporting_window)
-      if profile.terms.present?
-        return profile.terms.map do |term_data|
-          covered_window = covered_window_for_term_data(profile, reporting_window, term_data)
-          {
-            school_name: term_data[:school_name],
-            enrollment_status: term_data[:enrollment_status],
-            term_begin: covered_window.begin,
-            term_end: covered_window.end,
-            school_certified_on: covered_window.begin + term_data.fetch(:certification_month_offset, 0).months
-          }
-        end
-      end
-
-      enrollments = profile.enrollments || []
-
-      enrollments.map do |enrollment|
+      profile.terms.map do |term_data|
+        covered_window = covered_window_for_term_data(profile, reporting_window, term_data)
         {
-          school_name: enrollment[:school_name],
-          enrollment_status: enrollment[:enrollment_status],
-          term_begin: reporting_window.begin,
-          term_end: reporting_window.end,
-          school_certified_on: reporting_window.begin
+          school_name: term_data[:school_name],
+          enrollment_status: term_data[:enrollment_status],
+          term_begin: covered_window.begin,
+          term_end: covered_window.end,
+          school_certified_on: covered_window.begin + term_data.fetch(:certification_month_offset, 0).months
         }
       end
     end

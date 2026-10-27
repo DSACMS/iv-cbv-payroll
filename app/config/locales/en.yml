@@ -909,6 +909,14 @@ en:
       heading: We're experiencing technical difficulties
       income_body: Some parts of the site may not work properly. If you aren't able to search for your employer or login to your payroll provider, please try again later.
       manual_entry: add your employment details manually
+    government_banner:
+      aria_label: Official website of the United States government
+      gov_body_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.
+      gov_heading: Official websites use .gov
+      how_you_know: Here’s how you know
+      https_body_html: A <strong>lock</strong> (%{lock_icon}) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
+      https_heading: Secure .gov websites use HTTPS
+      official_website: An official website of the United States government
     sync_delay_alert:
       body: We're currently experiencing technical difficulties. If we are unable to sync your employment information, please try again later.
       heading: Syncing is taking longer than normal
@@ -1430,9 +1438,23 @@ en:
       title: Who are you reporting for?
   launcher:
     advanced:
-      enrollment_history:
-        description: Withdrawn enrollment with an earlier Enrolled status for the same school and term. Expand enrollment history to see the earlier status and certification date.
-        title: Robin Testuser — enrollment history
+      duplicate_enrollments:
+        browser_check: 'Verify college/university enrollment. Expect a withdrawn %{school_name} entry. Expand enrollment history to see the earlier %{full_time_status} status.'
+        certification_check: The status dates reflect the latest withdrawal and the newer %{full_time_status} record kept after deduplication.
+        certified_after_start:
+          one: Term start + 1 month
+          other: Term start + %{count} months
+          zero: Term start
+        certified_on: School certified on
+        description: 3 NSC records; expect 2 enrollment entries.
+        keep: Keep
+        records: All 3 records are for %{school_name}, with term dates matching the selected reporting window.
+        remove: Remove duplicate
+        result: Expected result
+        status: NSC status
+        test_data: Test data and expected result
+        title: Dedupe Testuser
+        withdrawn: Withdrawn
       launch_configuration:
         title: Launch configuration
       settings:
