@@ -7,7 +7,11 @@ class NscEnrollmentTerm < ApplicationRecord
     three_quarter_time: "three_quarter_time",   # Q
     half_time: "half_time",                     # H
     less_than_half_time: "less_than_half_time", # L
-    enrolled: "enrolled",                       # Y
+    enrolled: "enrolled",                     # Y: status not released by school
+    leave_of_absence: "leave_of_absence",       # A
+    withdrawn: "withdrawn",                     # W, S
+    graduated: "graduated",                     # G
+    deceased: "deceased",                       # D
     unknown: "unknown"
   }, default: :unknown, prefix: :enrollment
 
@@ -18,6 +22,10 @@ class NscEnrollmentTerm < ApplicationRecord
     "half_time" => 3,
     "less_than_half_time" => 2,
     "enrolled" => 1,
+    "leave_of_absence" => 0,
+    "withdrawn" => 0,
+    "graduated" => 0,
+    "deceased" => 0,
     "unknown" => 0
   }.freeze
 
@@ -39,6 +47,8 @@ class NscEnrollmentTerm < ApplicationRecord
       I18n.t("components.enrollment_term_table_component.status.half_time")
     when :less_than_half_time
       I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+    when :leave_of_absence, :withdrawn, :graduated, :deceased
+      I18n.t("components.enrollment_term_table_component.status.#{enrollment_status}")
     when :enrolled
       I18n.t("components.enrollment_term_table_component.status.enrolled")
     else

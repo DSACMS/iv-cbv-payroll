@@ -14,7 +14,8 @@ RSpec.describe NscDataFetcherService do
 
   let(:activity_flow) { create(:activity_flow, identity: identity, education_activities_count: 0) }
   let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
-  let(:logger) { Logger.new(StringIO.new) }
+  let(:log_output) { StringIO.new }
+  let(:logger) { Logger.new(log_output) }
   let(:response_transformer) { nil }
 
   before do
@@ -35,6 +36,125 @@ RSpec.describe NscDataFetcherService do
     before do
       allow(Rails.application.config).to receive(:is_internal_environment).and_return(false)
       nsc_stub_token_request
+    end
+
+    context "with raw NSC enrollment status codes" do
+      let(:identity) { create(:identity, :nsc_lynette) }
+      let(:raw_statuses) { %w[F Q H L Y A W S G D] }
+
+      before do
+        activity_flow.update!(created_at: Date.new(2024, 7, 15), reporting_window_months: 6)
+        nsc_stub_request_education_search_response("lynette") do |response|
+          enrollment = response.fetch("enrollmentDetails").first
+          template = enrollment.fetch("enrollmentData").first
+          enrollment["enrollmentData"] = raw_statuses.map do |code|
+            template.merge("enrollmentStatus" => code)
+          end
+        end
+        service.fetch
+      end
+
+      it "persists the documented grouped statuses for all ten raw codes" do
+        expect(education_activity.nsc_enrollment_terms.order(:id).pluck(:enrollment_status)).to eq(
+          %w[full_time three_quarter_time half_time less_than_half_time enrolled leave_of_absence withdrawn graduated deceased]
+        )
+      end
+
+      it "maps school-reported and Clearinghouse-generated withdrawals to the same status" do
+        expect(education_activity.nsc_enrollment_terms.enrollment_withdrawn.count).to eq(1)
+        expect(log_output.string).not_to include("Unknown enrollmentStatus")
+      end
+    end
+
+    context "when deduplicating grouped enrollment records" do
+      let(:identity) { create(:identity, :nsc_lynette) }
+      let(:second_term_attributes) { { "enrollmentStatus" => "S", "schoolCertifiedOnDate" => "2024-07-01" } }
+      let(:second_school_attributes) { {} }
+
+      before do
+        activity_flow.update!(created_at: Date.new(2024, 7, 15), reporting_window_months: 6)
+        nsc_stub_request_education_search_response("lynette") do |response|
+          first = response.fetch("enrollmentDetails").first
+          first["enrollmentData"] = [ first.fetch("enrollmentData").first.merge(
+            "enrollmentStatus" => "W", "schoolCertifiedOnDate" => "2024-06-01"
+          ) ]
+          second = first.deep_dup.merge(second_school_attributes)
+          second["enrollmentData"].first.merge!(second_term_attributes)
+          response["enrollmentDetails"] = [ first, second ]
+        end
+        service.fetch
+      end
+
+      it "compares grouped persisted attributes across school records" do
+        expect(education_activity.nsc_enrollment_terms.count).to eq(1)
+      end
+
+      context "when both raw codes are W" do
+        let(:second_term_attributes) { { "enrollmentStatus" => "W" } }
+
+        it "collapses repeated withdrawals" do
+          expect(education_activity.nsc_enrollment_terms.count).to eq(1)
+        end
+      end
+
+      context "when the grouped statuses differ" do
+        let(:second_term_attributes) { { "enrollmentStatus" => "A" } }
+
+        it "preserves both distinct records" do
+          expect(education_activity.nsc_enrollment_terms.count).to eq(2)
+        end
+      end
+
+      context "when an unknown status accompanies a withdrawal" do
+        let(:second_term_attributes) { { "enrollmentStatus" => "INVALID" } }
+
+        it "preserves both distinct records" do
+          expect(education_activity.nsc_enrollment_terms.count).to eq(2)
+        end
+      end
+
+      context "when the school differs" do
+        let(:second_school_attributes) { { "officialSchoolName" => "Another Test College" } }
+
+        it "preserves both distinct records" do
+          expect(education_activity.nsc_enrollment_terms.count).to eq(2)
+        end
+      end
+
+      context "when the term dates differ" do
+        let(:second_term_attributes) { { "enrollmentStatus" => "S", "termEndDate" => "2024-12-01" } }
+
+        it "preserves both distinct records" do
+          expect(education_activity.nsc_enrollment_terms.count).to eq(2)
+        end
+      end
+
+      context "when the name on the school record differs" do
+        let(:second_school_attributes) do
+          { "nameOnSchoolRecord" => { "firstName" => "Another", "middleName" => nil, "lastName" => "Testuser" } }
+        end
+
+        it "preserves both distinct records" do
+          expect(education_activity.nsc_enrollment_terms.count).to eq(2)
+        end
+      end
+    end
+
+    context "with an unrecognized raw status code" do
+      let(:identity) { create(:identity, :nsc_lynette) }
+
+      before do
+        activity_flow.update!(created_at: Date.new(2024, 7, 15), reporting_window_months: 6)
+        nsc_stub_request_education_search_response("lynette") do |response|
+          response.fetch("enrollmentDetails").first.fetch("enrollmentData").first["enrollmentStatus"] = "INVALID"
+        end
+        service.fetch
+      end
+
+      it "preserves the unknown fallback and logs the unexpected code" do
+        expect(education_activity.nsc_enrollment_terms.sole.enrollment_status).to eq("unknown")
+        expect(log_output.string).to include("Unknown enrollmentStatus")
+      end
     end
 
     context "when there are no enrollments (Linda)" do

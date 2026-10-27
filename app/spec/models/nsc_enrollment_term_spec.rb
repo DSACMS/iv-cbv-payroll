@@ -1,6 +1,50 @@
 require "rails_helper"
 
 RSpec.describe NscEnrollmentTerm do
+  describe "new grouped NSC statuses" do
+    subject(:term) { described_class.new(enrollment_status: status) }
+
+    context "with a leave of absence" do
+      let(:status) { :leave_of_absence }
+
+      it "displays the status without establishing half-time enrollment" do
+        expect(term.enrollment_status_display).to eq("Leave of absence")
+        expect(term.half_time_or_above?).to be(false)
+        expect(term.enrollment_priority).to eq(0)
+      end
+    end
+
+    context "with a withdrawal" do
+      let(:status) { :withdrawn }
+
+      it "displays the status without establishing half-time enrollment" do
+        expect(term.enrollment_status_display).to eq("Withdrawn")
+        expect(term.half_time_or_above?).to be(false)
+        expect(term.enrollment_priority).to eq(0)
+      end
+    end
+
+    context "with graduation" do
+      let(:status) { :graduated }
+
+      it "displays the status without establishing half-time enrollment" do
+        expect(term.enrollment_status_display).to eq("Graduated")
+        expect(term.half_time_or_above?).to be(false)
+        expect(term.enrollment_priority).to eq(0)
+      end
+    end
+
+    context "with a deceased student" do
+      let(:status) { :deceased }
+
+      it "displays the status without establishing half-time enrollment" do
+        expect(term.enrollment_status_display).to eq("Deceased")
+        expect(term.half_time_or_above?).to be(false)
+        expect(term.enrollment_priority).to eq(0)
+      end
+    end
+  end
+
   describe "#half_time_or_above?" do
     it "returns true for full_time status" do
       term = described_class.new(enrollment_status: "full_time")

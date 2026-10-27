@@ -1243,11 +1243,15 @@ en:
       enrollment_term: Enrollment term
       school_or_program: School or program
       status:
-        enrolled: Enrolled
+        deceased: Deceased
+        enrolled: Enrollment status not released by school
         full_time: Full-time
+        graduated: Graduated
         half_time: Half-time
+        leave_of_absence: Leave of absence
         less_than_half_time: Less than half-time
         three_quarter_time: Three-quarter Time
+        withdrawn: Withdrawn
       student_name_label: Name on school record
     report:
       monthly_summary_table:
