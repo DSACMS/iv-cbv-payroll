@@ -207,6 +207,21 @@ RSpec.describe NscDataFetcherService do
         )
       end
 
+      context "when withdrawn and unknown records otherwise match" do
+        let(:enrollment_data) do
+          [ withdrawn_record, withdrawn_record.merge("enrollmentStatus" => "NEW") ]
+        end
+
+        it "preserves both records with distinct withdrawal flags" do
+          service.fetch
+
+          expect(education_activity.nsc_enrollment_terms).to contain_exactly(
+            have_attributes(enrollment_status: "unknown", nsc_withdrawn: true),
+            have_attributes(enrollment_status: "unknown", nsc_withdrawn: false)
+          )
+        end
+      end
+
       context "when the oldest record appears first" do
         let(:enrollment_data) { super().reverse }
 
