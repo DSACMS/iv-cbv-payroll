@@ -156,6 +156,7 @@ class ActivityReportSerializer
       end
 
       employment_payroll_entries(report).each do |entry|
+        entry["employment_type"] = nil unless account.type == "argyle"
         entries_by_month[entry["month"]] << entry
       end
     end
@@ -194,7 +195,7 @@ class ActivityReportSerializer
       "document_ids" => document_ids_for(activity),
       "additional_comments" => json_value(activity.additional_comments),
       "employer_address" => activity.formatted_address.presence,
-      "employment_type" => activity.unpaid_or_in_kind? ? "unpaid" : (activity.is_self_employed ? "self_employed" : "w2"),
+      "employment_type" => nil,
       "gross_income" => activity_month.gross_income.to_f
     )
   end
