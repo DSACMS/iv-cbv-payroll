@@ -719,7 +719,7 @@ en:
         month: Month
         organization: Organization name
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
-      description: Report what you have. %{agency_name} will follow up with next steps if anything else is needed.
+      description: "%{agency_name} will determine your final eligibility based on the activities you've added to your report."
       education:
         address: School address
         community_engagement_hours: Community engagement hours
@@ -729,6 +729,7 @@ en:
         contact_title: School official’s title
         credit_hours: Credit hours
         details: Education details
+        enrollment_details: Enrollment details
         school_name: School or program
         term_credit_hours: Credit hours
         term_details: Term details
@@ -1264,6 +1265,7 @@ en:
         half_time: Half-time
         less_than_half_time: Less than half-time
         three_quarter_time: Three-quarter Time
+      status_as_of_date: "%{status} (as of %{date})"
       student_name_label: Name on school record
     report:
       monthly_summary_table:
