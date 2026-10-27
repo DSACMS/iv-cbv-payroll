@@ -99,20 +99,6 @@ RSpec.describe NscDataFetcherService do
         expect(education_activity.reload.data_source).to eq("partially_self_attested")
       end
 
-      context "when the school certification date is absent" do
-        before do
-          nsc_stub_request_education_search_response("lynette") do |response|
-            response["enrollmentDetails"].first["enrollmentData"].first.delete("schoolCertifiedOnDate")
-          end
-        end
-
-        it "saves the enrollment without inventing a certification date" do
-          service.fetch
-
-          expect(education_activity.nsc_enrollment_terms.first.school_certified_on).to be_nil
-        end
-      end
-
       context "when the student has withdrawn" do
         before do
           nsc_stub_request_education_search_response("lynette") do |response|
@@ -169,6 +155,157 @@ RSpec.describe NscDataFetcherService do
           .with(body: hash_including(
             "nscRequest" => hash_including("asOfDate" => activity_flow.reporting_window_range.max.strftime("%Y-%m-%d"))
           ))
+      end
+    end
+
+    context "when enrollment records contain duplicates" do
+      let(:identity) { create(:identity, :nsc_lynette) }
+      let(:full_time_record) do
+        {
+          "termBeginDate" => "2021-09-01",
+          "termEndDate" => "2021-12-01",
+          "enrollmentStatus" => "F",
+          "schoolCertifiedOnDate" => "2021-10-01",
+          "anticipatedGraduationDate" => "2023-06-01"
+        }
+      end
+      let(:older_full_time_record) do
+        full_time_record.merge(
+          "schoolCertifiedOnDate" => "2021-09-01",
+          "anticipatedGraduationDate" => "2024-06-01"
+        )
+      end
+      let(:withdrawn_record) do
+        full_time_record.merge("enrollmentStatus" => "W", "schoolCertifiedOnDate" => "2021-11-01")
+      end
+      let(:enrollment_data) { [ withdrawn_record, full_time_record, older_full_time_record ] }
+      let(:enrollment_details) do
+        nsc_load_relative_json_file("lynette", "insight.json")["enrollmentDetails"].map do |detail|
+          detail.merge("enrollmentData" => enrollment_data)
+        end
+      end
+
+      before do
+        activity_flow.update!(created_at: Date.new(2021, 12, 15), reporting_window_months: 3)
+        nsc_stub_request_education_search_response("lynette") do |response|
+          response["enrollmentDetails"] = enrollment_details
+        end
+      end
+
+      it "saves the latest full-time record and the distinct withdrawal from the design example" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms).to contain_exactly(
+          have_attributes(
+            term_begin: Date.new(2021, 9, 1), term_end: Date.new(2021, 12, 1),
+            enrollment_status: "full_time", nsc_withdrawn: false, school_certified_on: Date.new(2021, 10, 1)
+          ),
+          have_attributes(
+            term_begin: Date.new(2021, 9, 1), term_end: Date.new(2021, 12, 1),
+            enrollment_status: "unknown", nsc_withdrawn: true, school_certified_on: Date.new(2021, 11, 1)
+          )
+        )
+      end
+
+      context "when withdrawn and unknown records otherwise match" do
+        let(:enrollment_data) do
+          [ withdrawn_record, withdrawn_record.merge("enrollmentStatus" => "NEW") ]
+        end
+
+        it "preserves both records with distinct withdrawal flags" do
+          service.fetch
+
+          expect(education_activity.nsc_enrollment_terms).to contain_exactly(
+            have_attributes(enrollment_status: "unknown", nsc_withdrawn: true),
+            have_attributes(enrollment_status: "unknown", nsc_withdrawn: false)
+          )
+        end
+      end
+
+      context "when the oldest record appears first" do
+        let(:enrollment_data) { super().reverse }
+
+        it "keeps the latest certification regardless of response order" do
+          service.fetch
+
+          expect(education_activity.nsc_enrollment_terms.pluck(:school_certified_on))
+            .to contain_exactly(Date.new(2021, 10, 1), Date.new(2021, 11, 1))
+        end
+      end
+
+      context "when another record has a different term start" do
+        let(:enrollment_data) { super() + [ full_time_record.merge("termBeginDate" => "2021-08-01") ] }
+
+        it "preserves the record with a distinct start date" do
+          service.fetch
+
+          expect(education_activity.nsc_enrollment_terms.pluck(:term_begin, :enrollment_status)).to contain_exactly(
+            [ Date.new(2021, 9, 1), "full_time" ],
+            [ Date.new(2021, 9, 1), "unknown" ],
+            [ Date.new(2021, 8, 1), "full_time" ]
+          )
+        end
+      end
+
+      context "when another record has a different term end" do
+        let(:enrollment_data) { super() + [ full_time_record.merge("termEndDate" => "2021-11-01") ] }
+
+        it "preserves the record with a distinct end date" do
+          service.fetch
+
+          expect(education_activity.nsc_enrollment_terms.pluck(:term_end, :enrollment_status)).to contain_exactly(
+            [ Date.new(2021, 12, 1), "full_time" ],
+            [ Date.new(2021, 12, 1), "unknown" ],
+            [ Date.new(2021, 11, 1), "full_time" ]
+          )
+        end
+      end
+
+      context "when another school reports the same terms" do
+        let(:enrollment_details) do
+          details = super()
+          details + [ details.first.merge("officialSchoolName" => "Other College") ]
+        end
+
+        it "preserves each school's distinct enrollment records" do
+          service.fetch
+
+          expect(education_activity.nsc_enrollment_terms.pluck(:school_name, :enrollment_status)).to contain_exactly(
+            [ "Trident University International", "full_time" ],
+            [ "Trident University International", "unknown" ],
+            [ "Other College", "full_time" ],
+            [ "Other College", "unknown" ]
+          )
+        end
+      end
+
+      context "when duplicate terms appear in separate details for the same school" do
+        let(:enrollment_details) do
+          super().flat_map do |detail|
+            detail["enrollmentData"].map { |record| detail.merge("enrollmentData" => [ record ]) }
+          end
+        end
+
+        it "saves one record per distinct term and status for the school" do
+          service.fetch
+
+          expect(education_activity.nsc_enrollment_terms.pluck(:school_certified_on))
+            .to contain_exactly(Date.new(2021, 10, 1), Date.new(2021, 11, 1))
+        end
+      end
+
+      context "when duplicates have the same certification date" do
+        let(:enrollment_data) do
+          [ full_time_record, full_time_record.merge("anticipatedGraduationDate" => "2024-06-01") ]
+        end
+
+        it "saves one copy regardless of fields that are not displayed" do
+          service.fetch
+
+          expect(education_activity.nsc_enrollment_terms).to contain_exactly(
+            have_attributes(enrollment_status: "full_time", school_certified_on: Date.new(2021, 10, 1))
+          )
+        end
       end
     end
 
