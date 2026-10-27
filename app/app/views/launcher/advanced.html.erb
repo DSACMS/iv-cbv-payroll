@@ -157,6 +157,70 @@
                 <span class="advanced-launcher__scenario-desc">Spring and fall enrollment with no summer term</span>
               </label>
             </div>
+            <div class="usa-radio advanced-launcher__scenario-with-details">
+              <input class="usa-radio__input usa-radio__input--tile" type="radio"
+                     name="test_scenario" id="test_scenario_duplicate_enrollments_dedupe" value="duplicate_enrollments_dedupe"
+                     data-action="advanced-launcher#selectScenario"
+                     data-reporting-window-months="3">
+              <label class="usa-radio__label" for="test_scenario_duplicate_enrollments_dedupe">
+                <strong>
+                  <%= t(".duplicate_enrollments.title") %>
+                </strong>
+                <span class="advanced-launcher__scenario-desc">
+                  <%= t(".duplicate_enrollments.description") %>
+                </span>
+              </label>
+              <% dedupe_profile = Launcher::FakeNscScenarios.by_key("duplicate_enrollments_dedupe") %>
+              <% dedupe_school_name = dedupe_profile.terms.first.fetch(:school_name) %>
+              <details class="font-body-2xs">
+                <summary class="text-primary">
+                  <%= t(".duplicate_enrollments.test_data") %>
+                </summary>
+                <p>
+                  <%= t(".duplicate_enrollments.records", school_name: dedupe_school_name) %>
+                </p>
+                <table class="usa-table usa-table--stacked width-full">
+                  <caption class="usa-sr-only">
+                    <%= t(".duplicate_enrollments.test_data") %>
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">
+                        <%= t(".duplicate_enrollments.status") %>
+                      </th>
+                      <th scope="col">
+                        <%= t(".duplicate_enrollments.certified_on") %>
+                      </th>
+                      <th scope="col">
+                        <%= t(".duplicate_enrollments.result") %>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% dedupe_profile.terms.each do |term| %>
+                      <tr>
+                        <td data-label="<%= t(".duplicate_enrollments.status") %>">
+                          <%= term.fetch(:enrollment_status) == :withdrawn ? t(".duplicate_enrollments.withdrawn") : t("components.enrollment_term_table_component.status.#{term.fetch(:enrollment_status)}") %>
+                          (<%= Launcher::FakeNscScenarios::STATUS_CODES.fetch(term.fetch(:enrollment_status)) %>)
+                        </td>
+                        <td data-label="<%= t(".duplicate_enrollments.certified_on") %>">
+                          <%= t(".duplicate_enrollments.certified_after_start", count: term.fetch(:certification_month_offset)) %>
+                        </td>
+                        <td data-label="<%= t(".duplicate_enrollments.result") %>">
+                          <%= t(".duplicate_enrollments.#{term.fetch(:expected_dedupe_result)}") %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+                <p>
+                  <%= t(".duplicate_enrollments.browser_check", school_name: dedupe_school_name, full_time_status: t("components.enrollment_term_table_component.status.full_time"), withdrawn_status: t("shared.not_applicable")) %>
+                </p>
+                <p class="usa-hint">
+                  <%= t(".duplicate_enrollments.certification_check", full_time_status: t("components.enrollment_term_table_component.status.full_time")) %>
+                </p>
+              </details>
+            </div>
                 </div>
               </div>
             </div>
