@@ -216,7 +216,7 @@
           <% rows = term_groups.map do |terms_for_range|
             status_lines = terms_for_range.map do |term|
               if term.school_certified_on.present?
-                t("components.entrollment_term_table_component.status_as_of_date",
+                t("components.enrollment_term_table_component.status_as_of_date",
                   status: term.enrollment_status_display,
                   date: format_date(term.school_certified_on))
               else
@@ -385,7 +385,6 @@
       <% @report.education_entries.each_with_index do |entry, index| %>
         <% activity = entry.activity %>
         <% education_details = [] %>
-        <% if activity.fully_self_attested? %>
           <% education_details = [
             [ t("activities.submit.pdf.address"), activity.formatted_address ],
             [ t("activities.submit.pdf.school_contact_name"), activity.contact_name ],
