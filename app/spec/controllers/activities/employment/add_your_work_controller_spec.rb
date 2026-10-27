@@ -43,7 +43,7 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       it "shows the error after the description and immediately before the radio form" do
         rendered = Capybara.string(response.body)
 
-        expect(rendered).to have_selector("p + .usa-alert + form#add_your_work_form")
+        expect(rendered).to have_selector("p + .usa-alert + form[action='#{activities_flow_income_add_your_work_path}']")
         expect(rendered).to have_text(I18n.t("shared.next_path.notice_no_answer"), count: 1)
       end
     end
