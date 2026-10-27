@@ -90,7 +90,7 @@ module InvitationSchemas
         required: %w[tokenized_url],
         additionalProperties: true,
         properties: {
-          tokenized_url: { type: :string, format: :uri, description: "The expired invitation's reporting link, returned for reference. Do not resend this link to the applicant."}
+          tokenized_url: { type: :string, format: :uri, description: "The expired invitation's reporting link, returned for reference. Do not resend this link to the applicant." }
         }
       },
       InvitationErrors: {
