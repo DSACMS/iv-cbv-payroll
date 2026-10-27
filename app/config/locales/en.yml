@@ -1436,6 +1436,23 @@ en:
       title: Who are you reporting for?
   launcher:
     advanced:
+      duplicate_enrollments:
+        browser_check: 'Verify college/university enrollment. Expect 2 %{school_name} entries: %{full_time_status} and %{withdrawn_status} (withdrawal).'
+        certification_check: Certification dates aren't shown on the enrollment screen; automated tests check that the newer %{full_time_status} record is kept.
+        certified_after_start:
+          one: Term start + 1 month
+          other: Term start + %{count} months
+          zero: Term start
+        certified_on: School certified on
+        description: 3 NSC records; expect 2 enrollment entries.
+        keep: Keep
+        records: All 3 records are for %{school_name}, with term dates matching the selected reporting window.
+        remove: Remove duplicate
+        result: Expected result
+        status: NSC status
+        test_data: Test data and expected result
+        title: Dedupe Testuser
+        withdrawn: Withdrawn
       launch_configuration:
         title: Launch configuration
       settings:
