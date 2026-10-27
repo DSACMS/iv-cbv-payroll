@@ -24,6 +24,29 @@ RSpec.describe Launcher::FakeNscDataFetcherService do
   let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
 
   describe "#fetch" do
+    context "when enrollment is verified without an intensity" do
+      let(:identity) do
+        create(:identity, first_name: "Jordan", last_name: "Testuser", date_of_birth: Date.new(1995, 6, 12))
+      end
+
+      before { service.fetch }
+
+      it "saves enrolled status across the reporting window" do
+        expect(education_activity.reload).to be_sync_succeeded
+        expect(education_activity.nsc_enrollment_terms.sole).to have_attributes(
+          school_name: "Maple Grove College",
+          enrollment_status: "enrolled",
+          term_begin: activity_flow.reporting_window_range.begin,
+          term_end: activity_flow.reporting_window_range.end
+        )
+      end
+
+      it "requires self-attested credits rather than validating half-time enrollment" do
+        expect(education_activity.reload).to be_partially_self_attested
+        expect(education_activity).to have_less_than_half_time_terms
+      end
+    end
+
     it "saves fake enrollment terms and derives data_source from those terms" do
       expect { service.fetch }
         .to change { education_activity.reload.status }
