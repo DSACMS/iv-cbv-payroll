@@ -1439,7 +1439,7 @@ en:
   launcher:
     advanced:
       duplicate_enrollments:
-        browser_check: 'Verify college/university enrollment. Expect a withdrawn %{school_name} entry. Expand enrollment history to see the earlier %{full_time_status} status.'
+        browser_check: Verify college/university enrollment. Expect a withdrawn %{school_name} entry. Expand enrollment history to see the earlier %{full_time_status} status.
         certification_check: The status dates reflect the latest withdrawal and the newer %{full_time_status} record kept after deduplication.
         certified_after_start:
           one: Term start + 1 month
