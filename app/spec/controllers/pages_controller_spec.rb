@@ -3,6 +3,81 @@ require "rails_helper"
 RSpec.describe PagesController do
   render_views
 
+  describe "agency partnership heading" do
+    let(:host) { "example.gov" }
+    let(:development) { false }
+    let(:rendered) { Capybara.string(response.body) }
+
+    before do
+      request.host = host
+      allow(Rails.env).to receive(:development?).and_return(development)
+      allow(controller).to receive_messages(
+        client_agency_from_domain: nil,
+        current_agency: Rails.application.config.client_agencies["sandbox"]
+      )
+      get :home
+    end
+
+    it "shows only the government banner on a government host" do
+      expect(rendered).to have_button(I18n.t("application.government_banner.how_you_know"))
+      expect(rendered).to have_no_text(I18n.t("shared.header.preheader.default"))
+    end
+
+    context "in local development" do
+      let(:host) { "localhost" }
+      let(:development) { true }
+
+      it "shows only the government banner" do
+        expect(rendered).to have_button(I18n.t("application.government_banner.how_you_know"))
+        expect(rendered).to have_no_text(I18n.t("shared.header.preheader.default"))
+      end
+    end
+
+    context "on a non-government host" do
+      let(:host) { "example.org" }
+
+      it "shows only the partnership heading" do
+        expect(rendered).to have_text(I18n.t("shared.header.preheader.default"))
+        expect(rendered).to have_no_selector("section.usa-banner")
+      end
+    end
+
+    context "with gov in a subdomain" do
+      let(:host) { "example.gov.com" }
+
+      it "shows only the partnership heading" do
+        expect(rendered).to have_text(I18n.t("shared.header.preheader.default"))
+        expect(rendered).to have_no_selector("section.usa-banner")
+      end
+    end
+  end
+
+  describe "government banner" do
+    let(:rendered) { Capybara.string(response.body) }
+
+    before do
+      request.host = "example.gov"
+    end
+
+    it "renders the banner in the application layout" do
+      get :home
+
+      expect(rendered).to have_selector("section.usa-banner", count: 1)
+      expect(rendered).to have_button(I18n.t("application.government_banner.how_you_know"))
+      expect(rendered).to have_text(I18n.t("application.government_banner.gov_heading"))
+    end
+
+    context "on a non-government host" do
+      before { request.host = "example.org" }
+
+      it "omits the banner" do
+        get :home
+
+        expect(rendered).to have_no_selector("section.usa-banner")
+      end
+    end
+  end
+
   describe "#home" do
     it "renders" do
       get :home
