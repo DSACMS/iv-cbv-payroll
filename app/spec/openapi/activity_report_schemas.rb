@@ -94,7 +94,7 @@ module ActivityReportSchemas
         data_source: { type: :string, enum: %w[self_attested] },
         employer_name: { type: :string, description: "Name of the employer or business." },
         employer_address: nullable_string.merge(description: "Combined address, also supplied as individual address fields."),
-        employment_type: { type: :string, enum: %w[w2 self_employed unpaid], description: "w2 for paid work, self_employed for paid self-employment, or unpaid for unpaid or in-kind work." },
+        employment_type: { type: :null, description: "Always null for self-attested employment. Populated only for Argyle-sourced employment." },
         is_self_employed: { type: :boolean, description: "Whether the applicant marked the work as self-employment. Employer contact fields are null when true." },
         gross_income: { type: :number, minimum: 0, description: "Self-attested monthly gross income in dollars, including cents as a decimal." }
       )).merge(description: "Published self-attested work appears once per reported month, including months with zero hours or income. Draft activities are excluded. Includes address components, applicant comments, monthly hours, and supporting document IDs. Employer contact details are null for self-employment."),
@@ -108,7 +108,7 @@ module ActivityReportSchemas
         employer_phone: nullable_string.merge(description: "Employer phone number from the payroll provider."),
         employer_address: nullable_string.merge(description: "Employer address from the payroll provider."),
         employment_status: nullable_enum(%w[employed inactive terminated]).merge(description: "Employment status reported by the payroll provider."),
-        employment_type: nullable_enum(%w[w2 gig]).merge(description: "Payroll employment classification: W-2 or gig work."),
+        employment_type: nullable_enum(%w[w2 gig]).merge(description: "Argyle employment classification: w2 for W-2 work or gig for gig work; null for Pinwheel or when unavailable."),
         employment_start_date: nullable_string.merge(format: :date, description: "Employment start date reported by the payroll provider."),
         employment_end_date: nullable_string.merge(format: :date, description: "Employment end date reported by the payroll provider."),
         pay_frequency: nullable_enum(%w[daily weekly biweekly semimonthly monthly quarterly variable]).merge(description: "How often the applicant is paid."),
