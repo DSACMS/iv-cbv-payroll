@@ -27,6 +27,9 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     # --- Step 1: Create a new self-attested education activity ---
     visit activities_flow_education_add_your_education_path
     verify_page(page, title: I18n.t("activities.education.add_your_education.show.header"))
+    click_button I18n.t("continue")
+    verify_page(page, title: I18n.t("activities.education.add_your_education.show.header"))
+    expect(page).to have_selector(".usa-alert--error.usa-alert--slim", text: I18n.t("shared.next_path.notice_no_answer"))
     find("label[for='add_education_method_high_school_ged']").click
     click_button I18n.t("continue")
     verify_page(page, title: I18n.t("activities.education.new.title"))
