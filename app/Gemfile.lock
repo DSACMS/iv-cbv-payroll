@@ -399,7 +399,7 @@ GEM
       premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.1)
     prism (1.9.0)
-    pry (0.16.0)
+    pry (0.16.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
       reline (>= 0.6.0)
@@ -621,7 +621,7 @@ GEM
       actionview (>= 8.0.0)
       bindex (>= 0.4.0)
       railties (>= 8.0.0)
-    webmock (3.26.4)
+    webmock (3.34.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -696,7 +696,7 @@ DEPENDENCIES
   pg (~> 1.7)
   pg-aws_rds_iam (~> 0.8.0)
   premailer-rails
-  pry (~> 0.16.0)
+  pry (~> 0.16.1)
   pry-doc (~> 1.7)
   puma (~> 8.0.2)
   rack-mini-profiler
