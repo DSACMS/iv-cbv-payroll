@@ -128,6 +128,8 @@ ignore_missing:
     - "time.*"    # Defaults provided by rails-i18n
     - "payment_frequencies.*"   # Helper method uses English values directly
   es:
+    # Government banner is currently supported in English only.
+    - "application.government_banner.*"
     # Internal advanced launcher
     - "launcher.advanced.*"
     # Caseworker emails that are only supported in English:
