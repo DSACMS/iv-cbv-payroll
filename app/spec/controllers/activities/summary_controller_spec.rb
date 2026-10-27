@@ -401,9 +401,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
       )
 
       get :show
-      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }.all("tbody tr").first).to have_text("#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.college_or_university")}", normalize_ws: true)
-
       doc = Capybara.string(response.body)
+
+      education_info_tables = doc.all("table").select { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }
+      expect(education_info_tables.size).to eq(2)
+      expect(education_info_tables.first.all("tbody tr").first).to have_text(I18n.t("components.enrollment_term_table_component.student_name_label"), normalize_ws: true)
+
       expect(response.body).to include(half_time_school_name)
       expect(response.body).to include(less_than_half_time_school_name)
       expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.half_time"))

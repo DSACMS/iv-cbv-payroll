@@ -1,6 +1,6 @@
 <% first_term = enrollment_terms.first %>
 <% student_name = [ first_term&.first_name, first_term&.middle_name, first_term&.last_name ].compact_blank.join(" ") %>
-<% enrollment_status_text = lambda do |term| 
+<% enrollment_status_text = lambda do |term|
   if term.school_certified_on.present?
     t("components.enrollment_term_table_component.status_as_of_date",
       status: term.enrollment_status_display,
