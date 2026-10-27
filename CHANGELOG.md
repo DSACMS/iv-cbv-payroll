@@ -7,7 +7,7 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
-## 0.13.0
+## 0.14.0
 
 ### User facing changes to Emmy Income + Emmy CE
 - No ticket: fix for json package bump regression [(#2253)](https://github.com/DSACMS/iv-cbv-payroll/pull/2253) - Tim Miller
