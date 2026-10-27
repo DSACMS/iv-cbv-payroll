@@ -1,4 +1,13 @@
 class NscEnrollmentTerm < ApplicationRecord
+  include Redactable
+
+  has_redactable_fields(
+    first_name: :string,
+    middle_name: :string,
+    last_name: :string,
+    school_name: :string
+  )
+
   belongs_to :education_activity
 
   SUMMER_MONTHS = [ 5, 6, 7, 8 ].freeze

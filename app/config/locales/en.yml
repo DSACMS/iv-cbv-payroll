@@ -98,6 +98,8 @@ en:
               greater_than_or_equal_to: Hours must be 0 or more
   activities:
     activities:
+      activity_section:
+        unpaid_work_alert: Paid work you reported separately also counts towards your community engagement.
       employment_focused_review:
         additional_comments: Additional comments
         employer_address: Address
@@ -386,8 +388,8 @@ en:
         hours_label: "%{month} hours worked"
         month_indicator: 'Month %{current} of %{total}:'
         unpaid_or_in_kind:
-          error_body: Add hours to continue.
-          error_heading: No hours entered
+          error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>.
+          error_heading: No work hours added
           field_error: Add hours to continue.
           heading: Add your hours for %{organization}
           hours_hint: If you performed in-kind work, provide an estimate
@@ -417,17 +419,24 @@ en:
           description: Review the information you've added for %{employer_name}.
         gross_income: Gross income
         name: Name
-        save: Save and add to my report
+        save: Add to my report
         title: Review your employment information for %{employer_name}
         unpaid_or_in_kind:
           additional_comments_description: Share any comments or additional information about your unpaid or in-kind work that you’d like %{agency_name} to know.
+          additional_comments_description_unpaid: Share any comments or additional information about your unpaid work that you’d like %{agency_name} to know.
           description: Review the information you’ve added for %{employer_name} before adding it to your Community Engagement Report.
+          who_you_worked_for: Who you worked for
+          work_contact_email: Work contact email
+          work_contact_name: Work contact name
+          work_contact_phone: Work contact phone number
           work_hours: Work hours
+          work_information: Work information
       title: Employment
       title_singular: Employment
       unpaid_or_in_kind:
         document_upload_suggestion_text_html: "<ul><li>Letter of employment or contract with role, responsibilities and key dates.</li><li>Proof of employment forms from a work supervisor or employer.</li><li>Invoices sent, if self-employed.</li></ul>"
         document_upload_suggestion_title: Suggested supporting documents
+      unpaid_title: Unpaid work
     employment_info:
       city: City
       contact_email: Employer contact email
@@ -453,12 +462,17 @@ en:
           item_3: In-kind work is work done for non-monetary goods or services, like housing, meals, or utilities.
           item_4: If you volunteered for an organization or cause, you may need to report that as community service instead.
           title: What is unpaid or in-kind work?
+          unpaid_title: What is unpaid work?
         contact_email: Contact email
         contact_information_description: For unpaid or in-kind work, please provide the contact details for who you worked for or can verify your hours.
+        contact_information_description_unpaid: For unpaid work, please provide the contact details for who you worked for or can verify your hours.
         contact_information_title: Work contact information
         contact_name: Contact name
         contact_phone_number: Contact phone number
-        description: If you’ve done unpaid or in-kind work, that can still count towards your community engagement requirements.
+        description: |-
+          If you’ve done unpaid work, that can still count towards your community engagement requirements.
+
+          Paid work, including in-kind work and income from self-employment, should not be re-entered here.
         employer_name: Who you worked for
         employer_name_error: Add who you worked for
         title: Tell us about the work you’ve done
@@ -468,6 +482,7 @@ en:
       show:
         card_heading: 'Enter information related to the following activities:'
         card_item_1: Work or earned income
+        card_item_1_unpaid: Unpaid work
         card_item_2: School enrollment
         card_item_3: Community service or work program participation
         continue: Report your activities
@@ -502,6 +517,17 @@ en:
         gross_income: 'Gross income: %{amount}'
         hours: 'Community engagement hours: %{count}'
         no_employment_data: No payments found from this employer.
+      common_questions:
+        heading: Common questions
+        income_body: Yes. Any income you reported earlier in your %{reporting_purpose} will contribute towards meeting community engagement requirements in addition to the activities you submit here.
+        income_title: Does income count toward meeting requirements?
+        reporting_purposes:
+          application: application
+          renewal: renewal
+        requirements_body_html:
+          one: Report at least <strong>80 hours</strong> of activity for at least <strong>%{required_month_count} month</strong> in the reporting period to meet community engagement requirements.
+          other: Report at least <strong>80 hours</strong> of activity for at least <strong>%{required_month_count} months</strong> in the reporting period to meet community engagement requirements.
+        requirements_title: What do I need to meet community engagement requirements?
       edit: Edit
       empty:
         community_service: No community service added
@@ -667,10 +693,8 @@ en:
     success:
       show:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
-        done_for_now: You're done for now. %{agency_full_name} will review your information and contact you if needed.
         download_pdf: Download my report
         employment_focused:
-          subheading: It may take a few moments for them to be reflected in the system.
           title: Your jobs have been submitted to %{agency_name}
           whats_next:
             download_your_report:
@@ -682,11 +706,17 @@ en:
               heading: If you’re a household member
               subheading: You’re done for now. %{agency_name} will review your information and contact you if needed. You may close this tab.
             subheading: "%{agency_name} will review your information and contact you if needed."
+        head_of_household_description_html: Continue your renewal in the <a href="%{agency_website}" target="_blank" rel="noopener noreferrer">agency website</a> or use the forms mailed to you. You may close this tab.
+        head_of_household_title: If you’re the head of household
+        household_member_description: You’re done for now. %{agency_name} will review your information and contact you if needed. You may close this tab.
+        household_member_title: If you’re a household member
+        next_steps_description: "%{agency_name} will review your information and contact you if needed."
+        subheading: It may take a few moments for them to be reflected in the system.
         survey: Take the 3 question survey
-        title: Your community engagement report was successfully sent to %{agency_acronym}
+        title: Your community engagement activities have been submitted to %{agency_name}
         whats_next: What's next?
         whats_next_1_li_1: We recommend saving your report for your records.
-        whats_next_1_title: Download your report for your records.
+        whats_next_1_title: Download your report
         whats_next_2_li_1: We’d like to hear more about your experience using this site.
         whats_next_2_title: Help make this experience better.
     summary:
@@ -702,8 +732,7 @@ en:
         month: Month
         organization: Organization name
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
-      description: The report below has your community engagement information from %{start_date} to %{end_date}. Please review before sending to %{agency_name}.
-      description_single_month: The report below has your community engagement information from %{month}. Please review before sending to %{agency_name}.
+      description: Report what you have. %{agency_name} will follow up with next steps if anything else is needed.
       education:
         address: School address
         community_engagement_hours: Community engagement hours
@@ -740,7 +769,7 @@ en:
       monthly_details: Monthly details
       no_activities_added: Add at least one activity before submitting your report.
       submit: Submit to %{agency_name}
-      title: Review and submit your %{benefit} community engagement report
+      title: Review and submit your community engagement activities
     unpaid_work:
       title: Unpaid work
     work_programs:
@@ -878,6 +907,14 @@ en:
       heading: We're experiencing technical difficulties
       income_body: Some parts of the site may not work properly. If you aren't able to search for your employer or login to your payroll provider, please try again later.
       manual_entry: add your employment details manually
+    government_banner:
+      aria_label: Official website of the United States government
+      gov_body_html: A <strong>.gov</strong> website belongs to an official government organization in the United States.
+      gov_heading: Official websites use .gov
+      how_you_know: Here’s how you know
+      https_body_html: A <strong>lock</strong> (%{lock_icon}) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
+      https_heading: Secure .gov websites use HTTPS
+      official_website: An official website of the United States government
     sync_delay_alert:
       body: We're currently experiencing technical difficulties. If we are unable to sync your employment information, please try again later.
       heading: Syncing is taking longer than normal
@@ -1286,6 +1323,9 @@ en:
           title_gross_income: Gross income
           title_number_of_paychecks: Number of paychecks
           title_total_hours_worked: Total hours worked
+    uswds:
+      alert:
+        dismiss: Dismiss
   continue: Continue
   date:
     formats:
@@ -1399,6 +1439,23 @@ en:
       title: Who are you reporting for?
   launcher:
     advanced:
+      duplicate_enrollments:
+        browser_check: 'Verify college/university enrollment. Expect 2 %{school_name} entries: %{full_time_status} and %{withdrawn_status} (withdrawal).'
+        certification_check: Certification dates aren't shown on the enrollment screen; automated tests check that the newer %{full_time_status} record is kept.
+        certified_after_start:
+          one: Term start + 1 month
+          other: Term start + %{count} months
+          zero: Term start
+        certified_on: School certified on
+        description: 3 NSC records; expect 2 enrollment entries.
+        keep: Keep
+        records: All 3 records are for %{school_name}, with term dates matching the selected reporting window.
+        remove: Remove duplicate
+        result: Expected result
+        status: NSC status
+        test_data: Test data and expected result
+        title: Dedupe Testuser
+        withdrawn: Withdrawn
       launch_configuration:
         title: Launch configuration
       settings:
@@ -1488,7 +1545,10 @@ en:
       one: "%{count} credit hour"
       other: "%{count} credit hours"
     footer:
+      cms_logo_alt: Centers for Medicare & Medicaid Services
       feedback: Share feedback
+      partners_label: Federal and state partners
+      partnership: Emmy is provided by the Centers for Medicare & Medicaid Services (CMS) in partnership with %{agency}.
     header:
       aria_label: Main navigation
       cbv_flow_title:
@@ -1534,6 +1594,7 @@ en:
       sandbox: benefits
     select_placeholder: "- Select -"
     skip_link: Skip to main content
+    subheader_agency_text: In partnership with %{agency}
     table_headers:
       community_service_information: Community service information
       education_information: Education information

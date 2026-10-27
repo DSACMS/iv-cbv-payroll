@@ -24,6 +24,70 @@ RSpec.describe Launcher::FakeNscDataFetcherService do
   let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
 
   describe "#fetch" do
+    context "with duplicate enrollment records" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("duplicate_enrollments_dedupe") }
+      let(:identity) do
+        create(:identity, first_name: profile.first_name, last_name: profile.last_name, date_of_birth: profile.date_of_birth)
+      end
+      let(:reporting_window) { activity_flow.reporting_window_range }
+
+      before do
+        activity_flow.update!(reporting_window_months: 3)
+      end
+
+      it "persists the latest full-time record and the withdrawal for the selected window" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms).to contain_exactly(
+          have_attributes(
+            term_begin: reporting_window.begin, term_end: reporting_window.end,
+            enrollment_status: "full_time", school_certified_on: reporting_window.begin + 1.month
+          ),
+          have_attributes(
+            term_begin: reporting_window.begin, term_end: reporting_window.end,
+            enrollment_status: "withdrawn", school_certified_on: reporting_window.begin + 2.months
+          )
+        )
+      end
+    end
+
+    context "with Maya's same-school enrollments in distinct terms" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("partial_enrollment_maya") }
+      let(:identity) do
+        create(:identity, first_name: profile.first_name, last_name: profile.last_name, date_of_birth: profile.date_of_birth)
+      end
+
+      it "preserves both distinct terms" do
+        service.fetch
+
+        expect(education_activity.nsc_enrollment_terms).to contain_exactly(
+          have_attributes(
+            term_begin: Date.new(2026, 1, 1), term_end: Date.new(2026, 1, 31),
+            school_name: profile.terms.first.fetch(:school_name), enrollment_status: "less_than_half_time"
+          ),
+          have_attributes(
+            term_begin: Date.new(2026, 1, 1), term_end: Date.new(2026, 2, 28),
+            school_name: profile.terms.first.fetch(:school_name), enrollment_status: "less_than_half_time"
+          )
+        )
+      end
+
+      context "with a six-month reporting window" do
+        before do
+          activity_flow.update!(reporting_window_months: 6)
+        end
+
+        it "keeps enrollment covering the full reporting window" do
+          service.fetch
+
+          expect(education_activity.nsc_enrollment_terms).to contain_exactly(
+            have_attributes(term_begin: Date.new(2025, 9, 1), term_end: Date.new(2025, 9, 30)),
+            have_attributes(term_begin: Date.new(2025, 9, 1), term_end: Date.new(2026, 2, 28))
+          )
+        end
+      end
+    end
+
     it "saves fake enrollment terms and derives data_source from those terms" do
       expect { service.fetch }
         .to change { education_activity.reload.status }

@@ -22,6 +22,33 @@ RSpec.describe Activities::SummaryController, type: :controller do
   end
 
   describe "GET #show" do
+    context "page introduction" do
+      let(:reporting_window_months) { 1 }
+      let(:rendered) { Capybara.string(response.body) }
+      let(:description) { I18n.t("activities.summary.description", agency_name: I18n.t("shared.agency_full_name.sandbox")) }
+
+      before do
+        activity_flow.update!(reporting_window_months: reporting_window_months)
+        get :show
+      end
+
+      it "renders the heading" do
+        expect(rendered).to have_selector("h1", text: I18n.t("activities.summary.title"), exact_text: true, normalize_ws: true)
+      end
+
+      it "renders the agency description directly below the heading" do
+        expect(rendered).to have_selector("h1 + p", text: description, exact_text: true, normalize_ws: true)
+      end
+
+      context "with multiple reporting months" do
+        let(:reporting_window_months) { 2 }
+
+        it "renders the agency description directly below the heading" do
+          expect(rendered).to have_selector("h1 + p", text: description, exact_text: true, normalize_ws: true)
+        end
+      end
+    end
+
     context "with a tokenized flow" do
       let(:applicant) { create(:cbv_applicant, first_name: "Lisa", last_name: "Williams") }
       let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
@@ -759,7 +786,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(flash.now[:alert]).to eq(I18n.t("activities.submit.consent_required"))
         expect(response.body).to include("Gainesville Wrecking")
         expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.activities.employment_focused_review.header")))
-        expect(response.body).not_to include(CGI.escapeHTML(I18n.t("activities.summary.title", benefit: "Medicaid")))
+        expect(response.body).not_to include(CGI.escapeHTML(I18n.t("activities.summary.title")))
       end
     end
 

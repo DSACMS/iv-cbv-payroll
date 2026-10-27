@@ -1,4 +1,20 @@
 class EducationActivity < Activity
+  include Redactable
+
+  has_redactable_fields(
+    school_name: :string,
+    contact_name: :string,
+    contact_title: :string,
+    contact_email: :email,
+    contact_phone_number: :string,
+    street_address: :string,
+    street_address_line_2: :string,
+    city: :string,
+    state: :string,
+    zip_code: :string,
+    additional_comments: :string
+  )
+
   include DocumentUploadable
 
   CREDIT_HOUR_CE_MULTIPLIER = 13

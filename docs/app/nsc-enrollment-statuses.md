@@ -25,16 +25,18 @@ the other statuses do not establish qualifying enrollment by themselves.
 
 Deduplication happens within each fetched response, after filtering to current
 enrollment details and terms overlapping the reporting window, and after mapping
-raw status codes to stored statuses. Records match when all persisted enrollment
+raw status codes to stored statuses. Records match when these enrollment
 attributes match: school name, student first/middle/last name, term begin/end
 dates, and grouped enrollment status.
 
 Consequently, otherwise identical W and S records produce one `withdrawn` term.
-Certification dates do not make separate records; this version of the model does
-not store them. Different grouped statuses, schools, student names, or term dates
-remain separate records. Grouping does not select one status over another for a
+Certification dates do not make separate records; the record with the latest
+school certification date is retained. Different grouped statuses, schools,
+student names, or term dates remain separate records. Grouping does not select one status over another for a
 term, and does not remove existing records from earlier fetches.
 
-This checkout has no separate withdrawal flag or column, so no removal migration
-is required. Existing `unknown` records cannot be reclassified without the raw
-NSC response; this change applies the expanded mapping to future fetches.
+The removal migration converts records with the legacy withdrawal flag to
+`withdrawn` before dropping the flag column. Other existing `unknown` records
+cannot be reclassified without the raw NSC response. The expanded mapping applies
+to future fetches. Migration rollback restores the legacy flag and maps withdrawn
+records back to `unknown` for compatibility with the previous representation.

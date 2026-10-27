@@ -215,7 +215,8 @@ module Aggregators
               {
                 "enrollmentStatus" => term["enrollmentStatusCode"],
                 "termBeginDate" => term["termBeginDate"],
-                "termEndDate" => term["termEndDate"]
+                "termEndDate" => term["termEndDate"],
+                "schoolCertifiedOnDate" => term["schoolCertifiedOnDate"]
               }
             end
           }

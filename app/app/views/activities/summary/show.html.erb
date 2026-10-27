@@ -1,4 +1,4 @@
-<% content_for :title, t("activities.summary.title", benefit: agency_translation("shared.benefit")) %>
+<% content_for :title, t("activities.summary.title") %>
 
 <% content_for :activity_flow_header do %>
   <div class="back-nav">
@@ -12,21 +12,10 @@
 <% end %>
 
 <h1>
-  <%= t("activities.summary.title", benefit: agency_translation("shared.benefit")) %>
+  <%= t("activities.summary.title") %>
 </h1>
 <p>
-  <% start_date = I18n.l(@flow.reporting_window_range.begin, format: :month_year) %>
-  <% end_date = I18n.l(@flow.reporting_window_range.end, format: :month_year) %>
-  <% if start_date == end_date %>
-    <%= t("activities.summary.description_single_month",
-          month: start_date,
-          agency_name: agency_translation("shared.agency_full_name")) %>
-  <% else %>
-    <%= t("activities.summary.description",
-          start_date: start_date,
-          end_date: end_date,
-          agency_name: agency_translation("shared.agency_full_name")) %>
-  <% end %>
+  <%= t("activities.summary.description", agency_name: agency_translation("shared.agency_full_name")) %>
 </p>
 
 <div class="margin-top-4">

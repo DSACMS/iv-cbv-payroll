@@ -2,6 +2,26 @@ require "rails_helper"
 
 RSpec.describe Launcher::FakeNscScenarios do
   describe ".nsc_response_for" do
+    context "with duplicate enrollment records" do
+      let(:profile) { described_class.by_key("duplicate_enrollments_dedupe") }
+      let(:identity) do
+        build(:identity, first_name: profile.first_name, last_name: profile.last_name, date_of_birth: profile.date_of_birth)
+      end
+      let(:reporting_window) { Date.new(2021, 9, 1)..Date.new(2021, 12, 1) }
+
+      it "returns the full-time updates and distinct withdrawal from the design example" do
+        response = described_class.nsc_response_for(identity: identity, reporting_window: reporting_window)
+        records = response.fetch("enrollmentDetails").flat_map { |detail| detail.fetch("enrollmentData") }
+
+        expect(records.map { |record| record.values_at("termBeginDate", "termEndDate", "enrollmentStatus", "schoolCertifiedOnDate") })
+          .to contain_exactly(
+            [ "2021-09-01", "2021-12-01", "W", "2021-11-01" ],
+            [ "2021-09-01", "2021-12-01", "F", "2021-10-01" ],
+            [ "2021-09-01", "2021-12-01", "F", "2021-09-01" ]
+          )
+      end
+    end
+
     it "limits Nina's terms to the last 2 months of the reporting window" do
       identity = build(
         :identity,

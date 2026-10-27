@@ -57,7 +57,7 @@ class NscDataFetcherService
 
   def update_education_activity(education_activity, response_data)
     enrollments = Array(response_data["enrollmentDetails"])
-    current_enrollments = enrollments.find_all { |enrollment_detail| enrollment_detail["currentEnrollmentStatus"] == "CC" }
+    current_enrollments = enrollments.find_all { |enrollment_detail| enrollment_detail["currentEnrollmentStatus"] == CURRENTLY_ENROLLED }
 
     if current_enrollments.any?
       @logger.info "Found #{current_enrollments.length} current enrollments (total enrollments: #{enrollments.length})"
@@ -69,11 +69,14 @@ class NscDataFetcherService
   end
 
   def save_enrollment_terms(enrollment_details)
-    # Compare the persisted attributes after grouping raw statuses. Certification
-    # dates and raw-code differences do not make a distinct enrollment record.
-    enrollment_term_attributes(enrollment_details).uniq.each do |attributes|
-      @education_activity.nsc_enrollment_terms.create!(attributes)
-    end
+    # Compare grouped statuses, retaining the newest certification for each group.
+    enrollment_term_attributes(enrollment_details)
+      .group_by { |attributes| attributes.except(:school_certified_on) }
+      .each_value do |duplicates|
+        # NSC dates use YYYY-MM-DD, so string comparison preserves date order.
+        latest = duplicates.max_by { |attributes| attributes[:school_certified_on] }
+        @education_activity.nsc_enrollment_terms.create!(latest)
+      end
   end
 
   def enrollment_term_attributes(enrollment_details)
@@ -94,7 +97,8 @@ class NscDataFetcherService
           last_name: enrollment_detail["nameOnSchoolRecord"]["lastName"],
           enrollment_status: enrollment_status(enrollment_data),
           term_begin: term_begin,
-          term_end: term_end
+          term_end: term_end,
+          school_certified_on: enrollment_data.fetch("schoolCertifiedOnDate")
         }
       end
     end

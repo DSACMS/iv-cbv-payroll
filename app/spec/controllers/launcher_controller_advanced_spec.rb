@@ -6,6 +6,48 @@ RSpec.describe LauncherController, type: :controller do
   render_views
 
   describe "GET #advanced" do
+    context "with the duplicate enrollment scenario" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("duplicate_enrollments_dedupe") }
+      let(:rendered) { Capybara.string(response.body) }
+      let(:scenario) { rendered.find(".advanced-launcher__scenario-with-details", visible: :all) }
+      let(:details) { scenario.find("details", visible: :all) }
+      let(:copy_scope) { "launcher.advanced.duplicate_enrollments" }
+
+      before { get :advanced }
+
+      it "places Dedupe Testuser last in the fake scenario list" do
+        scenarios = rendered.all("#fake-test-scenarios-content input[name=test_scenario]", visible: :all)
+
+        expect(scenarios.last[:value]).to eq(profile.scenario_key)
+        expect(scenario).to have_field("test_scenario_duplicate_enrollments_dedupe", type: "radio", with: profile.scenario_key, visible: :all)
+        expect(rendered).to have_text(I18n.t("#{copy_scope}.title"))
+        expect(rendered).to have_text(I18n.t("#{copy_scope}.description"))
+      end
+
+      it "lists the three input records and which ones should remain" do
+        rows = details.all("tbody tr", visible: :all).map { |row| row.text(:all).squish }
+        full_time = I18n.t("components.enrollment_term_table_component.status.full_time")
+        keep = I18n.t("#{copy_scope}.keep")
+
+        expect(rows).to eq([
+          "#{I18n.t("#{copy_scope}.withdrawn")} (W) #{I18n.t("#{copy_scope}.certified_after_start", count: 2)} #{keep}",
+          "#{full_time} (F) #{I18n.t("#{copy_scope}.certified_after_start", count: 1)} #{keep}",
+          "#{full_time} (F) #{I18n.t("#{copy_scope}.certified_after_start", count: 0)} #{I18n.t("#{copy_scope}.remove")}"
+        ])
+      end
+
+      it "provides collapsed instructions for the browser check and its limit" do
+        expect(scenario).to have_selector("details:not([open]) summary", text: I18n.t("#{copy_scope}.test_data"))
+        expect(details).to have_text(:all, I18n.t("#{copy_scope}.records", school_name: profile.terms.first.fetch(:school_name)))
+        expect(details).to have_text(:all, I18n.t("#{copy_scope}.browser_check",
+          school_name: profile.terms.first.fetch(:school_name),
+          full_time_status: I18n.t("components.enrollment_term_table_component.status.full_time"),
+          withdrawn_status: I18n.t("shared.not_applicable")))
+        expect(details).to have_text(:all, I18n.t("#{copy_scope}.certification_check",
+          full_time_status: I18n.t("components.enrollment_term_table_component.status.full_time")))
+      end
+    end
+
     it "renders the show template" do
       get :advanced
       expect(response).to have_http_status(:success)
@@ -61,6 +103,20 @@ RSpec.describe LauncherController, type: :controller do
   end
 
   describe "POST #create" do
+    context "with the duplicate enrollment scenario" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("duplicate_enrollments_dedupe") }
+
+      it "creates an invitation for the fake NSC identity" do
+        post :create, params: {
+          client_agency_id: "sandbox", launch_type: "tokenized", test_scenario: profile.scenario_key
+        }, format: :json
+
+        expect(ActivityFlowInvitation.last.cbv_applicant).to have_attributes(
+          first_name: profile.first_name, last_name: profile.last_name, date_of_birth: profile.date_of_birth
+        )
+      end
+    end
+
     context "with a generic launch" do
       it "redirects to the generic activities link" do
         post :create, params: {

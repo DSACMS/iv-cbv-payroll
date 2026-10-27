@@ -9,6 +9,12 @@
     <% end %>
   </div>
 
+  <% if activity_type == "unpaid_work" %>
+    <%= render(Uswds::Alert.new(type: :info, slim: true, dismiss_key: "unpaid-work-#{@flow.id}")) do %>
+      <%= t(".unpaid_work_alert") %>
+    <% end %>
+  <% end %>
+
   <% if cards.any? %>
     <%= yield %>
   <% else %>
