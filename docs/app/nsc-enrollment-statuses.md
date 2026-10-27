@@ -35,8 +35,7 @@ school certification date is retained. Different grouped statuses, schools,
 student names, or term dates remain separate records. Grouping does not select one status over another for a
 term, and does not remove existing records from earlier fetches.
 
-The removal migration converts records with the legacy withdrawal flag to
-`withdrawn` before dropping the flag column. Other existing `unknown` records
-cannot be reclassified without the raw NSC response. The expanded mapping applies
-to future fetches. Migration rollback restores the legacy flag and maps withdrawn
-records back to `unknown` for compatibility with the previous representation.
+The enrollment-details migration adds only the school certification date.
+Withdrawals are represented by the grouped enrollment status. Existing `unknown`
+records cannot be reclassified without the raw NSC response; the expanded mapping
+applies to future fetches.
