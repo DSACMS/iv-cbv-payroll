@@ -209,26 +209,46 @@
               t("activities.summary.education.community_engagement_hours")
             ] %>
           <% end %>
-          <% rows = enrollment_terms.map do |term|
+          <% term_groups = enrollment_terms
+            .sort_by { |term| [ term.term_begin, term.term_end, term.school_certified_on || Date::Infinity.new ] }
+            .group_by { |term| [ term.term_begin, term.term_end ] } 
+            .values %>
+          <% rows = term_groups.map do |terms_for_range|
+            status_lines = terms_for_range.map do |term|
+              if term.school_certified_on.present?
+                t("components.entrollment_term_table_component.status_as_of_date",
+                  status: term.enrollment_status_display,
+                  date: format_date(term.school_certified_on))
+              else
+                term.enrollment_status_display
+              end
+            end
+
             row = [
               t(
                 "activities.submit.pdf.term_date_range",
-                start_date: format_date(term.term_begin),
-                end_date: format_date(term.term_end)
+                start_date: format_date(terms_for_range.first.term_begin),
+                end_date: format_date(terms_for_range.first.term_end)
               ),
-              term.enrollment_status_display
+              safe_join(status_lines, tag.br)
             ]
+
             if show_credit_hours
-              if term.less_than_half_time?
-                credit_hours = activity.review_term_credit_hours(term)
-                row += [
-                  format_decimal_amount(credit_hours),
-                  format_decimal_amount(activity.community_engagement_hours(credit_hours))
-                ]
-              else
-                row += [ t("shared.not_applicable"), t("shared.not_applicable") ]
-              end
+              credit_hours_lines, ce_hours_lines = terms_for_range.map do |term|
+                if term.less_than_half_time?
+                  credit_hours = activity.review_term_credit_hours(term)
+                  [
+                    format_decimal_amount(credit_hours),
+                    format_decimal_amount(activity.community_engagement_hours(credit_hours))
+                  ]
+                else
+                  [ t("shared.not_applicable"), t("shared.not_applicable") ]
+                end
+              end.transpose
+
+              row += [ safe_join(credit_hours_lines, tag.br), safe_join(ce_hours_lines, tag.br) ]
             end
+
             row
           end %>
         <% end %>
