@@ -19,9 +19,11 @@ RSpec.describe "e2e Launcher dedupe test data", :js, type: :feature do
     expect(page).to have_checked_field("test_scenario_partial_enrollment_maya", visible: :all)
     expect(page).to have_field("reporting_window_months", with: "2")
     within "details" do
-      expect(page).to have_selector("tbody tr", count: 3)
-      expect(page).to have_selector("td", text: I18n.t("launcher.advanced.duplicate_enrollments.keep"), count: 2)
-      expect(page).to have_selector("td", text: I18n.t("launcher.advanced.duplicate_enrollments.remove"), count: 1)
+      expect(page).to have_selector("tbody tr", count: 5)
+      expect(page).to have_selector("tr", text: /Withdrawn \(S\).*Remove duplicate/)
+      expect(page).to have_selector("tr", text: /Leave of absence \(A\).*Keep/)
+      expect(page).to have_selector("td", text: I18n.t("launcher.advanced.duplicate_enrollments.keep"), count: 3)
+      expect(page).to have_selector("td", text: I18n.t("launcher.advanced.duplicate_enrollments.remove"), count: 2)
     end
 
     choose "test_scenario_duplicate_enrollments_dedupe", allow_label_click: true
