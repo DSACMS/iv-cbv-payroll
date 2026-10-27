@@ -7,6 +7,40 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.13.0
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Implement .gov banner in CMS infra [(#2229)](https://github.com/DSACMS/iv-cbv-payroll/pull/2229) - Jake Wheeler [[FFS-4833]](https://jiraent.cms.gov/browse/FFS-4833)
+- Add agency/CMS branding to header/footer [(#2217)](https://github.com/DSACMS/iv-cbv-payroll/pull/2217) - Chris [[FFS-4924]](https://jiraent.cms.gov/browse/FFS-4924)
+- update copy unpaid only v2 [(#2203)](https://github.com/DSACMS/iv-cbv-payroll/pull/2203) - Chris [[FFS-4863]](https://jiraent.cms.gov/browse/FFS-4863)
+- Add dismissible unpaid work alert [(#2218)](https://github.com/DSACMS/iv-cbv-payroll/pull/2218) - Tom Dooner [[FFS-4930]](https://jiraent.cms.gov/browse/FFS-4930)
+- Update Review and submit page static content [(#2231)](https://github.com/DSACMS/iv-cbv-payroll/pull/2231) - Daphne Gold [[FFS-4934]](https://jiraent.cms.gov/browse/FFS-4934)
+- Implement CE completion screen copy updates [(#2227)](https://github.com/DSACMS/iv-cbv-payroll/pull/2227) - Daphne Gold [[FFS-4873]](https://jiraent.cms.gov/browse/FFS-4873)
+- Persist schoolCertifiedOnDate and withdrawn status [(#2225)](https://github.com/DSACMS/iv-cbv-payroll/pull/2225) - krista-skylight [[FFS-4974]](https://jiraent.cms.gov/browse/FFS-4974)
+- Redact CE flow data (ActivityFlow, Household, Identity, activities) parallel to Income flow [(#2204)](https://github.com/DSACMS/iv-cbv-payroll/pull/2204) - krista-skylight [[FFS-4829]](https://jiraent.cms.gov/browse/FFS-4829)
+- Add "Common questions" section and content to Activity Hub [(#2220)](https://github.com/DSACMS/iv-cbv-payroll/pull/2220) - Jake Wheeler [[FFS-4931]](https://jiraent.cms.gov/browse/FFS-4931)
+- Update Activity Hub heading elements [(#2222)](https://github.com/DSACMS/iv-cbv-payroll/pull/2222) - Daphne Gold [[FFS-4929]](https://jiraent.cms.gov/browse/FFS-4929)
+- Disable progress indicator across pages [(#2219)](https://github.com/DSACMS/iv-cbv-payroll/pull/2219) - Daphne Gold [[FFS-4928]](https://jiraent.cms.gov/browse/FFS-4928)
+- Add expired invitation page for CE flows [(#2216)](https://github.com/DSACMS/iv-cbv-payroll/pull/2216) - krista-skylight [[FFS-4923]](https://jiraent.cms.gov/browse/FFS-4923)
+- Consolidate maintenance under ENABLED_ALERTS [(#2211)](https://github.com/DSACMS/iv-cbv-payroll/pull/2211) - Tom Dooner [[FFS-4942]](https://jiraent.cms.gov/browse/FFS-4942)
+- Add the full-site technical difficulties alert [(#2210)](https://github.com/DSACMS/iv-cbv-payroll/pull/2210) - Tom Dooner [[FFS-4940]](https://jiraent.cms.gov/browse/FFS-4940)
+- Show alerts for delayed payroll synchronizations [(#2209)](https://github.com/DSACMS/iv-cbv-payroll/pull/2209) - Tom Dooner [[FFS-4938]](https://jiraent.cms.gov/browse/FFS-4938)
+- Add the aggregator outage alert [(#2207)](https://github.com/DSACMS/iv-cbv-payroll/pull/2207) - Tom Dooner [[FFS-4939]](https://jiraent.cms.gov/browse/FFS-4939)
+- Replace the site alert flag with ENABLED_ALERTS [(#2206)](https://github.com/DSACMS/iv-cbv-payroll/pull/2206) - Tom Dooner [[FFS-4941]](https://jiraent.cms.gov/browse/FFS-4941)
+- Update AI options [(#2221)](https://github.com/DSACMS/iv-cbv-payroll/pull/2221) - Daphne Gold
+- Tweak OpenAPI documentation [(#2215)](https://github.com/DSACMS/iv-cbv-payroll/pull/2215) - Tom Dooner
+- CE flow invitation expiration [(#2187)](https://github.com/DSACMS/iv-cbv-payroll/pull/2187) - Jake Wheeler [[FFS-4828]](https://jiraent.cms.gov/browse/FFS-4828)
+- Update Education "Other" page to route to unpaid work [(#2184)](https://github.com/DSACMS/iv-cbv-payroll/pull/2184) - Chris [[FFS-4915]](https://jiraent.cms.gov/browse/FFS-4915)
+- Add webhooks to OpenAPI documentation [(#2212)](https://github.com/DSACMS/iv-cbv-payroll/pull/2212) - Tom Dooner
+
+### Other/Maintenance (Not user facing)
+- Bump net-ssh, webmock, pry, webpack, vite, postcss, jsdom, sass, newrelic_rpm, net-sftp, fast-uri, json, certifi, github.com/klauspost/compress
+- fix: patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore [(#2233)](https://github.com/DSACMS/iv-cbv-payroll/pull/2233) - github-actions[bot]
+- fix: patch Ruby/JS dependencies for CVEs flagged by bundler-audit/npm audit [(#2232)](https://github.com/DSACMS/iv-cbv-payroll/pull/2232) - github-actions[bot]
+
 ## 0.12.0
 
 ### User facing changes to Emmy Income + Emmy CE
