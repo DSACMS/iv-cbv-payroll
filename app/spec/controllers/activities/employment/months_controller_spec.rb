@@ -497,10 +497,16 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
           }
 
           rendered = Capybara.string(response.body)
-          error = I18n.t("activities.employment.hours_input.unpaid_or_in_kind.error_body")
+          alert_error = ActionView::Base.full_sanitizer.sanitize(
+            I18n.t(
+              "activities.employment.hours_input.unpaid_or_in_kind.error_body_html",
+              month_selection_url: edit_activities_flow_income_employment_month_selection_path(employment_id: employment_activity)
+            )
+          )
+          field_error = I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error")
           expect(response).to have_http_status(:unprocessable_content)
-          expect(rendered).to have_selector(".usa-alert--error", text: error)
-          expect(rendered).to have_selector(".usa-error-message", text: error)
+          expect(rendered).to have_selector(".usa-alert--error", text: alert_error)
+          expect(rendered).to have_selector(".usa-error-message", text: field_error)
           expect(employment_activity.employment_activity_months).to be_empty
         end
 
