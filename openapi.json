@@ -250,6 +250,85 @@
         }
       }
     },
+    "/api/v1/{flow_type}/invitations/{token}": {
+      "parameters": [
+        {
+          "name": "flow_type",
+          "in": "path",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "income",
+              "community-engagement"
+            ]
+          },
+          "description": "Selects which invitation type the token belongs to.",
+          "required": true
+        },
+        {
+          "name": "token",
+          "in": "path",
+          "schema": {
+            "type": "string"
+          },
+          "description": "The invitation's auth token, from tokenized_url or activity_tokenized_url.",
+          "required": true
+        }
+      ],
+      "delete": {
+        "summary": "Expire a Tokenized Link",
+        "tags": [
+          "Invitations"
+        ],
+        "operationId": "expireInvitation",
+        "description": "Use `DELETE /api/v1/income/invitations/{token}` to expire an income link, or\n`DELETE /api/v1/community-engagement/invitations/{token}` to expire a community\nengagement link. The API key must belong to the agency that created the link.\nThe operation is idempotent: repeat calls for a manually expired link also\nreturn `200`. Unknown tokens, tokens belonging to another agency, and unknown\nflow types return `404`. The legacy `DELETE /api/v1/invitations/{token}` route\ncontinues to expire income links.\n\n### Example\n\nRequest:\n\n```http\nDELETE /api/v1/income/invitations/IncomeExampleToken HTTP/1.1\nHost: verify-demo.navapbc.cloud\nAuthorization: Bearer API_KEY\n```\n\nResponse (`200 OK`):\n\n```json\n{\n  \"tokenized_url\": \"https://verify-demo.navapbc.cloud/en/start/IncomeExampleToken\"\n}\n```\n\nUse the same request shape with `/api/v1/community-engagement/invitations/{token}`\nto expire a community engagement link instead. Calling this again for the same\ntoken (even after it's already expired) still returns `200`; an unknown token,\na token created by another agency, or an unrecognized `flow_type` segment\nreturns `404` with an empty body.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invitation expired",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "expire_income": {
+                    "summary": "Expire an income invitation",
+                    "value": {
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/en/start/IncomeExampleToken"
+                    }
+                  },
+                  "expire_community_engagement": {
+                    "summary": "Expire a community engagement invitation",
+                    "value": {
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/xYppT3htNb"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ExpireInvitationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key (plain text, not JSON)",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown token, mismatched agency, or unrecognized flow type",
+            "content": {}
+          }
+        }
+      }
+    },
     "/api/v2/{invitation_type}/invitations": {
       "parameters": [
         {
@@ -297,7 +376,7 @@
                         "first_name": "Jane",
                         "last_name": "Doe"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/ufXcN3AjBU"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/BmqmKZc2jd"
                     }
                   },
                   "community_engagement": {
@@ -313,7 +392,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/DymrnFT2pL"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/5oc5ze2MpW"
                     }
                   }
                 },
@@ -1181,6 +1260,20 @@
           },
           "agency_partner_metadata": {
             "$ref": "#/components/schemas/AgencyPartnerMetadataV2"
+          }
+        }
+      },
+      "ExpireInvitationResponse": {
+        "type": "object",
+        "required": [
+          "tokenized_url"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "tokenized_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The expired invitation's reporting link, returned for reference. Do not resend this link to the applicant."
           }
         }
       },
