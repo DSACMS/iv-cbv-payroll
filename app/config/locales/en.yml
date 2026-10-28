@@ -666,6 +666,7 @@ en:
         hourly_wage_hours_paid: 'Hourly wage: Hours paid'
         institution_information: Institution information
         institution_title: 'Institution %{number}: %{name}'
+        institution_title_single: 'Institution: %{name}'
         mileage_expense_value: "%{amount} (%{rate} x %{miles} miles)"
         mileage_expenses: Mileage expenses
         not_provided: Not provided
@@ -679,9 +680,9 @@ en:
         payment_information: Payment information (%{number})
         product_name: Emmy Community Engagement
         report_created_at: Date report was created
-        school_contact_email: School official’s email
-        school_contact_name: School official’s name
-        school_contact_phone_number: School phone number
+        school_contact_email: School contact email
+        school_contact_name: School contact name
+        school_contact_phone_number: School contact phone number
         term_date_range: "%{start_date} to %{end_date}"
         title: Community Engagement Report
         total_hours_worked: Total hours worked

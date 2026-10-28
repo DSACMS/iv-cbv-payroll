@@ -256,7 +256,10 @@
 
         <%= render "activities/submit/summary_activity",
           section_heading: index.zero? ? t("activities.submit.pdf.education_summary") : nil,
-          title: t(
+          title: index.zero? ? t(
+            "activities.submit.pdf.institution_title_single",
+            name: entry.school_name.presence || not_provided
+          ) : t(
             "activities.submit.pdf.institution_title",
             number: index + 1,
             name: entry.school_name.presence || not_provided
@@ -397,7 +400,10 @@
         ] %>
         <%= render "activities/submit/detail_activity",
           section_heading: index.zero? ? t("activities.submit.pdf.education_details") : nil,
-          title: t(
+          title: index.zero? ? t(
+            "activities.submit.pdf.institution_title_single",
+            name: entry.school_name.presence || not_provided
+          ) : t(
             "activities.submit.pdf.institution_title",
             number: index + 1,
             name: entry.school_name.presence || not_provided
