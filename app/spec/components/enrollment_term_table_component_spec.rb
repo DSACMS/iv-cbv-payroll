@@ -14,7 +14,7 @@ RSpec.describe EnrollmentTermTableComponent, type: :component do
     let(:status) { :leave_of_absence }
 
     it "displays leave of absence" do
-      expect(rendered).to have_text("Leave of absence")
+      expect(rendered).to have_text(I18n.t("components.enrollment_term_table_component.status.leave_of_absence"))
     end
   end
 
@@ -22,7 +22,7 @@ RSpec.describe EnrollmentTermTableComponent, type: :component do
     let(:status) { :withdrawn }
 
     it "displays withdrawn" do
-      expect(rendered).to have_text("Withdrawn")
+      expect(rendered).to have_text(I18n.t("components.enrollment_term_table_component.status.withdrawn"))
     end
   end
 
@@ -30,7 +30,7 @@ RSpec.describe EnrollmentTermTableComponent, type: :component do
     let(:status) { :graduated }
 
     it "displays graduated" do
-      expect(rendered).to have_text("Graduated")
+      expect(rendered).to have_text(I18n.t("components.enrollment_term_table_component.status.graduated"))
     end
   end
 
@@ -38,7 +38,7 @@ RSpec.describe EnrollmentTermTableComponent, type: :component do
     let(:status) { :deceased }
 
     it "displays deceased" do
-      expect(rendered).to have_text("Deceased")
+      expect(rendered).to have_text(I18n.t("components.enrollment_term_table_component.status.deceased"))
     end
   end
 
@@ -46,7 +46,7 @@ RSpec.describe EnrollmentTermTableComponent, type: :component do
     let(:status) { :enrolled }
 
     it "describes the meaning of the raw Y code" do
-      expect(rendered).to have_text("Enrollment status not released by school")
+      expect(rendered).to have_text(I18n.t("components.enrollment_term_table_component.status.enrolled"))
     end
   end
 end

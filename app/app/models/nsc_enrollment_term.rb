@@ -16,7 +16,7 @@ class NscEnrollmentTerm < ApplicationRecord
     three_quarter_time: "three_quarter_time",   # Q
     half_time: "half_time",                     # H
     less_than_half_time: "less_than_half_time", # L
-    enrolled: "enrolled",                     # Y: status not released by school
+    enrolled: "enrolled",                       # Y: status not released by school
     leave_of_absence: "leave_of_absence",       # A
     withdrawn: "withdrawn",                     # W, S
     graduated: "graduated",                     # G

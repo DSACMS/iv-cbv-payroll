@@ -8,7 +8,7 @@ RSpec.describe NscEnrollmentTerm do
       let(:status) { :leave_of_absence }
 
       it "displays the status without establishing half-time enrollment" do
-        expect(term.enrollment_status_display).to eq("Leave of absence")
+        expect(term.enrollment_status_display).to eq(I18n.t("components.enrollment_term_table_component.status.leave_of_absence"))
         expect(term.half_time_or_above?).to be(false)
         expect(term.enrollment_priority).to eq(0)
       end
@@ -18,7 +18,7 @@ RSpec.describe NscEnrollmentTerm do
       let(:status) { :withdrawn }
 
       it "displays the status without establishing half-time enrollment" do
-        expect(term.enrollment_status_display).to eq("Withdrawn")
+        expect(term.enrollment_status_display).to eq(I18n.t("components.enrollment_term_table_component.status.withdrawn"))
         expect(term.half_time_or_above?).to be(false)
         expect(term.enrollment_priority).to eq(0)
       end
@@ -28,7 +28,7 @@ RSpec.describe NscEnrollmentTerm do
       let(:status) { :graduated }
 
       it "displays the status without establishing half-time enrollment" do
-        expect(term.enrollment_status_display).to eq("Graduated")
+        expect(term.enrollment_status_display).to eq(I18n.t("components.enrollment_term_table_component.status.graduated"))
         expect(term.half_time_or_above?).to be(false)
         expect(term.enrollment_priority).to eq(0)
       end
@@ -38,7 +38,7 @@ RSpec.describe NscEnrollmentTerm do
       let(:status) { :deceased }
 
       it "displays the status without establishing half-time enrollment" do
-        expect(term.enrollment_status_display).to eq("Deceased")
+        expect(term.enrollment_status_display).to eq(I18n.t("components.enrollment_term_table_component.status.deceased"))
         expect(term.half_time_or_above?).to be(false)
         expect(term.enrollment_priority).to eq(0)
       end
