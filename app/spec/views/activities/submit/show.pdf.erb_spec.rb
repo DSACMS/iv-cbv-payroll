@@ -15,8 +15,8 @@ RSpec.describe "activities/submit/show.pdf.erb", type: :view do
   let(:document) { Capybara.string(rendered) }
   let(:term_date_range) do
     I18n.t("activities.submit.pdf.term_date_range",
-      start_date: I18n.l(education_activity.self_attested_term_start, format: :abbreviated_month_year),
-      end_date: I18n.l(education_activity.self_attested_term_end, format: :abbreviated_month_year))
+      start_date: I18n.l(education_activity.self_attested_term_start, format: :month_year),
+      end_date: I18n.l(education_activity.self_attested_term_end, format: :month_year))
   end
   let(:term_table) { document.find("table", text: term_date_range) }
 

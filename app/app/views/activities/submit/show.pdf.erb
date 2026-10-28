@@ -183,8 +183,8 @@
           <% row = [
             t(
               "activities.submit.pdf.term_date_range",
-              start_date: format_date(activity.self_attested_term_start, :abbreviated_month_year),
-              end_date: format_date(activity.self_attested_term_end,  :abbreviated_month_year)
+              start_date: format_date(activity.self_attested_term_start, :month_year),
+              end_date: format_date(activity.self_attested_term_end,  :month_year)
             ),
             activity.self_attested_enrollment_status_display
           ] %>
@@ -228,8 +228,8 @@
             row = [
               t(
                 "activities.submit.pdf.term_date_range",
-                start_date: format_date(terms_for_range.first.term_begin),
-                end_date: format_date(terms_for_range.first.term_end)
+                start_date: format_date(terms_for_range.first.term_begin, :month_year),
+                end_date: format_date(terms_for_range.first.term_end, :month_year)
               ),
               safe_join(status_lines, tag.br)
             ]
