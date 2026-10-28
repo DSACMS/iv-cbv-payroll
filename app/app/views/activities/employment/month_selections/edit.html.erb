@@ -44,7 +44,7 @@
       method: :patch
     ) do |f| %>
   <%= hidden_field_tag "employment_activity[selected_months][]", "" %>
-  <fieldset class="usa-fieldset">
+  <fieldset class="<%= class_names("usa-fieldset", "margin-top-2" => !@error) %>">
     <legend class="usa-legend font-body-sm text-bold margin-bottom-1">
       <%= t(".legend") %>
     </legend>
