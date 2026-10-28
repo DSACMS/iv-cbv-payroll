@@ -22,6 +22,21 @@ RSpec.describe Activities::SummaryController, type: :controller do
   end
 
   describe "GET #show" do
+    context "legal agreement" do
+      let(:consent_text) do
+        Capybara.string(I18n.t("activities.summary.consent_label_html",
+          agency_name: I18n.t("shared.agency_full_name.sandbox"),
+          agency_initials: I18n.t("shared.agency_acronym.sandbox"))).text
+      end
+
+      before { get :show }
+
+      it "labels the consent checkbox with the agency-specific agreement" do
+        expect(Capybara.string(response.body)).to have_selector("label[for='activity_flow_consent_to_submit']",
+          text: consent_text, normalize_ws: true)
+      end
+    end
+
     context "page introduction" do
       let(:reporting_window_months) { 1 }
       let(:rendered) { Capybara.string(response.body) }

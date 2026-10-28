@@ -161,7 +161,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       employment = payload.dig("ce_report", "activities", "employment")
       expect(employment.keys).to eq(%w[2025-02 2025-03])
       employment.each do |month, entries|
-        expect(entries.sole["data_source"]).to eq("validated")
+        expect(entries.sole).to include("data_source" => "validated", "employment_type" => "gig")
         expect(entries.sole["paystubs"]).not_to be_empty
         expect(entries.sole["paystubs"].map { |paystub| paystub["pay_date"][0, 7] }.uniq).to eq([ month ])
       end
@@ -183,7 +183,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       employment = payload.dig("ce_report", "activities", "employment")
       expect(employment.keys).to eq(%w[2025-02 2025-03])
       employment.each do |month, entries|
-        expect(entries.sole["data_source"]).to eq("validated")
+        expect(entries.sole).to include("data_source" => "validated", "employment_type" => "w2")
         expect(entries.sole["paystubs"]).not_to be_empty
         expect(entries.sole["paystubs"].map { |paystub| paystub["pay_date"][0, 7] }.uniq).to eq([ month ])
       end
@@ -236,7 +236,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
         mixed_report: { summary: "Community service, work programs, mixed employment, and education", value: payload }
       }
       expect(payload.dig("ce_report", "activities", "employment", "2025-03").map { |entry| entry["employment_type"] })
-        .to eq(%w[self_employed unpaid gig])
+        .to eq([ nil, nil, nil ])
       expect(payload.dig("ce_report", "activities", "education", "2025-03").map { |entry| entry["data_source"] }.uniq)
         .to eq(%w[self_attested verified verified_enrollment_only])
       expect(payload.dig("ce_report", "activities", "education", "2025-03").map { |entry| entry["education_type"] }.uniq)
