@@ -183,8 +183,8 @@
           <% row = [
             t(
               "activities.submit.pdf.term_date_range",
-              start_date: format_date(activity.self_attested_term_start, :month_year),
-              end_date: format_date(activity.self_attested_term_end, :month_year)
+              start_date: format_date(activity.self_attested_term_start, :abbreviated_month_year),
+              end_date: format_date(activity.self_attested_term_end,  :abbreviated_month_year)
             ),
             activity.self_attested_enrollment_status_display
           ] %>
@@ -386,18 +386,15 @@
     <section class="margin-top-4">
       <% @report.education_entries.each_with_index do |entry, index| %>
         <% activity = entry.activity %>
-        <% education_details = [] %>
-          <% education_details = [
-            [ t("activities.submit.pdf.address"), activity.formatted_address ],
-            [ t("activities.submit.pdf.school_contact_name"), activity.contact_name ],
-            [ t("activities.submit.pdf.school_contact_title"), activity.contact_title ],
-            [ t("activities.submit.pdf.school_contact_email"), activity.contact_email ],
-            [
-              t("activities.submit.pdf.school_contact_phone_number"),
-              number_to_phone(activity.contact_phone_number, area_code: true)
-            ]
-          ] %>
-        <% end %>
+        <% education_details = [
+          [ t("activities.submit.pdf.address"), activity.formatted_address ],
+          [ t("activities.submit.pdf.school_contact_name"), activity.contact_name ],
+          [ t("activities.submit.pdf.school_contact_email"), activity.contact_email ],
+          [
+            t("activities.submit.pdf.school_contact_phone_number"),
+            number_to_phone(activity.contact_phone_number, area_code: true)
+          ]
+        ] %>
         <%= render "activities/submit/detail_activity",
           section_heading: index.zero? ? t("activities.submit.pdf.education_details") : nil,
           title: t(
@@ -407,7 +404,7 @@
           ),
           comments: entry.comments,
           information_heading: t("activities.submit.pdf.institution_information"),
-          details: [ [ t("activities.submit.pdf.education_type"), activity.education_type_display ] ] + education_details %>
+          details: education_details %>
       <% end %>
     </section>
   <% end %>
