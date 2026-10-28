@@ -645,11 +645,21 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include("Submit to")
     end
 
-    it "renders a back link pointing to the activity hub" do
+    it "renders a back link to the activity hub without prefetching" do
       get :show
 
-      expect(response.body).to include("back-nav")
-      expect(response.body).to have_link(href: activities_flow_root_path)
+      expect(Capybara.string(response.body)).to have_selector(
+        "a.back-nav__link[href='#{activities_flow_root_path}'][data-turbo-prefetch='false']",
+        text: I18n.t("activities.activity_header_component.back")
+      )
+    end
+
+    it "keeps an added-activity flash for the hub back link" do
+      session["flash"] = { "discard" => [], "flashes" => { "activity_added" => "education" } }
+
+      get :show
+
+      expect(session.dig("flash", "flashes", "activity_added")).to eq("education")
     end
 
     context "with previously uploaded documents across activity types" do

@@ -510,6 +510,7 @@ en:
         title: Your verification link is no longer valid
         visit_agency: Visit %{agency_acronym} website
     hub:
+      activity_added: Your %{activity_type} activity has been successfully added to your report.
       add: Add
       cards:
         credit_hours: 'Credit hours: %{amount}'

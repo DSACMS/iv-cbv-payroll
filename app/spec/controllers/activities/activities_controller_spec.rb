@@ -4,6 +4,75 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
   include_context "activity_hub"
   render_views
 
+  describe "activity added alert" do
+    let(:current_flow) { create(:activity_flow) }
+    let(:rendered) { Capybara.string(response.body) }
+    let(:alert_text) do
+      I18n.t("activities.hub.activity_added",
+        activity_type: I18n.t("activities.submit.pdf.activity_types.community_service"))
+    end
+
+    before do
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+    end
+
+    it "renders the slim success alert above the hub content" do
+      get :index, flash: { activity_added: :community_service }
+
+      expect(rendered).to have_selector(".usa-alert--success.usa-alert--slim[role='alert'][data-turbo-temporary]",
+        text: alert_text, normalize_ws: true)
+      expect(rendered).to have_selector(".usa-alert--success + .activity-hub-columns",
+        text: I18n.t("activities.hub.title"))
+    end
+
+    it "does not show an added alert on a regular hub visit" do
+      get :index
+
+      expect(rendered).to have_no_selector(".usa-alert--success")
+    end
+
+    context "when reporting for a named applicant" do
+      let(:applicant) { create(:cbv_applicant) }
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+      let(:current_flow) { create(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation) }
+      let(:reporting_text) do
+        I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+      end
+
+      it "renders the success alert above the reporting banner" do
+        get :index, flash: { activity_added: :community_service }
+
+        expect(rendered).to have_selector(".usa-alert--success + div", text: reporting_text, normalize_ws: true)
+      end
+    end
+
+    context "with unpaid-only employment" do
+      let(:current_flow) { create(:activity_flow, unpaid_work_only: true) }
+      let(:alert_text) do
+        I18n.t("activities.hub.activity_added", activity_type: I18n.t("activities.unpaid_work.title").downcase)
+      end
+
+      it "uses the unpaid work label in the added alert" do
+        get :index, flash: { activity_added: :employment }
+
+        expect(rendered).to have_selector(".usa-alert--success", text: alert_text, normalize_ws: true)
+      end
+
+      context "when an education activity was added" do
+        let(:alert_text) do
+          I18n.t("activities.hub.activity_added", activity_type: I18n.t("activities.submit.pdf.activity_types.education"))
+        end
+
+        it "uses the education label in the added alert" do
+          get :index, flash: { activity_added: :education }
+
+          expect(rendered).to have_selector(".usa-alert--success", text: alert_text, normalize_ws: true)
+        end
+      end
+    end
+  end
+
   describe "common questions" do
     let(:current_flow) do
       create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,

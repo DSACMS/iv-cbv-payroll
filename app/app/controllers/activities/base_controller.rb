@@ -29,6 +29,12 @@ class Activities::BaseController < FlowController
 
   private
 
+  def publish_activity(activity, activity_type:)
+    newly_added = activity.draft?
+    activity.publish!
+    flash[:activity_added] = activity_type if newly_added
+  end
+
   def redirect_if_nsc_disabled
     redirect_to new_activities_flow_education_path(education_type: params[:education_type].presence) if nsc_disabled?
   end
