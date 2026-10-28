@@ -3,7 +3,6 @@ class NscDataFetcherService
   ENROLLMENT_STATUSES = {
     # Raw NSC codes mapped to the grouped NscEnrollmentTerm status.
     # W and S describe the same grouped status, regardless of who reported it.
-    # See docs/app/nsc-enrollment-statuses.md for meanings and deduplication rules.
     "F" => :full_time,
     "Q" => :three_quarter_time,
     "H" => :half_time,
