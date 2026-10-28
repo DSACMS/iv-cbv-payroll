@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -75,6 +75,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_000000) do
     t.string "verification_range"
     t.boolean "unpaid_work_only", default: false
     t.datetime "expires_at"
+    t.boolean "manually_expired", default: false, null: false
     t.datetime "redacted_at"
     t.index ["auth_token"], name: "index_activity_flow_invitations_on_auth_token", unique: true
     t.index ["cbv_applicant_id"], name: "index_activity_flow_invitations_on_cbv_applicant_id"
@@ -114,9 +115,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_000000) do
     t.integer "renewal_required_months"
     t.integer "reporting_window_months"
     t.string "reporting_window_type"
+    t.boolean "unpaid_work_only", default: false
     t.datetime "transmitted_at"
     t.datetime "updated_at", null: false
-    t.boolean "unpaid_work_only", default: false
     t.datetime "redacted_at"
     t.index ["activity_flow_invitation_id"], name: "index_activity_flows_on_activity_flow_invitation_id"
     t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"
@@ -162,6 +163,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_000000) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.string "verification_range"
+    t.boolean "manually_expired", default: false, null: false
     t.index ["auth_token"], name: "index_cbv_flow_invitations_on_auth_token", unique: true, where: "(redacted_at IS NULL)"
     t.index ["cbv_applicant_id"], name: "index_cbv_flow_invitations_on_cbv_applicant_id"
     t.index ["user_id"], name: "index_cbv_flow_invitations_on_user_id"
