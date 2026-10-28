@@ -199,7 +199,7 @@
           <% rows = [ row ] %>
         <% else %>
           <% enrollment_terms = entry.enrollment_terms %>
-          <% show_credit_hours = enrollment_terms.any?(&:less_than_half_time?) %>
+          <% show_credit_hours = (activity.partially_self_attested? || activity.fully_self_attested?) && enrollment_terms.any?(&:less_than_half_time?) %>
           <% columns = [
             t("activities.education.review.term"),
             t("components.enrollment_term_table_component.enrollment_status")
