@@ -31,14 +31,8 @@
 </p>
 
 <% if @error %>
-  <%= render Uswds::Alert.new(
-    type: :error,
-    slim: true,
-    form_id: "education_term_credit_hours_form",
-    class: "margin-bottom-4"
-  ) do %>
-    <%= t("activities.education.term_credit_hours.error_body_multi_month") %>
-  <% end %>
+  <%= render "shared/input_error", form_id: "education_term_credit_hours_form",
+        message: t("activities.education.term_credit_hours.error_body_multi_month") %>
 <% end %>
 
 <%= uswds_form_with(model: @current_term,

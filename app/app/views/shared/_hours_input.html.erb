@@ -37,18 +37,8 @@
 <% end %>
 
 <% if error %>
-  <%= render Uswds::Alert.new(
-    type: :error,
-    slim: true,
-    form_id: "hours_input_form",
-    class: "margin-bottom-4"
-  ) do %>
-    <% if months.length > 1 %>
-      <%= t("#{t_scope}.error_body_multi_month") %>
-    <% else %>
-      <%= t("#{t_scope}.error_body") %>
-    <% end %>
-  <% end %>
+  <%= render "shared/input_error", form_id: "hours_input_form",
+        message: t("#{t_scope}.#{months.length > 1 ? 'error_body_multi_month' : 'error_body'}") %>
 <% end %>
 
 <%= uswds_form_with(model: activity_month,

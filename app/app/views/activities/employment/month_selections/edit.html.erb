@@ -30,14 +30,8 @@
 </p>
 
 <% if @error %>
-  <%= render Uswds::Alert.new(
-    type: :error,
-    slim: true,
-    form_id: "employment_month_selection_form",
-    class: "margin-bottom-4"
-  ) do %>
-    <%= t(".error_body") %>
-  <% end %>
+  <%= render "shared/input_error", form_id: "employment_month_selection_form",
+        message: t(".error_body") %>
 <% end %>
 
 <%= uswds_form_with(

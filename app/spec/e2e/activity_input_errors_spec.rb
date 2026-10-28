@@ -10,26 +10,26 @@ RSpec.describe "Activity input errors", :js, type: :feature do
   before do
     page.driver.browser.execute_cdp("Emulation.setDeviceMetricsOverride", width: 390, height: 844, deviceScaleFactor: 1, mobile: true)
     visit activities_flow_start_path(token: invitation.auth_token, reporting_window_months: 1)
-    verify_page(page, title: I18n.t("activities.entries.show.title", benefit: "Medicaid"))
+    verify_page(page, title: I18n.t("activities.entries.show.title", benefit: I18n.t("shared.benefit.sandbox")))
   end
 
   after do
     page.driver.browser.execute_cdp("Emulation.clearDeviceMetricsOverride")
   end
 
-  def verify_input_error(title:, form_id:, message:, field_ids: [])
+  def verify_input_error(title:, form_id:, message:)
     # The title is unchanged after submission. Wait for the error before Axe runs.
     expect(page).to have_selector(".usa-alert--error.usa-alert--slim", text: message, count: 1)
     verify_page(page, title: title)
     expect(page).to have_no_selector(".usa-alert__heading")
     expect(page).to have_selector(".usa-alert--slim:focus[data-error-summary-form-id-value='#{form_id}']")
     expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth")).to be(true)
+  end
 
-    field_ids.each do |field_id|
-      expect(page).to have_selector("##{field_id}.usa-input--error[aria-invalid='true']")
-      expect(page).to have_selector("##{field_id}_error.usa-error-message")
-      expect(find("##{field_id}")["aria-describedby"]).to include("#{field_id}_error")
-    end
+  def expect_invalid_field(field_id)
+    expect(page).to have_selector("##{field_id}.usa-input--error[aria-invalid='true']")
+    expect(page).to have_selector("##{field_id}_error.usa-error-message")
+    expect(find("##{field_id}")["aria-describedby"]).to include("#{field_id}_error")
   end
 
   context "with community service hours" do
@@ -47,8 +47,8 @@ RSpec.describe "Activity input errors", :js, type: :feature do
 
     it "shows a slim summary and an inline hours error until the next submission" do
       verify_input_error(title: title, form_id: "hours_input_form",
-        message: I18n.t("activities.community_service.hours_input.error_body"),
-        field_ids: [ "volunteering_activity_month_hours" ])
+        message: I18n.t("activities.community_service.hours_input.error_body"))
+      expect_invalid_field("volunteering_activity_month_hours")
       fill_in "volunteering_activity_month_hours", with: "5"
       expect(page).to have_selector(".usa-alert--slim")
       expect(page).to have_selector("#volunteering_activity_month_hours_error")
@@ -71,8 +71,8 @@ RSpec.describe "Activity input errors", :js, type: :feature do
 
     it "shows the same slim summary and inline field styling" do
       verify_input_error(title: title, form_id: "hours_input_form",
-        message: I18n.t("activities.work_programs.hours_input.error_body"),
-        field_ids: [ "job_training_activity_month_hours" ])
+        message: I18n.t("activities.work_programs.hours_input.error_body"))
+      expect_invalid_field("job_training_activity_month_hours")
       expect(activity.activity_months).to be_empty
     end
   end
@@ -89,8 +89,8 @@ RSpec.describe "Activity input errors", :js, type: :feature do
 
     it "highlights missing income while keeping optional hours unmarked" do
       verify_input_error(title: title, form_id: "employment_month_form",
-        message: I18n.t("activities.employment.hours_input.error_body"),
-        field_ids: [ "employment_activity_month_gross_income" ])
+        message: I18n.t("activities.employment.hours_input.error_body"))
+      expect_invalid_field("employment_activity_month_gross_income")
       expect(page).to have_no_selector("#employment_activity_month_hours.usa-input--error")
       expect(page).to have_selector(".usa-input-group--error #employment_activity_month_gross_income")
       expect(activity.activity_months).to be_empty
@@ -106,8 +106,8 @@ RSpec.describe "Activity input errors", :js, type: :feature do
       it "provides inline feedback for the existing all-zero validation" do
         expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.field_error"))
         verify_input_error(title: title, form_id: "employment_month_form",
-          message: I18n.t("activities.employment.hours_input.error_body"),
-          field_ids: [ "employment_activity_month_gross_income" ])
+          message: I18n.t("activities.employment.hours_input.error_body"))
+        expect_invalid_field("employment_activity_month_gross_income")
         expect(activity.activity_months).to be_empty
       end
     end
@@ -125,8 +125,8 @@ RSpec.describe "Activity input errors", :js, type: :feature do
 
     it "shows the hours error with a slim banner" do
       verify_input_error(title: title, form_id: "employment_month_form",
-        message: I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error"),
-        field_ids: [ "employment_activity_month_hours" ])
+        message: I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error"))
+      expect_invalid_field("employment_activity_month_hours")
       expect(activity.activity_months).to be_empty
     end
   end
@@ -163,8 +163,10 @@ RSpec.describe "Activity input errors", :js, type: :feature do
 
     it "highlights all three required fields with linked inline errors" do
       verify_input_error(title: title, form_id: "education-term-form",
-        message: I18n.t("activities.education.add_your_term.errors.information_body"),
-        field_ids: %w[education_activity_self_attested_term_start education_activity_self_attested_term_end education_activity_self_attested_enrollment_status])
+        message: I18n.t("activities.education.add_your_term.errors.information_body"))
+      expect_invalid_field("education_activity_self_attested_term_start")
+      expect_invalid_field("education_activity_self_attested_term_end")
+      expect_invalid_field("education_activity_self_attested_enrollment_status")
       fill_in "education_activity_self_attested_term_start", with: "01/2026"
       expect(page).to have_selector(".usa-alert--slim")
       expect(page).to have_selector("#education_activity_self_attested_term_start_error")
@@ -181,8 +183,8 @@ RSpec.describe "Activity input errors", :js, type: :feature do
 
       it "preserves the invalid value and uses the same error presentation" do
         verify_input_error(title: title, form_id: "education-term-form",
-          message: I18n.t("activities.education.add_your_term.errors.dates_body"),
-          field_ids: [ "education_activity_self_attested_term_start" ])
+          message: I18n.t("activities.education.add_your_term.errors.dates_body"))
+        expect_invalid_field("education_activity_self_attested_term_start")
         expect(page).to have_field("education_activity_self_attested_term_start", with: "55/2026")
       end
     end
@@ -202,8 +204,8 @@ RSpec.describe "Activity input errors", :js, type: :feature do
 
     it "shows the slim summary and inline credit-hours error" do
       verify_input_error(title: title, form_id: "education_term_credit_hours_form",
-        message: I18n.t("activities.education.term_credit_hours.error_body_multi_month"),
-        field_ids: [ "nsc_enrollment_term_credit_hours" ])
+        message: I18n.t("activities.education.term_credit_hours.error_body_multi_month"))
+      expect_invalid_field("nsc_enrollment_term_credit_hours")
       expect(term.reload.credit_hours).to be_nil
     end
   end

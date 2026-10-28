@@ -18,14 +18,8 @@
 <p><%= t(".multiple_terms_description") %></p>
 
 <% if @error %>
-  <%= render Uswds::Alert.new(
-    type: :error,
-    slim: true,
-    form_id: "education-term-form",
-    class: "margin-bottom-4"
-  ) do %>
-    <%= t("activities.education.add_your_term.errors.#{@term_error_type}_body") %>
-  <% end %>
+  <%= render "shared/input_error", form_id: "education-term-form",
+        message: t("activities.education.add_your_term.errors.#{@term_error_type}_body") %>
 <% end %>
 
 <%= uswds_form_with(model: @education_activity,
