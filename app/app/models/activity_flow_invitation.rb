@@ -26,4 +26,8 @@ class ActivityFlowInvitation < ApplicationRecord
   def expired?
     expires_at.nil? || Time.current.after?(expires_at)
   end
+
+  def used?
+    activity_flows.completed.exists?
+  end
 end
