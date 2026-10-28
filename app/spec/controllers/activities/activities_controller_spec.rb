@@ -1087,8 +1087,12 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       it "renders the consent checkbox and submit button" do
         rendered = Capybara.string(response.body)
+        consent_text = Capybara.string(I18n.t("activities.summary.consent_label_html",
+          agency_name: I18n.t("shared.agency_full_name.sandbox"),
+          agency_initials: I18n.t("shared.agency_acronym.sandbox"))).text
 
         expect(rendered).to have_css("input[type='checkbox'][name='activity_flow[consent_to_submit]']")
+        expect(rendered).to have_selector("label[for='activity_flow_consent_to_submit']", text: consent_text, normalize_ws: true)
         expect(rendered).to have_button(
           I18n.t("activities.activities.employment_focused_review.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
         )
