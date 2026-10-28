@@ -122,6 +122,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
           value: object&.send(attribute),
           input_class: input_class,
           data: data,
+          group_class: options.delete(:input_group_class),
           required: options[:required],
           aria: aria_options
         ))
