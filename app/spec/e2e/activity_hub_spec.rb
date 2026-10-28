@@ -542,7 +542,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     click_button I18n.t("activities.hub.save")
 
     # Should stay on hours input with an error
-    expect(page).to have_content I18n.t("activities.community_service.hours_input.error_body_multi_month")
+    expect(page).to have_content I18n.t("activities.community_service.hours_input.error_heading")
 
     # Fix it — set to a valid value and save
     fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month1_label), with: "5"

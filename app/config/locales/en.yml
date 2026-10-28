@@ -141,6 +141,7 @@ en:
         continue: Continue
         error_body: You need to add community service hours to continue.
         error_body_multi_month: You need to add community service hours for at least one month to continue.
+        error_heading: No hours entered
         field_error: Add hours for at least one month
         heading: Add your %{month} community service hours with %{organization}
         hours_label: "%{month} community service hours"
@@ -237,7 +238,9 @@ en:
           title: Add your term for %{school_name}
         errors:
           dates_body: Add a valid date with a MM/YYYY format to continue.
+          dates_heading: Check your term dates
           information_body: Add your term dates and enrollment status to continue.
+          information_heading: No education information added
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (optional)
@@ -325,6 +328,7 @@ en:
         body_html: Enter the number of credit hours you were taking in the term from %{term_begin} to %{term_end}.
         continue: Continue
         error_body_multi_month: You need to add credit hours for at least one month to continue.
+        error_heading: No hours entered
         field_error: Add hours for at least one month
         heading: Add your credit hours for %{school_name}
         hours_label: Term credit hours
@@ -377,6 +381,7 @@ en:
       hours_input:
         continue: Continue
         error_body: Add income to continue.
+        error_heading: No employment information added
         gross_income_hint: How much you made before taxes
         gross_income_label: "%{month} gross income"
         heading: Add your income and hours for %{organization}
@@ -384,6 +389,7 @@ en:
         month_indicator: 'Month %{current} of %{total}:'
         unpaid_or_in_kind:
           error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>.
+          error_heading: No work hours added
           field_error: Add hours to continue.
           heading: Add your hours for %{organization}
           hours_hint: If you performed in-kind work, provide an estimate
@@ -770,6 +776,7 @@ en:
         continue: Continue
         error_body: You need to add work program hours to continue.
         error_body_multi_month: You need to add work program hours for at least one month to continue.
+        error_heading: No hours entered
         field_error: Add hours for at least one month
         heading: Add your %{month} work program hours for %{organization}
         hours_label: "%{month} work program hours"

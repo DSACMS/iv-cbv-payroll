@@ -19,6 +19,23 @@
   organization: @employment_activity.employer_name) %>
 <% content_for :title, heading %>
 
+<% if @error %>
+  <%= render Uswds::Alert.new(
+        type: :error,
+        heading: t("#{input_scope}.error_heading"),
+        form_id: "employment_month_form",
+        class: "margin-bottom-4"
+      ) do %>
+    <% if other && @employment_activity.requires_month_selection? %>
+       <%= t("#{input_scope}.error_body_html", month_selection_url: edit_activities_flow_income_employment_month_selection_path(employment_id: @employment_activity, from_edit: params[:from_edit].presence)) %>
+     <% elsif unpaid %>
+       <%= t("#{input_scope}.field_error") %>
+     <% else %>
+       <%= t("#{input_scope}.error_body") %>
+     <% end %>
+  <% end %>
+<% end %>
+
 <p class="month-indicator">
   <%= t("activities.employment.hours_input.month_indicator",
         current: @month_index + 1,
@@ -29,17 +46,6 @@
 <h1 class="margin-top-0 padding-top-2 padding-bottom-1">
   <%= heading %>
 </h1>
-
-<% if @error %>
-  <% error_message = if other && @employment_activity.requires_month_selection?
-                       t("#{input_scope}.error_body_html", month_selection_url: edit_activities_flow_income_employment_month_selection_path(employment_id: @employment_activity, from_edit: params[:from_edit].presence))
-                     elsif other || unpaid
-                       t("#{input_scope}.field_error")
-                     else
-                       t("#{input_scope}.error_body")
-                     end %>
-  <%= render "shared/input_error", form_id: "employment_month_form", message: error_message %>
-<% end %>
 
 <%= uswds_form_with(
       model: @activity_month,
@@ -55,7 +61,6 @@
   <% unless other %>
     <%= f.currency_field :gross_income,
           required: true,
-          input_group_class: ("usa-input-group--error" if f.has_error?(:gross_income)),
           label: t("activities.employment.hours_input.gross_income_label", month: month_label),
           label_class: "text-bold",
           hint: t("activities.employment.hours_input.gross_income_hint") %>

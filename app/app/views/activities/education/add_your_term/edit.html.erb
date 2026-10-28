@@ -17,11 +17,6 @@
 <p><%= t(".description", school_name: @education_activity.school_name) %></p>
 <p><%= t(".multiple_terms_description") %></p>
 
-<% if @error %>
-  <%= render "shared/input_error", form_id: "education-term-form",
-        message: t("activities.education.add_your_term.errors.#{@term_error_type}_body") %>
-<% end %>
-
 <%= uswds_form_with(model: @education_activity,
       id: "education-term-form",
       url: activities_flow_education_add_your_term_path(
@@ -48,13 +43,10 @@
 
   <%= f.select :self_attested_enrollment_status,
         EducationActivity::SELF_ATTESTED_ENROLLMENT_STATUSES.map { |status| [ t(".enrollment_status_options.#{status}"), status ] },
-        { required: true, label: t(".enrollment_status"), class: "text-bold", include_blank: t(".select_one") },
+        { required: true, label: t(".enrollment_status"), class: "text-bold", include_blank: t(".select_one"), show_error_message: false },
         {
           class: ("usa-input--error text-error" if f.has_error?(:self_attested_enrollment_status)),
-          aria: {
-            invalid: f.has_error?(:self_attested_enrollment_status),
-            describedby: ("education_activity_self_attested_enrollment_status_error" if f.has_error?(:self_attested_enrollment_status))
-          },
+          aria: { invalid: f.has_error?(:self_attested_enrollment_status) },
           data: { education_term_target: "enrollmentStatus", action: "education-term#toggleCreditHours" }
         } %>
 

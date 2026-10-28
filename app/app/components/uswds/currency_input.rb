@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 class Uswds::CurrencyInput < ViewComponent::Base
-  def initialize(name:, value: nil, id: nil, input_class: "usa-input", group_class: nil, **html_options)
+  def initialize(name:, value: nil, id: nil, input_class: "usa-input", **html_options)
     @name = name
     @value = format_value(value)
     @id = id || name.to_s.parameterize(separator: "_")
     @input_class = input_class
-    @group_class = group_class
     @html_options = html_options
   end
 

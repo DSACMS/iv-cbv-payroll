@@ -134,8 +134,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     click_button I18n.t("activities.employment.hours_input.continue")
 
     # Hours input for the second selected month
-    verify_page(page, title: monthly_details_title)
-    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
+    # Both months share a heading; wait for the new month before checking accessibility.
     expect(page).to have_content(
       [
         I18n.t(
@@ -147,6 +146,8 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       ].join(" "),
       normalize_ws: true
     )
+    verify_page(page, title: monthly_details_title)
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: second_selected_month_name), with: "300"
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: second_selected_month_name), with: "20"
     click_button I18n.t("activities.employment.hours_input.continue")
