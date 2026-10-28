@@ -25,9 +25,11 @@ class Activities::SummaryController < Activities::BaseController
       return render :show, status: :unprocessable_content
     end
 
-    ensure_confirmation_code
-    mark_as_completed
-    enqueue_transmission
+    @flow.transaction do
+      ensure_confirmation_code
+      mark_as_completed
+      enqueue_transmission
+    end
 
     redirect_to after_submit_path
   end
