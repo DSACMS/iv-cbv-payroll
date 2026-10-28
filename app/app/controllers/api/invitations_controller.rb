@@ -25,14 +25,22 @@ class Api::InvitationsController < ApplicationController
   end
 
   def expire
-    invitation = CbvFlowInvitation.find_by(auth_token: params[:token],
-      client_agency_id: @current_user.client_agency_id)
+    invitation_class = {
+      "income" => CbvFlowInvitation,
+      "community-engagement" => ActivityFlowInvitation
+    }[params[:flow_type] || "income"]
+    return head :not_found unless invitation_class
 
-    return head :not_found unless invitation && !invitation.expired?
+    invitation = invitation_class.find_by(auth_token: params[:token], client_agency_id: @current_user.client_agency_id)
 
-    invitation.update!(expires_at: Time.current)
+    return head :not_found unless invitation
 
-    Rails.logger.info "Expired invitation ID: #{invitation.id} by user ID: #{@current_user.id}"
+    newly_expired = !invitation.manually_expired?
+    if newly_expired
+      invitation.update!(expires_at: [ invitation.expires_at, Time.current ].compact.min, manually_expired: true)
+    end
+
+    Rails.logger.info "Expired invitation ID: #{invitation.id} by user ID: #{@current_user.id} (newly_expired=#{newly_expired})"
 
     render json: { tokenized_url: invitation.to_url }, status: :ok
   end

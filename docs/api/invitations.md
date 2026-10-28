@@ -26,3 +26,37 @@ Direct the applicant to `tokenized_url` to report income. Its `expiration_date`
 is the end of the day in `America/New_York` after the agency's configured
 validity period (14 days for the sandbox). Request a new invitation when a
 link expires.
+
+## Expiring a link
+
+Use `DELETE /api/v1/income/invitations/{token}` to expire an income link, or
+`DELETE /api/v1/community-engagement/invitations/{token}` to expire a community
+engagement link. The API key must belong to the agency that created the link.
+The operation is idempotent: repeat calls for a manually expired link also
+return `200`. Unknown tokens, tokens belonging to another agency, and unknown
+flow types return `404`. The legacy `DELETE /api/v1/invitations/{token}` route
+continues to expire income links.
+
+### Example
+
+Request:
+
+```http
+DELETE /api/v1/income/invitations/IncomeExampleToken HTTP/1.1
+Host: verify-demo.navapbc.cloud
+Authorization: Bearer API_KEY
+```
+
+Response (`200 OK`):
+
+```json
+{
+  "tokenized_url": "https://verify-demo.navapbc.cloud/en/start/IncomeExampleToken"
+}
+```
+
+Use the same request shape with `/api/v1/community-engagement/invitations/{token}`
+to expire a community engagement link instead. Calling this again for the same
+token (even after it's already expired) still returns `200`; an unknown token,
+a token created by another agency, or an unrecognized `flow_type` segment
+returns `404` with an empty body.

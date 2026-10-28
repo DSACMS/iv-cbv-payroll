@@ -146,4 +146,84 @@ RSpec.describe "Tokenized Link API", type: :request do
       end
     end
   end
+
+  path "/api/v1/{flow_type}/invitations/{token}" do
+    parameter name: :flow_type, in: :path, schema: {
+      type: :string, enum: [ "income", "community-engagement" ]
+    }, description: "Selects which invitation type the token belongs to."
+    parameter name: :token, in: :path, schema: { type: :string },
+      description: "The invitation's auth token, from tokenized_url or activity_tokenized_url."
+
+    delete "Expire a Tokenized Link" do
+      tags "Invitations"
+      operationId "expireInvitation"
+      description InvitationDocumentation.read("invitations", section: "Expiring a link")
+      produces "application/json"
+      security [ bearerAuth: [] ]
+
+      response "200", "Invitation expired" do
+        schema "$ref" => "#/components/schemas/ExpireInvitationResponse"
+
+        context "with an income invitation" do
+          let(:flow_type) { "income" }
+          let(:cbv_flow_invitation) { create(:cbv_flow_invitation, client_agency_id: agency_id) }
+          let(:token) { cbv_flow_invitation.auth_token }
+
+          run_test! "expires an income link", example_summary: "Expire an income invitation", openapi_example: :expire_income do
+            expect(response.parsed_body["tokenized_url"]).to include("/start/")
+            expect(cbv_flow_invitation.reload.manually_expired).to be true
+          end
+        end
+
+        context "with a community engagement invitation" do
+          let(:flow_type) { "community-engagement" }
+          let(:activity_flow_invitation) { create(:activity_flow_invitation, client_agency_id: agency_id) }
+          let(:token) { activity_flow_invitation.auth_token }
+
+          run_test! "expires a community engagement link", example_summary: "Expire a community engagement invitation", openapi_example: :expire_community_engagement do
+            expect(activity_flow_invitation.reload.manually_expired).to be true
+          end
+        end
+
+        context "when the invitation was already manually expired" do
+          let(:flow_type) { "income" }
+          let(:cbv_flow_invitation) { create(:cbv_flow_invitation, client_agency_id: agency_id, manually_expired: true) }
+          let(:token) { cbv_flow_invitation.auth_token }
+
+          run_test! "succeeds again without error" do
+            expect(response.parsed_body).to have_key("tokenized_url")
+          end
+        end
+      end
+
+      response "401", "Missing or invalid API key (plain text, not JSON)" do
+        metadata[:response][:content] = { "text/plain" => { schema: { type: :string } } }
+        let(:authorization) { nil }
+        let(:flow_type) { "income" }
+        let(:token) { "any-token" }
+
+        run_test! do
+          expect(response.body).to eq("HTTP Token: Access denied.\n")
+        end
+      end
+
+      response "404", "Unknown token, mismatched agency, or unrecognized flow type" do
+        metadata[:response][:content] = {}
+        let(:flow_type) { "income" }
+
+        context "with an unknown token" do
+          let(:token) { "does-not-exist" }
+
+          run_test!
+        end
+
+        context "with an unrecognized flow type" do
+          let(:flow_type) { "other" }
+          let(:token) { "any-token" }
+
+          run_test!
+        end
+      end
+    end
+  end
 end
