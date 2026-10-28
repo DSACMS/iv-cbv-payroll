@@ -17,7 +17,7 @@
 <p><%= @flow.employment_focused? ? t(".employment_focused.description") : t(".description") %></p>
 
 <% if flash[:add_work_method_error].present? %>
-  <%= render Uswds::Alert.new(type: :error, slim: true, class: "margin-y-4", id: "add_work_method_error") do %>
+  <%= render Uswds::Alert.new(type: :error, slim: true, class: "margin-y-4") do %>
     <%= flash[:add_work_method_error] %>
   <% end %>
 <% end %>
