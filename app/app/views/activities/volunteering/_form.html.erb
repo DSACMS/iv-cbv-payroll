@@ -19,10 +19,7 @@
         label: t("activities.community_service.coordinator_name"),
         hint: t("activities.community_service.coordinator_name_hint") %>
   <%= f.email_field :coordinator_email, label: t("activities.community_service.coordinator_email") %>
-  <%= f.phone_field :coordinator_phone_number,
-        label: t("activities.community_service.coordinator_phone_number"),
-        optional: true %>
-
+  <%= f.phone_field :coordinator_phone_number, label: t("activities.community_service.coordinator_phone_number") %>
   <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t("activities.community_service.continue") %>
   <%= f.submit submit_label %>
 <% end %>
