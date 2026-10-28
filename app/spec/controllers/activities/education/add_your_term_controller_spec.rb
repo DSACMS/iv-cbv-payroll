@@ -230,7 +230,7 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
         expect(term_start_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_term_start.blank"))
         expect(term_end_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_term_end.blank"))
         expect(enrollment_status_group).to have_selector("select.usa-input--error.text-error[aria-invalid='true']")
-        expect(enrollment_status_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_enrollment_status.inclusion"))
+        expect(enrollment_status_group).to have_selector(".usa-error-message", text: I18n.t("errors.messages.inclusion"))
       end
     end
 
@@ -293,7 +293,7 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(enrollment_status_group).to have_selector("select.usa-input--error.text-error[aria-invalid='true']")
-        expect(enrollment_status_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_enrollment_status.inclusion"))
+        expect(enrollment_status_group).to have_selector(".usa-error-message", text: I18n.t("errors.messages.inclusion"))
       end
     end
 

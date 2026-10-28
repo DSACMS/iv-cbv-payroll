@@ -72,8 +72,6 @@ en:
           attributes:
             school_name:
               blank: Enter the school or program name.
-            self_attested_enrollment_status:
-              inclusion: Select your enrollment status to continue
             self_attested_term_end:
               blank: Add term end date to continue
               invalid: Add a valid date with month and year
@@ -379,7 +377,6 @@ en:
       hours_input:
         continue: Continue
         error_body: Add income to continue.
-        field_error: Add income or hours to continue.
         gross_income_hint: How much you made before taxes
         gross_income_label: "%{month} gross income"
         heading: Add your income and hours for %{organization}

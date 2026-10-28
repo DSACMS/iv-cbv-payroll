@@ -104,7 +104,7 @@ RSpec.describe "Activity input errors", :js, type: :feature do
       end
 
       it "provides inline feedback for the existing all-zero validation" do
-        expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.field_error"))
+        expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.error_body"))
         verify_input_error(title: title, form_id: "employment_month_form",
           message: I18n.t("activities.employment.hours_input.error_body"))
         expect_invalid_field("employment_activity_month_gross_income")
