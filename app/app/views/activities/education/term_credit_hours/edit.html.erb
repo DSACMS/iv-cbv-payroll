@@ -33,7 +33,7 @@
 <% if @error %>
   <%= render Uswds::Alert.new(
     type: :error,
-    heading: t("activities.education.term_credit_hours.error_heading"),
+    slim: true,
     form_id: "education_term_credit_hours_form",
     class: "margin-bottom-4"
   ) do %>

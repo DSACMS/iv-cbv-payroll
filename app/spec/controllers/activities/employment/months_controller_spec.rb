@@ -408,7 +408,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
 
         rendered = Capybara.string(response.body)
         expect(response).to have_http_status(:unprocessable_content)
-        expect(rendered).to have_text(I18n.t("activities.employment.hours_input.error_heading"))
+        expect(rendered).to have_selector(".usa-alert--slim .usa-alert__text", text: I18n.t("activities.employment.hours_input.error_body"))
         expect(rendered).to have_text(
           I18n.t("activities.employment.hours_input.error_body")
         )

@@ -1,7 +1,6 @@
 <%# i18n-tasks-use t('activities.community_service.hours_input.title') %>
 <%# i18n-tasks-use t('activities.community_service.hours_input.month_indicator') %>
 <%# i18n-tasks-use t('activities.community_service.hours_input.heading') %>
-<%# i18n-tasks-use t('activities.community_service.hours_input.error_heading') %>
 <%# i18n-tasks-use t('activities.community_service.hours_input.error_body') %>
 <%# i18n-tasks-use t('activities.community_service.hours_input.error_body_multi_month') %>
 <%# i18n-tasks-use t('activities.community_service.hours_input.field_error') %>
@@ -11,7 +10,6 @@
 <%# i18n-tasks-use t('activities.work_programs.hours_input.title') %>
 <%# i18n-tasks-use t('activities.work_programs.hours_input.month_indicator') %>
 <%# i18n-tasks-use t('activities.work_programs.hours_input.heading') %>
-<%# i18n-tasks-use t('activities.work_programs.hours_input.error_heading') %>
 <%# i18n-tasks-use t('activities.work_programs.hours_input.error_body') %>
 <%# i18n-tasks-use t('activities.work_programs.hours_input.error_body_multi_month') %>
 <%# i18n-tasks-use t('activities.work_programs.hours_input.field_error') %>
@@ -41,7 +39,7 @@
 <% if error %>
   <%= render Uswds::Alert.new(
     type: :error,
-    heading: t("#{t_scope}.error_heading"),
+    slim: true,
     form_id: "hours_input_form",
     class: "margin-bottom-4"
   ) do %>

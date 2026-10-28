@@ -225,12 +225,12 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
         submit_term
 
         expect(response).to have_http_status(:unprocessable_content)
-        expect(rendered).to have_text(I18n.t("activities.education.add_your_term.errors.information_heading"))
-        expect(rendered).to have_text(I18n.t("activities.education.add_your_term.errors.information_body"))
+        expect(rendered).to have_selector(".usa-alert--slim .usa-alert__text", text: I18n.t("activities.education.add_your_term.errors.information_body"))
+        expect(rendered).to have_no_selector(".usa-alert__heading")
         expect(term_start_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_term_start.blank"))
         expect(term_end_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_term_end.blank"))
         expect(enrollment_status_group).to have_selector("select.usa-input--error.text-error[aria-invalid='true']")
-        expect(enrollment_status_group).to have_no_selector(".usa-error-message")
+        expect(enrollment_status_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_enrollment_status.inclusion"))
       end
     end
 
@@ -241,8 +241,8 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
 
       it "renders the invalid-date alert and preserves the input" do
         expect(response).to have_http_status(:unprocessable_content)
-        expect(rendered).to have_text(I18n.t("activities.education.add_your_term.errors.dates_heading"))
-        expect(rendered).to have_text(I18n.t("activities.education.add_your_term.errors.dates_body"))
+        expect(rendered).to have_selector(".usa-alert--slim .usa-alert__text", text: I18n.t("activities.education.add_your_term.errors.dates_body"))
+        expect(rendered).to have_no_selector(".usa-alert__heading")
         expect(term_start_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_term_start.invalid"))
         expect(rendered).to have_field(I18n.t("activities.education.add_your_term.edit.term_start"), with: "55/2026")
       end
@@ -281,19 +281,19 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
         submit_term
 
         expect(response).to have_http_status(:unprocessable_content)
-        expect(rendered).to have_text(I18n.t("activities.education.add_your_term.errors.dates_heading"))
+        expect(rendered).to have_text(I18n.t("activities.education.add_your_term.errors.dates_body"))
       end
     end
 
     context "with an unsupported enrollment status" do
       let(:term_attributes) { super().merge(self_attested_enrollment_status: "three_quarter_time") }
 
-      it "highlights the enrollment selector without an inline message" do
+      it "shows an inline error for the enrollment selector" do
         submit_term
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(enrollment_status_group).to have_selector("select.usa-input--error.text-error[aria-invalid='true']")
-        expect(enrollment_status_group).to have_no_selector(".usa-error-message")
+        expect(enrollment_status_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_enrollment_status.inclusion"))
       end
     end
 

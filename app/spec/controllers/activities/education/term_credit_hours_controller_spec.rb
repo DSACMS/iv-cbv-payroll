@@ -284,8 +284,8 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       }
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_heading"))
       expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_body_multi_month"))
+      expect(Capybara.string(response.body)).to have_selector(".usa-alert--slim")
       expect(response.body).to include(I18n.t("activities.education.term_credit_hours.field_error"))
       expect(less_than_half_time_term.reload.credit_hours).to be_nil
     end
@@ -390,8 +390,8 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
         }
 
         expect(response).to have_http_status(:unprocessable_content)
-        expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_heading"))
         expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_body_multi_month"))
+        expect(Capybara.string(response.body)).to have_selector(".usa-alert--slim")
         expect(response.body).to include(I18n.t("activities.education.term_credit_hours.field_error"))
         expect(second_less_than_half_time_term.reload.credit_hours).to be_nil
       end
@@ -450,7 +450,8 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       }
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_heading"))
+      expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_body_multi_month"))
+      expect(Capybara.string(response.body)).to have_selector(".usa-alert--slim")
       expect(less_than_half_time_term.reload.credit_hours).to be_nil
     end
   end
