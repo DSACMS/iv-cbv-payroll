@@ -22,6 +22,7 @@ class Activities::SummaryController < Activities::BaseController
       end
 
       load_summary_data
+      flash.keep(:activity_added)
       return render :show, status: :unprocessable_content
     end
 

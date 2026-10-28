@@ -802,6 +802,15 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(I18n.t("activities.summary.legal_agreement"))
     end
 
+    it "keeps an added-activity flash when consent is missing" do
+      session["flash"] = { "discard" => [], "flashes" => { "activity_added" => "education" } }
+
+      patch :update
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(session.dig("flash", "flashes", "activity_added")).to eq("education")
+    end
+
     context "when the flow is employment-focused" do
       let(:activity_flow) do
         create(

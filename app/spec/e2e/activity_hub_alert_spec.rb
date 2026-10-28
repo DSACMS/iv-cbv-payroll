@@ -89,5 +89,20 @@ RSpec.describe "Activity hub added alert", :js, type: :feature do
       verify_page(page, title: I18n.t("activities.hub.title"))
       expect(page).to have_no_selector(".usa-alert--success")
     end
+
+    it "keeps the added alert after submitting without consent" do
+      visit edit_activities_flow_education_path(id: education_activity)
+      verify_page(page, title: I18n.t("activities.education.edit.header"))
+      click_button I18n.t("activities.education.edit.continue")
+      verify_page(page, title: I18n.t("activities.summary.title"))
+
+      click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
+      verify_page(page, title: I18n.t("activities.summary.title"))
+      expect(page).to have_selector(".usa-alert--error", text: I18n.t("activities.submit.consent_required"), normalize_ws: true)
+
+      click_link I18n.t("activities.activity_header_component.back")
+      verify_page(page, title: I18n.t("activities.hub.title"))
+      expect(page).to have_selector(".usa-alert--success", text: alert_text, normalize_ws: true)
+    end
   end
 end
