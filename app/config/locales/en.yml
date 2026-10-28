@@ -92,6 +92,8 @@ en:
           attributes:
             date:
               outside_reporting_window: must be within %{range}
+            organization_name:
+              blank: Enter the organization name.
         volunteering_activity_month:
           attributes:
             hours:

@@ -1,6 +1,7 @@
 <%= uswds_form_with(model: volunteering_activity, url: volunteering_activity.persisted? ? activities_flow_community_service_path(id: volunteering_activity.id, from_review: params[:from_review].presence, from_edit: params[:from_edit].presence) : activities_flow_community_service_index_path) do |f| %>
   <h2><%= t("activities.community_service.organization_section_title") %></h2>
   <%= f.text_field :organization_name,
+        required: true,
         label: t("activities.community_service.organization_name"),
         hint: t("activities.community_service.organization_name_hint") %>
   <%= f.text_field :street_address, label: t("activities.community_service.street_address") %>
