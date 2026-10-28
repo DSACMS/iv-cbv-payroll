@@ -90,7 +90,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_content(flow.reporting_window_display)
     click_button I18n.t("activities.employment.month_selections.edit.continue")
-    expect(page).to have_content(I18n.t("activities.employment.month_selections.edit.error_heading"))
+    expect(page).to have_content(I18n.t("activities.employment.month_selections.edit.error_body"))
 
     [ first_selected_month_label, second_selected_month_label ].each do |month_label|
       find("label", text: month_label, exact_text: true).click
