@@ -51,6 +51,6 @@ class DocumentUploadsComponent < ViewComponent::Base
   end
 
   def pdf_icon_path
-    helpers.wicked_pdf_asset_base64("@uswds/uswds/dist/img/usa-icons/file_present.svg")
+    helpers.pdf_asset_data_uri("@uswds/uswds/dist/img/usa-icons/file_present.svg")
   end
 end

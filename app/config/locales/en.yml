@@ -1332,6 +1332,8 @@ en:
       month: "%B"
       month_year: "%B %Y"
       short: "%b %-d"
+  health_check:
+    pdf_rendering: The PDF works!
   help:
     index:
       company_id: I don't know my company ID
