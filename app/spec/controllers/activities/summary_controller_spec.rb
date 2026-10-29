@@ -427,7 +427,8 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
     context "with self-attested employment activities" do
       it "includes self-attested employment in all_activities list" do
-        employment_activity = create(:employment_activity, activity_flow: activity_flow)
+        employment_activity = create(
+          :employment_activity, activity_flow: activity_flow)
         create(
           :employment_activity_month,
           employment_activity: employment_activity,
@@ -442,6 +443,27 @@ RSpec.describe Activities::SummaryController, type: :controller do
         income_activity = all_activities.find { |a| a[:type] == :employment && a[:employment_activity].present? }
         expect(income_activity).to be_present
         expect(income_activity[:employment_activity]).to eq(employment_activity)
+      end
+
+      it "omits gross income for unpaid or in-kind employment" do
+        employment_activity = create(
+          :employment_activity,
+          activity_flow: activity_flow,
+          employer_name: "Example Nonprofit",
+          compensation_type: :unpaid_or_in_kind
+        )
+        create(
+          :employment_activity_month,
+          employment_activity: employment_activity,
+          month: activity_flow.reporting_months.first.beginning_of_month,
+          hours: 40,
+          gross_income: 0
+        )
+
+        get :show
+
+        expect(response.body).to include(employment_activity.employer_name)
+        expect(response.body).not_to include(I18n.t("activities.summary.employment.gross_income"))
       end
 
       it "renders self-attested employment details and monthly values in the summary table" do

@@ -111,6 +111,22 @@ RSpec.describe Activities::SubmitController, type: :controller do
       end
     end
 
+    it "omits gross income for unpaid or in-kind employment in the PDF" do
+      employment = create(
+        :employment_activity,
+        activity_flow: activity_flow,
+        employer_name: "Example Nonprofit",
+        compensation_type: :unpaid_or_in_kind
+      )
+      create(:employment_activity_month, employment_activity: employment, month: activity_flow.reporting_months.first.beginning_of_month, hours: 40, gross_income: 0)
+
+      get :show, format: :pdf
+
+      pdf_text = extract_pdf_text(response)
+      expect(pdf_text).to include("Example Nonprofit")
+      expect(pdf_text).not_to include(I18n.t("activities.summary.employment.gross_income"))
+    end
+
     it "renders the submitted activity summaries and details from the approved design" do
       activity_flow.update!(completed_at: frozen_time, confirmation_code: test_confirmation_code)
       employment = create(
