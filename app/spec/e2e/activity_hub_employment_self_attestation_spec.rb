@@ -102,10 +102,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       "activities.employment.hours_input.heading",
       organization: "Gainesville Wrecking"
     )
-    verify_page(page, title: monthly_details_title)
-    expect(page).to have_selector("h1", text: "Add your income and hours for Gainesville Wrecking")
-    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
-    expect(page).to have_content(
+    expect(page).to have_selector(".month-indicator", text:
       [
         I18n.t(
           "activities.employment.hours_input.month_indicator",
@@ -116,6 +113,9 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       ].join(" "),
       normalize_ws: true
     )
+    verify_page(page, title: monthly_details_title)
+    expect(page).to have_selector("h1", text: "Add your income and hours for Gainesville Wrecking")
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_no_selector('input[name="no_hours"]', visible: :all)
 
     page.go_back
@@ -133,10 +133,8 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: "40"
     click_button I18n.t("activities.employment.hours_input.continue")
 
-    # Hours input for the second selected month
-    verify_page(page, title: monthly_details_title)
-    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
-    expect(page).to have_content(
+    # Both month forms share a heading; wait for the second month before Axe runs.
+    expect(page).to have_selector(".month-indicator", text:
       [
         I18n.t(
           "activities.employment.hours_input.month_indicator",
@@ -147,6 +145,8 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       ].join(" "),
       normalize_ws: true
     )
+    verify_page(page, title: monthly_details_title)
+    expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: second_selected_month_name), with: "300"
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: second_selected_month_name), with: "20"
     click_button I18n.t("activities.employment.hours_input.continue")
