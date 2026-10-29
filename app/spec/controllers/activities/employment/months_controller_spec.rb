@@ -417,7 +417,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
           month: I18n.l(first_month, format: :month)
         )
         expect(rendered.find_field(gross_income_label).value).to be_nil
-        expect(rendered).to have_selector(".usa-error-message", count: 1)
+        expect(rendered).to have_selector(".usa-error-message", text: "Add income to continue", exact_text: true, count: 1)
         expect(rendered).to have_selector(
           'input[name="employment_activity_month[gross_income]"].usa-input--error'
         )
@@ -566,6 +566,14 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       it "rejects the submission without saving a month" do
         expect(response).to have_http_status(:unprocessable_content)
         expect(employment_activity.activity_months).to be_empty
+      end
+
+      it "asks for income next to the gross income field" do
+        expect(Capybara.string(response.body)).to have_selector(
+          "#employment_activity_month_gross_income_error",
+          text: "Add income to continue",
+          exact_text: true
+        )
       end
 
       it "shows the paid-work income error banner" do

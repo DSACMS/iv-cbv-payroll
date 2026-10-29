@@ -78,6 +78,10 @@ en:
             self_attested_term_start:
               blank: Add term start date to continue
               invalid: Add a valid date with month and year
+        employment_activity_month:
+          attributes:
+            gross_income:
+              not_a_number: Add income to continue
         job_training_activity:
           attributes:
             organization_name:
