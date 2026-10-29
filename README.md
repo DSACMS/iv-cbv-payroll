@@ -12,34 +12,34 @@ Emmy is built and maintained by the Centers for Medicare and Medicaid Services (
 
 ## Contributing
 
-For a guide to running the Emmy project on your own, and submitting changes, see [CONTRIBUTING.md](https://github.com/DSACMS/iv-cbv-payroll/blob/main/CONTRIBUTING.md).
+For a guide to running the Emmy project on your own, and submitting changes, see [CONTRIBUTING.md](/CONTRIBUTING.md).
 
 ## Core Team
 
 The Emmy core team is a group of technologists, composed of engineers, designers, product managers, and procurement specialists at the Centers for Medicare and Medicaid Services (CMS). The products developed are open source and SHARE IT compliant.
 
-A list of core team members responsible for the code and documentation in this repository can be found in [COMMUNITY.md](https://github.com/DSACMS/iv-cbv-payroll/blob/main/COMMUNITY.md) and [CODEOWNERS](https://github.com/DSACMS/iv-cbv-payroll/blob/main/.github/CODEOWNERS).
+A list of core team members responsible for the code and documentation in this repository can be found in [COMMUNITY.md](/COMMUNITY.md) and [CODEOWNERS](/.github/CODEOWNERS).
 
 ## Documentation
 
 ### Repository Structure
 
-* [/.github](https://github.com/DSACMS/iv-cbv-payroll/blob/main/.github) GitHub-specific settings files and testing, linting, and CI/CD workflows  
-* [/app](https://github.com/DSACMS/iv-cbv-payroll/blob/main/app) the Emmy web application built using Rails  
-* [/bin](https://github.com/DSACMS/iv-cbv-payroll/blob/main/bin) scripts for managing infrastructure  
-* [/docs](https://github.com/DSACMS/iv-cbv-payroll/blob/main/docs) public documentation for developers  
-* [/infra](https://github.com/DSACMS/iv-cbv-payroll/blob/main/infra) contains infrastructure-as-code and documentation of replication steps for Emmy environment  
-* [/load\_testing](https://github.com/DSACMS/iv-cbv-payroll/blob/main/load_testing) load testing resources
+* [/.github](/.github) GitHub-specific settings files and testing, linting, and CI/CD workflows  
+* [/app](/app) the Emmy web application built using Rails  
+* [/bin](/bin) scripts for managing infrastructure  
+* [/docs](/docs) public documentation for developers  
+* [/infra](/infra) contains infrastructure-as-code and documentation of replication steps for Emmy environment  
+* [/load\_testing](/load_testing) load testing resources
 
-See [AGENTS.md](https://github.com/DSACMS/iv-cbv-payroll/blob/main/AGENTS.md) for some more information on repo structure.
+See [AGENTS.md](/AGENTS.md) for some more information on repo structure.
 
 ### Documentation
 
-Public documentation is in the [/docs](https://github.com/DSACMS/iv-cbv-payroll/blob/main/docs) subfolder.
+Public documentation is in the [/docs](/docs) subfolder.
 
 ### Versioning
 
-Emmy App follows semantic versioning with one deviation: user-facing interface changes are promoted to MAJOR, because states train staff and applicants using static materials that a "cosmetic" change can invalidate. See [docs/versioning.md](https://github.com/DSACMS/iv-cbv-payroll/blob/main/docs/versioning.md) for the rubric and [CHANGELOG.md](https://github.com/DSACMS/iv-cbv-payroll/blob/main/CHANGELOG.md) for release history.
+Emmy App follows semantic versioning with one deviation: user-facing interface changes are promoted to MAJOR, because states train staff and applicants using static materials that a "cosmetic" change can invalidate. See [docs/versioning.md](/docs/versioning.md) for the rubric and [CHANGELOG.md](/CHANGELOG.md) for release history.
 
 ### Architectural Decision Records (ADRs)
 
@@ -53,7 +53,7 @@ We know that we can learn from a wide variety of communities, including those wh
 
 We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skill sets.
 
-For more information on how the Emmy team works with our community, see [COMMUNITY.md](https://github.com/DSACMS/iv-cbv-payroll/blob/main/COMMUNITY.md) and [GOVERNANCE.md](https://github.com/DSACMS/iv-cbv-payroll/blob/main/GOVERNANCE.md).
+For more information on how the Emmy team works with our community, see [COMMUNITY.md](/COMMUNITY.md) and [GOVERNANCE.md](/GOVERNANCE.md).
 
 ## Feedback
 
@@ -69,7 +69,7 @@ We adhere to the [CMS Open Source Policy](https://github.com/CMSGov/cms-open-sou
 
 *Submit a vulnerability:* Unfortunately, we cannot accept secure submissions via email or via GitHub Issues. Please use our website to submit vulnerabilities at [https\://hhs.responsibledisclosure.com](https://hhs.responsibledisclosure.com/). HHS maintains an acknowledgements page to recognize your efforts on behalf of the American public, but you are also welcome to submit anonymously.
 
-For more information about our Security, Vulnerability, and Responsible Disclosure Policies, see [SECURITY.md](https://github.com/DSACMS/iv-cbv-payroll/blob/main/SECURITY.md).
+For more information about our Security, Vulnerability, and Responsible Disclosure Policies, see [SECURITY.md](/SECURITY.md).
 
 ### Software Bill of Materials (SBOM)
 
@@ -81,6 +81,6 @@ For more information and resources about SBOMs, visit [https\://www\.cisa.gov/sb
 
 ### Public Domain
 
-This project is in the public domain within the United States, and copyright and related rights in the work worldwide are waived through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/) as indicated in [LICENSE](https://github.com/DSACMS/iv-cbv-payroll/blob/main/LICENSE).
+This project is in the public domain within the United States, and copyright and related rights in the work worldwide are waived through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/) as indicated in [LICENSE](/LICENSE).
 
 All contributions to this project will be released under the CC0 dedication. By submitting a pull request or issue, you are agreeing to comply with this waiver of copyright interest.  
