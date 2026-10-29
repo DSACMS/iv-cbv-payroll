@@ -20,19 +20,30 @@
 <% content_for :title, heading %>
 
 <% if @error %>
-  <%= render Uswds::Alert.new(
-        type: :error,
-        heading: t("#{input_scope}.error_heading"),
-        form_id: "employment_month_form",
-        class: "margin-bottom-4"
-      ) do %>
-    <% if other && @employment_activity.requires_month_selection? %>
-       <%= t("#{input_scope}.error_body_html", month_selection_url: edit_activities_flow_income_employment_month_selection_path(employment_id: @employment_activity, from_edit: params[:from_edit].presence)) %>
-     <% elsif unpaid %>
-       <%= t("#{input_scope}.field_error") %>
-     <% else %>
-       <%= t("#{input_scope}.error_body") %>
-     <% end %>
+  <% if !@flow.employment_focused? && !other && @employment_activity.requires_month_selection? && (@activity_month.gross_income || 0).zero? %>
+    <% content_for :page_alerts do %>
+      <%= render Uswds::Alert.new(type: :info, form_id: "employment_month_form", class: "margin-bottom-4") do %>
+        <%= t("activities.employment.hours_input.no_income_html",
+              month_selection_url: edit_activities_flow_income_employment_month_selection_path(
+                employment_id: @employment_activity, from_edit: params[:from_edit].presence
+              )) %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= render Uswds::Alert.new(
+          type: :error,
+          heading: t("#{input_scope}.error_heading"),
+          form_id: "employment_month_form",
+          class: "margin-bottom-4"
+        ) do %>
+      <% if other && @employment_activity.requires_month_selection? %>
+        <%= t("#{input_scope}.error_body_html", month_selection_url: edit_activities_flow_income_employment_month_selection_path(employment_id: @employment_activity, from_edit: params[:from_edit].presence)) %>
+      <% elsif unpaid %>
+        <%= t("#{input_scope}.field_error") %>
+      <% else %>
+        <%= t("#{input_scope}.error_body") %>
+      <% end %>
+    <% end %>
   <% end %>
 <% end %>
 

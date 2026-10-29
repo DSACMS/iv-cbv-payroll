@@ -78,10 +78,6 @@ en:
             self_attested_term_start:
               blank: Add term start date to continue
               invalid: Add a valid date with month and year
-        employment_activity_month:
-          attributes:
-            gross_income:
-              not_a_number: Add income to continue
         job_training_activity:
           attributes:
             organization_name:
@@ -389,11 +385,13 @@ en:
         continue: Continue
         error_body: Add income to continue.
         error_heading: No employment information added
+        field_error: Add income to continue
         gross_income_hint: How much you made before taxes
         gross_income_label: "%{month} gross income"
         heading: Add your income and hours for %{organization}
         hours_label: "%{month} hours worked"
         month_indicator: 'Month %{current} of %{total}:'
+        no_income_html: If you weren't paid this month, you can <a href="%{month_selection_url}">edit the months you selected</a>. You can report unpaid work later.
         unpaid_or_in_kind:
           error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>.
           error_heading: No work hours added
