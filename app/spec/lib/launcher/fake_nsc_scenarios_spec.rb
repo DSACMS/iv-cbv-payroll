@@ -9,7 +9,7 @@ RSpec.describe Launcher::FakeNscScenarios do
       end
       let(:reporting_window) { Date.new(2021, 9, 1)..Date.new(2021, 12, 1) }
 
-      it "returns the full-time updates and distinct withdrawal from the design example" do
+      it "returns full-time updates, both raw withdrawal codes, and a distinct leave of absence" do
         response = described_class.nsc_response_for(identity: identity, reporting_window: reporting_window)
         records = response.fetch("enrollmentDetails").flat_map { |detail| detail.fetch("enrollmentData") }
 
@@ -17,7 +17,9 @@ RSpec.describe Launcher::FakeNscScenarios do
           .to contain_exactly(
             [ "2021-09-01", "2021-12-01", "W", "2021-11-01" ],
             [ "2021-09-01", "2021-12-01", "F", "2021-10-01" ],
-            [ "2021-09-01", "2021-12-01", "F", "2021-09-01" ]
+            [ "2021-09-01", "2021-12-01", "F", "2021-09-01" ],
+            [ "2021-09-01", "2021-12-01", "S", "2021-10-01" ],
+            [ "2021-09-01", "2021-12-01", "A", "2021-11-01" ]
           )
       end
     end

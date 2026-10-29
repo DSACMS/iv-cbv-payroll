@@ -35,17 +35,21 @@ RSpec.describe Launcher::FakeNscDataFetcherService do
         activity_flow.update!(reporting_window_months: 3)
       end
 
-      it "persists the latest full-time record and the withdrawal for the selected window" do
+      it "removes duplicate F and S records while preserving W and the distinct A record" do
         service.fetch
 
         expect(education_activity.nsc_enrollment_terms).to contain_exactly(
           have_attributes(
             term_begin: reporting_window.begin, term_end: reporting_window.end,
-            enrollment_status: "full_time", nsc_withdrawn: false, school_certified_on: reporting_window.begin + 1.month
+            enrollment_status: "full_time", school_certified_on: reporting_window.begin + 1.month
           ),
           have_attributes(
             term_begin: reporting_window.begin, term_end: reporting_window.end,
-            enrollment_status: "unknown", nsc_withdrawn: true, school_certified_on: reporting_window.begin + 2.months
+            enrollment_status: "withdrawn", school_certified_on: reporting_window.begin + 2.months
+          ),
+          have_attributes(
+            term_begin: reporting_window.begin, term_end: reporting_window.end,
+            enrollment_status: "leave_of_absence", school_certified_on: reporting_window.begin + 2.months
           )
         )
       end
