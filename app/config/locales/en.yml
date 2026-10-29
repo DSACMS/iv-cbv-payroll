@@ -247,9 +247,11 @@ en:
         additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         continue: Save and continue
         description: We have gathered your student enrollment details from %{reporting_window}.
-        enrollment_information: Enrollment information
+        enrollment_history: View enrollment history
+        enrollment_history_description: Below is your most recent enrollment status. If it changed during a term, you can view your full enrollment history.
         enrollment_information_numbered: 'Enrollment #%{number} information'
         header: Review your student enrollment details
+        status_as_of: "(As of %{date})"
         summer_logic_description: If you don’t have enough summer enrollment, we’ll use your spring enrollment to meet the community engagement requirement for the summer.
       error:
         description: 'We were unable to verify your student status with National Student Clearinghouse. To continue, you can:'
@@ -366,6 +368,7 @@ en:
               unpaid:
                 label: Enter in-kind work
           header: Choose how you want to add your work
+          legend: 'Please select an option:'
           options:
             automatic:
               hint: We'll pull your hours and income from your payroll account. Works with ADP, Workday, Uber, Lyft, and most large employers.
@@ -510,6 +513,7 @@ en:
         title: Your verification link is no longer valid
         visit_agency: Visit %{agency_acronym} website
     hub:
+      activity_added: Your %{activity_type} activity has been successfully added to your report.
       add: Add
       cards:
         credit_hours: 'Credit hours: %{amount}'
@@ -1280,11 +1284,15 @@ en:
       enrollment_term: Enrollment term
       school_or_program: School or program
       status:
-        enrolled: Enrolled
+        deceased: Deceased
+        enrolled: Enrollment status not released by school
         full_time: Full-time
+        graduated: Graduated
         half_time: Half-time
+        leave_of_absence: Leave of absence
         less_than_half_time: Less than half-time
         three_quarter_time: Three-quarter Time
+        withdrawn: Withdrawn
       student_name_label: Name on school record
     report:
       monthly_summary_table:
@@ -1438,16 +1446,16 @@ en:
   launcher:
     advanced:
       duplicate_enrollments:
-        browser_check: 'Verify college/university enrollment. Expect 2 %{school_name} entries: %{full_time_status} and %{withdrawn_status} (withdrawal).'
-        certification_check: Certification dates aren't shown on the enrollment screen; automated tests check that the newer %{full_time_status} record is kept.
+        browser_check: Verify college/university enrollment. Expect one %{school_name} enrollment showing %{leave_of_absence_status}. Expand enrollment history to see %{withdrawn_status} and %{full_time_status}. The older F record and the S record should be removed; S groups with W as withdrawn.
+        certification_check: The status dates reflect the retained certifications, including the newer %{full_time_status} record kept after deduplication.
         certified_after_start:
           one: Term start + 1 month
           other: Term start + %{count} months
           zero: Term start
         certified_on: School certified on
-        description: 3 NSC records; expect 2 enrollment entries.
+        description: 5 NSC records; expect 3 enrollment entries.
         keep: Keep
-        records: All 3 records are for %{school_name}, with term dates matching the selected reporting window.
+        records: All 5 records are for %{school_name}, with term dates matching the selected reporting window.
         remove: Remove duplicate
         result: Expected result
         status: NSC status

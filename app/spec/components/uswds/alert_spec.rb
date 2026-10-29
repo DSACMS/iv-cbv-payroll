@@ -90,6 +90,14 @@ RSpec.describe Uswds::Alert, type: :component do
     end
   end
 
+  context "with data attributes" do
+    let(:result) { render_inline(described_class.new(data: { turbo_temporary: true })) { "Alert message" } }
+
+    it "adds the data attributes to the alert element" do
+      expect(result).to have_selector(".usa-alert[data-turbo-temporary='true']")
+    end
+  end
+
   context 'slim variant' do
     let(:result) { render_inline(described_class.new(slim: true)) { 'Custom alert' } }
 
