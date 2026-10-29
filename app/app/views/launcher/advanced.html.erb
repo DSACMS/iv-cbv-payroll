@@ -201,7 +201,7 @@
                       <tr>
                         <td data-label="<%= t(".duplicate_enrollments.status") %>">
                           <%= term.fetch(:enrollment_status) == :withdrawn ? t(".duplicate_enrollments.withdrawn") : t("components.enrollment_term_table_component.status.#{term.fetch(:enrollment_status)}") %>
-                          (<%= Launcher::FakeNscScenarios::STATUS_CODES.fetch(term.fetch(:enrollment_status)) %>)
+                          (<%= term.fetch(:nsc_status_code) { Launcher::FakeNscScenarios::STATUS_CODES.fetch(term.fetch(:enrollment_status)) } %>)
                         </td>
                         <td data-label="<%= t(".duplicate_enrollments.certified_on") %>">
                           <%= t(".duplicate_enrollments.certified_after_start", count: term.fetch(:certification_month_offset)) %>
@@ -214,7 +214,7 @@
                   </tbody>
                 </table>
                 <p>
-                  <%= t(".duplicate_enrollments.browser_check", school_name: dedupe_school_name, full_time_status: t("components.enrollment_term_table_component.status.full_time"), withdrawn_status: t("shared.not_applicable")) %>
+                  <%= t(".duplicate_enrollments.browser_check", school_name: dedupe_school_name, full_time_status: t("components.enrollment_term_table_component.status.full_time"), withdrawn_status: t("components.enrollment_term_table_component.status.withdrawn"), leave_of_absence_status: t("components.enrollment_term_table_component.status.leave_of_absence")) %>
                 </p>
                 <p class="usa-hint">
                   <%= t(".duplicate_enrollments.certification_check", full_time_status: t("components.enrollment_term_table_component.status.full_time")) %>

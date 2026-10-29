@@ -1,5 +1,6 @@
 class Activities::BaseController < FlowController
   before_action :redirect_unless_activity_hub_enabled, :set_flow
+  before_action :ensure_activity_flow_not_yet_complete
 
   helper_method :current_identity, :progress_calculator
 
@@ -75,7 +76,12 @@ class Activities::BaseController < FlowController
   end
 
   def invitation_unusable?(invitation)
-    super || invitation.activity_flows.completed.exists?
+    agency = Rails.application.config.client_agencies[invitation.client_agency_id]
+    super || (!agency.allow_activity_invitation_reuse && invitation.used?)
+  end
+
+  def ensure_activity_flow_not_yet_complete
+    redirect_to activities_flow_success_path if @flow&.complete?
   end
 
   def expired_invitation_path(invitation)

@@ -4,6 +4,62 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
   include_context "activity_hub"
   render_views
 
+  context "for Louisiana acceptance testing" do
+    let(:applicant) { create(:cbv_applicant, client_agency_id: "la_ldh") }
+    let(:flow) { create(:activity_flow, cbv_applicant: applicant) }
+    let(:rendered) { Capybara.string(response.body) }
+
+    before do
+      session[:flow_id] = flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "offers all four CE activity types" do
+      expect(rendered).to have_selector("[data-activity-type='employment']")
+      expect(rendered).to have_selector("[data-activity-type='education']")
+      expect(rendered).to have_selector("[data-activity-type='community_service']")
+      expect(rendered).to have_selector("[data-activity-type='work_programs']")
+    end
+
+    context "for Employment" do
+      let(:flow) do
+        create(:activity_flow, cbv_applicant: applicant, employment_focused: true,
+          volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      end
+
+      it "offers a way to add work" do
+        expect(response).to redirect_to(activities_flow_income_add_your_work_path)
+      end
+    end
+  end
+
+  context "with a completed flow" do
+    let(:flow) { create(:activity_flow, completed_at: Time.current) }
+
+    before do
+      session[:flow_id] = flow.id
+      session[:flow_type] = :activity
+    end
+
+    it "redirects to success instead of showing an editable report" do
+      get :index
+
+      expect(response).to redirect_to(activities_flow_success_path)
+    end
+
+    context "when invitation reuse is allowed" do
+      let(:invitation) { create(:activity_flow_invitation) }
+      let(:flow) { create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current) }
+
+      it "still protects the completed report" do
+        get :index
+
+        expect(response).to redirect_to(activities_flow_success_path)
+      end
+    end
+  end
+
   describe "common questions" do
     let(:current_flow) do
       create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
