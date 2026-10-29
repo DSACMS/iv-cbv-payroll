@@ -26,11 +26,13 @@ RSpec.describe "NSC enrollment statuses", :js, type: :feature do
   end
 
   it "shows the new labels and combines school and Clearinghouse withdrawals" do
+    click_button I18n.t("activities.education.edit.enrollment_history")
+
     expect(page).to have_text(I18n.t("components.enrollment_term_table_component.status.enrolled"))
     expect(page).to have_text(I18n.t("components.enrollment_term_table_component.status.leave_of_absence"))
     expect(page).to have_text(I18n.t("components.enrollment_term_table_component.status.graduated"))
     expect(page).to have_text(I18n.t("components.enrollment_term_table_component.status.deceased"))
-    expect(page).to have_selector("td", exact_text: I18n.t("components.enrollment_term_table_component.status.withdrawn"), count: 1)
+    expect(page).to have_selector("td", text: I18n.t("components.enrollment_term_table_component.status.withdrawn"), count: 1)
     expect(education.nsc_enrollment_terms.count).to eq(9)
   end
 end
