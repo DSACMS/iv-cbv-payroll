@@ -71,7 +71,7 @@ en:
         education_activity:
           attributes:
             school_name:
-              blank: Enter the school or program name.
+              blank: Add your school or program name
             self_attested_term_end:
               blank: Add term end date to continue
               invalid: Add a valid date with month and year
@@ -81,9 +81,9 @@ en:
         job_training_activity:
           attributes:
             organization_name:
-              blank: Enter the organization or provider name.
+              blank: Add the organization or provider name
             program_name:
-              blank: Enter the program name.
+              blank: Add the program name
         job_training_activity_month:
           attributes:
             hours:
@@ -92,6 +92,8 @@ en:
           attributes:
             date:
               outside_reporting_window: must be within %{range}
+            organization_name:
+              blank: Add the organization name
         volunteering_activity_month:
           attributes:
             hours:

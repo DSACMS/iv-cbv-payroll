@@ -381,7 +381,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(rendered).to have_field(I18n.t("activities.education.new.contact_email"))
       expect(rendered).to have_field(I18n.t("activities.education.new.contact_phone_number"))
       expect(rendered).to have_selector("label[for='education_activity_contact_title']",
-        text: "#{I18n.t('activities.education.new.contact_title')} (#{I18n.t('us_form_with.optional').downcase})")
+        exact_text: I18n.t("activities.education.new.contact_title"))
     end
   end
 

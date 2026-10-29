@@ -107,8 +107,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
     end
 
     it "still matches the schema when an unenforced field is blank" do
-      blank = activity_flow.volunteering_activities.new(organization_name: "", draft: true)
-      blank.save!
+      blank = create(:volunteering_activity, activity_flow: activity_flow, coordinator_phone_number: "", draft: true)
       blank.publish!
       create(:volunteering_activity_month, volunteering_activity: blank,
         month: activity_flow.reporting_months.first, hours: 5)

@@ -18,11 +18,28 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.community_service.new_title"))
+      expect(Capybara.string(response.body)).to have_selector('input[name="volunteering_activity[organization_name]"][required]')
     end
   end
 
   describe "POST #create" do
     let(:volunteering_params) { { volunteering_activity: attributes_for(:volunteering_activity) } }
+
+    context "without an organization name" do
+      let(:volunteering_params) { { volunteering_activity: attributes_for(:volunteering_activity).except(:organization_name) } }
+
+      before { post :create, params: volunteering_params }
+
+      it "does not create an activity" do
+        expect(activity_flow.volunteering_activities).to be_empty
+      end
+
+      it "renders the inline validation error" do
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(Capybara.string(response.body)).to have_selector("#volunteering_activity_organization_name_error",
+          text: I18n.t("activerecord.errors.models.volunteering_activity.attributes.organization_name.blank"))
+      end
+    end
 
     it "creates a volunteering activity and redirects to hours input" do
       expect do
@@ -78,6 +95,24 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
   describe "PATCH #update" do
     let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+
+    context "with a blank organization name" do
+      let!(:original_name) { volunteering_activity.organization_name }
+
+      before do
+        patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: " " } }
+      end
+
+      it "preserves the saved organization name" do
+        expect(volunteering_activity.reload.organization_name).to eq(original_name)
+      end
+
+      it "renders the inline validation error" do
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(Capybara.string(response.body)).to have_selector("#volunteering_activity_organization_name_error",
+          text: I18n.t("activerecord.errors.models.volunteering_activity.attributes.organization_name.blank"))
+      end
+    end
 
     it "updates the activity and redirects to hours input" do
       patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: "Updated Org" } }
