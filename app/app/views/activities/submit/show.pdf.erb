@@ -395,7 +395,7 @@
           ]
         ] %>
         <%= render "activities/submit/detail_activity",
-          section_heading: @report.education_entries.one? ? t("activities.submit.pdf.education_details") : nil,
+          section_heading: index.zero? ? t("activities.submit.pdf.education_details") : nil,
           title: @report.education_entries.one? ? t(
             "activities.submit.pdf.institution_title_single",
             name: entry.school_name.presence || not_provided

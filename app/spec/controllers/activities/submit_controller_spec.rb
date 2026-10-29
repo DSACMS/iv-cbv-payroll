@@ -81,8 +81,8 @@ RSpec.describe Activities::SubmitController, type: :controller do
     context "with a manual education term" do
       let(:education) do
         create(:education_activity, activity_flow: activity_flow, data_source: :fully_self_attested,
-          school_name: "Manual University", self_attested_term_start: activity_flow.reporting_months.first,
-          self_attested_term_end: activity_flow.reporting_months.last,
+          school_name: "Manual University", self_attested_term_start: activity_flow.reporting_months.first - 1.month,
+          self_attested_term_end: activity_flow.reporting_months.last + 1.month,
           self_attested_enrollment_status: "less_than_half_time", credit_hours: 3.5)
       end
 
@@ -93,6 +93,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
 
         pdf_text = extract_pdf_text(response)
         expect(response).to have_http_status(:ok)
+        # PDF extraction can interleave neighboring table cells when the term wraps.
         expect(pdf_text).to include(I18n.t("activities.education.add_your_term.edit.enrollment_status_options.less_than_half_time"))
         expect(pdf_text).to include(ApplicationHelper.format_decimal_amount(education.credit_hours).to_s)
       end

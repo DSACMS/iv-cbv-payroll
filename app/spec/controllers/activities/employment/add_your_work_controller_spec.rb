@@ -27,6 +27,27 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.employment.add_your_work.show.description")))
     end
 
+    it "groups the radio choices under an associated legend" do
+      get :show
+
+      fieldset = Capybara.string(response.body).find(:fieldset, I18n.t("activities.employment.add_your_work.show.legend"))
+      expect(fieldset).to have_selector("legend", text: I18n.t("activities.employment.add_your_work.show.legend"), exact_text: true, normalize_ws: true)
+      expect(fieldset).to have_selector("input[type='radio'][name='add_work_method']", count: 3)
+    end
+
+    context "with a missing selection error" do
+      before do
+        get :show, flash: { add_work_method_error: I18n.t("shared.next_path.notice_no_answer") }
+      end
+
+      it "shows the error after the description and immediately before the radio form" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_selector("p + .usa-alert + form[action='#{activities_flow_income_add_your_work_path}']")
+        expect(rendered).to have_text(I18n.t("shared.next_path.notice_no_answer"), count: 1)
+      end
+    end
+
     it "uses work in the heading and browser title for other flows" do
       get :show
 
@@ -144,13 +165,13 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
 
     it "redirects back with an alert when nothing is selected" do
       post :create
-      expect(flash[:slim_alert][:message]).to eq(I18n.t("shared.next_path.notice_no_answer"))
+      expect(flash[:add_work_method_error]).to eq(I18n.t("shared.next_path.notice_no_answer"))
       expect(response).to redirect_to(activities_flow_income_add_your_work_path)
     end
 
     it "redirects back with an alert when the selection is not recognized" do
       post :create, params: { add_work_method: "something_else" }
-      expect(flash[:slim_alert][:message]).to eq(I18n.t("shared.next_path.notice_no_answer"))
+      expect(flash[:add_work_method_error]).to eq(I18n.t("shared.next_path.notice_no_answer"))
       expect(response).to redirect_to(activities_flow_income_add_your_work_path)
     end
 
