@@ -81,9 +81,9 @@ en:
         job_training_activity:
           attributes:
             organization_name:
-              blank: Enter the organization or provider name.
+              blank: Add the organization or provider name
             program_name:
-              blank: Enter the program name.
+              blank: Add the program name
         job_training_activity_month:
           attributes:
             hours:
