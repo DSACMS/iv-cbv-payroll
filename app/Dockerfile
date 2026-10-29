@@ -11,15 +11,18 @@
 #      * Remove manual security upgrades (if any)
 # 4. Ensure that docker build pasess:
 #      > make release-build OPTS="--tag iv-cbv-payroll:latest"
-# 5. Ensure that `wkhtmltopdf` runs:
-#      > docker run iv-cbv-payroll:latest bundle exec wkhtmltopdf --version
+# 5. Verify Chromium is available:
+#      > docker run --entrypoint chromium iv-cbv-payroll:latest --version
 ARG RUBY_VERSION=3.4.9
 
 
 ##########################################################################################
 # BASE: Shared base docker image
 ##########################################################################################
+FROM registry.docker.com/library/node:24.11.1-bookworm-slim AS node-runtime
+
 FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
+COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
 
 # Upgrade packages in base image to address security issues.
 # We should be able to remove these after upgrading the base image to a version
@@ -141,6 +144,20 @@ RUN apt-get update -qq && \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
+# Grover needs Node and Chromium in development, CI images, and deployed workers.
+# Debian supplies Chromium for both amd64 and arm64; Puppeteer uses this binary.
+# hadolint ignore=DL3008
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends chromium fonts-liberation python3-venv && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+ENV PDF_PYTHON=/opt/emmy/pdf-venv/bin/python \
+    PUPPETEER_SKIP_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
+    GROVER_NO_SANDBOX=true \
+    XDG_CONFIG_HOME=/rails/tmp/chromium-config \
+    XDG_CACHE_HOME=/rails/tmp/chromium-cache
+
 # Rails app lives here
 WORKDIR /rails
 
@@ -174,18 +191,9 @@ RUN apt-get update -qq && \
 # Copy application code
 COPY . .
 
-# chromium is not available for arm64, this could be problematic when developing locally on an arm64 machine
-# and running tests that require puppeteer.
-# Set default value for PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-
-# Detect architecture and skip the installation of chromium if the architecture is arm64
-# see https://github.com/puppeteer/puppeteer/issues/7740#issuecomment-1016083451
-RUN if [ "$(uname -m)" = "arm64" ]; then \
-      export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false; \
-    fi
-
-RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=$PUPPETEER_SKIP_CHROMIUM_DOWNLOAD npm install
+RUN npm ci && \
+    python3 -m venv /opt/emmy/pdf-venv && \
+    /opt/emmy/pdf-venv/bin/pip install --no-cache-dir -r lib/pdf/requirements.txt
 
 ##########################################################################################
 # DEV: Used for development and test
@@ -278,15 +286,11 @@ COPY bin/db-drop-schema /usr/bin/
 # Copy built artifacts: gems, application, binary dependencies
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
+COPY --from=release-build /opt/emmy/pdf-venv /opt/emmy/pdf-venv
 
 # Clean up any unused gems and ensure we have the correct versions
 RUN bundle clean --force && \
     bundle install --no-cache
-
-# Pre-decompress the wkhtmltopdf binary so it doesn't need to happen at runtime
-# Prevents sporadic 500s on report generation, similar to known issue documented here:
-# https://github.com/zakird/wkhtmltopdf_binary_gem/issues/57
-RUN bundle exec wkhtmltopdf --version
 
 # Ensure all necessary directories exist
 RUN mkdir -p /rails/tmp/pids /rails/log /rails/db

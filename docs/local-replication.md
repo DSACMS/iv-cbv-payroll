@@ -57,7 +57,9 @@ nodenv install
 # Install Ruby and JavaScript dependencies
 bundle install
 nodenv rehash
-npm install
+npm ci
+python3 -m venv "$HOME/.local/share/emmy/pdf-venv"
+"$HOME/.local/share/emmy/pdf-venv/bin/python" -m pip install -r lib/pdf/requirements.txt
 ```
 
 Start PostgreSQL (installed via the Brewfile):

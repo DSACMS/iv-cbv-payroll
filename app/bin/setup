@@ -19,6 +19,11 @@ FileUtils.chdir APP_ROOT do
   system! "gem install bundler --conservative"
   system("bundle check") || system!("bundle install")
 
+  system! "npm ci"
+  pdf_environment = File.expand_path("~/.local/share/emmy/pdf-venv")
+  system! "python3", "-m", "venv", pdf_environment
+  system! File.join(pdf_environment, "bin/python"), "-m", "pip", "install", "-r", "lib/pdf/requirements.txt"
+
   # puts "\n== Copying sample files =="
   # unless File.exist?("config/database.yml")
   #   FileUtils.cp "config/database.yml.sample", "config/database.yml"
