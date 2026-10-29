@@ -71,7 +71,7 @@ en:
         education_activity:
           attributes:
             school_name:
-              blank: Enter the school or program name.
+              blank: Add your school or program name
             self_attested_term_end:
               blank: Add term end date to continue
               invalid: Add a valid date with month and year
