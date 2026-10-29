@@ -4,11 +4,11 @@
 
 Emmy is a suite of federally developed digital tools designed to help states meet Medicaid eligibility requirements and help beneficiaries navigate those requirements more easily.
 
-Emmy was created to address a growing gap: states are being asked to verify eligibility across an expanding set of requirements, but many lack the infrastructure to do so affordably, accurately, and at scale. Emmy is CMS’s response — a low-cost, federally maintained verification layer that states can adopt without needing to replace or rebuild their existing eligibility systems.
+Emmy was created to address a growing gap: states are being asked to verify eligibility across an expanding set of requirements, but many lack the infrastructure to do so affordably, accurately, and at scale. Emmy is CMS's response — a low-cost, federally maintained verification layer that states can adopt without needing to replace or rebuild their existing eligibility systems.
 
-Emmy is a web application that allows states to implement tools for Medicaid clients with a simple, human-centered way to complete eligibility-related tasks. Designed with an applicant-first approach, the Emmy App guides users through reporting and verifying information — starting with Community Engagement (CE) activities and income — connects to trusted data sources to reduce redundant questions, and generates a standardized, audit-ready evidence package for the state.
+Emmy is a web application that allows states to implement tools for Medicaid clients with a simple, human-centered way to complete eligibility-related tasks. Designed with an applicant-first approach, the Emmy App guides users through reporting and verifying information — the tool connects to trusted data sources to reduce redundant questions, and generates a standardized, audit-ready evidence package for the state.
 
-Emmy is built and maintained by the Centers for Medicare & Medicaid Services (CMS) and is under active development, with new releases on a two-week cadence.
+Emmy is built and maintained by the Centers for Medicare and Medicaid Services (CMS) and is under active development, with new releases on a two-week cadence.
 
 ## Contributing
 
@@ -16,7 +16,7 @@ For a guide to running the Emmy project on your own, and submitting changes, see
 
 ## Core Team
 
-The Emmy core team is a group of technologists, composed of engineers, designers, product, and procurement specialists at Centers for Medicare and Medicaid Services (CMS). The products developed are open source and SHARE IT compliant.
+The Emmy core team is a group of technologists, composed of engineers, designers, product managers, and procurement specialists at the Centers for Medicare and Medicaid Services (CMS). The products developed are open source and SHARE IT compliant.
 
 A list of core team members responsible for the code and documentation in this repository can be found in [COMMUNITY.md](https://github.com/DSACMS/iv-cbv-payroll/blob/main/COMMUNITY.md) and [CODEOWNERS](https://github.com/DSACMS/iv-cbv-payroll/blob/main/.github/CODEOWNERS).
 
@@ -24,7 +24,7 @@ A list of core team members responsible for the code and documentation in this r
 
 ### Repository Structure
 
-* [/.github](https://github.com/DSACMS/iv-cbv-payroll/blob/main/.github) GitHub specific settings files and testing, linting, and CI/CD workflows  
+* [/.github](https://github.com/DSACMS/iv-cbv-payroll/blob/main/.github) GitHub-specific settings files and testing, linting, and CI/CD workflows  
 * [/app](https://github.com/DSACMS/iv-cbv-payroll/blob/main/app) the Emmy web application built using Rails  
 * [/bin](https://github.com/DSACMS/iv-cbv-payroll/blob/main/bin) scripts for managing infrastructure  
 * [/docs](https://github.com/DSACMS/iv-cbv-payroll/blob/main/docs) public documentation for developers  
@@ -43,15 +43,15 @@ Emmy App follows semantic versioning with one deviation: user-facing interface c
 
 ### Architectural Decision Records (ADRs)
 
-Our ADRs are stored in [CMS Confluence](https://confluenceent.cms.gov/pages/viewpage.action?pageId=693666588) and not currently accessible to the public.
+Our ADRs are stored in [CMS Confluence](https://confluenceent.cms.gov/pages/viewpage.action?pageId=693666588) and are not currently accessible to the public.
 
 ### Community
 
-The CMS Emmy team is taking an open source approach to the product development of this tool. We believe government software should be made in the open and be built and licensed such that anyone can download the code, run it themselves, modify the project to fit their state’s needs, and then share their updates with the open source community.
+The CMS Emmy team is taking an open source approach to the product development of this tool. We believe government software should be made in the open and be built and licensed such that anyone can download the code, run it themselves, modify the project to fit their state's needs, and then share their updates with the open source community.
 
 We know that we can learn from a wide variety of communities, including those who will use or will be impacted by the tool, who are experts in technology, or who have experience with similar technologies deployed in other spaces. We are dedicated to creating forums for continuous conversation and feedback to help shape the design and development of the tool.
 
-We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skillsets.
+We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skill sets.
 
 For more information on how the Emmy team works with our community, see [COMMUNITY.md](https://github.com/DSACMS/iv-cbv-payroll/blob/main/COMMUNITY.md) and [GOVERNANCE.md](https://github.com/DSACMS/iv-cbv-payroll/blob/main/GOVERNANCE.md).
 
@@ -75,13 +75,12 @@ For more information about our Security, Vulnerability, and Responsible Disclosu
 
 A Software Bill of Materials (SBOM) is a formal record containing the details and supply chain relationships of various components used in building software.
 
-In the spirit of [Executive Order 14028 \- Improving the Nation’s Cybersecurity](https://www.federalregister.gov/documents/2021/05/17/2021-10460/improving-the-nations-cybersecurity), an SBOM for this repository is provided here: [https\://github.com/DSACMS/iv-cbv-payroll/network/dependencies](https://github.com/DSACMS/iv-cbv-payroll/network/dependencies).
+In the spirit of [Executive Order 14028 \- Improving the Nation's Cybersecurity](https://www.federalregister.gov/documents/2021/05/17/2021-10460/improving-the-nations-cybersecurity), an SBOM for this repository is provided here: [https\://github.com/DSACMS/iv-cbv-payroll/network/dependencies](https://github.com/DSACMS/iv-cbv-payroll/network/dependencies).
 
-For more information and resources about SBOMs, visit: [https\://www\.cisa.gov/sbom](https://www.cisa.gov/sbom).
+For more information and resources about SBOMs, visit [https\://www\.cisa.gov/sbom](https://www.cisa.gov/sbom).
 
-### Public domain
+### Public Domain
 
 This project is in the public domain within the United States, and copyright and related rights in the work worldwide are waived through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/) as indicated in [LICENSE](https://github.com/DSACMS/iv-cbv-payroll/blob/main/LICENSE).
 
 All contributions to this project will be released under the CC0 dedication. By submitting a pull request or issue, you are agreeing to comply with this waiver of copyright interest.  
-\s
