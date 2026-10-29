@@ -19,7 +19,7 @@ ARG RUBY_VERSION=3.4.9
 ##########################################################################################
 # BASE: Shared base docker image
 ##########################################################################################
-FROM registry.docker.com/library/node:24.11.1-bookworm-slim AS node-runtime
+FROM registry.docker.com/library/node:24.22.1-bookworm-slim AS node-runtime
 
 FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
 COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
