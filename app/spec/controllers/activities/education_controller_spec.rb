@@ -392,6 +392,28 @@ RSpec.describe Activities::EducationController, type: :controller do
     let(:tracked_flow) { activity_flow }
     let(:perform_tracked_action) { get :edit, params: { id: self_attested_activity.id } }
 
+    context "with a tokenized enrollment history" do
+      let(:education) { create(:education_activity, activity_flow: activity_flow, status: :succeeded) }
+
+      before do
+        activity_flow.update!(activity_flow_invitation: create(:activity_flow_invitation, cbv_applicant: activity_flow.cbv_applicant))
+        create(:nsc_enrollment_term, :full_time, education_activity: education, school_certified_on: Date.new(2026, 9, 1))
+        create(:nsc_enrollment_term, education_activity: education, enrollment_status: :withdrawn, school_certified_on: Date.new(2026, 9, 15))
+        get :edit, params: { id: education.id }
+      end
+
+      it "explains the most recent enrollment and renders one enrollment with its history" do
+        rendered = Capybara.string(response.body)
+
+        expect(response).to have_http_status(:ok)
+        expect(rendered).to have_text(I18n.t("activities.education.edit.enrollment_history_description"))
+        expect(rendered).to have_selector("h2", text: "Enrollment #1 information")
+        expect(rendered).to have_no_selector("h2", text: "Enrollment #2 information")
+        expect(rendered).to have_button("View enrollment history")
+        expect(rendered).to have_field("education_activity[additional_comments]")
+      end
+    end
+
     it_behaves_like "tracks an event", TrackEvent::EducationInfoViewed,
       extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
 
@@ -911,10 +933,19 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "publishes the activity" do
+    it "publishes the new activity and queues the added alert" do
       patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
 
       expect(education_activity.reload.draft).to be(false)
+      expect(flash[:activity_added]).to eq(:education)
+    end
+
+    it "does not queue the added alert when saving an existing activity" do
+      education_activity.update!(draft: false)
+
+      patch :save_review, params: { id: education_activity.id, from_edit: 1, education_activity: { additional_comments: "Updated notes" } }
+
+      expect(flash[:activity_added]).to be_nil
     end
 
     context "with incomplete manual term details" do
@@ -1016,6 +1047,18 @@ RSpec.describe Activities::EducationController, type: :controller do
 
   describe "PATCH #update" do
     let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
+
+    context "when publishing newly verified education" do
+      let(:education_activity) { create(:education_activity, activity_flow: activity_flow, data_source: :validated, draft: true) }
+
+      before do
+        patch :update, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
+      end
+
+      it "queues the added alert" do
+        expect(flash[:activity_added]).to eq(:education)
+      end
+    end
 
     it "updates the activity" do
       patch :update, params: {

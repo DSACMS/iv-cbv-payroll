@@ -68,6 +68,8 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
 
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(first_month, format: :month)), with: "12"
     click_button I18n.t("activities.employment.hours_input.continue")
+    # Both month forms have the same heading. Wait for the new month before
+    # verify_page checks accessibility so Axe does not run during the Turbo visit.
     expect(page).to have_selector(".month-indicator",
       text: [ I18n.t("activities.employment.hours_input.month_indicator", current: 2, total: 2), I18n.l(third_month, format: :month) ].join(" "),
       normalize_ws: true
