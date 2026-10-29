@@ -1,5 +1,5 @@
 <% education_information = t("shared.table_headers.education_information") %>
-<%= render(TableComponent.new(caption: education_information)) do |table| %>
+<%= render(TableComponent.new(caption: education_information, class_names: @class_names)) do |table| %>
   <%= table.with_header_cell(scope: "col") { education_information } %>
   <%= table.with_header_cell(scope: "col") { t("shared.table_headers.your_details") } %>
   <% if @education_activity %>
@@ -45,7 +45,7 @@
       <%= t("components.enrollment_term_table_component.enrollment_status") %>
     <% end %>
     <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_status")) do %>
-      <%= enrollment_status_text(@nsc_enrollment_term.enrollment_status) %>
+      <%= enrollment_status.presence || enrollment_status_text(@nsc_enrollment_term.enrollment_status) %>
     <% end %>
   <% end %>
 <% end %>

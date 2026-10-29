@@ -3,6 +3,16 @@
 require "rails_helper"
 
 RSpec.describe AccordionComponent, type: :component do
+  it "renders a table body without wrapping it in a paragraph" do
+    rendered = render_inline(described_class.new(id: "table-accordion")) do |component|
+      component.with_title { "History" }
+      component.with_body { '<table><tbody><tr><td>Previous status</td></tr></tbody></table>'.html_safe }
+    end
+
+    expect(rendered).to have_selector(".usa-accordion__content > table", text: "Previous status")
+    expect(rendered).to have_no_selector(".usa-accordion__content > p")
+  end
+
   it "renders content as expected" do
     render_inline(described_class.new(id: "accordion1", expanded: true)) do |component|
       component.with_title { "Accordion Title" }
