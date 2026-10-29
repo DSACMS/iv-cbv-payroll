@@ -8,14 +8,18 @@ RSpec.describe JobTrainingActivity, type: :model do
       activity = build(:job_training_activity, activity_flow: activity_flow, organization_name: nil)
 
       expect(activity).not_to be_valid
-      expect(activity.errors[:organization_name]).to include("Enter the organization or provider name.")
+      expect(activity.errors[:organization_name]).to include(
+        I18n.t("activerecord.errors.models.job_training_activity.attributes.organization_name.blank")
+      )
     end
 
     it "is invalid without a program name" do
       activity = build(:job_training_activity, activity_flow: activity_flow, program_name: nil)
 
       expect(activity).not_to be_valid
-      expect(activity.errors[:program_name]).to include("Enter the program name.")
+      expect(activity.errors[:program_name]).to include(
+        I18n.t("activerecord.errors.models.job_training_activity.attributes.program_name.blank")
+      )
     end
   end
 
