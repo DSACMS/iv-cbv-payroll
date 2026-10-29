@@ -34,8 +34,13 @@ From `app/`, `bin/setup` installs the dependencies. For an existing checkout:
 bundle install
 npm ci
 python3 -m venv "$HOME/.local/share/emmy/pdf-venv"
-"$HOME/.local/share/emmy/pdf-venv/bin/python" -m pip install -r lib/pdf/requirements.txt
+"$HOME/.local/share/emmy/pdf-venv/bin/python" -m pip install --require-hashes -r lib/pdf/requirements.txt
 ```
+
+The Python requirements pin versions and SHA-256 hashes of universal wheels,
+including `typing_extensions` for Python versions below 3.11. When updating a
+dependency, verify its wheel against the official PyPI release and update its
+version and hash together. Source distributions are not installed.
 
 Puppeteer installs its matching Chrome browser locally and in CI. Docker uses
 Debian Chromium (including arm64), a Node version matching `.node-version`, and

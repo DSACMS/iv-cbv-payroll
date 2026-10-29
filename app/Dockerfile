@@ -193,7 +193,7 @@ COPY . .
 
 RUN npm ci && \
     python3 -m venv /opt/emmy/pdf-venv && \
-    /opt/emmy/pdf-venv/bin/pip install --no-cache-dir -r lib/pdf/requirements.txt
+    /opt/emmy/pdf-venv/bin/pip install --no-cache-dir --require-hashes -r lib/pdf/requirements.txt
 
 ##########################################################################################
 # DEV: Used for development and test
