@@ -1442,7 +1442,7 @@ en:
   launcher:
     advanced:
       duplicate_enrollments:
-        browser_check: 'Verify college/university enrollment. Expect one %{school_name} enrollment showing %{leave_of_absence_status}. Expand enrollment history to see %{withdrawn_status} and %{full_time_status}. The older F record and the S record should be removed; S groups with W as withdrawn.'
+        browser_check: Verify college/university enrollment. Expect one %{school_name} enrollment showing %{leave_of_absence_status}. Expand enrollment history to see %{withdrawn_status} and %{full_time_status}. The older F record and the S record should be removed; S groups with W as withdrawn.
         certification_check: The status dates reflect the retained certifications, including the newer %{full_time_status} record kept after deduplication.
         certified_after_start:
           one: Term start + 1 month
