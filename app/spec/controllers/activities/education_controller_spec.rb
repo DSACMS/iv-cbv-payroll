@@ -398,7 +398,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       before do
         activity_flow.update!(activity_flow_invitation: create(:activity_flow_invitation, cbv_applicant: activity_flow.cbv_applicant))
         create(:nsc_enrollment_term, :full_time, education_activity: education, school_certified_on: Date.new(2026, 9, 1))
-        create(:nsc_enrollment_term, education_activity: education, enrollment_status: :unknown, nsc_withdrawn: true, school_certified_on: Date.new(2026, 9, 15))
+        create(:nsc_enrollment_term, education_activity: education, enrollment_status: :withdrawn, school_certified_on: Date.new(2026, 9, 15))
         get :edit, params: { id: education.id }
       end
 

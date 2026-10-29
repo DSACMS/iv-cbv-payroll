@@ -10,7 +10,7 @@ RSpec.describe EnrollmentDetailsComponent, type: :component do
   end
   let(:latest) do
     create(:nsc_enrollment_term, education_activity: education,
-      enrollment_status: :unknown, nsc_withdrawn: true, school_certified_on: Date.new(2026, 9, 15))
+      enrollment_status: :withdrawn, school_certified_on: Date.new(2026, 9, 15))
   end
   let(:terms) { [ latest, older ] }
 
@@ -102,7 +102,7 @@ RSpec.describe EnrollmentDetailsComponent, type: :component do
   end
 
   context "when the same status was certified on different dates" do
-    before { older.update!(enrollment_status: :unknown, nsc_withdrawn: true) }
+    before { older.update!(enrollment_status: :withdrawn) }
 
     it "keeps the earlier certification in history" do
       expect(rendered.css(".usa-accordion__content")).to have_text("Withdrawn (As of September 1, 2026)", normalize_ws: true)

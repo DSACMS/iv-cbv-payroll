@@ -47,8 +47,8 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     term_title = I18n.t("activities.education.add_your_term.edit.title", school_name: "University of Illinois")
     verify_page(page, title: term_title)
     click_button I18n.t("activities.education.add_your_term.edit.continue")
-    verify_page(page, title: term_title)
     expect(page).to have_text(I18n.t("activities.education.add_your_term.errors.information_heading"))
+    verify_page(page, title: term_title)
 
     fill_in I18n.t("activities.education.add_your_term.edit.term_start"), with: "55/2026"
     fill_in I18n.t("activities.education.add_your_term.edit.term_end"), with: flow.reporting_months.last.strftime("%m/%Y")
@@ -56,8 +56,8 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
       from: I18n.t("activities.education.add_your_term.edit.enrollment_status")
     fill_in I18n.t("activities.education.add_your_term.edit.credit_hours"), with: "3.5"
     click_button I18n.t("activities.education.add_your_term.edit.continue")
-    verify_page(page, title: term_title)
     expect(page).to have_text(I18n.t("activities.education.add_your_term.errors.dates_heading"))
+    verify_page(page, title: term_title)
     fill_in I18n.t("activities.education.add_your_term.edit.term_start"), with: flow.reporting_months.first.strftime("%m/%Y")
     click_button I18n.t("activities.education.add_your_term.edit.continue")
 

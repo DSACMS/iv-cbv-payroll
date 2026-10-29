@@ -22,10 +22,11 @@ RSpec.describe "Student enrollment history", :js, type: :feature do
     visit edit_activities_flow_education_path(id: education)
     verify_page(page, title: I18n.t("activities.education.edit.header"))
 
-    expect(page).to have_text("Withdrawn (As of September 1, 2026)", normalize_ws: true)
+    expect(page).to have_text("Leave of absence (As of September 1, 2026)", normalize_ws: true)
     expect(page).to have_no_text("Full-time (As of August 1, 2026)", normalize_ws: true)
     click_button "View enrollment history"
     expect(page).to have_text("Full-time (As of August 1, 2026)", normalize_ws: true)
+    expect(page).to have_text("Withdrawn (As of September 1, 2026)", normalize_ws: true)
     expect(page).to have_selector("button[aria-expanded='true']", text: "View enrollment history")
     expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth")).to be(true)
     click_button "View enrollment history"

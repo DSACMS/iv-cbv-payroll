@@ -1,4 +1,4 @@
-<%= term.nsc_withdrawn? ? t("components.enrollment_term_table_component.status.withdrawn") : term.enrollment_status_display %>
+<%= term.enrollment_status_display %>
 <% if term.school_certified_on.present? %>
   <em>
     <%= t("activities.education.edit.status_as_of", date: format_date(term.school_certified_on)) %>

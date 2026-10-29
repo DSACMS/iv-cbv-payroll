@@ -17,6 +17,8 @@ class EnrollmentTermTableComponent < ViewComponent::Base
       I18n.t("components.enrollment_term_table_component.status.half_time")
     when :less_than_half_time
       I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+    when :leave_of_absence, :withdrawn, :graduated, :deceased
+      I18n.t("components.enrollment_term_table_component.status.#{enrollment_status}")
     when :enrolled
       I18n.t("components.enrollment_term_table_component.status.enrolled")
     when :unknown
