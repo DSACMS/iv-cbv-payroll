@@ -8,13 +8,15 @@ RSpec.describe "Expired CE links", :js, type: :feature do
   let(:expired_title) { I18n.t("activities.expired_invitations.show.title") }
 
   context "when a report has been submitted" do
+    let(:invitation) { create(:activity_flow_invitation, client_agency_id: "la_ldh") }
+
     before { create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current) }
 
     it "shows the expired-link page on revisiting the invitation" do
       visit URI(invitation.to_url).request_uri
       verify_page(page, title: expired_title)
 
-      expect(page).to have_link("Visit TA website", href: Rails.application.config.client_agencies["sandbox"].agency_contact_website)
+      expect(page).to have_link("Visit LDH website", href: Rails.application.config.client_agencies["la_ldh"].agency_contact_website)
       expect(page).to have_no_selector("#session-timeout-modal", visible: :all)
     end
   end

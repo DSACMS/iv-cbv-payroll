@@ -10,6 +10,16 @@ RSpec.describe EnrollmentTermTableComponent, type: :component do
     )
   end
 
+  context "with full-time enrollment on review pages" do
+    let(:status) { :full_time }
+
+    it "shows the status without certification dates or enrollment history" do
+      expect(rendered).to have_text(I18n.t("components.enrollment_term_table_component.status.full_time"))
+      expect(rendered).to have_no_text("As of")
+      expect(rendered).to have_no_button("View enrollment history")
+    end
+  end
+
   context "with a leave of absence" do
     let(:status) { :leave_of_absence }
 

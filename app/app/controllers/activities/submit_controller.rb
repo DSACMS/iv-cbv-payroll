@@ -1,4 +1,6 @@
 class Activities::SubmitController < Activities::BaseController
+  skip_before_action :ensure_activity_flow_not_yet_complete, only: :show
+
   def show
     respond_to do |format|
       format.html

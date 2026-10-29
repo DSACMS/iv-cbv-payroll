@@ -247,9 +247,11 @@ en:
         additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
         continue: Save and continue
         description: We have gathered your student enrollment details from %{reporting_window}.
-        enrollment_information: Enrollment information
+        enrollment_history: View enrollment history
+        enrollment_history_description: Below is your most recent enrollment status. If it changed during a term, you can view your full enrollment history.
         enrollment_information_numbered: 'Enrollment #%{number} information'
         header: Review your student enrollment details
+        status_as_of: "(As of %{date})"
         summer_logic_description: If you don’t have enough summer enrollment, we’ll use your spring enrollment to meet the community engagement requirement for the summer.
       error:
         description: 'We were unable to verify your student status with National Student Clearinghouse. To continue, you can:'
@@ -731,7 +733,7 @@ en:
         coordinator_phone: Coordinator's phone
         month: Month
         organization: Organization name
-      consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
+      consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information you provided is true and complete to the best of your knowledge.</li><li>You will inform %{agency_name} of any missing information or anything that doesn’t match what the tool found.</li><li>You understand that false or omitted information may have legal consequences.</li></ul> By sending this report, you allow %{agency_initials} to use it to determine your eligibility for health coverage.'
       description: Report what you have. %{agency_name} will follow up with next steps if anything else is needed.
       education:
         address: School address
@@ -1440,8 +1442,8 @@ en:
   launcher:
     advanced:
       duplicate_enrollments:
-        browser_check: 'Verify college/university enrollment. Expect 3 %{school_name} entries: %{full_time_status}, %{withdrawn_status}, and %{leave_of_absence_status}. The older F record and the S record should be removed; S groups with W as withdrawn.'
-        certification_check: Certification dates aren't shown on the enrollment screen; automated tests check that the newer %{full_time_status} record is kept.
+        browser_check: 'Verify college/university enrollment. Expect one %{school_name} enrollment showing %{leave_of_absence_status}. Expand enrollment history to see %{withdrawn_status} and %{full_time_status}. The older F record and the S record should be removed; S groups with W as withdrawn.'
+        certification_check: The status dates reflect the retained certifications, including the newer %{full_time_status} record kept after deduplication.
         certified_after_start:
           one: Term start + 1 month
           other: Term start + %{count} months

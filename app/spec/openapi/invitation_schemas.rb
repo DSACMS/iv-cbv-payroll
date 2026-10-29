@@ -85,6 +85,14 @@ module InvitationSchemas
           agency_partner_metadata: { "$ref" => "#/components/schemas/AgencyPartnerMetadataV2" }
         }
       },
+      ExpireInvitationResponse: {
+        type: :object,
+        required: %w[tokenized_url],
+        additionalProperties: true,
+        properties: {
+          tokenized_url: { type: :string, format: :uri, description: "The expired invitation's reporting link, returned for reference. Do not resend this link to the applicant." }
+        }
+      },
       InvitationErrors: {
         type: :object,
         required: %w[errors],
