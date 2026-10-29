@@ -8,7 +8,7 @@ Emmy was created to address a growing gap: states are being asked to verify elig
 
 Emmy is a web application that allows states to implement tools for Medicaid clients with a simple, human-centered way to complete eligibility-related tasks. Designed with an applicant-first approach, the Emmy App guides users through reporting and verifying information — the tool connects to trusted data sources to reduce redundant questions, and generates a standardized, audit-ready evidence package for the state.
 
-Emmy is built and maintained by the Centers for Medicare and Medicaid Services (CMS) and is under active development, with new releases on a two-week cadence.
+Emmy is built and maintained by the Centers for Medicare & Medicaid Services (CMS) and is under active development, with new releases on a weekly cadence.
 
 ## Contributing
 
