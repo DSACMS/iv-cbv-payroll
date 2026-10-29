@@ -368,6 +368,7 @@ en:
               unpaid:
                 label: Enter in-kind work
           header: Choose how you want to add your work
+          legend: 'Please select an option:'
           options:
             automatic:
               hint: We'll pull your hours and income from your payroll account. Works with ADP, Workday, Uber, Lyft, and most large employers.
