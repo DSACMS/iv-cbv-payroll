@@ -933,10 +933,19 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "publishes the activity" do
+    it "publishes the new activity and queues the added alert" do
       patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
 
       expect(education_activity.reload.draft).to be(false)
+      expect(flash[:activity_added]).to eq(:education)
+    end
+
+    it "does not queue the added alert when saving an existing activity" do
+      education_activity.update!(draft: false)
+
+      patch :save_review, params: { id: education_activity.id, from_edit: 1, education_activity: { additional_comments: "Updated notes" } }
+
+      expect(flash[:activity_added]).to be_nil
     end
 
     context "with incomplete manual term details" do
@@ -1038,6 +1047,18 @@ RSpec.describe Activities::EducationController, type: :controller do
 
   describe "PATCH #update" do
     let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
+
+    context "when publishing newly verified education" do
+      let(:education_activity) { create(:education_activity, activity_flow: activity_flow, data_source: :validated, draft: true) }
+
+      before do
+        patch :update, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
+      end
+
+      it "queues the added alert" do
+        expect(flash[:activity_added]).to eq(:education)
+      end
+    end
 
     it "updates the activity" do
       patch :update, params: {

@@ -63,7 +63,7 @@ class Activities::EmploymentController < Activities::BaseController
 
   def save_review
     @employment_activity.update(review_params)
-    @employment_activity.publish!
+    publish_activity(@employment_activity, activity_type: :employment)
     track_event(TrackEvent::EmploymentReviewSubmitted, employment_activity_id: @employment_activity.id)
     redirect_to next_path
   end
