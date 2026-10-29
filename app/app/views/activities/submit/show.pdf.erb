@@ -235,15 +235,16 @@
             ]
 
             if show_credit_hours
-              if term.less_than_half_time?
-                credit_hours = activity.review_term_credit_hours(term)
-                row += [
-                  format_decimal_amount(credit_hours),
-                  format_decimal_amount(activity.community_engagement_hours(credit_hours))
-                ]
-              else
-                row += [ t("shared.not_applicable"), t("shared.not_applicable") ]
-              end
+              credit_hours_lines, ce_hours_lines = terms_for_range.map do |term|
+                if term.less_than_half_time?
+                  credit_hours = activity.review_term_credit_hours(term)
+                  [ format_decimal_amount(credit_hours), format_decimal_amount(activity.community_engagement_hours(credit_hours)) ]
+                else
+                  [ t("shared.not_applicable"), t("shared.not_applicable") ]
+                end
+              end.transpose
+
+              row += [ safe_join(credit_hours_lines, tag.br), safe_join(ce_hours_lines, tag.br) ]
             end
             row
           end %>
