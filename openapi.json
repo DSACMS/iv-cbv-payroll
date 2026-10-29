@@ -302,7 +302,7 @@
                   "expire_community_engagement": {
                     "summary": "Expire a community engagement invitation",
                     "value": {
-                      "tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/Nkidr2HqNG"
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/pyJih3gmgz"
                     }
                   }
                 },
@@ -376,7 +376,7 @@
                         "first_name": "Jane",
                         "last_name": "Doe"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/Qj3GYkiSWJ"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/uwanpv2Ppw"
                     }
                   },
                   "community_engagement": {
@@ -392,7 +392,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/xgHoUjjGmP"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/Bj48iW27jZ"
                     }
                   }
                 },
@@ -3282,6 +3282,10 @@
                   "half_time",
                   "less_than_half_time",
                   "enrolled",
+                  "leave_of_absence",
+                  "withdrawn",
+                  "graduated",
+                  "deceased",
                   "unknown"
                 ],
                 "description": "NSC enrollment status for this term, including unknown when the status is unavailable."
@@ -3439,6 +3443,10 @@
                   "half_time",
                   "less_than_half_time",
                   "enrolled",
+                  "leave_of_absence",
+                  "withdrawn",
+                  "graduated",
+                  "deceased",
                   "unknown"
                 ],
                 "description": "NSC enrollment status for this term, including unknown when the status is unavailable."
