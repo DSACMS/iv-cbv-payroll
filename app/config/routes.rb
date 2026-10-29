@@ -178,6 +178,7 @@ Rails.application.routes.draw do
     post "/launcher",          to: "launcher#simple_create"
     get  "/launcher/advanced", to: "launcher#advanced"
     post "/launcher/advanced", to: "launcher#create"
+    post "/launcher/toggle_nsc", to: "launcher#toggle_nsc"
     get  "/demo",              to: redirect("/launcher")
   end
 end

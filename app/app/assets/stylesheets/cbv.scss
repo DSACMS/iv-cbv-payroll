@@ -406,6 +406,9 @@ input#invitation_link {
 .activity-review-hours-table th:last-child {
   white-space: nowrap;
 }
+.activity-review-hours-table .enrollment-status-cell {
+  white-space: normal;
+}
 
 // Mobile edit link lives inside the th; hidden on desktop where the td column is visible
 .mobile-edit-link {

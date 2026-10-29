@@ -32,7 +32,7 @@ end %>
         <%= terms_for_range.first.term_date_display %>
       <% end %>
       <% terms_for_range.each do |term| %>
-        <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_status")) do %>
+        <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_status"), class_names: "enrollment-status-cell") do %>
           <%= enrollment_status_text.call(term) %>
         <% end %>
       <% end %>

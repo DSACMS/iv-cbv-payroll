@@ -199,7 +199,7 @@
           <% rows = [ row ] %>
         <% else %>
           <% enrollment_terms = entry.enrollment_terms %>
-          <% show_credit_hours = (activity.partially_self_attested? || activity.fully_self_attested?) && enrollment_terms.any?(&:less_than_half_time?) %>
+          <% show_credit_hours = activity.partially_self_attested? && enrollment_terms.any?(&:less_than_half_time?) %>
           <% columns = [
             t("activities.education.review.term"),
             t("components.enrollment_term_table_component.enrollment_status")
@@ -252,7 +252,7 @@
 
         <%= render "activities/submit/summary_activity",
           section_heading: index.zero? ? t("activities.submit.pdf.education_summary") : nil,
-          title: index.zero? ? t(
+          title: @report.education_entries.one? ? t(
             "activities.submit.pdf.institution_title_single",
             name: entry.school_name.presence || not_provided
           ) : t(
@@ -395,8 +395,8 @@
           ]
         ] %>
         <%= render "activities/submit/detail_activity",
-          section_heading: index.zero? ? t("activities.submit.pdf.education_details") : nil,
-          title: index.zero? ? t(
+          section_heading: @report.education_entries.one? ? t("activities.submit.pdf.education_details") : nil,
+          title: @report.education_entries.one? ? t(
             "activities.submit.pdf.institution_title_single",
             name: entry.school_name.presence || not_provided
           ) : t(

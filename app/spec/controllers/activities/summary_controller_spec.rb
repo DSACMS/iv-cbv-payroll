@@ -428,6 +428,50 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.less_than_half_time"))
     end
 
+    it "renders multiple enrollment statuses with their certification dates for the same school and term" do
+      school_name = "Harborview College"
+      activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :validated,
+        status: :succeeded
+      )
+      first_month = activity_flow.reporting_months.first
+      second_month = activity_flow.reporting_months.second
+      earlier_certified_on = first_month.beginning_of_month
+      later_certified_on = second_month.beginning_of_month
+      create(
+        :nsc_enrollment_term,
+        :full_time,
+        education_activity: activity,
+        school_name: school_name,
+        term_begin: first_month,
+        term_end: second_month.end_of_month,
+        school_certified_on: earlier_certified_on
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: school_name,
+        term_begin: first_month,
+        term_end: second_month.end_of_month,
+        school_certified_on: later_certified_on,
+        credit_hours: 2
+      )
+
+      get :show
+      doc = Capybara.string(response.body)
+
+      enrollment_table = doc.all("table").find { |table| table.has_text?(I18n.t("activities.summary.education.enrollment_details")) }
+      term_row = enrollment_table.all("tbody tr").first
+
+      expect(term_row).to have_text(I18n.t("components.enrollment_term_table_component.status.full_time"), normalize_ws: true)
+      expect(term_row).to have_text(I18n.t("components.enrollment_term_table_component.status.less_than_half_time"), normalize_ws: true)
+      expect(term_row).to have_text(I18n.l(earlier_certified_on, format: :long), normalize_ws: true)
+      expect(term_row).to have_text(I18n.l(later_certified_on, format: :long), normalize_ws: true)
+    end
+
     context "with self-attested employment activities" do
       it "includes self-attested employment in all_activities list" do
         employment_activity = create(:employment_activity, activity_flow: activity_flow)
