@@ -1,0 +1,41 @@
+<% first_term = enrollment_terms.first %>
+<% student_name = [ first_term&.first_name, first_term&.middle_name, first_term&.last_name ].compact_blank.join(" ") %>
+<% enrollment_status_text = lambda do |term|
+  if term.school_certified_on.present?
+    t("components.enrollment_term_table_component.status_as_of_date",
+      status: term.enrollment_status_display,
+      date: I18n.l(term.school_certified_on, format: :long))
+  else
+    term.enrollment_status_display
+  end
+end %>
+
+<h3><%= t("activities.summary.education.details") %></h3>
+<%= render(ContactInfoReviewTableComponent.new(field_header: t("shared.table_headers.education_information"), value_header: t("shared.table_headers.your_details"), rows: [
+  { label: t("components.enrollment_term_table_component.student_name_label"), value: student_name },
+  { label: t("components.enrollment_term_table_component.school_or_program"), value: first_term&.school_name&.titlecase }
+])) %>
+
+<% enrollment_term_groups = enrollment_terms.group_by { |term| [ term.term_begin, term.term_end ] }.values %>
+<% max_statuses_per_term = enrollment_term_groups.map(&:size).max || 0 %>
+<% enrollment_details = t("activities.summary.education.enrollment_details") %>
+<h3><%= enrollment_details %></h3>
+<%= render(TableComponent.new(caption: enrollment_details, activity_hours_review: true)) do |table| %>
+  <%= table.with_header_cell(scope: "col") { t("activities.education.review.term") } %>
+  <% max_statuses_per_term.times do %>
+    <%= table.with_header_cell(scope: "col") { t("components.enrollment_term_table_component.enrollment_status") } %>
+  <% end %>
+
+  <% enrollment_term_groups.each do |terms_for_range| %>
+    <%= table.with_row do |row| %>
+      <%= row.with_data_cell(is_header: true, data_label: t("activities.education.review.term")) do %>
+        <%= terms_for_range.first.term_date_display %>
+      <% end %>
+      <% terms_for_range.each do |term| %>
+        <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_status"), class_names: "enrollment-status-cell") do %>
+          <%= enrollment_status_text.call(term) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

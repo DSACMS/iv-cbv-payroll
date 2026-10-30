@@ -3,8 +3,8 @@
 <% elsif activity.partially_self_attested? %>
   <%= render "activities/summary/partially_self_attested_education_table", activity: activity %>
 <% else %>
-  <% activity.nsc_enrollment_terms.each do |enrollment_term| %>
-    <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term, education_activity: activity)) %>
+  <% activity.nsc_enrollment_terms.order(:term_begin, :term_end).group_by(&:school_name).each do |_school_name, enrollment_terms| %>
+    <%= render "activities/summary/validated_education_table", enrollment_terms: enrollment_terms %>
   <% end %>
 <% end %>
 

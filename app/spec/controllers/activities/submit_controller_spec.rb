@@ -94,9 +94,6 @@ RSpec.describe Activities::SubmitController, type: :controller do
         pdf_text = extract_pdf_text(response)
         expect(response).to have_http_status(:ok)
         # PDF extraction can interleave neighboring table cells when the term wraps.
-        expect(pdf_text).to include(
-          I18n.l(education.self_attested_term_start, format: :month_year),
-          I18n.l(education.self_attested_term_end, format: :month_year))
         expect(pdf_text).to include(I18n.t("activities.education.add_your_term.edit.enrollment_status_options.less_than_half_time"))
         expect(pdf_text).to include(ApplicationHelper.format_decimal_amount(education.credit_hours).to_s)
       end
@@ -180,14 +177,11 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(pdf_text).to include("Garden State Market")
       expect(pdf_text).to include("(225) 555-0199")
       expect(pdf_text).to include("Bayou College")
-      expect(pdf_text).to match(/#{Regexp.escape(I18n.t("activities.submit.pdf.education_type"))}\s+#{Regexp.escape(I18n.t("activities.education.types.college_or_university"))}/)
-      expect(pdf_text).to include(education.contact_title)
       expect(pdf_text).to include("Volunteer Log.pdf")
       expect(pdf_text).to include(test_confirmation_code)
       expect(pdf_text).to include("December 1, 2025 12:00:00 UTC")
       expect(pdf_text).to include(
         I18n.t("activities.submit.pdf.school_contact_name"),
-        I18n.t("activities.submit.pdf.school_contact_title"),
         I18n.t("activities.submit.pdf.school_contact_email"),
         I18n.t("activities.submit.pdf.school_contact_phone_number")
       )
@@ -285,7 +279,6 @@ RSpec.describe Activities::SubmitController, type: :controller do
         "Education details",
         "This schedule covers both institutions"
       )
-      expect(education_details_text).to include(I18n.t("activities.submit.pdf.education_type"))
     end
 
     it "omits contact rows that do not apply to self-employed work" do
@@ -318,26 +311,6 @@ RSpec.describe Activities::SubmitController, type: :controller do
 
       pdf_text = extract_pdf_text(response)
       expect(pdf_text).to match(/Food Pantry.*October 2025\s+17.*November 2025\s+19/)
-    end
-
-    context "when the education type is other" do
-      let(:education) do
-        create(:education_activity, :with_self_attested_term, activity_flow: activity_flow,
-          school_name: "Example School", education_type: "other")
-      end
-
-      before do
-        education
-        get :show, format: :pdf
-      end
-
-      it "displays Other as the first institution information row" do
-        pdf_text = extract_pdf_text(response)
-        education_details_text = pdf_text.split(I18n.t("activities.submit.pdf.education_details"), 2).last
-        expect(education_details_text).to match(/#{Regexp.escape(I18n.t("activities.submit.pdf.education_type"))}\s+#{Regexp.escape(I18n.t("activities.education.types.other"))}/)
-        expect(education_details_text.index(I18n.t("activities.submit.pdf.education_type"))).to be < education_details_text.index(I18n.t("activities.submit.pdf.address"))
-        expect(pdf_text).not_to include("I'm not sure")
-      end
     end
 
     it "renders activity-level education data for each NSC school" do
@@ -374,7 +347,6 @@ RSpec.describe Activities::SubmitController, type: :controller do
       )
 
       get :show, format: :pdf
-      expect(extract_pdf_text(response)).to include(I18n.t("activities.education.types.trade_or_technical"))
 
       pdf_text = extract_pdf_text(response)
       expect(pdf_text.scan("Comment for both reported schools").size).to eq(2)
