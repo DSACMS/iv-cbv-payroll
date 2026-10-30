@@ -22,6 +22,37 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
   end
 
   describe "PATCH #update" do
+    context "with no hours in a single-month report" do
+      before do
+        patch :update, params: { community_service_id: volunteering_activity.id, id: 0, volunteering_activity_month: { hours: "" } }
+      end
+
+      it "shows only the inline hours error" do
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(Capybara.string(response.body)).to have_selector("#volunteering_activity_month_hours_error",
+          text: I18n.t("activities.community_service.hours_input.field_error"))
+        expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--error")
+      end
+    end
+
+    context "with no hours by the last month" do
+      let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
+
+      before do
+        create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.first, hours: 0)
+        create(:volunteering_activity_month, volunteering_activity: volunteering_activity, month: activity_flow.reporting_months.second, hours: 0)
+        patch :update, params: { community_service_id: volunteering_activity.id, id: 2, volunteering_activity_month: { hours: 0 } }
+      end
+
+      it "shows only the inline hours error without saving the last month" do
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(Capybara.string(response.body)).to have_selector("#volunteering_activity_month_hours_error",
+          text: I18n.t("activities.community_service.hours_input.field_error"))
+        expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--error")
+        expect(volunteering_activity.activity_months.count).to eq(2)
+      end
+    end
+
     it "redirects to document upload" do
       patch :update, params: { community_service_id: volunteering_activity.id, id: 0, volunteering_activity_month: { hours: 1 } }
 
