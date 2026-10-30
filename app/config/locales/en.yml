@@ -71,7 +71,7 @@ en:
         education_activity:
           attributes:
             school_name:
-              blank: Enter the school or program name.
+              blank: Add your school or program name
             self_attested_term_end:
               blank: Add term end date to continue
               invalid: Add a valid date with month and year
@@ -81,9 +81,9 @@ en:
         job_training_activity:
           attributes:
             organization_name:
-              blank: Enter the organization or provider name.
+              blank: Add the organization or provider name
             program_name:
-              blank: Enter the program name.
+              blank: Add the program name
         job_training_activity_month:
           attributes:
             hours:
@@ -92,6 +92,8 @@ en:
           attributes:
             date:
               outside_reporting_window: must be within %{range}
+            organization_name:
+              blank: Add the organization name
         volunteering_activity_month:
           attributes:
             hours:
@@ -403,8 +405,7 @@ en:
           employment_focused:
             description: For each month, you will need to report how much you made and how many hours you worked. Only include months you were paid, you can report unpaid work later.
           error_body: Select at least one month to continue
-          error_heading: No months selected
-          legend: Months worked
+          legend: 'Please select all that apply:'
           paid_description: For each month, you will need to report how much you made and how many hours you worked.
           title: Select which months you worked for %{employer_name}
           unpaid_or_in_kind_description: For each month, you will need to report how many hours you worked.
