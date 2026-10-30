@@ -2,18 +2,7 @@
 <div class="grid-col-12 advanced-launcher">
   <h1>Emmy Launcher 🏆🚀</h1>
   <div class="usa-hint advanced-launcher__usa-hint">Configure settings and launch Emmy in a new tab.</div>
-
-  <div class="margin-top-4">
-    <%= render AdvancedLauncher::SettingComponent.new(title: "NSC verification") do %>
-      <p>NSC is currently <strong><%= nsc_enabled? ? "enabled" : "disabled" %></strong></p>
-      <p><small>This toggle does not always work in local dev environments, but it does in PR environments.</small></p>
-      <%= button_to nsc_enabled? ? "Disable NSC" : "Enable NSC",
-          "/launcher/toggle_nsc",
-          method: :post,
-          class: "usa-button usa-button--outline",
-          data: { turbo: false } %>
-    <% end %>
-  </div>
+  
   <%= form_with(url: "/launcher/advanced", method: :post, builder: UswdsFormBuilder, html: { class: "usa-form usa-form--large" }, data: { turbo: false, controller: "advanced-launcher", action: "input->advanced-launcher#invalidateShareLink change->advanced-launcher#invalidateShareLink" }) do |f| %>
     <div class="advanced-launcher__two-col">
       <div class="advanced-launcher__left-col">

@@ -1,5 +1,5 @@
 class LauncherController < ApplicationController
-  helper_method :session_timeout_enabled?, :agency_activity_types, :nsc_enabled?
+  helper_method :session_timeout_enabled?, :agency_activity_types
   before_action :set_launcher_flow, only: [ :advanced, :launcher ]
 
   def advanced; end
@@ -101,11 +101,6 @@ class LauncherController < ApplicationController
     else
       redirect_to url, allow_other_host: true
     end
-  end
-
-  def toggle_nsc
-    Nsc.override!(Nsc.enabled?)
-    redirect_back fallback_location: launcher_path
   end
 
   private
@@ -323,9 +318,5 @@ class LauncherController < ApplicationController
     allowed_overrides = [ :reporting_window, :reporting_window_months ]
     allowed_overrides << :renewal_required_months if simple_launcher_params[:reporting_window] == "renewal"
     simple_launcher_params.slice(*allowed_overrides).select { |_, v| v.present? }
-  end
-
-  def nsc_enabled?
-    Nsc.enabled?
   end
 end
