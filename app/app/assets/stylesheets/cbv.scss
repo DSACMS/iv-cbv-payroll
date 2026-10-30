@@ -422,6 +422,15 @@ input#invitation_link {
 // rules are re-declared here so they cover 480px-639px;
 // at < 480px they are also applied redundantly (harmless override).
 @media all and (max-width: 39.99em) {
+  .activity-review-hours-table {
+    display: block;
+  }
+
+  .activity-review-hours-table tbody,
+  .activity-review-hours-table tr {
+    display: block;
+  }
+
   // --- USWDS usa-table--stacked rules, scoped to the hours table ---
   .activity-review-hours-table thead {
     display: none;
