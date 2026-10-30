@@ -393,9 +393,9 @@ en:
         month_indicator: 'Month %{current} of %{total}:'
         no_income_html: If you weren't paid this month, you can <a href="%{month_selection_url}">edit the months you selected</a>. You can report unpaid work later.
         unpaid_or_in_kind:
-          error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>.
+          error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>
           error_heading: No work hours added
-          field_error: Add hours to continue.
+          field_error: Add hours to continue
           heading: Add your hours for %{organization}
           hours_hint: If you performed in-kind work, provide an estimate
       month_selections:

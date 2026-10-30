@@ -535,7 +535,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
           create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
         end
 
-        it "shows the hours error in the alert and next to the field" do
+        it "shows the information banner and inline hours error" do
           patch :update, params: {
             employment_id: employment_activity.id,
             id: 0,
@@ -551,10 +551,44 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
           )
           field_error = I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error")
           expect(response).to have_http_status(:unprocessable_content)
-          expect(rendered).to have_selector(".usa-alert--error", text: alert_error)
-          expect(rendered).to have_no_selector(".usa-alert--info")
+          expect(rendered).to have_selector(".usa-alert--info", text: alert_error)
+          expect(rendered).to have_no_selector(".usa-alert--error")
           expect(rendered).to have_selector(".usa-error-message", text: field_error)
+          expect(rendered).to have_selector('input[name="employment_activity_month[hours]"][required]')
           expect(employment_activity.employment_activity_months).to be_empty
+        end
+
+        context "when zero hours are submitted" do
+          before do
+            patch :update, params: {
+              employment_id: employment_activity.id,
+              id: 0,
+              from_edit: 1,
+              employment_activity_month: { hours: "0" }
+            }
+          end
+
+          it "links back to month selection with the edit context" do
+            rendered = Capybara.string(response.body)
+
+            expect(response).to have_http_status(:unprocessable_content)
+            expect(rendered).to have_selector(".usa-alert--info")
+            expect(rendered).to have_link("edit the months you selected",
+              href: edit_activities_flow_income_employment_month_selection_path(employment_id: employment_activity, from_edit: 1))
+          end
+
+          context "for the income flow" do
+            let(:activity_flow) { super().tap { |flow| flow.update!(employment_focused: true) } }
+
+            it "keeps the original error banner and optional hours field" do
+              rendered = Capybara.string(response.body)
+
+              expect(rendered).to have_selector(".usa-alert--error")
+              expect(rendered).to have_no_selector(".usa-alert--info")
+              expect(rendered).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error"), exact_text: true)
+              expect(rendered).to have_selector('input[name="employment_activity_month[hours]"]:not([required])')
+            end
+          end
         end
 
         context "when validation fails" do

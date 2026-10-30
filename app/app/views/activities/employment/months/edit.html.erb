@@ -20,10 +20,10 @@
 <% content_for :title, heading %>
 
 <% if @error %>
-  <% if !@flow.employment_focused? && !other && @employment_activity.requires_month_selection? && (@activity_month.gross_income || 0).zero? %>
+  <% if !@flow.employment_focused? && @employment_activity.requires_month_selection? && (other || (@activity_month.gross_income || 0).zero?) %>
     <% content_for :page_alerts do %>
       <%= render Uswds::Alert.new(type: :info, form_id: "employment_month_form", class: "margin-bottom-4") do %>
-        <%= t("activities.employment.hours_input.no_income_html",
+        <%= t(other ? "#{input_scope}.error_body_html" : "activities.employment.hours_input.no_income_html",
               month_selection_url: edit_activities_flow_income_employment_month_selection_path(
                 employment_id: @employment_activity, from_edit: params[:from_edit].presence
               )) %>
@@ -79,6 +79,7 @@
 
   <%= f.text_field :hours,
         type: :number,
+        required: other && !@flow.employment_focused?,
         step: "any",
         value: decimal_input_value(@activity_month.hours),
         label: t("activities.employment.hours_input.hours_label", month: month_label),
