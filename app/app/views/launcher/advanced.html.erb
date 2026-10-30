@@ -6,6 +6,7 @@
   <div class="margin-top-4">
     <%= render AdvancedLauncher::SettingComponent.new(title: "NSC verification") do %>
       <p>NSC is currently <strong><%= nsc_enabled? ? "enabled" : "disabled" %></strong></p>
+      <p><small>This toggle does not always work in local dev environments, but it does in PR environments.</small></p>
       <%= button_to nsc_enabled? ? "Disable NSC" : "Enable NSC",
           "/launcher/toggle_nsc",
           method: :post,
