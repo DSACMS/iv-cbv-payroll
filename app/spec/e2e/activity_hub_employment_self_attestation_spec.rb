@@ -257,13 +257,17 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       'input[name="employment_activity_month[gross_income]"][required]'
     )
     expect(page).to have_selector(
-      ".usa-alert--error",
-      text: I18n.t("activities.employment.hours_input.field_error")
+      ".usa-alert--info",
+      text: ActionView::Base.full_sanitizer.sanitize(I18n.t("activities.employment.hours_input.error_body_html", month_selection_url: ""))
     )
+    expect(page).to have_no_selector(".usa-alert--error")
+    expect(page).to have_link("edit the months you selected",
+      href: edit_activities_flow_income_employment_month_selection_path(employment_id: flow.employment_activities.last))
     expect(page).to have_selector(
       'input[name="employment_activity_month[gross_income]"].usa-input--error'
     )
     expect(page).to have_selector(".usa-error-message", count: 1)
+    expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.field_error"), exact_text: true)
 
     # Fix it — set to valid values and save
     fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: "200"

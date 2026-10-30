@@ -4,6 +4,31 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
   include E2e::TestHelpers
   include_context "activity_hub"
 
+  it "shows the unpaid-work validation UI in employment-focused CE" do
+    invitation = create(:activity_flow_invitation, client_agency_id: "sandbox", employment_focused: true)
+    visit activities_flow_start_path(token: invitation.auth_token, reporting_window_months: 3)
+    verify_page(page, title: I18n.t("activities.entries.show.employment_focused.header"))
+    flow = ActivityFlow.last
+    month = flow.reporting_months.first
+    activity = create(:employment_activity, activity_flow: flow, compensation_type: :unpaid_or_in_kind, selected_months: [ month ], employer_name: "Example work")
+    visit edit_activities_flow_income_employment_month_path(employment_id: activity, id: 0)
+    title = I18n.t("activities.employment.hours_input.unpaid_or_in_kind.heading", organization: activity.employer_name)
+    verify_page(page, title: title)
+
+    expect(page).to have_selector('input[name="employment_activity_month[hours]"][required]')
+    fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(month, format: :month)), with: "0"
+    click_button I18n.t("activities.employment.hours_input.continue")
+    verify_page(page, title: title)
+    expect(page).to have_selector(".usa-alert--info")
+    expect(page).to have_no_selector(".usa-alert--error")
+    expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error"), exact_text: true)
+    within(".usa-alert--info") do
+      click_link "edit the months you selected"
+    end
+    verify_page(page, title: I18n.t("activities.employment.month_selections.edit.title", employer_name: activity.employer_name))
+    expect(page).to have_field(I18n.l(month, format: :month_year), checked: true, visible: :all)
+  end
+
   it "preserves unpaid work through validation, upload, review, and editing" do # rubocop:disable RSpec/MultipleExpectations,RSpec/ExampleLength
     invitation = create(:activity_flow_invitation, client_agency_id: "sandbox")
     visit activities_flow_start_path(token: invitation.auth_token, reporting_window_months: 3)

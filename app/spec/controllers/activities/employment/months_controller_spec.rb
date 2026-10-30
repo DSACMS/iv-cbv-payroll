@@ -505,15 +505,15 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
           end
         end
 
-        context "for the income flow" do
+        context "for the employment-focused CE flow" do
           let(:activity_flow) { super().tap { |flow| flow.update!(employment_focused: true) } }
 
-          it "keeps the existing error banner and numericality message" do
+          it "shows the information banner and inline income message" do
             rendered = Capybara.string(response.body)
 
-            expect(rendered).to have_no_selector(".usa-alert--info")
-            expect(rendered).to have_selector(".usa-alert--error")
-            expect(rendered).to have_selector(".usa-error-message", text: I18n.t("errors.messages.not_a_number"), exact_text: true)
+            expect(rendered).to have_selector(".usa-alert--info")
+            expect(rendered).to have_no_selector(".usa-alert--error")
+            expect(rendered).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.field_error"), exact_text: true)
           end
         end
       end
@@ -577,16 +577,18 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
               href: edit_activities_flow_income_employment_month_selection_path(employment_id: employment_activity, from_edit: 1))
           end
 
-          context "for the income flow" do
+          context "for the employment-focused CE flow" do
             let(:activity_flow) { super().tap { |flow| flow.update!(employment_focused: true) } }
 
-            it "keeps the original error banner and optional hours field" do
+            it "shows the information banner and required hours field" do
               rendered = Capybara.string(response.body)
 
-              expect(rendered).to have_selector(".usa-alert--error")
-              expect(rendered).to have_no_selector(".usa-alert--info")
+              expect(rendered).to have_no_selector(".usa-alert--error")
+              expect(rendered).to have_selector(".usa-alert--info")
               expect(rendered).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error"), exact_text: true)
-              expect(rendered).to have_selector('input[name="employment_activity_month[hours]"]:not([required])')
+              expect(rendered).to have_selector('input[name="employment_activity_month[hours]"][required]')
+              expect(rendered).to have_link("edit the months you selected",
+                href: edit_activities_flow_income_employment_month_selection_path(employment_id: employment_activity, from_edit: 1))
             end
           end
         end
