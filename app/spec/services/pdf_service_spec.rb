@@ -20,7 +20,7 @@ RSpec.describe PdfService, type: :service do
       it 'generates a PDF file' do
       pdf_service = described_class.new(language: :en)
       @pdf_results = pdf_service.generate(cbv_flow, pinwheel_report, current_agency)
-      expect(@pdf_results&.content).to include('%PDF-1.4')
+      expect(@pdf_results&.content).to start_with('%PDF-')
       expect(@pdf_results&.html).to include('Test Agency')
       expect(@pdf_results&.html).to include('Gross pay YTD')
       expect(@pdf_results&.html).to include('Monthly summary')
@@ -36,7 +36,7 @@ RSpec.describe PdfService, type: :service do
       it 'generates a PDF file in english' do
       pdf_service = described_class.new(language: :en)
       @pdf_results = pdf_service.generate(cbv_flow, pinwheel_report, current_agency)
-      expect(@pdf_results&.content).to include('%PDF-1.4')
+      expect(@pdf_results&.content).to start_with('%PDF-')
       expect(@pdf_results&.html).to include('Test Agency')
       expect(@pdf_results&.html).to include('Gross pay YTD')
       expect(@pdf_results&.html).to include('Agreement Consent Timestamp')

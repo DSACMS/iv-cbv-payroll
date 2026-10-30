@@ -2,7 +2,7 @@ name: rspec tests
 
 on:
   pull_request:
-    paths: ['app/**', 'docs/api/**', '.github/workflows/rspec.yml']
+    paths: ['app/**', 'docs/api/**', '.github/workflows/rspec.yml', '.github/actions/setup-languages/**']
 
 permissions:
   contents: read
@@ -48,6 +48,7 @@ jobs:
         working-directory: app
         env:
           RAILS_ENV: test
+          PDF_ACCESSIBILITY_OUTPUT_DIR: ${{ runner.temp }}/pdf-accessibility/pdfs
           DB_HOST: localhost
           DB_USERNAME: cidbuser
           DB_PASSWORD: postgres
@@ -57,6 +58,27 @@ jobs:
             --type rspec \
             -n 2 \
             --exclude-pattern '^spec/e2e/'
+
+      - name: Set up Java for veraPDF
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Validate generated PDFs against PDF/UA-1
+        working-directory: app
+        run: |
+          ruby bin/install-verapdf "$RUNNER_TEMP/verapdf"
+          PDF_ACCESSIBILITY_REPORT_DIR="$RUNNER_TEMP/pdf-accessibility" VERAPDF="$RUNNER_TEMP/verapdf/verapdf" bundle exec ruby bin/check-pdf-accessibility "$RUNNER_TEMP/pdf-accessibility/pdfs"
+
+      - name: Upload PDF accessibility evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: pdf-accessibility
+          path: ${{ runner.temp }}/pdf-accessibility/
+          retention-days: 7
+          if-no-files-found: error
 
       - name: Build and validate API reference
         working-directory: app

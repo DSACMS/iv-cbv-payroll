@@ -59,7 +59,7 @@ gem "faker", "~> 3.8"
 # Use Sass to process CSS
 # gem "sassc-rails"
 
-gem "datadog", "~> 2.43", require: false
+gem "datadog", "~> 2.45", require: false
 gem "mixpanel-ruby"
 gem "newrelic_rpm"
 gem "rails_semantic_logger", require: false
@@ -71,7 +71,7 @@ gem "mission_control-jobs"
 
 gem "faraday", "~> 2.15.0"
 
-gem "wicked_pdf"
+gem "grover"
 gem "actioncable-enhanced-postgresql-adapter"
 gem "aws-sdk-rails"
 gem "aws-sdk-s3"
@@ -141,7 +141,6 @@ gem "devise", "~> 5.0"
 
 gem "view_component"
 gem "lookbook"
-gem "wkhtmltopdf-binary"
 
 gem "net-sftp"
 gem "net-ssh"

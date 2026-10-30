@@ -64,6 +64,6 @@ class Transmitters::ActivityS3Transmitter
       )
     end
 
-    WickedPdf.new.pdf_from_string(html, margin: PDF_MARGIN)
+    PdfRenderer.render(html, margin: PDF_MARGIN)
   end
 end

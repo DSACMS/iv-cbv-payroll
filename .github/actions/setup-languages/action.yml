@@ -19,4 +19,20 @@ runs:
     - name: Install npm dependencies
       shell: bash
       working-directory: app
-      run: npm install --frozen-lockfile
+      run: npm ci
+
+    - name: Install Chromium runtime dependencies
+      shell: bash
+      working-directory: app
+      run: sudo env "PATH=$PATH" "PUPPETEER_CACHE_DIR=$HOME/.cache/puppeteer" npx puppeteer browsers install chrome --install-deps
+
+    - name: Configure Chrome for the CI container
+      shell: bash
+      run: echo "GROVER_NO_SANDBOX=true" >> "$GITHUB_ENV"
+
+    - name: Install PDF accessibility finalizer
+      shell: bash
+      working-directory: app
+      run: |
+        python3 -m venv "$HOME/.local/share/emmy/pdf-venv"
+        "$HOME/.local/share/emmy/pdf-venv/bin/python" -m pip install -r lib/pdf/requirements.txt

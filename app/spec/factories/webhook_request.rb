@@ -1,3 +1,5 @@
+require "ostruct"
+
 FactoryBot.define do
   factory :webhook_request, class: OpenStruct do
     to_create { |instance| instance } # This prevents FactoryBot from calling save!

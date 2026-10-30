@@ -435,7 +435,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       pdf_text = extract_pdf_text(response)
       expect(pdf_text).to include("Payments from Payroll Employer")
       expect(pdf_text).to include("These were the dates that the client was paid")
-      expect(pdf_text).to include("11/15/2025 - $450.00")
+      expect(pdf_text).to match(/11\/15\/2025\s*-\s*\$450\.00/)
       expect(pdf_text).not_to include("Mileage expenses")
     end
 
