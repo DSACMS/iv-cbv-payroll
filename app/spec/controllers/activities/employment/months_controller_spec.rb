@@ -11,10 +11,12 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       volunteering_activities_count: 0,
       job_training_activities_count: 0,
       education_activities_count: 0,
-      reporting_window_months: reporting_window_months
+      reporting_window_months: reporting_window_months,
+      employment_focused: employment_focused
     )
   end
   let(:reporting_window_months) { 1 }
+  let(:employment_focused) { false }
   let(:employment_activity) { create(:employment_activity, activity_flow: activity_flow) }
 
   before do
@@ -352,6 +354,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
       }
 
       expect(response).to have_http_status(:unprocessable_content)
+      expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--info")
     end
 
     it "threads from_edit to review when from_review is set" do
@@ -397,7 +400,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         )
       end
 
-      it "shows the error alert when income and hours are blank" do
+      it "shows the information alert when income and hours are blank" do
         first_month = activity_flow.reporting_months.first
 
         patch :update, params: {
@@ -408,16 +411,18 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
 
         rendered = Capybara.string(response.body)
         expect(response).to have_http_status(:unprocessable_content)
-        expect(rendered).to have_text(I18n.t("activities.employment.hours_input.error_heading"))
-        expect(rendered).to have_text(
-          I18n.t("activities.employment.hours_input.error_body")
+        expect(rendered).to have_selector(".usa-alert--info")
+        expect(rendered).to have_no_selector(".usa-alert--error")
+        expect(rendered).to have_link(
+          "edit the months you selected",
+          href: edit_activities_flow_income_employment_month_selection_path(employment_id: employment_activity)
         )
         gross_income_label = I18n.t(
           "activities.employment.hours_input.gross_income_label",
           month: I18n.l(first_month, format: :month)
         )
         expect(rendered.find_field(gross_income_label).value).to be_nil
-        expect(rendered).to have_selector(".usa-error-message", count: 1)
+        expect(rendered).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.field_error"), exact_text: true, count: 1)
         expect(rendered).to have_selector(
           'input[name="employment_activity_month[gross_income]"].usa-input--error'
         )
@@ -467,9 +472,50 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(employment_activity.activity_months).to be_empty
-        expect(Capybara.string(response.body)).to have_text(
-          I18n.t("activities.employment.hours_input.error_body")
-        )
+        expect(Capybara.string(response.body)).to have_selector(".usa-alert--info")
+      end
+
+      context "with no income submitted" do
+        let(:gross_income) { "" }
+
+        before do
+          patch :update, params: {
+            employment_id: employment_activity.id,
+            id: 0,
+            from_edit: 1,
+            employment_activity_month: { gross_income: gross_income, hours: "" }
+          }
+        end
+
+        it "preserves the edit context in the month selection link" do
+          expect(Capybara.string(response.body)).to have_link(
+            "edit the months you selected",
+            href: edit_activities_flow_income_employment_month_selection_path(employment_id: employment_activity, from_edit: 1)
+          )
+        end
+
+        context "when income is zero" do
+          let(:gross_income) { "0" }
+
+          it "shows the blue banner and inline income error" do
+            rendered = Capybara.string(response.body)
+
+            expect(rendered).to have_selector(".usa-alert--info")
+            expect(rendered).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.field_error"))
+          end
+        end
+
+        context "for the employment-focused CE flow" do
+          let(:activity_flow) { super().tap { |flow| flow.update!(employment_focused: true) } }
+
+          it "shows the information banner and inline income message" do
+            rendered = Capybara.string(response.body)
+
+            expect(rendered).to have_selector(".usa-alert--info")
+            expect(rendered).to have_no_selector(".usa-alert--error")
+            expect(rendered).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.field_error"), exact_text: true)
+          end
+        end
       end
 
       it "saves the month represented by the selected-month index" do
@@ -489,7 +535,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
           create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
         end
 
-        it "shows the hours error in the alert and next to the field" do
+        it "shows the information banner and inline hours error" do
           patch :update, params: {
             employment_id: employment_activity.id,
             id: 0,
@@ -505,9 +551,46 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
           )
           field_error = I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error")
           expect(response).to have_http_status(:unprocessable_content)
-          expect(rendered).to have_selector(".usa-alert--error", text: alert_error)
+          expect(rendered).to have_selector(".usa-alert--info", text: alert_error)
+          expect(rendered).to have_no_selector(".usa-alert--error")
           expect(rendered).to have_selector(".usa-error-message", text: field_error)
+          expect(rendered).to have_selector('input[name="employment_activity_month[hours]"][required]')
           expect(employment_activity.employment_activity_months).to be_empty
+        end
+
+        context "when zero hours are submitted" do
+          before do
+            patch :update, params: {
+              employment_id: employment_activity.id,
+              id: 0,
+              from_edit: 1,
+              employment_activity_month: { hours: "0" }
+            }
+          end
+
+          it "links back to month selection with the edit context" do
+            rendered = Capybara.string(response.body)
+
+            expect(response).to have_http_status(:unprocessable_content)
+            expect(rendered).to have_selector(".usa-alert--info")
+            expect(rendered).to have_link("edit the months you selected",
+              href: edit_activities_flow_income_employment_month_selection_path(employment_id: employment_activity, from_edit: 1))
+          end
+
+          context "for the employment-focused CE flow" do
+            let(:activity_flow) { super().tap { |flow| flow.update!(employment_focused: true) } }
+
+            it "shows the information banner and required hours field" do
+              rendered = Capybara.string(response.body)
+
+              expect(rendered).to have_no_selector(".usa-alert--error")
+              expect(rendered).to have_selector(".usa-alert--info")
+              expect(rendered).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error"), exact_text: true)
+              expect(rendered).to have_selector('input[name="employment_activity_month[hours]"][required]')
+              expect(rendered).to have_link("edit the months you selected",
+                href: edit_activities_flow_income_employment_month_selection_path(employment_id: employment_activity, from_edit: 1))
+            end
+          end
         end
 
         context "when validation fails" do
@@ -568,11 +651,19 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         expect(employment_activity.activity_months).to be_empty
       end
 
+      it "asks for income next to the gross income field" do
+        expect(Capybara.string(response.body)).to have_selector(
+          "#employment_activity_month_gross_income_error",
+          text: I18n.t("activities.employment.hours_input.field_error"),
+          exact_text: true
+        )
+      end
+
       it "shows the paid-work income error banner" do
         rendered = Capybara.string(response.body)
 
         expect(rendered).to have_text(
-          I18n.t("activities.employment.hours_input.error_body")
+          I18n.t("activities.employment.hours_input.field_error")
         )
         expect(rendered).to have_no_text(
           I18n.t("activities.employment.hours_input.unpaid_or_in_kind.error_body")

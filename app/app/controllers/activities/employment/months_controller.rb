@@ -81,6 +81,9 @@ class Activities::Employment::MonthsController < Activities::BaseController
   def add_hours_submission_errors
     if @employment_activity.unpaid_or_in_kind?
       @activity_month.errors.add(:hours, I18n.t("#{hours_input_t_scope}.unpaid_or_in_kind.field_error"))
+    elsif (@activity_month.gross_income || 0).zero?
+      @activity_month.errors.delete(:gross_income, :not_a_number)
+      @activity_month.errors.add(:gross_income, I18n.t("#{hours_input_t_scope}.field_error"))
     end
   end
 
