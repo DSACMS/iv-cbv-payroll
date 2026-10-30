@@ -144,17 +144,14 @@
           <% activity = entry.record %>
           <% employer_name = activity.employer_name %>
           <% unpaid = activity.unpaid_or_in_kind? %>
-          <% columns = [
-            t("activities.summary.employment.month"),
-            t("activities.summary.employment.gross_income"),
-            t("activities.summary.employment.community_engagement_hours")
-          ] %>
+          <% columns = [ t("activities.summary.employment.month") ] %>
+          <% columns << t("activities.summary.employment.gross_income") unless unpaid %>
+          <% columns << t("activities.summary.employment.community_engagement_hours") %>
           <% rows = @report.activity_month_records(activity.employment_activity_months).map do |month, activity_month|
-            [
-              l(month, format: :month_year),
-              activity_month ? number_to_currency(activity_month.gross_income) : not_provided,
-              activity_month ? format_decimal_amount(activity_month.hours) : not_provided
-            ]
+            row = [ l(month, format: :month_year) ]
+            row << (activity_month ? number_to_currency(activity_month.gross_income) : not_provided) unless unpaid
+            row << (activity_month ? format_decimal_amount(activity_month.hours) : not_provided)
+            row
           end %>
           <% documents = @report.document_names_for(activity) %>
         <% end %>
