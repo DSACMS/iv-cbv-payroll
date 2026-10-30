@@ -22,19 +22,6 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
   end
 
   describe "PATCH #update" do
-    context "with no hours in a single-month report" do
-      before do
-        patch :update, params: { community_service_id: volunteering_activity.id, id: 0, volunteering_activity_month: { hours: "" } }
-      end
-
-      it "shows only the inline hours error" do
-        expect(response).to have_http_status(:unprocessable_content)
-        expect(Capybara.string(response.body)).to have_selector("#volunteering_activity_month_hours_error",
-          text: I18n.t("activities.community_service.hours_input.field_error"))
-        expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--error")
-      end
-    end
-
     context "with no hours by the last month" do
       let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
 
@@ -66,6 +53,9 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
         expect(response).to have_http_status(:unprocessable_content)
         expect(assigns(:back_url)).to be_present
         expect(response.body).to include("back-nav")
+        expect(Capybara.string(response.body)).to have_selector("#volunteering_activity_month_hours_error",
+          text: I18n.t("activities.community_service.hours_input.field_error"))
+        expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--error")
       end
     end
 

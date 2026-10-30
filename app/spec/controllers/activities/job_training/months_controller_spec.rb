@@ -22,37 +22,6 @@ RSpec.describe Activities::JobTraining::MonthsController, type: :controller do
   end
 
   describe "PATCH #update" do
-    context "with no hours in a single-month report" do
-      before do
-        patch :update, params: { job_training_id: job_training_activity.id, id: 0, job_training_activity_month: { hours: "" } }
-      end
-
-      it "shows only the inline hours error" do
-        expect(response).to have_http_status(:unprocessable_content)
-        expect(Capybara.string(response.body)).to have_selector("#job_training_activity_month_hours_error",
-          text: I18n.t("activities.work_programs.hours_input.field_error"))
-        expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--error")
-      end
-    end
-
-    context "with no hours by the last month" do
-      let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
-
-      before do
-        create(:job_training_activity_month, job_training_activity: job_training_activity, month: activity_flow.reporting_months.first, hours: 0)
-        create(:job_training_activity_month, job_training_activity: job_training_activity, month: activity_flow.reporting_months.second, hours: 0)
-        patch :update, params: { job_training_id: job_training_activity.id, id: 2, job_training_activity_month: { hours: 0 } }
-      end
-
-      it "shows only the inline hours error without saving the last month" do
-        expect(response).to have_http_status(:unprocessable_content)
-        expect(Capybara.string(response.body)).to have_selector("#job_training_activity_month_hours_error",
-          text: I18n.t("activities.work_programs.hours_input.field_error"))
-        expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--error")
-        expect(job_training_activity.activity_months.count).to eq(2)
-      end
-    end
-
     it "redirects to document upload on a single-month flow when hours are positive" do
       patch :update, params: { job_training_id: job_training_activity.id, id: 0, job_training_activity_month: { hours: 1 } }
 
@@ -65,6 +34,9 @@ RSpec.describe Activities::JobTraining::MonthsController, type: :controller do
       expect(response).to have_http_status(:unprocessable_content)
       expect(assigns(:back_url)).to be_present
       expect(response.body).to include("back-nav")
+      expect(Capybara.string(response.body)).to have_selector("#job_training_activity_month_hours_error",
+        text: I18n.t("activities.work_programs.hours_input.field_error"))
+      expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--error")
     end
 
     context "with multiple reporting months" do
@@ -91,6 +63,10 @@ RSpec.describe Activities::JobTraining::MonthsController, type: :controller do
         patch :update, params: { job_training_id: job_training_activity.id, id: 2, no_hours: "1" }
 
         expect(response).to have_http_status(:unprocessable_content)
+        expect(Capybara.string(response.body)).to have_selector("#job_training_activity_month_hours_error",
+          text: I18n.t("activities.work_programs.hours_input.field_error"))
+        expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--error")
+        expect(job_training_activity.activity_months.count).to eq(2)
       end
 
       it "allows final month save when another month has hours" do
