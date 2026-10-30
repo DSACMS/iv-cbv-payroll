@@ -11,7 +11,7 @@ RSpec.describe "CE paid work without income", :js, type: :feature do
   let(:monthly_title) { I18n.t("activities.employment.hours_input.heading", organization: activity.employer_name) }
   let(:banner_text) do
     ActionView::Base.full_sanitizer.sanitize(
-      I18n.t("activities.employment.hours_input.no_income_html", month_selection_url: "")
+      I18n.t("activities.employment.hours_input.error_body_html", month_selection_url: "")
     )
   end
 

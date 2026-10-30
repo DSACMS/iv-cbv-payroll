@@ -661,7 +661,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         rendered = Capybara.string(response.body)
 
         expect(rendered).to have_text(
-          I18n.t("activities.employment.hours_input.error_body")
+          I18n.t("activities.employment.hours_input.field_error")
         )
         expect(rendered).to have_no_text(
           I18n.t("activities.employment.hours_input.unpaid_or_in_kind.error_body")

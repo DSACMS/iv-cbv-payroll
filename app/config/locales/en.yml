@@ -383,7 +383,7 @@ en:
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:
         continue: Continue
-        error_body: Add income to continue.
+        error_body_html: If you weren't paid this month, you can <a href="%{month_selection_url}">edit the months you selected</a>. You can report unpaid work later.
         error_heading: No employment information added
         field_error: Add income to continue
         gross_income_hint: How much you made before taxes
@@ -391,7 +391,6 @@ en:
         heading: Add your income and hours for %{organization}
         hours_label: "%{month} hours worked"
         month_indicator: 'Month %{current} of %{total}:'
-        no_income_html: If you weren't paid this month, you can <a href="%{month_selection_url}">edit the months you selected</a>. You can report unpaid work later.
         unpaid_or_in_kind:
           error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>
           error_heading: No work hours added

@@ -257,7 +257,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     )
     expect(page).to have_selector(
       ".usa-alert--error",
-      text: I18n.t("activities.employment.hours_input.error_body")
+      text: I18n.t("activities.employment.hours_input.field_error")
     )
     expect(page).to have_selector(
       'input[name="employment_activity_month[gross_income]"].usa-input--error'
