@@ -1,16 +1,19 @@
 class NscDataFetcherService
   CURRENTLY_ENROLLED = "CC"
   ENROLLMENT_STATUSES = {
-    # Ordered in descending preference if there are multiple active enrollments.
-    # The key is the API response value
-    # The value is the enum value for EducationActivity.
+    # Raw NSC codes mapped to the grouped NscEnrollmentTerm status.
+    # W and S describe the same grouped status, regardless of who reported it.
     "F" => :full_time,
     "Q" => :three_quarter_time,
     "H" => :half_time,
     "L" => :less_than_half_time,
-    "Y" => :enrolled,
-    "W" => :unknown
-  }
+    "Y" => :enrolled, # Enrollment status not released by school.
+    "A" => :leave_of_absence,
+    "W" => :withdrawn,
+    "S" => :withdrawn, # Clearinghouse generated withdrawn.
+    "G" => :graduated,
+    "D" => :deceased
+  }.freeze
 
   def initialize(
     education_activity:,
@@ -65,6 +68,7 @@ class NscDataFetcherService
   end
 
   def save_enrollment_terms(enrollment_details)
+    # Compare grouped statuses, retaining the newest certification for each group.
     enrollment_term_attributes(enrollment_details)
       .group_by { |attributes| attributes.except(:school_certified_on) }
       .each_value do |duplicates|
@@ -91,7 +95,6 @@ class NscDataFetcherService
           middle_name: enrollment_detail["nameOnSchoolRecord"]["middleName"],
           last_name: enrollment_detail["nameOnSchoolRecord"]["lastName"],
           enrollment_status: enrollment_status(enrollment_data),
-          nsc_withdrawn: enrollment_data["enrollmentStatus"] == "W",
           term_begin: term_begin,
           term_end: term_end,
           school_certified_on: enrollment_data.fetch("schoolCertifiedOnDate")

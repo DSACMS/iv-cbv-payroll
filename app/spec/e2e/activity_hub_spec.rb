@@ -81,6 +81,12 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     # Add a Community Service activity
     within("[data-activity-type='community_service']") { click_button I18n.t("activities.hub.add") }
     verify_page(page, title: I18n.t("activities.community_service.new_title"))
+    organization_field = find_field(I18n.t("activities.community_service.organization_name"))
+    expect(organization_field[:required]).to be_truthy
+    click_button I18n.t("activities.community_service.continue")
+    verify_page(page, title: I18n.t("activities.community_service.new_title"))
+    expect(page).to have_selector("#volunteering_activity_organization_name_error",
+      text: I18n.t("activerecord.errors.models.volunteering_activity.attributes.organization_name.blank"))
     fill_in I18n.t("activities.community_service.organization_name"), with: "Helping Hands"
     fill_in I18n.t("activities.community_service.street_address"), with: "123 Main St"
     fill_in I18n.t("activities.community_service.city"), with: "Springfield"

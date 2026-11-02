@@ -9,6 +9,40 @@ RSpec.describe VolunteeringActivity, type: :model do
     expect(activity.hours).to eq(2)
   end
 
+  describe "organization name validation" do
+    subject(:activity) { build(:volunteering_activity, activity_flow: activity_flow, organization_name: organization_name) }
+
+    let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0) }
+
+    context "when missing" do
+      let(:organization_name) { nil }
+
+      it "requires an organization name" do
+        expect(activity).not_to be_valid
+        expect(activity.errors.of_kind?(:organization_name, :blank)).to be(true)
+      end
+    end
+
+    context "when empty" do
+      let(:organization_name) { "" }
+
+      it "requires an organization name" do
+        expect(activity).not_to be_valid
+        expect(activity.errors.of_kind?(:organization_name, :blank)).to be(true)
+      end
+    end
+
+    context "when whitespace only" do
+      let(:organization_name) { " " }
+
+      it "requires an organization name even for drafts" do
+        activity.draft = true
+        expect(activity).not_to be_valid
+        expect(activity.errors.of_kind?(:organization_name, :blank)).to be(true)
+      end
+    end
+  end
+
   describe "date validation" do
     let(:activity_flow) { create(:activity_flow, reporting_window_months: 1, volunteering_activities_count: 0) }
 

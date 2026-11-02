@@ -4,6 +4,20 @@
 
 <% content_for :title, t("activities.hub.title") %>
 
+<% if flash[:activity_added] %>
+  <% activity_type_label = if flash[:activity_added].to_s == "employment" && @flow.unpaid_work_only?
+                             t("activities.unpaid_work.title").downcase
+                           else
+                             t("activities.submit.pdf.activity_types.#{flash[:activity_added]}")
+                           end %>
+  <% alert_spacing_classes = activity_reporting_name(@flow) ? "margin-bottom-4" : "margin-bottom-3 tablet:margin-bottom-0" %>
+  <% content_for :page_alerts do %>
+    <%= render Uswds::Alert.new(type: :success, slim: true, class: alert_spacing_classes, data: { turbo_temporary: true }) do %>
+      <%= t("activities.hub.activity_added", activity_type: activity_type_label) %>
+    <% end %>
+  <% end %>
+<% end %>
+
 <div class="activity-hub-columns">
   <div class="activity-hub-columns__progress">
     <h1>

@@ -8,6 +8,7 @@
 @forward "advanced-launcher.scss";
 @forward "launcher.scss";
 @forward "document_uploads.scss";
+@forward "details_table.scss";
 @forward "activity_report.scss";
 
 /* Import styling from ViewComponents */

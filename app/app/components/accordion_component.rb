@@ -4,6 +4,7 @@ class AccordionComponent < ViewComponent::Base
   attr_reader :base_id
 
   renders_one :title
+  renders_one :body
   renders_many :accordion_items
 
   def initialize(

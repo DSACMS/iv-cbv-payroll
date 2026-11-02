@@ -14,6 +14,12 @@
 </p>
 <p><%= t(".description") %></p>
 
+<% if flash[:education_selection_error] %>
+  <%= render Uswds::Alert.new(type: :error, slim: true, class: "margin-y-3") do %>
+    <%= flash[:education_selection_error] %>
+  <% end %>
+<% end %>
+
 <%= form_with(url: activities_flow_education_add_your_education_path, class: "maxw-none", builder: UswdsFormBuilder, id: "add_your_education_form") do |f| %>
   <%= f.radio_button(:add_education_method, "college_or_university", { label: tag.span(t(".options.college.label"), class: "text-bold"), hint: t(".options.college.hint") }) %>
   <%= f.radio_button(:add_education_method, "high_school_ged", { label: tag.span(t(".options.high_school_ged.label"), class: "text-bold"), hint: t(".options.high_school_ged.hint") }) %>

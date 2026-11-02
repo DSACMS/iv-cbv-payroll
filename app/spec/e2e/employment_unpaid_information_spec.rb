@@ -31,8 +31,8 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
     expect(page).to have_no_field(I18n.t("activities.employment_info.self_employed"))
 
     click_button I18n.t("activities.employment_info.continue")
-    verify_page(page, title: title)
     expect(page).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name_error"))
+    verify_page(page, title: title)
     fill_in I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name"), with: "Example work"
     fill_in I18n.t("activities.employment_info.unpaid_or_in_kind.contact_name"), with: "Example contact"
     click_button I18n.t("activities.employment_info.continue")
@@ -47,11 +47,11 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
     click_button I18n.t("activities.employment.month_selections.edit.continue")
 
     monthly_title = I18n.t("activities.employment.hours_input.unpaid_or_in_kind.heading", organization: "Example work")
-    verify_page(page, title: monthly_title)
-    expect(page).to have_text(
-      [ I18n.t("activities.employment.hours_input.month_indicator", current: 1, total: 2), I18n.l(first_month, format: :month) ].join(" "),
+    expect(page).to have_selector(".month-indicator",
+      text: [ I18n.t("activities.employment.hours_input.month_indicator", current: 1, total: 2), I18n.l(first_month, format: :month) ].join(" "),
       normalize_ws: true
     )
+    verify_page(page, title: monthly_title)
     expect(page).to have_text(I18n.t("activities.employment.hours_input.unpaid_or_in_kind.hours_hint"))
     expect(page).to have_no_selector('input[name="employment_activity_month[gross_income]"]')
     expect(page).to have_no_selector('input[type="checkbox"]')
@@ -68,11 +68,13 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
 
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(first_month, format: :month)), with: "12"
     click_button I18n.t("activities.employment.hours_input.continue")
-    verify_page(page, title: monthly_title)
-    expect(page).to have_text(
-      [ I18n.t("activities.employment.hours_input.month_indicator", current: 2, total: 2), I18n.l(third_month, format: :month) ].join(" "),
+    # Both month forms have the same heading. Wait for the new month before
+    # verify_page checks accessibility so Axe does not run during the Turbo visit.
+    expect(page).to have_selector(".month-indicator",
+      text: [ I18n.t("activities.employment.hours_input.month_indicator", current: 2, total: 2), I18n.l(third_month, format: :month) ].join(" "),
       normalize_ws: true
     )
+    verify_page(page, title: monthly_title)
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(third_month, format: :month)), with: "8"
     click_button I18n.t("activities.employment.hours_input.continue")
     verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: "Example work"), skip_axe_rules: %w[heading-order])

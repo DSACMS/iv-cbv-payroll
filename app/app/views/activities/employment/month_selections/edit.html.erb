@@ -30,14 +30,8 @@
 </p>
 
 <% if @error %>
-  <%= render Uswds::Alert.new(
-    type: :error,
-    heading: t(".error_heading"),
-    form_id: "employment_month_selection_form",
-    class: "margin-bottom-4"
-  ) do %>
-    <%= t(".error_body") %>
-  <% end %>
+  <%= render "shared/input_error", form_id: "employment_month_selection_form",
+        message: t(".error_body") %>
 <% end %>
 
 <%= uswds_form_with(
@@ -50,8 +44,10 @@
       method: :patch
     ) do |f| %>
   <%= hidden_field_tag "employment_activity[selected_months][]", "" %>
-  <fieldset class="usa-fieldset">
-    <legend class="usa-sr-only"><%= t(".legend") %></legend>
+  <fieldset class="<%= class_names("usa-fieldset", "margin-top-2" => !@error) %>">
+    <legend class="usa-legend font-body-sm text-bold margin-bottom-1">
+      <%= t(".legend") %>
+    </legend>
     <% @reporting_months.each do |month| %>
       <% field_id = "employment_activity_selected_months_#{month.strftime('%Y_%m')}" %>
       <div class="usa-checkbox">

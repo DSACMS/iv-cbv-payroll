@@ -47,7 +47,7 @@ class Activities::JobTrainingController < Activities::BaseController
 
   def save_review
     @job_training_activity.update(review_params)
-    @job_training_activity.publish!
+    publish_activity(@job_training_activity, activity_type: :work_programs)
     redirect_to after_activity_path
   end
 

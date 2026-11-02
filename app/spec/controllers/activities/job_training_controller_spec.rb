@@ -205,12 +205,19 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "publishes the activity" do
+    it "publishes the new activity and queues the added alert" do
       job_training_activity.update!(draft: true)
 
       patch :save_review, params: { id: job_training_activity.id, job_training_activity: { additional_comments: "" } }
 
       expect(job_training_activity.reload.draft).to be(false)
+      expect(flash[:activity_added]).to eq(:work_programs)
+    end
+
+    it "does not queue the added alert when saving an existing activity" do
+      patch :save_review, params: { id: job_training_activity.id, from_edit: 1, job_training_activity: { additional_comments: "Updated notes" } }
+
+      expect(flash[:activity_added]).to be_nil
     end
   end
 

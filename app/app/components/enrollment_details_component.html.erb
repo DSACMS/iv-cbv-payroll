@@ -1,0 +1,34 @@
+<% @enrollment_groups.each_with_index do |(latest, *history), index| %>
+  <h2>
+    <%= t("activities.education.edit.enrollment_information_numbered", number: index + 1) %>
+  </h2>
+
+  <%= render EnrollmentTermTableComponent.new(nsc_enrollment_term: latest, class_names: "details-table") do |table| %>
+    <% table.with_enrollment_status do %>
+      <%= render partial: "activities/education/enrollment_status", locals: { term: latest } %>
+    <% end %>
+  <% end %>
+
+  <% if history.any? %>
+    <div class="maxw-table">
+      <%= render AccordionComponent.new(id: "enrollment-history-#{latest.id}") do |accordion| %>
+        <% accordion.with_title { t("activities.education.edit.enrollment_history") } %>
+        <% accordion.with_body do %>
+          <%= render TableComponent.new(
+            caption: t("activities.education.edit.enrollment_history"),
+            class_names: "details-table"
+          ) do |table| %>
+            <% history.each do |term| %>
+              <%= table.with_row do |row| %>
+                <%= row.with_data_cell(is_header: true, scope: "row").with_content(t("components.enrollment_term_table_component.enrollment_status")) %>
+                <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_status")) do %>
+                  <%= render partial: "activities/education/enrollment_status", locals: { term: term } %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

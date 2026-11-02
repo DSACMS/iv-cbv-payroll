@@ -2,6 +2,7 @@
   class="<%= alert_classes %>"
   role="<%= @form_id.present? ? "group" : @options.fetch(:role, "alert") %>"
   aria-atomic="true"
+  <%= tag.attributes(@options.slice(:data)) %>
   <% if controllers.present? %>
     data-controller="<%= controllers %>"
   <% end %>

@@ -1,8 +1,48 @@
 require "rails_helper"
 
 RSpec.describe NscEnrollmentTerm do
-  it "defaults the NSC withdrawn flag to false" do
-    expect(create(:nsc_enrollment_term).reload.nsc_withdrawn).to be(false)
+  describe "new grouped NSC statuses" do
+    subject(:term) { described_class.new(enrollment_status: status) }
+
+    context "with a leave of absence" do
+      let(:status) { :leave_of_absence }
+
+      it "displays the status without establishing half-time enrollment" do
+        expect(term.enrollment_status_display).to eq(I18n.t("components.enrollment_term_table_component.status.leave_of_absence"))
+        expect(term.half_time_or_above?).to be(false)
+        expect(term.enrollment_priority).to eq(0)
+      end
+    end
+
+    context "with a withdrawal" do
+      let(:status) { :withdrawn }
+
+      it "displays the status without establishing half-time enrollment" do
+        expect(term.enrollment_status_display).to eq(I18n.t("components.enrollment_term_table_component.status.withdrawn"))
+        expect(term.half_time_or_above?).to be(false)
+        expect(term.enrollment_priority).to eq(0)
+      end
+    end
+
+    context "with graduation" do
+      let(:status) { :graduated }
+
+      it "displays the status without establishing half-time enrollment" do
+        expect(term.enrollment_status_display).to eq(I18n.t("components.enrollment_term_table_component.status.graduated"))
+        expect(term.half_time_or_above?).to be(false)
+        expect(term.enrollment_priority).to eq(0)
+      end
+    end
+
+    context "with a deceased student" do
+      let(:status) { :deceased }
+
+      it "displays the status without establishing half-time enrollment" do
+        expect(term.enrollment_status_display).to eq(I18n.t("components.enrollment_term_table_component.status.deceased"))
+        expect(term.half_time_or_above?).to be(false)
+        expect(term.enrollment_priority).to eq(0)
+      end
+    end
   end
 
   describe "#half_time_or_above?" do

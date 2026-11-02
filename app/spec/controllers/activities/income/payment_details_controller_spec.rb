@@ -240,7 +240,7 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         .to(comment)
     end
 
-    it "publishes the payroll account" do
+    it "publishes the new payroll account and queues the added alert" do
       payroll_account.update!(draft: true)
 
       patch :update, params: {
@@ -249,6 +249,16 @@ RSpec.describe Activities::Income::PaymentDetailsController do
       }
 
       expect(payroll_account.reload.draft).to be(false)
+      expect(flash[:activity_added]).to eq(:employment)
+    end
+
+    it "does not queue the added alert when saving an existing payroll account" do
+      patch :update, params: {
+        user: { account_id: account_id },
+        payroll_account: { additional_information: comment }
+      }
+
+      expect(flash[:activity_added]).to be_nil
     end
 
     it "tracks saved payment details with activity_flow_id" do

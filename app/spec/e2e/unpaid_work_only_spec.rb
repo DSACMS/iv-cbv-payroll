@@ -5,6 +5,9 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
   include_context "activity_hub"
 
   let(:alert_text) { I18n.t("activities.activities.activity_section.unpaid_work_alert") }
+  let(:activity_added_text) do
+    I18n.t("activities.hub.activity_added", activity_type: I18n.t("activities.unpaid_work.title").downcase)
+  end
   let(:agency_name) { I18n.t("shared.agency_full_name.sandbox") }
   let(:agency_website) { Rails.application.config.client_agencies["sandbox"].agency_contact_website }
   let(:renewal_instructions) { I18n.t("activities.success.show.head_of_household_description_html", agency_website: agency_website) }
@@ -62,6 +65,7 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
 
       # Hub: verify the saved activity and hours.
       verify_page(page, title: I18n.t("activities.hub.title"))
+      expect(page).to have_selector(".usa-alert--success", text: activity_added_text, normalize_ws: true)
       within("[data-activity-type='unpaid_work']") do
         expect(page).to have_text(I18n.t("activities.hub.cards.hours", count: "12"))
         expect(page).to have_no_text("$0.00")

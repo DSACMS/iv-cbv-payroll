@@ -50,6 +50,23 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
       expect(response.body).to include("exit-confirmation-modal")
       expect(Capybara.string(response.body)).not_to have_link("Back")
     end
+
+    context "after submitting without a selection" do
+      before do
+        post :create
+        get :show
+      end
+
+      it "renders the slim error alert between the introduction and the choices" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_selector(
+          "h1 ~ p + .usa-alert--error.usa-alert--slim",
+          text: I18n.t("shared.next_path.notice_no_answer")
+        )
+        expect(rendered).to have_selector(".usa-alert + form#add_your_education_form")
+      end
+    end
   end
 
   describe "#create" do
@@ -82,13 +99,13 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
 
     it "redirects back with an alert when nothing is selected" do
       post :create
-      expect(flash[:slim_alert][:message]).to eq(I18n.t("shared.next_path.notice_no_answer"))
+      expect(flash[:education_selection_error]).to eq(I18n.t("shared.next_path.notice_no_answer"))
       expect(response).to redirect_to(activities_flow_education_add_your_education_path)
     end
 
     it "redirects back with an alert when the selection is not recognized" do
       post :create, params: { add_education_method: "something_else" }
-      expect(flash[:slim_alert][:message]).to eq(I18n.t("shared.next_path.notice_no_answer"))
+      expect(flash[:education_selection_error]).to eq(I18n.t("shared.next_path.notice_no_answer"))
       expect(response).to redirect_to(activities_flow_education_add_your_education_path)
     end
   end

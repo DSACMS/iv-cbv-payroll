@@ -14,7 +14,7 @@ class Activities::Employment::AddYourWorkController < Activities::BaseController
     add_work_method = params[:add_work_method]
 
     unless ADD_WORK_METHODS.include?(add_work_method)
-      flash[:slim_alert] = { message: t("shared.next_path.notice_no_answer"), type: "error" }
+      flash[:add_work_method_error] = t("shared.next_path.notice_no_answer")
       return redirect_to activities_flow_income_add_your_work_path
     end
 

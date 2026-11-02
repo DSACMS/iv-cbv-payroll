@@ -127,7 +127,9 @@ module Launcher
         terms: [
           { school_name: "Harborview College", enrollment_status: :withdrawn, certification_month_offset: 2, expected_dedupe_result: :keep },
           { school_name: "Harborview College", enrollment_status: :full_time, certification_month_offset: 1, expected_dedupe_result: :keep },
-          { school_name: "Harborview College", enrollment_status: :full_time, certification_month_offset: 0, expected_dedupe_result: :remove }
+          { school_name: "Harborview College", enrollment_status: :full_time, certification_month_offset: 0, expected_dedupe_result: :remove },
+          { school_name: "Harborview College", enrollment_status: :withdrawn, nsc_status_code: "S", certification_month_offset: 1, expected_dedupe_result: :remove },
+          { school_name: "Harborview College", enrollment_status: :leave_of_absence, certification_month_offset: 2, expected_dedupe_result: :keep }
         ]
       )
     ].freeze
@@ -138,7 +140,8 @@ module Launcher
       half_time: "H",
       less_than_half_time: "L",
       enrolled: "Y",
-      withdrawn: "W"
+      withdrawn: "W",
+      leave_of_absence: "A"
     }.freeze
 
     module_function
@@ -178,7 +181,7 @@ module Launcher
             {
               "termBeginDate" => term[:term_begin].strftime("%Y-%m-%d"),
               "termEndDate" => term[:term_end].strftime("%Y-%m-%d"),
-              "enrollmentStatus" => STATUS_CODES.fetch(term[:enrollment_status].to_sym),
+              "enrollmentStatus" => term[:nsc_status_code],
               "schoolCertifiedOnDate" => term[:school_certified_on].strftime("%Y-%m-%d")
             }
           ]
@@ -194,6 +197,7 @@ module Launcher
         {
           school_name: term_data[:school_name],
           enrollment_status: term_data[:enrollment_status],
+          nsc_status_code: term_data.fetch(:nsc_status_code) { STATUS_CODES.fetch(term_data[:enrollment_status].to_sym) },
           term_begin: covered_window.begin,
           term_end: covered_window.end,
           school_certified_on: covered_window.begin + term_data.fetch(:certification_month_offset, 0).months

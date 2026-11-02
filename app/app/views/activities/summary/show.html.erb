@@ -2,7 +2,7 @@
 
 <% content_for :activity_flow_header do %>
   <div class="back-nav">
-    <%= link_to activities_flow_root_path, class: "back-nav__link" do %>
+    <%= link_to activities_flow_root_path, class: "back-nav__link", data: { turbo_prefetch: false } do %>
       <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
         <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#navigate_before") %>"></use>
       </svg>
