@@ -196,7 +196,7 @@
           <% rows = [ row ] %>
         <% else %>
           <% enrollment_terms = entry.enrollment_terms %>
-          <% show_credit_hours = enrollment_terms.any?(&:less_than_half_time?) %>
+          <% show_credit_hours = activity.partially_self_attested? && enrollment_terms.any?(&:less_than_half_time?) %>
           <% columns = [
             t("activities.education.review.term"),
             t("components.enrollment_term_table_component.enrollment_status")
@@ -207,25 +207,41 @@
               t("activities.summary.education.community_engagement_hours")
             ] %>
           <% end %>
-          <% rows = enrollment_terms.map do |term|
+          <% term_groups = enrollment_terms
+            .sort_by { |term| [ term.term_begin, term.term_end, term.school_certified_on || Date::Infinity.new ] }
+            .group_by { |term| [ term.term_begin, term.term_end ] } 
+            .values %>
+          <% rows = term_groups.map do |terms_for_range|
+            status_lines = terms_for_range.map do |term|
+              if term.school_certified_on.present?
+                t("components.enrollment_term_table_component.status_as_of_date",
+                  status: term.enrollment_status_display,
+                  date: format_date(term.school_certified_on))
+              else
+                term.enrollment_status_display
+              end
+            end
+
             row = [
               t(
                 "activities.submit.pdf.term_date_range",
-                start_date: format_date(term.term_begin),
-                end_date: format_date(term.term_end)
+                start_date: format_date(terms_for_range.first.term_begin, :month_year),
+                end_date: format_date(terms_for_range.first.term_end, :month_year)
               ),
-              term.enrollment_status_display
+              safe_join(status_lines, tag.br)
             ]
+
             if show_credit_hours
-              if term.less_than_half_time?
-                credit_hours = activity.review_term_credit_hours(term)
-                row += [
-                  format_decimal_amount(credit_hours),
-                  format_decimal_amount(activity.community_engagement_hours(credit_hours))
-                ]
-              else
-                row += [ t("shared.not_applicable"), t("shared.not_applicable") ]
-              end
+              credit_hours_lines, ce_hours_lines = terms_for_range.map do |term|
+                if term.less_than_half_time?
+                  credit_hours = activity.review_term_credit_hours(term)
+                  [ format_decimal_amount(credit_hours), format_decimal_amount(activity.community_engagement_hours(credit_hours)) ]
+                else
+                  [ t("shared.not_applicable"), t("shared.not_applicable") ]
+                end
+              end.transpose
+
+              row += [ safe_join(credit_hours_lines, tag.br), safe_join(ce_hours_lines, tag.br) ]
             end
             row
           end %>
@@ -233,7 +249,10 @@
 
         <%= render "activities/submit/summary_activity",
           section_heading: index.zero? ? t("activities.submit.pdf.education_summary") : nil,
-          title: t(
+          title: @report.education_entries.one? ? t(
+            "activities.submit.pdf.institution_title_single",
+            name: entry.school_name.presence || not_provided
+          ) : t(
             "activities.submit.pdf.institution_title",
             number: index + 1,
             name: entry.school_name.presence || not_provided
@@ -363,29 +382,28 @@
     <section class="margin-top-4">
       <% @report.education_entries.each_with_index do |entry, index| %>
         <% activity = entry.activity %>
-        <% education_details = [] %>
-        <% if activity.fully_self_attested? %>
-          <% education_details = [
-            [ t("activities.submit.pdf.address"), activity.formatted_address ],
-            [ t("activities.submit.pdf.school_contact_name"), activity.contact_name ],
-            [ t("activities.submit.pdf.school_contact_title"), activity.contact_title ],
-            [ t("activities.submit.pdf.school_contact_email"), activity.contact_email ],
-            [
-              t("activities.submit.pdf.school_contact_phone_number"),
-              number_to_phone(activity.contact_phone_number, area_code: true)
-            ]
-          ] %>
-        <% end %>
+        <% education_details = [
+          [ t("activities.submit.pdf.address"), activity.formatted_address ],
+          [ t("activities.submit.pdf.school_contact_name"), activity.contact_name ],
+          [ t("activities.submit.pdf.school_contact_email"), activity.contact_email ],
+          [
+            t("activities.submit.pdf.school_contact_phone_number"),
+            number_to_phone(activity.contact_phone_number, area_code: true)
+          ]
+        ] %>
         <%= render "activities/submit/detail_activity",
           section_heading: index.zero? ? t("activities.submit.pdf.education_details") : nil,
-          title: t(
+          title: @report.education_entries.one? ? t(
+            "activities.submit.pdf.institution_title_single",
+            name: entry.school_name.presence || not_provided
+          ) : t(
             "activities.submit.pdf.institution_title",
             number: index + 1,
             name: entry.school_name.presence || not_provided
           ),
           comments: entry.comments,
           information_heading: t("activities.submit.pdf.institution_information"),
-          details: [ [ t("activities.submit.pdf.education_type"), activity.education_type_display ] ] + education_details %>
+          details: education_details %>
       <% end %>
     </section>
   <% end %>
