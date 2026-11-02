@@ -20,22 +20,22 @@
 
 <div class="margin-top-5">
   <h2><%= t("activities.income.payment_details.show.employment_focused.monthly_details") %></h2>
-  <%= render TableComponent.new(caption: employment_information, class_names: "maxw-none", multi_column: true) do |table| %>
+  <%= render TableComponent.new(caption: t("activities.income.payment_details.show.employment_focused.monthly_details"), class_names: "maxw-none", multi_column: true) do |table| %>
     <%= table.with_header_cell
-      .with_content(I18n.t("components.report.monthly_summary_table.month")) %>
+      .with_content(I18n.t("activities.income.payment_details.show.employment_focused.month")) %>
     <%= table.with_header_cell
-      .with_content(I18n.t("components.report.monthly_summary_table.w2.title_gross_income")) %>
+      .with_content(I18n.t("activities.income.payment_details.show.employment_focused.gross_income")) %>
     <%= table.with_header_cell
-      .with_content(I18n.t("components.report.monthly_summary_table.w2.title_number_of_paychecks")) %>
+      .with_content(I18n.t("activities.income.payment_details.show.employment_focused.number_of_paychecks")) %>
     <%= table.with_header_cell
-      .with_content(I18n.t("components.report.monthly_summary_table.activity.hours_worked")) %>
+      .with_content(I18n.t("activities.income.payment_details.show.employment_focused.hours_worked")) %>
     <% @report.flow.reporting_months.each do |month| %>
       <% row_data = month_rows(month) %>
       <%= table.with_row do |row| %>
-        <%= row.with_data_cell(data_label: I18n.t("components.report.monthly_summary_table.month"), is_header: true, scope: "row").with_content(row_data[:month]) %>
-        <%= row.with_data_cell(data_label: I18n.t("components.report.monthly_summary_table.w2.title_gross_income")).with_content(row_data[:gross_income]) %>
-        <%= row.with_data_cell(data_label: I18n.t("components.report.monthly_summary_table.w2.title_number_of_paychecks")).with_content(row_data[:number_of_paychecks]) %>
-        <%= row.with_data_cell(data_label: I18n.t("components.report.monthly_summary_table.activity.hours_worked")).with_content(row_data[:hours_worked]) %>
+        <%= row.with_data_cell(data_label: I18n.t("activities.income.payment_details.show.employment_focused.month"), is_header: true, scope: "row").with_content(row_data[:month]) %>
+        <%= row.with_data_cell(data_label: I18n.t("activities.income.payment_details.show.employment_focused.gross_income")).with_content(row_data[:gross_income]) %>
+        <%= row.with_data_cell(data_label: I18n.t("activities.income.payment_details.show.employment_focused.number_of_paychecks")).with_content(row_data[:number_of_paychecks]) %>
+        <%= row.with_data_cell(data_label: I18n.t("activities.income.payment_details.show.employment_focused.hours_worked")).with_content(row_data[:hours_worked]) %>
       <% end %>
     <% end %>
   <% end %>

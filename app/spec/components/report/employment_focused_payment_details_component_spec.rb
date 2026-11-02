@@ -17,14 +17,13 @@ RSpec.describe Report::EmploymentFocusedPaymentDetailsComponent, type: :componen
       summarize_by_month: { "synthetic-account" => summary })
   end
 
-  it "renders the requested employment fields and one table per reporting month" do
+  it "renders the requested employment fields and a shared monthly details table" do
     rendered = render_inline(described_class.new(report, payroll_account, is_w2_worker: true))
 
     expect(rendered).to have_selector("h2", text: "Employment information")
     expect(rendered).to have_selector("h2", text: "Monthly details")
-    expect(rendered).to have_selector("table", count: 3)
-    expect(rendered).to have_selector("table.maxw-none caption", text: "January 2026")
-    expect(rendered).to have_selector("table.maxw-none caption", text: "February 2026")
+    expect(rendered).to have_selector("table", count: 2)
+
     employment_table = rendered.css("table").first
     expect(employment_table.css("tbody th").map { |cell| cell.text.strip }).to eq([
       "Employment start date", "Employment end date", "Employment status", "Pay frequency", "Compensation amount"
@@ -33,18 +32,22 @@ RSpec.describe Report::EmploymentFocusedPaymentDetailsComponent, type: :componen
     expect(employment_table).to have_text("$25.00")
     expect(rendered).to have_no_text("Employer address")
 
-    january = rendered.css("table").find { |table| table.at_css("caption")&.text&.strip == "January 2026" }
-    expect(january.css("th").map { |cell| cell.text.strip }).to eq([ "Month", "Gross income", "Number of paychecks", "Hours worked" ])
-    expect(january.css("td").map { |cell| cell.text.strip }).to eq([ "January 2026", "$1,500.00", "2", "80.0" ])
-    february = rendered.css("table").find { |table| table.at_css("caption")&.text&.strip == "February 2026" }
-    expect(february.css("td").map { |cell| cell.text.strip }).to eq([ "February 2026", "N/A", "0", "N/A" ])
+    monthly_table = rendered.css("table").last
+    expect(monthly_table.css("thead th").map { |cell| cell.text.strip }).to eq([ "Month", "Gross income", "Number of paychecks", "Hours worked" ])
+
+    january_row = monthly_table.css("tbody tr").find { |row| row.at_css("th")&.text&.strip == "January 2026" }
+    expect(january_row.css("td").map { |cell| cell.text.strip }).to eq([ "$1,500.00", "2", "80.0" ])
+
+    february_row = monthly_table.css("tbody tr").find { |row| row.at_css("th")&.text&.strip == "February 2026" }
+    expect(february_row.css("td").map { |cell| cell.text.strip }).to eq([ "N/A", "0", "N/A" ])
   end
 
   it "uses gig hours for gig workers" do
     rendered = render_inline(described_class.new(report, payroll_account, is_w2_worker: false))
 
-    january = rendered.css("table").find { |table| table.at_css("caption")&.text&.strip == "January 2026" }
-    expect(january.css("td").last.text).to eq("12.5")
+    monthly_table = rendered.css("table").last
+    january_row = monthly_table.css("tbody tr").find { |row| row.at_css("th")&.text&.strip == "January 2026" }
+    expect(january_row.css("td").last.text).to eq("12.5")
   end
 
   it "does not format missing compensation as zero" do
