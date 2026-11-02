@@ -168,6 +168,7 @@ ignore_missing:
     - "components.uswds.alert.dismiss" # FFS-4930
     - "api.v2.la_ldh.fields.*" # FFS-4797
     - "api.v2.fields.*" # FFS-4797
+    - "cbv.submits.update.consent_to_authorize_warning" # FFS-4947
     - "cbv.employer_searches.employer.select_employer"
     - "cbv.employer_searches.show.select_employer"
 
