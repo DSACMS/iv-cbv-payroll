@@ -75,10 +75,10 @@ en:
             self_attested_enrollment_status:
               inclusion: Please select an option
             self_attested_term_end:
-              blank: Add term end date to continue
+              blank: Enter a term end date to continue
               invalid: Add a valid date with month and year
             self_attested_term_start:
-              blank: Add term start date to continue
+              blank: Enter a term start date to continue
               invalid: Add a valid date with month and year
         job_training_activity:
           attributes:
