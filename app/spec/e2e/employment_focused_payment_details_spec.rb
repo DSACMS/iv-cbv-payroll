@@ -32,7 +32,7 @@ RSpec.describe "Employment-focused payment details copy", :js, type: :feature do
       open_payment_details(months: 3)
 
       tables = page.all("table.maxw-none")
-      expect(tables.size).to eq(4)
+      expect(tables.size).to eq(2)
       tables.each do |table|
         dimensions = page.evaluate_script(<<~JS, table)
           [arguments[0].getBoundingClientRect().width,
@@ -46,7 +46,7 @@ RSpec.describe "Employment-focused payment details copy", :js, type: :feature do
 
     it "shows employment and monthly details for a three-month report" do
       open_payment_details(months: 3)
-      expect(page).to have_selector("table", count: 4)
+      expect(page).to have_selector("table", count: 2)
       verify_employment_details_copy
     end
   end
@@ -73,14 +73,13 @@ RSpec.describe "Employment-focused payment details copy", :js, type: :feature do
         expect(page).to have_text(label)
       end
     end
-    ActivityFlow.last.reporting_months.each do |month|
-      caption = I18n.l(month, format: :month_year)
-      table = page.find("caption", text: caption, exact_text: true, visible: :all).find(:xpath, "..")
-      within(table) do
-        [ "Month", "Gross income", "Number of paychecks", "Hours worked" ].each do |label|
-          expect(page).to have_text(label)
-        end
-        expect(page).to have_text(caption)
+    within(page.all("table").last) do
+      [ "Month", "Gross income", "Number of paychecks", "Hours worked" ].each do |label|
+        expect(page).to have_text(label)
+      end
+      ActivityFlow.last.reporting_months.each do |month|
+        caption = I18n.l(month, format: :month_year)
+        expect(page).to have_selector("th", text: caption, exact_text: true)
       end
     end
     expect(page).to have_field("payroll_account[additional_information]")
