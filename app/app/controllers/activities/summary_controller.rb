@@ -12,7 +12,7 @@ class Activities::SummaryController < Activities::BaseController
     end
 
     unless params.dig(:activity_flow, :consent_to_submit) == "1"
-      flash.now[:alert] = t("activities.submit.consent_required")
+      @consent_error = t("activities.submit.consent_required")
 
       if @flow.employment_focused?
         load_employment_focused_review_data

@@ -637,7 +637,7 @@ en:
     submit:
       confirm: Share my report
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized agency personnel.'
-      consent_required: Please check the legal agreement box to share your report.
+      consent_required: Please check the box to continue
       description: Your report will be sent to %{agency_name}. You must check the legal agreement box to share your report.
       pdf:
         activity_comments: Activity comments
@@ -1217,7 +1217,7 @@ en:
         warning_1: Your income report will be sent to %{agency_acronym}.
         warning_2: You must check the legal agreement box to share your report.
       update:
-        consent_to_authorize_warning: Please check the legal agreement box to share your report.
+        consent_to_authorize_warning: Please check the box to continue
     successes:
       show:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"

@@ -73,8 +73,23 @@ RSpec.describe Cbv::SubmitsController do
           it "renders properly" do
             get :show
             expect(controller.send(:has_consent)).to be_falsey
-            expect(response.body).to include("Legal agreement")
+            expect(Capybara.string(response.body)).to have_selector("h2", text: I18n.t("cbv.submits.show.legal_header"))
             expect(response).to be_successful
+          end
+
+          context "after submitting without consent" do
+            before do
+              patch :update
+              get :show
+            end
+
+            it "renders an inline error associated with the consent checkbox" do
+              rendered = Capybara.string(response.body)
+
+              expect(rendered).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("cbv.submits.update.consent_to_authorize_warning"))
+              expect(rendered).to have_selector("#cbv_flow_consent_to_authorized_use[aria-invalid='true'][aria-describedby='cbv_flow_consent_to_authorized_use_error']")
+              expect(rendered).to have_no_selector(".usa-alert--error")
+            end
           end
         end
 
@@ -591,12 +606,11 @@ RSpec.describe Cbv::SubmitsController do
     end
 
     context "without consent" do
-      it "redirects back with an alert" do
+      it "redirects back with a consent error" do
         expect(CaseWorkerTransmitterJob).not_to receive(:perform_later)
         patch :update
         expect(response).to redirect_to(cbv_flow_submit_path)
-        expect(flash[:alert]).to be_present
-        expect(flash[:alert]).to eq("Please check the legal agreement box to share your report.")
+        expect(flash[:consent_error]).to eq(I18n.t("cbv.submits.update.consent_to_authorize_warning"))
       end
     end
 

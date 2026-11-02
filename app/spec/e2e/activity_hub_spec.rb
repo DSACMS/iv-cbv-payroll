@@ -381,7 +381,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
     verify_page(page, title: I18n.t("activities.summary.title"))
-    expect(page).to have_content I18n.t("activities.submit.consent_required")
+    expect(page).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("activities.submit.consent_required"))
+    expect(page).to have_selector("#activity_flow_consent_to_submit[aria-invalid='true'][aria-describedby='activity_flow_consent_to_submit_error']:focus", visible: :all)
+    expect(page).to have_no_selector(".usa-alert--error")
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
 
