@@ -221,12 +221,11 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
             error_fields: contain_exactly("self_attested_enrollment_status", "self_attested_term_start", "self_attested_term_end") }
         }
 
-      it "renders the required-field alert and inline errors" do
+      it "renders inline errors without an error banner" do
         submit_term
 
         expect(response).to have_http_status(:unprocessable_content)
-        expect(rendered).to have_text(I18n.t("activities.education.add_your_term.errors.information_heading"))
-        expect(rendered).to have_text(I18n.t("activities.education.add_your_term.errors.information_body"))
+        expect(rendered).to have_no_selector(".usa-alert--error")
         expect(term_start_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_term_start.blank"))
         expect(term_end_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_term_end.blank"))
         expect(enrollment_status_group).to have_selector("select.usa-input--error.text-error[aria-invalid='true']")
@@ -240,10 +239,9 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
 
       before { submit_term }
 
-      it "renders the invalid-date alert and preserves the input" do
+      it "renders an inline date error and preserves the input without a banner" do
         expect(response).to have_http_status(:unprocessable_content)
-        expect(rendered).to have_text(I18n.t("activities.education.add_your_term.errors.dates_heading"))
-        expect(rendered).to have_text(I18n.t("activities.education.add_your_term.errors.dates_body"))
+        expect(rendered).to have_no_selector(".usa-alert--error")
         expect(term_start_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_term_start.invalid"))
         expect(rendered).to have_field(I18n.t("activities.education.add_your_term.edit.term_start"), with: "55/2026")
       end
@@ -282,7 +280,8 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
         submit_term
 
         expect(response).to have_http_status(:unprocessable_content)
-        expect(rendered).to have_text(I18n.t("activities.education.add_your_term.errors.dates_heading"))
+        expect(term_end_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_term_end.invalid"))
+        expect(rendered).to have_no_selector(".usa-alert--error")
       end
     end
 
