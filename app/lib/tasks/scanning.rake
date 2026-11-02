@@ -27,37 +27,16 @@ namespace :npm do
     stdout, stderr, status = Open3.capture3("npm audit --json")
     unless status.success?
       Rails.logger.error stderr
-      parsed = JSON.parse("[#{stdout}]")
+      parsed = JSON.parse(stdout)
       Rails.logger.info JSON.pretty_generate(parsed)
       if /503 Service Unavailable/.match?(stderr)
         Rails.logger.info "Ignoring unavailable server"
-      elsif all_issues_ignored?(parsed)
-        Rails.logger.info "Ignoring known and accepted npm audit results"
       else
         Rails.logger.error "Failed with exit code #{status.exitstatus}"
         exit status.exitstatus
       end
     end
   end
-end
-
-def all_issues_ignored?(issues)
-  present_advisories_with_frequencies = Hash.new { |hash, key| hash[key] = 0 }
-
-  # Only look at audit advisories, and not audit summaries
-  issues.select { |issue_json| issue_json["type"] == "auditAdvisory" }.each do |issue_json|
-    present_advisories_with_frequencies[issue_json["data"]["advisory"]["id"]] += 1
-  end
-
-  # Advisory ID to be ignored with number of times it appears in project dependencies
-  # And, a comment as to why we're ignoring
-  ignored_advisories_with_frequencies = {
-    # 1005154 => 2, # high - inefficient regex in dev server and at build time
-  }
-
-  pp "Present advisories: #{present_advisories_with_frequencies}"
-  pp "Ignored advisories: #{ignored_advisories_with_frequencies}"
-  present_advisories_with_frequencies == ignored_advisories_with_frequencies
 end
 
 task default: [ "standard", "brakeman", "bundler:audit", "npm:audit" ]
