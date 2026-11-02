@@ -128,6 +128,8 @@ ignore_missing:
     - "time.*"    # Defaults provided by rails-i18n
     - "payment_frequencies.*"   # Helper method uses English values directly
   es:
+    # Development-only PDF rendering diagnostic.
+    - "health_check.pdf_rendering"
     # Government banner is currently supported in English only.
     - "application.government_banner.*"
     # Internal advanced launcher

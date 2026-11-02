@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+require "open3"
+require "fileutils"
+require "rexml/document"
+
+files = ARGV.flat_map { |path| File.directory?(path) ? Dir.glob(File.join(path, "*.pdf")) : [ path ] }
+abort "Usage: bin/check-pdf-accessibility PDF_OR_DIRECTORY [...] (at least one PDF required)" if files.empty?
+report, error, status = Open3.capture3(ENV.fetch("VERAPDF", "verapdf"), "--flavour", "ua1", "--format", "xml", *files)
+report_directory = ENV.fetch("PDF_ACCESSIBILITY_REPORT_DIR", File.expand_path("~/.local/share/emmy/pdf-accessibility"))
+FileUtils.mkdir_p(report_directory)
+report_path = File.join(report_directory, "verapdf.xml")
+File.write(report_path, report)
+warn error unless error.empty?
+document = REXML::Document.new(report)
+results = REXML::XPath.match(document, "//validationReport")
+failures = results.reject { |result| result.attributes["isCompliant"] == "true" }
+unless status.success? && results.length == files.length && failures.empty?
+  abort "PDF/UA validation failed; see #{report_path}"
+end
+puts "#{results.length} PDFs passed veraPDF PDF/UA-1 validation. Manual assistive-technology review is still required."

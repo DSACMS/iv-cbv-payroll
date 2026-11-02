@@ -1,3 +1,5 @@
+require "ostruct"
+
 FactoryBot.define do
   factory :pinwheel_report, class: 'Aggregators::AggregatorReports::PinwheelReport' do
     initialize_with do

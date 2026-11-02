@@ -218,14 +218,14 @@ RSpec.describe Cbv::SubmitsController do
 
               pdf_text = extract_pdf_text(response)
 
-              expect(pdf_text).to include([
+              expect(pdf_text).to include(*[
                 I18n.t("cbv.submits.show.pdf.shared.report_details"),
                 "#{I18n.t("cbv.submits.show.pdf.shared.confirmation_code")} #{cbv_flow.confirmation_code}",
                 "#{I18n.t("cbv.submits.show.pdf.client.date_created")} #{I18n.l(cbv_flow.consented_to_authorized_use_at.to_date, format: :long)}",
                 "#{I18n.t("cbv.submits.show.pdf.client.date_range")} #{I18n.l(pinwheel_report.from_date.to_date, format: :long)} to #{I18n.l(pinwheel_report.to_date.to_date, format: :long)}",
                 "#{I18n.t("cbv.submits.show.pdf.caseworker.agreement_consent_timestamp")} #{cbv_flow.consented_to_authorized_use_at}",
                 I18n.t("cbv.submits.show.pdf.client.employment_payment_details")
-              ].join(" "))
+              ])
             end
 
             it "shows the expected client report details rows" do
@@ -235,13 +235,13 @@ RSpec.describe Cbv::SubmitsController do
 
               pdf_text = extract_pdf_text(response)
 
-              expect(pdf_text).to include([
+              expect(pdf_text).to include(*[
                 I18n.t("cbv.submits.show.pdf.shared.report_details"),
                 "#{I18n.t("cbv.submits.show.pdf.shared.confirmation_code")} #{cbv_flow.confirmation_code}",
                 "#{I18n.t("cbv.submits.show.pdf.client.date_created")} #{I18n.l(cbv_flow.consented_to_authorized_use_at.to_date, format: :long)}",
                 "#{I18n.t("cbv.submits.show.pdf.client.date_range")} #{I18n.l(pinwheel_report.from_date.to_date, format: :long)} to #{I18n.l(pinwheel_report.to_date.to_date, format: :long)}",
                 I18n.t("cbv.submits.show.pdf.client.employment_payment_details")
-              ].join(" "))
+              ])
             end
           end
         end

@@ -32,19 +32,10 @@ class Cbv::SubmitsController < Cbv::BaseController
           locale: I18n.locale
         })
 
-        render pdf: "#{@cbv_flow.id}",
-          layout: "pdf",
-          locals: {
-            is_caseworker: internal_environment? && params[:is_caseworker],
-            aggregator_report: @aggregator_report
-          },
-          footer: { right: t(".pdf.footer.page_footer"), font_size: 10 },
-          margin: {
-            top: 10,
-            bottom: 10,
-            left: 10,
-            right: 10
-          }
+        html = render_to_string(template: "cbv/submits/show", formats: [ :pdf ], layout: "pdf",
+          locals: { is_caseworker: internal_environment? && params[:is_caseworker], aggregator_report: @aggregator_report })
+        send_data PdfRenderer.render(html, footer: helpers.pdf_page_footer),
+          filename: "#{@cbv_flow.id}.pdf", type: "application/pdf", disposition: "inline"
       end
     end
 

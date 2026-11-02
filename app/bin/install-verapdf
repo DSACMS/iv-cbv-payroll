@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+require "tmpdir"
+require "digest"
+require "cgi"
+
+version = "1.30.3"
+checksum = "b512bf24945503a33fc10738ecffc1f2dccaaf8593a448e94ee9ac86a9559a59"
+destination = File.expand_path(ARGV.fetch(0))
+Dir.mktmpdir("verapdf-install") do |directory|
+  archive = File.join(directory, "installer.zip")
+  url = "https://software.verapdf.org/releases/1.30/verapdf-greenfield-#{version}-installer.zip"
+  abort "veraPDF download failed" unless system("curl", "--fail", "--location", url, "--output", archive)
+  abort "veraPDF checksum mismatch" unless Digest::SHA256.file(archive).hexdigest == checksum
+  abort "veraPDF extraction failed" unless system("unzip", "-q", archive, "-d", directory)
+  config = File.join(directory, "install.xml")
+  File.write(config, <<~XML)
+    <AutomatedInstallation langpack="eng">
+      <com.izforge.izpack.panels.htmlhello.HTMLHelloPanel id="welcome"/>
+      <com.izforge.izpack.panels.target.TargetPanel id="install_dir"><installpath>#{CGI.escapeHTML(destination)}</installpath></com.izforge.izpack.panels.target.TargetPanel>
+      <com.izforge.izpack.panels.packs.PacksPanel id="sdk_pack_select">
+        <pack index="0" name="veraPDF GUI" selected="false"/>
+        <pack index="1" name="veraPDF CLI" selected="true"/>
+        <pack index="2" name="veraPDF Documentation" selected="false"/>
+        <pack index="3" name="veraPDF Sample Plugins" selected="false"/>
+      </com.izforge.izpack.panels.packs.PacksPanel>
+      <com.izforge.izpack.panels.install.InstallPanel id="install"/>
+      <com.izforge.izpack.panels.finish.FinishPanel id="finish"/>
+    </AutomatedInstallation>
+  XML
+  jar = File.join(directory, "verapdf-greenfield-#{version}", "verapdf-izpack-installer-#{version}.jar")
+  abort "veraPDF installation failed" unless system("java", "-jar", jar, config)
+end
+puts "Installed veraPDF to #{destination}"
