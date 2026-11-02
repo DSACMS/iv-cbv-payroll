@@ -25,6 +25,7 @@ RSpec.describe "Work program month validation", :js, type: :feature do
     expect(page).to have_selector(".usa-error-message", text: I18n.t("#{scope}.field_error"))
     verify_page(page, title: title)
     expect(page).to have_no_selector(".usa-alert--error")
+    expect(page).to have_selector("#job_training_activity_month_hours:focus")
 
     fill_in I18n.t("#{scope}.hours_label", month: month_label), with: "12.5"
     expect(page).to have_selector(".usa-error-message", text: I18n.t("#{scope}.field_error"))
