@@ -72,6 +72,8 @@ en:
           attributes:
             school_name:
               blank: Add your school or program name
+            self_attested_enrollment_status:
+              inclusion: Please select an option
             self_attested_term_end:
               blank: Add term end date to continue
               invalid: Add a valid date with month and year

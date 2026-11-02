@@ -48,6 +48,8 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     verify_page(page, title: term_title)
     click_button I18n.t("activities.education.add_your_term.edit.continue")
     expect(page).to have_text(I18n.t("activities.education.add_your_term.errors.information_heading"))
+    expect(page).to have_selector("#education_activity_self_attested_enrollment_status_error",
+      text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_enrollment_status.inclusion"), exact_text: true)
     verify_page(page, title: term_title)
 
     fill_in I18n.t("activities.education.add_your_term.edit.term_start"), with: "55/2026"

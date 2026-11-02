@@ -221,7 +221,7 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
             error_fields: contain_exactly("self_attested_enrollment_status", "self_attested_term_start", "self_attested_term_end") }
         }
 
-      it "renders the required-field alert, inline date errors, and enrollment highlight" do
+      it "renders the required-field alert and inline errors" do
         submit_term
 
         expect(response).to have_http_status(:unprocessable_content)
@@ -230,7 +230,8 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
         expect(term_start_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_term_start.blank"))
         expect(term_end_group).to have_selector(".usa-error-message", text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_term_end.blank"))
         expect(enrollment_status_group).to have_selector("select.usa-input--error.text-error[aria-invalid='true']")
-        expect(enrollment_status_group).to have_no_selector(".usa-error-message")
+        expect(enrollment_status_group).to have_selector(".usa-error-message",
+          text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_enrollment_status.inclusion"), exact_text: true)
       end
     end
 
@@ -288,12 +289,13 @@ RSpec.describe Activities::Education::AddYourTermController, type: :controller d
     context "with an unsupported enrollment status" do
       let(:term_attributes) { super().merge(self_attested_enrollment_status: "three_quarter_time") }
 
-      it "highlights the enrollment selector without an inline message" do
+      it "asks the user to select an enrollment option" do
         submit_term
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(enrollment_status_group).to have_selector("select.usa-input--error.text-error[aria-invalid='true']")
-        expect(enrollment_status_group).to have_no_selector(".usa-error-message")
+        expect(enrollment_status_group).to have_selector(".usa-error-message",
+          text: I18n.t("activerecord.errors.models.education_activity.attributes.self_attested_enrollment_status.inclusion"), exact_text: true)
       end
     end
 
