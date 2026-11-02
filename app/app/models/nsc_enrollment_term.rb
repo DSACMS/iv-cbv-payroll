@@ -93,11 +93,14 @@ class NscEnrollmentTerm < ApplicationRecord
     month_start.month.in?(SUMMER_MONTHS)
   end
 
-  def term_date_display
+  def term_date_display(abbreviated: true)
+    month_format = abbreviated ? :abbreviated_month : :month
+    month_year_format = abbreviated ? :abbreviated_month_year : :month_year
+
     if term_begin.year == term_end.year
-      "#{I18n.l(term_begin, format: :abbreviated_month)} - #{I18n.l(term_end, format: :abbreviated_month_year)}"
+      "#{I18n.l(term_begin, format: month_format)} - #{I18n.l(term_end, format: month_year_format)}"
     else
-      "#{I18n.l(term_begin, format: :abbreviated_month_year)} - #{I18n.l(term_end, format: :abbreviated_month_year)}"
+      "#{I18n.l(term_begin, format: month_year_format)} - #{I18n.l(term_end, format: month_year_format)}"
     end
   end
 end
