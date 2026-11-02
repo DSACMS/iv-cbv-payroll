@@ -228,8 +228,8 @@
             row = [
               t(
                 "activities.submit.pdf.term_date_range",
-                start_date: format_date(terms_for_range.first.term_begin, :abbreviated_month_year),
-                end_date: format_date(terms_for_range.first.term_end, :abbreviated_month_year)
+                start_date: format_date(terms_for_range.first.term_begin, :month_year),
+                end_date: format_date(terms_for_range.first.term_end, :month_year)
               ),
               safe_join(status_lines, tag.br)
             ]
