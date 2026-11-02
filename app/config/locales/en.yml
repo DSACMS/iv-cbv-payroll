@@ -662,7 +662,6 @@ en:
         description: We have collected %{activity_types} information with your consent and sent it to %{agency_name}. Any additional income that you weren’t able to add to this report should be shared separately with %{agency_name}.
         education_details: Education details
         education_summary: Education summary
-        education_type: Type
         employer_title: 'Employer %{number}: %{name}'
         employment_details: Employment details
         employment_status: Employment status
@@ -672,6 +671,7 @@ en:
         hourly_wage_hours_paid: 'Hourly wage: Hours paid'
         institution_information: Institution information
         institution_title: 'Institution %{number}: %{name}'
+        institution_title_single: 'Institution: %{name}'
         mileage_expense_value: "%{amount} (%{rate} x %{miles} miles)"
         mileage_expenses: Mileage expenses
         not_provided: Not provided
@@ -685,10 +685,9 @@ en:
         payment_information: Payment information (%{number})
         product_name: Emmy Community Engagement
         report_created_at: Date report was created
-        school_contact_email: School official’s email
-        school_contact_name: School official’s name
-        school_contact_phone_number: School phone number
-        school_contact_title: School official’s title
+        school_contact_email: School contact email
+        school_contact_name: School contact name
+        school_contact_phone_number: School contact phone number
         term_date_range: "%{start_date} to %{end_date}"
         title: Community Engagement Report
         total_hours_worked: Total hours worked
@@ -736,8 +735,8 @@ en:
         coordinator_phone: Coordinator's phone
         month: Month
         organization: Organization name
-      consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information you provided is true and complete to the best of your knowledge.</li><li>You will inform %{agency_name} of any missing information or anything that doesn’t match what the tool found.</li><li>You understand that false or omitted information may have legal consequences.</li></ul> By sending this report, you allow %{agency_initials} to use it to determine your eligibility for health coverage.'
-      description: Report what you have. %{agency_name} will follow up with next steps if anything else is needed.
+      consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
+      description: "%{agency_name} will determine your final eligibility based on the activities you've added to your report."
       education:
         address: School address
         community_engagement_hours: Community engagement hours
@@ -747,6 +746,7 @@ en:
         contact_title: School official’s title
         credit_hours: Credit hours
         details: Education details
+        enrollment_details: Enrollment details
         school_name: School or program
         term_credit_hours: Credit hours
         term_details: Term details
@@ -774,7 +774,7 @@ en:
       monthly_details: Monthly details
       no_activities_added: Add at least one activity before submitting your report.
       submit: Submit to %{agency_name}
-      title: Review and submit your community engagement activities
+      title: Review and submit your community engagement report
     unpaid_work:
       title: Unpaid work
     work_programs:
@@ -1294,6 +1294,7 @@ en:
         less_than_half_time: Less than half-time
         three_quarter_time: Three-quarter Time
         withdrawn: Withdrawn
+      status_as_of_date: "%{status} (as of %{date})"
       student_name_label: Name on school record
     report:
       monthly_summary_table:
