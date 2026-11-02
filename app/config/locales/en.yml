@@ -141,9 +141,6 @@ en:
       edit_title: Edit Community Service Activity
       hours_input:
         continue: Continue
-        error_body: You need to add community service hours to continue.
-        error_body_multi_month: You need to add community service hours for at least one month to continue.
-        error_heading: No hours entered
         field_error: Add hours for at least one month
         heading: Add your %{month} community service hours with %{organization}
         hours_label: "%{month} community service hours"
@@ -780,9 +777,6 @@ en:
     work_programs:
       hours_input:
         continue: Continue
-        error_body: You need to add work program hours to continue.
-        error_body_multi_month: You need to add work program hours for at least one month to continue.
-        error_heading: No hours entered
         field_error: Add hours for at least one month
         heading: Add your %{month} work program hours for %{organization}
         hours_label: "%{month} work program hours"
