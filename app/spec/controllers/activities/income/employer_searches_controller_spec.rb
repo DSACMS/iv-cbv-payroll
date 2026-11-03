@@ -18,6 +18,19 @@ RSpec.describe Activities::Income::EmployerSearchesController do
 
     render_views
 
+    context "when an empty query is submitted" do
+      let(:rendered) { Capybara.string(response.body) }
+
+      before do
+        get :show, params: { query: "" }
+      end
+
+      it "associates the inline error with the search field" do
+        expect(rendered).to have_selector("#query_error.usa-error-message", text: I18n.t("cbv.employer_searches.search_form.query_required"))
+        expect(rendered).to have_selector("input.usa-input--error[aria-invalid='true'][aria-describedby='query_error']")
+      end
+    end
+
     context "with an aggregator outage alert" do
       let(:enabled_alerts) { "aggregator_outage" }
       let(:locale) { :en }
