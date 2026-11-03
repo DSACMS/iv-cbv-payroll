@@ -13,14 +13,9 @@ module NscEducationTracking
     activity = @education_activity || @activity
     return {} unless activity.is_a?(EducationActivity) && activity.persisted? && !activity.fully_self_attested?
 
-    {
-      education_flow: "nsc",
-      education_activity_id: activity.id,
-      education_data_source: activity.sync_unknown? ? "pending" : activity.data_source,
-      nsc_status: activity.status,
-      education_type: activity.education_type,
+    EducationTrackingAttributes.new(activity).to_h.merge(
       from_edit: params[:from_edit].presence,
       from_review: params[:from_review].presence
-    }
+    )
   end
 end

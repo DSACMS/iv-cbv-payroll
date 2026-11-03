@@ -80,7 +80,7 @@ RSpec.describe NscSynchronizationJob do
     it "tracks the failed attempt while preserving the existing retry behavior" do
       expect { job.perform_now }.to have_enqueued_job(described_class).with(education_activity.id)
       expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::EducationNscLookupCompleted, nil,
-        hash_including(outcome: "service_error", education_data_source: "pending", lookup_attempt: 1))
+        hash_including(outcome: "service_error", education_data_source: "pending", nsc_status: "unknown", lookup_attempt: 1))
       expect(education_activity.reload).to be_sync_unknown
     end
   end

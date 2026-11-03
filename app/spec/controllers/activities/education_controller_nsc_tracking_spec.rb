@@ -15,6 +15,7 @@ RSpec.describe Activities::EducationController, type: :controller do
   let(:event_attributes) do
     hash_including(cbv_flow_id: activity_flow.id, cbv_applicant_id: activity_flow.cbv_applicant_id,
       invitation_id: activity_flow.invitation_id, client_agency_id: activity_flow.cbv_applicant.client_agency_id,
+      device_id: activity_flow.device_id, flow_type: "ce", nsc_status: education_activity.status,
       education_activity_id: education_activity.id, education_flow: "nsc", education_data_source: education_activity.data_source)
   end
 
