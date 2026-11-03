@@ -46,7 +46,7 @@ class NscSynchronizationJob < ApplicationJob
       device_id: flow.device_id,
       education_activity_id: @education_activity.id,
       education_flow: "nsc",
-      education_data_source: @education_activity.data_source,
+      education_data_source: @education_activity.sync_unknown? ? "pending" : @education_activity.data_source,
       education_type: @education_activity.education_type
     }
   end
