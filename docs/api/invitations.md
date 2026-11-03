@@ -27,6 +27,11 @@ is the end of the day in `America/New_York` after the agency's configured
 validity period (14 days for the sandbox). Request a new invitation when a
 link expires.
 
+`agency_partner_metadata` uses the same agency-specific fields as the request.
+The response includes all accepted V1 fields, with `null` for omitted values,
+and echoes supplied values, including date strings. Unrecognized fields are
+ignored.
+
 ## Expiring a link
 
 Use `DELETE /api/v1/income/invitations/{token}` to expire an income link, or
