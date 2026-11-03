@@ -1,9 +1,20 @@
 Metadata links a submitted report to the agency's records. Select the schema
-for the agency associated with your API key. Sandbox and Louisiana have
-separate field sets; do not combine them. Some agency schemas overlap, so
-matching a schema alone does not identify the agency.
+for the API version, invitation type, and agency associated with your API key.
+Some agency schemas overlap, so matching a schema alone does not identify the
+agency.
 
-Unrecognized fields and `individual_id` are ignored by this V1 endpoint.
-The response contains all accepted fields for the agency, with `null` for
-omitted values. Values are echoed as supplied, including date strings.
-Supply dates of birth as `MM/DD/YYYY`.
+For V1 income invitations, the response contains all accepted metadata fields
+for the agency, with `null` for omitted values. Unrecognized fields are
+ignored.
+
+For V2 invitations, the response echoes the accepted metadata fields supplied
+in the request. Unrecognized fields are ignored, and omitted optional fields
+are not added to the response. Select the agency's community engagement or
+employment schema to see the accepted and required fields, including
+`individual_id`.
+
+Supply dates of birth as `MM/DD/YYYY`. Invitation responses echo date strings
+as supplied. **Louisiana Emmy CE requests require `date_of_birth`** in
+`agency_partner_metadata`, along with `individual_id`, `first_name`, and
+`last_name`. This applies to `POST /api/v2/community-engagement/invitations`;
+V2 employment invitations do not accept `date_of_birth`.
