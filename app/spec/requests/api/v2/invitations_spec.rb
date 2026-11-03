@@ -12,7 +12,7 @@ RSpec.describe "Tokenized Link API V2", type: :request do
       verification_range: "last_complete_month",
       agency_partner_metadata: {
         individual_id: "INDIVIDUAL-123",
-        first_name: "Jane", last_name: "Doe", case_number: "EXAMPLE-123", date_of_birth: "01/15/1990"
+        first_name: "Jane", last_name: "Doe"
       }
     }
   end
@@ -53,15 +53,28 @@ RSpec.describe "Tokenized Link API V2", type: :request do
 
           run_test! "creates an income link and an activity link", example_summary: "Employment invitation (sandbox agency)", openapi_example: :employment do
             expect(response.parsed_body).to have_key("activity_tokenized_url")
+            expect(response.parsed_body["agency_partner_metadata"]).to eq(invitation[:agency_partner_metadata].stringify_keys)
             expect(CbvFlowInvitation.last.client_agency_id).to eq(agency_id)
           end
         end
 
         context "with invitation_type community-engagement" do
           let(:invitation_type) { "community-engagement" }
+          let(:invitation) { super().deep_merge(agency_partner_metadata: { date_of_birth: "01/15/1990" }) }
 
           run_test! "creates an income link and a community engagement activity link", example_summary: "Community engagement invitation (sandbox agency)", openapi_example: :community_engagement do
             expect(response.parsed_body).to have_key("activity_tokenized_url")
+            expect(response.parsed_body["agency_partner_metadata"]).to eq(invitation[:agency_partner_metadata].stringify_keys)
+          end
+        end
+
+        context "with Louisiana community engagement metadata" do
+          let(:agency_id) { "la_ldh" }
+          let(:invitation_type) { "community-engagement" }
+          let(:invitation) { super().deep_merge(agency_partner_metadata: { date_of_birth: "01/15/1990" }) }
+
+          run_test! "echoes all accepted Louisiana CE metadata", example_summary: "Community engagement invitation (Louisiana agency)", openapi_example: :louisiana_community_engagement do
+            expect(response.parsed_body["agency_partner_metadata"]).to eq(invitation[:agency_partner_metadata].stringify_keys)
           end
         end
       end
@@ -78,6 +91,15 @@ RSpec.describe "Tokenized Link API V2", type: :request do
 
       response "422", "Validation failed" do
         schema "$ref" => "#/components/schemas/InvitationErrorsV2"
+
+        context "without a date of birth for Louisiana community engagement" do
+          let(:agency_id) { "la_ldh" }
+          let(:invitation_type) { "community-engagement" }
+
+          run_test! "requires a date of birth", example_summary: "Missing Louisiana CE date of birth", openapi_example: :louisiana_missing_date_of_birth do
+            expect(response.parsed_body["errors"].pluck("field")).to include("date_of_birth")
+          end
+        end
 
         context "without a required applicant name" do
           let(:invitation) { super().deep_merge(agency_partner_metadata: { first_name: nil }) }
