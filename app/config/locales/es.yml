@@ -367,7 +367,7 @@ es:
         warning_1: Su reporte de ingresos se enviará a %{agency_acronym}.
         warning_2: Usted debe marcar la casilla del acuerdo legal para compartir su reporte.
       update:
-        consent_to_authorize_warning: A fin de compartir su informe, marque la casilla de consentimiento legal.
+        consent_to_authorize_warning: Marque la casilla para continuar
     successes:
       show:
         confirmation_code_html: "<strong>Su código de confirmación</strong>: %{confirmation_code}"
