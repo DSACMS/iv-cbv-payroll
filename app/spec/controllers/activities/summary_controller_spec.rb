@@ -855,7 +855,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response).to redirect_to(household_start_path(token: member.household.auth_token))
     end
 
-    it "re-renders summary with alert when consent is missing and keeps activity table content" do
+    it "re-renders summary with an inline consent error and keeps activity table content" do
       create(
         :volunteering_activity,
         activity_flow: activity_flow,
@@ -866,9 +866,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       expect(activity_flow.reload.completed_at).to be_nil
       expect(response).to have_http_status(:unprocessable_content)
-      expect(flash.now[:alert]).to eq(I18n.t("activities.submit.consent_required"))
-      expect(response.body).to include("Helping Hands")
-      expect(response.body).to include(I18n.t("activities.summary.legal_agreement"))
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("activities.submit.consent_required"))
+      expect(rendered).to have_selector("#activity_flow_consent_to_submit[aria-invalid='true'][aria-describedby='activity_flow_consent_to_submit_error']")
+      expect(rendered).to have_no_selector(".usa-alert--error")
+      expect(rendered).to have_text("Helping Hands")
+      expect(rendered).to have_selector("h2", text: I18n.t("activities.summary.legal_agreement"))
     end
 
     it "keeps an added-activity flash when consent is missing" do
@@ -901,10 +904,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(activity_flow.reload.completed_at).to be_nil
         expect(response).to have_http_status(:unprocessable_content)
         expect(response).to render_template("activities/activities/employment_focused_review")
-        expect(flash.now[:alert]).to eq(I18n.t("activities.submit.consent_required"))
-        expect(response.body).to include("Gainesville Wrecking")
-        expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.activities.employment_focused_review.header")))
-        expect(response.body).not_to include(CGI.escapeHTML(I18n.t("activities.summary.title")))
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("activities.submit.consent_required"))
+        expect(rendered).to have_selector("#activity_flow_consent_to_submit[aria-invalid='true'][aria-describedby='activity_flow_consent_to_submit_error']")
+        expect(rendered).to have_no_selector(".usa-alert--error")
+        expect(rendered).to have_text("Gainesville Wrecking")
+        expect(rendered).to have_selector("h1", text: I18n.t("activities.activities.employment_focused_review.header"))
       end
     end
 

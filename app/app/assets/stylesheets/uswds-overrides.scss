@@ -14,6 +14,10 @@
 }
 
 // Form styles
+.usa-checkbox__input--tile[aria-invalid="true"] + .usa-checkbox__label {
+  border-color: color("error-dark");
+}
+
 .usa-form .usa-button {
   margin: units(4) 0;
 

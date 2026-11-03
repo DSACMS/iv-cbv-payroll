@@ -83,10 +83,11 @@ RSpec.describe "e2e Employment-focused review page", :js, type: :feature do
 
     # --- Submitting is blocked until the consent checkbox is checked ---
     click_button I18n.t("activities.activities.employment_focused_review.submit", agency_name: "Test Agency")
-    expect(page).to have_content(I18n.t("activities.submit.consent_required"))
-
     # --- The error re-renders the same employment-focused review page, not the generic summary ---
     verify_page(page, title: I18n.t("activities.activities.employment_focused_review.header"))
+    expect(page).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("activities.submit.consent_required"))
+    expect(page).to have_selector("#activity_flow_consent_to_submit[aria-invalid='true'][aria-describedby='activity_flow_consent_to_submit_error']:focus", visible: :all)
+    expect(page).to have_no_selector(".usa-alert--error")
     expect(page).to have_content(
       I18n.t("activities.activities.employment_focused_review.employment_header", count: 1, employer_name: "Gainesville Wrecking")
     )
