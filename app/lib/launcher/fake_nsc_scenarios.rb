@@ -18,7 +18,7 @@ module Launcher
         first_name: "Jordan",
         last_name: "Testuser",
         date_of_birth: Date.parse("1995-06-12"),
-        enrollments: [
+        terms: [
           { school_name: "Maple Grove College", enrollment_status: :enrolled }
         ]
       ),

@@ -46,7 +46,7 @@ RSpec.describe Launcher::FakeNscDataFetcherService do
         expect(education_activity).to have_less_than_half_time_terms
       end
     end
-    
+
     context "with duplicate enrollment records" do
       let(:profile) { Launcher::FakeNscScenarios.by_key("duplicate_enrollments_dedupe") }
       let(:identity) do
