@@ -3,7 +3,9 @@
 <% content_for :activity_flow_header do %>
   <%= render ActivityFlowHeaderComponent.new(
     title: t("activities.education.title_singular"),
-    exit_url: activities_flow_root_path
+    exit_url: activities_flow_root_path,
+    track_event_prefix: "Education",
+    track_event_attributes: nsc_education_tracking_attributes.merge(education_flow: "nsc", education_step: "error")
   ) %>
 <% end %>
 

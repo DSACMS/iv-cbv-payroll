@@ -11,6 +11,7 @@ describe("ActivityFlowHeaderController", () => {
            data-activity-flow-header-track-event-prefix-value="Employment">
         <a data-action="click->activity-flow-header#handleExit"
            data-activity-flow-header-target="exitButton">Exit</a>
+        <a data-activity-flow-header-target="backButton">Back</a>
         <button data-open-modal id="open-exit-modal-button"></button>
       </div>
     `
@@ -47,5 +48,47 @@ describe("ActivityFlowHeaderController", () => {
     document.querySelector('[data-activity-flow-header-target="modalConfirmButton"]').click()
 
     expect(trackUserAction).toHaveBeenCalledWith("EmploymentExitModalConfirmed", {})
+  })
+
+  describe("NSC education context", () => {
+    const attributes = {
+      education_activity_id: 123,
+      education_flow: "nsc",
+      education_data_source: "partially_self_attested",
+      education_step: "enrollment_review",
+    }
+
+    beforeEach(() => {
+      const header = document.querySelector('[data-controller="activity-flow-header"]')
+      header.dataset.activityFlowHeaderTrackEventPrefixValue = "Education"
+      header.dataset.activityFlowHeaderTrackEventAttributesValue = JSON.stringify(attributes)
+    })
+
+    it("tracks the exit click and whether the modal is shown", () => {
+      document.querySelector('[data-activity-flow-header-target="exitButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EducationExitClicked", {
+        ...attributes,
+        modal_shown: true,
+      })
+    })
+
+    it("tracks back clicks with the partial journey context", () => {
+      document.querySelector('[data-activity-flow-header-target="backButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EducationBackClicked", attributes)
+    })
+
+    it("tracks cancelling the exit warning with the partial journey context", () => {
+      document.querySelector('[data-activity-flow-header-target="modalCancelButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EducationExitModalCancelled", attributes)
+    })
+
+    it("tracks confirming exit with the partial journey context", () => {
+      document.querySelector('[data-activity-flow-header-target="modalConfirmButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EducationExitModalConfirmed", attributes)
+    })
   })
 })

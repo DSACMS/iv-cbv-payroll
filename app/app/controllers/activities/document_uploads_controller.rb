@@ -1,5 +1,6 @@
 class Activities::DocumentUploadsController < Activities::BaseController
   include NavigationTracking
+  include NscEducationTracking
 
   before_action :set_activity
   before_action :set_back_url, only: %i[new]
