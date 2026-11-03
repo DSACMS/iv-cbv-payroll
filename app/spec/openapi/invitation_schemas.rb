@@ -168,6 +168,9 @@ module InvitationSchemas
           properties: v2_fields.to_h { |field| [ field, metadata_fields.fetch(field) ] },
           required: client_agency.api_required_metadata(invitation_type).map(&:to_s)
         }
+        if agency == "Louisiana" && invitation_type == "community_engagement"
+          v2_schema[:properties][:date_of_birth] = metadata_fields[:date_of_birth].merge(type: :string)
+        end
         schemas[v2_schema_name] = v2_schema
       end
     end

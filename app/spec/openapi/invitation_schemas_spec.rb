@@ -46,6 +46,26 @@ RSpec.describe InvitationSchemas do
       expect(schema.valid?(metadata.merge("date_of_birth" => "01/15/1990"))).to be(true)
     end
 
+    context "with Louisiana community engagement metadata" do
+      let(:schema) { document.schema("AgencyMetadataV2LouisianaCommunityEngagement") }
+
+      it "accepts a supplied date of birth" do
+        expect(schema.valid?(metadata.merge("date_of_birth" => "01/15/1990"))).to be(true)
+      end
+
+      it "rejects a null date of birth" do
+        expect(schema.valid?(metadata.merge("date_of_birth" => nil))).to be(false)
+      end
+
+      it "rejects an omitted date of birth" do
+        expect(schema.valid?(metadata)).to be(false)
+      end
+
+      it "preserves nullable dates of birth in Louisiana's V1 metadata" do
+        expect(document.schema("AgencyMetadataLouisiana").valid?(louisiana.merge("date_of_birth" => nil))).to be(true)
+      end
+    end
+
     context "when one agency's configuration changes" do
       let(:agency) { Rails.application.config.client_agencies["sandbox"] }
 
