@@ -139,7 +139,7 @@ module ActivityReportSchemas
         data_source: { type: :string, enum: %w[verified], description: "NSC-verified enrollment." }
       )).merge(description: "NSC-verified enrollment and original term details. NSC does not provide academic credit hours, so credit_hours is null."),
       CeVerifiedEnrollmentOnlyEducationActivity: activity(%w[school_name hours enrollment_status term education_type], self_attested.merge(contact).merge(education_term).merge(
-        data_source: { type: :string, enum: %w[verified_enrollment_only], description: "NSC-verified enrollment with self-attested academic credits." },
+        data_source: { type: :string, enum: %w[verified_enrollment_only], description: "NSC-verified enrollment, but whether the user was enrolled full-time, half-time, or less-than-half-time was not provided. The term credit_hours field is populated with self-attested values." },
         hours: { type: %w[number null], minimum: 0, description: "Self-attested academic credit hours for the term, matching credit_hours. Fractions and zero are preserved; null when not reported." }
       )).merge(description: "Partially self-attested education combines NSC enrollment and term details with applicant-reported academic credits, retaining self-attested address and contact fields. Every term entry uses verified_enrollment_only, including terms with half-time or greater enrollment."),
       CeEducationTerm: object(%w[start_month end_month], {
