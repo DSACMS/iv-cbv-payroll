@@ -7,6 +7,41 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.15.0
+
+### User facing changes to Emmy Income + Emmy CE
+- Update review and submit page alerting [(#2284)](https://github.com/DSACMS/iv-cbv-payroll/pull/2284) - Daphne Gold [[FFS-4947]](https://jiraent.cms.gov/browse/FFS-4947)
+- Add manual expiration of tokenized links [(#2234)](https://github.com/DSACMS/iv-cbv-payroll/pull/2234) - Chris [[FFS-4827]](https://jiraent.cms.gov/browse/FFS-4827)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Education term entry validation update [(#2267)](https://github.com/DSACMS/iv-cbv-payroll/pull/2267) - Jake Wheeler [[FFS-4952]](https://jiraent.cms.gov/browse/FFS-4952)
+- Update employment flow validation UI [(#2262)](https://github.com/DSACMS/iv-cbv-payroll/pull/2262) - Jake Wheeler [[FFS-4950]](https://jiraent.cms.gov/browse/FFS-4950)
+- Fix monthly details table for payroll connected jobs in Emmy Employment [(#2278)](https://github.com/DSACMS/iv-cbv-payroll/pull/2278) - Chris [[FFS-4953]](https://jiraent.cms.gov/browse/FFS-4953)
+- CS/WP month entry validation update [(#2266)](https://github.com/DSACMS/iv-cbv-payroll/pull/2266) - krista-skylight [[FFS-4951]](https://jiraent.cms.gov/browse/FFS-4951)
+- implement review and submit [(#2250)](https://github.com/DSACMS/iv-cbv-payroll/pull/2250) - Chris [[FFS-4937]](https://jiraent.cms.gov/browse/FFS-4937)
+- Remove gross income from unpaid work [(#2264)](https://github.com/DSACMS/iv-cbv-payroll/pull/2264) - Chris [[FFS-4975]](https://jiraent.cms.gov/browse/FFS-4975)
+- Month selection input screens error handling [(#2260)](https://github.com/DSACMS/iv-cbv-payroll/pull/2260) - krista-skylight [[FFS-4945]](https://jiraent.cms.gov/browse/FFS-4945)
+- Self-attestation validation updates [(#2259)](https://github.com/DSACMS/iv-cbv-payroll/pull/2259) - Jake Wheeler [[FFS-4949]](https://jiraent.cms.gov/browse/FFS-4949)
+- Update activity hub alerting [(#2261)](https://github.com/DSACMS/iv-cbv-payroll/pull/2261) - Daphne Gold [[FFS-4948]](https://jiraent.cms.gov/browse/FFS-4948)
+- Update Employment screener alert banner [(#2252)](https://github.com/DSACMS/iv-cbv-payroll/pull/2252) - Jake Wheeler [[FFS-4943]](https://jiraent.cms.gov/browse/FFS-4943)
+- Remove nsc_withdrawn field and regroup NSC enrollment statuses [(#2254)](https://github.com/DSACMS/iv-cbv-payroll/pull/2254) - krista-skylight [[FFS-5014]](https://jiraent.cms.gov/browse/FFS-5014)
+- Implement Enrollment details page [(#2248)](https://github.com/DSACMS/iv-cbv-payroll/pull/2248) - krista-skylight [[FFS-4936]](https://jiraent.cms.gov/browse/FFS-4936)
+- Update Education screener alert banner [(#2258)](https://github.com/DSACMS/iv-cbv-payroll/pull/2258) - Daphne Gold [[FFS-4944]](https://jiraent.cms.gov/browse/FFS-4944)
+- One-time use CE and Employment links [(#2230)](https://github.com/DSACMS/iv-cbv-payroll/pull/2230) - krista-skylight [[FFS-4962]](https://jiraent.cms.gov/browse/FFS-4962)
+- Update legal agreement checkbox content on review and submit page [(#2235)](https://github.com/DSACMS/iv-cbv-payroll/pull/2235) - Jake Wheeler [[FFS-4957]](https://jiraent.cms.gov/browse/FFS-4957)
+- Set employment_type to null for self-attested employment entries [(#2257)](https://github.com/DSACMS/iv-cbv-payroll/pull/2257) - Daphne Gold [[FFS-4961]](https://jiraent.cms.gov/browse/FFS-4961)
+
+### Other/Maintenance (Not user facing)
+- Bump net-sftp, postcss, @scalar/api-reference, bootsnap, rubocop, autoprefixer, view_component, github.com/go-jose/go-jose/v4, pip
+- Add launcher case for "Enrollment-only" and improve docs [(#2228)](https://github.com/DSACMS/iv-cbv-payroll/pull/2228) - Tom Dooner
+- Remove unused Webpack tooling [(#2285)](https://github.com/DSACMS/iv-cbv-payroll/pull/2285) - Daphne Gold
+- fix: patch Ruby/JS dependencies for CVEs flagged by bundler-audit/npm audit [(#2279)](https://github.com/DSACMS/iv-cbv-payroll/pull/2279) - github-actions[bot]
+- Fix false pass in npm audit check [(#2280)](https://github.com/DSACMS/iv-cbv-payroll/pull/2280) - Daphne Gold
+- readme update [(#2263)](https://github.com/DSACMS/iv-cbv-payroll/pull/2263) - Nočnica Mellifera [[FFS-4927]](https://jiraent.cms.gov/browse/FFS-4927)
+
 ## 0.14.0
 
 ### User facing changes to Emmy Income + Emmy CE
