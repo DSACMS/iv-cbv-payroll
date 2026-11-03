@@ -18,25 +18,15 @@
 <% heading = t("#{input_scope}.heading",
   organization: @employment_activity.employer_name) %>
 <% content_for :title, heading %>
+<% income_required = @activity_month.errors.of_kind?(:gross_income, :income_required) %>
 
-<% if @error %>
-  <% if @employment_activity.requires_month_selection? && (other || (@activity_month.gross_income || 0).zero?) %>
-    <% content_for :page_alerts do %>
-      <%= render Uswds::Alert.new(type: :info, form_id: "employment_month_form", class: "margin-bottom-4") do %>
-        <%= t("#{input_scope}.error_body_html",
-              month_selection_url: edit_activities_flow_income_employment_month_selection_path(
-                employment_id: @employment_activity, from_edit: params[:from_edit].presence
-              )) %>
-      <% end %>
-    <% end %>
-  <% else %>
-    <%= render Uswds::Alert.new(
-          type: :error,
-          heading: t("#{input_scope}.error_heading"),
-          form_id: "employment_month_form",
-          class: "margin-bottom-4"
-        ) do %>
-      <%= t("#{input_scope}.field_error") %>
+<% if @error && @employment_activity.requires_month_selection? && (other || income_required) %>
+  <% content_for :page_alerts do %>
+    <%= render Uswds::Alert.new(type: :info, form_id: "employment_month_form", class: "margin-bottom-4") do %>
+      <%= t("#{input_scope}.error_body_html",
+            month_selection_url: edit_activities_flow_income_employment_month_selection_path(
+              employment_id: @employment_activity, from_edit: params[:from_edit].presence
+            )) %>
     <% end %>
   <% end %>
 <% end %>

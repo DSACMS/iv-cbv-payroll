@@ -355,6 +355,7 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--info")
+      expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--error")
     end
 
     it "threads from_edit to review when from_review is set" do
@@ -477,13 +478,14 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
 
       context "with no income submitted" do
         let(:gross_income) { "" }
+        let(:hours) { "" }
 
         before do
           patch :update, params: {
             employment_id: employment_activity.id,
             id: 0,
             from_edit: 1,
-            employment_activity_month: { gross_income: gross_income, hours: "" }
+            employment_activity_month: { gross_income: gross_income, hours: hours }
           }
         end
 
@@ -502,6 +504,36 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
 
             expect(rendered).to have_selector(".usa-alert--info")
             expect(rendered).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.field_error"))
+          end
+
+          context "when hours are negative" do
+            let(:hours) { "-1" }
+
+            it "marks only hours as invalid without asking for income" do
+              rendered = Capybara.string(response.body)
+
+              expect(response).to have_http_status(:unprocessable_content)
+              expect(assigns(:activity_month).errors.attribute_names).to eq([ :hours ])
+              expect(rendered).to have_selector('input[name="employment_activity_month[hours]"].usa-input--error')
+              expect(rendered).to have_no_selector('input[name="employment_activity_month[gross_income]"].usa-input--error')
+              expect(rendered).to have_no_selector(".usa-alert--info")
+              expect(rendered).to have_no_selector(".usa-alert--error")
+              expect(rendered).to have_no_text(I18n.t("activities.employment.hours_input.field_error"))
+            end
+          end
+
+          context "when hours are not numeric" do
+            let(:hours) { "abc" }
+
+            it "keeps the numericality error confined to hours" do
+              rendered = Capybara.string(response.body)
+
+              expect(response).to have_http_status(:unprocessable_content)
+              expect(assigns(:activity_month).errors.attribute_names).to eq([ :hours ])
+              expect(rendered).to have_no_selector(".usa-alert--info")
+              expect(rendered).to have_no_selector(".usa-alert--error")
+              expect(rendered).to have_no_text(I18n.t("activities.employment.hours_input.field_error"))
+            end
           end
         end
 
@@ -659,19 +691,16 @@ RSpec.describe Activities::Employment::MonthsController, type: :controller do
         )
       end
 
-      it "shows the paid-work income error banner" do
+      it "shows an accessible inline income error without a banner when month selection is unavailable" do
         rendered = Capybara.string(response.body)
 
         expect(rendered).to have_text(
           I18n.t("activities.employment.hours_input.field_error")
         )
-        expect(rendered).to have_no_text(
-          I18n.t("activities.employment.hours_input.unpaid_or_in_kind.error_body")
-        )
         expect(rendered).to have_css(
           'form#employment_month_form[data-controller~="error-summary"]'
         )
-        expect(rendered).to have_css(
+        expect(rendered).to have_no_css(
           '.usa-alert[data-error-summary-form-id-value="employment_month_form"]'
         )
 

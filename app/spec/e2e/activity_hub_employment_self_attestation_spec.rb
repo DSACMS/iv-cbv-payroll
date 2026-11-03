@@ -273,6 +273,18 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     expect(page).to have_selector(".usa-error-message", count: 1)
     expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.field_error"), exact_text: true)
 
+    # Zero income is valid when the only invalid field is hours.
+    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: "0"
+    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: "-1"
+    click_button I18n.t("activities.hub.save")
+    expect(page).to have_selector('input[name="employment_activity_month[hours]"].usa-input--error')
+    verify_page(page, title: updated_monthly_details_title)
+    expect(page).to have_no_selector('input[name="employment_activity_month[gross_income]"].usa-input--error')
+    expect(page).to have_no_selector(".usa-alert--info")
+    expect(page).to have_no_selector(".usa-alert--error")
+    expect(page).to have_selector("#employment_activity_month_hours:focus")
+    expect(page).to have_no_text(I18n.t("activities.employment.hours_input.field_error"))
+
     # Fix it — set to valid values and save
     fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: "200"
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: "10"

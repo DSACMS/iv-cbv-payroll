@@ -383,7 +383,6 @@ en:
       hours_input:
         continue: Continue
         error_body_html: If you weren't paid this month, you can <a href="%{month_selection_url}">edit the months you selected</a>. You can report unpaid work later.
-        error_heading: No employment information added
         field_error: Add income to continue
         gross_income_hint: How much you made before taxes
         gross_income_label: "%{month} gross income"
@@ -392,7 +391,6 @@ en:
         month_indicator: 'Month %{current} of %{total}:'
         unpaid_or_in_kind:
           error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>
-          error_heading: No work hours added
           field_error: Add hours to continue
           heading: Add your hours for %{organization}
           hours_hint: If you performed in-kind work, provide an estimate
