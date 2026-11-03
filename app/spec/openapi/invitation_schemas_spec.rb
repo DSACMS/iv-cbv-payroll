@@ -43,6 +43,7 @@ RSpec.describe InvitationSchemas do
       schema = document.schema("AgencyMetadataV2SandboxCommunityEngagement")
 
       expect(schema.valid?(metadata)).to be(false)
+      expect(schema.valid?(metadata.merge("date_of_birth" => nil))).to be(false)
       expect(schema.valid?(metadata.merge("date_of_birth" => "01/15/1990"))).to be(true)
     end
 
@@ -84,6 +85,26 @@ RSpec.describe InvitationSchemas do
         expect(schemas.fetch("AgencyMetadataV2SandboxCommunityEngagement")[:properties]).to have_key(:first_name)
         expect(schemas.fetch("AgencyMetadataV2LouisianaEmployment")[:properties]).to have_key(:first_name)
         expect(schemas.fetch("AgencyMetadataSandbox")[:properties]).to have_key(:middle_name)
+      end
+
+      it "rejects null for a field made required by the agency configuration" do
+        schema = document.schema("AgencyMetadataV2SandboxEmployment")
+
+        expect(schema.valid?({ "individual_id" => "INDIVIDUAL-123", "case_number" => "EXAMPLE-123" })).to be(true)
+        expect(schema.valid?({ "individual_id" => "INDIVIDUAL-123", "case_number" => nil })).to be(false)
+      end
+
+      context "when the field is optional" do
+        before do
+          allow(agency).to receive(:api_required_metadata).with("employment").and_return(%i[individual_id])
+        end
+
+        it "preserves the optional field's nullable type" do
+          schema = document.schema("AgencyMetadataV2SandboxEmployment")
+
+          expect(schema.valid?({ "individual_id" => "INDIVIDUAL-123", "case_number" => nil })).to be(true)
+          expect(schema.valid?({ "individual_id" => "INDIVIDUAL-123" })).to be(true)
+        end
       end
     end
   end
