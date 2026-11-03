@@ -59,6 +59,8 @@ RUN apt-get update -qq && \
       libaprutil1t64 \
       libblkid-dev \
       libblkid1 \
+      libbrotli-dev \
+      libbrotli1 \
       libcap2 \
       libcurl3t64-gnutls \
       libcurl4-openssl-dev \

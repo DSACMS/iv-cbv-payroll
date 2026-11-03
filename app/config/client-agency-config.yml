@@ -42,6 +42,13 @@
     - tiff
   max_document_upload_size_mb: 40
   invitation_valid_days: 75
+  # Defaults to true when omitted. Applies only to tokenized CE and Employment links.
+  allow_activity_invitation_reuse: false
+  activity_types:
+    education: true
+    community_service: true
+    work_programs: true
+    employment: true
   weekly_report:
     recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
     report_variant: flows
@@ -57,8 +64,19 @@
         required: false
     v2:
       <<: *la_ldh_applicant_attributes_v1
+      first_name:
+        required: false
+        redaction_type: string
+      last_name:
+        required: false
+        redaction_type: string
       individual_id:
         required: false
+  activity_types:
+    education: true
+    community_service: true
+    work_programs: true
+    employment: true
   api:
     v2:
       community_engagement:

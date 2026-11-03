@@ -553,7 +553,7 @@ RSpec.describe ActivityReportSerializer do
       expect(employment_months["2026-07"].sole).to include(
         "type" => "employment", "month" => "2026-07", "data_source" => "self_attested",
         "employer_name" => "Gainesville Wrecking", "is_self_employed" => false,
-        "employer_address" => "942 W Harlan Ave, Gainesville, FL 32611", "employment_type" => "w2",
+        "employer_address" => "942 W Harlan Ave, Gainesville, FL 32611", "employment_type" => nil,
         "hours" => 12.75, "gross_income" => 123.45, "additional_comments" => "Seasonal work",
         "document_ids" => [ "DOC-#{document.id}" ]
       )
@@ -561,7 +561,7 @@ RSpec.describe ActivityReportSerializer do
       expect(report.dig("ce_report", "documents").sole["document_id"]).to eq("DOC-#{document.id}")
     end
 
-    it "identifies self-employed and unpaid work and preserves cleared contact fields as null" do
+    it "includes self-employed and unpaid work with null employment types" do
       self_employed = create(:employment_activity, activity_flow: activity_flow, is_self_employed: true)
       unpaid = create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
       [ self_employed, unpaid ].each do |employment|
@@ -569,10 +569,10 @@ RSpec.describe ActivityReportSerializer do
       end
 
       expect(employment_months["2026-06"].first).to include(
-        "employment_type" => "self_employed", "is_self_employed" => true,
+        "employment_type" => nil, "is_self_employed" => true,
         "contact_name" => nil, "contact_email" => nil, "contact_phone_number" => nil
       )
-      expect(employment_months["2026-06"].last).to include("employment_type" => "unpaid", "gross_income" => 0.0)
+      expect(employment_months["2026-06"].last).to include("employment_type" => nil, "is_self_employed" => false, "gross_income" => 0.0)
     end
 
     it "excludes drafts and does not fetch unsuccessful or unpublished payroll connections" do
@@ -607,7 +607,7 @@ RSpec.describe ActivityReportSerializer do
         expect(employment_months.keys).to eq([ "2026-07" ])
         entry = employment_months["2026-07"].sole
         expect(entry.except("type", "month", "data_source", "document_ids", "paystubs"))
-          .to eq(income_employment.except("paystubs"))
+          .to eq(income_employment.except("paystubs").merge("employment_type" => nil))
         expect(entry).to include("data_source" => "validated", "document_ids" => [], "month" => "2026-07")
         expect(entry["paystubs"].sole).to include(
           "pay_date" => "2026-07-01", "pay_period_start" => "2026-06-15", "pay_gross" => 12345,
@@ -650,6 +650,7 @@ RSpec.describe ActivityReportSerializer do
 
         entries = employment_months["2026-07"]
         expect(entries.map { |entry| entry["employer_name"] }).to eq([ "Cool Company", "Argyle Test Corp." ])
+        expect(entries.map { |entry| entry["employment_type"] }).to eq([ nil, "w2" ])
         expect(entries.map { |entry| entry["paystubs"].sole["pay_date"] }).to eq(%w[2026-07-01 2026-07-02])
       end
 

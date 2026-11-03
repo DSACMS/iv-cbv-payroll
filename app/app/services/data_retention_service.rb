@@ -4,7 +4,7 @@ class DataRetentionService
   # Redact invitations 7 days after they expire
   REDACT_UNUSED_INVITATIONS_AFTER = 7.days
 
-  # Redact transmitted CbvFlows 7 days after they are sent to caseworker
+  # Redact transmitted Income and CE flows 7 days after they are sent to caseworker
   REDACT_TRANSMITTED_CBV_FLOWS_AFTER = 7.days
 
   # Redact persisted income data from activity flows 7 days after the flow's last update.
@@ -12,9 +12,12 @@ class DataRetentionService
 
   def redact_all!
     redact_invitations
+    redact_activity_invitations
     redact_incomplete_cbv_flows
     redact_complete_cbv_flows
     redact_activity_flow_summaries
+    redact_incomplete_activity_flows
+    redact_complete_activity_flows
     delete_delivered_documents
   end
 
@@ -75,6 +78,66 @@ class DataRetentionService
       end
   end
 
+  def redact_activity_invitations
+    ActivityFlowInvitation.unredacted
+      .where("expires_at < ?", REDACT_UNUSED_INVITATIONS_AFTER.ago)
+      .find_each { |invitation| redact_activity_invitation(invitation) }
+  end
+
+  def redact_incomplete_activity_flows
+    ActivityFlow.incomplete.unredacted.includes(:activity_flow_invitation).find_each do |flow|
+      invitation = flow.activity_flow_invitation
+      # Legacy invitations without expires_at have no retention deadline yet.
+      retention_start = invitation ? invitation.expires_at : flow.updated_at
+      next unless retention_start && Time.current.after?(retention_start + REDACT_UNUSED_INVITATIONS_AFTER)
+
+      flow.transaction do
+        redact_activity_invitation(invitation) if invitation
+        redact_activity_flow(flow)
+      end
+    end
+  end
+
+  def redact_complete_activity_flows
+    ActivityFlow
+      .unredacted
+      .where("transmitted_at < ?", REDACT_TRANSMITTED_CBV_FLOWS_AFTER.ago)
+      .find_each do |flow|
+        redact_activity_flow(flow)
+      end
+  end
+
+  def redact_activity_invitation(invitation)
+    invitation.transaction do
+      invitation.redact! unless invitation.redacted_at?
+      redact_activity_household_member(invitation)
+      redact_applicant_if_no_active_invitations_or_cbv_flows(invitation.cbv_applicant)
+    end
+  end
+
+  # Shared by scheduled retention and manual case redaction. Keep shared identity
+  # and household data until the last flow/member that needs it is redacted.
+  def redact_activity_flow(flow)
+    flow.transaction do
+      flow.education_activities.each do |activity|
+        activity.nsc_enrollment_terms.unredacted.each(&:redact!)
+        activity.redact! unless activity.redacted_at?
+      end
+      flow.employment_activities.each do |activity|
+        activity.employment_activity_months.unredacted.each(&:redact!)
+        activity.redact! unless activity.redacted_at?
+      end
+      flow.job_training_activities.unredacted.each(&:redact!)
+      flow.volunteering_activities.unredacted.each(&:redact!)
+      flow.redact!(touch: false) unless flow.redacted_at?
+
+      identity = flow.identity
+      identity.redact! if identity && !identity.redacted_at? && !identity.activity_flows.unredacted.exists?
+      redact_activity_household_member(flow.activity_flow_invitation)
+      redact_applicant_if_no_active_invitations_or_cbv_flows(flow.cbv_applicant)
+    end
+  end
+
   def redact_activity_flow_summaries
     redaction_threshold = REDACT_ACTIVITY_FLOW_SUMMARIES_AFTER.ago
     monthly_summary_flow_ids = ActivityFlowMonthlySummary.unredacted.select(:activity_flow_id)
@@ -119,11 +182,16 @@ class DataRetentionService
     applicant.cbv_flow_invitations.map(&:redact!)
     applicant.cbv_flows.map(&:redact!)
     applicant.cbv_flows.each { |cbv_flow| cbv_flow.payroll_accounts.each(&:redact!) }
+    service = new
+    invitations = ActivityFlowInvitation.where(cbv_applicant: applicant)
+      .or(ActivityFlowInvitation.where(id: applicant.activity_flows.select(:activity_flow_invitation_id)))
     applicant.activity_flows.each do |flow|
+      service.redact_activity_flow(flow)
       flow.activity_flow_monthly_summaries.each(&:redact!)
       flow.activity_flow_employment_summaries.each(&:redact!)
       flow.payroll_accounts.each(&:redact!)
     end
+    invitations.each { |invitation| service.redact_activity_invitation(invitation) }
   end
 
   def self.redact_case_numbers_by_agency(agency_id)
@@ -135,6 +203,18 @@ class DataRetentionService
   end
 
   private
+
+  def redact_activity_household_member(invitation)
+    return unless invitation&.redacted_at?
+    return if invitation.activity_flows.unredacted.exists?
+
+    member = invitation.household_member
+    return unless member
+
+    member.redact! unless member.redacted_at?
+    household = member.household
+    household.redact! unless household.redacted_at? || household.household_members.unredacted.exists?
+  end
 
   def delete_documents_for(activity_flow)
     deleted_keys = []
@@ -183,6 +263,8 @@ class DataRetentionService
 
     return if applicant.cbv_flow_invitations.unredacted.where("expires_at >= ?", Time.current).exists?
     return if applicant.cbv_flows.unredacted.exists?
+    return if applicant.activity_flows.unredacted.exists?
+    return if ActivityFlowInvitation.where(cbv_applicant: applicant).unredacted.where("expires_at >= ?", Time.current).exists?
 
     applicant.redact!
   end

@@ -1,4 +1,19 @@
 class VolunteeringActivity < Activity
+  include Redactable
+
+  has_redactable_fields(
+    organization_name: :string,
+    coordinator_name: :string,
+    coordinator_email: :email,
+    coordinator_phone_number: :string,
+    street_address: :string,
+    street_address_line_2: :string,
+    city: :string,
+    state: :string,
+    zip_code: :string,
+    additional_comments: :string
+  )
+
   include HasActivityMonths
   include DocumentUploadable
 
@@ -13,6 +28,8 @@ class VolunteeringActivity < Activity
     coordinator_email
     coordinator_phone_number
   ].freeze
+
+  validates :organization_name, presence: true
 
   has_many :volunteering_activity_months, dependent: :destroy
   has_activity_months :volunteering_activity_months

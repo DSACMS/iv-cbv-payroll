@@ -3,7 +3,9 @@ class Activities::SummaryController < Activities::BaseController
 
   before_action :load_summary_data, only: %i[show]
 
-  def show; end
+  def show
+    flash.keep(:activity_added)
+  end
 
   def update
     unless @flow.any_activities_added?
@@ -20,12 +22,15 @@ class Activities::SummaryController < Activities::BaseController
       end
 
       load_summary_data
+      flash.keep(:activity_added)
       return render :show, status: :unprocessable_content
     end
 
-    ensure_confirmation_code
-    mark_as_completed
-    enqueue_transmission
+    @flow.transaction do
+      ensure_confirmation_code
+      mark_as_completed
+      enqueue_transmission
+    end
 
     redirect_to after_submit_path
   end

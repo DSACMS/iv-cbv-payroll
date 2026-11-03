@@ -1,0 +1,48 @@
+<section class="usa-banner" aria-label="<%= t(".aria_label") %>">
+  <div class="usa-accordion">
+    <header class="usa-banner__header">
+      <div class="usa-banner__inner">
+        <div class="grid-col-auto">
+          <%= image_tag "@uswds/uswds/dist/img/us_flag_small.png", class: "usa-banner__header-flag", alt: "", aria: { hidden: true } %>
+        </div>
+        <div class="grid-col-fill tablet:grid-col-auto" aria-hidden="true">
+          <p class="usa-banner__header-text">
+            <%= t(".official_website") %>
+          </p>
+          <p class="usa-banner__header-action">
+            <%= t(".how_you_know") %>
+          </p>
+        </div>
+        <button type="button" class="usa-accordion__button usa-banner__button" aria-expanded="false" aria-controls="government-banner-content">
+          <span class="usa-banner__button-text">
+            <%= t(".how_you_know") %>
+          </span>
+        </button>
+      </div>
+    </header>
+    <div class="usa-banner__content usa-accordion__content padding-left-2 tablet:padding-left-4" id="government-banner-content">
+      <div class="grid-row grid-gap-lg">
+        <div class="usa-banner__guidance tablet:grid-col-6">
+          <%= image_tag "@uswds/uswds/dist/img/icon-dot-gov.svg", class: "usa-banner__icon usa-media-block__img", alt: "", aria: { hidden: true } %>
+          <div class="usa-media-block__body">
+            <p>
+              <strong><%= t(".gov_heading") %></strong>
+              <br>
+              <%= t(".gov_body_html") %>
+            </p>
+          </div>
+        </div>
+        <div class="usa-banner__guidance tablet:grid-col-6">
+          <%= image_tag "@uswds/uswds/dist/img/icon-https.svg", class: "usa-banner__icon usa-media-block__img", alt: "", aria: { hidden: true } %>
+          <div class="usa-media-block__body">
+            <p>
+              <strong><%= t(".https_heading") %></strong>
+              <br>
+              <%= t(".https_body_html", lock_icon: render("application/banner_lock_icon")) %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

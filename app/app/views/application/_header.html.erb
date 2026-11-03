@@ -1,6 +1,6 @@
 <div class="usa-overlay"></div>
 <header class="usa-header usa-header--basic" aria-label="<%= t("shared.header.aria_label") %>" data-controller="language">
-  <% if current_agency.present? %>
+  <% if current_agency.present? && !show_government_banner? %>
     <div class="cbv-header__preheader">
       <div class="cbv-header__preheader__text">
         <%= agency_translation("shared.header.preheader") %>
@@ -17,7 +17,7 @@
                 <%= t("shared.pilot_name_hr1_full") %>
               </div>
               <div class="cbv-header__subtitle">
-                <%= agency_translation("shared.agency_full_name") %>
+                <%= t("shared.subheader_agency_text", agency: agency_translation("shared.agency_full_name")) %>
               </div>
             </div>
           <% else %>

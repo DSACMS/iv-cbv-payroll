@@ -1,4 +1,13 @@
 class NscEnrollmentTerm < ApplicationRecord
+  include Redactable
+
+  has_redactable_fields(
+    first_name: :string,
+    middle_name: :string,
+    last_name: :string,
+    school_name: :string
+  )
+
   belongs_to :education_activity
 
   SUMMER_MONTHS = [ 5, 6, 7, 8 ].freeze
@@ -7,7 +16,11 @@ class NscEnrollmentTerm < ApplicationRecord
     three_quarter_time: "three_quarter_time",   # Q
     half_time: "half_time",                     # H
     less_than_half_time: "less_than_half_time", # L
-    enrolled: "enrolled",                       # Y
+    enrolled: "enrolled",                       # Y: status not released by school
+    leave_of_absence: "leave_of_absence",       # A
+    withdrawn: "withdrawn",                     # W, S
+    graduated: "graduated",                     # G
+    deceased: "deceased",                       # D
     unknown: "unknown"
   }, default: :unknown, prefix: :enrollment
 
@@ -18,6 +31,10 @@ class NscEnrollmentTerm < ApplicationRecord
     "half_time" => 3,
     "less_than_half_time" => 2,
     "enrolled" => 1,
+    "leave_of_absence" => 0,
+    "withdrawn" => 0,
+    "graduated" => 0,
+    "deceased" => 0,
     "unknown" => 0
   }.freeze
 
@@ -39,6 +56,8 @@ class NscEnrollmentTerm < ApplicationRecord
       I18n.t("components.enrollment_term_table_component.status.half_time")
     when :less_than_half_time
       I18n.t("components.enrollment_term_table_component.status.less_than_half_time")
+    when :leave_of_absence, :withdrawn, :graduated, :deceased
+      I18n.t("components.enrollment_term_table_component.status.#{enrollment_status}")
     when :enrolled
       I18n.t("components.enrollment_term_table_component.status.enrolled")
     else
@@ -74,11 +93,14 @@ class NscEnrollmentTerm < ApplicationRecord
     month_start.month.in?(SUMMER_MONTHS)
   end
 
-  def term_date_display
+  def term_date_display(abbreviated: true)
+    month_format = abbreviated ? :abbreviated_month : :month
+    month_year_format = abbreviated ? :abbreviated_month_year : :month_year
+
     if term_begin.year == term_end.year
-      "#{I18n.l(term_begin, format: :abbreviated_month)} - #{I18n.l(term_end, format: :abbreviated_month_year)}"
+      "#{I18n.l(term_begin, format: month_format)} - #{I18n.l(term_end, format: month_year_format)}"
     else
-      "#{I18n.l(term_begin, format: :abbreviated_month_year)} - #{I18n.l(term_end, format: :abbreviated_month_year)}"
+      "#{I18n.l(term_begin, format: month_year_format)} - #{I18n.l(term_end, format: month_year_format)}"
     end
   end
 end

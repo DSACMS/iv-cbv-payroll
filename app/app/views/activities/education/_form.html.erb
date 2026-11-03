@@ -21,19 +21,10 @@
   <p>
     <%= t("activities.education.new.contact_section_description") %>
   </p>
-  <%= f.text_field :contact_name,
-        label: t("activities.education.new.contact_name"),
-        optional: true %>
-  <%= f.text_field :contact_title,
-        label: t("activities.education.new.contact_title"),
-        optional: true %>
-  <%= f.email_field :contact_email,
-        label: t("activities.education.new.contact_email"),
-        optional: true %>
-  <%= f.phone_field :contact_phone_number,
-        label: t("activities.education.new.contact_phone_number"),
-        optional: true %>
-
+  <%= f.text_field :contact_name, label: t("activities.education.new.contact_name") %>
+  <%= f.text_field :contact_title, label: t("activities.education.new.contact_title") %>
+  <%= f.email_field :contact_email, label: t("activities.education.new.contact_email") %>
+  <%= f.phone_field :contact_phone_number, label: t("activities.education.new.contact_phone_number") %>
   <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t("activities.education.new.continue") %>
   <%= f.submit submit_label %>
 <% end %>

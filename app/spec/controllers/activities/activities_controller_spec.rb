@@ -4,6 +4,225 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
   include_context "activity_hub"
   render_views
 
+  describe "activity added alert" do
+    let(:current_flow) { create(:activity_flow) }
+    let(:rendered) { Capybara.string(response.body) }
+    let(:alert_text) do
+      I18n.t("activities.hub.activity_added",
+        activity_type: I18n.t("activities.submit.pdf.activity_types.community_service"))
+    end
+
+    before do
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+    end
+
+    it "renders the slim success alert above the hub content" do
+      get :index, flash: { activity_added: :community_service }
+
+      expect(rendered).to have_selector(".usa-alert--success.usa-alert--slim[role='alert'][data-turbo-temporary]",
+        text: alert_text, normalize_ws: true)
+      expect(rendered).to have_selector(".usa-alert--success + .activity-hub-columns",
+        text: I18n.t("activities.hub.title"))
+    end
+
+    it "does not show an added alert on a regular hub visit" do
+      get :index
+
+      expect(rendered).to have_no_selector(".usa-alert--success")
+    end
+
+    context "when reporting for a named applicant" do
+      let(:applicant) { create(:cbv_applicant) }
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant) }
+      let(:current_flow) { create(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation) }
+      let(:reporting_text) do
+        I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
+      end
+
+      it "renders the success alert above the reporting banner" do
+        get :index, flash: { activity_added: :community_service }
+
+        expect(rendered).to have_selector(".usa-alert--success + div", text: reporting_text, normalize_ws: true)
+      end
+    end
+
+    context "with unpaid-only employment" do
+      let(:current_flow) { create(:activity_flow, unpaid_work_only: true) }
+      let(:alert_text) do
+        I18n.t("activities.hub.activity_added", activity_type: I18n.t("activities.unpaid_work.title").downcase)
+      end
+
+      it "uses the unpaid work label in the added alert" do
+        get :index, flash: { activity_added: :employment }
+
+        expect(rendered).to have_selector(".usa-alert--success", text: alert_text, normalize_ws: true)
+      end
+
+      context "when an education activity was added" do
+        let(:alert_text) do
+          I18n.t("activities.hub.activity_added", activity_type: I18n.t("activities.submit.pdf.activity_types.education"))
+        end
+
+        it "uses the education label in the added alert" do
+          get :index, flash: { activity_added: :education }
+
+          expect(rendered).to have_selector(".usa-alert--success", text: alert_text, normalize_ws: true)
+        end
+      end
+    end
+  end
+
+  context "for Louisiana acceptance testing" do
+    let(:applicant) { create(:cbv_applicant, client_agency_id: "la_ldh") }
+    let(:flow) { create(:activity_flow, cbv_applicant: applicant) }
+    let(:rendered) { Capybara.string(response.body) }
+
+    before do
+      session[:flow_id] = flow.id
+      session[:flow_type] = :activity
+      get :index
+    end
+
+    it "offers all four CE activity types" do
+      expect(rendered).to have_selector("[data-activity-type='employment']")
+      expect(rendered).to have_selector("[data-activity-type='education']")
+      expect(rendered).to have_selector("[data-activity-type='community_service']")
+      expect(rendered).to have_selector("[data-activity-type='work_programs']")
+    end
+
+    context "for Employment" do
+      let(:flow) do
+        create(:activity_flow, cbv_applicant: applicant, employment_focused: true,
+          volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0)
+      end
+
+      it "offers a way to add work" do
+        expect(response).to redirect_to(activities_flow_income_add_your_work_path)
+      end
+    end
+  end
+
+  context "with a completed flow" do
+    let(:flow) { create(:activity_flow, completed_at: Time.current) }
+
+    before do
+      session[:flow_id] = flow.id
+      session[:flow_type] = :activity
+    end
+
+    it "redirects to success instead of showing an editable report" do
+      get :index
+
+      expect(response).to redirect_to(activities_flow_success_path)
+    end
+
+    context "when invitation reuse is allowed" do
+      let(:invitation) { create(:activity_flow_invitation) }
+      let(:flow) { create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current) }
+
+      it "still protects the completed report" do
+        get :index
+
+        expect(response).to redirect_to(activities_flow_success_path)
+      end
+    end
+  end
+
+  describe "common questions" do
+    let(:current_flow) do
+      create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
+        education_activities_count: 0, reporting_window_months: 1)
+    end
+    let(:rendered) { Capybara.string(response.body) }
+    let(:reporting_purpose) { I18n.t("activities.hub.common_questions.reporting_purposes.application") }
+    let(:required_month_count) { 1 }
+    let(:requirements_body) do
+      ActionController::Base.helpers.strip_tags(
+        I18n.t("activities.hub.common_questions.requirements_body_html",
+          count: required_month_count, required_month_count: required_month_count)
+      )
+    end
+    let(:income_body) { I18n.t("activities.hub.common_questions.income_body", reporting_purpose: reporting_purpose) }
+
+    before do
+      session[:flow_id] = current_flow.id
+      session[:flow_type] = :activity
+    end
+
+    it "shows both questions on an empty hub" do
+      get :index
+
+      expect(rendered).to have_selector("h2", text: I18n.t("activities.hub.common_questions.heading"))
+      expect(rendered).to have_button(I18n.t("activities.hub.common_questions.requirements_title"))
+      expect(rendered).to have_button(I18n.t("activities.hub.common_questions.income_title"))
+      expect(rendered).to have_no_button(I18n.t("activities.hub.review_and_submit"))
+    end
+
+    it "uses the application requirements and reporting purpose" do
+      get :index
+
+      expect(rendered).to have_text(requirements_body)
+      expect(rendered).to have_text(income_body)
+    end
+
+    context "with activities to review" do
+      before { create(:volunteering_activity, activity_flow: current_flow) }
+
+      it "provides the review action when activities have been added" do
+        get :index
+
+        expect(rendered).to have_button(I18n.t("activities.hub.review_and_submit"))
+        expect(rendered).to have_selector("form[action='#{controller.next_path}'][method='get']")
+      end
+    end
+
+    context "with an 11-month renewal requiring a subset of months" do
+      let(:required_month_count) { 2 }
+
+      let(:current_flow) do
+        create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
+          education_activities_count: 0, reporting_window_type: "renewal", reporting_window_months: 11,
+          renewal_required_months: 2)
+      end
+
+      it "uses the required month count and the application purpose" do
+        get :index
+
+        expect(rendered).to have_text(requirements_body)
+        expect(rendered).to have_text(income_body)
+      end
+    end
+
+    context "with a 12-month application" do
+      let(:reporting_purpose) { I18n.t("activities.hub.common_questions.reporting_purposes.renewal") }
+      let(:current_flow) do
+        create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
+          education_activities_count: 0, reporting_window_type: "application", reporting_window_months: 12)
+      end
+
+      it "uses the renewal purpose based on the lookback period" do
+        get :index
+
+        expect(rendered).to have_text(income_body)
+      end
+    end
+
+    context "with a lookback period greater than 12 months" do
+      let(:reporting_purpose) { I18n.t("activities.hub.common_questions.reporting_purposes.renewal") }
+      let(:current_flow) do
+        create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,
+          education_activities_count: 0, reporting_window_type: "application", reporting_window_months: 13)
+      end
+
+      it "uses the renewal purpose" do
+        get :index
+
+        expect(rendered).to have_text(income_body)
+      end
+    end
+  end
+
   describe "#index" do
     let(:current_flow) { create(:activity_flow) }
     let(:tracked_flow) { current_flow }
@@ -36,6 +255,21 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       expect(Capybara.string(response.body)).to have_css(
         "[data-activity-type='employment'] form[action='#{activities_flow_income_add_your_work_path}']"
       )
+    end
+
+    context "with Louisiana" do
+      let(:applicant) { create(:cbv_applicant, client_agency_id: "la_ldh") }
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: applicant, client_agency_id: "la_ldh") }
+      let(:current_flow) { create(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation) }
+
+      it "shows all four community engagement activity types" do
+        rendered = Capybara.string(response.body)
+
+        expect(rendered).to have_selector("[data-activity-type='employment'] h2", text: I18n.t("activities.employment.title"))
+        expect(rendered).to have_selector("[data-activity-type='education'] h2", text: I18n.t("activities.education.title"))
+        expect(rendered).to have_selector("[data-activity-type='community_service'] h2", text: I18n.t("activities.community_service.title"))
+        expect(rendered).to have_selector("[data-activity-type='work_programs'] h2", text: I18n.t("activities.work_programs.title"))
+      end
     end
 
     context "with unpaid-only employment" do
@@ -978,8 +1212,12 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
 
       it "renders the consent checkbox and submit button" do
         rendered = Capybara.string(response.body)
+        consent_text = Capybara.string(I18n.t("activities.summary.consent_label_html",
+          agency_name: I18n.t("shared.agency_full_name.sandbox"),
+          agency_initials: I18n.t("shared.agency_acronym.sandbox"))).text
 
         expect(rendered).to have_css("input[type='checkbox'][name='activity_flow[consent_to_submit]']")
+        expect(rendered).to have_selector("label[for='activity_flow_consent_to_submit']", text: consent_text, normalize_ws: true)
         expect(rendered).to have_button(
           I18n.t("activities.activities.employment_focused_review.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
         )

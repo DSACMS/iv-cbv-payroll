@@ -15,7 +15,7 @@ RSpec.describe ActivityReportSchemas do
   let(:self_attested) do
     {
       "type" => "employment", "month" => "2026-07", "data_source" => "self_attested", "document_ids" => [],
-      "employer_name" => "Sample work", "employment_type" => "self_employed", "is_self_employed" => true,
+      "employer_name" => "Sample work", "employment_type" => nil, "is_self_employed" => true,
       "hours" => 12.75, "gross_income" => 123.45
     }
   end
@@ -42,8 +42,14 @@ RSpec.describe ActivityReportSchemas do
     expect(standalone.schema("CeActivityReport").valid?(report)).to be(true)
   end
 
-  it "accepts mixed employment with decimal self-attested dollars and nullable payroll data" do
+  it "accepts mixed employment with null self-attested employment types, decimal dollars, and nullable payroll data" do
     expect(schema.validate(report).to_a).to be_empty
+  end
+
+  it "requires null employment types for self-attested work" do
+    self_attested["employment_type"] = "w2"
+
+    expect(schema.valid?(report)).to be(false)
   end
 
   it "accepts overlapping agency metadata shapes and validates their shared fields" do

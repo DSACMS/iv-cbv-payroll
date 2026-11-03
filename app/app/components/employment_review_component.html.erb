@@ -1,0 +1,10 @@
+<div class="display-flex flex-justify activity-review-edit-header">
+  <h2 class="margin-y-0">
+    <%= unpaid? ? t("activities.employment.review.unpaid_or_in_kind.work_information") : t("activities.employment.review.employer_info") %>
+  </h2>
+  <%= link_to t("activities.hub.edit"),
+    edit_activities_flow_income_employment_path(id: employment_activity, from_review: 1, from_edit: params[:from_edit].presence),
+      class: "usa-link" %>
+</div>
+
+<%= render partial: summary_partial, locals: { employment_activity: employment_activity, params: params } %>

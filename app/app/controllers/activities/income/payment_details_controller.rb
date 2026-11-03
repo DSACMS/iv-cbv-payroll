@@ -43,7 +43,7 @@ class Activities::Income::PaymentDetailsController < Activities::BaseController
     end
 
     @payroll_account.update(payroll_account_params)
-    @payroll_account.publish!
+    publish_activity(@payroll_account, activity_type: :employment)
 
     redirect_to next_path
   end

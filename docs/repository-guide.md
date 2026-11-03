@@ -19,6 +19,6 @@ Inside `app/app/`, expect the usual Rails neighborhoods: `controllers`, `models`
 
 `app/spec/` contains RSpec coverage for Ruby code and includes folders for controllers, models, jobs, services, requests, helpers, factories, fixtures, and E2E tests. JavaScript tests live under `spec/javascript` and run with Vitest. The repository guidance emphasizes adding test coverage and running tests after changes.
 
-The dependency files show the platform shape: `app/Gemfile` uses Rails 8, PostgreSQL, Puma, Redis, Solid Queue, Hotwire, Mixpanel, New Relic, AWS libraries, PDF tooling, RSpec, Capybara, Brakeman, RuboCop, and i18n tooling. `app/package.json` adds USWDS, Stimulus, Turbo, esbuild, PostCSS, Sass, Webpack, Prettier, Vite, and Vitest.
+The dependency files show the platform shape: `app/Gemfile` uses Rails 8, PostgreSQL, Puma, Redis, Solid Queue, Hotwire, Mixpanel, New Relic, AWS libraries, PDF tooling, RSpec, Capybara, Brakeman, RuboCop, and i18n tooling. `app/package.json` adds USWDS, Stimulus, Turbo, esbuild, PostCSS, Sass, Prettier, Vite, and Vitest.
 
 For navigation, read the root `README.md`, then `AGENTS.md`, then `app/AGENTS.md`. After that, use `docs/` for architecture and process context, and `app/` for day-to-day implementation.

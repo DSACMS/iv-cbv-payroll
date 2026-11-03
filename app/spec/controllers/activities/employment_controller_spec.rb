@@ -118,7 +118,9 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         rendered = Capybara.string(response.body)
 
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.title"))
-        expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.description"))
+        I18n.t("activities.employment_info.unpaid_or_in_kind.description").split("\n\n").each do |paragraph|
+          expect(rendered).to have_text(paragraph)
+        end
         expect(rendered).to have_text(I18n.t("activities.employment_info.unpaid_or_in_kind.contact_information_description"))
       end
 
@@ -745,12 +747,19 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response).to redirect_to(activities_flow_root_path)
     end
 
-    it "publishes the activity" do
+    it "publishes the new activity and queues the added alert" do
       employment_activity.update!(draft: true)
 
       patch :save_review, params: { id: employment_activity.id, employment_activity: { additional_comments: "" } }
 
       expect(employment_activity.reload.draft).to be(false)
+      expect(flash[:activity_added]).to eq(:employment)
+    end
+
+    it "does not queue the added alert when saving an existing activity" do
+      patch :save_review, params: { id: employment_activity.id, from_edit: 1, employment_activity: { additional_comments: "Updated notes" } }
+
+      expect(flash[:activity_added]).to be_nil
     end
   end
 end

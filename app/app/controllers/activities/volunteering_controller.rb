@@ -47,7 +47,7 @@ class Activities::VolunteeringController < Activities::BaseController
 
   def save_review
     @volunteering_activity.update(review_params)
-    @volunteering_activity.publish!
+    publish_activity(@volunteering_activity, activity_type: :community_service)
     redirect_to after_activity_path
   end
 

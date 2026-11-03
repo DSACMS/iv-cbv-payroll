@@ -1,0 +1,6 @@
+<%= term.enrollment_status_display %>
+<% if term.school_certified_on.present? %>
+  <em>
+    <%= t("activities.education.edit.status_as_of", date: format_date(term.school_certified_on)) %>
+  </em>
+<% end %>

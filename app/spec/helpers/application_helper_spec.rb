@@ -1,6 +1,56 @@
 require "rails_helper"
 
 RSpec.describe ApplicationHelper do
+  describe "#show_government_banner?" do
+    subject(:show_banner) { helper.show_government_banner? }
+
+    before do
+      allow(helper.request).to receive(:host).and_return(host)
+    end
+
+    let(:host) { "example.gov" }
+
+    it { is_expected.to be true }
+
+    context "in local development" do
+      let(:host) { "localhost" }
+
+      before { allow(Rails.env).to receive(:development?).and_return(true) }
+
+      it { is_expected.to be true }
+    end
+
+    context "on a government subdomain" do
+      let(:host) { "benefits.example.gov" }
+
+      it { is_expected.to be true }
+    end
+
+    context "with a mixed-case fully qualified hostname" do
+      let(:host) { "Benefits.Example.GOV." }
+
+      it { is_expected.to be true }
+    end
+
+    context "on a non-government domain" do
+      let(:host) { "example.org" }
+
+      it { is_expected.to be false }
+    end
+
+    context "with gov in a subdomain" do
+      let(:host) { "example.gov.com" }
+
+      it { is_expected.to be false }
+    end
+
+    context "on localhost" do
+      let(:host) { "localhost" }
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe "#uswds_form_with" do
     it "disables native browser validation by default" do
       rendered = Capybara.string(helper.uswds_form_with(url: "/") { "" })
@@ -150,7 +200,7 @@ RSpec.describe ApplicationHelper do
     end
 
     context "when agency has activity types configured" do
-      let(:current_agency) { Rails.application.config.client_agencies["sandbox"] }
+      let(:current_agency) { Rails.application.config.client_agencies["la_ldh"] }
 
       it "returns true for enabled types" do
         expect(helper.activity_type_enabled?(:education)).to be true
@@ -158,7 +208,7 @@ RSpec.describe ApplicationHelper do
     end
 
     context "when agency has no activity types configured" do
-      let(:current_agency) { Rails.application.config.client_agencies["la_ldh"] }
+      let(:current_agency) { instance_double(ClientAgencyConfig::ClientAgency, activity_types: {}) }
 
       it "returns nil" do
         expect(helper.activity_type_enabled?(:education)).to be_nil

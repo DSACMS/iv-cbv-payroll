@@ -8,7 +8,7 @@ class Activities::Education::AddYourEducationController < Activities::BaseContro
     add_education_method = params[:add_education_method]
 
     unless ADD_EDUCATION_METHODS.include?(add_education_method)
-      flash[:slim_alert] = { message: t("shared.next_path.notice_no_answer"), type: "error" }
+      flash[:education_selection_error] = t("shared.next_path.notice_no_answer")
       return redirect_to activities_flow_education_add_your_education_path
     end
 

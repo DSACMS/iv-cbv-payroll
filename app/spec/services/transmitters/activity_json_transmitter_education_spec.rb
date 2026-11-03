@@ -65,7 +65,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
         complete_nsc_education!
       end
 
-      it_behaves_like "an education report", %w[partial_enrollment_casey summer_term_carryover_sage spring_fall_no_summer_morgan]
+      it_behaves_like "an education report", %w[partial_enrollment_casey duplicate_enrollments_dedupe summer_term_carryover_sage spring_fall_no_summer_morgan]
         .include?(profile.scenario_key) ? "verified" : "verified_enrollment_only"
     end
   end

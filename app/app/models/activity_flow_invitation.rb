@@ -1,5 +1,11 @@
 class ActivityFlowInvitation < ApplicationRecord
+  include Redactable
   include InvitationExpiration
+
+  has_redactable_fields(
+    auth_token: :unique_string,
+    reference_id: :string
+  )
 
   belongs_to :cbv_applicant, optional: true
   has_many :activity_flows
@@ -19,5 +25,9 @@ class ActivityFlowInvitation < ApplicationRecord
 
   def expired?
     expires_at.nil? || Time.current.after?(expires_at)
+  end
+
+  def used?
+    activity_flows.completed.exists?
   end
 end

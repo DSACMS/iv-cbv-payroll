@@ -24,7 +24,9 @@ class MixpanelEventTracker
 
     start_time = Time.now
     Rails.logger.info "  Sending Mixpanel event #{event_type} with attributes: #{attributes}"
-    @tracker.track(distinct_id, event_type, attributes)
+    # Mixpanel merges these into its own string-keyed defaults (e.g. "time"), so
+    # symbol keys would produce duplicate keys, which json >= 3.0 refuses to generate.
+    @tracker.track(distinct_id, event_type, attributes.stringify_keys)
     Rails.logger.info "    Mixpanel event sent in #{Time.now - start_time}"
   end
 end

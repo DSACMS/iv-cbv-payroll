@@ -17,6 +17,11 @@ The agency must build an API endpoint that meets this specification and integrat
 
 This revision covers `community_service`, `work_program`, `employment`, and `education`. Employment includes self-attested work and payroll data from linked Argyle or Pinwheel accounts. Education includes self-attested credits, verified NSC enrollment, and partially self-attested education.
 
+For employment, `employment_type` is populated only for Argyle-sourced records
+as `w2` or `gig`; self-attested and Pinwheel entries retain the field as `null`. To identify
+self-employment across both sources, use
+`employment_type == "gig" OR is_self_employed == true`.
+
 ## Transmission
 
 Emmy sends a completed CE Activity Report as an HTTP `POST` to an endpoint

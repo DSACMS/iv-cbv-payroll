@@ -1,4 +1,11 @@
 class Household < ApplicationRecord
+  include Redactable
+
+  has_redactable_fields(
+    auth_token: :unique_string,
+    reference_id: :unique_string
+  )
+
   has_many :household_members, dependent: :destroy
 
   has_secure_token :auth_token, length: 10

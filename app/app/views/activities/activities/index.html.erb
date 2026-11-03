@@ -1,7 +1,22 @@
+<% any_activities_added = @flow.any_activities_added? %>
 <% reporting_window_display = @flow.reporting_window_display %>
 <% months_required_display = @flow.months_required_display %>
 
 <% content_for :title, t("activities.hub.title") %>
+
+<% if flash[:activity_added] %>
+  <% activity_type_label = if flash[:activity_added].to_s == "employment" && @flow.unpaid_work_only?
+                             t("activities.unpaid_work.title").downcase
+                           else
+                             t("activities.submit.pdf.activity_types.#{flash[:activity_added]}")
+                           end %>
+  <% alert_spacing_classes = activity_reporting_name(@flow) ? "margin-bottom-4" : "margin-bottom-3 tablet:margin-bottom-0" %>
+  <% content_for :page_alerts do %>
+    <%= render Uswds::Alert.new(type: :success, slim: true, class: alert_spacing_classes, data: { turbo_temporary: true }) do %>
+      <%= t("activities.hub.activity_added", activity_type: activity_type_label) %>
+    <% end %>
+  <% end %>
+<% end %>
 
 <div class="activity-hub-columns">
   <div class="activity-hub-columns__progress">
@@ -21,8 +36,10 @@
       </p>
     <% end %>
 
-    <% if @flow.any_activities_added? %>
-      <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+    <% if any_activities_added %>
+      <div class="display-none tablet:display-block">
+        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+      </div>
     <% end %>
   </div>
   <div class="activity-hub-columns__activities">
@@ -196,5 +213,15 @@
         <% end %>
       <% end %>
     <% end %>
+
+    <% if any_activities_added %>
+      <div class="tablet:display-none">
+        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+      </div>
+    <% end %>
   </div>
 </div>
+
+<%= render "activities/activities/common_questions",
+      reporting_purpose: @flow.reporting_window_months >= 12 ? :renewal : :application,
+      required_month_count: @flow.required_month_count %>

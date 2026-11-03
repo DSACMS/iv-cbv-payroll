@@ -66,6 +66,7 @@ class ClientAgencyConfig
       caseworker_feedback_form
       default_origin
       invitation_valid_days
+      allow_activity_invitation_reuse
       logo_path
       logo_square_path
       pay_income_days
@@ -103,6 +104,7 @@ class ClientAgencyConfig
       @caseworker_feedback_form = yaml["caseworker_feedback_form"]
       @default_origin = yaml["default_origin"]
       @invitation_valid_days = yaml["invitation_valid_days"]
+      @allow_activity_invitation_reuse = yaml.fetch("allow_activity_invitation_reuse", true)
       @logo_path = yaml["logo_path"]
       @logo_square_path = yaml["logo_square_path"]
       @pay_income_days = yaml.fetch("pay_income_days", { w2: 90, gig: 90 }).symbolize_keys
@@ -146,6 +148,9 @@ class ClientAgencyConfig
         end
 
       raise ArgumentError.new("Client Agency missing id") if @id.blank?
+      unless [ true, false ].include?(@allow_activity_invitation_reuse)
+        raise ArgumentError.new("Client Agency #{@id} invalid value for allow_activity_invitation_reuse")
+      end
       raise ArgumentError.new("Client Agency #{@id} `allowed_iframe_ancestors` must be a list") unless @allowed_iframe_ancestors.is_a?(Array)
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `agency_name`") if @agency_name.blank?
       unsupported_document_types = @allowed_document_types - DOCUMENT_CONTENT_TYPES.keys
@@ -184,10 +189,13 @@ class ClientAgencyConfig
       applicant_attributes(version: version).compact.keys.map(&:to_sym)
     end
 
-    def redactable_applicant_fields(version: :v1)
-      applicant_attributes(version: version).each_with_object({}) do |(name, options), fields|
-        next unless options.is_a?(Hash) && options["redaction_type"]
-        fields[name.to_sym] = options["redaction_type"].to_sym
+    def redactable_applicant_fields(version: nil)
+      attribute_sets = version ? [ applicant_attributes(version: version) ] : @applicant_attributes.values
+      attribute_sets.each_with_object({}) do |attributes, fields|
+        attributes.each do |name, options|
+          next unless options.is_a?(Hash) && options["redaction_type"]
+          fields[name.to_sym] = options["redaction_type"].to_sym
+        end
       end
     end
 

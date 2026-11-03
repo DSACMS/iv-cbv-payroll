@@ -16,11 +16,22 @@
 </p>
 <p><%= @flow.employment_focused? ? t(".employment_focused.description") : t(".description") %></p>
 
-<%= form_with(url: activities_flow_income_add_your_work_path, class: "maxw-none", builder: UswdsFormBuilder, id: "add_your_work_form") do |f| %>
-  <%= f.radio_button(:add_work_method, "connect_automatically", { label: tag.span(t(".options.automatic.label"), class: "text-bold"), hint: t(".options.automatic.hint") }) %>
-  <%= f.radio_button(:add_work_method, "enter_paid_manually", { label: tag.span(t(".options.paid.label"), class: "text-bold"), hint: t(".options.paid.hint") }) %>
-  <% unpaid_label = @flow.employment_focused? ? t(".employment_focused.options.unpaid.label") : t(".options.unpaid.label") %>
-  <%= f.radio_button(:add_work_method, "enter_unpaid_manually", { label: tag.span(unpaid_label, class: "text-bold"), hint: t(".options.unpaid.hint") }) %>
+<% if flash[:add_work_method_error].present? %>
+  <%= render Uswds::Alert.new(type: :error, slim: true, class: "margin-y-4") do %>
+    <%= flash[:add_work_method_error] %>
+  <% end %>
+<% end %>
+
+<%= form_with(url: activities_flow_income_add_your_work_path, class: "maxw-none", builder: UswdsFormBuilder) do |f| %>
+  <fieldset class="usa-fieldset">
+    <legend class="usa-legend text-bold">
+      <%= t(".legend") %>
+    </legend>
+    <%= f.radio_button(:add_work_method, "connect_automatically", { label: tag.span(t(".options.automatic.label"), class: "text-bold"), hint: t(".options.automatic.hint") }) %>
+    <%= f.radio_button(:add_work_method, "enter_paid_manually", { label: tag.span(t(".options.paid.label"), class: "text-bold"), hint: t(".options.paid.hint") }) %>
+    <% unpaid_label = @flow.employment_focused? ? t(".employment_focused.options.unpaid.label") : t(".options.unpaid.label") %>
+    <%= f.radio_button(:add_work_method, "enter_unpaid_manually", { label: tag.span(unpaid_label, class: "text-bold"), hint: t(".options.unpaid.hint") }) %>
+  </fieldset>
 
   <%= f.submit t("continue") %>
 <% end %>

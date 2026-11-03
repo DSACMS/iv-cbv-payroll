@@ -15,6 +15,7 @@
     </button>
   <% end %>
   <div id="<%= content_id %>" class="usa-accordion__content accordion-body">
+    <%= body %>
     <% if @items_as_list %>
       <ul class="usa-list margin-y-0">
         <% accordion_items.each do |item| %>

@@ -27,6 +27,9 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     # --- Step 1: Create a new self-attested education activity ---
     visit activities_flow_education_add_your_education_path
     verify_page(page, title: I18n.t("activities.education.add_your_education.show.header"))
+    click_button I18n.t("continue")
+    verify_page(page, title: I18n.t("activities.education.add_your_education.show.header"))
+    expect(page).to have_selector(".usa-alert--error.usa-alert--slim", text: I18n.t("shared.next_path.notice_no_answer"))
     find("label[for='add_education_method_high_school_ged']").click
     click_button I18n.t("continue")
     verify_page(page, title: I18n.t("activities.education.new.title"))
@@ -44,8 +47,8 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     term_title = I18n.t("activities.education.add_your_term.edit.title", school_name: "University of Illinois")
     verify_page(page, title: term_title)
     click_button I18n.t("activities.education.add_your_term.edit.continue")
-    verify_page(page, title: term_title)
     expect(page).to have_text(I18n.t("activities.education.add_your_term.errors.information_heading"))
+    verify_page(page, title: term_title)
 
     fill_in I18n.t("activities.education.add_your_term.edit.term_start"), with: "55/2026"
     fill_in I18n.t("activities.education.add_your_term.edit.term_end"), with: flow.reporting_months.last.strftime("%m/%Y")
@@ -53,8 +56,8 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
       from: I18n.t("activities.education.add_your_term.edit.enrollment_status")
     fill_in I18n.t("activities.education.add_your_term.edit.credit_hours"), with: "3.5"
     click_button I18n.t("activities.education.add_your_term.edit.continue")
-    verify_page(page, title: term_title)
     expect(page).to have_text(I18n.t("activities.education.add_your_term.errors.dates_heading"))
+    verify_page(page, title: term_title)
     fill_in I18n.t("activities.education.add_your_term.edit.term_start"), with: flow.reporting_months.first.strftime("%m/%Y")
     click_button I18n.t("activities.education.add_your_term.edit.continue")
 
@@ -90,7 +93,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
 
     expect(education_activity.education_type).to eq("high_school_ged")
     visit activities_flow_summary_path
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: "Medicaid"))
+    verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_selector("tr", text: "#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.high_school_ged")}")
     visit new_activities_flow_education_document_upload_path(education_id: education_activity)
     verify_page(
@@ -144,7 +147,7 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     expect(page).to have_content("Updated University of Illinois")
 
     visit activities_flow_summary_path
-    verify_page(page, title: I18n.t("activities.summary.title", benefit: I18n.t("shared.benefit.sandbox")))
+    verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_selector("tr", text: "#{I18n.t('activities.summary.education.contact_title')} Academic advisor", normalize_ws: true)
     within("table", text: I18n.t("activities.education.add_your_term.edit.term_start")) do
       expect(page).to have_text(I18n.l(education_activity.self_attested_term_start, format: :month_year))

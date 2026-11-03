@@ -1,15 +1,19 @@
 class NscDataFetcherService
   CURRENTLY_ENROLLED = "CC"
   ENROLLMENT_STATUSES = {
-    # Ordered in descending preference if there are multiple active enrollments.
-    # The key is the API response value
-    # The value is the enum value for EducationActivity.
+    # Raw NSC codes mapped to the grouped NscEnrollmentTerm status.
+    # W and S describe the same grouped status, regardless of who reported it.
     "F" => :full_time,
     "Q" => :three_quarter_time,
     "H" => :half_time,
     "L" => :less_than_half_time,
-    "Y" => :enrolled
-  }
+    "Y" => :enrolled, # Enrollment status not released by school.
+    "A" => :leave_of_absence,
+    "W" => :withdrawn,
+    "S" => :withdrawn, # Clearinghouse generated withdrawn.
+    "G" => :graduated,
+    "D" => :deceased
+  }.freeze
 
   def initialize(
     education_activity:,
@@ -52,7 +56,7 @@ class NscDataFetcherService
 
   def update_education_activity(education_activity, response_data)
     enrollments = Array(response_data["enrollmentDetails"])
-    current_enrollments = enrollments.find_all { |enrollment_detail| enrollment_detail["currentEnrollmentStatus"] == "CC" }
+    current_enrollments = enrollments.find_all { |enrollment_detail| enrollment_detail["currentEnrollmentStatus"] == CURRENTLY_ENROLLED }
 
     if current_enrollments.any?
       @logger.info "Found #{current_enrollments.length} current enrollments (total enrollments: #{enrollments.length})"
@@ -64,17 +68,28 @@ class NscDataFetcherService
   end
 
   def save_enrollment_terms(enrollment_details)
+    # Compare grouped statuses, retaining the newest certification for each group.
+    enrollment_term_attributes(enrollment_details)
+      .group_by { |attributes| attributes.except(:school_certified_on) }
+      .each_value do |duplicates|
+        # NSC dates use YYYY-MM-DD, so string comparison preserves date order.
+        latest = duplicates.max_by { |attributes| attributes[:school_certified_on] }
+        @education_activity.nsc_enrollment_terms.create!(latest)
+      end
+  end
+
+  def enrollment_term_attributes(enrollment_details)
     activity_flow = @education_activity.activity_flow
 
-    enrollment_details.each do |enrollment_detail|
-      next unless enrollment_detail["currentEnrollmentStatus"] == CURRENTLY_ENROLLED
+    enrollment_details.flat_map do |enrollment_detail|
+      next [] unless enrollment_detail["currentEnrollmentStatus"] == CURRENTLY_ENROLLED
 
-      enrollment_detail["enrollmentData"].each do |enrollment_data|
+      enrollment_detail["enrollmentData"].filter_map do |enrollment_data|
         term_begin = Date.parse(enrollment_data["termBeginDate"])
         term_end = Date.parse(enrollment_data["termEndDate"])
         next unless activity_flow.within_reporting_window?(term_begin, term_end)
 
-        @education_activity.nsc_enrollment_terms.create!(
+        {
           school_name: enrollment_detail["officialSchoolName"],
           first_name: enrollment_detail["nameOnSchoolRecord"]["firstName"],
           middle_name: enrollment_detail["nameOnSchoolRecord"]["middleName"],
@@ -82,7 +97,8 @@ class NscDataFetcherService
           enrollment_status: enrollment_status(enrollment_data),
           term_begin: term_begin,
           term_end: term_end,
-        )
+          school_certified_on: enrollment_data.fetch("schoolCertifiedOnDate")
+        }
       end
     end
   end

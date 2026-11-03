@@ -11,6 +11,21 @@ RSpec.describe ClientAgencyConfig do
       .and_return(sample_config)
   end
 
+  describe "Louisiana acceptance testing configuration" do
+    let(:agency) { Rails.application.config.client_agencies["la_ldh"] }
+
+    it "allows CE activities to be added with invitation reuse disabled" do
+      expect(agency.allow_activity_invitation_reuse).to be(false)
+      expect(agency.activity_types).to include(
+        education: true, community_service: true, work_programs: true, employment: true
+      )
+    end
+
+    it "keeps Sandbox invitation reuse enabled" do
+      expect(Rails.application.config.client_agencies["sandbox"].allow_activity_invitation_reuse).to be(true)
+    end
+  end
+
   context 'valid config' do
     let(:sample_config) { <<~YAML }
       - id: foo
@@ -42,6 +57,42 @@ RSpec.describe ClientAgencyConfig do
         expect do
           described_class.new(sample_config_path)
         end.not_to raise_error
+      end
+    end
+
+    describe "#allow_activity_invitation_reuse" do
+      let(:config) { described_class.new(sample_config_path) }
+
+      it "defaults to allowing reuse" do
+        expect(config["foo"].allow_activity_invitation_reuse).to be(true)
+      end
+
+      context "when explicitly disabled" do
+        let(:sample_config) { super().sub("agency_name: Foo Agency Name", "agency_name: Foo Agency Name\n  allow_activity_invitation_reuse: false") }
+
+        it "preserves false" do
+          expect(config["foo"].allow_activity_invitation_reuse).to be(false)
+        end
+      end
+
+      context "when explicitly enabled" do
+        let(:sample_config) { super().sub("agency_name: Foo Agency Name", "agency_name: Foo Agency Name\n  allow_activity_invitation_reuse: true") }
+
+        it "allows reuse" do
+          expect(config["foo"].allow_activity_invitation_reuse).to be(true)
+        end
+      end
+
+      context "when the value is not a boolean" do
+        let(:sample_config) { super().sub("agency_name: Foo Agency Name", "agency_name: Foo Agency Name\n  allow_activity_invitation_reuse: 'false'") }
+
+        it "rejects the config" do
+          expect { config }.to raise_error(ArgumentError, /allow_activity_invitation_reuse/)
+        end
+      end
+
+      it "disables reuse for Louisiana" do
+        expect(Rails.application.config.client_agencies["la_ldh"].allow_activity_invitation_reuse).to be(false)
       end
     end
 
@@ -644,6 +695,40 @@ RSpec.describe ClientAgencyConfig do
       config = described_class.new(sample_config_path)
       expect(config["foo"].redactable_applicant_fields)
         .to eq({ first_name: :string, date_of_birth: :date })
+    end
+
+    context "with different attributes across API versions" do
+      let(:sample_config) { <<~YAML }
+        - id: foo
+          agency_name: foo
+          pinwheel:
+            environment: foo
+          argyle:
+            environment: foo
+          income_flow_transmission_method: shared_email
+          applicant_attributes:
+            v1:
+              case_number:
+                redaction_type: string
+            v2:
+              first_name:
+                redaction_type: string
+              last_name:
+                redaction_type: string
+      YAML
+
+      it "redacts fields from every version by default" do
+        config = described_class.new(sample_config_path)
+
+        expect(config["foo"].redactable_applicant_fields)
+          .to eq(case_number: :string, first_name: :string, last_name: :string)
+      end
+
+      it "can select fields for an explicit version" do
+        config = described_class.new(sample_config_path)
+
+        expect(config["foo"].redactable_applicant_fields(version: :v1)).to eq(case_number: :string)
+      end
     end
   end
 end

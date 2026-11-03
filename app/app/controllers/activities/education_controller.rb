@@ -73,7 +73,7 @@ class Activities::EducationController < Activities::BaseController
           education_id: @education_activity, id: 0
         )
       else
-        @education_activity.publish!
+        publish_activity(@education_activity, activity_type: :education)
         redirect_to after_activity_path
       end
     else
@@ -124,7 +124,7 @@ class Activities::EducationController < Activities::BaseController
       )
     end
 
-    @education_activity.publish!
+    publish_activity(@education_activity, activity_type: :education)
     # Fires for every data source; see track_review_viewed_event.
     track_event(TrackEvent::EducationReviewSubmitted, education_activity_id: @education_activity.id)
     if @education_activity.fully_self_attested?
