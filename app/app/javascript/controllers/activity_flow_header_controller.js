@@ -2,12 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { trackUserAction } from "@js/utilities/api.js"
 
 export default class extends Controller {
-  static values = {
-    exitUrl: String,
-    confirmOnExit: Boolean,
-    trackEventPrefix: String,
-    trackEventAttributes: Object,
-  }
+  static values = { exitUrl: String, confirmOnExit: Boolean, trackEventPrefix: String }
   static targets = [
     "exitButton",
     "modalConfirmButton",
@@ -82,9 +77,6 @@ export default class extends Controller {
 
   _trackEvent(suffix, attributes = {}) {
     if (!this.trackEventPrefixValue) return
-    trackUserAction(`${this.trackEventPrefixValue}${suffix}`, {
-      ...this.trackEventAttributesValue,
-      ...attributes,
-    })
+    trackUserAction(`${this.trackEventPrefixValue}${suffix}`, attributes)
   }
 }

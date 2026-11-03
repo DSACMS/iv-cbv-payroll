@@ -26,7 +26,7 @@ RSpec.describe "NSC education event tracking", :js, type: :feature do
     expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::EducationAddYourEducationViewed, anything,
       hash_excluding(:education_flow, :education_data_source, :education_type, :education_activity_id))
     expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::EducationBackClicked, anything,
-      hash_including(education_flow: "nsc", education_step: "verification"))
+      hash_including(cbv_flow_id: flow.id))
 
     visit verify_activities_flow_education_index_path(education_type: "college_or_university")
     verify_page(page, title: I18n.t("activities.education.verify.header"))
@@ -50,11 +50,11 @@ RSpec.describe "NSC education event tracking", :js, type: :feature do
     end
     verify_page(page, title: I18n.t("activities.hub.title"))
     expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::EducationExitClicked, anything,
-      hash_including(education_activity_id: activity.id, modal_shown: true)).twice
+      hash_including(cbv_flow_id: flow.id, modal_shown: true)).twice
     expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::EducationExitModalCancelled, anything,
-      hash_including(education_data_source: "validated"))
+      hash_including(cbv_flow_id: flow.id))
     expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::EducationExitModalConfirmed, anything,
-      hash_including(education_data_source: "validated"))
+      hash_including(cbv_flow_id: flow.id))
 
     visit edit_activities_flow_education_path(id: activity)
     verify_page(page, title: I18n.t("activities.education.edit.header"))

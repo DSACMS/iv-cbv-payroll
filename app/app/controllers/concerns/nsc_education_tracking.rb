@@ -3,10 +3,6 @@
 module NscEducationTracking
   extend ActiveSupport::Concern
 
-  included do
-    helper_method :nsc_education_tracking_attributes
-  end
-
   private
 
   def standard_track_attributes

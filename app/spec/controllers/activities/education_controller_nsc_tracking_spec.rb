@@ -109,16 +109,14 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(Capybara.string(response.body)).to have_selector('[data-activity-flow-header-track-event-prefix-value="Education"]')
     end
 
-    it "tags enrollment review and navigation with partial self-attestation" do
+    it "tags enrollment review with partial self-attestation and edit context" do
       education_activity.update!(data_source: :partially_self_attested)
       get :edit, params: { id: education_activity.id, from_edit: 1 }
 
       expect(EventTrackingJob).to have_received(:perform_later).with(
-        TrackEvent::EducationEnrollmentReviewViewed, anything, event_attributes)
-      header = Capybara.string(response.body).find('[data-controller="activity-flow-header"]')
-      attributes = JSON.parse(header["data-activity-flow-header-track-event-attributes-value"])
-      expect(attributes).to include("education_activity_id" => education_activity.id,
-        "education_data_source" => "partially_self_attested", "from_edit" => "1")
+        TrackEvent::EducationEnrollmentReviewViewed, anything,
+        hash_including(education_activity_id: education_activity.id,
+          education_data_source: "partially_self_attested", from_edit: "1"))
     end
   end
 
