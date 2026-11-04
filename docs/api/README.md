@@ -13,8 +13,8 @@ by the same build; do not maintain or commit a separate copy.
 
 Contact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) for onboarding and an API key
 for each environment. Keep keys server-side and send requests over HTTPS.
-The Dev environment is `https://verify-demo.navapbc.cloud`; the Demo environment
-is `https://demo.reportmyincome.org`. Production access is arranged during onboarding.
+See [API environments](introduction.md#api-environments) for base URLs and agency
+environment mappings, including legacy environments that support Emmy Income only.
 
 The generated reference covers `POST /api/v1/invitations`,
 `POST /api/v2/{invitation_type}/invitations`, the document delivery webhook, and the CE Activity Report webhook, including self-attested and validated employment and
