@@ -1452,8 +1452,14 @@ en:
         test_data: Test data and expected result
         title: Dedupe Testuser
         withdrawn: Withdrawn
+      enrollment_only:
+        description: 1 school with Y (Enrolled); enrollment level not reported.
+        title: Jordan Testuser
       launch_configuration:
         title: Launch configuration
+      mixed_enrollment_history:
+        description: 2 schools with Y (Enrolled) and half-time history. Y is latest at one school and historical at the other.
+        title: Harper Testuser
       settings:
         title: Agency settings
       unpaid_work_only:
