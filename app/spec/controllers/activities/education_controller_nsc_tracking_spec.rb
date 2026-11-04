@@ -92,6 +92,15 @@ RSpec.describe Activities::EducationController, type: :controller do
         hash_including(education_activity_id: education_activity.id, education_data_source: "pending")).once
     end
 
+    it "tracks the selected locale on an NSC page" do
+      education_activity.update!(status: :unknown)
+      get :show, params: { id: education_activity.id, locale: "es" }
+
+      expect(EventTrackingJob).to have_received(:perform_later).with(
+        TrackEvent::EducationSynchronizationViewed, anything,
+        hash_including(education_activity_id: education_activity.id, locale: "es"))
+    end
+
     it "does not track each poll as a page view or lookup result" do
       education_activity.update!(status: :unknown)
       patch :sync, params: { education_id: education_activity.id }, format: :turbo_stream

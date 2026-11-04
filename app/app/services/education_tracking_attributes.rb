@@ -8,6 +8,7 @@ class EducationTrackingAttributes
 
     {
       flow_type: "ce",
+      locale: I18n.locale.to_s,
       cbv_flow_id: flow.id,
       cbv_applicant_id: flow.cbv_applicant_id,
       invitation_id: flow.invitation_id,

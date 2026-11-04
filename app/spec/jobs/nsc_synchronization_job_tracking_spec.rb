@@ -11,7 +11,7 @@ RSpec.describe NscSynchronizationJob do
   let(:attributes) do
     hash_including(cbv_flow_id: activity_flow.id, cbv_applicant_id: activity_flow.cbv_applicant_id,
       invitation_id: activity_flow.invitation_id, client_agency_id: activity_flow.cbv_applicant.client_agency_id,
-      device_id: activity_flow.device_id, flow_type: "ce", education_flow: "nsc",
+      device_id: activity_flow.device_id, flow_type: "ce", education_flow: "nsc", locale: "en",
       education_activity_id: education_activity.id, lookup_attempt: 1, duration_ms: kind_of(Integer))
   end
 
@@ -42,6 +42,19 @@ RSpec.describe NscSynchronizationJob do
 
       expect { job.perform_now }.not_to have_enqueued_job(described_class)
       expect(education_activity.reload).to be_sync_succeeded
+    end
+
+    context "when queued in Spanish" do
+      let(:serialized_job) { I18n.with_locale(:es) { job.serialize } }
+
+      before { job.deserialize(serialized_job) }
+
+      it "tracks the queued locale even when the worker locale is English" do
+        I18n.with_locale(:en) { job.perform_now }
+
+        expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::EducationNscLookupCompleted, nil,
+          hash_including(locale: "es"))
+      end
     end
   end
 
