@@ -18,16 +18,28 @@
   "info": {
     "title": "Emmy Platform API Documentation",
     "version": "v1",
-    "description": "# Introduction\n\nIntegrate your agency's systems with the Emmy platform. This reference currently\ncovers the Tokenized Link API (v1 and v2) for creating personalized reporting links and the\nCE Activity Report webhook for outbound community engagement reports. Find the\nwebhook under **Receiving data from the Emmy Platform**, including its JSON\nrequest example, signing headers, expected response, and signed cURL sample.\nIts component models include self-attested employment, validated payroll, and education.\nYour agency hosts this receiver.\nExamples use synthetic applicant data and nonfunctional tokens.\n\nObject schemas allow additional properties for forward compatibility. Integrations\nshould tolerate unknown response fields so new fields can be added without breaking\nexisting clients. Required fields and documented field types still apply.\n\n\u003c!-- Remove this link-check exception after the first reviewed deployment. --\u003e\n\u003c!-- markdown-link-check-disable-next-line --\u003e\n[Download the official OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json).\nThe JSON and this reference are generated together from executable API tests.\n\n## API environments\n\n| Environment | Base URL | Purpose |\n| :-- | :-- | :-- |\n| Dev | https://verify-demo.navapbc.cloud | Develop and test integrations. |\n| Demo | https://demo.reportmyincome.org | Demonstrate and evaluate the platform. |\n\nThese URLs host the invitation API. Report webhooks use your agency's configured\nreceiver URL instead.\n\nUse HTTPS for every request and the API key issued for the selected environment.\nYour production hostname and credentials are provided during agency onboarding.\n\n## API keys and authentication\n\nContact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) to request an agency API key\nfor each environment. The Tokenized Link API uses a 32-character secret API key.\nKeep it on your server, never in browser code or public repositories.\n\nFor invitation requests, each key identifies an agency and its configured metadata and invitation settings.\nSending a `client_agency_id` cannot select another agency. Include these headers:\n\n```http\nAuthorization: Bearer API_KEY\nContent-Type: application/json\n```\n\nA missing or invalid key returns `401 Unauthorized` with the plain-text body\n`HTTP Token: Access denied.` and a `WWW-Authenticate` header. If a key is\ncompromised, contact emmy@cms.hhs.gov to have it replaced.\n\nOutbound report webhooks use HMAC signing headers instead of Bearer\nauthentication. See **Receiving data from the Emmy Platform** for verification\ndetails and an example delivery to your agency."
+    "description": "# Introduction\n\nIntegrate your agency's systems with the Emmy platform. This reference currently\ncovers the Tokenized Link API (v1 and v2) for creating personalized reporting links and the\nCE Activity Report webhook for outbound community engagement reports. Find the\nwebhook under **Receiving data from the Emmy Platform**, including its JSON\nrequest example, signing headers, expected response, and signed cURL sample.\nIts component models include self-attested employment, validated payroll, and education.\nYour agency hosts this receiver.\nExamples use synthetic applicant data and nonfunctional tokens.\n\nObject schemas allow additional properties for forward compatibility. Integrations\nshould tolerate unknown response fields so new fields can be added without breaking\nexisting clients. Required fields and documented field types still apply.\n\n\u003c!-- Remove this link-check exception after the first reviewed deployment. --\u003e\n\u003c!-- markdown-link-check-disable-next-line --\u003e\n[Download the official OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json).\nThe JSON and this reference are generated together from executable API tests.\n\n## API environments\n\n| Environment | Base URL | Purpose |\n| :-- | :-- | :-- |\n| Production | https://emmy.cms.gov | Run live integrations with your agency's highest environment. |\n| UAT | https://uat.emmy.cms.gov | Perform integration testing with your agency's second-highest environment, for example UAT. |\n| Production Sandbox | https://sandbox.emmy.cms.gov | Develop and test integrations with your agency's lowest environment, for example SIT. |\n\n**Legacy environments support Emmy Income only.**\n\n| Environment | Base URL | Purpose |\n| :-- | :-- | :-- |\n| Dev (Legacy) | https://verify-demo.navapbc.cloud | Develop and test Emmy Income integrations. |\n| Demo (Legacy) | https://demo.reportmyincome.org | Demonstrate and evaluate Emmy Income. |\n\nThese URLs host the invitation API. Report webhooks use your agency's configured\nreceiver URL instead.\n\nUse the API key issued for the selected environment. Credentials are provided\nduring agency onboarding.\n\n## Networking\n\nUse the following IP addresses when configuring your agency's firewall\nallowlists. Incoming and outgoing are from Emmy's perspective:\n\n- **Incoming IP addresses** are the destination addresses for requests from your\n  agency to Emmy, such as invitation API requests.\n- **Outgoing IP addresses** are the source addresses for requests from Emmy to\n  your agency, such as report and document webhooks.\n\nAll traffic uses **HTTPS with TLS 1.2 or later over TCP port 443**.\nContinue to use the environment's hostname for API requests; the IP addresses\nbelow are for network configuration.\n\n| Environment | Incoming IP addresses | Outgoing IP addresses |\n| :-- | :-- | :-- |\n| Production | `18.213.216.33`, `44.211.14.94`, `52.20.193.29` | `3.215.248.116`, `52.73.87.18`, `54.209.184.111` |\n| UAT | `18.235.177.44`, `52.205.81.42`, `52.6.231.243` | `35.171.156.207`, `3.223.173.67`, `34.197.38.57` |\n| Production Sandbox | `100.26.93.171`, `35.169.122.224`, `44.213.152.175` | `98.91.6.41`, `32.193.216.192`, `32.194.27.148` |\n\n## API keys and authentication\n\nContact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) to request an agency API key\nfor each environment. The Tokenized Link API uses a 32-character secret API key.\nKeep it on your server, never in browser code or public repositories.\n\nFor invitation requests, each key identifies an agency and its configured metadata and invitation settings.\nSending a `client_agency_id` cannot select another agency. Include these headers:\n\n```http\nAuthorization: Bearer API_KEY\nContent-Type: application/json\n```\n\nA missing or invalid key returns `401 Unauthorized` with the plain-text body\n`HTTP Token: Access denied.` and a `WWW-Authenticate` header. If a key is\ncompromised, contact emmy@cms.hhs.gov to have it replaced.\n\nOutbound report webhooks use HMAC signing headers instead of Bearer\nauthentication. See **Receiving data from the Emmy Platform** for verification\ndetails and an example delivery to your agency."
   },
   "servers": [
     {
+      "url": "https://emmy.cms.gov",
+      "description": "Production"
+    },
+    {
+      "url": "https://uat.emmy.cms.gov",
+      "description": "UAT"
+    },
+    {
+      "url": "https://sandbox.emmy.cms.gov",
+      "description": "Production Sandbox"
+    },
+    {
       "url": "https://verify-demo.navapbc.cloud",
-      "description": "Dev environment"
+      "description": "Dev (Legacy) — Emmy Income only"
     },
     {
       "url": "https://demo.reportmyincome.org",
-      "description": "Demo environment"
+      "description": "Demo (Legacy) — Emmy Income only"
     }
   ],
   "externalDocs": {
@@ -317,7 +329,7 @@
                   "expire_community_engagement": {
                     "summary": "Expire a community engagement invitation",
                     "value": {
-                      "tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/qoqpepXM2F"
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/h8SHMxEiNh"
                     }
                   }
                 },
@@ -391,7 +403,7 @@
                         "first_name": "Jane",
                         "last_name": "Doe"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/F2LsFWtSWL"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/dYjBCC1yjr"
                     }
                   },
                   "community_engagement": {
@@ -407,7 +419,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/jrL1JKqLfY"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/tyKDFoofKM"
                     }
                   },
                   "louisiana_community_engagement": {
@@ -423,7 +435,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/7sShL2xH9h"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/1rHipYgHYd"
                     }
                   }
                 },
