@@ -282,7 +282,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       let(:perform_tracked_action) { get :new, params: { community_service_id: volunteering_activity.id } }
 
       it_behaves_like "tracks an event", TrackEvent::CommunityServiceDocumentUploadViewed,
-        extra_attributes: -> { { community_service_activity_id: kind_of(Integer) } }
+        extra_attributes: -> { { volunteering_activity_id: kind_of(Integer) } }
     end
 
     it "renders the upload form for an employment activity" do
@@ -508,7 +508,7 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       let(:perform_tracked_action) { post :create, params: { community_service_id: volunteering_activity.id } }
 
       it_behaves_like "tracks an event", TrackEvent::CommunityServiceDocumentUploadSubmitted,
-        extra_attributes: -> { { community_service_activity_id: kind_of(Integer), document_count: 0 } }
+        extra_attributes: -> { { volunteering_activity_id: kind_of(Integer), document_count: 0 } }
     end
 
     it "does not track EducationDocumentUploadSubmitted when the update fails" do

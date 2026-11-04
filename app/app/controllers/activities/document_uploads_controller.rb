@@ -217,7 +217,7 @@ class Activities::DocumentUploadsController < Activities::BaseController
     when params[:employment_id].present?
       track_event(TrackEvent::EmploymentDocumentUploadViewed, employment_activity_id: @activity.id)
     when params[:community_service_id].present?
-      track_event(TrackEvent::CommunityServiceDocumentUploadViewed, community_service_activity_id: @activity.id)
+      track_event(TrackEvent::CommunityServiceDocumentUploadViewed, volunteering_activity_id: @activity.id)
     end
   end
 
@@ -240,7 +240,7 @@ class Activities::DocumentUploadsController < Activities::BaseController
     when params[:community_service_id].present?
       track_event(
         TrackEvent::CommunityServiceDocumentUploadSubmitted,
-        community_service_activity_id: @activity.id,
+        volunteering_activity_id: @activity.id,
         document_count: @activity.document_uploads.count
       )
     end
