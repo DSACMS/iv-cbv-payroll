@@ -61,10 +61,11 @@ class Activities::VolunteeringController < Activities::BaseController
   end
 
   def save_review
+    was_draft = @volunteering_activity.draft?
     @volunteering_activity.update(review_params)
     publish_activity(@volunteering_activity, activity_type: :community_service)
     track_event(TrackEvent::CommunityServiceReviewSubmitted, volunteering_activity_id: @volunteering_activity.id)
-    track_event(TrackEvent::CommunityServiceFlowCompleted, volunteering_activity_id: @volunteering_activity.id)
+    track_event(TrackEvent::CommunityServiceFlowCompleted, volunteering_activity_id: @volunteering_activity.id) if was_draft
     redirect_to after_activity_path
   end
 
