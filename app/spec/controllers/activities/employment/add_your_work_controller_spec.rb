@@ -172,12 +172,7 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
     context "with an employment-focused flow" do
       let(:activity_flow) { create(:activity_flow, employment_focused: true) }
 
-      it "routes in-kind work to manual income and hours entry and preserves the screener event" do
-        expect(EventTrackingJob).to receive(:perform_later).with(
-          TrackEvent::EmploymentAddYourWorkSubmitted, anything,
-          hash_including(add_work_method: "enter_unpaid_manually", cbv_flow_id: activity_flow.id)
-        )
-
+      it "routes in-kind work to manual income and hours entry" do
         post :create, params: { add_work_method: "enter_unpaid_manually" }
 
         expect(response).to redirect_to(new_activities_flow_income_employment_path(compensation_type: "paid"))

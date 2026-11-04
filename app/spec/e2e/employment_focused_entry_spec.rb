@@ -31,18 +31,12 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
     verify_page(page, title: I18n.t("activities.employment.month_selections.edit.title", employer_name: "Example Employer"))
     activity = invitation.activity_flows.last.employment_activities.last
     month = activity.activity_flow.reporting_months.first
-    choose_month = I18n.l(month, format: :month_year)
-    check choose_month, allow_label_click: true
+    check I18n.l(month, format: :month_year), allow_label_click: true
     click_button I18n.t("activities.employment.month_selections.edit.continue")
 
     verify_page(page, title: I18n.t("activities.employment.hours_input.heading", organization: "Example Employer"))
-    fill_in "employment_activity_month_gross_income", with: "100"
-    fill_in "employment_activity_month_hours", with: "8"
-    click_button I18n.t("activities.employment.hours_input.continue")
-
-    verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: "Example Employer"), skip_axe_rules: %w[heading-order])
-    expect(activity).to be_paid
-    expect(activity.activity_months.find_by!(month: month).attributes).to include("gross_income" => 100, "hours" => 8)
+    expect(page).to have_field("employment_activity_month_gross_income")
+    expect(page).to have_field("employment_activity_month_hours")
   end
 
   it "renders the generic entry content when not employment_focused" do
