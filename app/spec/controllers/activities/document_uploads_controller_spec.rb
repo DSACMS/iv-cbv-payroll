@@ -222,9 +222,11 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
     context "with NSC education" do
       let(:education_activity) { create(:education_activity, activity_flow: activity_flow, data_source: data_source) }
-      let(:rendered) { Capybara.string(response.body) }
-
-      before { get :new, params: { education_id: education_activity.id } }
+      let(:navigation_params) { {} }
+      let(:rendered) do
+        get :new, params: { education_id: education_activity.id }.merge(navigation_params)
+        Capybara.string(response.body)
+      end
 
       context "when validated" do
         let(:data_source) { :validated }
@@ -249,9 +251,83 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       context "when partially self-attested" do
         let(:data_source) { :partially_self_attested }
+        let(:education_activity) do
+          create(:education_activity, activity_flow: activity_flow, data_source: data_source, draft: true)
+        end
+        let(:term) do
+          create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity,
+            credit_hours: 3, term_begin: activity_flow.reporting_months.first,
+            term_end: activity_flow.reporting_months.last.end_of_month)
+        end
 
-        it "links back to the hub" do
+        before { term }
+
+        it "links back to the credit hours form" do
+          expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"),
+            href: edit_activities_flow_education_term_credit_hour_path(education_id: education_activity, id: 0))
+        end
+
+        it "preserves the draft activity and saved credit hours" do
+          get :new, params: { education_id: education_activity.id }
+
+          expect(education_activity.reload).to be_draft
+          expect(term.reload.credit_hours).to eq(3)
+        end
+
+        context "with multiple terms" do
+          before do
+            create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity,
+              term_begin: activity_flow.reporting_months.first, term_end: activity_flow.reporting_months.last.end_of_month)
+            create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: :full_time)
+            create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity,
+              term_begin: activity_flow.reporting_months.first - 2.years, term_end: activity_flow.reporting_months.first - 1.year)
+          end
+
+          it "links to the last credit hours page using only applicable terms" do
+            expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"),
+              href: edit_activities_flow_education_term_credit_hour_path(education_id: education_activity, id: 1))
+          end
+        end
+
+        context "when editing from review" do
+          let(:navigation_params) { { from_review: 1, from_edit: 1 } }
+
+          it "preserves the review and edit context" do
+            expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"),
+              href: edit_activities_flow_education_term_credit_hour_path(
+                education_id: education_activity, id: 0, from_review: 1, from_edit: 1))
+          end
+        end
+      end
+
+      context "when partially self-attested without applicable credit hours terms" do
+        let(:data_source) { :partially_self_attested }
+
+        it "links back to the hub when there are no terms" do
           expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"), href: activities_flow_root_path)
+        end
+
+        context "with terms outside the reporting window" do
+          before do
+            create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity,
+              term_begin: activity_flow.reporting_months.first - 2.years, term_end: activity_flow.reporting_months.first - 1.year)
+          end
+
+          it "links back to the hub instead of an invalid credit hours page" do
+            expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"), href: activities_flow_root_path)
+          end
+        end
+
+        context "with sufficient enrollment" do
+          before do
+            education_activity.update!(status: :succeeded)
+            create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: :half_time,
+              term_begin: activity_flow.reporting_months.first, term_end: activity_flow.reporting_months.last.end_of_month)
+          end
+
+          it "links back to review and submit" do
+            expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"), href: activities_flow_summary_path)
+          end
         end
       end
     end

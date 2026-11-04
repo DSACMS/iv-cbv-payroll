@@ -64,6 +64,13 @@ class Activities::DocumentUploadsController < Activities::BaseController
                       from_review: params[:from_review].presence,
                       from_edit: params[:from_edit].presence
                     )
+                  elsif @activity.partially_self_attested? && @activity.has_less_than_half_time_terms?
+                    edit_activities_flow_education_term_credit_hour_path(
+                      education_id: @activity,
+                      id: @activity.less_than_half_time_terms_in_reporting_window.length - 1,
+                      from_review: params[:from_review].presence,
+                      from_edit: params[:from_edit].presence
+                    )
                   else
                     progress_calculator.overall_result.meets_routing_requirements ? activities_flow_summary_path : activities_flow_root_path
                   end
