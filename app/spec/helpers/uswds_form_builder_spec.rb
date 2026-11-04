@@ -283,6 +283,32 @@ RSpec.describe UswdsFormBuilder do
         expect(result).to have_element(:span, text: 'Check this box', class: 'usa-checkbox__label-description')
       end
     end
+
+    context 'with an error message' do
+      let(:result) { builder.check_box(:first_name, error_message: I18n.t('errors.messages.invalid')) }
+      let(:rendered) { Capybara.string(result) }
+
+      it 'renders the inline error before the checkbox' do
+        expect(rendered).to have_selector('.usa-checkbox > .usa-error-message', text: I18n.t('errors.messages.invalid'))
+        expect(rendered).to have_selector('.usa-error-message ~ input[type="checkbox"] + .usa-checkbox__label')
+      end
+
+      it 'associates the checkbox with its error' do
+        expect(rendered).to have_selector('input[type="checkbox"][aria-invalid="true"][aria-describedby="object_first_name_error"]')
+      end
+
+      context 'with an existing description' do
+        let(:result) do
+          builder.check_box(:first_name, error_message: I18n.t('errors.messages.invalid'), aria: { describedby: 'existing-description' })
+        end
+
+        it 'preserves the existing description alongside the error' do
+          expect(rendered.find('input[type="checkbox"]')['aria-describedby'].split).to contain_exactly(
+            'existing-description', 'object_first_name_error'
+          )
+        end
+      end
+    end
   end
 
   describe '#radio_button' do
