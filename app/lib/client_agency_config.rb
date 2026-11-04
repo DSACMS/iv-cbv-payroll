@@ -16,6 +16,7 @@ class ClientAgencyConfig
   VALID_PAY_INCOME_DAYS = [ 90, 182 ]
   VALID_APPLICATION_REPORTING_MONTHS = [ 1, 2, 3 ]
   VALID_RENEWAL_REQUIRED_MONTHS = 1..6
+  VALID_APPLICATION_REQUIRED_MONTHS = 1..12
   VALID_REDACTION_TYPES = %w[string date email object uuid]
   DOCUMENT_CONTENT_TYPES = {
     "pdf" => "application/pdf",
@@ -71,6 +72,7 @@ class ClientAgencyConfig
       logo_square_path
       pay_income_days
       application_reporting_months
+      application_required_months
       renewal_required_months
       pinwheel_api_token
       pinwheel_environment
@@ -109,6 +111,7 @@ class ClientAgencyConfig
       @logo_square_path = yaml["logo_square_path"]
       @pay_income_days = yaml.fetch("pay_income_days", { w2: 90, gig: 90 }).symbolize_keys
       @application_reporting_months = yaml["application_reporting_months"] || 1
+      @application_required_months = yaml["application_required_months"]
       @renewal_required_months = yaml["renewal_required_months"]
       @pinwheel_environment = yaml["pinwheel"]["environment"] || "sandbox"
       @pilot_ended = yaml["pilot_ended"] || false
@@ -163,6 +166,7 @@ class ClientAgencyConfig
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.w2") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:w2])
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.gig") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:gig])
       raise ArgumentError.new("Client Agency #{@id} invalid value for application_reporting_months") unless VALID_APPLICATION_REPORTING_MONTHS.include?(@application_reporting_months)
+      raise ArgumentError.new("Client Agency #{@id} invalid value for application_required_months") unless VALID_APPLICATION_REQUIRED_MONTHS
       raise ArgumentError.new("Client Agency #{@id} invalid value for renewal_required_months") unless @renewal_required_months.blank? || VALID_RENEWAL_REQUIRED_MONTHS.include?(@renewal_required_months)
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `income_flow_transmission_method`") if @income_flow_transmission_method.blank?
 

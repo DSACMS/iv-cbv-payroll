@@ -31,6 +31,7 @@ RSpec.describe ClientAgencyConfig do
       - id: foo
         agency_name: Foo Agency Name
         renewal_required_months: 2
+        application_required_months: 2
         pinwheel:
           environment: foo
         argyle:
@@ -112,6 +113,11 @@ RSpec.describe ClientAgencyConfig do
       it "returns renewal_required_months when configured" do
         config = described_class.new(sample_config_path)
         expect(config["foo"].renewal_required_months).to eq(2)
+      end
+
+      it "returns application_required_months when configured" do
+        config = described_class.new(sample_config_path)
+        expect(config["foo"].application_required_months).to eq(2)
       end
 
       it "defaults allowed_iframe_ancestors to an empty array" do
