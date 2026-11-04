@@ -626,6 +626,44 @@ RSpec.describe ClientAgencyConfig do
         end
       end
 
+      context "invalid application required months" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            application_required_months: 0
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo invalid value for application_required_months")
+        end
+      end
+
+      context "application required months above the max" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            application_required_months: 13
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo invalid value for application_required_months")
+        end
+      end
+
       context "applicant attribute with an invalid redaction_type" do
         let(:sample_config) { <<~YAML }
           - id: foo

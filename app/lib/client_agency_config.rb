@@ -166,7 +166,7 @@ class ClientAgencyConfig
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.w2") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:w2])
       raise ArgumentError.new("Client Agency #{@id} invalid value for pay_income_days.gig") unless VALID_PAY_INCOME_DAYS.include?(@pay_income_days[:gig])
       raise ArgumentError.new("Client Agency #{@id} invalid value for application_reporting_months") unless VALID_APPLICATION_REPORTING_MONTHS.include?(@application_reporting_months)
-      raise ArgumentError.new("Client Agency #{@id} invalid value for application_required_months") unless VALID_APPLICATION_REQUIRED_MONTHS
+      raise ArgumentError.new("Client Agency #{@id} invalid value for application_required_months") unless @application_required_months.blank? || VALID_APPLICATION_REQUIRED_MONTHS.include?(@application_required_months)
       raise ArgumentError.new("Client Agency #{@id} invalid value for renewal_required_months") unless @renewal_required_months.blank? || VALID_RENEWAL_REQUIRED_MONTHS.include?(@renewal_required_months)
       raise ArgumentError.new("Client Agency #{@id} missing required attribute `income_flow_transmission_method`") if @income_flow_transmission_method.blank?
 

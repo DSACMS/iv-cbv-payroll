@@ -917,6 +917,14 @@ RSpec.describe ActivityFlowProgressCalculator do
         expect(progress.meets_requirements).to be(false)
         expect(progress.meets_routing_requirements).to be(false)
       end
+
+      context "when the flow's required month count is reduced below the full window" do
+        before { flow.set_required_month_count!(1) }
+
+        it "meets routing requirements once only the sufficient month is required" do
+          expect(progress.meets_routing_requirements).to be(true)
+        end
+      end
     end
 
     context "when education is partially self-attested with less-than-half-time credit hours" do

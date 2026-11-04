@@ -144,7 +144,7 @@ class LauncherController < ApplicationController
                   launcher_params.slice(:launcher_timeout).select { |_, v| v.present? }
                 else
                   allowed_overrides = [ :reporting_window, :reporting_window_months, :reporting_window_start, :launcher_timeout, :employment_focused, :unpaid_work_only ]
-                  allowed_overrides << :renewal_required_months if launcher_params[:reporting_window] == "renewal"
+                  allowed_overrides << :renewal_required_months
                   launcher_params.slice(*allowed_overrides).select { |_, v| v.present? }
                 end
 

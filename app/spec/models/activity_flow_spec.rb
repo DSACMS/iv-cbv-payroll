@@ -305,6 +305,28 @@ RSpec.describe ActivityFlow, type: :model do
       expect(flow.required_month_count).to eq(3)
     end
 
+    it "uses a persisted override for application flows, same as renewal flows" do
+      flow = create(:activity_flow, reporting_window_type: "application", reporting_window_months: 12)
+      flow.set_required_month_count!(1)
+
+      expect(flow.required_month_count).to eq(1)
+    end
+
+    it "uses the agency application required-month count for last_12_complete_months invitations" do
+      stub_client_agency_config_value("sandbox", "application_required_months", 1)
+      invitation = create(:activity_flow_invitation, verification_range: "last_12_complete_months")
+      flow = create(:activity_flow, activity_flow_invitation: invitation, reporting_window_type: "application", reporting_window_months: 12)
+
+      expect(flow.required_month_count).to eq(1)
+    end
+
+    it "does not apply the agency application required-month count to a plain application invitation" do
+      stub_client_agency_config_value("sandbox", "application_required_months", 1)
+      flow = create(:activity_flow, reporting_window_type: "application", reporting_window_months: 3)
+
+      expect(flow.required_month_count).to eq(3)
+    end
+
     it "defaults to reporting_window_months for renewal flows when no override is configured" do
       flow = create(:activity_flow, reporting_window_type: "renewal", reporting_window_months: 6)
 

@@ -203,8 +203,6 @@ class ActivityFlow < Flow
   end
 
   def set_default_required_month_count
-    return unless renewal_reporting_window?
-
     client_agency = Rails.application.config.client_agencies[cbv_applicant&.client_agency_id]
 
     self.renewal_required_months ||=

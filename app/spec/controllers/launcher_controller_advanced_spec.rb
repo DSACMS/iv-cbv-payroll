@@ -172,15 +172,16 @@ RSpec.describe LauncherController, type: :controller do
         expect(location).not_to include("launcher_timeout")
       end
 
-      it "does not include renewal_required_months for non-renewal reporting windows" do
+      it "includes renewal_required_months for application reporting windows too" do
         post :create, params: {
           client_agency_id: "sandbox",
           launch_type: "generic",
           reporting_window: "application",
-          renewal_required_months: "2"
+          reporting_window_months: "12",
+          renewal_required_months: "1"
         }
 
-        expect(response.location).not_to include("renewal_required_months")
+        expect(response.location).to include("renewal_required_months=1")
       end
 
       it "returns the generated URL as JSON" do
