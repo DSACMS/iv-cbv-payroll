@@ -118,6 +118,8 @@ module TrackEvent
   EmploymentReviewViewed = "EmploymentReviewViewed"
   CommunityServiceFlowStarted = "CommunityServiceFlowStarted"
   CommunityServiceFlowCompleted = "CommunityServiceFlowCompleted"
+  CommunityServiceDocumentUploadSubmitted = "CommunityServiceDocumentUploadSubmitted"
+  CommunityServiceDocumentUploadViewed = "CommunityServiceDocumentUploadViewed"
   CommunityServiceInfoSubmitted = "CommunityServiceInfoSubmitted"
   CommunityServiceInfoViewed = "CommunityServiceInfoViewed"
   CommunityServiceReviewViewed = "CommunityServiceReviewViewed"

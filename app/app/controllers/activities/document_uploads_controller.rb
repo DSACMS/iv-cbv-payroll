@@ -203,6 +203,8 @@ class Activities::DocumentUploadsController < Activities::BaseController
       "Education"
     elsif params[:employment_id]
       "Employment"
+    elsif params[:community_service_id]
+      "CommunityService"
     end
   end
 
@@ -214,6 +216,8 @@ class Activities::DocumentUploadsController < Activities::BaseController
       track_event(TrackEvent::EducationDocumentUploadViewed, education_activity_id: @activity.id)
     when params[:employment_id].present?
       track_event(TrackEvent::EmploymentDocumentUploadViewed, employment_activity_id: @activity.id)
+    when params[:community_service_id].present?
+      track_event(TrackEvent::CommunityServiceDocumentUploadViewed, community_service_activity_id: @activity.id)
     end
   end
 
@@ -231,6 +235,12 @@ class Activities::DocumentUploadsController < Activities::BaseController
       track_event(
         TrackEvent::EmploymentDocumentUploadSubmitted,
         employment_activity_id: @activity.id,
+        document_count: @activity.document_uploads.count
+      )
+    when params[:community_service_id].present?
+      track_event(
+        TrackEvent::CommunityServiceDocumentUploadSubmitted,
+        community_service_activity_id: @activity.id,
         document_count: @activity.document_uploads.count
       )
     end
