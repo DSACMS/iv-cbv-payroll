@@ -126,7 +126,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       post :create, params: { education_type: "college_or_university" }
 
       expect(EventTrackingJob).to have_received(:perform_later).with(
-        TrackEvent::EducationFlowStarted, anything,
+        TrackEvent::EducationNscFlowStarted, anything,
         hash_including(education_activity_id: activity_flow.education_activities.last.id,
           education_data_source: "pending", education_flow: "nsc"))
     end
@@ -136,7 +136,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       patch :update, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
 
       expect(EventTrackingJob).to have_received(:perform_later).with(
-        TrackEvent::EducationFlowCompleted, anything, event_attributes).once
+        TrackEvent::EducationNscFlowCompleted, anything, event_attributes).once
     end
 
     context "with partial self-attestation" do
@@ -150,14 +150,14 @@ RSpec.describe Activities::EducationController, type: :controller do
 
         expect(EventTrackingJob).to have_received(:perform_later).with(
           TrackEvent::EducationEnrollmentReviewSubmitted, anything, event_attributes)
-        expect(EventTrackingJob).not_to have_received(:perform_later).with(TrackEvent::EducationFlowCompleted, anything, anything)
+        expect(EventTrackingJob).not_to have_received(:perform_later).with(TrackEvent::EducationNscFlowCompleted, anything, anything)
       end
 
       it "completes when the user saves the final review" do
         patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
 
         expect(EventTrackingJob).to have_received(:perform_later).with(
-          TrackEvent::EducationFlowCompleted, anything, event_attributes)
+          TrackEvent::EducationNscFlowCompleted, anything, event_attributes)
         expect(EventTrackingJob).to have_received(:perform_later).with(
           TrackEvent::EducationReviewSubmitted, anything, event_attributes)
       end
@@ -169,7 +169,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       it "does not add NSC lifecycle events to the manual flow" do
         patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
 
-        expect(EventTrackingJob).not_to have_received(:perform_later).with(TrackEvent::EducationFlowCompleted, anything, anything)
+        expect(EventTrackingJob).not_to have_received(:perform_later).with(TrackEvent::EducationNscFlowCompleted, anything, anything)
         expect(EventTrackingJob).to have_received(:perform_later).with(
           TrackEvent::EducationReviewSubmitted, anything, hash_excluding(:education_flow, :education_data_source))
       end

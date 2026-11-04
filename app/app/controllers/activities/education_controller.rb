@@ -225,7 +225,7 @@ class Activities::EducationController < Activities::BaseController
 
   def create_validated_activity
     @education_activity = @flow.education_activities.create(draft: true, education_type: education_type)
-    track_event(TrackEvent::EducationFlowStarted, education_activity_id: @education_activity.id)
+    track_event(TrackEvent::EducationNscFlowStarted, education_activity_id: @education_activity.id)
     NscSynchronizationJob.perform_later(@education_activity.id)
     redirect_to activities_flow_education_path(id: @education_activity.id)
   end
@@ -288,6 +288,6 @@ class Activities::EducationController < Activities::BaseController
   def publish_nsc_education_activity
     was_draft = @education_activity.draft?
     publish_activity(@education_activity, activity_type: :education)
-    track_event(TrackEvent::EducationFlowCompleted, education_activity_id: @education_activity.id) if was_draft
+    track_event(TrackEvent::EducationNscFlowCompleted, education_activity_id: @education_activity.id) if was_draft
   end
 end
