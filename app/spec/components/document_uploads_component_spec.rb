@@ -31,6 +31,7 @@ RSpec.describe DocumentUploadsComponent, type: :component do
     )
 
     expect(result).to have_link("Remove file", href: "/documents/1")
+    expect(result).to have_selector('a[aria-label="Remove file verification.pdf"]')
     expect(result.to_html).to include('data-turbo-method="delete"')
   end
 

@@ -209,6 +209,7 @@ export default class extends Controller {
     remove.className = "usa-button usa-button--unstyled margin-0 document-uploads__remove-link"
     remove.dataset.action = "document-upload#remove"
     remove.textContent = this.removeLabelValue
+    remove.setAttribute("aria-label", `${this.removeLabelValue} ${upload.filename}`)
 
     item.append(file, remove)
 

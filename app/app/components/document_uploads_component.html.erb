@@ -28,6 +28,7 @@
           <%= link_to t("activities.document_uploads.remove_file"),
                 remove_path_for(document),
                 class: "usa-link document-uploads__remove-link",
+                aria: { label: "#{t('activities.document_uploads.remove_file')} #{filename_for(document)}" },
                 data: { turbo_method: :delete } %>
         <% end %>
       </li>

@@ -509,6 +509,7 @@ en:
     hub:
       activity_added: Your %{activity_type} activity has been successfully added to your report.
       add: Add
+      add_activity: Add %{activity_type} activity
       cards:
         credit_hours: 'Credit hours: %{amount}'
         enrollment_status: 'Enrollment: %{status}'
