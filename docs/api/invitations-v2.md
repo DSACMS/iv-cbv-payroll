@@ -13,3 +13,8 @@ invitation (`last_complete_month` or `last_12_complete_months`).
 Direct the applicant to `tokenized_url` to complete income verification, and
 to `activity_tokenized_url` to complete the corresponding activity flow.
 Treat both tokens as opaque.
+
+`agency_partner_metadata` echoes the accepted fields supplied in the request,
+using the same agency and invitation-type schema, including `individual_id`.
+Unrecognized fields are ignored; omitted optional fields are not added to the
+response. Date strings are echoed as supplied.

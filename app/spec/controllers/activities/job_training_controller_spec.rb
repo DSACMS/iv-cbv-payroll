@@ -8,6 +8,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
   let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 1) }
 
   before do
+    allow(controller).to receive(:track_event).and_call_original
     session[:flow_id] = activity_flow.id
     session[:flow_type] = :activity
   end
@@ -16,6 +17,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
     before { get :new }
 
     it "renders the form" do
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramInfoViewed, job_training_activity_id: nil)
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.job_training.new.title"))
     end
@@ -51,6 +53,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
         post :create, params: job_training_params
       end.to change(activity_flow.job_training_activities, :count).by(1)
 
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramInfoSubmitted, job_training_activity_id: JobTrainingActivity.last.id)
       expect(JobTrainingActivity.last.organization_name).to eq("Goodwill")
       expect(JobTrainingActivity.last.program_name).to eq("Resume Workshop")
       expect(JobTrainingActivity.last.activity_flow).to eq(activity_flow)
@@ -98,6 +101,33 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
     end
   end
 
+  describe "invalid information" do
+    it "tracks failed creation without submitting or counting another view" do
+      post :create, params: { job_training_activity: { program_name: "" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(controller).to have_received(:track_event).once.with(
+        TrackEvent::WorkProgramInfoValidationFailed,
+        job_training_activity_id: nil, error_fields: %w[organization_name program_name]
+      )
+    end
+
+    it "tracks failed edits with navigation context via the shared helper" do
+      activity = create(:job_training_activity, activity_flow: activity_flow)
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::WorkProgramInfoValidationFailed, anything,
+        hash_including(job_training_activity_id: activity.id, error_fields: %w[program_name],
+          cbv_flow_id: activity_flow.id, cbv_applicant_id: activity_flow.cbv_applicant_id,
+          invitation_id: activity_flow.invitation_id, client_agency_id: activity_flow.cbv_applicant.client_agency_id,
+          from_edit: "1", from_review: "1", flow_type: "ce", time: kind_of(Integer))
+      )
+
+      patch :update, params: { id: activity.id, from_edit: 1, from_review: 1, job_training_activity: { program_name: "" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+  end
+
   describe "GET #edit" do
     let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow) }
 
@@ -106,6 +136,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.job_training.edit_title"))
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramInfoViewed, job_training_activity_id: job_training_activity.id)
     end
   end
 
@@ -115,6 +146,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
     it "updates the activity and redirects to month 0" do
       patch :update, params: { id: job_training_activity.id, job_training_activity: { contact_name: "Taylor Smith" } }
 
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramInfoSubmitted, job_training_activity_id: job_training_activity.id)
       expect(job_training_activity.reload.contact_name).to eq("Taylor Smith")
       expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: job_training_activity.id, id: 0))
     end
@@ -152,6 +184,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(job_training_activity.program_name)
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramReviewViewed, job_training_activity_id: job_training_activity.id)
     end
 
     it "includes an edit link for each month" do
@@ -210,6 +243,7 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
 
       patch :save_review, params: { id: job_training_activity.id, job_training_activity: { additional_comments: "" } }
 
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramReviewSubmitted, job_training_activity_id: job_training_activity.id)
       expect(job_training_activity.reload.draft).to be(false)
       expect(flash[:activity_added]).to eq(:work_programs)
     end

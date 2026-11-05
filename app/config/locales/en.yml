@@ -72,11 +72,13 @@ en:
           attributes:
             school_name:
               blank: Add your school or program name
+            self_attested_enrollment_status:
+              inclusion: Please select an option
             self_attested_term_end:
-              blank: Add term end date to continue
+              blank: Enter a term end date to continue
               invalid: Add a valid date with month and year
             self_attested_term_start:
-              blank: Add term start date to continue
+              blank: Enter a term start date to continue
               invalid: Add a valid date with month and year
         job_training_activity:
           attributes:
@@ -235,11 +237,6 @@ en:
           term_end_hint: If you’re not sure, enter when your current classes are expected to end
           term_start: Term start date
           title: Add your term for %{school_name}
-        errors:
-          dates_body: Add a valid date with a MM/YYYY format to continue.
-          dates_heading: Check your term dates
-          information_body: Add your term dates and enrollment status to continue.
-          information_heading: No education information added
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (optional)
@@ -382,17 +379,16 @@ en:
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:
         continue: Continue
-        error_body: Add income to continue.
-        error_heading: No employment information added
+        error_body_html: If you weren't paid this month, you can <a href="%{month_selection_url}">edit the months you selected</a>. You can report unpaid work later.
+        field_error: Add income to continue
         gross_income_hint: How much you made before taxes
         gross_income_label: "%{month} gross income"
         heading: Add your income and hours for %{organization}
         hours_label: "%{month} hours worked"
         month_indicator: 'Month %{current} of %{total}:'
         unpaid_or_in_kind:
-          error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>.
-          error_heading: No work hours added
-          field_error: Add hours to continue.
+          error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>
+          field_error: Add hours to continue
           heading: Add your hours for %{organization}
           hours_hint: If you performed in-kind work, provide an estimate
       month_selections:
@@ -639,7 +635,7 @@ en:
     submit:
       confirm: Share my report
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized agency personnel.'
-      consent_required: Please check the legal agreement box to share your report.
+      consent_required: Please check the box to continue
       description: Your report will be sent to %{agency_name}. You must check the legal agreement box to share your report.
       pdf:
         activity_comments: Activity comments
@@ -1216,7 +1212,7 @@ en:
         warning_1: Your income report will be sent to %{agency_acronym}.
         warning_2: You must check the legal agreement box to share your report.
       update:
-        consent_to_authorize_warning: Please check the legal agreement box to share your report.
+        consent_to_authorize_warning: Please check the box to continue
     successes:
       show:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
@@ -1456,8 +1452,14 @@ en:
         test_data: Test data and expected result
         title: Dedupe Testuser
         withdrawn: Withdrawn
+      enrollment_only:
+        description: 1 school with Y (Enrolled); enrollment level not reported.
+        title: Jordan Testuser
       launch_configuration:
         title: Launch configuration
+      mixed_enrollment_history:
+        description: 2 schools with Y (Enrolled) and half-time history. Y is latest at one school and historical at the other.
+        title: Harper Testuser
       settings:
         title: Agency settings
       unpaid_work_only:

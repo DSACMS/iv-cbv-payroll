@@ -16,8 +16,11 @@ RSpec.configure do |config|
         description: InvitationDocumentation.read("introduction")
       },
       servers: [
-        { url: "https://verify-demo.navapbc.cloud", description: "Dev environment" },
-        { url: "https://demo.reportmyincome.org", description: "Demo environment" }
+        { url: "https://emmy.cms.gov", description: "Production" },
+        { url: "https://uat.emmy.cms.gov", description: "UAT" },
+        { url: "https://sandbox.emmy.cms.gov", description: "Production Sandbox" },
+        { url: "https://verify-demo.navapbc.cloud", description: "Dev (Legacy) — Emmy Income only" },
+        { url: "https://demo.reportmyincome.org", description: "Demo (Legacy) — Emmy Income only" }
       ],
       externalDocs: { description: "Emmy Platform API Documentation", url: InvitationDocumentation::SITE_URL },
       tags: [

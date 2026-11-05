@@ -6,6 +6,36 @@ RSpec.describe LauncherController, type: :controller do
   render_views
 
   describe "GET #advanced" do
+    context "with the enrollment-only scenario" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("enrollment_only_jordan") }
+      let(:rendered) { Capybara.string(response.body) }
+
+      before { get :advanced }
+
+      it "lists the enrolled test user in the fake scenario options" do
+        scenarios = rendered.find("#fake-test-scenarios-content", visible: :all)
+
+        expect(scenarios).to have_field("test_scenario_enrollment_only_jordan", type: "radio", with: profile.scenario_key, visible: :all)
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.enrollment_only.title"))
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.enrollment_only.description"))
+      end
+    end
+
+    context "with the mixed enrollment history scenario" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("mixed_enrollment_history_harper") }
+      let(:rendered) { Capybara.string(response.body) }
+
+      before { get :advanced }
+
+      it "lists the mixed enrollment test user in the fake scenario options" do
+        scenarios = rendered.find("#fake-test-scenarios-content", visible: :all)
+
+        expect(scenarios).to have_field("test_scenario_mixed_enrollment_history_harper", type: "radio", with: profile.scenario_key, visible: :all)
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.mixed_enrollment_history.title"))
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.mixed_enrollment_history.description"))
+      end
+    end
+
     context "with the duplicate enrollment scenario" do
       let(:profile) { Launcher::FakeNscScenarios.by_key("duplicate_enrollments_dedupe") }
       let(:rendered) { Capybara.string(response.body) }

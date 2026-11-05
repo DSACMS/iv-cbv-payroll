@@ -34,6 +34,47 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
     allow_any_instance_of(LinkWithIconComponent).to receive(:asset_path).and_return("/assets/sprite.svg")
   end
 
+  describe "work program tracking" do
+    let(:activity) { create(:job_training_activity, activity_flow: activity_flow) }
+
+    before { allow(controller).to receive(:track_event).and_call_original }
+
+    it "tracks the upload view and enables shared navigation tracking" do
+      get :new, params: { job_training_id: activity.id }
+
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramDocumentUploadViewed, job_training_activity_id: activity.id)
+      expect(Capybara.string(response.body)).to have_selector('[data-activity-flow-header-track-event-prefix-value="WorkProgram"]')
+    end
+
+    it "tracks continuing without attachments" do
+      post :create, params: { job_training_id: activity.id }
+
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramDocumentUploadSubmitted,
+        job_training_activity_id: activity.id, document_count: 0)
+    end
+
+    it "tracks successful uploads without sending file contents or names" do
+      post :create, params: { job_training_id: activity.id,
+        activity: { document_uploads: [ fixture_file_upload("document_upload.pdf", "application/pdf") ] } }
+
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramDocumentUploadSubmitted,
+        job_training_activity_id: activity.id, document_count: 1)
+    end
+
+    it "tracks upload validation errors without counting a successful submission" do
+      allow(controller).to receive(:set_activity) { controller.instance_variable_set(:@activity, activity) }
+      allow(activity).to receive(:update) do
+        activity.errors.add(:document_uploads, :invalid)
+        false
+      end
+
+      post :create, params: { job_training_id: activity.id, activity: { document_uploads: [ fixture_file_upload("document_upload.pdf", "application/pdf") ] } }
+
+      expect(controller).to have_received(:track_event).once.with(TrackEvent::WorkProgramDocumentUploadValidationFailed,
+        job_training_activity_id: activity.id, error_fields: %w[document_uploads])
+    end
+  end
+
   describe "GET #new" do
     let(:partial_education_activity) do
       create(

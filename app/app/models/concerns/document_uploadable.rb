@@ -64,7 +64,7 @@ module DocumentUploadable
   end
 
   def document_upload_verification_items
-    document_upload_months_to_verify.map do |month|
+    document_upload_months_to_verify.sort.map do |month|
       {
         label: I18n.l(month, format: :month),
         details: document_upload_details_for_month(month)

@@ -14,6 +14,27 @@ module Launcher
 
     USER_PROFILES = [
       UserProfile.new(
+        scenario_key: "enrollment_only_jordan",
+        first_name: "Jordan",
+        last_name: "Testuser",
+        date_of_birth: Date.parse("1995-06-12"),
+        terms: [
+          { school_name: "Maple Grove College", enrollment_status: :enrolled }
+        ]
+      ),
+      UserProfile.new(
+        scenario_key: "mixed_enrollment_history_harper",
+        first_name: "Harper",
+        last_name: "Testuser",
+        date_of_birth: Date.parse("1993-02-18"),
+        terms: [
+          { school_name: "Maple Grove College", enrollment_status: :enrolled, certification_month_offset: 1 },
+          { school_name: "Maple Grove College", enrollment_status: :half_time, certification_month_offset: 0 },
+          { school_name: "Cedar Grove College", enrollment_status: :half_time, certification_month_offset: 1 },
+          { school_name: "Cedar Grove College", enrollment_status: :enrolled, certification_month_offset: 0 }
+        ]
+      ),
+      UserProfile.new(
         scenario_key: "partial_enrollment_sam",
         first_name: "Sam",
         last_name: "Testuser",

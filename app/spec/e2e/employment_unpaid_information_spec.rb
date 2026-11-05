@@ -55,16 +55,31 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
     expect(page).to have_text(I18n.t("activities.employment.hours_input.unpaid_or_in_kind.hours_hint"))
     expect(page).to have_no_selector('input[name="employment_activity_month[gross_income]"]')
     expect(page).to have_no_selector('input[type="checkbox"]')
+    expect(page).to have_no_selector(".usa-alert--info")
+    expect(page).to have_selector('input[name="employment_activity_month[hours]"][required]')
 
+    fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(first_month, format: :month)), with: "0"
     click_button I18n.t("activities.employment.hours_input.continue")
+    verify_page(page, title: monthly_title)
     error = ActionView::Base.full_sanitizer.sanitize(
       I18n.t(
         "activities.employment.hours_input.unpaid_or_in_kind.error_body_html",
         month_selection_url: edit_activities_flow_income_employment_month_selection_path(employment_id: activity)
       )
     )
-    expect(page).to have_selector(".usa-alert--error", text: error)
-    expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error"))
+    expect(page).to have_selector(".usa-alert--info", text: error)
+    expect(page).to have_no_selector(".usa-alert--error")
+    expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.unpaid_or_in_kind.field_error"), exact_text: true)
+    banner = find(".usa-alert--info")
+    month_indicator = find(".month-indicator")
+    expect(banner.native.rect.y + banner.native.rect.height).to be <= month_indicator.native.rect.y
+    within(".usa-alert--info") do
+      click_link "edit the months you selected"
+    end
+    verify_page(page, title: I18n.t("activities.employment.month_selections.edit.title", employer_name: "Example work"))
+    expect(page).to have_field(I18n.l(first_month, format: :month_year), checked: true, visible: :all)
+    click_button I18n.t("activities.employment.month_selections.edit.continue")
+    verify_page(page, title: monthly_title)
 
     fill_in I18n.t("activities.employment.hours_input.hours_label", month: I18n.l(first_month, format: :month)), with: "12"
     click_button I18n.t("activities.employment.hours_input.continue")
