@@ -169,6 +169,16 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(response).to redirect_to(activities_flow_income_add_your_work_path)
     end
 
+    context "with an employment-focused flow" do
+      let(:activity_flow) { create(:activity_flow, employment_focused: true) }
+
+      it "routes in-kind work to manual income and hours entry" do
+        post :create, params: { add_work_method: "enter_unpaid_manually" }
+
+        expect(response).to redirect_to(new_activities_flow_income_employment_path(compensation_type: "paid"))
+      end
+    end
+
     it "redirects back with an alert when the selection is not recognized" do
       post :create, params: { add_work_method: "something_else" }
       expect(flash[:add_work_method_error]).to eq(I18n.t("shared.next_path.notice_no_answer"))
