@@ -5,7 +5,7 @@ class Activities::DocumentUploadsController < Activities::BaseController
     education_id: [ "Education", :education_activity_id ],
     employment_id: [ "Employment", :employment_activity_id ],
     job_training_id: [ "WorkProgram", :job_training_activity_id ],
-    community_service_id: [ "CommunityService", :community_service_activity_id ]
+    community_service_id: [ "CommunityService", :volunteering_activity_id ]
   }.freeze
 
   before_action :set_activity
@@ -236,12 +236,6 @@ class Activities::DocumentUploadsController < Activities::BaseController
         TrackEvent::WorkProgramDocumentUploadValidationFailed,
         job_training_activity_id: @activity.id,
         error_fields: @activity.errors.attribute_names.map(&:to_s)
-      )
-    elsif params[:community_service_id].present?
-      track_event(
-        TrackEvent::CommunityServiceDocumentUploadSubmitted,
-        volunteering_activity_id: @activity.id,
-        document_count: @activity.document_uploads.count
       )
     end
   end
