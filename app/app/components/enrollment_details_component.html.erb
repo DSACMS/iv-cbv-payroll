@@ -3,7 +3,11 @@
     <%= t("activities.education.edit.enrollment_information_numbered", number: index + 1) %>
   </h2>
 
-  <%= render EnrollmentTermTableComponent.new(nsc_enrollment_term: latest, class_names: "details-table") do |table| %>
+  <%= render EnrollmentTermTableComponent.new(
+    nsc_enrollment_term: latest,
+    class_names: "details-table",
+    show_enrollment_status: !latest.enrollment_enrolled?
+  ) do |table| %>
     <% table.with_enrollment_status do %>
       <%= render partial: "activities/education/enrollment_status", locals: { term: latest } %>
     <% end %>
