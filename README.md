@@ -77,7 +77,7 @@ A Software Bill of Materials (SBOM) is a formal record containing the details an
 
 In the spirit of [Executive Order 14028 \- Improving the Nation's Cybersecurity](https://www.federalregister.gov/documents/2021/05/17/2021-10460/improving-the-nations-cybersecurity), an SBOM for this repository is provided here: [https\://github.com/DSACMS/iv-cbv-payroll/network/dependencies](https://github.com/DSACMS/iv-cbv-payroll/network/dependencies).
 
-For more information and resources about SBOMs, visit [https\://www\.cisa.gov/sbom](https://www.cisa.gov/sbom).
+For more information and resources about SBOMs, visit [https://www.cisa.gov/topics/information-communications-technology-supply-chain-security/sbom](https://www.cisa.gov/topics/information-communications-technology-supply-chain-security/sbom).
 
 ### Public Domain
 
