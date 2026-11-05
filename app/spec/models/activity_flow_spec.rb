@@ -313,7 +313,14 @@ RSpec.describe ActivityFlow, type: :model do
     end
 
     it "uses the agency application required-month count for last_12_complete_months invitations" do
-      stub_client_agency_config_value("sandbox", "application_required_months", 1)
+      stub_client_agency_config_value("sandbox", "application_required_months", 4)
+      invitation = create(:activity_flow_invitation, verification_range: "last_12_complete_months")
+      flow = create(:activity_flow, activity_flow_invitation: invitation, reporting_window_type: "application", reporting_window_months: 12)
+
+      expect(flow.required_month_count).to eq(4)
+    end
+
+    it "defaults to a single required month for last_12_complete_months invitations with no agency override" do
       invitation = create(:activity_flow_invitation, verification_range: "last_12_complete_months")
       flow = create(:activity_flow, activity_flow_invitation: invitation, reporting_window_type: "application", reporting_window_months: 12)
 

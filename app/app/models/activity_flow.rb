@@ -13,6 +13,7 @@ class ActivityFlow < Flow
 
   DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS = 6
   DEFAULT_APPLICATION_REPORTING_WINDOW_MONTHS = 1
+  DEFAULT_APPLICATION_REQUIRED_MONTHS = 1
 
   belongs_to :cbv_applicant
   belongs_to :identity, optional: true
@@ -209,7 +210,7 @@ class ActivityFlow < Flow
       if renewal_reporting_window?
         client_agency&.renewal_required_months || reporting_window_months
       elsif activity_flow_invitation&.verification_range == "last_12_complete_months"
-        client_agency&.application_required_months
+        client_agency&.application_required_months || DEFAULT_APPLICATION_REQUIRED_MONTHS
       end
   end
 end

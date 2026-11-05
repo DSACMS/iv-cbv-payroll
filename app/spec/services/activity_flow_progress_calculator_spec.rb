@@ -927,6 +927,25 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
     end
 
+    context "for a last_12_complete_months application with no required-month override configured" do
+      let(:invitation) { create(:activity_flow_invitation, verification_range: "last_12_complete_months") }
+      let(:flow) do
+        create(:activity_flow, activity_flow_invitation: invitation, reporting_window_type: "application", education_activities_count: 0)
+      end
+      let(:first_month) { flow.reporting_window_range.begin }
+
+      before do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: first_month,
+          term_end: first_month.end_of_month
+        )
+        
+      end
+    end
+
     context "when education is partially self-attested with less-than-half-time credit hours" do
       let(:education_activity) do
         create(
