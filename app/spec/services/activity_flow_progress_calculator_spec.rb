@@ -927,7 +927,7 @@ RSpec.describe ActivityFlowProgressCalculator do
       end
     end
 
-    context "for a last_12_complete_months application with no required-month override configured" do
+    context "for a last_12_complete_months application using the configured required-month count" do
       let(:invitation) { create(:activity_flow_invitation, verification_range: "last_12_complete_months") }
       let(:flow) do
         create(:activity_flow, activity_flow_invitation: invitation, reporting_window_type: "application", education_activities_count: 0)
@@ -942,7 +942,13 @@ RSpec.describe ActivityFlowProgressCalculator do
           term_begin: first_month,
           term_end: first_month.end_of_month
         )
-        
+      end
+
+      it "uses the default required-month count for routing" do
+        expect(flow.renewal_required_months).to eq(1)
+        expect(flow.reporting_window_months).to eq(12)
+        expect(flow.required_month_count).to eq(1)
+        expect(progress.meets_routing_requirements).to be(true)
       end
     end
 
