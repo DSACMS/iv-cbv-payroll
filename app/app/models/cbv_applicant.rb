@@ -29,11 +29,9 @@ class CbvApplicant < ApplicationRecord
     Rails.application.config.client_agencies[client_agency_id].applicant_attribute_names(version: version)
   end
 
-  def self.build_agency_partner_metadata(client_agency_id, individual_id: nil, &value_provider)
-    valid_attributes_for_agency(client_agency_id, version: :v1).each_with_object({}) do |attr, hash|
+  def self.build_agency_partner_metadata(client_agency_id, version: :v1, &value_provider)
+    valid_attributes_for_agency(client_agency_id, version: version).each_with_object({}) do |attr, hash|
       hash[attr.to_s] = value_provider.call(attr)
-    end.tap do |metadata|
-      metadata["individual_id"] = individual_id if individual_id.present?
     end
   end
 

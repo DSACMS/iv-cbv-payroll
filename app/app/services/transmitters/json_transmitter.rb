@@ -42,7 +42,7 @@ class Transmitters::JsonTransmitter
     applicant = @cbv_flow.cbv_applicant
     agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(
       @current_agency.id,
-      individual_id: applicant.individual_id
+      version: applicant.individual_id.present? ? :v2 : :v1
     ) do |attr|
       applicant.public_send(attr)
     end

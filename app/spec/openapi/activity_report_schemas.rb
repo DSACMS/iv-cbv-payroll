@@ -34,7 +34,7 @@ module ActivityReportSchemas
         schema_version: { type: :string, pattern: '^\d+\.\d+\.\d+$', example: "1.0.0", description: "Semantic version of the CE compliance specification this payload conforms to." },
         confirmation_code: { type: :string, description: "Unique code assigned when the report was completed, shared with the applicant and used to debug report processing errors." },
         completed_at: { type: :string, format: :"date-time", description: "UTC time the applicant completed the report, in ISO 8601 format." },
-        agency_partner_metadata: ref("AgencyPartnerMetadata").merge(description: "Agency-specific fields used to associate the report with the correct case, as agreed in the integration plan and shared with the Income Report API. The V1 metadata fields are included, and individual_id is also included when supplied during V2 invitation creation. Examples include case_number (string), date_of_birth (date string), and doc_id (string); which fields are required depends on the agency."),
+        agency_partner_metadata: ref("AgencyPartnerMetadata").merge(description: "Agency-specific fields used to associate the report with the correct case, as agreed in the integration plan and shared with the Income Report API. Examples include case_number (string), date_of_birth (date string), and doc_id (string); which fields are required depends on the agency."),
         ce_report: ref("CeReport").merge(description: "Community engagement report containing the review period, supporting document metadata, and activities.")
       }).merge(description: InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Model")),
       CeReport: object(%w[report_variant review_period documents activities], {
