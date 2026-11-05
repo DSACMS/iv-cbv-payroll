@@ -101,6 +101,91 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
   end
 
   describe "#create" do
+    context "tracking a submitted selection" do
+      let(:activity_flow) { create(:activity_flow, activity_flow_invitation: create(:activity_flow_invitation)) }
+
+      context "when college or university is selected" do
+        it "tracks the selected education method with flow context" do
+          expect(EventTrackingJob).to receive(:perform_later).with(
+            TrackEvent::EducationAddYourEducationSubmitted, anything,
+            hash_including(add_education_method: "college_or_university", cbv_flow_id: activity_flow.id,
+              cbv_applicant_id: activity_flow.cbv_applicant_id, invitation_id: activity_flow.invitation_id,
+              client_agency_id: activity_flow.cbv_applicant.client_agency_id))
+
+          post :create, params: { add_education_method: "college_or_university" }
+        end
+
+        it "tracks the selection when NSC is disabled" do
+          expect(EventTrackingJob).to receive(:perform_later).with(
+            TrackEvent::EducationAddYourEducationSubmitted, anything,
+            hash_including(add_education_method: "college_or_university"))
+
+          stub_environment_variable("NSC_DISABLED", "true") do
+            post :create, params: { add_education_method: "college_or_university" }
+          end
+        end
+      end
+
+      context "when high school or GED is selected" do
+        it "tracks the selected education method" do
+          expect(EventTrackingJob).to receive(:perform_later).with(
+            TrackEvent::EducationAddYourEducationSubmitted, anything,
+            hash_including(add_education_method: "high_school_ged"))
+
+          post :create, params: { add_education_method: "high_school_ged" }
+        end
+      end
+
+      context "when trade or technical education is selected" do
+        it "tracks the selected education method" do
+          expect(EventTrackingJob).to receive(:perform_later).with(
+            TrackEvent::EducationAddYourEducationSubmitted, anything,
+            hash_including(add_education_method: "trade_or_technical"))
+
+          post :create, params: { add_education_method: "trade_or_technical" }
+        end
+      end
+
+      context "when other is selected" do
+        it "tracks the selected education method" do
+          expect(EventTrackingJob).to receive(:perform_later).with(
+            TrackEvent::EducationAddYourEducationSubmitted, anything,
+            hash_including(add_education_method: "other"))
+
+          post :create, params: { add_education_method: "other" }
+        end
+      end
+
+      context "when nothing is selected" do
+        it "does not track a submitted selection" do
+          expect(EventTrackingJob).not_to receive(:perform_later)
+            .with(TrackEvent::EducationAddYourEducationSubmitted, anything, anything)
+
+          post :create
+        end
+      end
+
+      context "when an unrecognized option is submitted" do
+        it "does not track a submitted selection" do
+          expect(EventTrackingJob).not_to receive(:perform_later)
+            .with(TrackEvent::EducationAddYourEducationSubmitted, anything, anything)
+
+          post :create, params: { add_education_method: "something_else" }
+        end
+      end
+
+      context "when the flow is already completed" do
+        before { activity_flow.update!(completed_at: Time.current) }
+
+        it "does not track a submitted selection" do
+          expect(EventTrackingJob).not_to receive(:perform_later)
+            .with(TrackEvent::EducationAddYourEducationSubmitted, anything, anything)
+
+          post :create, params: { add_education_method: "other" }
+        end
+      end
+    end
+
     it "redirects to verify enrollment when college or university is selected" do
       post :create, params: { add_education_method: "college_or_university" }
       expect(response).to redirect_to(verify_activities_flow_education_index_path(education_type: "college_or_university"))

@@ -2,6 +2,72 @@ require 'rails_helper'
 
 RSpec.describe Api::UserEventsController, type: :controller do
   describe "POST #user_action with an activity flow" do
+    context "when clicking a link on the education Other page" do
+      let(:flow) { create(:activity_flow, activity_flow_invitation: create(:activity_flow_invitation)) }
+      let(:event_params) do
+        { events: { event_name: TrackEvent::EducationOtherLinkClicked, attributes: { link: link_name } } }
+      end
+
+      before do
+        allow(EventTrackingJob).to receive(:perform_later)
+        session[:flow_id] = flow.id
+        session[:flow_type] = :activity
+        post :user_action, params: event_params
+      end
+
+      context "for education not listed" do
+        let(:link_name) { "not_listed" }
+
+        it "accepts the event and includes the tokenized flow context" do
+          expect(response).to have_http_status(:ok)
+          expect(EventTrackingJob).to have_received(:perform_later).with(
+            TrackEvent::EducationOtherLinkClicked, anything,
+            hash_including(link: "not_listed", cbv_flow_id: flow.id,
+              cbv_applicant_id: flow.cbv_applicant_id, invitation_id: flow.invitation_id,
+              client_agency_id: flow.cbv_applicant.client_agency_id)).once
+        end
+      end
+
+      context "for job training" do
+        let(:link_name) { "job_training" }
+
+        it "accepts the event and includes the tokenized flow context" do
+          expect(response).to have_http_status(:ok)
+          expect(EventTrackingJob).to have_received(:perform_later).with(
+            TrackEvent::EducationOtherLinkClicked, anything,
+            hash_including(link: "job_training", cbv_flow_id: flow.id,
+              cbv_applicant_id: flow.cbv_applicant_id, invitation_id: flow.invitation_id,
+              client_agency_id: flow.cbv_applicant.client_agency_id)).once
+        end
+      end
+
+      context "for internships" do
+        let(:link_name) { "internship" }
+
+        it "accepts the event and includes the tokenized flow context" do
+          expect(response).to have_http_status(:ok)
+          expect(EventTrackingJob).to have_received(:perform_later).with(
+            TrackEvent::EducationOtherLinkClicked, anything,
+            hash_including(link: "internship", cbv_flow_id: flow.id,
+              cbv_applicant_id: flow.cbv_applicant_id, invitation_id: flow.invitation_id,
+              client_agency_id: flow.cbv_applicant.client_agency_id)).once
+        end
+      end
+
+      context "for returning home" do
+        let(:link_name) { "exit_to_home" }
+
+        it "accepts the event and includes the tokenized flow context" do
+          expect(response).to have_http_status(:ok)
+          expect(EventTrackingJob).to have_received(:perform_later).with(
+            TrackEvent::EducationOtherLinkClicked, anything,
+            hash_including(link: "exit_to_home", cbv_flow_id: flow.id,
+              cbv_applicant_id: flow.cbv_applicant_id, invitation_id: flow.invitation_id,
+              client_agency_id: flow.cbv_applicant.client_agency_id)).once
+        end
+      end
+    end
+
     it "tracks unpaid work help text" do
       flow = create(:activity_flow, activity_flow_invitation: create(:activity_flow_invitation))
       session[:flow_id] = flow.id
