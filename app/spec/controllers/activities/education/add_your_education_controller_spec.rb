@@ -105,10 +105,10 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
       let(:activity_flow) { create(:activity_flow, activity_flow_invitation: create(:activity_flow_invitation)) }
 
       context "when college or university is selected" do
-        it "tracks the selected education method with flow context" do
+        it "tracks the selected education type with flow context" do
           expect(EventTrackingJob).to receive(:perform_later).with(
             TrackEvent::EducationAddYourEducationSubmitted, anything,
-            hash_including(add_education_method: "college_or_university", cbv_flow_id: activity_flow.id,
+            hash_including(education_type: "college_or_university", cbv_flow_id: activity_flow.id,
               cbv_applicant_id: activity_flow.cbv_applicant_id, invitation_id: activity_flow.invitation_id,
               client_agency_id: activity_flow.cbv_applicant.client_agency_id))
 
@@ -118,7 +118,7 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
         it "tracks the selection when NSC is disabled" do
           expect(EventTrackingJob).to receive(:perform_later).with(
             TrackEvent::EducationAddYourEducationSubmitted, anything,
-            hash_including(add_education_method: "college_or_university"))
+            hash_including(education_type: "college_or_university"))
 
           stub_environment_variable("NSC_DISABLED", "true") do
             post :create, params: { add_education_method: "college_or_university" }
@@ -127,30 +127,30 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
       end
 
       context "when high school or GED is selected" do
-        it "tracks the selected education method" do
+        it "tracks the selected education type" do
           expect(EventTrackingJob).to receive(:perform_later).with(
             TrackEvent::EducationAddYourEducationSubmitted, anything,
-            hash_including(add_education_method: "high_school_ged"))
+            hash_including(education_type: "high_school_ged"))
 
           post :create, params: { add_education_method: "high_school_ged" }
         end
       end
 
       context "when trade or technical education is selected" do
-        it "tracks the selected education method" do
+        it "tracks the selected education type" do
           expect(EventTrackingJob).to receive(:perform_later).with(
             TrackEvent::EducationAddYourEducationSubmitted, anything,
-            hash_including(add_education_method: "trade_or_technical"))
+            hash_including(education_type: "trade_or_technical"))
 
           post :create, params: { add_education_method: "trade_or_technical" }
         end
       end
 
       context "when other is selected" do
-        it "tracks the selected education method" do
+        it "tracks the selected education type" do
           expect(EventTrackingJob).to receive(:perform_later).with(
             TrackEvent::EducationAddYourEducationSubmitted, anything,
-            hash_including(add_education_method: "other"))
+            hash_including(education_type: "other"))
 
           post :create, params: { add_education_method: "other" }
         end

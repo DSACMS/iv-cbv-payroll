@@ -14,7 +14,7 @@ class Activities::Education::AddYourEducationController < Activities::BaseContro
       return redirect_to activities_flow_education_add_your_education_path
     end
 
-    track_event(TrackEvent::EducationAddYourEducationSubmitted, add_education_method: add_education_method)
+    track_event(TrackEvent::EducationAddYourEducationSubmitted, education_type: add_education_method)
 
     redirect_to next_step_path(add_education_method)
   end
