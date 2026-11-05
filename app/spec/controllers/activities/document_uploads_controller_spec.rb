@@ -317,6 +317,15 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
     end
 
+    context "community service scope" do
+      let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :new, params: { community_service_id: volunteering_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::CommunityServiceDocumentUploadViewed,
+        extra_attributes: -> { { volunteering_activity_id: kind_of(Integer) } }
+    end
+
     it "renders the upload form for an employment activity" do
       employment_activity = create(:employment_activity, activity_flow: activity_flow)
       month_record = create(:employment_activity_month, employment_activity: employment_activity, hours: 18)
@@ -534,6 +543,15 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         extra_attributes: -> { { education_activity_id: kind_of(Integer), document_count: 0 } }
     end
 
+    context "community service scope tracking" do
+      let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { post :create, params: { community_service_id: volunteering_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::CommunityServiceDocumentUploadSubmitted,
+        extra_attributes: -> { { volunteering_activity_id: kind_of(Integer), document_count: 0 } }
+    end
+
     it "does not track EducationDocumentUploadSubmitted when the update fails" do
       education_activity = create(
         :education_activity,
@@ -549,6 +567,20 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       post :create, params: {
         education_id: education_activity.id,
+        activity: { document_uploads: [ "existing-upload-token" ] }
+      }
+    end
+
+    it "does not track CommunityServiceDocumentUploadSubmitted when the update fails" do
+      volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
+      allow_any_instance_of(VolunteeringActivity).to receive(:update).and_return(false)
+
+      expect(EventTrackingJob).not_to receive(:perform_later).with(
+        TrackEvent::CommunityServiceDocumentUploadSubmitted, anything, anything
+      )
+
+      post :create, params: {
+        community_service_id: volunteering_activity.id,
         activity: { document_uploads: [ "existing-upload-token" ] }
       }
     end

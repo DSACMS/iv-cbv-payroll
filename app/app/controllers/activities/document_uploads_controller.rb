@@ -4,7 +4,8 @@ class Activities::DocumentUploadsController < Activities::BaseController
   TRACKED_ACTIVITIES = {
     education_id: [ "Education", :education_activity_id ],
     employment_id: [ "Employment", :employment_activity_id ],
-    job_training_id: [ "WorkProgram", :job_training_activity_id ]
+    job_training_id: [ "WorkProgram", :job_training_activity_id ],
+    community_service_id: [ "CommunityService", :volunteering_activity_id ]
   }.freeze
 
   before_action :set_activity

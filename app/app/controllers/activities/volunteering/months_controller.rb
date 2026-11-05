@@ -5,8 +5,34 @@ class Activities::Volunteering::MonthsController < Activities::BaseController
   include NavigationTracking
 
   before_action :set_back_url, only: %i[edit update]
+  after_action :track_month_viewed_event, only: :edit
+  after_action :track_month_submission_event, only: :update
 
   private
+
+  def track_month_viewed_event
+    return unless response.successful?
+
+    track_event(
+      TrackEvent::CommunityServiceMonthViewed,
+      volunteering_activity_id: @volunteering_activity.id,
+      month_index: @month_index,
+      month: I18n.l(@current_month, format: :month_year)
+    )
+  end
+
+  def track_month_submission_event
+    return unless @activity_month.present?
+
+    event = @error ? TrackEvent::CommunityServiceMonthValidationFailed : TrackEvent::CommunityServiceMonthSubmitted
+    attributes = {
+      volunteering_activity_id: @volunteering_activity.id,
+      month_index: @month_index,
+      month: I18n.l(@current_month, format: :month_year)
+    }
+    attributes[:error_fields] = @activity_month.errors.attribute_names.map(&:to_s) if @error
+    track_event(event, attributes)
+  end
 
   def set_back_url
     @back_url = if params[:from_review].present?
