@@ -2,6 +2,13 @@ class Activities::DocumentUploadsController < Activities::BaseController
   include NavigationTracking
   include NscEducationTracking
 
+  TRACKED_ACTIVITIES = {
+    education_id: [ "Education", :education_activity_id ],
+    employment_id: [ "Employment", :employment_activity_id ],
+    job_training_id: [ "WorkProgram", :job_training_activity_id ],
+    community_service_id: [ "CommunityService", :volunteering_activity_id ]
+  }.freeze
+
   before_action :set_activity
   before_action :set_back_url, only: %i[new]
   after_action :track_viewed_event, only: :new
@@ -199,40 +206,37 @@ class Activities::DocumentUploadsController < Activities::BaseController
     end
   end
 
+  def tracking_config
+    TRACKED_ACTIVITIES.find { |param, _| params[param].present? }&.last
+  end
+
   def track_event_prefix
-    if params[:education_id]
-      "Education"
-    elsif params[:employment_id]
-      "Employment"
-    end
+    tracking_config&.first
   end
 
   def track_viewed_event
-    return unless response.successful?
+    return unless response.successful? && tracking_config
 
-    case
-    when params[:education_id].present?
-      track_event(TrackEvent::EducationDocumentUploadViewed, education_activity_id: @activity.id)
-    when params[:employment_id].present?
-      track_event(TrackEvent::EmploymentDocumentUploadViewed, employment_activity_id: @activity.id)
-    end
+    track_event(
+      TrackEvent.const_get("#{track_event_prefix}DocumentUploadViewed"),
+      tracking_config.last => @activity.id
+    )
   end
 
   def track_submitted_event
-    return unless response.redirect?
+    return unless tracking_config
 
-    case
-    when params[:education_id].present?
+    if response.redirect?
       track_event(
-        TrackEvent::EducationDocumentUploadSubmitted,
-        education_activity_id: @activity.id,
+        TrackEvent.const_get("#{track_event_prefix}DocumentUploadSubmitted"),
+        tracking_config.last => @activity.id,
         document_count: @activity.document_uploads.count
       )
-    when params[:employment_id].present?
+    elsif params[:job_training_id].present? && @activity.errors.any?
       track_event(
-        TrackEvent::EmploymentDocumentUploadSubmitted,
-        employment_activity_id: @activity.id,
-        document_count: @activity.document_uploads.count
+        TrackEvent::WorkProgramDocumentUploadValidationFailed,
+        job_training_activity_id: @activity.id,
+        error_fields: @activity.errors.attribute_names.map(&:to_s)
       )
     end
   end

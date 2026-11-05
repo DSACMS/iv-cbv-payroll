@@ -58,5 +58,13 @@ RSpec.describe EnrollmentTermTableComponent, type: :component do
     it "describes the meaning of the raw Y code" do
       expect(rendered).to have_text(I18n.t("components.enrollment_term_table_component.status.enrolled"))
     end
+
+    context "when the status row is hidden" do
+      subject(:rendered) { render_inline(described_class.new(nsc_enrollment_term: term, show_enrollment_status: false)) }
+
+      it "omits the enrollment status row" do
+        expect(rendered).to have_no_selector("tr", text: I18n.t("components.enrollment_term_table_component.enrollment_status"))
+      end
+    end
   end
 end

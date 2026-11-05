@@ -13,6 +13,9 @@ class Activities::JobTrainingController < Activities::BaseController
   before_action :set_job_training_activity, only: %i[edit update destroy review save_review]
   before_action :set_back_url, only: %i[edit review]
 
+  after_action :track_info_viewed_event, only: %i[new edit]
+  after_action :track_review_viewed_event, only: :review
+
   def new
     @job_training_activity = @flow.job_training_activities.new
   end
@@ -20,14 +23,17 @@ class Activities::JobTrainingController < Activities::BaseController
   def create
     @job_training_activity = @flow.job_training_activities.new(job_training_activity_params.merge(draft: true))
     if @job_training_activity.save
+      track_info_submission
       redirect_to edit_activities_flow_job_training_month_path(job_training_id: @job_training_activity, id: 0)
     else
+      track_info_validation_failed
       render :new, status: :unprocessable_content
     end
   end
 
   def update
     if @job_training_activity.update(job_training_activity_params)
+      track_info_submission
       if params[:from_review].present?
         redirect_to review_activities_flow_job_training_path(id: @job_training_activity, from_edit: params[:from_edit].presence)
       else
@@ -38,6 +44,7 @@ class Activities::JobTrainingController < Activities::BaseController
         )
       end
     else
+      track_info_validation_failed
       render :edit, status: :unprocessable_content
     end
   end
@@ -48,6 +55,7 @@ class Activities::JobTrainingController < Activities::BaseController
   def save_review
     @job_training_activity.update(review_params)
     publish_activity(@job_training_activity, activity_type: :work_programs)
+    track_event(TrackEvent::WorkProgramReviewSubmitted, job_training_activity_id: @job_training_activity.id)
     redirect_to after_activity_path
   end
 
@@ -58,6 +66,30 @@ class Activities::JobTrainingController < Activities::BaseController
   end
 
   private
+
+  def track_info_viewed_event
+    return unless response.successful?
+
+    track_event(TrackEvent::WorkProgramInfoViewed, job_training_activity_id: @job_training_activity&.id)
+  end
+
+  def track_review_viewed_event
+    return unless response.successful?
+
+    track_event(TrackEvent::WorkProgramReviewViewed, job_training_activity_id: @job_training_activity.id)
+  end
+
+  def track_info_submission
+    track_event(TrackEvent::WorkProgramInfoSubmitted, job_training_activity_id: @job_training_activity.id)
+  end
+
+  def track_info_validation_failed
+    track_event(
+      TrackEvent::WorkProgramInfoValidationFailed,
+      job_training_activity_id: @job_training_activity.id,
+      error_fields: @job_training_activity.errors.attribute_names.map(&:to_s)
+    )
+  end
 
   def set_back_url
     if action_name == "edit" && params[:from_review].present?

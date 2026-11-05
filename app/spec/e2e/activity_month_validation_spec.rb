@@ -12,6 +12,7 @@ RSpec.describe "Work program month validation", :js, type: :feature do
   let(:title) { I18n.t("#{scope}.heading", month: month_label, organization: activity.program_name) }
 
   before do
+    allow(EventTrackingJob).to receive(:perform_later).and_call_original
     visit activities_flow_start_path(token: invitation.auth_token, reporting_window_months: 2)
     verify_page(page, title: I18n.t("activities.entries.show.title", benefit: I18n.t("shared.benefit.sandbox")))
     create(:job_training_activity_month, job_training_activity: activity, month: flow.reporting_months.first, hours: 0)
@@ -33,5 +34,17 @@ RSpec.describe "Work program month validation", :js, type: :feature do
 
     verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: activity.program_name), skip_axe_rules: %w[heading-order])
     expect(activity.activity_months.order(:month).pluck(:hours)).to eq([ 0, 12.5 ])
+    expect(EventTrackingJob).to have_received(:perform_later).with(
+      TrackEvent::WorkProgramMonthValidationFailed, anything,
+      hash_including(job_training_activity_id: activity.id, error_fields: %w[hours])
+    ).once
+    expect(EventTrackingJob).to have_received(:perform_later).with(
+      TrackEvent::WorkProgramMonthSubmitted, anything,
+      hash_including(job_training_activity_id: activity.id, month_index: 1)
+    ).once
+    expect(EventTrackingJob).to have_received(:perform_later).with(
+      TrackEvent::WorkProgramDocumentUploadViewed, anything,
+      hash_including(job_training_activity_id: activity.id)
+    ).once
   end
 end
