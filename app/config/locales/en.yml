@@ -1019,6 +1019,8 @@ en:
     employer_searches:
       employer:
         select_employer: Select %{name}
+      search_form:
+        query_required: Enter a search term to continue
       show:
         alert:
           heading: Need help connecting to your payroll provider?
@@ -1042,6 +1044,7 @@ en:
         payroll_providers: Payroll providers
         popular_providers: Or choose from popular payroll providers or apps
         provider_types_label: Provider type
+        query_label: Search for your employer
         results:
           one: We found 1 result
           other: We found %{count} results
