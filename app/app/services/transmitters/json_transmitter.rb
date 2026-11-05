@@ -39,8 +39,12 @@ class Transmitters::JsonTransmitter
   private
 
   def _payload
-    agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(@current_agency.id) do |attr|
-      @cbv_flow.cbv_applicant.public_send(attr)
+    applicant = @cbv_flow.cbv_applicant
+    agency_partner_metadata = CbvApplicant.build_agency_partner_metadata(
+      @current_agency.id,
+      individual_id: applicant.individual_id
+    ) do |attr|
+      applicant.public_send(attr)
     end
     include_report_pdf = transmission_configuration["include_report_pdf"]
 

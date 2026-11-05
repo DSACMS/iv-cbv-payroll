@@ -13,6 +13,11 @@ are not added to the response. Select the agency's community engagement or
 employment schema to see the accepted and required fields, including
 `individual_id`.
 
+Both JSON report webhooks include the V1 metadata fields configured for the
+agency. If `individual_id` was supplied when the invitation was created, the
+webhook also includes that exact value. When it was not supplied, the webhook
+omits `individual_id`.
+
 Supply dates of birth as `MM/DD/YYYY`. Invitation responses echo date strings
 as supplied. **Louisiana Emmy CE requests require `date_of_birth`** in
 `agency_partner_metadata`, along with `individual_id`, `first_name`, and

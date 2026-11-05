@@ -46,6 +46,20 @@ RSpec.describe Transmitters::JsonTransmitter do
       schema_report.incomes.first.compensation_unit = "hourly"
     end
 
+    it "includes a supplied individual ID in agency partner metadata" do
+      cbv_applicant.update!(individual_id: "INDIVIDUAL-123")
+
+      payload = JSON.parse(described_class.new(cbv_flow, mock_client_agency, schema_report).payload)
+
+      expect(payload["agency_partner_metadata"]).to include("individual_id" => "INDIVIDUAL-123")
+    end
+
+    it "omits individual ID when it was not supplied" do
+      payload = JSON.parse(described_class.new(cbv_flow, mock_client_agency, schema_report).payload)
+
+      expect(payload["agency_partner_metadata"]).not_to have_key("individual_id")
+    end
+
     it "matches the legacy income report contract" do
       expect(JSONSchemer.validate_schema(schema).to_a).to be_empty
       payload = JSON.parse(described_class.new(cbv_flow, mock_client_agency, schema_report).payload)
