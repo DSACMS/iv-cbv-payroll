@@ -58,6 +58,30 @@ RSpec.describe JobTrainingActivity, type: :model do
     end
   end
 
+  describe "#document_upload_verification_items" do
+    let(:activity) { described_class.new }
+    let(:months) { Array.new(12) { |index| Date.new(2025, 10, 1) + index.months } }
+    let(:expected_items) do
+      months.each_with_index.map do |month, index|
+        { label: I18n.l(month, format: :month), details: I18n.t("shared.hours", count: index + 1) }
+      end
+    end
+
+    before do
+      # Association order is not guaranteed after database updates.
+      months.reverse_each do |month|
+        index = months.index(month)
+        activity.job_training_activity_months.build(month: month, hours: index.zero? ? 0 : index + 1)
+      end
+    end
+
+    it "orders twelve months across years and preserves edited hours" do
+      activity.job_training_activity_months.find { |record| record.month == months.first }.hours = 1
+
+      expect(activity.document_upload_verification_items).to eq(expected_items)
+    end
+  end
+
   describe "#formatted_address" do
     let(:base_address_attrs) do
       { street_address: "123 Main St", city: "Springfield", state: "IL", zip_code: "62701" }

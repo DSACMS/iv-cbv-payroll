@@ -7,6 +7,7 @@ RSpec.describe "NSC enrollment statuses", :js, type: :feature do
   let(:invitation) { create(:activity_flow_invitation) }
   let(:flow) { invitation.activity_flows.order(:created_at).last }
   let(:education) { create(:education_activity, activity_flow: flow) }
+  let(:enrollment_codes) { %w[F Q H L Y A W S G D] }
 
   before do
     visit activities_flow_start_path(token: invitation.auth_token)
@@ -16,7 +17,7 @@ RSpec.describe "NSC enrollment statuses", :js, type: :feature do
     nsc_stub_request_education_search_response("lynette") do |response|
       enrollment = response.fetch("enrollmentDetails").first
       template = enrollment.fetch("enrollmentData").first
-      enrollment["enrollmentData"] = %w[F Q H L Y A W S G D].map do |code|
+      enrollment["enrollmentData"] = enrollment_codes.map do |code|
         template.merge("enrollmentStatus" => code)
       end
     end
@@ -25,14 +26,25 @@ RSpec.describe "NSC enrollment statuses", :js, type: :feature do
     verify_page(page, title: I18n.t("activities.education.edit.header"))
   end
 
-  it "shows the new labels and combines school and Clearinghouse withdrawals" do
+  it "hides enrolled, shows other statuses, and combines school and Clearinghouse withdrawals" do
     click_button I18n.t("activities.education.edit.enrollment_history")
 
-    expect(page).to have_text(I18n.t("components.enrollment_term_table_component.status.enrolled"))
+    expect(page).to have_no_text(I18n.t("components.enrollment_term_table_component.status.enrolled"))
     expect(page).to have_text(I18n.t("components.enrollment_term_table_component.status.leave_of_absence"))
     expect(page).to have_text(I18n.t("components.enrollment_term_table_component.status.graduated"))
     expect(page).to have_text(I18n.t("components.enrollment_term_table_component.status.deceased"))
     expect(page).to have_selector("td", text: I18n.t("components.enrollment_term_table_component.status.withdrawn"), count: 1)
     expect(education.nsc_enrollment_terms.count).to eq(9)
+  end
+
+  context "when NSC returns only enrolled" do
+    let(:enrollment_codes) { %w[Y] }
+
+    it "shows the enrollment details without a status row" do
+      expect(page).to have_selector("tr", text: I18n.t("components.enrollment_term_table_component.student_name_label"))
+      expect(page).to have_selector("tr", text: I18n.t("components.enrollment_term_table_component.school_or_program"))
+      expect(page).to have_selector("tr", text: I18n.t("components.enrollment_term_table_component.enrollment_term"))
+      expect(page).to have_no_selector("tr", text: I18n.t("components.enrollment_term_table_component.enrollment_status"))
+    end
   end
 end

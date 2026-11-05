@@ -14,6 +14,18 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
   end
 
   describe "GET #edit" do
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { get :edit, params: { community_service_id: volunteering_activity.id, id: 0 } }
+
+    it_behaves_like "tracks an event", TrackEvent::CommunityServiceMonthViewed,
+      extra_attributes: -> { { volunteering_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String) } }
+
+    it "does not track an event for an out-of-range month index" do
+      expect(EventTrackingJob).not_to receive(:perform_later)
+
+      get :edit, params: { community_service_id: volunteering_activity.id, id: 99 }
+    end
+
     it "redirects to month 0 for an out-of-range month index" do
       get :edit, params: { community_service_id: volunteering_activity.id, id: 99 }
 
@@ -22,6 +34,25 @@ RSpec.describe Activities::Volunteering::MonthsController, type: :controller do
   end
 
   describe "PATCH #update" do
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) do
+      patch :update, params: { community_service_id: volunteering_activity.id, id: 0, volunteering_activity_month: { hours: 10 } }
+    end
+
+    it_behaves_like "tracks an event", TrackEvent::CommunityServiceMonthSubmitted,
+      extra_attributes: -> { { volunteering_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String) } }
+
+    context "when validation fails" do
+      let(:perform_tracked_action) do
+        patch :update, params: { community_service_id: volunteering_activity.id, id: 0, volunteering_activity_month: { hours: 0 } }
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::CommunityServiceMonthValidationFailed,
+        extra_attributes: -> {
+          { volunteering_activity_id: kind_of(Integer), month_index: 0, month: kind_of(String), error_fields: [ "hours" ] }
+        }
+    end
+
     context "with no hours by the last month" do
       let(:activity_flow) { create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0, education_activities_count: 0, reporting_window_months: 3) }
 

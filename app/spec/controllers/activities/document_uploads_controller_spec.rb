@@ -34,6 +34,47 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
     allow_any_instance_of(LinkWithIconComponent).to receive(:asset_path).and_return("/assets/sprite.svg")
   end
 
+  describe "work program tracking" do
+    let(:activity) { create(:job_training_activity, activity_flow: activity_flow) }
+
+    before { allow(controller).to receive(:track_event).and_call_original }
+
+    it "tracks the upload view and enables shared navigation tracking" do
+      get :new, params: { job_training_id: activity.id }
+
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramDocumentUploadViewed, job_training_activity_id: activity.id)
+      expect(Capybara.string(response.body)).to have_selector('[data-activity-flow-header-track-event-prefix-value="WorkProgram"]')
+    end
+
+    it "tracks continuing without attachments" do
+      post :create, params: { job_training_id: activity.id }
+
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramDocumentUploadSubmitted,
+        job_training_activity_id: activity.id, document_count: 0)
+    end
+
+    it "tracks successful uploads without sending file contents or names" do
+      post :create, params: { job_training_id: activity.id,
+        activity: { document_uploads: [ fixture_file_upload("document_upload.pdf", "application/pdf") ] } }
+
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramDocumentUploadSubmitted,
+        job_training_activity_id: activity.id, document_count: 1)
+    end
+
+    it "tracks upload validation errors without counting a successful submission" do
+      allow(controller).to receive(:set_activity) { controller.instance_variable_set(:@activity, activity) }
+      allow(activity).to receive(:update) do
+        activity.errors.add(:document_uploads, :invalid)
+        false
+      end
+
+      post :create, params: { job_training_id: activity.id, activity: { document_uploads: [ fixture_file_upload("document_upload.pdf", "application/pdf") ] } }
+
+      expect(controller).to have_received(:track_event).once.with(TrackEvent::WorkProgramDocumentUploadValidationFailed,
+        job_training_activity_id: activity.id, error_fields: %w[document_uploads])
+    end
+  end
+
   describe "GET #new" do
     let(:partial_education_activity) do
       create(
@@ -352,6 +393,15 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
     end
 
+    context "community service scope" do
+      let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :new, params: { community_service_id: volunteering_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::CommunityServiceDocumentUploadViewed,
+        extra_attributes: -> { { volunteering_activity_id: kind_of(Integer) } }
+    end
+
     it "renders the upload form for an employment activity" do
       employment_activity = create(:employment_activity, activity_flow: activity_flow)
       month_record = create(:employment_activity_month, employment_activity: employment_activity, hours: 18)
@@ -569,6 +619,15 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         extra_attributes: -> { { education_activity_id: kind_of(Integer), document_count: 0 } }
     end
 
+    context "community service scope tracking" do
+      let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { post :create, params: { community_service_id: volunteering_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::CommunityServiceDocumentUploadSubmitted,
+        extra_attributes: -> { { volunteering_activity_id: kind_of(Integer), document_count: 0 } }
+    end
+
     it "does not track EducationDocumentUploadSubmitted when the update fails" do
       education_activity = create(
         :education_activity,
@@ -584,6 +643,20 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       post :create, params: {
         education_id: education_activity.id,
+        activity: { document_uploads: [ "existing-upload-token" ] }
+      }
+    end
+
+    it "does not track CommunityServiceDocumentUploadSubmitted when the update fails" do
+      volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
+      allow_any_instance_of(VolunteeringActivity).to receive(:update).and_return(false)
+
+      expect(EventTrackingJob).not_to receive(:perform_later).with(
+        TrackEvent::CommunityServiceDocumentUploadSubmitted, anything, anything
+      )
+
+      post :create, params: {
+        community_service_id: volunteering_activity.id,
         activity: { document_uploads: [ "existing-upload-token" ] }
       }
     end

@@ -4,7 +4,8 @@ class EnrollmentDetailsComponent < ViewComponent::Base
       .group_by { |term| [ term.school_name, term.term_begin, term.term_end ] }
       .values
       .map do |terms|
-        terms.sort_by { |term| [ term.school_certified_on || Date.new(1, 1, 1), term.id || 0 ] }.reverse
+        latest, *history = terms.sort_by { |term| [ term.school_certified_on || Date.new(1, 1, 1), term.id || 0 ] }.reverse
+        [ latest, *history.reject(&:enrollment_enrolled?) ]
       end
   end
 end
