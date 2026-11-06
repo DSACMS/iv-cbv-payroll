@@ -71,8 +71,7 @@ The generated request example shows a complete report with all activity types.
 
 # **Design Principles**
 
-| Design | Description |
-| :-- | :-- |
-| Tolerant Reader | Systems should accept payloads that contain unknown or extra fields without rejecting them. Only a minimal set of fields are truly required. |
-| Additive-only schema evolution | New fields can be added to the spec at any time without breaking existing integrations. Fields are only removed in major version releases. |
-| Soft required fields | Fields that should be present but may not always be available from upstream providers are not marked as required, and denote `null` as an acceptable value. |
+| Design | Description                                                                                                                                                                                        |
+| :-- |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Legacy System Tolerant Design | Fields should only be added to the spec at any time without breaking existing integrations. Fields are only removed in major version releases. Fields must be introduced in minor version releases |
+| Soft required fields | Fields that should be present but may not always be available from upstream providers are not marked as required, and denote `null` as an acceptable value.                                        |
