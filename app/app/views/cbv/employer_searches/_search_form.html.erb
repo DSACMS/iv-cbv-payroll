@@ -1,0 +1,32 @@
+<% search_term_missing = params.key?(:query) && query.blank? %>
+
+<%= form_with url: search_path,
+              method: :get,
+              class: "margin-y-4",
+              html: { role: "search" },
+              data: { controller: "error-summary" } do |f| %>
+  <%= f.label :query, query_label, class: "usa-sr-only" %>
+  <% if search_term_missing %>
+    <span id="query_error" class="usa-error-message margin-bottom-05">
+      <%= t(".query_required") %>
+    </span>
+  <% end %>
+
+  <div class="usa-search usa-search--big display-flex">
+    <%= f.text_field :query,
+                     value: query,
+                     class: [ "usa-input", ("usa-input--error" if search_term_missing) ],
+                     type: "search",
+                     aria: { invalid: (true if search_term_missing), describedby: ("query_error" if search_term_missing) } %>
+    <button
+      class="usa-button"
+      type="submit"
+      data-cbv-employer-search-target="searchButton"
+    >
+      <span class="usa-search__submit-text">
+        <%= search_label %>
+      </span>
+      <%= image_tag "@uswds/uswds/dist/img/usa-icons-bg/search--white.svg", class: "usa-search__submit-icon", alt: search_label %>
+    </button>
+  </div>
+<% end %>

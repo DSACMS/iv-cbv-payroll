@@ -52,7 +52,7 @@ class Activities::Employment::AddYourWorkController < Activities::BaseController
       activities_flow_income_employer_search_path
     else
       new_activities_flow_income_employment_path(
-        compensation_type: MANUAL_ENTRY_COMPENSATION_TYPES.fetch(add_work_method)
+        compensation_type: @flow.employment_focused? ? "paid" : MANUAL_ENTRY_COMPENSATION_TYPES.fetch(add_work_method)
       )
     end
   end

@@ -13,6 +13,37 @@ RSpec.describe Activities::Education::AddYourEducationController, type: :control
   end
 
   describe "#show" do
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { get :show }
+
+    it_behaves_like "tracks an event", TrackEvent::EducationAddYourEducationViewed
+
+    it "tracks the choice page without classifying the education path" do
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::EducationAddYourEducationViewed, anything,
+        hash_excluding(:education_flow, :education_data_source, :education_type, :education_activity_id, :nsc_status))
+
+      get :show
+    end
+
+    it "tracks the choice page even when NSC is disabled" do
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::EducationAddYourEducationViewed, anything,
+        hash_excluding(:education_flow, :education_data_source))
+
+      stub_environment_variable("NSC_DISABLED", "true") { get :show }
+    end
+
+    it "does not track a page view when a completed flow is redirected" do
+      activity_flow.update!(completed_at: Time.current)
+      expect(EventTrackingJob).not_to receive(:perform_later).with(
+        TrackEvent::EducationAddYourEducationViewed, anything, anything)
+
+      get :show
+
+      expect(response).to have_http_status(:redirect)
+    end
+
     it "renders properly" do
       get :show
       expect(response).to be_successful

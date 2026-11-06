@@ -57,7 +57,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         end
 
         it "routes the applicant to the fallback page" do
-          expect(response).to redirect_to(activities_flow_education_error_path(education_type: "college_or_university"))
+          expect(response).to redirect_to(activities_flow_education_error_path(education_type: "college_or_university", education_id: activity_flow.education_activities.last.id))
         end
 
         it "preserves the original type when the applicant enters education manually" do
@@ -223,7 +223,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       it "redirects to the error page" do
         get :show, params: { id: education_activity.id }
 
-        expect(response).to redirect_to(activities_flow_education_error_path)
+        expect(response).to redirect_to(activities_flow_education_error_path(education_id: education_activity.id))
       end
     end
 
@@ -237,7 +237,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       it "redirects to the error page" do
         get :show, params: { id: education_activity.id }
 
-        expect(response).to redirect_to(activities_flow_education_error_path)
+        expect(response).to redirect_to(activities_flow_education_error_path(education_id: education_activity.id))
       end
     end
 

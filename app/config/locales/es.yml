@@ -188,6 +188,8 @@ es:
           other: "%{count} errores"
         error_updating_applicant: Se produjo un error al actualizar la información del solicitante. Vuelva a intentarlo.
     employer_searches:
+      search_form:
+        query_required: Ingrese un término de búsqueda para continuar
       show:
         alert:
           heading: "¿Necesita ayuda para conectarse a su proveedor de nómina?"
@@ -211,6 +213,7 @@ es:
         payroll_providers: Proveedores de nómina
         popular_providers: O elija entre los proveedores o aplicaciones de nómina más populares
         provider_types_label: Tipo de proveedor
+        query_label: Busque a su empleador
         results:
           one: Encontramos un resultado
           other: Encontramos %{count} resultados

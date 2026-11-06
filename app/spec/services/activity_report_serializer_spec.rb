@@ -44,6 +44,26 @@ RSpec.describe ActivityReportSerializer do
     )
   end
 
+  it "includes a supplied individual ID in agency partner metadata" do
+    cbv_applicant.update!(individual_id: "INDIVIDUAL-123")
+
+    expect(report["agency_partner_metadata"]).to include("individual_id" => "INDIVIDUAL-123")
+  end
+
+  it "omits individual ID when it was not supplied" do
+    expect(report["agency_partner_metadata"]).not_to have_key("individual_id")
+  end
+
+  it "includes a supplied individual ID for Louisiana" do
+    louisiana_applicant = create(:cbv_applicant, :la_ldh, individual_id: "LA-INDIVIDUAL-123")
+    louisiana_flow = create(:activity_flow, cbv_applicant: louisiana_applicant, with_identity: false)
+    louisiana_agency = Rails.application.config.client_agencies["la_ldh"]
+
+    metadata = described_class.new(louisiana_flow, louisiana_agency).as_json.fetch("agency_partner_metadata")
+
+    expect(metadata).to include("individual_id" => "LA-INDIVIDUAL-123")
+  end
+
   it "reports the review period covered by the flow" do
     expect(report["ce_report"]["review_period"]).to eq(
       "start_month" => "2026-06",

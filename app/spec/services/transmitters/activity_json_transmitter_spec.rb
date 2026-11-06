@@ -6,7 +6,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
   let(:activity_transmission_method_configuration) { { "json_api_url" => api_url } }
   let(:cbv_applicant) do
     create(:cbv_applicant, client_agency_id: "sandbox", first_name: "Jane", middle_name: "A", last_name: "Doe",
-      case_number: "CASE-2026-00987", date_of_birth: Date.new(1990, 4, 15))
+      case_number: "CASE-2026-00987", date_of_birth: Date.new(1990, 4, 15), individual_id: "INDIVIDUAL-123")
   end
   let(:activity_flow) do
     create(
