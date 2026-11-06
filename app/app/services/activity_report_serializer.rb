@@ -62,7 +62,10 @@ class ActivityReportSerializer
   end
 
   def agency_partner_metadata
-    CbvApplicant.build_agency_partner_metadata(@current_agency.id) do |attribute|
+    CbvApplicant.build_agency_partner_metadata(
+      @current_agency.id,
+      version: applicant.individual_id.present? ? :v2 : :v1
+    ) do |attribute|
       json_value(applicant.public_send(attribute))
     end
   end

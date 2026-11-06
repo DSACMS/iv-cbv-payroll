@@ -31,6 +31,7 @@ RSpec.describe Transmitters::JsonTransmitter do
   before do
     allow(mock_client_agency).to receive_messages(income_transmission_method_configuration: income_transmission_method_configuration, id: "sandbox")
     allow(CbvApplicant).to receive(:valid_attributes_for_agency).with("sandbox", version: :v1).and_return([ "case_number" ])
+    allow(CbvApplicant).to receive(:valid_attributes_for_agency).with("sandbox", version: :v2).and_return([ "case_number", "individual_id" ])
     allow(Rails.logger).to receive(:error)
     allow(Rails.logger).to receive(:info)
   end
@@ -44,6 +45,20 @@ RSpec.describe Transmitters::JsonTransmitter do
       cbv_flow.update!(has_other_jobs: false)
       schema_report.payroll_accounts.first.flow = cbv_flow
       schema_report.incomes.first.compensation_unit = "hourly"
+    end
+
+    it "includes a supplied individual ID in agency partner metadata" do
+      cbv_applicant.update!(individual_id: "INDIVIDUAL-123")
+
+      payload = JSON.parse(described_class.new(cbv_flow, mock_client_agency, schema_report).payload)
+
+      expect(payload["agency_partner_metadata"]).to include("individual_id" => "INDIVIDUAL-123")
+    end
+
+    it "omits individual ID when it was not supplied" do
+      payload = JSON.parse(described_class.new(cbv_flow, mock_client_agency, schema_report).payload)
+
+      expect(payload["agency_partner_metadata"]).not_to have_key("individual_id")
     end
 
     it "matches the legacy income report contract" do
