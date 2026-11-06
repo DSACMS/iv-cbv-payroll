@@ -1,0 +1,21 @@
+# Context for NSC-backed education events, including its partially self-attested steps.
+# Fully self-attested education keeps its existing instrumentation unchanged.
+module NscEducationTracking
+  extend ActiveSupport::Concern
+
+  private
+
+  def standard_track_attributes
+    super.merge(nsc_education_tracking_attributes)
+  end
+
+  def nsc_education_tracking_attributes
+    activity = @education_activity || @activity
+    return {} unless activity.is_a?(EducationActivity) && activity.persisted? && !activity.fully_self_attested?
+
+    EducationTrackingAttributes.new(activity).to_h.merge(
+      from_edit: params[:from_edit].presence,
+      from_review: params[:from_review].presence
+    )
+  end
+end

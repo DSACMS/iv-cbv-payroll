@@ -1,5 +1,7 @@
 # Synchronizes data from the National Student Clearinghouse (NSC)
 class NscSynchronizationJob < ApplicationJob
+  include Trackable
+
   queue_as :default
 
   after_discard do |job, exception|
@@ -9,6 +11,7 @@ class NscSynchronizationJob < ApplicationJob
   end
 
   def perform(education_activity_id)
+    @lookup_started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     Rails.logger.info "Fetching NSC Data for EducationActivity #{education_activity_id}"
 
     @education_activity = EducationActivity.find(education_activity_id)
@@ -17,9 +20,54 @@ class NscSynchronizationJob < ApplicationJob
     end
 
     data_fetcher_service.fetch
+    @education_activity.reload
+    track_lookup_result unless @education_activity.sync_unknown?
+  rescue StandardError
+    track_lookup_result(outcome: "service_error") if @education_activity
+    raise
   end
 
   private
+
+  # Background lookups have no HTTP request; supply the same CE identifiers
+  # explicitly so the shared tracker can associate the result with the journey.
+  def request
+    nil
+  end
+
+  def standard_track_attributes
+    EducationTrackingAttributes.new(@education_activity).to_h
+  end
+
+  def track_lookup_result(outcome: nil)
+    terms = @education_activity.nsc_enrollment_terms.to_a
+    months = EducationReportingMonthResolver.new(
+      terms: terms, reporting_months: @education_activity.activity_flow.reporting_months
+    ).reporting_month_enrollments
+    outcome ||= if @education_activity.sync_no_enrollments?
+                  "no_enrollments"
+                elsif @education_activity.sync_failed?
+                  "service_error"
+                elsif @education_activity.partially_self_attested?
+                  "partial_data"
+                else
+                  "validated"
+                end
+
+    track_event(TrackEvent::EducationNscLookupCompleted,
+      outcome: outcome,
+      lookup_attempt: executions,
+      duration_ms: ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - @lookup_started_at) * 1000).round,
+      nsc_status: @education_activity.status,
+      term_count: terms.size,
+      enrollment_status_counts: terms.map(&:enrollment_status).tally,
+      reporting_month_count: months.size,
+      months_with_enrollment: months.count { |month| month.terms.any? || month.effective_term.present? },
+      months_with_sufficient_enrollment: months.count(&:sufficient_enrollment?))
+  rescue StandardError => error
+    # Instrumentation must not turn a completed lookup into another NSC request.
+    Rails.logger.warn("Unable to track NSC lookup for EducationActivity #{@education_activity.id}: #{error.class.name}")
+  end
 
   def data_fetcher_service
     if use_launcher_fake_data_fetcher?

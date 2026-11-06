@@ -1,5 +1,6 @@
 class Activities::DocumentUploadsController < Activities::BaseController
   include NavigationTracking
+  include NscEducationTracking
 
   TRACKED_ACTIVITIES = {
     education_id: [ "Education", :education_activity_id ],
@@ -68,6 +69,13 @@ class Activities::DocumentUploadsController < Activities::BaseController
       @back_url = if @activity.fully_self_attested?
                     edit_activities_flow_education_add_your_term_path(
                       education_id: @activity,
+                      from_review: params[:from_review].presence,
+                      from_edit: params[:from_edit].presence
+                    )
+                  elsif @activity.partially_self_attested? && @activity.has_less_than_half_time_terms?
+                    edit_activities_flow_education_term_credit_hour_path(
+                      education_id: @activity,
+                      id: @activity.less_than_half_time_terms_in_reporting_window.length - 1,
                       from_review: params[:from_review].presence,
                       from_edit: params[:from_edit].presence
                     )

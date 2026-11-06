@@ -7,6 +7,26 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.16.0
+
+### User facing changes to Emmy Income + Emmy CE
+- Include individual_id in JSON report webhooks when supplied during invitation creation [(#2302)](https://github.com/DSACMS/iv-cbv-payroll/pull/2302) - Chris [[FFS-5050]](https://jiraent.cms.gov/browse/FFS-5050)
+- Update employer search alerting [(#2293)](https://github.com/DSACMS/iv-cbv-payroll/pull/2293) - Daphne Gold [[FFS-4946]](https://jiraent.cms.gov/browse/FFS-4946)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Hide “Enrolled” status on the NSC enrollment review page [(#2299)](https://github.com/DSACMS/iv-cbv-payroll/pull/2299) - Daphne Gold [[FFS-5020]](https://jiraent.cms.gov/browse/FFS-5020)
+- Self-attested work program review has weird month sorting [(#2291)](https://github.com/DSACMS/iv-cbv-payroll/pull/2291) - krista-skylight [[FFS-5034]](https://jiraent.cms.gov/browse/FFS-5034)
+
+### Other/Maintenance (Not user facing)
+- Add mixpanel events to community service [(#2287)](https://github.com/DSACMS/iv-cbv-payroll/pull/2287) - Chris [[FFS-4637]](https://jiraent.cms.gov/browse/FFS-4637)
+- Instrument Mixpanel events for the Work Program Self-Attested flow in Emmy CE [(#2286)](https://github.com/DSACMS/iv-cbv-payroll/pull/2286) - krista-skylight [[FFS-4638]](https://jiraent.cms.gov/browse/FFS-4638)
+- Advanced launcher updates for Y (enrolled) [(#2298)](https://github.com/DSACMS/iv-cbv-payroll/pull/2298) - Daphne Gold
+- Add documentation for CMS API environments [(#2288)](https://github.com/DSACMS/iv-cbv-payroll/pull/2288) - Tom Dooner [[FFS-5030]](https://jiraent.cms.gov/browse/FFS-5030)
+- Clarify JSON API metadata documentation [(#2292)](https://github.com/DSACMS/iv-cbv-payroll/pull/2292) - Tom Dooner [[FFS-5032]](https://jiraent.cms.gov/browse/FFS-5032)
+
 ## 0.15.0
 
 ### User facing changes to Emmy Income + Emmy CE
