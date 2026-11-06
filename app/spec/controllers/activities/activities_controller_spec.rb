@@ -129,6 +129,39 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
     end
   end
 
+  context "when another session has used the invitation" do
+    let(:invitation) { create(:activity_flow_invitation) }
+    let(:flow) { create(:activity_flow, activity_flow_invitation: invitation) }
+
+    before do
+      allow(Rails.application.config.client_agencies["sandbox"])
+        .to receive(:allow_activity_invitation_reuse).and_return(false)
+      session[:flow_id] = flow.id
+      session[:flow_type] = :activity
+      create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current)
+    end
+
+    it "redirects the incomplete session before rendering the hub" do
+      get :index
+
+      expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: "sandbox"))
+      expect(flow.reload).not_to be_complete
+    end
+
+    context "when invitation reuse is allowed" do
+      before do
+        allow(Rails.application.config.client_agencies["sandbox"])
+          .to receive(:allow_activity_invitation_reuse).and_return(true)
+      end
+
+      it "allows the incomplete session to continue" do
+        get :index
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
   describe "common questions" do
     let(:current_flow) do
       create(:activity_flow, volunteering_activities_count: 0, job_training_activities_count: 0,

@@ -27,6 +27,17 @@ class Activities::SummaryController < Activities::BaseController
     end
 
     @flow.transaction do
+      invitation = @flow.activity_flow_invitation
+      if invitation && !Rails.application.config.client_agencies[invitation.client_agency_id].allow_activity_invitation_reuse
+        # Different sessions have different flows, so serialize on their shared
+        # invitation and check usage only after acquiring the database lock.
+        invitation.lock!
+        if invitation.used?
+          track_expired_event(invitation)
+          return redirect_to(expired_invitation_path(invitation))
+        end
+      end
+
       ensure_confirmation_code
       mark_as_completed
       enqueue_transmission
