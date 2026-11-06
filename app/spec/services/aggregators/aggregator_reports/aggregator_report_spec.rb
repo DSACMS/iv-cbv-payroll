@@ -322,7 +322,13 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
       it "formats the address as a string for the income report" do
         address = report.income_report.dig(:employments, 0, :employer_address)
 
-        expect(address).to eq("942 W Harlan Ave, Gainesville, FL 32611")
+        expect(address).to eq(
+          line1: "942 W Harlan Ave",
+          line2: nil,
+          city: "Gainesville",
+          state: "FL",
+          postal_code: "32611"
+        )
       end
     end
   end
