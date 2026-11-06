@@ -9,8 +9,8 @@ RSpec.describe "Employment month selection button", :js, type: :feature do
   let(:activity) { create(:employment_activity, activity_flow: flow, compensation_type: compensation_type) }
   let(:viewport_width) { 1024 }
   let(:button) { find_button(I18n.t("activities.employment.month_selections.edit.continue")) }
-  let(:button_width) { button.rect.width }
-  let(:container_width) { find("#employment_month_selection_form fieldset").rect.width }
+  let(:button_width) { button.native.rect.width }
+  let(:container_width) { find("#employment_month_selection_form fieldset").native.rect.width }
 
   before do
     page.driver.browser.execute_cdp("Emulation.setDeviceMetricsOverride",
