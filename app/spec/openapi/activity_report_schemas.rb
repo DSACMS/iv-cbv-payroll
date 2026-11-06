@@ -93,18 +93,7 @@ module ActivityReportSchemas
         type: { type: :string, enum: %w[employment] },
         data_source: { type: :string, enum: %w[self_attested] },
         employer_name: { type: :string, description: "Name of the employer or business." },
-        employer_address: {
-          type: %i[object null],
-          properties: {
-            line1: nullable_string,
-            line2: nullable_string,
-            city: nullable_string,
-            state: nullable_string,
-            postal_code: nullable_string
-          },
-          additionalProperties: false,
-          description: "Employer address, split into its component fields."
-        },
+        employer_address: nullable_string.merge(description: "Combined address, also supplied as individual address fields."),
         employment_type: { type: :null, description: "Always null for self-attested employment. Populated only for Argyle-sourced employment." },
         is_self_employed: { type: :boolean, description: "Whether the applicant marked the work as self-employment. Employer contact fields are null when true." },
         gross_income: { type: :number, minimum: 0, description: "Self-attested monthly gross income in dollars, including cents as a decimal." }
