@@ -581,18 +581,35 @@ RSpec.describe ActivityReportSerializer do
       expect(report.dig("ce_report", "documents").sole["document_id"]).to eq("DOC-#{document.id}")
     end
 
-    it "includes self-employed and unpaid work with null employment types" do
-      self_employed = create(:employment_activity, activity_flow: activity_flow, is_self_employed: true)
-      unpaid = create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
-      [ self_employed, unpaid ].each do |employment|
+    context "with self-employed work" do
+      let(:employment) { create(:employment_activity, activity_flow: activity_flow, is_self_employed: true) }
+
+      before do
         create(:employment_activity_month, employment_activity: employment, month: first_month, gross_income: 0)
       end
 
-      expect(employment_months["2026-06"].first).to include(
-        "employment_type" => nil, "is_self_employed" => true,
-        "contact_name" => nil, "contact_email" => nil, "contact_phone_number" => nil
-      )
-      expect(employment_months["2026-06"].last).to include("employment_type" => nil, "is_self_employed" => false, "gross_income" => 0.0)
+      it "preserves zero income and omits employer contact details" do
+        expect(employment_months["2026-06"].sole).to include(
+          "employment_type" => nil, "is_self_employed" => true, "gross_income" => 0.0,
+          "contact_name" => nil, "contact_email" => nil, "contact_phone_number" => nil
+        )
+      end
+    end
+
+    context "with unpaid or in-kind work" do
+      let(:employment) { create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind) }
+
+      before do
+        create(:employment_activity_month, employment_activity: employment, month: first_month, gross_income: 0)
+      end
+
+      it "serializes the stored income placeholder as JSON null" do
+        payload = JSON.parse(report.to_json)
+
+        expect(payload.dig("ce_report", "activities", "employment", "2026-06").sole).to include(
+          "employment_type" => nil, "is_self_employed" => false, "gross_income" => nil
+        )
+      end
     end
 
     it "excludes drafts and does not fetch unsuccessful or unpublished payroll connections" do

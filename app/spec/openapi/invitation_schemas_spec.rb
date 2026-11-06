@@ -152,6 +152,26 @@ RSpec.describe InvitationSchemas do
     end
   end
 
+  context "with a case number on the shared metadata schema" do
+    let(:schema) { document.schema("AgencyPartnerMetadata") }
+
+    it "rejects numeric values even when the Louisiana branch matches" do
+      expect(schema.valid?(louisiana.merge("case_number" => 123))).to be(false)
+    end
+
+    it "accepts string values" do
+      expect(schema.valid?(louisiana.merge("case_number" => "EXAMPLE-123"))).to be(true)
+    end
+
+    it "accepts null values" do
+      expect(schema.valid?(louisiana.merge("case_number" => nil))).to be(true)
+    end
+
+    it "does not require a case number" do
+      expect(schema.valid?(louisiana)).to be(true)
+    end
+  end
+
   it "accepts overlapping agency shapes without requiring an exclusive match" do
     schema = document.schema("AgencyPartnerMetadata")
     expect(schema.valid?(sandbox)).to be(true)

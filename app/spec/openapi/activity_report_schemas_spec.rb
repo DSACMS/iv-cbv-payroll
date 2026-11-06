@@ -63,6 +63,12 @@ RSpec.describe ActivityReportSchemas do
     expect(schema.valid?(report)).to be(false)
   end
 
+  it "rejects numeric case numbers even when metadata matches the Louisiana branch" do
+    report["agency_partner_metadata"] = { "doc_id" => "EXAMPLE-DOC-123", "case_number" => 123 }
+
+    expect(schema.valid?(report)).to be(false)
+  end
+
   it "validates every month's entries, including months absent from documentation examples" do
     report["ce_report"]["activities"]["employment"]["2030-12"] = [ payroll.merge("paystubs" => [ { "pay_date" => "2030-12-01", "pay_gross" => "invalid" } ]) ]
 
