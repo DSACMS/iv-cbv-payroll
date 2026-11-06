@@ -52,11 +52,14 @@ RSpec.describe ActivityReportSchemas do
     expect(schema.valid?(report)).to be(false)
   end
 
-  it "accepts overlapping agency metadata shapes and validates their shared fields" do
+  it "accepts overlapping agency metadata shapes" do
     report["agency_partner_metadata"] = { "first_name" => "Jane", "last_name" => "Doe", "case_number" => "EXAMPLE-123" }
     expect(schema.valid?(report)).to be(true)
+  end
 
-    report["agency_partner_metadata"]["case_number"] = 123
+  it "requires agency metadata to be an object" do
+    report["agency_partner_metadata"] = []
+
     expect(schema.valid?(report)).to be(false)
   end
 
@@ -80,6 +83,18 @@ RSpec.describe ActivityReportSchemas do
     expect(schema.valid?(report)).to be(false)
     payroll["data_source"] = "argyle"
     expect(schema.valid?(report)).to be(false)
+  end
+
+  it "accepts omitted self-attested gross income" do
+    self_attested.delete("gross_income")
+
+    expect(schema.valid?(report)).to be(true)
+  end
+
+  it "accepts null gross income for unpaid self-attested work" do
+    self_attested["gross_income"] = nil
+
+    expect(schema.valid?(report)).to be(true)
   end
 
   it "rejects negative self-attested income and missing hours" do
