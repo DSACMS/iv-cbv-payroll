@@ -73,7 +73,7 @@ class Activities::EducationController < Activities::BaseController
       track_event(TrackEvent::EducationEnrollmentReviewSubmitted, education_activity_id: @education_activity.id)
       if @education_activity.partially_self_attested? && @education_activity.has_less_than_half_time_terms?
         redirect_to edit_activities_flow_education_term_credit_hour_path(
-          education_id: @education_activity, id: 0
+          education_id: @education_activity, id: 0, from_edit: params[:from_edit].presence
         )
       else
         publish_nsc_education_activity

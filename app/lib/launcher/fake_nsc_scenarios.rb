@@ -35,6 +35,16 @@ module Launcher
         ]
       ),
       UserProfile.new(
+        scenario_key: "partial_enrollment_riley",
+        first_name: "Riley",
+        last_name: "Testuser",
+        date_of_birth: Date.parse("1991-08-14"),
+        terms: [
+          { school_name: "Maple Grove College", enrollment_status: :enrolled },
+          { school_name: "North Valley College", enrollment_status: :less_than_half_time }
+        ]
+      ),
+      UserProfile.new(
         scenario_key: "partial_enrollment_sam",
         first_name: "Sam",
         last_name: "Testuser",

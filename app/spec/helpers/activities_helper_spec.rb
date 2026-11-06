@@ -405,13 +405,14 @@ RSpec.describe ActivitiesHelper do
       ])
     end
 
-    it "shows enrollment status only for enrolled partially self-attested months" do
+    it "shows supplemental enrollment status for enrolled partially self-attested months" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested)
       create(
         :nsc_enrollment_term,
         education_activity: activity,
         school_name: "Test U",
         enrollment_status: "enrolled",
+        supplemental_enrollment_status: "less_than_half_time",
         term_begin: first_month,
         term_end: second_month.end_of_month,
         credit_hours: 5
@@ -422,11 +423,11 @@ RSpec.describe ActivitiesHelper do
       expect(result.first[:months]).to eq([
         {
           month: first_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.enrolled")
+          enrollment_status: I18n.t("activities.education.add_your_term.edit.enrollment_status_options.less_than_half_time")
         },
         {
           month: second_month,
-          enrollment_status: I18n.t("components.enrollment_term_table_component.status.enrolled")
+          enrollment_status: I18n.t("activities.education.add_your_term.edit.enrollment_status_options.less_than_half_time")
         }
       ])
     end
