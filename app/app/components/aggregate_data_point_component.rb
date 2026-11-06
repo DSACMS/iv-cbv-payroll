@@ -164,7 +164,7 @@ class AggregateDataPointComponent < ViewComponent::Base
           [ address[:state], address[:postal_code] ].compact_blank.join(" ")
         ].compact_blank.join(", ")
 
-        [ street, city_state_postal].compact_blank.join(", ").presence
+        [ street, city_state_postal ].compact_blank.join(", ").presence
       else
         address
       end
