@@ -15,14 +15,12 @@ module InvitationSchemas
     schemas = {
       AgencyPartnerMetadata: {
         type: :object,
-        additionalProperties: true,
         properties: { case_number: metadata_fields[:case_number] },
         description: InvitationDocumentation.read("agency-partner-metadata"),
         anyOf: %w[Sandbox NewHampshire Louisiana Research Accenture].map { |agency| { "$ref" => "#/components/schemas/AgencyMetadata#{agency}" } }
       },
       AgencyPartnerMetadataV2: {
         type: :object,
-        additionalProperties: true,
         description: InvitationDocumentation.read("agency-partner-metadata"),
         anyOf: %w[community_engagement employment].flat_map do |invitation_type|
           %w[Sandbox NewHampshire Louisiana Research Accenture].map do |agency|
@@ -32,7 +30,7 @@ module InvitationSchemas
       },
       InvitationRequest: {
         type: :object,
-        additionalProperties: true,
+        additionalProperties: false,
         description: "Invitation settings and metadata for the agency identified by the API key.",
         required: %w[language agency_partner_metadata],
         properties: {
@@ -45,7 +43,7 @@ module InvitationSchemas
       },
       InvitationRequestV2: {
         type: :object,
-        additionalProperties: true,
+        additionalProperties: false,
         description: "Invitation settings and metadata for the agency identified by the API key. invitation_type is selected via the URL path, not this body.",
         required: %w[language verification_range agency_partner_metadata],
         properties: {
@@ -62,9 +60,9 @@ module InvitationSchemas
       },
       InvitationResponse: {
         type: :object,
+        additionalProperties: false,
         description: InvitationDocumentation.read("invitations", section: "Response"),
         required: %w[tokenized_url expiration_date language agency_partner_metadata],
-        additionalProperties: true,
         properties: {
           tokenized_url: { type: :string, format: :uri, description: "Income reporting link. Treat the token as opaque and direct the applicant to this URL unchanged." },
           expiration_date: { type: :string, format: :"date-time", description: "Expiration of tokenized_url, at the end of the day in America/New_York after the agency's configured validity period." },
@@ -74,9 +72,9 @@ module InvitationSchemas
       },
       InvitationResponseV2: {
         type: :object,
+        additionalProperties: false,
         description: InvitationDocumentation.read("invitations-v2", section: "Response"),
         required: %w[tokenized_url expiration_date language agency_partner_metadata],
-        additionalProperties: true,
         properties: {
           tokenized_url: { type: :string, format: :uri, description: "Income reporting link. Treat the token as opaque and direct the applicant to this URL unchanged." },
           token: { type: :string, description: "Opaque auth token for tokenized_url" },
@@ -88,21 +86,22 @@ module InvitationSchemas
       },
       ExpireInvitationResponse: {
         type: :object,
+        additionalProperties: false,
         required: %w[tokenized_url],
-        additionalProperties: true,
         properties: {
           tokenized_url: { type: :string, format: :uri, description: "The expired invitation's reporting link, returned for reference. Do not resend this link to the applicant." }
         }
       },
       InvitationErrors: {
         type: :object,
+        additionalProperties: false,
         required: %w[errors],
-        additionalProperties: true,
         properties: {
           errors: {
             type: :array, minItems: 1,
             items: {
-              type: :object, required: %w[field message], additionalProperties: true,
+              type: :object, required: %w[field message],
+              additionalProperties: false,
               properties: {
                 field: { type: :string, description: "Invalid field, including language or cbv_applicant.first_name. Applicant errors may use cbv_applicant or agency_partner_metadata prefixes." },
                 message: { type: :string, description: "Human-readable validation message. Do not depend on the exact wording." }
@@ -113,14 +112,15 @@ module InvitationSchemas
       },
       InvitationErrorsV2: {
         type: :object,
+        additionalProperties: false,
         required: %w[errors],
-        additionalProperties: true,
         description: "Validation errors for a V2 invitation request. The field attribute identifies the invalid value.",
         properties: {
           errors: {
             type: :array, minItems: 1,
             items: {
-              type: :object, required: %w[field message], additionalProperties: true,
+              type: :object, required: %w[field message],
+              additionalProperties: false,
               properties: {
                 field: {
                   type: :string,
@@ -146,7 +146,6 @@ module InvitationSchemas
         title: schema_name,
         type: :object,
         description: "Accepted metadata for #{title}. The API ignores fields outside this schema.",
-        additionalProperties: true,
         properties: metadata_fields.slice(*fields)
       }
       schema[:required] = %w[first_name last_name] if agency == "NewHampshire"
@@ -163,7 +162,6 @@ module InvitationSchemas
           title: v2_schema_name,
           type: :object,
           description: "Accepted V2 metadata for #{title}'s #{invitation_type.humanize.downcase} invitations. The API ignores fields outside this schema.",
-          additionalProperties: true,
           properties: v2_fields.to_h { |field| [ field, metadata_fields.fetch(field) ] },
           required: client_agency.api_required_metadata(invitation_type).map(&:to_s)
         }
@@ -178,7 +176,7 @@ module InvitationSchemas
 
     schemas[:CommunityEngagementInvitationRequest] = {
       type: :object,
-      additionalProperties: true,
+      additionalProperties: false,
       required: %w[language verification_range agency_partner_metadata],
       properties: {
         language: schemas[:InvitationRequest][:properties][:language],
@@ -189,7 +187,6 @@ module InvitationSchemas
         },
         agency_partner_metadata: {
           type: :object,
-          additionalProperties: true,
           anyOf: %w[Sandbox NewHampshire Louisiana Research Accenture].map do |agency|
             { "$ref" => "#/components/schemas/AgencyMetadataV2#{agency}CommunityEngagement" }
           end

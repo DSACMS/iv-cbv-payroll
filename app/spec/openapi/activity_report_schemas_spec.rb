@@ -75,10 +75,8 @@ RSpec.describe ActivityReportSchemas do
     expect(schema.valid?(report)).to be(false)
   end
 
-  it "requires arrays for month keys while allowing future non-month fields" do
+  it "requires arrays for month keys" do
     employment = report["ce_report"]["activities"]["employment"]
-    employment["future_field"] = { "value" => true }
-    expect(schema.valid?(report)).to be(true)
 
     employment["2026-08"] = { "value" => true }
     expect(schema.valid?(report)).to be(false)
@@ -234,16 +232,25 @@ RSpec.describe ActivityReportSchemas do
     end
   end
 
-  it "allows future fields on the report, activities, paystubs, and metadata" do
+  it "enforces additionalProperties: false on the report, activities, and paystubs" do
     report["future_field"] = true
-    report["agency_partner_metadata"]["future_field"] = true
-    report["ce_report"]["future_field"] = true
-    report["ce_report"]["activities"]["future_activity"] = {}
-    payroll["future_field"] = true
-    payroll["paystubs"].first["future_field"] = true
-    self_attested["future_field"] = true
+    expect(schema.valid?(report)).to be(false)
+    report.delete("future_field")
 
-    expect(schema.valid?(report)).to be(true)
+    report["ce_report"]["future_field"] = true
+    expect(schema.valid?(report)).to be(false)
+    report["ce_report"].delete("future_field")
+
+    payroll["future_field"] = true
+    expect(schema.valid?(report)).to be(false)
+    payroll.delete("future_field")
+
+    payroll["paystubs"].first["future_field"] = true
+    expect(schema.valid?(report)).to be(false)
+    payroll["paystubs"].first.delete("future_field")
+
+    self_attested["future_field"] = true
+    expect(schema.valid?(report)).to be(false)
   end
 
   it "uses the CE report guide for the standalone model description" do
