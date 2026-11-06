@@ -9,7 +9,7 @@ RSpec.describe InvitationSchemas do
     }.to_json))
   end
   let(:sandbox) { { "first_name" => "Jane", "last_name" => "Doe", "middle_name" => nil, "case_number" => "EXAMPLE-123" } }
-  let(:louisiana) { { "doc_id" => "EXAMPLE-DOC-123", "case_number" => nil, "date_of_birth" => "01/15/1990" } }
+  let(:louisiana) { { "doc_id" => "EXAMPLE-DOC-123" } }
 
   describe "V2 agency metadata" do
     let(:metadata) { { "individual_id" => "INDIVIDUAL-123", "first_name" => "Jane", "last_name" => "Doe" } }
@@ -62,8 +62,17 @@ RSpec.describe InvitationSchemas do
         expect(schema.valid?(metadata)).to be(false)
       end
 
-      it "preserves nullable dates of birth in Louisiana's V1 metadata" do
-        expect(document.schema("AgencyMetadataLouisiana").valid?(louisiana.merge("date_of_birth" => nil))).to be(true)
+      it "documents only the four CE metadata fields" do
+        expect(described_class.schemas.fetch("AgencyMetadataV2LouisianaCommunityEngagement")[:properties].keys)
+          .to contain_exactly(:individual_id, :first_name, :last_name, :date_of_birth)
+      end
+    end
+
+    context "with Louisiana employment metadata" do
+      it "documents only individual ID and applicant names" do
+        expect(described_class.schemas.fetch("AgencyMetadataV2LouisianaEmployment")[:properties].keys)
+          .to contain_exactly(:individual_id, :first_name, :last_name)
+        expect(document.schema("AgencyMetadataV2LouisianaEmployment").valid?(metadata)).to be(true)
       end
     end
 
@@ -113,7 +122,7 @@ RSpec.describe InvitationSchemas do
     expect(document.schema("AgencyMetadataSandbox").valid?(sandbox)).to be(true)
     expect(document.schema("AgencyMetadataLouisiana").valid?(louisiana)).to be(true)
     expect(described_class.schemas["AgencyMetadataSandbox"][:properties].keys).to contain_exactly(:first_name, :middle_name, :last_name, :case_number, :date_of_birth)
-    expect(described_class.schemas["AgencyMetadataLouisiana"][:properties].keys).to contain_exactly(:case_number, :date_of_birth, :doc_id)
+    expect(described_class.schemas["AgencyMetadataLouisiana"][:properties].keys).to contain_exactly(:doc_id)
   end
 
   it "requires first and last names specifically for New Hampshire" do
@@ -131,11 +140,6 @@ RSpec.describe InvitationSchemas do
       expect(document.schema(name).valid?({})).to be(true)
     end
     expect(document.schema("AgencyMetadataSandbox").valid?(sandbox.except("first_name", "last_name"))).to be(true)
-  end
-
-  it "limits Louisiana case numbers without limiting sandbox case numbers" do
-    expect(document.schema("AgencyMetadataLouisiana").valid?(louisiana.merge("case_number" => "1" * 14))).to be(false)
-    expect(document.schema("AgencyMetadataSandbox").valid?(sandbox.merge("case_number" => "1" * 14))).to be(true)
   end
 
   it "uses AgencyMetadata-prefixed names for all agency model references and titles" do

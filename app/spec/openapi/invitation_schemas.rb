@@ -136,7 +136,7 @@ module InvitationSchemas
     {
       "Sandbox" => [ "sandbox", "Sandbox", %i[first_name middle_name last_name case_number date_of_birth] ],
       "NewHampshire" => [ "nh_dhhs", "New Hampshire", %i[first_name middle_name last_name case_number date_of_birth] ],
-      "Louisiana" => [ "la_ldh", "Louisiana", %i[case_number date_of_birth doc_id] ],
+      "Louisiana" => [ "la_ldh", "Louisiana", %i[doc_id] ],
       "Research" => [ "research", "Research", %i[case_number date_of_birth] ],
       "Accenture" => [ "accenture", "Accenture", %i[case_number] ]
     }.each do |agency, (agency_id, title, fields)|
@@ -149,9 +149,7 @@ module InvitationSchemas
         properties: metadata_fields.slice(*fields)
       }
       schema[:required] = %w[first_name last_name] if agency == "NewHampshire"
-      if agency == "Louisiana"
-        schema[:properties][:case_number] = metadata_fields[:case_number].merge(maxLength: 13)
-      end
+      schema[:description] = "Metadata for Louisiana Emmy Income invitations: doc_id only." if agency == "Louisiana"
       schemas[schema_name] = schema
 
       client_agency = Rails.application.config.client_agencies[agency_id] ||

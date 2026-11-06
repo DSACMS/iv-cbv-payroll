@@ -3,6 +3,14 @@ for the API version, invitation type, and agency associated with your API key.
 Some agency schemas overlap, so matching a schema alone does not identify the
 agency.
 
+For Louisiana, use the following metadata fields for each Emmy flow:
+
+| Emmy flow | Tokenized Link API endpoint | Metadata fields |
+| --- | --- | --- |
+| Employment | `POST /api/v2/employment/invitations` | `individual_id`, `first_name`, `last_name` |
+| CE | `POST /api/v2/community-engagement/invitations` | `individual_id`, `first_name`, `last_name`, `date_of_birth` |
+| Income | `POST /api/v1/income/invitations` | `doc_id` |
+
 For V1 income invitations, the response contains all accepted metadata fields
 for the agency, with `null` for omitted values. Unrecognized fields are
 ignored.
