@@ -60,6 +60,12 @@ RSpec.describe ActivityReportSchemas do
     expect(schema.valid?(report)).to be(false)
   end
 
+  it "accepts an individual ID in agency partner metadata" do
+    report["agency_partner_metadata"]["individual_id"] = "INDIVIDUAL-123"
+
+    expect(schema.valid?(report)).to be(true)
+  end
+
   it "validates every month's entries, including months absent from documentation examples" do
     report["ce_report"]["activities"]["employment"]["2030-12"] = [ payroll.merge("paystubs" => [ { "pay_date" => "2030-12-01", "pay_gross" => "invalid" } ]) ]
 
