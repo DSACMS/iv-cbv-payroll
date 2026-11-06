@@ -2,7 +2,8 @@
   <h2 class="margin-y-0"><%= t("activities.education.review.school_info") %></h2>
   <%= link_to t("activities.hub.edit"),
         edit_activities_flow_education_path(id: @education_activity, from_review: 1, from_edit: params[:from_edit].presence),
-        class: "usa-link" %>
+        class: "usa-link",
+        aria: { label: t("activities.education.review.edit_school_information", school_name: @education_activity.school_name) } %>
 </div>
 <%= render(ContactInfoReviewTableComponent.new(field_header: t("shared.table_headers.education_information"), value_header: t("shared.table_headers.your_details"), rows: [
   { label: t("activities.education.review.school_name"), value: @education_activity.school_name },
@@ -17,7 +18,8 @@
   <h2 class="margin-y-0"><%= t("activities.summary.education.term_details") %></h2>
   <%= link_to t("activities.hub.edit"),
         edit_activities_flow_education_add_your_term_path(education_id: @education_activity, from_review: 1, from_edit: params[:from_edit].presence),
-        class: "usa-link" %>
+        class: "usa-link",
+        aria: { label: t("activities.education.review.edit_term_details", school_name: @education_activity.school_name) } %>
 </div>
 
 <%= render "activities/education/self_attested_term_table", activity: @education_activity %>

@@ -2,7 +2,7 @@
   <% if edit_path.present? %>
     <div class="display-flex flex-justify activity-review-edit-header">
       <%= content_tag :"h#{heading_level}", heading_text, class: "document-uploads__heading" %>
-      <%= link_to edit_label, edit_path, class: "usa-link" %>
+      <%= link_to edit_label, edit_path, class: "usa-link", aria: { label: t("activities.document_uploads.edit") } %>
     </div>
   <% else %>
     <%= content_tag :"h#{heading_level}", heading_text, class: "document-uploads__heading" %>

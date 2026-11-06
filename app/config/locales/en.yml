@@ -174,6 +174,7 @@ en:
       title_singular: Community service
       zip_code: Zip code
     document_uploads:
+      edit: Edit uploaded documents
       heading: Uploaded documents (%{document_count})
       heading_previous: Previously uploaded documents (%{document_count})
       new:
@@ -307,6 +308,8 @@ en:
         credit_hours: Credit hours
         description: Review all the information you've added for %{school_name} before adding it to your community engagement report.
         edit: Edit
+        edit_school_information: Edit %{school_name} information
+        edit_term_details: Edit term details for %{school_name}
         enrollment_information: Enrollment information
         enrollment_information_numbered: 'Enrollment #%{number} information'
         save: Add to my report
@@ -410,6 +413,7 @@ en:
         contact_name: Employer contact name
         contact_phone: Employer contact phone number
         description: Review all the information you've added for %{employer_name} before adding it to your Community Engagement Report.
+        edit_employer: Edit %{employer_name} information
         employer_info: Employer information
         employment_focused:
           comment_prompt: If you'd like to provide additional context, add a comment for %{agency_initials}.
@@ -528,6 +532,7 @@ en:
           other: Report at least <strong>80 hours</strong> of activity for at least <strong>%{required_month_count} months</strong> in the reporting period to meet community engagement requirements.
         requirements_title: What do I need to meet community engagement requirements?
       edit: Edit
+      edit_activity: Edit %{activity_type} %{activity_name}
       empty:
         community_service: No community service added
         education: No education added
