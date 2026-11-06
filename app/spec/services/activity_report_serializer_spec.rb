@@ -574,7 +574,7 @@ RSpec.describe ActivityReportSerializer do
         "type" => "employment", "month" => "2026-07", "data_source" => "self_attested",
         "employer_name" => "Gainesville Wrecking", "is_self_employed" => false,
         "employer_address" => {
-          "line1" => "942 W Harlan Ave, Gainesville, FL 32611",
+          "line1" => "942 W Harlan Ave",
           "line2" => nil,
           "city" => "Gainesville",
           "state" => "FL",
