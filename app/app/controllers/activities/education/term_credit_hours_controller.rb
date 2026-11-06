@@ -1,5 +1,6 @@
 class Activities::Education::TermCreditHoursController < Activities::BaseController
   include NavigationTracking
+  include NscEducationTracking
 
   before_action :redirect_if_nsc_disabled
   before_action :set_education_activity

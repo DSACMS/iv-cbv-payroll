@@ -1,5 +1,6 @@
 class Activities::DocumentUploadsController < Activities::BaseController
   include NavigationTracking
+  include NscEducationTracking
 
   TRACKED_ACTIVITIES = {
     education_id: [ "Education", :education_activity_id ],

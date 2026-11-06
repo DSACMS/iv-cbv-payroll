@@ -9,6 +9,7 @@
 #                 return to review when finished.
 class Activities::EducationController < Activities::BaseController
   include NavigationTracking
+  include NscEducationTracking
 
   # Keep the user on the loading page (the #show action) at least this long.
   ARTIFICIAL_DELAY = 7.seconds
@@ -21,6 +22,7 @@ class Activities::EducationController < Activities::BaseController
   before_action :set_back_url, only: %i[new create verify edit update review]
   after_action :track_info_viewed_event, only: %i[new edit]
   after_action :track_review_viewed_event, only: :review
+  after_action :track_nsc_step_viewed_event, only: %i[verify show error]
 
   def verify
     @identity = current_identity!
@@ -42,7 +44,7 @@ class Activities::EducationController < Activities::BaseController
     set_completed_indicators
 
     if @education_activity.sync_failed? || @education_activity.sync_no_enrollments?
-      redirect_to activities_flow_education_error_path(education_type: @education_activity.education_type)
+      redirect_to education_nsc_error_path
     elsif @education_activity.sync_succeeded? && !testing_synchronization_page?
       redirect_to education_sync_success_path
     else
@@ -68,12 +70,13 @@ class Activities::EducationController < Activities::BaseController
         render :edit_fully_self_attested, status: :unprocessable_content
       end
     elsif @education_activity.update(education_params)
+      track_event(TrackEvent::EducationEnrollmentReviewSubmitted, education_activity_id: @education_activity.id)
       if @education_activity.partially_self_attested? && @education_activity.has_less_than_half_time_terms?
         redirect_to edit_activities_flow_education_term_credit_hour_path(
           education_id: @education_activity, id: 0
         )
       else
-        publish_activity(@education_activity, activity_type: :education)
+        publish_nsc_education_activity
         redirect_to after_activity_path
       end
     else
@@ -99,7 +102,7 @@ class Activities::EducationController < Activities::BaseController
     if @education_activity.sync_unknown?
       render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
     elsif @education_activity.sync_failed? || @education_activity.sync_no_enrollments?
-      render turbo_stream: turbo_stream.action(:redirect, activities_flow_education_error_path(education_type: @education_activity.education_type))
+      render turbo_stream: turbo_stream.action(:redirect, education_nsc_error_path)
     elsif @wait_time < ARTIFICIAL_DELAY && !testing_synchronization_page?
       render turbo_stream: turbo_stream.replace(:synchronization, partial: "status")
     else
@@ -124,7 +127,11 @@ class Activities::EducationController < Activities::BaseController
       )
     end
 
-    publish_activity(@education_activity, activity_type: :education)
+    if @education_activity.fully_self_attested?
+      publish_activity(@education_activity, activity_type: :education)
+    else
+      publish_nsc_education_activity
+    end
     # Fires for every data source; see track_review_viewed_event.
     track_event(TrackEvent::EducationReviewSubmitted, education_activity_id: @education_activity.id)
     if @education_activity.fully_self_attested?
@@ -135,6 +142,7 @@ class Activities::EducationController < Activities::BaseController
   end
 
   def error
+    @education_activity = @flow.education_activities.find(params[:education_id]) if params[:education_id].present?
   end
 
   private
@@ -217,6 +225,7 @@ class Activities::EducationController < Activities::BaseController
 
   def create_validated_activity
     @education_activity = @flow.education_activities.create(draft: true, education_type: education_type)
+    track_event(TrackEvent::EducationNscFlowStarted, education_activity_id: @education_activity.id)
     NscSynchronizationJob.perform_later(@education_activity.id)
     redirect_to activities_flow_education_path(id: @education_activity.id)
   end
@@ -227,6 +236,10 @@ class Activities::EducationController < Activities::BaseController
     else
       after_activity_path
     end
+  end
+
+  def education_nsc_error_path
+    activities_flow_education_error_path(education_type: @education_activity.education_type, education_id: @education_activity.id)
   end
 
   def education_type
@@ -258,5 +271,23 @@ class Activities::EducationController < Activities::BaseController
     return unless response.successful?
 
     track_event(TrackEvent::EducationReviewViewed, education_activity_id: @education_activity.id)
+  end
+
+  def track_nsc_step_viewed_event
+    return unless response.successful?
+    return if @education_activity&.fully_self_attested?
+
+    event = case action_name
+            when "verify" then TrackEvent::EducationVerificationViewed
+            when "show" then TrackEvent::EducationSynchronizationViewed
+            when "error" then TrackEvent::EducationNscErrorViewed
+            end
+    track_event(event, education_flow: "nsc", education_type: @education_activity&.education_type || education_type)
+  end
+
+  def publish_nsc_education_activity
+    was_draft = @education_activity.draft?
+    publish_activity(@education_activity, activity_type: :education)
+    track_event(TrackEvent::EducationNscFlowCompleted, education_activity_id: @education_activity.id) if was_draft
   end
 end
