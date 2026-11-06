@@ -573,7 +573,14 @@ RSpec.describe ActivityReportSerializer do
       expect(employment_months["2026-07"].sole).to include(
         "type" => "employment", "month" => "2026-07", "data_source" => "self_attested",
         "employer_name" => "Gainesville Wrecking", "is_self_employed" => false,
-        "employer_address" => "942 W Harlan Ave, Gainesville, FL 32611", "employment_type" => nil,
+        "employer_address" => {
+          "line1" => "942 W Harlan Ave, Gainesville, FL 32611",
+          "line2" => nil,
+          "city" => "Gainesville",
+          "state" => "FL",
+          "postal_code" => "32611"
+        },
+        "employment_type" => nil,
         "hours" => 12.75, "gross_income" => 123.45, "additional_comments" => "Seasonal work",
         "document_ids" => [ "DOC-#{document.id}" ]
       )
