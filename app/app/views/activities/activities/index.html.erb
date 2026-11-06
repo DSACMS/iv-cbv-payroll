@@ -62,10 +62,10 @@
             <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
               <% card.with_header do %>
                 <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link",
-                  aria: { 
-                    label: t("activities.hub.edit_activity", 
-                    activity_type: t("activities.unpaid_work.title"), 
-                    activity_name: card_data[:name]) 
+                  aria: {
+                    label: t("activities.hub.edit_activity",
+                    activity_type: t("activities.unpaid_work.title"),
+                    activity_name: card_data[:name])
                   } %>
               <% end %>
               <% card.with_body do %>
@@ -99,10 +99,10 @@
             <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
               <% card.with_header do %>
                 <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link",
-                  aria: { 
-                    label: t("activities.hub.edit_activity", 
-                    activity_type: t("activities.employment.title"), 
-                    activity_name: card_data[:name]) 
+                  aria: {
+                    label: t("activities.hub.edit_activity",
+                    activity_type: t("activities.employment.title"),
+                    activity_name: card_data[:name])
                   } %>
               <% end %>
               <% card.with_body do %>
@@ -141,10 +141,10 @@
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
               <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link",
-                aria: { 
-                    label: t("activities.hub.edit_activity", 
-                    activity_type: t("activities.education.title"), 
-                    activity_name: card_data[:name]) 
+                aria: {
+                    label: t("activities.hub.edit_activity",
+                    activity_type: t("activities.education.title"),
+                    activity_name: card_data[:name])
                 } %>
             <% end %>
             <% card.with_body do %>
@@ -181,10 +181,10 @@
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
               <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link",
-                aria: { 
-                    label: t("activities.hub.edit_activity", 
-                    activity_type: t("activities.community_service.title"), 
-                    activity_name: card_data[:name]) 
+                aria: {
+                    label: t("activities.hub.edit_activity",
+                    activity_type: t("activities.community_service.title"),
+                    activity_name: card_data[:name])
                 } %>
             <% end %>
             <% card.with_body do %>
@@ -216,10 +216,10 @@
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
               <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link",
-                aria: { 
-                  label: t("activities.hub.edit_activity", 
-                  activity_type: t("activities.work_programs.title"), 
-                  activity_name: card_data[:name]) 
+                aria: {
+                  label: t("activities.hub.edit_activity",
+                  activity_type: t("activities.work_programs.title"),
+                  activity_name: card_data[:name])
                 } %>
             <% end %>
             <% card.with_body do %>
