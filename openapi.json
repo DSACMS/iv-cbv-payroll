@@ -314,7 +314,7 @@
                   "expire_community_engagement": {
                     "summary": "Expire a community engagement invitation",
                     "value": {
-                      "tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/oZWqSddxCU"
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/EURetoXvhn"
                     }
                   }
                 },
@@ -388,7 +388,7 @@
                         "first_name": "Jane",
                         "last_name": "Doe"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/jgo5Y2m4qj"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/cibLv9aND5"
                     }
                   },
                   "community_engagement": {
@@ -404,7 +404,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/KdJAMaPVvB"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/hPwGfemCBA"
                     }
                   },
                   "louisiana_community_engagement": {
@@ -420,7 +420,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/QEWnbPNeLV"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/NuEHYuXoGS"
                     }
                   }
                 },
@@ -543,7 +543,7 @@
         ],
         "operationId": "receiveCeActivityReport",
         "summary": "Receive a CE Activity Report (JSON)",
-        "description": "## Overview\n\nEmmy sends completed reports to your agency's systems so they can be added to\nthe applicant's case. Your agency hosts the receiving endpoint and arranges its\nURL and any additional headers during onboarding.\n\nThe CE Activity Report webhook below delivers JSON, including income and payroll\ndata. Its request body describes what your agency receives; its response describes\nwhat your endpoint should return to Emmy. The example agency hostname is a\nplaceholder. Use your own receiver URL when testing delivery.\n\n## Model\n\nThis document describes the **Community Engagement (CE) Activity Report Transmission API Specification**, a method by which CE activity data can be sent from the Eligibility made easy (Emmy) platform to an agency's systems.\n\nThe agency must build an API endpoint that meets this specification and integrates with agency systems to process the activity report into the case file for the correct client.\n\nThis revision covers `community_service`, `work_program`, `employment`, and `education`. Employment includes self-attested work and payroll data from linked Argyle or Pinwheel accounts. Education includes self-attested credits, verified NSC enrollment, and partially self-attested education.\n\n`agency_partner_metadata` identifies the applicant in the agency's records.\nWhen no individual_id was supplied, the webhook includes the agency's V1 metadata field set. When an individual_id was supplied during V2 invitation creation, it includes the agency's V2 metadata field set, including that exact ID. Unavailable values are sent as null; individual_id is omitted when it was not supplied. Dates of birth are serialized as YYYY-MM-DD, rather than echoed from the invitation request.\n\nFor employment, `employment_type` is populated only for Argyle-sourced records\nas `w2` or `gig`; self-attested and Pinwheel entries retain the field as `null`. To identify\nself-employment across both sources, use\n`employment_type == \"gig\" OR is_self_employed == true`.\n\n## Transmission\n\nEmmy sends a completed CE Activity Report as an HTTP `POST` to an endpoint\nhosted by your agency. This is an outbound webhook, not an endpoint on Emmy's\nDev or Demo servers.\n\n### POST /api/v1/ce-activity-report\n\nThis API endpoint is built by the agency and receives one CE activity report record. The endpoint URL can be whatever the agency desires, however, it must include a version number to allow for easy upgrades in the future.\n\nThe complete `CeActivityReport` model is published in the generated\nOpenAPI reference, along with component models for the report,\nreview period, documents, activity types, and payroll details. Find the webhook\nunder **Receiving data from the Emmy Platform**. The request example\ncomes from the tested serializer and includes community service, work programs,\nlinked payroll, self-employment, unpaid work, and all three education variants.\n\n### Request signatures\n\nSee [Webhook signatures](#tag/webhook-signatures) for signing headers,\nverification guidance, and a signed cURL example for testing your receiver.\n\n## Response\n\nThe agency should respond with `200` and a payload containing:\n\n```json\n{\n  \"status\": \"received\",\n  \"confirmation_code\": \"SANDBOX123\",\n  \"received_at\": \"2026-08-11T14:00:05Z\",\n  \"schema_version_received\": \"1.0.0\"\n}\n```\n\nEmmy currently checks the HTTP status and does not validate this response body.\n\n## Request body\n\nThe request body uses the `CeActivityReport` OpenAPI model. Expand its properties\nand linked models in the reference for field descriptions, required and nullable\nfields, monthly reporting rules, and the employment and education variants.\nThe generated request example shows a complete report with all activity types.\n\n# **Design Principles**\n\n| Design | Description |\n| :-- | :-- |\n| Tolerant Reader | Systems should accept payloads that contain unknown or extra fields without rejecting them. Only a minimal set of fields are truly required. |\n| Additive-only schema evolution | New fields can be added to the spec at any time without breaking existing integrations. Fields are only removed in major version releases. |\n| Soft required fields | Fields that should be present but may not always be available from upstream providers are not marked as required, and denote `null` as an acceptable value. |",
+        "description": "## Overview\n\nEmmy sends completed reports to your agency's systems so they can be added to\nthe applicant's case. Your agency hosts the receiving endpoint and arranges its\nURL and any additional headers during onboarding.\n\nThe CE Activity Report webhook below delivers JSON, including income and payroll\ndata. Its request body describes what your agency receives; its response describes\nwhat your endpoint should return to Emmy. The example agency hostname is a\nplaceholder. Use your own receiver URL when testing delivery.\n\n## Model\n\nThis document describes the **Community Engagement (CE) Activity Report Transmission API Specification**, a method by which CE activity data can be sent from the Eligibility made easy (Emmy) platform to an agency's systems.\n\nThe agency must build an API endpoint that meets this specification and integrates with agency systems to process the activity report into the case file for the correct client.\n\nThis revision covers `community_service`, `work_program`, `employment`, and `education`. Employment includes self-attested work and payroll data from linked Argyle or Pinwheel accounts. Education includes self-attested credits, verified NSC enrollment, and partially self-attested education.\n\n`agency_partner_metadata` identifies the applicant in the agency's records.\nWhen no individual_id was supplied, the webhook includes the agency's V1 metadata field set. When an individual_id was supplied during V2 invitation creation, it includes the agency's V2 metadata field set, including that exact ID. Unavailable values are sent as null; individual_id is omitted when it was not supplied. Dates of birth are serialized as YYYY-MM-DD, rather than echoed from the invitation request.\n\nFor employment, `employment_type` is populated only for Argyle-sourced records\nas `w2` or `gig`; self-attested and Pinwheel entries retain the field as `null`. To identify\nself-employment across both sources, use\n`employment_type == \"gig\" OR is_self_employed == true`.\n\n## Transmission\n\nEmmy sends a completed CE Activity Report as an HTTP `POST` to an endpoint\nhosted by your agency. This is an outbound webhook, not an endpoint on Emmy's\nDev or Demo servers.\n\n### POST /api/v1/ce-activity-report\n\nThis API endpoint is built by the agency and receives one CE activity report record. The endpoint URL can be whatever the agency desires, however, it must include a version number to allow for easy upgrades in the future.\n\nThe complete `CeActivityReport` model is published in the generated\nOpenAPI reference, along with component models for the report,\nreview period, documents, activity types, and payroll details. Find the webhook\nunder **Receiving data from the Emmy Platform**. The request example\ncomes from the tested serializer and includes community service, work programs,\nlinked payroll, self-employment, unpaid work, and all three education variants.\n\n### Request signatures\n\nSee [Webhook signatures](#tag/webhook-signatures) for signing headers,\nverification guidance, and a signed cURL example for testing your receiver.\n\n## Response\n\nThe agency should respond with `200` and a payload containing:\n\n```json\n{\n  \"status\": \"received\",\n  \"confirmation_code\": \"SANDBOX123\",\n  \"received_at\": \"2026-08-11T14:00:05Z\",\n  \"schema_version_received\": \"1.0.0\"\n}\n```\n\nEmmy currently checks the HTTP status and does not validate this response body.\n\n## Request body\n\nThe request body uses the `CeActivityReport` OpenAPI model. Expand its properties\nand linked models in the reference for field descriptions, required and nullable\nfields, monthly reporting rules, and the employment and education variants.\nThe generated request example shows a complete report with all activity types.\n\n# **Design Principles**\n\n| Design | Description                                                                                                                                                                                        |\n| :-- |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n| Legacy System Tolerant Design | Fields should only be added to the spec at any time without breaking existing integrations. Fields are only removed in major version releases. Fields must be introduced in minor version releases |\n| Soft required fields | Fields that should be present but may not always be available from upstream providers are not marked as required, and denote `null` as an acceptable value.                                        |",
         "servers": [
           {
             "url": "https://agency.example.org",
@@ -977,7 +977,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true,
+                  "additionalProperties": false,
                   "properties": {
                     "status": {
                       "type": "string"
@@ -1128,7 +1128,6 @@
     "schemas": {
       "AgencyPartnerMetadata": {
         "type": "object",
-        "additionalProperties": true,
         "description": "Metadata links a submitted report to the agency's records. Select the schema\nfor the API version, invitation type, and agency associated with your API key.\nSome agency schemas overlap, so matching a schema alone does not identify the\nagency.\n\nFor V1 income invitations, the response contains all accepted metadata fields\nfor the agency, with `null` for omitted values. Unrecognized fields are\nignored.\n\nFor V2 invitations, the response echoes the accepted metadata fields supplied\nin the request. Unrecognized fields are ignored, and omitted optional fields\nare not added to the response. Select the agency's community engagement or\nemployment schema to see the accepted and required fields, including\n`individual_id`.\n\nBoth JSON report webhooks include the agency's V1 metadata field set when no individual_id was supplied. When an individual_id was supplied during V2 invitation creation, they include the agency's V2 metadata field set, including that exact ID. Unavailable values are sent as null; individual_id is omitted when it was not supplied.\n\nSupply dates of birth as `MM/DD/YYYY`. Invitation responses echo date strings\nas supplied. **Louisiana Emmy CE requests require `date_of_birth`** in\n`agency_partner_metadata`, along with `individual_id`, `first_name`, and\n`last_name`. This applies to `POST /api/v2/community-engagement/invitations`;\nV2 employment invitations do not accept `date_of_birth`.",
         "anyOf": [
           {
@@ -1150,7 +1149,6 @@
       },
       "AgencyPartnerMetadataV2": {
         "type": "object",
-        "additionalProperties": true,
         "description": "Metadata links a submitted report to the agency's records. Select the schema\nfor the API version, invitation type, and agency associated with your API key.\nSome agency schemas overlap, so matching a schema alone does not identify the\nagency.\n\nFor V1 income invitations, the response contains all accepted metadata fields\nfor the agency, with `null` for omitted values. Unrecognized fields are\nignored.\n\nFor V2 invitations, the response echoes the accepted metadata fields supplied\nin the request. Unrecognized fields are ignored, and omitted optional fields\nare not added to the response. Select the agency's community engagement or\nemployment schema to see the accepted and required fields, including\n`individual_id`.\n\nBoth JSON report webhooks include the agency's V1 metadata field set when no individual_id was supplied. When an individual_id was supplied during V2 invitation creation, they include the agency's V2 metadata field set, including that exact ID. Unavailable values are sent as null; individual_id is omitted when it was not supplied.\n\nSupply dates of birth as `MM/DD/YYYY`. Invitation responses echo date strings\nas supplied. **Louisiana Emmy CE requests require `date_of_birth`** in\n`agency_partner_metadata`, along with `individual_id`, `first_name`, and\n`last_name`. This applies to `POST /api/v2/community-engagement/invitations`;\nV2 employment invitations do not accept `date_of_birth`.",
         "anyOf": [
           {
@@ -1187,7 +1185,7 @@
       },
       "InvitationRequest": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "description": "Invitation settings and metadata for the agency identified by the API key.",
         "required": [
           "language",
@@ -1207,7 +1205,7 @@
       },
       "InvitationRequestV2": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "description": "Invitation settings and metadata for the agency identified by the API key. invitation_type is selected via the URL path, not this body.",
         "required": [
           "language",
@@ -1236,6 +1234,7 @@
       },
       "InvitationResponse": {
         "type": "object",
+        "additionalProperties": false,
         "description": "Direct the applicant to `tokenized_url` to report income. Its `expiration_date`\nis the end of the day in `America/New_York` after the agency's configured\nvalidity period (14 days for the sandbox). Request a new invitation when a\nlink expires.\n\n`agency_partner_metadata` uses the same agency-specific fields as the request.\nThe response includes all accepted V1 fields, with `null` for omitted values,\nand echoes supplied values, including date strings. Unrecognized fields are\nignored.",
         "required": [
           "tokenized_url",
@@ -1243,7 +1242,6 @@
           "language",
           "agency_partner_metadata"
         ],
-        "additionalProperties": true,
         "properties": {
           "tokenized_url": {
             "type": "string",
@@ -1269,6 +1267,7 @@
       },
       "InvitationResponseV2": {
         "type": "object",
+        "additionalProperties": false,
         "description": "Direct the applicant to `tokenized_url` to complete income verification, and\nto `activity_tokenized_url` to complete the corresponding activity flow.\nTreat both tokens as opaque.\n\n`agency_partner_metadata` echoes the accepted fields supplied in the request,\nusing the same agency and invitation-type schema, including `individual_id`.\nUnrecognized fields are ignored; omitted optional fields are not added to the\nresponse. Date strings are echoed as supplied.",
         "required": [
           "tokenized_url",
@@ -1276,7 +1275,6 @@
           "language",
           "agency_partner_metadata"
         ],
-        "additionalProperties": true,
         "properties": {
           "tokenized_url": {
             "type": "string",
@@ -1311,10 +1309,10 @@
       },
       "ExpireInvitationResponse": {
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "tokenized_url"
         ],
-        "additionalProperties": true,
         "properties": {
           "tokenized_url": {
             "type": "string",
@@ -1325,10 +1323,10 @@
       },
       "InvitationErrors": {
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "errors"
         ],
-        "additionalProperties": true,
         "properties": {
           "errors": {
             "type": "array",
@@ -1339,7 +1337,7 @@
                 "field",
                 "message"
               ],
-              "additionalProperties": true,
+              "additionalProperties": false,
               "properties": {
                 "field": {
                   "type": "string",
@@ -1356,10 +1354,10 @@
       },
       "InvitationErrorsV2": {
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "errors"
         ],
-        "additionalProperties": true,
         "description": "Validation errors for a V2 invitation request. The field attribute identifies the invalid value.",
         "properties": {
           "errors": {
@@ -1371,7 +1369,7 @@
                 "field",
                 "message"
               ],
-              "additionalProperties": true,
+              "additionalProperties": false,
               "properties": {
                 "field": {
                   "type": "string",
@@ -1390,7 +1388,6 @@
         "title": "AgencyMetadataSandbox",
         "type": "object",
         "description": "Accepted metadata for Sandbox. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "first_name": {
             "type": "string",
@@ -1431,7 +1428,6 @@
         "title": "AgencyMetadataV2SandboxCommunityEngagement",
         "type": "object",
         "description": "Accepted V2 metadata for Sandbox's community engagement invitations. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "individual_id": {
             "type": "string",
@@ -1466,7 +1462,6 @@
         "title": "AgencyMetadataV2SandboxEmployment",
         "type": "object",
         "description": "Accepted V2 metadata for Sandbox's employment invitations. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "individual_id": {
             "type": "string",
@@ -1495,7 +1490,6 @@
         "title": "AgencyMetadataNewHampshire",
         "type": "object",
         "description": "Accepted metadata for New Hampshire. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "first_name": {
             "type": "string",
@@ -1540,7 +1534,6 @@
         "title": "AgencyMetadataV2NewHampshireCommunityEngagement",
         "type": "object",
         "description": "Accepted V2 metadata for New Hampshire's community engagement invitations. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "individual_id": {
             "type": "string",
@@ -1575,7 +1568,6 @@
         "title": "AgencyMetadataV2NewHampshireEmployment",
         "type": "object",
         "description": "Accepted V2 metadata for New Hampshire's employment invitations. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "individual_id": {
             "type": "string",
@@ -1604,7 +1596,6 @@
         "title": "AgencyMetadataLouisiana",
         "type": "object",
         "description": "Accepted metadata for Louisiana. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "case_number": {
             "type": [
@@ -1636,7 +1627,6 @@
         "title": "AgencyMetadataV2LouisianaCommunityEngagement",
         "type": "object",
         "description": "Accepted V2 metadata for Louisiana's community engagement invitations. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "individual_id": {
             "type": "string",
@@ -1671,7 +1661,6 @@
         "title": "AgencyMetadataV2LouisianaEmployment",
         "type": "object",
         "description": "Accepted V2 metadata for Louisiana's employment invitations. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "individual_id": {
             "type": "string",
@@ -1700,7 +1689,6 @@
         "title": "AgencyMetadataResearch",
         "type": "object",
         "description": "Accepted metadata for Research. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "case_number": {
             "type": [
@@ -1724,7 +1712,6 @@
         "title": "AgencyMetadataV2ResearchCommunityEngagement",
         "type": "object",
         "description": "Accepted V2 metadata for Research's community engagement invitations. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "individual_id": {
             "type": "string",
@@ -1759,7 +1746,6 @@
         "title": "AgencyMetadataV2ResearchEmployment",
         "type": "object",
         "description": "Accepted V2 metadata for Research's employment invitations. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "individual_id": {
             "type": "string",
@@ -1788,7 +1774,6 @@
         "title": "AgencyMetadataAccenture",
         "type": "object",
         "description": "Accepted metadata for Accenture. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "case_number": {
             "type": [
@@ -1804,7 +1789,6 @@
         "title": "AgencyMetadataV2AccentureCommunityEngagement",
         "type": "object",
         "description": "Accepted V2 metadata for Accenture's community engagement invitations. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "individual_id": {
             "type": "string",
@@ -1839,7 +1823,6 @@
         "title": "AgencyMetadataV2AccentureEmployment",
         "type": "object",
         "description": "Accepted V2 metadata for Accenture's employment invitations. The API ignores fields outside this schema.",
-        "additionalProperties": true,
         "properties": {
           "individual_id": {
             "type": "string",
@@ -1866,7 +1849,7 @@
       },
       "CommunityEngagementInvitationRequest": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "required": [
           "language",
           "verification_range",
@@ -1897,7 +1880,6 @@
           },
           "agency_partner_metadata": {
             "type": "object",
-            "additionalProperties": true,
             "anyOf": [
               {
                 "$ref": "#/components/schemas/AgencyMetadataV2SandboxCommunityEngagement"
@@ -1920,6 +1902,7 @@
       },
       "CommunityEngagementInvitationResponse": {
         "type": "object",
+        "additionalProperties": false,
         "description": "Direct the applicant to activity_tokenized_url to start community engagement reporting.",
         "required": [
           "tokenized_url",
@@ -1929,7 +1912,6 @@
           "agency_partner_metadata",
           "activity_tokenized_url"
         ],
-        "additionalProperties": true,
         "properties": {
           "tokenized_url": {
             "type": "string",
@@ -1950,7 +1932,6 @@
           },
           "agency_partner_metadata": {
             "type": "object",
-            "additionalProperties": true,
             "anyOf": [
               {
                 "$ref": "#/components/schemas/AgencyMetadataV2SandboxCommunityEngagement"
@@ -1982,7 +1963,7 @@
       },
       "CeActivityReport": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "schema_version": {
             "type": "string",
@@ -2391,7 +2372,7 @@
       },
       "CeReport": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "report_variant": {
             "type": "string",
@@ -2427,7 +2408,7 @@
       },
       "CeReviewPeriod": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "start_month": {
             "type": "string",
@@ -2448,7 +2429,7 @@
       },
       "CeDocument": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "document_id": {
             "type": "string",
@@ -2472,12 +2453,11 @@
       },
       "CeActivities": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "community_service": {
             "type": "object",
             "description": "Map of YYYY-MM calendar months to activity arrays. Months with no reported activity are omitted; no activities is an empty object.",
-            "additionalProperties": true,
             "patternProperties": {
               "^\\d{4}-\\d{2}$": {
                 "type": "array",
@@ -2490,7 +2470,6 @@
           "work_program": {
             "type": "object",
             "description": "Map of YYYY-MM calendar months to activity arrays. Months with no reported activity are omitted; no activities is an empty object.",
-            "additionalProperties": true,
             "patternProperties": {
               "^\\d{4}-\\d{2}$": {
                 "type": "array",
@@ -2503,7 +2482,6 @@
           "employment": {
             "type": "object",
             "description": "Map of YYYY-MM calendar months to activity arrays. Months with no reported activity are omitted; no activities is an empty object.",
-            "additionalProperties": true,
             "patternProperties": {
               "^\\d{4}-\\d{2}$": {
                 "type": "array",
@@ -2516,7 +2494,6 @@
           "education": {
             "type": "object",
             "description": "Map of YYYY-MM calendar months to activity arrays. Months with no reported activity are omitted; no activities is an empty object.",
-            "additionalProperties": true,
             "patternProperties": {
               "^\\d{4}-\\d{2}$": {
                 "type": "array",
@@ -2537,7 +2514,6 @@
       },
       "CeActivity": {
         "type": "object",
-        "additionalProperties": true,
         "properties": {
           "type": {
             "type": "string",
@@ -2578,219 +2554,245 @@
           "data_source",
           "document_ids"
         ],
+        "additionalProperties": false,
         "description": "Fields shared by all activity entries in the enclosing reporting month."
       },
       "CeCommunityServiceActivity": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/CeActivity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {
-              "street_address": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Street address of the organization, employer, or school."
-              },
-              "street_address_line_2": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Additional street address information, such as an apartment or suite."
-              },
-              "city": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "City of the organization, employer, or school."
-              },
-              "state": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "State of the organization, employer, or school."
-              },
-              "zip_code": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "ZIP code of the organization, employer, or school."
-              },
-              "hours": {
-                "type": "number",
-                "minimum": 0,
-                "description": "Decimal hours (10,2) reported for this activity in the enclosing month; may be zero. Education variants use academic credit hours instead."
-              },
-              "additional_comments": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Optional free-text comments the applicant added at the review step."
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "community_service"
-                ]
-              },
-              "data_source": {
-                "type": "string",
-                "enum": [
-                  "self_attested"
-                ]
-              },
-              "organization_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Full, official name of the community service organization."
-              },
-              "coordinator_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Coordinator or supervisor the applicant worked most closely with."
-              },
-              "coordinator_email": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Email address of the coordinator or supervisor."
-              },
-              "coordinator_phone_number": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Phone number of the coordinator or supervisor."
-              }
-            },
-            "required": [
-              "hours"
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "community_service"
             ]
+          },
+          "month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key."
+          },
+          "data_source": {
+            "type": "string",
+            "enum": [
+              "self_attested"
+            ]
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities."
+          },
+          "street_address": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Street address of the organization, employer, or school."
+          },
+          "street_address_line_2": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Additional street address information, such as an apartment or suite."
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "City of the organization, employer, or school."
+          },
+          "state": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "State of the organization, employer, or school."
+          },
+          "zip_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ZIP code of the organization, employer, or school."
+          },
+          "hours": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Decimal hours (10,2) reported for this activity in the enclosing month; may be zero. Education variants use academic credit hours instead."
+          },
+          "additional_comments": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional free-text comments the applicant added at the review step."
+          },
+          "organization_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Full, official name of the community service organization."
+          },
+          "coordinator_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Coordinator or supervisor the applicant worked most closely with."
+          },
+          "coordinator_email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Email address of the coordinator or supervisor."
+          },
+          "coordinator_phone_number": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Phone number of the coordinator or supervisor."
           }
+        },
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "month",
+          "data_source",
+          "document_ids",
+          "hours"
         ]
       },
       "CeWorkProgramActivity": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/CeActivity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {
-              "street_address": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Street address of the organization, employer, or school."
-              },
-              "street_address_line_2": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Additional street address information, such as an apartment or suite."
-              },
-              "city": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "City of the organization, employer, or school."
-              },
-              "state": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "State of the organization, employer, or school."
-              },
-              "zip_code": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "ZIP code of the organization, employer, or school."
-              },
-              "hours": {
-                "type": "number",
-                "minimum": 0,
-                "description": "Decimal hours (10,2) reported for this activity in the enclosing month; may be zero. Education variants use academic credit hours instead."
-              },
-              "additional_comments": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Optional free-text comments the applicant added at the review step."
-              },
-              "contact_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Name of the contact at the work program, employer, or school."
-              },
-              "contact_email": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Email address of the contact at the work program, employer, or school."
-              },
-              "contact_phone_number": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Phone number of the contact at the work program, employer, or school."
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "work_program"
-                ]
-              },
-              "data_source": {
-                "type": "string",
-                "enum": [
-                  "self_attested"
-                ]
-              },
-              "organization_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Organization or provider running the work or training program."
-              },
-              "program_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Full name of the work program."
-              }
-            },
-            "required": [
-              "hours"
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "work_program"
             ]
+          },
+          "month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key."
+          },
+          "data_source": {
+            "type": "string",
+            "enum": [
+              "self_attested"
+            ]
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities."
+          },
+          "street_address": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Street address of the organization, employer, or school."
+          },
+          "street_address_line_2": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Additional street address information, such as an apartment or suite."
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "City of the organization, employer, or school."
+          },
+          "state": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "State of the organization, employer, or school."
+          },
+          "zip_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ZIP code of the organization, employer, or school."
+          },
+          "hours": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Decimal hours (10,2) reported for this activity in the enclosing month; may be zero. Education variants use academic credit hours instead."
+          },
+          "additional_comments": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional free-text comments the applicant added at the review step."
+          },
+          "contact_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Name of the contact at the work program, employer, or school."
+          },
+          "contact_email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Email address of the contact at the work program, employer, or school."
+          },
+          "contact_phone_number": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Phone number of the contact at the work program, employer, or school."
+          },
+          "contact_title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Title of the contact person."
+          },
+          "organization_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Organization or provider running the work or training program."
+          },
+          "program_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Full name of the work program."
           }
+        },
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "month",
+          "data_source",
+          "document_ids",
+          "hours"
         ]
       },
       "CeEmploymentActivity": {
@@ -2812,296 +2814,321 @@
         }
       },
       "CeSelfAttestedEmploymentActivity": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/CeActivity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {
-              "street_address": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Street address of the organization, employer, or school."
-              },
-              "street_address_line_2": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Additional street address information, such as an apartment or suite."
-              },
-              "city": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "City of the organization, employer, or school."
-              },
-              "state": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "State of the organization, employer, or school."
-              },
-              "zip_code": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "ZIP code of the organization, employer, or school."
-              },
-              "hours": {
-                "type": "number",
-                "minimum": 0,
-                "description": "Decimal hours (10,2) reported for this activity in the enclosing month; may be zero. Education variants use academic credit hours instead."
-              },
-              "additional_comments": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Optional free-text comments the applicant added at the review step."
-              },
-              "contact_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Name of the contact at the work program, employer, or school."
-              },
-              "contact_email": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Email address of the contact at the work program, employer, or school."
-              },
-              "contact_phone_number": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Phone number of the contact at the work program, employer, or school."
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "employment"
-                ]
-              },
-              "data_source": {
-                "type": "string",
-                "enum": [
-                  "self_attested"
-                ]
-              },
-              "employer_name": {
-                "type": "string",
-                "description": "Name of the employer or business."
-              },
-              "employer_address": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Combined address, also supplied as individual address fields."
-              },
-              "employment_type": {
-                "type": "null",
-                "description": "Always null for self-attested employment. Populated only for Argyle-sourced employment."
-              },
-              "is_self_employed": {
-                "type": "boolean",
-                "description": "Whether the applicant marked the work as self-employment. Employer contact fields are null when true."
-              },
-              "gross_income": {
-                "type": "number",
-                "minimum": 0,
-                "description": "Self-attested monthly gross income in dollars, including cents as a decimal."
-              }
-            },
-            "required": [
-              "employer_name",
-              "employment_type",
-              "is_self_employed",
-              "hours",
-              "gross_income"
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "employment"
             ]
+          },
+          "month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key."
+          },
+          "data_source": {
+            "type": "string",
+            "enum": [
+              "self_attested"
+            ]
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities."
+          },
+          "street_address": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Street address of the organization, employer, or school."
+          },
+          "street_address_line_2": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Additional street address information, such as an apartment or suite."
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "City of the organization, employer, or school."
+          },
+          "state": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "State of the organization, employer, or school."
+          },
+          "zip_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ZIP code of the organization, employer, or school."
+          },
+          "hours": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Decimal hours (10,2) reported for this activity in the enclosing month; may be zero. Education variants use academic credit hours instead."
+          },
+          "additional_comments": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional free-text comments the applicant added at the review step."
+          },
+          "contact_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Name of the contact at the work program, employer, or school."
+          },
+          "contact_email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Email address of the contact at the work program, employer, or school."
+          },
+          "contact_phone_number": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Phone number of the contact at the work program, employer, or school."
+          },
+          "contact_title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Title of the contact person."
+          },
+          "employer_name": {
+            "type": "string",
+            "description": "Name of the employer or business."
+          },
+          "employer_address": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Combined address, also supplied as individual address fields."
+          },
+          "employment_type": {
+            "type": "null",
+            "description": "Always null for self-attested employment. Populated only for Argyle-sourced employment."
+          },
+          "is_self_employed": {
+            "type": "boolean",
+            "description": "Whether the applicant marked the work as self-employment. Employer contact fields are null when true."
+          },
+          "gross_income": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Self-attested monthly gross income in dollars, including cents as a decimal."
           }
+        },
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "month",
+          "data_source",
+          "document_ids",
+          "employer_name",
+          "employment_type",
+          "is_self_employed",
+          "hours",
+          "gross_income"
         ],
         "description": "Published self-attested work appears once per reported month, including months with zero hours or income. Draft activities are excluded. Includes address components, applicant comments, monthly hours, and supporting document IDs. Employer contact details are null for self-employment."
       },
       "CeValidatedEmploymentActivity": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/CeActivity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "employment"
-                ]
-              },
-              "data_source": {
-                "type": "string",
-                "enum": [
-                  "validated"
-                ],
-                "description": "Used for both Argyle and Pinwheel."
-              },
-              "applicant_full_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Applicant's full name from the payroll provider."
-              },
-              "applicant_ssn": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "pattern": "^XXX-XX-\\d{4}$",
-                "description": "Masked SSN, when available."
-              },
-              "applicant_extra_comments": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Applicant's comments about this employment."
-              },
-              "employer_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Employer name from the payroll provider."
-              },
-              "employer_phone": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Employer phone number from the payroll provider."
-              },
-              "employer_address": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Employer address from the payroll provider."
-              },
-              "employment_status": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "enum": [
-                  "employed",
-                  "inactive",
-                  "terminated",
-                  null
-                ],
-                "description": "Employment status reported by the payroll provider."
-              },
-              "employment_type": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "enum": [
-                  "w2",
-                  "gig",
-                  null
-                ],
-                "description": "Argyle employment classification: w2 for W-2 work or gig for gig work; null for Pinwheel or when unavailable."
-              },
-              "employment_start_date": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date",
-                "description": "Employment start date reported by the payroll provider."
-              },
-              "employment_end_date": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "format": "date",
-                "description": "Employment end date reported by the payroll provider."
-              },
-              "pay_frequency": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "enum": [
-                  "daily",
-                  "weekly",
-                  "biweekly",
-                  "semimonthly",
-                  "monthly",
-                  "quarterly",
-                  "variable",
-                  null
-                ],
-                "description": "How often the applicant is paid."
-              },
-              "compensation_amount": {
-                "type": [
-                  "integer",
-                  "null"
-                ],
-                "description": "Compensation rate in cents, per compensation_unit; null when unavailable."
-              },
-              "compensation_unit": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "enum": [
-                  "hourly",
-                  "daily",
-                  "weekly",
-                  "biweekly",
-                  "semimonthly",
-                  "monthly",
-                  "annual",
-                  "salary",
-                  "per_mile",
-                  "semiweekly",
-                  "variable",
-                  null
-                ],
-                "description": "Unit or period associated with compensation_amount."
-              },
-              "paystubs": {
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                  "$ref": "#/components/schemas/CePaystub"
-                },
-                "description": "Only payments dated within the enclosing month and review period. Grouped by pay_date, even when the work period falls in another month. Undated paychecks and paychecks outside the review period are omitted."
-              }
-            },
-            "required": [
-              "applicant_full_name",
-              "employer_name",
-              "paystubs"
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "employment"
             ]
+          },
+          "month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key."
+          },
+          "data_source": {
+            "type": "string",
+            "enum": [
+              "validated"
+            ],
+            "description": "Used for both Argyle and Pinwheel."
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities."
+          },
+          "applicant_full_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Applicant's full name from the payroll provider."
+          },
+          "applicant_ssn": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^XXX-XX-\\d{4}$",
+            "description": "Masked SSN, when available."
+          },
+          "applicant_extra_comments": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Applicant's comments about this employment."
+          },
+          "employer_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Employer name from the payroll provider."
+          },
+          "employer_phone": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Employer phone number from the payroll provider."
+          },
+          "employer_address": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Employer address from the payroll provider."
+          },
+          "employment_status": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "employed",
+              "inactive",
+              "terminated",
+              null
+            ],
+            "description": "Employment status reported by the payroll provider."
+          },
+          "employment_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "w2",
+              "gig",
+              null
+            ],
+            "description": "Argyle employment classification: w2 for W-2 work or gig for gig work; null for Pinwheel or when unavailable."
+          },
+          "employment_start_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "description": "Employment start date reported by the payroll provider."
+          },
+          "employment_end_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "description": "Employment end date reported by the payroll provider."
+          },
+          "pay_frequency": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "daily",
+              "weekly",
+              "biweekly",
+              "semimonthly",
+              "monthly",
+              "quarterly",
+              "variable",
+              null
+            ],
+            "description": "How often the applicant is paid."
+          },
+          "compensation_amount": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Compensation rate in cents, per compensation_unit; null when unavailable."
+          },
+          "compensation_unit": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "hourly",
+              "daily",
+              "weekly",
+              "biweekly",
+              "semimonthly",
+              "monthly",
+              "annual",
+              "salary",
+              "per_mile",
+              "semiweekly",
+              "variable",
+              null
+            ],
+            "description": "Unit or period associated with compensation_amount."
+          },
+          "paystubs": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/CePaystub"
+            },
+            "description": "Only payments dated within the enclosing month and review period. Grouped by pay_date, even when the work period falls in another month. Undated paychecks and paychecks outside the review period are omitted."
           }
+        },
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "month",
+          "data_source",
+          "document_ids",
+          "applicant_full_name",
+          "employer_name",
+          "paystubs"
         ],
         "description": "Only published, successfully synchronized Argyle or Pinwheel accounts are included. Each employer appears once per month with a paycheck in the review period; employers without dated paychecks in that period have no entry. Payroll money values are in cents, and nullable provider fields remain null. Hours are reported on each paystub as hours_paid; there is no calculated employment-level hours field. A failed payroll fetch fails transmission so the job can retry rather than sending a partial report."
       },
@@ -3128,395 +3155,436 @@
         }
       },
       "CeSelfAttestedEducationActivity": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/CeActivity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {
-              "street_address": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Street address of the organization, employer, or school."
-              },
-              "street_address_line_2": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Additional street address information, such as an apartment or suite."
-              },
-              "city": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "City of the organization, employer, or school."
-              },
-              "state": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "State of the organization, employer, or school."
-              },
-              "zip_code": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "ZIP code of the organization, employer, or school."
-              },
-              "hours": {
-                "type": "number",
-                "minimum": 0,
-                "description": "Academic credit hours for the term; zero when optional credits are not supplied."
-              },
-              "additional_comments": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Optional free-text comments the applicant added at the review step."
-              },
-              "contact_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Name of the contact at the work program, employer, or school."
-              },
-              "contact_email": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Email address of the contact at the work program, employer, or school."
-              },
-              "contact_phone_number": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Phone number of the contact at the work program, employer, or school."
-              },
-              "education_type": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "enum": [
-                  "college_or_university",
-                  "high_school_ged",
-                  "trade_or_technical",
-                  "other",
-                  null
-                ],
-                "description": "Original education type selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
-                "example": "college_or_university"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "education"
-                ]
-              },
-              "school_name": {
-                "type": "string",
-                "description": "Name of the school reported by the applicant."
-              },
-              "enrollment_status": {
-                "type": "string",
-                "enum": [
-                  "full_time",
-                  "half_time",
-                  "less_than_half_time",
-                  "unknown"
-                ],
-                "description": "Self-attested enrollment status."
-              },
-              "credit_hours": {
-                "type": [
-                  "number",
-                  "null"
-                ],
-                "minimum": 0,
-                "description": "Academic credits for the term, reported by the applicant where needed. Fractions are preserved; unknown credits stay null. NSC does not provide academic credits, so this is null for verified enrollment."
-              },
-              "term": {
-                "$ref": "#/components/schemas/CeEducationTerm",
-                "description": "Original enrollment term, with required start_month and end_month in YYYY-MM format."
-              },
-              "data_source": {
-                "type": "string",
-                "enum": [
-                  "self_attested"
-                ]
-              }
-            },
-            "required": [
-              "school_name",
-              "hours",
-              "enrollment_status",
-              "term",
-              "education_type"
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "education"
             ]
+          },
+          "month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key."
+          },
+          "data_source": {
+            "type": "string",
+            "enum": [
+              "self_attested"
+            ]
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities."
+          },
+          "street_address": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Street address of the organization, employer, or school."
+          },
+          "street_address_line_2": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Additional street address information, such as an apartment or suite."
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "City of the organization, employer, or school."
+          },
+          "state": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "State of the organization, employer, or school."
+          },
+          "zip_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ZIP code of the organization, employer, or school."
+          },
+          "hours": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Academic credit hours for the term; zero when optional credits are not supplied."
+          },
+          "additional_comments": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional free-text comments the applicant added at the review step."
+          },
+          "contact_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Name of the contact at the work program, employer, or school."
+          },
+          "contact_email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Email address of the contact at the work program, employer, or school."
+          },
+          "contact_phone_number": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Phone number of the contact at the work program, employer, or school."
+          },
+          "contact_title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Title of the contact person."
+          },
+          "education_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "college_or_university",
+              "high_school_ged",
+              "trade_or_technical",
+              "other",
+              null
+            ],
+            "description": "Original education type selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
+            "example": "college_or_university"
+          },
+          "school_name": {
+            "type": "string",
+            "description": "Name of the school reported by the applicant."
+          },
+          "enrollment_status": {
+            "type": "string",
+            "enum": [
+              "full_time",
+              "half_time",
+              "less_than_half_time",
+              "unknown"
+            ],
+            "description": "Self-attested enrollment status."
+          },
+          "credit_hours": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "Academic credits for the term, reported by the applicant where needed. Fractions are preserved; unknown credits stay null. NSC does not provide academic credits, so this is null for verified enrollment."
+          },
+          "term": {
+            "$ref": "#/components/schemas/CeEducationTerm",
+            "description": "Original enrollment term, with required start_month and end_month in YYYY-MM format."
           }
+        },
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "month",
+          "data_source",
+          "document_ids",
+          "school_name",
+          "hours",
+          "enrollment_status",
+          "term",
+          "education_type"
         ],
         "description": "School details, term dates, enrollment status, and optional academic credits reported by the applicant, including address and contact fields. Manual terms appear in each reporting month covered by their dates."
       },
       "CeVerifiedEducationActivity": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/CeActivity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {
-              "education_type": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "enum": [
-                  "college_or_university",
-                  "high_school_ged",
-                  "trade_or_technical",
-                  "other",
-                  null
-                ],
-                "description": "Original education type selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
-                "example": "college_or_university"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "education"
-                ]
-              },
-              "school_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "School name from the NSC enrollment term; null when unavailable."
-              },
-              "enrollment_status": {
-                "type": "string",
-                "enum": [
-                  "full_time",
-                  "three_quarter_time",
-                  "half_time",
-                  "less_than_half_time",
-                  "enrolled",
-                  "leave_of_absence",
-                  "withdrawn",
-                  "graduated",
-                  "deceased",
-                  "unknown"
-                ],
-                "description": "NSC enrollment status for this term, including unknown when the status is unavailable."
-              },
-              "credit_hours": {
-                "type": [
-                  "number",
-                  "null"
-                ],
-                "minimum": 0,
-                "description": "Academic credits for the term, reported by the applicant where needed. Fractions are preserved; unknown credits stay null. NSC does not provide academic credits, so this is null for verified enrollment."
-              },
-              "term": {
-                "$ref": "#/components/schemas/CeEducationTerm",
-                "description": "Original enrollment term, with required start_month and end_month in YYYY-MM format."
-              },
-              "additional_comments": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Optional free-text comments the applicant added at the review step."
-              },
-              "data_source": {
-                "type": "string",
-                "enum": [
-                  "verified"
-                ],
-                "description": "NSC-verified enrollment."
-              }
-            },
-            "required": [
-              "school_name",
-              "enrollment_status",
-              "term",
-              "education_type"
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "education"
             ]
+          },
+          "month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key."
+          },
+          "data_source": {
+            "type": "string",
+            "enum": [
+              "verified"
+            ],
+            "description": "NSC-verified enrollment."
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities."
+          },
+          "education_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "college_or_university",
+              "high_school_ged",
+              "trade_or_technical",
+              "other",
+              null
+            ],
+            "description": "Original education type selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
+            "example": "college_or_university"
+          },
+          "school_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "School name from the NSC enrollment term; null when unavailable."
+          },
+          "enrollment_status": {
+            "type": "string",
+            "enum": [
+              "full_time",
+              "three_quarter_time",
+              "half_time",
+              "less_than_half_time",
+              "enrolled",
+              "leave_of_absence",
+              "withdrawn",
+              "graduated",
+              "deceased",
+              "unknown"
+            ],
+            "description": "NSC enrollment status for this term, including unknown when the status is unavailable."
+          },
+          "credit_hours": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "Academic credits for the term, reported by the applicant where needed. Fractions are preserved; unknown credits stay null. NSC does not provide academic credits, so this is null for verified enrollment."
+          },
+          "term": {
+            "$ref": "#/components/schemas/CeEducationTerm",
+            "description": "Original enrollment term, with required start_month and end_month in YYYY-MM format."
+          },
+          "additional_comments": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional free-text comments the applicant added at the review step."
           }
+        },
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "month",
+          "data_source",
+          "document_ids",
+          "school_name",
+          "enrollment_status",
+          "term",
+          "education_type"
         ],
         "description": "NSC-verified enrollment and original term details. NSC does not provide academic credit hours, so credit_hours is null."
       },
       "CeVerifiedEnrollmentOnlyEducationActivity": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/CeActivity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {
-              "street_address": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Street address of the organization, employer, or school."
-              },
-              "street_address_line_2": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Additional street address information, such as an apartment or suite."
-              },
-              "city": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "City of the organization, employer, or school."
-              },
-              "state": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "State of the organization, employer, or school."
-              },
-              "zip_code": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "ZIP code of the organization, employer, or school."
-              },
-              "hours": {
-                "type": [
-                  "number",
-                  "null"
-                ],
-                "minimum": 0,
-                "description": "Self-attested academic credit hours for the term, matching credit_hours. Fractions and zero are preserved; null when not reported."
-              },
-              "additional_comments": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Optional free-text comments the applicant added at the review step."
-              },
-              "contact_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Name of the contact at the work program, employer, or school."
-              },
-              "contact_email": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Email address of the contact at the work program, employer, or school."
-              },
-              "contact_phone_number": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "Phone number of the contact at the work program, employer, or school."
-              },
-              "education_type": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "enum": [
-                  "college_or_university",
-                  "high_school_ged",
-                  "trade_or_technical",
-                  "other",
-                  null
-                ],
-                "description": "Original education type selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
-                "example": "college_or_university"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "education"
-                ]
-              },
-              "school_name": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "School name from the NSC enrollment term; null when unavailable."
-              },
-              "enrollment_status": {
-                "type": "string",
-                "enum": [
-                  "full_time",
-                  "three_quarter_time",
-                  "half_time",
-                  "less_than_half_time",
-                  "enrolled",
-                  "leave_of_absence",
-                  "withdrawn",
-                  "graduated",
-                  "deceased",
-                  "unknown"
-                ],
-                "description": "NSC enrollment status for this term, including unknown when the status is unavailable."
-              },
-              "credit_hours": {
-                "type": [
-                  "number",
-                  "null"
-                ],
-                "minimum": 0,
-                "description": "Academic credits for the term, reported by the applicant where needed. Fractions are preserved; unknown credits stay null. NSC does not provide academic credits, so this is null for verified enrollment."
-              },
-              "term": {
-                "$ref": "#/components/schemas/CeEducationTerm",
-                "description": "Original enrollment term, with required start_month and end_month in YYYY-MM format."
-              },
-              "data_source": {
-                "type": "string",
-                "enum": [
-                  "verified_enrollment_only"
-                ],
-                "description": "NSC-verified enrollment, but whether the user was enrolled full-time, half-time, or less-than-half-time was not provided. The term credit_hours field is populated with self-attested values."
-              }
-            },
-            "required": [
-              "school_name",
-              "hours",
-              "enrollment_status",
-              "term",
-              "education_type"
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "education"
             ]
+          },
+          "month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key."
+          },
+          "data_source": {
+            "type": "string",
+            "enum": [
+              "verified_enrollment_only"
+            ],
+            "description": "NSC-verified enrollment, but whether the user was enrolled full-time, half-time, or less-than-half-time was not provided. The term credit_hours field is populated with self-attested values."
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities."
+          },
+          "street_address": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Street address of the organization, employer, or school."
+          },
+          "street_address_line_2": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Additional street address information, such as an apartment or suite."
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "City of the organization, employer, or school."
+          },
+          "state": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "State of the organization, employer, or school."
+          },
+          "zip_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ZIP code of the organization, employer, or school."
+          },
+          "hours": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "Self-attested academic credit hours for the term, matching credit_hours. Fractions and zero are preserved; null when not reported."
+          },
+          "additional_comments": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional free-text comments the applicant added at the review step."
+          },
+          "contact_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Name of the contact at the work program, employer, or school."
+          },
+          "contact_email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Email address of the contact at the work program, employer, or school."
+          },
+          "contact_phone_number": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Phone number of the contact at the work program, employer, or school."
+          },
+          "contact_title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Title of the contact person."
+          },
+          "education_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "college_or_university",
+              "high_school_ged",
+              "trade_or_technical",
+              "other",
+              null
+            ],
+            "description": "Original education type selected by the applicant, retained when NSC verification falls back to self-attestation. Null for older records without a saved selection.",
+            "example": "college_or_university"
+          },
+          "school_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "School name from the NSC enrollment term; null when unavailable."
+          },
+          "enrollment_status": {
+            "type": "string",
+            "enum": [
+              "full_time",
+              "three_quarter_time",
+              "half_time",
+              "less_than_half_time",
+              "enrolled",
+              "leave_of_absence",
+              "withdrawn",
+              "graduated",
+              "deceased",
+              "unknown"
+            ],
+            "description": "NSC enrollment status for this term, including unknown when the status is unavailable."
+          },
+          "credit_hours": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "Academic credits for the term, reported by the applicant where needed. Fractions are preserved; unknown credits stay null. NSC does not provide academic credits, so this is null for verified enrollment."
+          },
+          "term": {
+            "$ref": "#/components/schemas/CeEducationTerm",
+            "description": "Original enrollment term, with required start_month and end_month in YYYY-MM format."
           }
+        },
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "month",
+          "data_source",
+          "document_ids",
+          "school_name",
+          "hours",
+          "enrollment_status",
+          "term",
+          "education_type"
         ],
         "description": "Partially self-attested education combines NSC enrollment and term details with applicant-reported academic credits, retaining self-attested address and contact fields. Every term entry uses verified_enrollment_only, including terms with half-time or greater enrollment."
       },
       "CeEducationTerm": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "start_month": {
             "type": "string",
@@ -3537,7 +3605,7 @@
       },
       "CePaystub": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "pay_date": {
             "type": "string",
@@ -3607,7 +3675,7 @@
       },
       "CePaystubDeduction": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "category": {
             "type": [
@@ -3641,7 +3709,7 @@
       },
       "CeGrossPayComponent": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "type": {
             "type": "string",
