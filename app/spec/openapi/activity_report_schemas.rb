@@ -170,7 +170,7 @@ module ActivityReportSchemas
   end
 
   def self.object(required, properties)
-    { type: :object, additionalProperties: true, properties: properties }.tap do |schema|
+    { type: :object, properties: properties }.tap do |schema|
       schema[:required] = required if required.any?
     end
   end
@@ -187,7 +187,6 @@ module ActivityReportSchemas
     {
       type: :object,
       description: "Map of YYYY-MM calendar months to activity arrays. Months with no reported activity are omitted; no activities is an empty object.",
-      additionalProperties: true,
       patternProperties: { '^\d{4}-\d{2}$' => { type: :array, items: ref(name) } }
     }
   end
