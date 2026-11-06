@@ -31,6 +31,7 @@ RSpec.describe ClientAgencyConfig do
       - id: foo
         agency_name: Foo Agency Name
         renewal_required_months: 2
+        application_required_months: 2
         pinwheel:
           environment: foo
         argyle:
@@ -112,6 +113,11 @@ RSpec.describe ClientAgencyConfig do
       it "returns renewal_required_months when configured" do
         config = described_class.new(sample_config_path)
         expect(config["foo"].renewal_required_months).to eq(2)
+      end
+
+      it "returns application_required_months when configured" do
+        config = described_class.new(sample_config_path)
+        expect(config["foo"].application_required_months).to eq(2)
       end
 
       it "defaults allowed_iframe_ancestors to an empty array" do
@@ -617,6 +623,44 @@ RSpec.describe ClientAgencyConfig do
           expect do
             described_class.new(sample_config_path)
           end.to raise_error(ArgumentError, "Client Agency foo invalid value for renewal_required_months")
+        end
+      end
+
+      context "invalid application required months" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            application_required_months: 0
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo invalid value for application_required_months")
+        end
+      end
+
+      context "application required months above the max" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            application_required_months: 13
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo invalid value for application_required_months")
         end
       end
 
