@@ -29,6 +29,7 @@ module InvitationSchemas
       },
       InvitationRequest: {
         type: :object,
+        additionalProperties: false,
         description: "Invitation settings and metadata for the agency identified by the API key.",
         required: %w[language agency_partner_metadata],
         properties: {
@@ -41,6 +42,7 @@ module InvitationSchemas
       },
       InvitationRequestV2: {
         type: :object,
+        additionalProperties: false,
         description: "Invitation settings and metadata for the agency identified by the API key. invitation_type is selected via the URL path, not this body.",
         required: %w[language verification_range agency_partner_metadata],
         properties: {
@@ -57,6 +59,7 @@ module InvitationSchemas
       },
       InvitationResponse: {
         type: :object,
+        additionalProperties: false,
         description: InvitationDocumentation.read("invitations", section: "Response"),
         required: %w[tokenized_url expiration_date language agency_partner_metadata],
         properties: {
@@ -68,6 +71,7 @@ module InvitationSchemas
       },
       InvitationResponseV2: {
         type: :object,
+        additionalProperties: false,
         description: InvitationDocumentation.read("invitations-v2", section: "Response"),
         required: %w[tokenized_url expiration_date language agency_partner_metadata],
         properties: {
@@ -81,6 +85,7 @@ module InvitationSchemas
       },
       ExpireInvitationResponse: {
         type: :object,
+        additionalProperties: false,
         required: %w[tokenized_url],
         properties: {
           tokenized_url: { type: :string, format: :uri, description: "The expired invitation's reporting link, returned for reference. Do not resend this link to the applicant." }
@@ -88,12 +93,14 @@ module InvitationSchemas
       },
       InvitationErrors: {
         type: :object,
+        additionalProperties: false,
         required: %w[errors],
         properties: {
           errors: {
             type: :array, minItems: 1,
             items: {
               type: :object, required: %w[field message],
+              additionalProperties: false,
               properties: {
                 field: { type: :string, description: "Invalid field, including language or cbv_applicant.first_name. Applicant errors may use cbv_applicant or agency_partner_metadata prefixes." },
                 message: { type: :string, description: "Human-readable validation message. Do not depend on the exact wording." }
@@ -104,6 +111,7 @@ module InvitationSchemas
       },
       InvitationErrorsV2: {
         type: :object,
+        additionalProperties: false,
         required: %w[errors],
         description: "Validation errors for a V2 invitation request. The field attribute identifies the invalid value.",
         properties: {
@@ -111,6 +119,7 @@ module InvitationSchemas
             type: :array, minItems: 1,
             items: {
               type: :object, required: %w[field message],
+              additionalProperties: false,
               properties: {
                 field: {
                   type: :string,

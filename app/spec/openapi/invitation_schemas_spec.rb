@@ -231,7 +231,7 @@ RSpec.describe InvitationSchemas do
     end
   end
 
-  it "does not check for additional properties by default" do
+  it "enforces additionalProperties: false on requests, responses, and errors" do
     request = { "language" => "en", "agency_partner_metadata" => sandbox, "future_request" => true }
     response = {
       "tokenized_url" => "https://example.org/start/token",
@@ -242,11 +242,8 @@ RSpec.describe InvitationSchemas do
     }
     errors = { "errors" => [ { "field" => "language", "message" => "Invalid", "future_detail" => true } ], "future_error" => true }
 
-    # By default, OpenAPI schemas without additionalProperties: false allow extra fields.
-    # The requirement is just to remove 'additionalProperties: true'.
-    expect(document.schema("InvitationRequest").valid?(request)).to be(true)
-    expect(document.schema("InvitationResponse").valid?(response)).to be(true)
-    expect(document.schema("AgencyMetadataLouisiana").valid?(louisiana.merge("future_metadata" => true))).to be(true)
-    expect(document.schema("InvitationErrors").valid?(errors)).to be(true)
+    expect(document.schema("InvitationRequest").valid?(request)).to be(false)
+    expect(document.schema("InvitationResponse").valid?(response)).to be(false)
+    expect(document.schema("InvitationErrors").valid?(errors)).to be(false)
   end
 end

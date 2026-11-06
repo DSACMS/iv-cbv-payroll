@@ -12,7 +12,8 @@ module ActivityReportSchemas
     contact = {
       contact_name: nullable_string.merge(description: "Name of the contact at the work program, employer, or school."),
       contact_email: nullable_string.merge(description: "Email address of the contact at the work program, employer, or school."),
-      contact_phone_number: nullable_string.merge(description: "Phone number of the contact at the work program, employer, or school.")
+      contact_phone_number: nullable_string.merge(description: "Phone number of the contact at the work program, employer, or school."),
+      contact_title: nullable_string.merge(description: "Title of the contact person.")
     }
     comments = nullable_string.merge(description: "Optional free-text comments the applicant added at the review step.")
     self_attested = address.merge(
@@ -35,13 +36,13 @@ module ActivityReportSchemas
         confirmation_code: { type: :string, description: "Unique code assigned when the report was completed, shared with the applicant and used to debug report processing errors." },
         completed_at: { type: :string, format: :"date-time", description: "UTC time the applicant completed the report, in ISO 8601 format." },
         agency_partner_metadata: ref("AgencyPartnerMetadata").merge(description: "Agency-specific fields used to associate the report with the correct case, as agreed in the integration plan and shared with the Income Report API. Examples include case_number (string), date_of_birth (date string), and doc_id (string); which fields are required depends on the agency."),
-        ce_report: ref("CeReport").merge(description: "Community engagement report containing the review period, supporting document metadata, and activities.")
-      }).merge(description: InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Model")),
+      ce_report: { "$ref" => "#/components/schemas/CeReport", description: "Community engagement report containing the review period, supporting document metadata, and activities." }
+    }, additionalProperties: false).merge(description: InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Model")),
       CeReport: object(%w[report_variant review_period documents activities], {
         report_variant: { type: :string, enum: %w[employment community_engagement], description: "Reporting flow used to complete this report." },
-        review_period: ref("CeReviewPeriod").merge(description: "Full date range covered by this CE compliance determination, expressed as inclusive calendar months."),
-        documents: { type: :array, items: ref("CeDocument"), description: "All supporting documents uploaded for the activities in this report. The files are transmitted separately by the document transmission integration; this array describes what to expect." },
-        activities: ref("CeActivities").merge(description: "Activities grouped first by type, then by reporting month in YYYY-MM format.")
+        review_period: { "$ref" => "#/components/schemas/CeReviewPeriod", description: "Full date range covered by this CE compliance determination, expressed as inclusive calendar months." },
+        documents: { type: :array, items: { "$ref" => "#/components/schemas/CeDocument" }, description: "All supporting documents uploaded for the activities in this report. The files are transmitted separately by the document transmission integration; this array describes what to expect." },
+        activities: { "$ref" => "#/components/schemas/CeActivities", description: "Activities grouped first by type, then by reporting month in YYYY-MM format." }
       }).merge(description: "The report's review period, supporting documents, and reported activities."),
       CeReviewPeriod: object(%w[start_month end_month], {
         start_month: month.merge(description: "First calendar month of the review period, inclusive, in YYYY-MM format."),
@@ -58,12 +59,12 @@ module ActivityReportSchemas
         employment: months("CeEmploymentActivity"),
         education: months("CeEducationActivity")
       }).merge(description: "Keys are activity types, each containing a map of YYYY-MM months to activity arrays. Months with no reported activity are omitted; an activity type with no activities is an empty object. Activities spanning several months appear under each applicable month."),
-      CeActivity: object(%w[type month data_source document_ids], {
-        type: { type: :string, enum: %w[community_service work_program employment education], description: "Activity type, matching the enclosing activity-type key." },
-        month: month.merge(description: "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key."),
-        data_source: { type: :string, enum: %w[self_attested validated verified verified_enrollment_only], description: "Origin of the activity data: self_attested for manually reported activities, validated for linked Argyle or Pinwheel payroll, verified for NSC enrollment, or verified_enrollment_only for NSC enrollment with self-attested credits." },
-        document_ids: { type: :array, items: { type: :string }, description: "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities." }
-      }).merge(description: "Fields shared by all activity entries in the enclosing reporting month."),
+      CeActivity: {
+        type: :object,
+        properties: CeActivityProperties,
+        required: %w[type month data_source document_ids],
+        additionalProperties: false
+      }.merge(description: "Fields shared by all activity entries in the enclosing reporting month."),
       CeCommunityServiceActivity: activity(%w[hours], self_attested.merge(
         type: { type: :string, enum: %w[community_service] },
         data_source: { type: :string, enum: %w[self_attested] },
@@ -169,8 +170,8 @@ module ActivityReportSchemas
     }
   end
 
-  def self.object(required, properties)
-    { type: :object, properties: properties }.tap do |schema|
+  def self.object(required, properties, **options)
+    { type: :object, additionalProperties: false, properties: properties }.merge(options).tap do |schema|
       schema[:required] = required if required.any?
     end
   end
@@ -180,8 +181,21 @@ module ActivityReportSchemas
   end
 
   def self.activity(required, properties)
-    { allOf: [ ref("CeActivity"), object(required, properties) ] }
+    {
+      type: :object,
+      properties: CeActivityProperties.merge(properties),
+      additionalProperties: false
+    }.tap do |schema|
+      schema[:required] = (%w[type month data_source document_ids] + required).uniq
+    end
   end
+
+  CeActivityProperties = {
+    type: { type: :string, enum: %w[community_service work_program employment education], description: "Activity type, matching the enclosing activity-type key." },
+    month: { type: :string, pattern: '^\d{4}-\d{2}$', description: "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key." },
+    data_source: { type: :string, enum: %w[self_attested validated verified verified_enrollment_only], description: "Origin of the activity data: self_attested for manually reported activities, validated for linked Argyle or Pinwheel payroll, verified for NSC enrollment, or verified_enrollment_only for NSC enrollment with self-attested credits." },
+    document_ids: { type: :array, items: { type: :string }, description: "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities." }
+  }.freeze
 
   def self.months(name)
     {
