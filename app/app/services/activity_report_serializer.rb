@@ -197,13 +197,7 @@ class ActivityReportSerializer
       "data_source" => "self_attested",
       "document_ids" => document_ids_for(activity),
       "additional_comments" => json_value(activity.additional_comments),
-      "employer_address" => {
-        "line1" => json_value(activity.street_address),
-        "line2" => json_value(activity.street_address_line_2),
-        "city" => json_value(activity.city),
-        "state" => json_value(activity.state),
-        "postal_code" => json_value(activity.zip_code)
-      },
+      "employer_address" => activity.formatted_address.presence,
       "employment_type" => nil,
       "gross_income" => activity_month.gross_income.to_f
     )

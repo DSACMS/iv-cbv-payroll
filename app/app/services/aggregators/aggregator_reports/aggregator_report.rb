@@ -81,6 +81,19 @@ module Aggregators::AggregatorReports
       }
     end
 
+    def incom_report_employer_address(address)
+      return address unless address.is_a?(Hash)
+
+      address = address.with_indifferent_access
+      street = [ address[:line1], address[:line2] ].compact.join(", ")
+      city_state_postal = [
+        address[:city],
+        [ address[:state], address[:postal_code] ].compact_blank.join(" ")
+      ].compact_blank.join(", ")
+
+      [ street, city_state_postal ].compact_blank.join(", ").presence
+    end
+
     def income_report_employments
       summarize_by_employer.map do |account_id, summary|
         cbv_flow = flow
@@ -93,7 +106,7 @@ module Aggregators::AggregatorReports
           applicant_extra_comments: payroll_account&.additional_information,
           employer_name: summary[:employment]&.employer_name,
           employer_phone: summary[:employment]&.employer_phone_number,
-          employer_address: summary[:employment]&.employer_address,
+          employer_address: income_report_employer_address(summary[:employment]&.employer_address),
           employment_status: summary[:employment]&.status,
           employment_type: summary[:employment]&.employment_type,
           employment_start_date: summary[:employment]&.start_date,

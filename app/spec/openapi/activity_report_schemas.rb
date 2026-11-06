@@ -103,7 +103,7 @@ module ActivityReportSchemas
             postal_code: nullable_string
           },
           additionalProperties: false,
-          description: "Employer address split into individual fields."
+          description: "Employer address, split into its component fields."
         },
         employment_type: { type: :null, description: "Always null for self-attested employment. Populated only for Argyle-sourced employment." },
         is_self_employed: { type: :boolean, description: "Whether the applicant marked the work as self-employment. Employer contact fields are null when true." },
@@ -117,7 +117,18 @@ module ActivityReportSchemas
         applicant_extra_comments: nullable_string.merge(description: "Applicant's comments about this employment."),
         employer_name: nullable_string.merge(description: "Employer name from the payroll provider."),
         employer_phone: nullable_string.merge(description: "Employer phone number from the payroll provider."),
-        employer_address: nullable_string.merge(description: "Employer address from the payroll provider."),
+        employer_address: {
+          type: %i[object null],
+          properties: {
+            line1: nullable_string,
+            line2: nullable_string,
+            city: nullable_string,
+            state: nullable_string,
+            postal_code: nullable_string
+          },
+          additionalProperties: false,
+          description: "Employer address from the payroll provider."
+        },
         employment_status: nullable_enum(%w[employed inactive terminated]).merge(description: "Employment status reported by the payroll provider."),
         employment_type: nullable_enum(%w[w2 gig]).merge(description: "Argyle employment classification: w2 for W-2 work or gig for gig work; null for Pinwheel or when unavailable."),
         employment_start_date: nullable_string.merge(format: :date, description: "Employment start date reported by the payroll provider."),
