@@ -15,22 +15,16 @@
         range: @current_term.term_date_display) %>
 </p>
 
-<h1 class="margin-top-0 padding-top-2 padding-bottom-3">
+<h1 class="margin-top-0 padding-top-2">
   <%= t("activities.education.term_credit_hours.heading",
         school_name: @current_term.school_name.titlecase) %>
 </h1>
 
-<p class="margin-bottom-3">
-  <%= t("activities.education.term_credit_hours.body_html",
-        term_begin: format_date(@current_term.term_begin),
-        term_end: format_date(@current_term.term_end)) %>
+<p class="font-body-sm margin-bottom-3">
+  <%= t("activities.education.term_credit_hours.body") %>
 </p>
 
-<p class="margin-bottom-3">
-  <%= t("activities.education.term_credit_hours.body_conversion") %>
-</p>
-
-<% if @error %>
+<% if @no_hours_error %>
   <%= render Uswds::Alert.new(
     type: :error,
     heading: t("activities.education.term_credit_hours.error_heading"),
@@ -41,6 +35,7 @@
   <% end %>
 <% end %>
 
+<% collect_enrollment_status = @current_term.enrollment_enrolled? %>
 <%= uswds_form_with(model: @current_term,
       id: "education_term_credit_hours_form",
       url: activities_flow_education_term_credit_hour_path(
@@ -49,14 +44,22 @@
         from_review: params[:from_review].presence,
         from_edit: params[:from_edit].presence
       ),
-      method: :patch) do |f| %>
+      method: :patch,
+      data: (collect_enrollment_status ? {
+        controller: "education-term",
+        education_term_credit_hours_statuses_value: EducationActivity::SELF_ATTESTED_CREDIT_HOURS_STATUSES.to_json
+      } : {})) do |f| %>
 
   <div data-controller="hours-input">
     <% if @show_no_hours_checkbox %>
       <div class="usa-checkbox">
-        <%= check_box_tag :no_hours, "1", false,
+        <%= check_box_tag :no_hours, "1", @current_term.no_hours,
               class: "usa-checkbox__input usa-checkbox__input--tile",
-              data: { hours_input_target: "checkbox", action: "hours-input#toggle" } %>
+              data: {
+                hours_input_target: "checkbox",
+                education_term_target: "noHoursCheckbox",
+                action: collect_enrollment_status ? "hours-input#toggle education-term#noHoursChanged" : "hours-input#toggle"
+              } %>
         <%= label_tag :no_hours,
               t("activities.education.term_credit_hours.no_hours_checkbox",
                 school_name: @current_term.school_name.titlecase),
@@ -64,11 +67,26 @@
       </div>
     <% end %>
 
-    <%= f.text_field :credit_hours, type: :number, step: "any",
-          value: decimal_input_value(@current_term.credit_hours),
-          label: t("activities.education.term_credit_hours.hours_label"),
-          label_class: "text-bold",
-          data: { hours_input_target: "hoursField", action: "input->hours-input#input" } %>
+    <% if collect_enrollment_status %>
+      <%= f.select :supplemental_enrollment_status,
+            EducationActivity::SELF_ATTESTED_ENROLLMENT_STATUSES.map { |status| [ t("activities.education.add_your_term.edit.enrollment_status_options.#{status}"), status ] },
+            { label: t("activities.education.add_your_term.edit.enrollment_status"), class: "text-bold", include_blank: t("activities.education.add_your_term.edit.select_one") },
+            {
+              class: ("usa-input--error text-error" if f.has_error?(:supplemental_enrollment_status)),
+              aria: { invalid: f.has_error?(:supplemental_enrollment_status) },
+              data: { education_term_target: "enrollmentStatus", action: "education-term#enrollmentStatusChanged" }
+            } %>
+    <% end %>
+
+    <div data-education-term-target="creditHours" <%= "hidden" unless @current_term.supplemental_credit_hours_applicable? %>>
+      <%= f.text_field :credit_hours, type: :number, min: 0, step: "any",
+            value: decimal_input_value(@current_term.credit_hours),
+            label: t("activities.education.add_your_term.edit.credit_hours"),
+            hint: t("activities.education.add_your_term.edit.credit_hours_hint"),
+            label_class: "text-bold",
+            disabled: !@current_term.supplemental_credit_hours_applicable?,
+            data: { education_term_target: "creditHoursField", hours_input_target: "hoursField", action: "input->hours-input#input" } %>
+    </div>
 
     <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t("activities.education.term_credit_hours.continue") %>
     <%= f.submit submit_label %>

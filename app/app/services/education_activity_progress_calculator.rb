@@ -72,9 +72,17 @@ class EducationActivityProgressCalculator
   end
 
   def partially_self_attested_monthly_hours(terms)
+    if terms.any?(&:supplemental_sufficient_enrollment?)
+      return MonthHours.new(
+        progress: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD,
+        routing: 0,
+        sufficient_enrollment: true
+      )
+    end
+
     monthly_credit_hours = terms
       .select(&:less_than_half_time?)
-      .sum { |term| @education_activity.review_term_credit_hours(term) }
+      .sum { |term| term.credit_hours || 0 }
 
     MonthHours.new(
       progress: @education_activity.community_engagement_hours(monthly_credit_hours),

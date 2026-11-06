@@ -70,7 +70,7 @@ class Activities::EducationController < Activities::BaseController
     elsif @education_activity.update(education_params)
       if @education_activity.partially_self_attested? && @education_activity.has_less_than_half_time_terms?
         redirect_to edit_activities_flow_education_term_credit_hour_path(
-          education_id: @education_activity, id: 0
+          education_id: @education_activity, id: 0, from_edit: params[:from_edit].presence
         )
       else
         publish_activity(@education_activity, activity_type: :education)

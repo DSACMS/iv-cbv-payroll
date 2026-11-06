@@ -36,6 +36,21 @@ RSpec.describe LauncherController, type: :controller do
       end
     end
 
+    context "with the mixed partial enrollment scenario" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("partial_enrollment_riley") }
+      let(:rendered) { Capybara.string(response.body) }
+
+      before { get :advanced }
+
+      it "lists the test user and describes the supplemental details flow" do
+        scenarios = rendered.find("#fake-test-scenarios-content", visible: :all)
+
+        expect(scenarios).to have_field("test_scenario_partial_enrollment_riley", type: "radio", with: profile.scenario_key, visible: :all)
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.mixed_partial_enrollment.title"))
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.mixed_partial_enrollment.description"))
+      end
+    end
+
     context "with the duplicate enrollment scenario" do
       let(:profile) { Launcher::FakeNscScenarios.by_key("duplicate_enrollments_dedupe") }
       let(:rendered) { Capybara.string(response.body) }
