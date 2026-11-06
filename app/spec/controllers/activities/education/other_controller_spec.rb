@@ -13,6 +13,45 @@ RSpec.describe Activities::Education::OtherController, type: :controller do
   end
 
   describe "#show" do
+    context "with page view analytics" do
+      let(:activity_flow) { create(:activity_flow, activity_flow_invitation: create(:activity_flow_invitation)) }
+
+      before do
+        allow(EventTrackingJob).to receive(:perform_later)
+      end
+
+      context "when the page renders successfully" do
+        before { get :show }
+
+        it "tracks the page view once with tokenized flow context" do
+          expect(EventTrackingJob).to have_received(:perform_later).with(
+            TrackEvent::EducationOtherViewed, anything,
+            hash_including(cbv_flow_id: activity_flow.id,
+              cbv_applicant_id: activity_flow.cbv_applicant_id, invitation_id: activity_flow.invitation_id,
+              client_agency_id: activity_flow.cbv_applicant.client_agency_id)).once
+        end
+
+        it "does not classify an education path before an activity is selected" do
+          expect(EventTrackingJob).to have_received(:perform_later).with(
+            TrackEvent::EducationOtherViewed, anything,
+            hash_excluding(:education_flow, :education_data_source, :education_type, :education_activity_id, :nsc_status))
+        end
+      end
+
+      context "when the flow is already completed" do
+        before do
+          activity_flow.update!(completed_at: Time.current)
+          get :show
+        end
+
+        it "redirects without tracking a page view" do
+          expect(response).to have_http_status(:redirect)
+          expect(EventTrackingJob).not_to have_received(:perform_later).with(
+            TrackEvent::EducationOtherViewed, anything, anything)
+        end
+      end
+    end
+
     context "with link analytics" do
       let(:rendered) { Capybara.string(response.body) }
 

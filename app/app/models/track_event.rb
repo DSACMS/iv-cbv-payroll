@@ -100,6 +100,7 @@ module TrackEvent
   EducationNscErrorViewed = "EducationNscErrorViewed"
   EducationNscLookupCompleted = "EducationNscLookupCompleted"
   EducationOtherLinkClicked = "EducationOtherLinkClicked"
+  EducationOtherViewed = "EducationOtherViewed"
   EducationReviewSubmitted = "EducationReviewSubmitted"
   EducationReviewViewed = "EducationReviewViewed"
   EducationSynchronizationViewed = "EducationSynchronizationViewed"
