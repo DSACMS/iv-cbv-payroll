@@ -199,7 +199,7 @@ class ActivityReportSerializer
       "additional_comments" => json_value(activity.additional_comments),
       "employer_address" => activity.formatted_address.presence,
       "employment_type" => nil,
-      "gross_income" => activity.unpaid_or_in_kind? ? nil : activity_month.gross_income&.to_f
+      "gross_income" => activity_month.gross_income.to_f
     )
   end
 
