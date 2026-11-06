@@ -59,10 +59,12 @@ RSpec.describe Cbv::SubmitsController do
         render_views
 
         context "with incomplete cbv_flow" do
+          let(:invitation) { create(:cbv_flow_invitation) }
           let(:cbv_flow) do
             create(:cbv_flow,
                    :invited,
                    :with_pinwheel_account,
+                   cbv_flow_invitation: invitation,
                    with_errored_jobs: errored_jobs,
                    created_at: current_time,
                    supported_jobs: supported_jobs,
@@ -75,6 +77,7 @@ RSpec.describe Cbv::SubmitsController do
             expect(controller.send(:has_consent)).to be_falsey
             expect(Capybara.string(response.body)).to have_selector("h2", text: I18n.t("cbv.submits.show.legal_header"))
             expect(response).to be_successful
+            expect(Capybara.string(response.body)).to have_no_selector("[data-error-summary-defer-focus-value='true']")
           end
 
           context "after submitting without consent" do
@@ -89,6 +92,23 @@ RSpec.describe Cbv::SubmitsController do
               expect(rendered).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("cbv.submits.update.consent_to_authorize_warning"))
               expect(rendered).to have_selector("#cbv_flow_consent_to_authorized_use[aria-invalid='true'][aria-describedby='cbv_flow_consent_to_authorized_use_error']")
               expect(rendered).to have_no_selector(".usa-alert--error")
+            end
+
+            it "opts the tokenized Income consent form into deferred focus" do
+              expect(Capybara.string(response.body)).to have_selector("form[data-controller='error-summary'][data-error-summary-defer-focus-value='true'] #cbv_flow_consent_to_authorized_use[aria-invalid='true']")
+            end
+          end
+
+          context "after submitting without consent or an invitation" do
+            let(:invitation) { nil }
+
+            before do
+              patch :update
+              get :show
+            end
+
+            it "keeps the existing focus timing" do
+              expect(Capybara.string(response.body)).to have_no_selector("[data-error-summary-defer-focus-value='true']")
             end
           end
         end
