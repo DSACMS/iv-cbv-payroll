@@ -110,9 +110,27 @@ RSpec.describe Aggregators::ResponseObjects::Employment do
       expect(employment.start_date).to eq("2019-01-01")
       expect(employment.termination_date).to eq("2020-01-01")
       expect(employment.status).to eq("employed")
-      expect(employment.employer_address).to eq("123 Main St, Anytown, New York 11111")
+      expect(employment.employer_address).to eq(
+        "line1" => "123 Main St",
+        "line2" => nil,
+        "city" => "Anytown",
+        "state" => "New York",
+        "postal_code" => "11111"
+      )
       expect(employment.account_source).to eq("Testing Payroll Provider Inc.")
       expect(employment.employer_id).to eq("item-1")
+    end
+
+    it "preserves a populated employer address line2" do
+      paystub_response = a_paystub_response.deep_dup
+      paystub_response.fetch("employer_address")["line2"] = "Unit 1"
+
+      employment = described_class.from_argyle(argyle_response, paystub_response)
+
+      expect(employment.employer_address).to include(
+        "line1" => "123 Main St",
+        "line2" => "Unit 1"
+      )
     end
   end
 end

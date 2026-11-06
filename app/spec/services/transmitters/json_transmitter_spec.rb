@@ -70,11 +70,29 @@ RSpec.describe Transmitters::JsonTransmitter do
 
       expect(errors).to eq([])
     end
+
+    it "sends employer_address as a string in the income report" do
+      allow(schema_report).to receive(:income_report).and_return(
+        has_other_jobs: false,
+        employments: [
+          { employer_address: "942 W Harlan Ave, Gainesville, FL 32611" }
+        ]
+      )
+
+      payload = JSON.parse(
+        described_class.new(cbv_flow, mock_client_agency, schema_report).payload
+      )
+
+      expect(payload.dig("income_report", "employments", 0, "employer_address")).to eq("942 W Harlan Ave, Gainesville, FL 32611")
+    end
   end
 
   context 'agency responds with 200' do
     it 'posts to the endpoint with the expected data' do
-      expect(aggregator_report).to receive(:income_report).and_return({ cool: "report" })
+      expect(aggregator_report).to receive(:income_report).and_return({
+        has_other_jobs: false,
+        employments: [],
+        cool: "report" })
       VCR.use_cassette("json_transmitter_200") do
         described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver
       end

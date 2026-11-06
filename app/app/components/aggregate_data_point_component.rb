@@ -155,9 +155,22 @@ class AggregateDataPointComponent < ViewComponent::Base
   end
 
   def employer_address(address)
+    formatted_address =
+      if address.is_a?(Hash)
+        address = address.with_indifferent_access
+        street = [ address[:line1], address[:line2] ].compact_blank.join(", ")
+        city_state_postal = [
+          address[:city],
+          [ address[:state], address[:postal_code] ].compact_blank.join(" ")
+        ].compact_blank.join(", ")
+
+        [ street, city_state_postal ].compact_blank.join(", ").presence
+      else
+        address
+      end
     {
       label: I18n.t("cbv.submits.show.pdf.client.address"),
-      value: format_string(address)
+      value: format_string(formatted_address)
     }
   end
 
