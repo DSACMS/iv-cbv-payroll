@@ -17,7 +17,9 @@
     <%= t(".accordion.not_listed.body") %>
   <% end %>
   <% accordion.with_accordion_item do %>
-    <%= link_to t(".accordion.not_listed.link"), new_activities_flow_education_path(education_type: "other"), class: "usa-link" %>
+    <%= link_to t(".accordion.not_listed.link"), new_activities_flow_education_path(education_type: "other"),
+      class: "usa-link",
+      data: { controller: "education-other", action: "click->education-other#trackLink", "education-other-link-param": "not_listed" } %>
   <% end %>
 <% end %>
 
@@ -27,7 +29,9 @@
     <%= t(".accordion.job_training.body") %>
   <% end %>
   <% accordion.with_accordion_item do %>
-    <%= link_to t(".accordion.job_training.link"), new_activities_flow_job_training_path, class: "usa-link" %>
+    <%= link_to t(".accordion.job_training.link"), new_activities_flow_job_training_path,
+      class: "usa-link",
+      data: { controller: "education-other", action: "click->education-other#trackLink", "education-other-link-param": "job_training" } %>
   <% end %>
 <% end %>
 
@@ -41,10 +45,13 @@
       new_activities_flow_income_employment_path(
         compensation_type: "unpaid_or_in_kind",
         back_url: "education_other"),
-      class: "usa-link" %>
+      class: "usa-link",
+      data: { controller: "education-other", action: "click->education-other#trackLink", "education-other-link-param": "internship" } %>
   <% end %>
 <% end %>
 
 <div class="margin-top-4">
-  <%= link_to t(".exit_to_home"), activities_flow_root_path, class: "usa-link" %>
+  <%= link_to t(".exit_to_home"), activities_flow_root_path,
+    class: "usa-link",
+    data: { controller: "education-other", action: "click->education-other#trackLink", "education-other-link-param": "exit_to_home" } %>
 </div>
