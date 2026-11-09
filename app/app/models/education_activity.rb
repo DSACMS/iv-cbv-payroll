@@ -63,13 +63,14 @@ class EducationActivity < Activity
     failed: "failed"
   }, default: :unknown, prefix: :sync
 
-  def self.data_source_from_nsc_results(enrollment_terms, reporting_months:)
+  def self.data_source_from_nsc_results(enrollment_terms, reporting_months:, required_month_count: nil)
     return :partially_self_attested if enrollment_terms.blank?
 
+    required_month_count ||= reporting_months.length
     resolver = EducationReportingMonthResolver.new(terms: enrollment_terms, reporting_months: reporting_months)
-    all_months_have_sufficient_enrollment = resolver.reporting_month_enrollments.all?(&:sufficient_enrollment?)
+    sufficient_month_count = resolver.reporting_month_enrollments.count(&:sufficient_enrollment?)
 
-    all_months_have_sufficient_enrollment ? :validated : :partially_self_attested
+    sufficient_month_count >= required_month_count ? :validated : :partially_self_attested
   end
 
   def education_type_display
