@@ -13,6 +13,7 @@ class ActivityFlow < Flow
 
   DEFAULT_RENEWAL_REPORTING_WINDOW_MONTHS = 6
   DEFAULT_APPLICATION_REPORTING_WINDOW_MONTHS = 1
+  DEFAULT_APPLICATION_REQUIRED_MONTHS = 1
 
   belongs_to :cbv_applicant
   belongs_to :identity, optional: true
@@ -27,7 +28,7 @@ class ActivityFlow < Flow
   has_many :activity_flow_monthly_summaries, dependent: :destroy
   has_many :activity_flow_employment_summaries, dependent: :destroy
 
-  before_create :set_default_reporting_window, :set_default_renewal_required_months
+  before_create :set_default_reporting_window, :set_default_required_month_count
 
   scope :completed, -> { where.not(completed_at: nil) }
   scope :incomplete, -> { where(completed_at: nil) }
@@ -171,7 +172,6 @@ class ActivityFlow < Flow
 
   def required_month_count
     window_months = reporting_window_months || calculate_reporting_window_months
-    return window_months unless renewal_reporting_window?
 
     renewal_required_months || window_months
   end
@@ -203,10 +203,14 @@ class ActivityFlow < Flow
     client_agency&.application_reporting_months || DEFAULT_APPLICATION_REPORTING_WINDOW_MONTHS
   end
 
-  def set_default_renewal_required_months
-    return unless renewal_reporting_window?
-
+  def set_default_required_month_count
     client_agency = Rails.application.config.client_agencies[cbv_applicant&.client_agency_id]
-    self.renewal_required_months ||= client_agency&.renewal_required_months || reporting_window_months
+
+    self.renewal_required_months ||=
+      if renewal_reporting_window?
+        client_agency&.renewal_required_months || reporting_window_months
+      elsif activity_flow_invitation&.verification_range == "last_12_complete_months"
+        client_agency&.application_required_months || DEFAULT_APPLICATION_REQUIRED_MONTHS
+      end
   end
 end

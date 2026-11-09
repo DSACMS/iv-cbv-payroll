@@ -232,6 +232,36 @@ RSpec.describe NscDataFetcherService do
         expect(education_activity.reload.data_source).to eq("partially_self_attested")
       end
 
+      context "when one of twelve renewal months meets the half-time requirement" do
+        before do
+          activity_flow.update!(
+            created_at: Date.new(2024, 7, 15),
+            reporting_window_type: "renewal",
+            reporting_window_months: 12,
+            renewal_required_months: 1
+          )
+          reporting_months = activity_flow.reporting_months
+          nsc_stub_request_education_search_response("lynette") do |response|
+            enrollment = response.fetch("enrollmentDetails").first
+            template = enrollment.fetch("enrollmentData").first
+            enrollment["enrollmentData"] = reporting_months.map.with_index do |month, index|
+              template.merge(
+                "termBeginDate" => month.beginning_of_month.iso8601,
+                "termEndDate" => month.end_of_month.iso8601,
+                "enrollmentStatus" => index.zero? ? "H" : "L",
+                "schoolCertifiedOnDate" => month.end_of_month.iso8601
+              )
+            end
+          end
+        end
+
+        it "marks the education as validated without requiring partial self-attestation" do
+          service.fetch
+
+          expect(education_activity.reload.data_source).to eq("validated")
+        end
+      end
+
       context "when the student has withdrawn" do
         before do
           nsc_stub_request_education_search_response("lynette") do |response|
