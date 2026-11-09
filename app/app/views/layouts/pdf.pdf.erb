@@ -2,15 +2,16 @@
 <html lang="<%= I18n.locale %>" class="<%= content_for(:pdf_html_class) %>">
   <head>
     <meta charset="utf-8" >
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:">
     <title><%= content_for?(:title) ? yield(:title) : t("cbv.submits.show.pdf.client.header") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <%= yield :head %>
 
-    <%= wicked_pdf_stylesheet_link_tag "application" %>
+    <%= pdf_stylesheet %>
   </head>
 
-  <body class="wkhtmltopdf">
+  <body class="pdf-report">
     <div id="root">
       <main id="main-content">
         <section class="<%= content_for?(:pdf_section_class) ? yield(:pdf_section_class) : "grid-container usa-section" %>">

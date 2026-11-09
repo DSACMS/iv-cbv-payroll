@@ -57,7 +57,7 @@ nodenv install
 # Install Ruby and JavaScript dependencies
 bundle install
 nodenv rehash
-npm install
+npm ci
 ```
 
 Start PostgreSQL (installed via the Brewfile):
