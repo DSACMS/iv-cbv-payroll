@@ -11,17 +11,14 @@
 
 <div class="font-sans-3xs">
   <header>
-    <p class="font-heading-sm line-height-sans-2 margin-0 text-bold">
-      <span class="text-primary">
+    <div class="display-flex flex-align-center font-heading-sm line-height-sans-2 margin-0 text-bold">
+      <p class="line-height-sans-2 margin-0 text-primary">
         <%= t("activities.submit.pdf.product_name") %>
-      </span>
-      <span aria-hidden="true">
-        |
-      </span>
-      <span>
+      </p>
+      <p class="line-height-sans-2 margin-y-0 margin-right-0 border-left-2px border-ink padding-left-05 margin-left-1">
         <%= agency_name %>
-      </span>
-    </p>
+      </p>
+    </div>
 
     <h1 class="margin-top-0 margin-bottom-1 padding-top-2">
       <%= t("activities.submit.pdf.heading") %>
@@ -209,7 +206,7 @@
           <% end %>
           <% term_groups = enrollment_terms
             .sort_by { |term| [ term.term_begin, term.term_end, term.school_certified_on || Date::Infinity.new ] }
-            .group_by { |term| [ term.term_begin, term.term_end ] } 
+            .group_by { |term| [ term.term_begin, term.term_end ] }
             .values %>
           <% rows = term_groups.map do |terms_for_range|
             status_lines = terms_for_range.map do |term|

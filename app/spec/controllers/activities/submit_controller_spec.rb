@@ -170,7 +170,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(response).to have_http_status(:ok)
       expect(response.header["Content-Type"]).to include("pdf")
       pdf_text = extract_pdf_text(response)
-      expect(pdf_text).to include("Emmy Community Engagement | Test Agency")
+      expect(pdf_text).to match(/Emmy Community Engagement\s+Test Agency/)
       expect(pdf_text).to include("Client and report information: Jordan Taylor")
       expect(pdf_text).to include("Food Pantry")
       expect(pdf_text).to include("Career Prep")
