@@ -24,7 +24,7 @@ module ActivityReportSchemas
       education_type: education_type,
       type: { type: :string, enum: %w[education] },
       school_name: nullable_string.merge(description: "School name from the NSC enrollment term; null when unavailable."),
-      enrollment_status: { type: :string, enum: NscEnrollmentTerm.enrollment_statuses.keys, description: "NSC enrollment status for this term, including unknown when the status is unavailable." },
+      enrollment_status: { type: :string, enum: NscEnrollmentTerm.enrollment_statuses.keys, description: "NSC-mapped enrollment status for this term. NSC Y is reported as enrolled: it confirms enrollment without specifying a level. Unknown means the status is unavailable." },
       credit_hours: { type: %w[number null], minimum: 0, description: "Academic credits for the term, reported by the applicant where needed. Fractions are preserved; unknown credits stay null. NSC does not provide academic credits, so this is null for verified enrollment." },
       term: ref("CeEducationTerm").merge(description: "Original enrollment term, with required start_month and end_month in YYYY-MM format."),
       additional_comments: comments
@@ -118,7 +118,7 @@ module ActivityReportSchemas
         paystubs: { type: :array, minItems: 1, items: ref("CePaystub"), description: "Only payments dated within the enclosing month and review period. Grouped by pay_date, even when the work period falls in another month. Undated paychecks and paychecks outside the review period are omitted." }
       }).merge(description: "Only published, successfully synchronized Argyle or Pinwheel accounts are included. Each employer appears once per month with a paycheck in the review period; employers without dated paychecks in that period have no entry. Payroll money values are in cents, and nullable provider fields remain null. Hours are reported on each paystub as hours_paid; there is no calculated employment-level hours field. A failed payroll fetch fails transmission so the job can retry rather than sending a partial report."),
       CeEducationActivity: {
-        description: "Only published education activities are included: self-attested credits, verified NSC enrollment, or verified enrollment with self-attested credits. Fully self-attested education appears under each reported month. NSC term entries appear under each applicable reporting month, including eligible summer carryover. A month can contain multiple schools or terms.",
+        description: "Only published education activities are included: self-attested credits, verified NSC enrollment, or verified enrollment with supplemental self-attested enrollment details. Fully self-attested education appears under each reported month. NSC term entries appear under each applicable reporting month, including eligible summer carryover. A month can contain multiple schools or terms.",
         oneOf: [ ref("CeSelfAttestedEducationActivity"), ref("CeVerifiedEducationActivity"), ref("CeVerifiedEnrollmentOnlyEducationActivity") ],
         discriminator: {
           propertyName: "data_source",
@@ -140,9 +140,10 @@ module ActivityReportSchemas
         data_source: { type: :string, enum: %w[verified], description: "NSC-verified enrollment." }
       )).merge(description: "NSC-verified enrollment and original term details. NSC does not provide academic credit hours, so credit_hours is null."),
       CeVerifiedEnrollmentOnlyEducationActivity: activity(%w[school_name hours enrollment_status term education_type], self_attested.merge(contact).merge(education_term).merge(
-        data_source: { type: :string, enum: %w[verified_enrollment_only], description: "NSC-verified enrollment, but whether the user was enrolled full-time, half-time, or less-than-half-time was not provided. The term credit_hours field is populated with self-attested values." },
-        hours: { type: %w[number null], minimum: 0, description: "Self-attested academic credit hours for the term, matching credit_hours. Fractions and zero are preserved; null when not reported." }
-      )).merge(description: "Partially self-attested education combines NSC enrollment and term details with applicant-reported academic credits, retaining self-attested address and contact fields. Every term entry uses verified_enrollment_only, including terms with half-time or greater enrollment."),
+        data_source: { type: :string, enum: %w[verified_enrollment_only], description: "NSC enrollment supplemented by applicant-reported enrollment details." },
+        supplemental_enrollment_status: nullable_enum(EducationActivity::SELF_ATTESTED_ENROLLMENT_STATUSES).merge(description: "Applicant-reported enrollment level when NSC reports Y (enrolled): full_time, half_time, less_than_half_time, or unknown (the applicant is unsure). Null for other NSC statuses, when the applicant reports no classes, or when no supplemental level was supplied. The original NSC status remains in enrollment_status."),
+        hours: { type: %w[number null], minimum: 0, description: "Self-attested academic credit hours for the term, matching credit_hours. Fractions and reported zero values are preserved. Null for supplemental full_time/half_time or when not reported." }
+      )).merge(description: "Partially self-attested education combines NSC enrollment and term details with applicant-reported enrollment levels and applicable academic credits, retaining self-attested address and contact fields. Every term entry uses verified_enrollment_only, including terms with half-time or greater enrollment. Credits are collected for NSC less_than_half_time terms and enrolled terms with a supplemental level of less_than_half_time or unknown. Reporting no classes for an enrolled term produces zero credits and a null supplemental level."),
       CeEducationTerm: object(%w[start_month end_month], {
         start_month: month.merge(description: "Start month of the original enrollment term in YYYY-MM format."),
         end_month: month.merge(description: "End month of the original enrollment term in YYYY-MM format.")
@@ -193,7 +194,7 @@ module ActivityReportSchemas
   CeActivityProperties = {
     type: { type: :string, enum: %w[community_service work_program employment education], description: "Activity type, matching the enclosing activity-type key." },
     month: { type: :string, pattern: '^\d{4}-\d{2}$', description: "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key." },
-    data_source: { type: :string, enum: %w[self_attested validated verified verified_enrollment_only], description: "Origin of the activity data: self_attested for manually reported activities, validated for linked Argyle or Pinwheel payroll, verified for NSC enrollment, or verified_enrollment_only for NSC enrollment with self-attested credits." },
+    data_source: { type: :string, enum: %w[self_attested validated verified verified_enrollment_only], description: "Origin of the activity data: self_attested for manually reported activities, validated for linked Argyle or Pinwheel payroll, verified for NSC enrollment, or verified_enrollment_only for NSC enrollment with supplemental self-attested enrollment details." },
     document_ids: { type: :array, items: { type: :string }, description: "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities." }
   }.freeze
 

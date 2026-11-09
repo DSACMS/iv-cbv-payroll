@@ -91,6 +91,8 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       school_name: "Example Technical College", credit_hours: 3.25)
     create(:nsc_enrollment_term, education_activity: partial, school_name: "Example State University",
       term_end: activity_flow.reporting_months.first.end_of_month)
+    create(:nsc_enrollment_term, :enrolled, education_activity: partial, school_name: "Example City College",
+      supplemental_enrollment_status: "unknown", credit_hours: 2.5)
     expect(EducationActivity.data_source_from_nsc_results(partial.nsc_enrollment_terms,
       reporting_months: activity_flow.reporting_months)).to eq(:partially_self_attested)
     partial.document_uploads.attach(io: StringIO.new("Synthetic transcript"), filename: "Transcript.pdf", content_type: "application/pdf")
@@ -242,7 +244,11 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
         .to eq(%w[high_school_ged college_or_university trade_or_technical])
       partial_entries = payload.dig("ce_report", "activities", "education", "2025-02")
         .select { |entry| entry["data_source"] == "verified_enrollment_only" }
-      expect(partial_entries.map { |entry| entry["credit_hours"] }).to contain_exactly(3.25, nil)
+      expect(partial_entries).to contain_exactly(
+        hash_including("enrollment_status" => "less_than_half_time", "supplemental_enrollment_status" => nil, "credit_hours" => 3.25, "hours" => 3.25),
+        hash_including("enrollment_status" => "half_time", "supplemental_enrollment_status" => nil, "credit_hours" => nil, "hours" => nil),
+        hash_including("enrollment_status" => "enrolled", "supplemental_enrollment_status" => "unknown", "credit_hours" => 2.5, "hours" => 2.5)
+      )
     end
 
     it "does not post a partial report when a payroll fetch fails" do

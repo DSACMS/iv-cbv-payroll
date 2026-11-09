@@ -25,6 +25,20 @@ as `w2` or `gig`; self-attested and Pinwheel entries retain the field as `null`.
 self-employment across both sources, use
 `employment_type == "gig" OR is_self_employed == true`.
 
+For NSC education, `enrollment_status` retains NSC's mapped status. NSC `Y` is
+reported as `"enrolled"`: it confirms enrollment without specifying a level.
+Partially self-attested entries include `supplemental_enrollment_status` for the
+applicant's supplied level: `full_time`, `half_time`, `less_than_half_time`, or
+`unknown` (the applicant is unsure). It is `null` for other NSC statuses or when
+no supplemental level was supplied.
+
+The `credit_hours` and `hours` fields contain applicant-reported term credits
+when NSC reports `less_than_half_time`, or when NSC reports `enrolled` and the
+supplemental level is `less_than_half_time` or `unknown`. Fractions and zero are
+preserved. Reporting no classes for an `enrolled` term produces `0` in both
+credit fields and `null` in `supplemental_enrollment_status`. Credits are `null`
+for supplemental `full_time` or `half_time`, or when not reported.
+
 ## Transmission
 
 Emmy sends a completed CE Activity Report as an HTTP `POST` to an endpoint
