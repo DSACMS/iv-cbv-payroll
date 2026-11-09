@@ -12,12 +12,13 @@ The rendered output is saved to docs/app/rendered/database-schema.pdf.
 ## Generated report PDFs (FFS-4894)
 
 Application PDFs use `PdfRenderer`: Grover/Puppeteer renders semantic HTML into
-Chromium's tagged PDF, then `lib/pdf/finalize.py` completes PDF/UA-1 metadata and
-structure using pypdf. It preserves existing marked-content IDs, text, and reading
-order; maps Chromium's PDF 2.0 emphasis roles to PDF 1.7 spans; groups list-item
-bodies; and marks untagged decoration, explicitly hidden DOM content, and running
-page furniture as artifacts. This finalizer is only for trusted application HTML,
-not for repairing uploaded PDFs. Changes to PDF templates must retain accessible
+Chromium's tagged PDF, which is returned unchanged. PDF generation does not use
+Python or pypdf. Chromium's native tags, document outline, title, and language
+are retained. No post-processing adds PDF/UA identification metadata, normalizes
+structure roles or list bodies, or marks remaining untagged content as artifacts.
+This setup evaluates Chromium's native accessibility output; PDF/UA-1 validation
+may fail and the output does not claim PDF/UA compliance.
+Changes to PDF templates must retain accessible
 DOM content and be checked against the final PDF; hiding meaningful HTML with
 `aria-hidden` also hides it from the PDF's accessibility tree.
 
@@ -33,19 +34,11 @@ From `app/`, `bin/setup` installs the dependencies. For an existing checkout:
 ```sh
 bundle install
 npm ci
-python3 -m venv "$HOME/.local/share/emmy/pdf-venv"
-"$HOME/.local/share/emmy/pdf-venv/bin/python" -m pip install --require-hashes -r lib/pdf/requirements.txt
 ```
 
-The Python requirements pin versions and SHA-256 hashes of universal wheels,
-including `typing_extensions` for Python versions below 3.11. When updating a
-dependency, verify its wheel against the official PyPI release and update its
-version and hash together. Source distributions are not installed.
-
 Puppeteer installs its matching Chrome browser locally and in CI. Docker uses
-Debian Chromium (including arm64), a Node version matching `.node-version`, and
-the same Python dependency. `PUPPETEER_EXECUTABLE_PATH` can select a system browser;
-`PDF_PYTHON` can select another Python environment containing the pinned pypdf.
+Debian Chromium (including arm64) and a Node version matching `.node-version`.
+`PUPPETEER_EXECUTABLE_PATH` can select a system browser.
 Docker/CI explicitly disable Chromium's OS sandbox because those container
 runtimes do not provide Chrome's required sandbox support; Chrome runs as the
 application's non-root user in the release image. Local runs retain the sandbox.

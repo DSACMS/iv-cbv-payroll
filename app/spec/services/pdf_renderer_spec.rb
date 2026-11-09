@@ -25,18 +25,18 @@ RSpec.describe PdfRenderer do
   end
 
 
-  it "preserves report content and supplies accessibility metadata and structure" do
+  it "preserves report content and Chromium's accessibility metadata and structure" do
     expect(reader.pages.map(&:text).join(" ")).to include("Test School", "3.5", "First item", "Additional detail")
     expect(reader.info[:Title]).to eq("Synthetic report")
     expect(catalog[:Lang]).to eq("en")
     expect(reader.objects.deref_hash(catalog[:MarkInfo])[:Marked]).to be(true)
-    expect(reader.objects.deref_hash(catalog[:ViewerPreferences])[:DisplayDocTitle]).to be(true)
-    expect(structure_tags(catalog[:StructTreeRoot])).to include(:H1, :H2, :Table, :TH, :TD, :L, :LI, :LBody)
-    expect(reader.objects[catalog[:Metadata]].data).to include("<pdfuaid:part>1</pdfuaid:part>")
+    expect(structure_tags(catalog[:StructTreeRoot])).to include(:H1, :H2, :Table, :TH, :TD, :L, :LI)
   end
 
-  it "refuses to claim compliance for untagged input" do
-    allow(Grover).to receive(:new).and_return(instance_double(Grover, to_pdf: File.binread(Rails.root.join("spec/fixtures/files/document_upload.pdf"))))
-    expect { content }.to raise_error(/PDF accessibility finalization failed/)
+  it "returns Grover's output unchanged" do
+    original = File.binread(Rails.root.join("spec/fixtures/files/document_upload.pdf"))
+    allow(Grover).to receive(:new).and_return(instance_double(Grover, to_pdf: original))
+
+    expect(content).to eq(original)
   end
 end

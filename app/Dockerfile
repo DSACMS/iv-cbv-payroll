@@ -148,11 +148,10 @@ RUN apt-get update -qq && \
 # Debian supplies Chromium for both amd64 and arm64; Puppeteer uses this binary.
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends chromium fonts-liberation python3-venv && \
+    apt-get install -y --no-install-recommends chromium fonts-liberation && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-ENV PDF_PYTHON=/opt/emmy/pdf-venv/bin/python \
-    PUPPETEER_SKIP_DOWNLOAD=true \
+ENV PUPPETEER_SKIP_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
     GROVER_NO_SANDBOX=true \
     XDG_CONFIG_HOME=/rails/tmp/chromium-config \
@@ -191,9 +190,7 @@ RUN apt-get update -qq && \
 # Copy application code
 COPY . .
 
-RUN npm ci && \
-    python3 -m venv /opt/emmy/pdf-venv && \
-    /opt/emmy/pdf-venv/bin/pip install --no-cache-dir --require-hashes -r lib/pdf/requirements.txt
+RUN npm ci
 
 ##########################################################################################
 # DEV: Used for development and test
@@ -273,9 +270,6 @@ RUN apt-get update -qq && \
         libgpgme11t64=1.24.2-3 \
         libvips42t64 \
         postgresql-client-17 \
-        python-is-python3=3.13.3-1 \
-        python3-venv=3.13.5-1 \
-        python3-pip=25.1.1+dfsg-1 \
         && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -286,7 +280,6 @@ COPY bin/db-drop-schema /usr/bin/
 # Copy built artifacts: gems, application, binary dependencies
 COPY --from=release-build /usr/local/bundle /usr/local/bundle
 COPY --from=release-build /rails /rails
-COPY --from=release-build /opt/emmy/pdf-venv /opt/emmy/pdf-venv
 
 # Clean up any unused gems and ensure we have the correct versions
 RUN bundle clean --force && \
