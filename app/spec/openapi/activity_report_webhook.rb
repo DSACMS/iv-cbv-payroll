@@ -32,7 +32,8 @@ module ActivityReportWebhook
           content: {
             "application/json" => {
               schema: {
-                type: :object, additionalProperties: true,
+                type: :object,
+                additionalProperties: false,
                 properties: {
                   status: { type: :string }, confirmation_code: { type: :string },
                   received_at: { type: :string, format: :"date-time" },

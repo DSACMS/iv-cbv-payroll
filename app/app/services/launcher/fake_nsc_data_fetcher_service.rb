@@ -14,7 +14,8 @@ class Launcher::FakeNscDataFetcherService < NscDataFetcherService
       @education_activity.update!(
         data_source: EducationActivity.data_source_from_nsc_results(
           @education_activity.nsc_enrollment_terms,
-          reporting_months: @education_activity.activity_flow.reporting_months
+          reporting_months: @education_activity.activity_flow.reporting_months,
+          required_month_count: @education_activity.activity_flow.required_month_count
         )
       )
     end

@@ -222,6 +222,15 @@ RSpec.describe NscEnrollmentTerm do
   end
 
   describe "#term_date_display" do
+    context "when both dates are in the same month" do
+      let(:term) { described_class.new(term_begin: Date.new(2026, 4, 2), term_end: Date.new(2026, 4, 28)) }
+
+      it "displays the month once in abbreviated and full formats" do
+        expect(term.term_date_display).to eq("Apr 2026")
+        expect(term.term_date_display(abbreviated: false)).to eq("April 2026")
+      end
+    end
+
     it "formats same-year term with abbreviated months" do
       term = described_class.new(term_begin: Date.new(2026, 9, 1), term_end: Date.new(2026, 12, 15))
       expect(term.term_date_display).to eq("Sep - Dec 2026")

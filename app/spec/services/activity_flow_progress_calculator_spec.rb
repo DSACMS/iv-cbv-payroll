@@ -917,6 +917,39 @@ RSpec.describe ActivityFlowProgressCalculator do
         expect(progress.meets_requirements).to be(false)
         expect(progress.meets_routing_requirements).to be(false)
       end
+
+      context "when the flow's required month count is reduced below the full window" do
+        before { flow.set_required_month_count!(1) }
+
+        it "meets routing requirements once only the sufficient month is required" do
+          expect(progress.meets_routing_requirements).to be(true)
+        end
+      end
+    end
+
+    context "for a last_12_complete_months application using the configured required-month count" do
+      let(:invitation) { create(:activity_flow_invitation, verification_range: "last_12_complete_months") }
+      let(:flow) do
+        create(:activity_flow, activity_flow_invitation: invitation, reporting_window_type: "application", education_activities_count: 0)
+      end
+      let(:first_month) { flow.reporting_window_range.begin }
+
+      before do
+        create(
+          :nsc_enrollment_term,
+          education_activity: education_activity,
+          enrollment_status: "half_time",
+          term_begin: first_month,
+          term_end: first_month.end_of_month
+        )
+      end
+
+      it "uses the default required-month count for routing" do
+        expect(flow.renewal_required_months).to eq(1)
+        expect(flow.reporting_window_months).to eq(12)
+        expect(flow.required_month_count).to eq(1)
+        expect(progress.meets_routing_requirements).to be(true)
+      end
     end
 
     context "when education is partially self-attested with less-than-half-time credit hours" do
