@@ -86,7 +86,9 @@ The last two failures occurred in the renderer's synthetic HTML example, not the
 application report PDFs in this sample. A subsequent fixture update replaced the
 list item's paragraph with a block span using the same margins. Before/after
 screenshots were identical, and a new veraPDF run confirmed that 7.2 / 20 no
-longer fails. The other three failures remain in that fixture.
+longer fails. Replacing the fixture's `strong` element with a bold-styled span
+also preserved identical screenshots and removed the 7.1 / 5 failure. Only
+untagged content (7.1 / 3) and missing XMP metadata (7.1 / 8) remain in that fixture.
 The deliberately mocked PDF in the renderer unit test is
 excluded from export; actual generated PDFs are always validated.
 

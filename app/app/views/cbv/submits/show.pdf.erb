@@ -39,7 +39,7 @@
 <% end %>
 
 <% client_information = t(".pdf.shared.client_information") %>
-<%= render(TableComponent.new(caption: client_information)) do |table| %>
+<%= render(TableComponent.new(caption: client_information, class_names: "income-report-information")) do |table| %>
   <%= table.with_header_cell(colspan: 2) do %>
     <%= client_information %>
   <% end %>
@@ -48,12 +48,12 @@
     <% if @cbv_flow.cbv_applicant[item].present? %>
       <% if item == :date_of_birth %>
         <%= table.with_row do |row| %>
-          <% row.with_data_cell.with_content(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html")) %>
+          <% row.with_data_cell(is_header: true, scope: "row").with_content(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html")) %>
           <% row.with_data_cell.with_content(format_date(@cbv_flow.cbv_applicant[item])) %>
         <% end %>
       <% else %>
         <%= table.with_row do |row| %>
-          <% row.with_data_cell.with_content(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html")) %>
+          <% row.with_data_cell(is_header: true, scope: "row").with_content(t("cbv.applicant_informations.#{@cbv_flow.cbv_applicant.client_agency_id}.fields.#{item}.super_one_html")) %>
           <% row.with_data_cell.with_content(@cbv_flow.cbv_applicant[item]) %>
         <% end %>
       <% end %>
@@ -63,41 +63,41 @@
   <% if is_caseworker %>
     <% ClientAgency::CaseworkerReportSpecificFieldDecider.caseworker_specific_fields(@cbv_flow).each do |field_name, field_value| %>
       <%= table.with_row do |row| %>
-        <% row.with_data_cell.with_content(t(field_name)) %>
+        <% row.with_data_cell(is_header: true, scope: "row").with_content(t(field_name)) %>
         <% row.with_data_cell.with_content(field_value) %>
       <% end %>
     <% end %>
   <% end %>
   <% ClientAgency::CaseworkerReportSpecificFieldDecider.applicant_specific_fields(@cbv_flow).each do |field, value| %>
     <%= table.with_row do |row| %>
-      <% row.with_data_cell.with_content(t(field)) %>
+      <% row.with_data_cell(is_header: true, scope: "row").with_content(t(field)) %>
       <% row.with_data_cell.with_content(value) %>
     <% end %>
   <% end %>
 <% end %>
 
 <% report_details = t(".pdf.shared.report_details") %>
-<%= render(TableComponent.new(caption: report_details)) do |table| %>
+<%= render(TableComponent.new(caption: report_details, class_names: "income-report-information")) do |table| %>
   <%= table.with_header_cell(colspan: 2) do %>
     <h3 class="margin-0"><%= report_details %></h3>
   <% end %>
   <% if @cbv_flow.confirmation_code.present? %>
     <%= table.with_row do |row| %>
-      <% row.with_data_cell.with_content(t(".pdf.shared.confirmation_code")) %>
+      <% row.with_data_cell(is_header: true, scope: "row").with_content(t(".pdf.shared.confirmation_code")) %>
       <% row.with_data_cell.with_content(@cbv_flow.confirmation_code) %>
     <% end %>
   <% end %>
   <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t(".pdf.client.date_created")) %>
+    <% row.with_data_cell(is_header: true, scope: "row").with_content(t(".pdf.client.date_created")) %>
     <% row.with_data_cell.with_content(format_parsed_date(@cbv_flow.consented_to_authorized_use_at)) %>
   <% end %>
   <%= table.with_row do |row| %>
-    <% row.with_data_cell.with_content(t(".pdf.client.date_range")) %>
+    <% row.with_data_cell(is_header: true, scope: "row").with_content(t(".pdf.client.date_range")) %>
     <% row.with_data_cell.with_content("#{format_parsed_date(aggregator_report.from_date)} to #{format_parsed_date(aggregator_report.to_date)}") %>
   <% end %>
   <% if is_caseworker %>
     <%= table.with_row do |row| %>
-      <% row.with_data_cell.with_content(t(".pdf.caseworker.agreement_consent_timestamp")) %>
+      <% row.with_data_cell(is_header: true, scope: "row").with_content(t(".pdf.caseworker.agreement_consent_timestamp")) %>
       <% row.with_data_cell.with_content(@cbv_flow.consented_to_authorized_use_at) %>
     <% end %>
   <% end %>

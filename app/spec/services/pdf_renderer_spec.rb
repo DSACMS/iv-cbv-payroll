@@ -5,7 +5,7 @@ RSpec.describe PdfRenderer do
     <<~HTML
       <!DOCTYPE html><html lang="en"><head><title>Synthetic report</title></head><body>
       <h1>Synthetic report</h1><h2>Enrollment</h2>
-      <p><strong>Test School</strong></p><span aria-hidden="true">|</span>
+      <p><span style="font-weight: bold;">Test School</span></p><span aria-hidden="true">|</span>
       <table><caption>Enrollment details</caption><thead><tr><th scope="col">School</th><th scope="col">Credits</th></tr></thead>
       <tbody><tr><th scope="row">Test School</th><td>3.5</td></tr></tbody></table>
       <ul><li>First item<span style="display: block; margin: 1em 0;">Additional detail</span></li></ul>
