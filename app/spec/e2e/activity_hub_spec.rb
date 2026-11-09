@@ -386,14 +386,15 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Test University"
 
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
-    verify_page(page, title: I18n.t("activities.summary.title"))
     expect(page).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("activities.submit.consent_required"))
-    expect(page).to have_selector("#activity_flow_consent_to_submit[aria-invalid='true'][aria-describedby='activity_flow_consent_to_submit_error']:focus", visible: :all)
+    verify_page(page, title: I18n.t("activities.summary.title"))
+    verify_consent_error_in_view(checkbox_id: "activity_flow_consent_to_submit")
     expect(page).to have_no_selector(".usa-alert--error")
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
 
     verify_page(page, title: I18n.t("activities.success.show.title", agency_name: agency_name))
+    expect(page.evaluate_script("window.scrollY")).to eq(0)
     expect(page).to have_text(I18n.t("activities.success.show.subheading"))
     expect(page).to have_link(I18n.t("activities.success.show.download_pdf"), href: activities_flow_submit_path(format: :pdf))
     expect(page).to have_selector("p", text: I18n.t("activities.success.show.next_steps_description", agency_name: agency_name), exact_text: true, normalize_ws: true)
