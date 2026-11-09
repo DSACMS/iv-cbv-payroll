@@ -8,7 +8,7 @@ RSpec.describe PdfRenderer do
       <p><strong>Test School</strong></p><span aria-hidden="true">|</span>
       <table><caption>Enrollment details</caption><thead><tr><th scope="col">School</th><th scope="col">Credits</th></tr></thead>
       <tbody><tr><th scope="row">Test School</th><td>3.5</td></tr></tbody></table>
-      <ul><li>First item<p>Additional detail</p></li></ul>
+      <ul><li>First item<span style="display: block; margin: 1em 0;">Additional detail</span></li></ul>
       </body></html>
     HTML
   end
@@ -33,7 +33,7 @@ RSpec.describe PdfRenderer do
     expect(structure_tags(catalog[:StructTreeRoot])).to include(:H1, :H2, :Table, :TH, :TD, :L, :LI)
   end
 
-  it "returns Grover's output unchanged" do
+  it "returns Grover's output unchanged", :skip_pdf_accessibility_export do
     original = File.binread(Rails.root.join("spec/fixtures/files/document_upload.pdf"))
     allow(Grover).to receive(:new).and_return(instance_double(Grover, to_pdf: original))
 

@@ -67,3 +67,30 @@ facility; do not export real beneficiary data into CI artifacts. Passing veraPDF
 machine-checkable PDF/UA-1 rules does not establish complete Section 508 compliance.
 Manual reading-order, accuracy, contrast, and assistive-technology checks remain
 required. See [veraPDF validation scope](https://docs.verapdf.org/validation/).
+
+### Known native Chromium limitations
+
+A local veraPDF 1.30.3 audit of 21 synthetic PDFs exported by the renderer,
+income report, activity report, activity transmitter, and activity submit specs
+found these PDF/UA-1 failures. All 38 RSpec examples passed; all 21 generated
+PDFs parsed successfully but failed validation.
+
+| Rule (clause / test) | Observed failure | Accessibility implication |
+| --- | --- | --- |
+| 7.1 / 3 | Untagged content in all 21 PDFs (160 checks) | Content is neither in the structure tree nor explicitly marked as decorative. Meaningful content could be skipped or read inconsistently; inspect the affected content and reading order manually. |
+| 7.1 / 8 | Missing XMP metadata in all 21 PDFs | Fails the document metadata requirement. This alone does not mean the text is unreadable with assistive technology. |
+| 7.1 / 5 | Unmapped `Strong` role in the renderer stress fixture | PDF/UA-1 readers cannot rely on a standard role for emphasis. Report templates use CSS for visual bold labels to avoid this Chromium mapping issue. |
+| 7.2 / 20 | A direct paragraph child of `LI` in the renderer stress fixture | The list lacks the required `LBody` grouping, which can impair consistent list navigation. |
+
+The last two failures occurred in the renderer's synthetic HTML example, not the
+application report PDFs in this sample. A subsequent fixture update replaced the
+list item's paragraph with a block span using the same margins. Before/after
+screenshots were identical, and a new veraPDF run confirmed that 7.2 / 20 no
+longer fails. The other three failures remain in that fixture.
+The deliberately mocked PDF in the renderer unit test is
+excluded from export; actual generated PDFs are always validated.
+
+The veraPDF CI gate remains enabled and will fail on these known issues. Native
+tagging is useful, but these results do not establish PDF/UA or Section 508
+compliance. A screen-reader review is still needed to establish the practical
+impact on reading order, tables, lists, and report content.

@@ -1,6 +1,6 @@
 <% content_for :title, t(".pdf.client.header") %>
 
-<strong>
+<div class="text-bold">
   <span class="cbv-header__pilot-name font-sans-md text-middle">
     <%= t("shared.pilot_name") %>
   </span>
@@ -16,7 +16,7 @@
       <span class="text-middle font-sans-md"><%= agency_translation(".pdf.agency_header_name") %></span>
     <% end %>
   <% end %>
-</strong>
+</div>
 
 <h1><%= t(".pdf.client.header") %></h1>
 <% if is_caseworker %>
@@ -24,7 +24,7 @@
   <div class="usa-alert usa-alert--info">
     <div class="usa-alert__body">
       <p class="usa-alert__text">
-        <strong><%= t(".pdf.caseworker.how_to_header") %></strong>
+        <span class="text-bold"><%= t(".pdf.caseworker.how_to_header") %></span>
         <%= t(".pdf.caseworker.how_to") %>
       </p>
     </div>
