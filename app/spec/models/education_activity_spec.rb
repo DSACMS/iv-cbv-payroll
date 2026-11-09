@@ -218,6 +218,12 @@ RSpec.describe EducationActivity do
 
       expect(activity.review_term_credit_hours(term)).to eq(6)
     end
+
+    it "returns whole credit hours for review output" do
+      term = create(:nsc_enrollment_term, education_activity: activity, credit_hours: 2.5)
+
+      expect(activity.review_term_credit_hours(term)).to eq(2)
+    end
   end
 
   describe "#document_upload_title_i18n_key" do
