@@ -48,6 +48,7 @@ RUN apt-get update -qq && \
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
+      apt \
       bsdutils \
       curl \
       gir1.2-glib-2.0 \
@@ -57,6 +58,7 @@ RUN apt-get update -qq && \
       gzip \
       krb5-multidev \
       libaprutil1t64 \
+      libapt-pkg7.0 \
       libblkid-dev \
       libblkid1 \
       libbrotli-dev \
@@ -138,6 +140,8 @@ RUN apt-get update -qq && \
       util-linux \
       uuid-dev \
       xz-utils \
+      zlib1g \
+      zlib1g-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
