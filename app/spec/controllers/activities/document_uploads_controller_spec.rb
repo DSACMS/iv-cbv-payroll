@@ -34,6 +34,47 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
     allow_any_instance_of(LinkWithIconComponent).to receive(:asset_path).and_return("/assets/sprite.svg")
   end
 
+  describe "work program tracking" do
+    let(:activity) { create(:job_training_activity, activity_flow: activity_flow) }
+
+    before { allow(controller).to receive(:track_event).and_call_original }
+
+    it "tracks the upload view and enables shared navigation tracking" do
+      get :new, params: { job_training_id: activity.id }
+
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramDocumentUploadViewed, job_training_activity_id: activity.id)
+      expect(Capybara.string(response.body)).to have_selector('[data-activity-flow-header-track-event-prefix-value="WorkProgram"]')
+    end
+
+    it "tracks continuing without attachments" do
+      post :create, params: { job_training_id: activity.id }
+
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramDocumentUploadSubmitted,
+        job_training_activity_id: activity.id, document_count: 0)
+    end
+
+    it "tracks successful uploads without sending file contents or names" do
+      post :create, params: { job_training_id: activity.id,
+        activity: { document_uploads: [ fixture_file_upload("document_upload.pdf", "application/pdf") ] } }
+
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramDocumentUploadSubmitted,
+        job_training_activity_id: activity.id, document_count: 1)
+    end
+
+    it "tracks upload validation errors without counting a successful submission" do
+      allow(controller).to receive(:set_activity) { controller.instance_variable_set(:@activity, activity) }
+      allow(activity).to receive(:update) do
+        activity.errors.add(:document_uploads, :invalid)
+        false
+      end
+
+      post :create, params: { job_training_id: activity.id, activity: { document_uploads: [ fixture_file_upload("document_upload.pdf", "application/pdf") ] } }
+
+      expect(controller).to have_received(:track_event).once.with(TrackEvent::WorkProgramDocumentUploadValidationFailed,
+        job_training_activity_id: activity.id, error_fields: %w[document_uploads])
+    end
+  end
+
   describe "GET #new" do
     let(:partial_education_activity) do
       create(
@@ -222,9 +263,11 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
     context "with NSC education" do
       let(:education_activity) { create(:education_activity, activity_flow: activity_flow, data_source: data_source) }
-      let(:rendered) { Capybara.string(response.body) }
-
-      before { get :new, params: { education_id: education_activity.id } }
+      let(:navigation_params) { {} }
+      let(:rendered) do
+        get :new, params: { education_id: education_activity.id }.merge(navigation_params)
+        Capybara.string(response.body)
+      end
 
       context "when validated" do
         let(:data_source) { :validated }
@@ -249,9 +292,83 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       context "when partially self-attested" do
         let(:data_source) { :partially_self_attested }
+        let(:education_activity) do
+          create(:education_activity, activity_flow: activity_flow, data_source: data_source, draft: true)
+        end
+        let(:term) do
+          create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity,
+            credit_hours: 3, term_begin: activity_flow.reporting_months.first,
+            term_end: activity_flow.reporting_months.last.end_of_month)
+        end
 
-        it "links back to the hub" do
+        before { term }
+
+        it "links back to the credit hours form" do
+          expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"),
+            href: edit_activities_flow_education_term_credit_hour_path(education_id: education_activity, id: 0))
+        end
+
+        it "preserves the draft activity and saved credit hours" do
+          get :new, params: { education_id: education_activity.id }
+
+          expect(education_activity.reload).to be_draft
+          expect(term.reload.credit_hours).to eq(3)
+        end
+
+        context "with multiple terms" do
+          before do
+            create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity,
+              term_begin: activity_flow.reporting_months.first, term_end: activity_flow.reporting_months.last.end_of_month)
+            create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: :full_time)
+            create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity,
+              term_begin: activity_flow.reporting_months.first - 2.years, term_end: activity_flow.reporting_months.first - 1.year)
+          end
+
+          it "links to the last credit hours page using only applicable terms" do
+            expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"),
+              href: edit_activities_flow_education_term_credit_hour_path(education_id: education_activity, id: 1))
+          end
+        end
+
+        context "when editing from review" do
+          let(:navigation_params) { { from_review: 1, from_edit: 1 } }
+
+          it "preserves the review and edit context" do
+            expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"),
+              href: edit_activities_flow_education_term_credit_hour_path(
+                education_id: education_activity, id: 0, from_review: 1, from_edit: 1))
+          end
+        end
+      end
+
+      context "when partially self-attested without applicable credit hours terms" do
+        let(:data_source) { :partially_self_attested }
+
+        it "links back to the hub when there are no terms" do
           expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"), href: activities_flow_root_path)
+        end
+
+        context "with terms outside the reporting window" do
+          before do
+            create(:nsc_enrollment_term, :less_than_half_time, education_activity: education_activity,
+              term_begin: activity_flow.reporting_months.first - 2.years, term_end: activity_flow.reporting_months.first - 1.year)
+          end
+
+          it "links back to the hub instead of an invalid credit hours page" do
+            expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"), href: activities_flow_root_path)
+          end
+        end
+
+        context "with sufficient enrollment" do
+          before do
+            education_activity.update!(status: :succeeded)
+            create(:nsc_enrollment_term, education_activity: education_activity, enrollment_status: :half_time,
+              term_begin: activity_flow.reporting_months.first, term_end: activity_flow.reporting_months.last.end_of_month)
+          end
+
+          it "links back to review and submit" do
+            expect(rendered).to have_link(I18n.t("activities.activity_header_component.back"), href: activities_flow_summary_path)
+          end
         end
       end
     end
@@ -274,6 +391,15 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       it_behaves_like "tracks an event", TrackEvent::EducationDocumentUploadViewed,
         extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
+    end
+
+    context "community service scope" do
+      let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :new, params: { community_service_id: volunteering_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::CommunityServiceDocumentUploadViewed,
+        extra_attributes: -> { { volunteering_activity_id: kind_of(Integer) } }
     end
 
     it "renders the upload form for an employment activity" do
@@ -493,6 +619,15 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
         extra_attributes: -> { { education_activity_id: kind_of(Integer), document_count: 0 } }
     end
 
+    context "community service scope tracking" do
+      let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { post :create, params: { community_service_id: volunteering_activity.id } }
+
+      it_behaves_like "tracks an event", TrackEvent::CommunityServiceDocumentUploadSubmitted,
+        extra_attributes: -> { { volunteering_activity_id: kind_of(Integer), document_count: 0 } }
+    end
+
     it "does not track EducationDocumentUploadSubmitted when the update fails" do
       education_activity = create(
         :education_activity,
@@ -508,6 +643,20 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
 
       post :create, params: {
         education_id: education_activity.id,
+        activity: { document_uploads: [ "existing-upload-token" ] }
+      }
+    end
+
+    it "does not track CommunityServiceDocumentUploadSubmitted when the update fails" do
+      volunteering_activity = create(:volunteering_activity, activity_flow: activity_flow)
+      allow_any_instance_of(VolunteeringActivity).to receive(:update).and_return(false)
+
+      expect(EventTrackingJob).not_to receive(:perform_later).with(
+        TrackEvent::CommunityServiceDocumentUploadSubmitted, anything, anything
+      )
+
+      post :create, params: {
+        community_service_id: volunteering_activity.id,
         activity: { document_uploads: [ "existing-upload-token" ] }
       }
     end

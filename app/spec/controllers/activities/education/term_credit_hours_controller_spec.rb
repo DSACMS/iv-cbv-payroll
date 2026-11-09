@@ -15,16 +15,18 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     )
   }
   let(:education_activity) {
-    create(:education_activity, activity_flow: activity_flow, status: :succeeded)
+    create(:education_activity, activity_flow: activity_flow, data_source: :partially_self_attested, status: :succeeded)
   }
-  let(:less_than_half_time_term) {
-    create(:nsc_enrollment_term, :less_than_half_time,
+  let(:enrollment_status) { "less_than_half_time" }
+  let(:enrollment_term) {
+    create(:nsc_enrollment_term, enrollment_status: enrollment_status,
       education_activity: education_activity,
       school_name: "State University")
   }
+  let(:page_content) { Capybara.string(response.body) }
 
   before do
-    less_than_half_time_term
+    enrollment_term
     session[:flow_id] = activity_flow.id
     session[:flow_type] = :activity
   end
@@ -55,26 +57,22 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     it "shows the school name from the NSC term" do
       get :edit, params: { education_id: education_activity.id, id: 0 }
 
-      expect(response.body).to include("State University")
+      expect(page_content).to have_selector("h1", text: I18n.t("activities.education.term_credit_hours.heading", school_name: enrollment_term.school_name))
     end
 
     it "shows the term date range" do
       get :edit, params: { education_id: education_activity.id, id: 0 }
 
-      expect(response.body).to include("Term:")
+      expect(page_content).to have_text(I18n.t("activities.education.term_credit_hours.term_date_range", range: enrollment_term.term_date_display))
     end
 
-    it "shows body copy with the term begin and end dates" do
+    it "shows the missing-details explanation and credit hours helper text" do
       get :edit, params: { education_id: education_activity.id, id: 0 }
 
-      expected_body = I18n.t(
-        "activities.education.term_credit_hours.body_html",
-        term_begin: I18n.l(less_than_half_time_term.term_begin.to_date, format: :long),
-        term_end: I18n.l(less_than_half_time_term.term_end.to_date, format: :long)
-      )
-
-      expect(response.body).to include(expected_body)
-      expect(response.body).to include(I18n.t("activities.education.term_credit_hours.body_conversion"))
+      expect(page_content).to have_text(I18n.t("activities.education.term_credit_hours.body"))
+      expect(page_content).to have_field(I18n.t("activities.education.add_your_term.edit.credit_hours"))
+      expect(page_content).to have_text(I18n.t("activities.education.add_your_term.edit.credit_hours_hint"))
+      expect(page_content).to have_no_select(I18n.t("activities.education.add_your_term.edit.enrollment_status"))
     end
 
     it "does not show checkbox for a single term" do
@@ -93,7 +91,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     it "shows Save changes button when from_review is present" do
       get :edit, params: { education_id: education_activity.id, id: 0, from_review: 1 }
 
-      expect(response.body).to include(I18n.t("activities.hub.save"))
+      expect(page_content).to have_button(I18n.t("activities.hub.save"))
     end
 
     it "redirects to index 0 for an out-of-range index" do
@@ -107,7 +105,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     end
 
     it "redirects to after_activity_path when no less-than-half-time terms exist" do
-      less_than_half_time_term.update!(enrollment_status: "half_time")
+      enrollment_term.update!(enrollment_status: "half_time")
       result = ActivityFlowProgressCalculator::OverallResult.new(
         total_hours: 0,
         meets_requirements: false,
@@ -262,7 +260,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
         nsc_enrollment_term: { credit_hours: 4 }
       }
 
-      expect(less_than_half_time_term.reload.credit_hours).to eq(4)
+      expect(enrollment_term.reload.credit_hours).to eq(4)
     end
 
     it "persists decimal credit_hours" do
@@ -272,7 +270,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
         nsc_enrollment_term: { credit_hours: "2.5" }
       }
 
-      expect(less_than_half_time_term.reload.credit_hours).to eq(BigDecimal("2.5"))
+      expect(enrollment_term.reload.credit_hours).to eq(BigDecimal("2.5"))
     end
 
     it "renders an error when no credit hours are entered for a single term" do
@@ -287,7 +285,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_heading"))
       expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_body_multi_month"))
       expect(response.body).to include(I18n.t("activities.education.term_credit_hours.field_error"))
-      expect(less_than_half_time_term.reload.credit_hours).to be_nil
+      expect(enrollment_term.reload.credit_hours).to be_nil
     end
 
     it "renders an error when 0 credit hours are entered for a single term" do
@@ -298,7 +296,8 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       }
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(less_than_half_time_term.reload.credit_hours).to be_nil
+      expect(page_content).to have_selector(".usa-alert--error", text: I18n.t("activities.education.term_credit_hours.error_heading"))
+      expect(enrollment_term.reload.credit_hours).to be_nil
     end
 
     it "redirects to document upload on the final term" do
@@ -313,8 +312,14 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       )
     end
 
+    it "preserves the hub edit context when continuing to document upload" do
+      patch :update, params: { education_id: education_activity.id, id: 0, from_edit: 1, nsc_enrollment_term: { credit_hours: 4 } }
+
+      expect(response).to redirect_to(new_activities_flow_education_document_upload_path(education_id: education_activity, from_edit: 1))
+    end
+
     context "with multiple terms" do
-      let(:second_less_than_half_time_term) {
+      let(:second_enrollment_term) {
         range = activity_flow.reporting_window_range
 
         create(:nsc_enrollment_term, :less_than_half_time,
@@ -334,7 +339,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       }
 
       before do
-        second_less_than_half_time_term
+        second_enrollment_term
       end
 
       it "redirects to the next term when not the last term" do
@@ -364,7 +369,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
             education_id: education_activity, id: 1
           )
         )
-        expect(less_than_half_time_term.reload.credit_hours).to eq(0)
+        expect(enrollment_term.reload.credit_hours).to eq(0)
       end
 
       it "redirects to document upload on the final term" do
@@ -380,7 +385,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       end
 
       it "renders an error on the final term when all terms have 0 credit hours" do
-        less_than_half_time_term.update!(credit_hours: 0)
+        enrollment_term.update!(credit_hours: 0)
 
         patch :update, params: {
           education_id: education_activity.id,
@@ -393,11 +398,11 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
         expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_heading"))
         expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_body_multi_month"))
         expect(response.body).to include(I18n.t("activities.education.term_credit_hours.field_error"))
-        expect(second_less_than_half_time_term.reload.credit_hours).to be_nil
+        expect(second_enrollment_term.reload.credit_hours).to be_nil
       end
 
       it "redirects to document upload on the final term when a previous term has credit hours" do
-        less_than_half_time_term.update!(credit_hours: 4)
+        enrollment_term.update!(credit_hours: 4)
 
         patch :update, params: {
           education_id: education_activity.id,
@@ -409,7 +414,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
         expect(response).to redirect_to(
           new_activities_flow_education_document_upload_path(education_id: education_activity)
         )
-        expect(second_less_than_half_time_term.reload.credit_hours).to eq(0)
+        expect(second_enrollment_term.reload.credit_hours).to eq(0)
       end
     end
 
@@ -451,9 +456,144 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include(I18n.t("activities.education.term_credit_hours.error_heading"))
-      expect(less_than_half_time_term.reload.credit_hours).to be_nil
+      expect(enrollment_term.reload.credit_hours).to be_nil
     end
   end
 
-  private
+  context "when NSC reports enrolled" do
+    let(:enrollment_status) { "enrolled" }
+
+    describe "GET #edit" do
+      before { get :edit, params: { education_id: education_activity.id, id: 0 } }
+
+      it "shows the self-attested enrollment options" do
+        expect(page_content).to have_select(I18n.t("activities.education.add_your_term.edit.enrollment_status"),
+          options: [ I18n.t("activities.education.add_your_term.edit.select_one") ] + EducationActivity::SELF_ATTESTED_ENROLLMENT_STATUSES.map { |status| I18n.t("activities.education.add_your_term.edit.enrollment_status_options.#{status}") })
+        expect(page_content).to have_selector('[data-education-term-target="creditHours"][hidden]', visible: :all)
+      end
+    end
+
+    context "when editing saved details" do
+      before do
+        enrollment_term.update!(supplemental_enrollment_status: "unknown", credit_hours: 2.5)
+        get :edit, params: { education_id: education_activity.id, id: 0, from_review: 1, from_edit: 1 }
+      end
+
+      it "restores the supplemental status and fractional hours" do
+        expect(page_content).to have_select(I18n.t("activities.education.add_your_term.edit.enrollment_status"),
+          selected: I18n.t("activities.education.add_your_term.edit.enrollment_status_options.unknown"))
+        expect(page_content).to have_field(I18n.t("activities.education.add_your_term.edit.credit_hours"), with: "2.5")
+        expect(page_content).to have_button(I18n.t("activities.hub.save"))
+      end
+    end
+
+    describe "supplemental validation tracking" do
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) do
+        patch :update, params: { education_id: education_activity.id, id: 0, nsc_enrollment_term: { supplemental_enrollment_status: "", credit_hours: 4 } }
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::EducationTermCreditHoursValidationFailed,
+        extra_attributes: -> {
+          { education_activity_id: kind_of(Integer), term_index: 0, term_date_range: kind_of(String), error_fields: [ "supplemental_enrollment_status" ] }
+        }
+    end
+
+    describe "PATCH #update" do
+      let(:supplemental_status) { "half_time" }
+      let(:submitted_hours) { "4" }
+      let(:submitted_details) { { supplemental_enrollment_status: supplemental_status, credit_hours: submitted_hours } }
+
+      before do
+        patch :update, params: { education_id: education_activity.id, id: 0, from_review: 1, from_edit: 1, nsc_enrollment_term: submitted_details }
+      end
+
+      it "saves the supplemental status separately and returns to review" do
+        expect(enrollment_term.reload).to have_attributes(enrollment_status: "enrolled", supplemental_enrollment_status: "half_time", credit_hours: nil)
+        expect(response).to redirect_to(review_activities_flow_education_path(id: education_activity, from_edit: 1))
+      end
+
+      context "with less-than-half-time enrollment" do
+        let(:supplemental_status) { "less_than_half_time" }
+        let(:submitted_hours) { "2.5" }
+
+        it "saves the reported status and fractional hours" do
+          expect(enrollment_term.reload).to have_attributes(enrollment_status: "enrolled", supplemental_enrollment_status: "less_than_half_time", credit_hours: BigDecimal("2.5"))
+          expect(response).to have_http_status(:redirect)
+        end
+      end
+
+      context "when the applicant is unsure" do
+        let(:supplemental_status) { "unknown" }
+
+        it "saves the reported credit hours" do
+          expect(enrollment_term.reload).to have_attributes(enrollment_status: "enrolled", supplemental_enrollment_status: "unknown", credit_hours: 4)
+          expect(response).to have_http_status(:redirect)
+        end
+      end
+
+      context "without a supplemental status" do
+        let(:supplemental_status) { "" }
+
+        it "renders the enrollment error on the form" do
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(page_content).to have_selector("select[aria-invalid='true']")
+          expect(page_content).to have_text(I18n.t("activerecord.errors.models.nsc_enrollment_term.attributes.supplemental_enrollment_status.inclusion"))
+        end
+      end
+
+      context "with missing hours for less-than-half-time enrollment" do
+        let(:supplemental_status) { "less_than_half_time" }
+        let(:submitted_hours) { "" }
+
+        it "keeps the selected enrollment status when rendering the hours error" do
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(page_content).to have_select(I18n.t("activities.education.add_your_term.edit.enrollment_status"),
+            selected: I18n.t("activities.education.add_your_term.edit.enrollment_status_options.less_than_half_time"))
+          expect(page_content).to have_text(I18n.t("activities.education.term_credit_hours.field_error"))
+        end
+      end
+    end
+  end
+
+  describe "PATCH #update with multiple enrolled terms" do
+    let(:enrollment_status) { "enrolled" }
+    let!(:second_term) { create(:nsc_enrollment_term, :enrolled, education_activity: education_activity) }
+
+    before do
+      enrollment_term.update!(supplemental_enrollment_status: "full_time")
+      patch :update, params: { education_id: education_activity.id, id: 1, no_hours: "1", nsc_enrollment_term: { credit_hours: "" } }
+    end
+
+    it "accepts a term without classes when another term has sufficient supplemental enrollment" do
+      expect(response).to redirect_to(new_activities_flow_education_document_upload_path(education_id: education_activity))
+      expect(second_term.reload).to have_attributes(enrollment_status: "enrolled", supplemental_enrollment_status: nil, credit_hours: 0)
+      expect(enrollment_term.reload.supplemental_enrollment_status).to eq("full_time")
+    end
+  end
+
+  describe "PATCH #update with invalid credit hours" do
+    let(:submitted_hours) { "-1" }
+
+    before do
+      patch :update, params: { education_id: education_activity.id, id: 0, nsc_enrollment_term: { credit_hours: submitted_hours } }
+    end
+
+    it "rejects negative hours" do
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page_content).to have_selector("input[aria-invalid='true']")
+      expect(page_content).to have_no_selector(".usa-alert--error", text: I18n.t("activities.education.term_credit_hours.error_heading"))
+      expect(enrollment_term.reload.credit_hours).to be_nil
+    end
+
+    context "with nonnumeric hours" do
+      let(:submitted_hours) { "abc" }
+
+      it "rejects nonnumeric hours" do
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(page_content).to have_selector("input[aria-invalid='true']")
+        expect(page_content).to have_no_selector(".usa-alert--error", text: I18n.t("activities.education.term_credit_hours.error_heading"))
+      end
+    end
+  end
 end

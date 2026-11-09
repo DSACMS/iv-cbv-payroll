@@ -1,6 +1,7 @@
 <% content_for :activity_flow_header do %>
   <%= render ActivityFlowHeaderComponent.new(
     title: t("activities.work_programs.title_singular"),
+    track_event_prefix: "WorkProgram",
     exit_url: activities_flow_root_path,
     back_url: @back_url
   ) %>
@@ -15,6 +16,5 @@
     current_month: @current_month,
     months: @months,
     month_index: @month_index,
-    error: @error,
     t_scope: "activities.work_programs.hours_input",
     submit_label: from_review ? t("activities.hub.save") : nil %>

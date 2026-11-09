@@ -29,6 +29,8 @@ class VolunteeringActivity < Activity
     coordinator_phone_number
   ].freeze
 
+  validates :organization_name, presence: true
+
   has_many :volunteering_activity_months, dependent: :destroy
   has_activity_months :volunteering_activity_months
 

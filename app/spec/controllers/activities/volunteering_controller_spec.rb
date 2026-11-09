@@ -13,16 +13,65 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
   end
 
   describe "GET #new" do
+    it "tracks CommunityServiceFlowStarted and CommunityServiceInfoViewed" do
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::CommunityServiceFlowStarted,
+        anything,
+        hash_including(
+          cbv_flow_id: activity_flow.id,
+          cbv_applicant_id: activity_flow.cbv_applicant_id,
+          invitation_id: activity_flow.invitation_id,
+          client_agency_id: activity_flow.cbv_applicant.client_agency_id
+        )
+      )
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::CommunityServiceInfoViewed,
+        anything,
+        hash_including(
+          cbv_flow_id: activity_flow.id,
+          volunteering_activity_id: nil
+        )
+      )
+
+      get :new
+    end
+
     it "renders the form with the new title" do
       get :new
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(I18n.t("activities.community_service.new_title"))
+      expect(Capybara.string(response.body)).to have_selector('input[name="volunteering_activity[organization_name]"][required]')
     end
   end
 
   describe "POST #create" do
     let(:volunteering_params) { { volunteering_activity: attributes_for(:volunteering_activity) } }
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { post :create, params: volunteering_params }
+
+    it_behaves_like "tracks an event", TrackEvent::CommunityServiceInfoSubmitted,
+      extra_attributes: -> { { volunteering_activity_id: kind_of(Integer) } }
+
+    context "without an organization name" do
+      let(:volunteering_params) { { volunteering_activity: attributes_for(:volunteering_activity).except(:organization_name) } }
+      let(:perform_tracked_action) { post :create, params: volunteering_params }
+
+      before { post :create, params: volunteering_params }
+
+      it_behaves_like "tracks an event", TrackEvent::CommunityServiceInfoValidationFailed,
+        extra_attributes: -> { { volunteering_activity_id: nil, error_fields: [ "organization_name" ] } }
+
+      it "does not create an activity" do
+        expect(activity_flow.volunteering_activities).to be_empty
+      end
+
+      it "renders the inline validation error" do
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(Capybara.string(response.body)).to have_selector("#volunteering_activity_organization_name_error",
+          text: I18n.t("activerecord.errors.models.volunteering_activity.attributes.organization_name.blank"))
+      end
+    end
 
     it "creates a volunteering activity and redirects to hours input" do
       expect do
@@ -78,6 +127,37 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
   describe "PATCH #update" do
     let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) do
+      patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: "Updated Org" } }
+    end
+
+    it_behaves_like "tracks an event", TrackEvent::CommunityServiceInfoSubmitted,
+      extra_attributes: -> { { volunteering_activity_id: kind_of(Integer) } }
+
+    context "with a blank organization name" do
+      let!(:original_name) { volunteering_activity.organization_name }
+      let(:perform_tracked_action) do
+        patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: " " } }
+      end
+
+      before do
+        patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: " " } }
+      end
+
+      it "preserves the saved organization name" do
+        expect(volunteering_activity.reload.organization_name).to eq(original_name)
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::CommunityServiceInfoValidationFailed,
+        extra_attributes: -> { { volunteering_activity_id: kind_of(Integer), error_fields: [ "organization_name" ] } }
+
+      it "renders the inline validation error" do
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(Capybara.string(response.body)).to have_selector("#volunteering_activity_organization_name_error",
+          text: I18n.t("activerecord.errors.models.volunteering_activity.attributes.organization_name.blank"))
+      end
+    end
 
     it "updates the activity and redirects to hours input" do
       patch :update, params: { id: volunteering_activity.id, volunteering_activity: { organization_name: "Updated Org" } }
@@ -107,6 +187,11 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
   describe "GET #review" do
     let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+    let(:tracked_flow) { activity_flow }
+    let(:perform_tracked_action) { get :review, params: { id: volunteering_activity.id } }
+
+    it_behaves_like "tracks an event", TrackEvent::CommunityServiceReviewViewed,
+      extra_attributes: -> { { volunteering_activity_id: kind_of(Integer) } }
 
     it "renders the review page" do
       get :review, params: { id: volunteering_activity.id }
@@ -168,6 +253,24 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
 
   describe "PATCH #save_review" do
     let(:volunteering_activity) { create(:volunteering_activity, activity_flow: activity_flow) }
+    let(:tracked_flow) { activity_flow }
+
+    it "tracks CommunityServiceReviewSubmitted and CommunityServiceFlowCompleted" do
+      volunteering_activity.update!(draft: true)
+
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::CommunityServiceReviewSubmitted,
+        anything,
+        hash_including(cbv_flow_id: activity_flow.id, volunteering_activity_id: volunteering_activity.id)
+      )
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::CommunityServiceFlowCompleted,
+        anything,
+        hash_including(cbv_flow_id: activity_flow.id, volunteering_activity_id: volunteering_activity.id)
+      )
+
+      patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "Some notes" } }
+    end
 
     it "saves additional comments and redirects to the hub" do
       patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "Some notes" } }
@@ -189,6 +292,17 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       patch :save_review, params: { id: volunteering_activity.id, from_edit: 1, volunteering_activity: { additional_comments: "Updated notes" } }
 
       expect(flash[:activity_added]).to be_nil
+    end
+
+    it "does not track CommunityServiceFlowCompleted when saving an already-published activity" do
+      volunteering_activity.update!(draft: false)
+
+      expect(EventTrackingJob).not_to receive(:perform_later).with(
+        TrackEvent::CommunityServiceFlowCompleted,
+        anything,
+        hash_including(cbv_flow_id: activity_flow.id, volunteering_activity_id: volunteering_activity.id)
+      )
+      patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "Some notes" } }
     end
   end
 

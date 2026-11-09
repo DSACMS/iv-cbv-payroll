@@ -16,6 +16,28 @@ RSpec.describe Cbv::EmployerSearchesController do
     context "when rendering views" do
       render_views
 
+      context "with the search form" do
+        let(:search_params) { { query: "" } }
+        let(:rendered) { Capybara.string(response.body) }
+
+        before do
+          get :show, params: search_params
+        end
+
+        it "associates the inline error with the search field after an empty submission" do
+          expect(rendered).to have_selector("#query_error.usa-error-message", text: I18n.t("cbv.employer_searches.search_form.query_required"))
+          expect(rendered).to have_selector("input.usa-input--error[aria-invalid='true'][aria-describedby='query_error']")
+        end
+
+        context "when a whitespace-only query is submitted" do
+          let(:search_params) { { query: "   " } }
+
+          it "shows the search instruction as an inline error" do
+            expect(rendered).to have_selector("#query_error.usa-error-message", text: I18n.t("cbv.employer_searches.search_form.query_required"))
+          end
+        end
+      end
+
       context "with an aggregator outage alert" do
         let(:enabled_alerts) { "site_alert, aggregator_outage " }
         let(:locale) { :en }

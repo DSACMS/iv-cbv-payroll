@@ -98,7 +98,7 @@ RSpec.describe "Activity hub added alert", :js, type: :feature do
 
       click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
       verify_page(page, title: I18n.t("activities.summary.title"))
-      expect(page).to have_selector(".usa-alert--error", text: I18n.t("activities.submit.consent_required"), normalize_ws: true)
+      expect(page).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("activities.submit.consent_required"), normalize_ws: true)
 
       click_link I18n.t("activities.activity_header_component.back")
       verify_page(page, title: I18n.t("activities.hub.title"))

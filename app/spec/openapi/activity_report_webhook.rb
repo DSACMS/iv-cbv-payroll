@@ -32,11 +32,12 @@ module ActivityReportWebhook
           content: {
             "application/json" => {
               schema: {
-                type: :object, additionalProperties: true,
+                type: :object,
+                additionalProperties: false,
                 properties: {
                   status: { type: :string }, confirmation_code: { type: :string },
                   received_at: { type: :string, format: :"date-time" },
-                  schema_version_received: { type: :string }, unrecognized_fields_detected: { type: :boolean }
+                  schema_version_received: { type: :string }
                 }
               },
               examples: { received: { value: JSON.parse(InvitationDocumentation.code_block("receiving-data/ce-activity-json", section: "Response", language: "json")) } }

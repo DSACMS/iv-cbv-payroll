@@ -55,9 +55,17 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     append_to_option(options, :class, " #{us_class_for_field_type(:check_box)}")
 
     label_text = options.delete(:label)
+    error_message = options.delete(:error_message)
+    input_options = options.except(:hint)
+    input_options[:aria] = build_aria_options(attribute, input_options,
+      existing_aria: options[:aria] || {}, hint: nil, error: error_message.present?)
 
     @template.content_tag(:div, class: "usa-checkbox") do
-      super(attribute, options, *args) + us_toggle_label("checkbox", attribute, label_text, options)
+      @template.safe_join([
+        (field_error(attribute, message: error_message) if error_message),
+        super(attribute, input_options, *args),
+        us_toggle_label("checkbox", attribute, label_text, options)
+      ])
     end
   end
 
@@ -198,9 +206,9 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
     @template.render(MemorableDateComponent.new(form: self, attribute: attribute, legend: legend, hint: hint))
   end
 
-  def field_error(attribute, label_id: nil)
-    return unless has_error?(attribute)
-    error_messages = object.errors.messages_for(attribute)
+  def field_error(attribute, label_id: nil, message: nil)
+    return unless message || has_error?(attribute)
+    error_messages = message ? [ message ] : object.errors.messages_for(attribute)
 
     @template.content_tag(
       :span,
@@ -327,7 +335,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
   # Build the list of description element IDs (error + hint) and the
   # resulting aria-describedby/aria-invalid options for a field.
-  def build_aria_options(attribute, options, existing_aria: {}, hint: options[:hint])
+  def build_aria_options(attribute, options, existing_aria: {}, hint: options[:hint], error: has_error?(attribute))
     aria_options = existing_aria.dup
 
     description_ids = [
@@ -336,11 +344,11 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
       options.delete(:"aria-describedby")
     ].compact.flat_map { |value| value.to_s.split }
 
-    description_ids << "#{field_id(attribute)}_error" if has_error?(attribute)
+    description_ids << "#{field_id(attribute)}_error" if error
     description_ids << hint_id(attribute) if hint
 
     aria_options[:describedby] = description_ids.uniq.join(" ") if description_ids.any?
-    aria_options[:invalid] = "true" if has_error?(attribute)
+    aria_options[:invalid] = "true" if error
 
     aria_options
   end

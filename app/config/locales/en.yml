@@ -71,27 +71,35 @@ en:
         education_activity:
           attributes:
             school_name:
-              blank: Enter the school or program name.
+              blank: Add your school or program name
+            self_attested_enrollment_status:
+              inclusion: Please select an option
             self_attested_term_end:
-              blank: Add term end date to continue
+              blank: Enter a term end date to continue
               invalid: Add a valid date with month and year
             self_attested_term_start:
-              blank: Add term start date to continue
+              blank: Enter a term start date to continue
               invalid: Add a valid date with month and year
         job_training_activity:
           attributes:
             organization_name:
-              blank: Enter the organization or provider name.
+              blank: Add the organization or provider name
             program_name:
-              blank: Enter the program name.
+              blank: Add the program name
         job_training_activity_month:
           attributes:
             hours:
               greater_than_or_equal_to: Hours must be 0 or more
+        nsc_enrollment_term:
+          attributes:
+            supplemental_enrollment_status:
+              inclusion: Please select an option
         volunteering_activity:
           attributes:
             date:
               outside_reporting_window: must be within %{range}
+            organization_name:
+              blank: Add the organization name
         volunteering_activity_month:
           attributes:
             hours:
@@ -139,9 +147,6 @@ en:
       edit_title: Edit Community Service Activity
       hours_input:
         continue: Continue
-        error_body: You need to add community service hours to continue.
-        error_body_multi_month: You need to add community service hours for at least one month to continue.
-        error_heading: No hours entered
         field_error: Add hours for at least one month
         heading: Add your %{month} community service hours with %{organization}
         hours_label: "%{month} community service hours"
@@ -236,11 +241,6 @@ en:
           term_end_hint: If you’re not sure, enter when your current classes are expected to end
           term_start: Term start date
           title: Add your term for %{school_name}
-        errors:
-          dates_body: Add a valid date with a MM/YYYY format to continue.
-          dates_heading: Check your term dates
-          information_body: Add your term dates and enrollment status to continue.
-          information_heading: No education information added
       document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
       edit:
         additional_information_header: Additional comments (optional)
@@ -326,14 +326,12 @@ en:
         header: We're gathering your details from National Student Clearinghouse
         school_or_program: School or program
       term_credit_hours:
-        body_conversion: We will convert these credit hours into your community engagement progress.
-        body_html: Enter the number of credit hours you were taking in the term from %{term_begin} to %{term_end}.
+        body: Some of your enrollment details could not be gathered automatically.
         continue: Continue
         error_body_multi_month: You need to add credit hours for at least one month to continue.
         error_heading: No hours entered
         field_error: Add hours for at least one month
-        heading: Add your credit hours for %{school_name}
-        hours_label: Term credit hours
+        heading: Add more information for %{school_name}
         no_hours_checkbox: I didn't take any classes at %{school_name} this term
         term_date_range: 'Term: %{range}'
       title: Education
@@ -383,17 +381,16 @@ en:
       document_upload_suggestion_text_html: "<ul><li>Paystubs</li><li>1099 or W-2 tax document</li><li>Schedule C (1040) tax document if you're self-employed</li><li>Bank statement showing income earned</li><li>Official email or letter from your employer's HR department with monthly income and hours detailed</li></ul>"
       hours_input:
         continue: Continue
-        error_body: Add income to continue.
-        error_heading: No employment information added
+        error_body_html: If you weren't paid this month, you can <a href="%{month_selection_url}">edit the months you selected</a>. You can report unpaid work later.
+        field_error: Add income to continue
         gross_income_hint: How much you made before taxes
         gross_income_label: "%{month} gross income"
         heading: Add your income and hours for %{organization}
         hours_label: "%{month} hours worked"
         month_indicator: 'Month %{current} of %{total}:'
         unpaid_or_in_kind:
-          error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>.
-          error_heading: No work hours added
-          field_error: Add hours to continue.
+          error_body_html: If you did not work this month, you can <a href="%{month_selection_url}">edit the months you selected</a>
+          field_error: Add hours to continue
           heading: Add your hours for %{organization}
           hours_hint: If you performed in-kind work, provide an estimate
       month_selections:
@@ -402,8 +399,7 @@ en:
           employment_focused:
             description: For each month, you will need to report how much you made and how many hours you worked. Only include months you were paid, you can report unpaid work later.
           error_body: Select at least one month to continue
-          error_heading: No months selected
-          legend: Months worked
+          legend: 'Please select all that apply:'
           paid_description: For each month, you will need to report how much you made and how many hours you worked.
           title: Select which months you worked for %{employer_name}
           unpaid_or_in_kind_description: For each month, you will need to report how many hours you worked.
@@ -641,7 +637,7 @@ en:
     submit:
       confirm: Share my report
       consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform the agency of any income not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for income verification by authorized agency personnel.'
-      consent_required: Please check the legal agreement box to share your report.
+      consent_required: Please check the box to continue
       description: Your report will be sent to %{agency_name}. You must check the legal agreement box to share your report.
       pdf:
         activity_comments: Activity comments
@@ -661,7 +657,6 @@ en:
         description: We have collected %{activity_types} information with your consent and sent it to %{agency_name}. Any additional income that you weren’t able to add to this report should be shared separately with %{agency_name}.
         education_details: Education details
         education_summary: Education summary
-        education_type: Type
         employer_title: 'Employer %{number}: %{name}'
         employment_details: Employment details
         employment_status: Employment status
@@ -671,6 +666,7 @@ en:
         hourly_wage_hours_paid: 'Hourly wage: Hours paid'
         institution_information: Institution information
         institution_title: 'Institution %{number}: %{name}'
+        institution_title_single: 'Institution: %{name}'
         mileage_expense_value: "%{amount} (%{rate} x %{miles} miles)"
         mileage_expenses: Mileage expenses
         not_provided: Not provided
@@ -684,10 +680,9 @@ en:
         payment_information: Payment information (%{number})
         product_name: Emmy Community Engagement
         report_created_at: Date report was created
-        school_contact_email: School official’s email
-        school_contact_name: School official’s name
-        school_contact_phone_number: School phone number
-        school_contact_title: School official’s title
+        school_contact_email: School contact email
+        school_contact_name: School contact name
+        school_contact_phone_number: School contact phone number
         term_date_range: "%{start_date} to %{end_date}"
         title: Community Engagement Report
         total_hours_worked: Total hours worked
@@ -735,8 +730,8 @@ en:
         coordinator_phone: Coordinator's phone
         month: Month
         organization: Organization name
-      consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information you provided is true and complete to the best of your knowledge.</li><li>You will inform %{agency_name} of any missing information or anything that doesn’t match what the tool found.</li><li>You understand that false or omitted information may have legal consequences.</li></ul> By sending this report, you allow %{agency_initials} to use it to determine your eligibility for health coverage.'
-      description: Report what you have. %{agency_name} will follow up with next steps if anything else is needed.
+      consent_label_html: 'Check this box to confirm: <ul class="margin-y-2"><li>The information provided by you is true and complete to the best of your knowledge.</li><li>You agree to inform %{agency_name} of any activities not reflected in this report or any discrepancies found in the information gathered with this tool.</li><li>You understand that providing accurate and complete information is your responsibility, and any false or omitted information may have legal consequences.</li></ul> By sending this report, you authorize its use for community engagement verification by authorized %{agency_initials} personnel.'
+      description: "%{agency_name} will determine your final eligibility based on the activities you've added to your report."
       education:
         address: School address
         community_engagement_hours: Community engagement hours
@@ -746,6 +741,7 @@ en:
         contact_title: School official’s title
         credit_hours: Credit hours
         details: Education details
+        enrollment_details: Enrollment details
         school_name: School or program
         term_credit_hours: Credit hours
         term_details: Term details
@@ -773,15 +769,12 @@ en:
       monthly_details: Monthly details
       no_activities_added: Add at least one activity before submitting your report.
       submit: Submit to %{agency_name}
-      title: Review and submit your community engagement activities
+      title: Review and submit your community engagement report
     unpaid_work:
       title: Unpaid work
     work_programs:
       hours_input:
         continue: Continue
-        error_body: You need to add work program hours to continue.
-        error_body_multi_month: You need to add work program hours for at least one month to continue.
-        error_heading: No hours entered
         field_error: Add hours for at least one month
         heading: Add your %{month} work program hours for %{organization}
         hours_label: "%{month} work program hours"
@@ -1028,6 +1021,8 @@ en:
     employer_searches:
       employer:
         select_employer: Select %{name}
+      search_form:
+        query_required: Enter a search term to continue
       show:
         alert:
           heading: Need help connecting to your payroll provider?
@@ -1051,6 +1046,7 @@ en:
         payroll_providers: Payroll providers
         popular_providers: Or choose from popular payroll providers or apps
         provider_types_label: Provider type
+        query_label: Search for your employer
         results:
           one: We found 1 result
           other: We found %{count} results
@@ -1221,7 +1217,7 @@ en:
         warning_1: Your income report will be sent to %{agency_acronym}.
         warning_2: You must check the legal agreement box to share your report.
       update:
-        consent_to_authorize_warning: Please check the legal agreement box to share your report.
+        consent_to_authorize_warning: Please check the box to continue
     successes:
       show:
         confirmation_code_html: "<strong>Your confirmation code</strong>: %{confirmation_code}"
@@ -1293,6 +1289,7 @@ en:
         less_than_half_time: Less than half-time
         three_quarter_time: Three-quarter Time
         withdrawn: Withdrawn
+      status_as_of_date: "%{status} (as of %{date})"
       student_name_label: Name on school record
     report:
       monthly_summary_table:
@@ -1462,8 +1459,17 @@ en:
         test_data: Test data and expected result
         title: Dedupe Testuser
         withdrawn: Withdrawn
+      enrollment_only:
+        description: 1 school with Y (Enrolled); enrollment level not reported.
+        title: Jordan Testuser
       launch_configuration:
         title: Launch configuration
+      mixed_enrollment_history:
+        description: 2 schools with Y (Enrolled) and half-time history. Y is latest at one school and historical at the other.
+        title: Harper Testuser
+      mixed_partial_enrollment:
+        description: '2 schools: Y (enrollment level not reported) and less-than-half-time. Requires supplemental enrollment details.'
+        title: Riley Testuser
       settings:
         title: Agency settings
       unpaid_work_only:

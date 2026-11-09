@@ -9,14 +9,25 @@ RSpec.describe Activities::JobTraining::MonthsController, type: :controller do
   let(:job_training_activity) { create(:job_training_activity, activity_flow: activity_flow) }
 
   before do
+    allow(controller).to receive(:track_event).and_call_original
     session[:flow_id] = activity_flow.id
     session[:flow_type] = :activity
   end
 
   describe "GET #edit" do
+    it "tracks the month view and enables shared header tracking" do
+      get :edit, params: { job_training_id: job_training_activity.id, id: 0 }
+
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramMonthViewed,
+        job_training_activity_id: job_training_activity.id, month_index: 0,
+        month: I18n.l(activity_flow.reporting_months.first, format: :month_year))
+      expect(Capybara.string(response.body)).to have_selector('[data-activity-flow-header-track-event-prefix-value="WorkProgram"]')
+    end
+
     it "redirects to month 0 for an out-of-range month index" do
       get :edit, params: { job_training_id: job_training_activity.id, id: 99 }
 
+      expect(controller).not_to have_received(:track_event)
       expect(response).to redirect_to(edit_activities_flow_job_training_month_path(job_training_id: job_training_activity, id: 0))
     end
   end
@@ -25,15 +36,20 @@ RSpec.describe Activities::JobTraining::MonthsController, type: :controller do
     it "redirects to document upload on a single-month flow when hours are positive" do
       patch :update, params: { job_training_id: job_training_activity.id, id: 0, job_training_activity_month: { hours: 1 } }
 
+      expect(controller).to have_received(:track_event).with(TrackEvent::WorkProgramMonthSubmitted, hash_including(job_training_activity_id: job_training_activity.id, month_index: 0))
       expect(response).to redirect_to(new_activities_flow_job_training_document_upload_path(job_training_id: job_training_activity.id))
     end
 
     it "returns an error on a single-month flow when no-hours checkbox is selected" do
       patch :update, params: { job_training_id: job_training_activity.id, id: 0, no_hours: "1" }
 
+      expect(controller).to have_received(:track_event).once.with(TrackEvent::WorkProgramMonthValidationFailed, hash_including(error_fields: %w[hours], month_index: 0))
       expect(response).to have_http_status(:unprocessable_content)
       expect(assigns(:back_url)).to be_present
       expect(response.body).to include("back-nav")
+      expect(Capybara.string(response.body)).to have_selector("#job_training_activity_month_hours_error",
+        text: I18n.t("activities.work_programs.hours_input.field_error"))
+      expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--error")
     end
 
     context "with multiple reporting months" do
@@ -60,6 +76,10 @@ RSpec.describe Activities::JobTraining::MonthsController, type: :controller do
         patch :update, params: { job_training_id: job_training_activity.id, id: 2, no_hours: "1" }
 
         expect(response).to have_http_status(:unprocessable_content)
+        expect(Capybara.string(response.body)).to have_selector("#job_training_activity_month_hours_error",
+          text: I18n.t("activities.work_programs.hours_input.field_error"))
+        expect(Capybara.string(response.body)).to have_no_selector(".usa-alert--error")
+        expect(job_training_activity.activity_months.count).to eq(2)
       end
 
       it "allows final month save when another month has hours" do

@@ -6,7 +6,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
   let(:activity_transmission_method_configuration) { { "json_api_url" => api_url } }
   let(:cbv_applicant) do
     create(:cbv_applicant, client_agency_id: "sandbox", first_name: "Jane", middle_name: "A", last_name: "Doe",
-      case_number: "CASE-2026-00987", date_of_birth: Date.new(1990, 4, 15))
+      case_number: "CASE-2026-00987", date_of_birth: Date.new(1990, 4, 15), individual_id: "INDIVIDUAL-123")
   end
   let(:activity_flow) do
     create(
@@ -107,8 +107,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
     end
 
     it "still matches the schema when an unenforced field is blank" do
-      blank = activity_flow.volunteering_activities.new(organization_name: "", draft: true)
-      blank.save!
+      blank = create(:volunteering_activity, activity_flow: activity_flow, coordinator_phone_number: "", draft: true)
       blank.publish!
       create(:volunteering_activity_month, volunteering_activity: blank,
         month: activity_flow.reporting_months.first, hours: 5)

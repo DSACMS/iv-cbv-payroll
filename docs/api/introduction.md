@@ -22,14 +22,42 @@ The JSON and this reference are generated together from executable API tests.
 
 | Environment | Base URL | Purpose |
 | :-- | :-- | :-- |
-| Dev | https://verify-demo.navapbc.cloud | Develop and test integrations. |
-| Demo | https://demo.reportmyincome.org | Demonstrate and evaluate the platform. |
+| Production | https://emmy.cms.gov | Run live integrations with your agency's highest environment. |
+| UAT | https://uat.emmy.cms.gov | Perform integration testing with your agency's second-highest environment, for example UAT. |
+| Production Sandbox | https://sandbox.emmy.cms.gov | Develop and test integrations with your agency's lowest environment, for example SIT. |
+
+**Legacy environments support Emmy Income only.**
+
+| Environment | Base URL | Purpose |
+| :-- | :-- | :-- |
+| Dev (Legacy) | https://verify-demo.navapbc.cloud | Develop and test Emmy Income integrations. |
+| Demo (Legacy) | https://demo.reportmyincome.org | Demonstrate and evaluate Emmy Income. |
 
 These URLs host the invitation API. Report webhooks use your agency's configured
 receiver URL instead.
 
-Use HTTPS for every request and the API key issued for the selected environment.
-Your production hostname and credentials are provided during agency onboarding.
+Use the API key issued for the selected environment. Credentials are provided
+during agency onboarding.
+
+## Networking
+
+Use the following IP addresses when configuring your agency's firewall
+allowlists. Incoming and outgoing are from Emmy's perspective:
+
+- **Incoming IP addresses** are the destination addresses for requests from your
+  agency to Emmy, such as invitation API requests.
+- **Outgoing IP addresses** are the source addresses for requests from Emmy to
+  your agency, such as report and document webhooks.
+
+All traffic uses **HTTPS with TLS 1.2 or later over TCP port 443**.
+Continue to use the environment's hostname for API requests; the IP addresses
+below are for network configuration.
+
+| Environment | Incoming IP addresses | Outgoing IP addresses |
+| :-- | :-- | :-- |
+| Production | `18.213.216.33`, `44.211.14.94`, `52.20.193.29` | `3.215.248.116`, `52.73.87.18`, `54.209.184.111` |
+| UAT | `18.235.177.44`, `52.205.81.42`, `52.6.231.243` | `35.171.156.207`, `3.223.173.67`, `34.197.38.57` |
+| Production Sandbox | `100.26.93.171`, `35.169.122.224`, `44.213.152.175` | `98.91.6.41`, `32.193.216.192`, `32.194.27.148` |
 
 ## API keys and authentication
 

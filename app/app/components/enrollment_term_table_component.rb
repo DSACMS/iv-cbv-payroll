@@ -1,10 +1,11 @@
 class EnrollmentTermTableComponent < ViewComponent::Base
   renders_one :enrollment_status
 
-  def initialize(nsc_enrollment_term:, education_activity: nil, class_names: "")
+  def initialize(nsc_enrollment_term:, education_activity: nil, class_names: "", show_enrollment_status: true)
     @education_activity = education_activity
     @nsc_enrollment_term = nsc_enrollment_term
     @class_names = class_names
+    @show_enrollment_status = show_enrollment_status
   end
 
   def enrollment_status_text(enrollment_status)

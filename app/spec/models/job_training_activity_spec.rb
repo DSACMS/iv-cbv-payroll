@@ -8,14 +8,18 @@ RSpec.describe JobTrainingActivity, type: :model do
       activity = build(:job_training_activity, activity_flow: activity_flow, organization_name: nil)
 
       expect(activity).not_to be_valid
-      expect(activity.errors[:organization_name]).to include("Enter the organization or provider name.")
+      expect(activity.errors[:organization_name]).to include(
+        I18n.t("activerecord.errors.models.job_training_activity.attributes.organization_name.blank")
+      )
     end
 
     it "is invalid without a program name" do
       activity = build(:job_training_activity, activity_flow: activity_flow, program_name: nil)
 
       expect(activity).not_to be_valid
-      expect(activity.errors[:program_name]).to include("Enter the program name.")
+      expect(activity.errors[:program_name]).to include(
+        I18n.t("activerecord.errors.models.job_training_activity.attributes.program_name.blank")
+      )
     end
   end
 
@@ -51,6 +55,30 @@ RSpec.describe JobTrainingActivity, type: :model do
       activity = create(:job_training_activity)
 
       expect(activity.document_upload_months_to_verify).to eq([])
+    end
+  end
+
+  describe "#document_upload_verification_items" do
+    let(:activity) { described_class.new }
+    let(:months) { Array.new(12) { |index| Date.new(2025, 10, 1) + index.months } }
+    let(:expected_items) do
+      months.each_with_index.map do |month, index|
+        { label: I18n.l(month, format: :month), details: I18n.t("shared.hours", count: index + 1) }
+      end
+    end
+
+    before do
+      # Association order is not guaranteed after database updates.
+      months.reverse_each do |month|
+        index = months.index(month)
+        activity.job_training_activity_months.build(month: month, hours: index.zero? ? 0 : index + 1)
+      end
+    end
+
+    it "orders twelve months across years and preserves edited hours" do
+      activity.job_training_activity_months.find { |record| record.month == months.first }.hours = 1
+
+      expect(activity.document_upload_verification_items).to eq(expected_items)
     end
   end
 

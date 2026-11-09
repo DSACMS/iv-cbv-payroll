@@ -43,7 +43,28 @@ RSpec.describe InvitationSchemas do
       schema = document.schema("AgencyMetadataV2SandboxCommunityEngagement")
 
       expect(schema.valid?(metadata)).to be(false)
+      expect(schema.valid?(metadata.merge("date_of_birth" => nil))).to be(false)
       expect(schema.valid?(metadata.merge("date_of_birth" => "01/15/1990"))).to be(true)
+    end
+
+    context "with Louisiana community engagement metadata" do
+      let(:schema) { document.schema("AgencyMetadataV2LouisianaCommunityEngagement") }
+
+      it "accepts a supplied date of birth" do
+        expect(schema.valid?(metadata.merge("date_of_birth" => "01/15/1990"))).to be(true)
+      end
+
+      it "rejects a null date of birth" do
+        expect(schema.valid?(metadata.merge("date_of_birth" => nil))).to be(false)
+      end
+
+      it "rejects an omitted date of birth" do
+        expect(schema.valid?(metadata)).to be(false)
+      end
+
+      it "preserves nullable dates of birth in Louisiana's V1 metadata" do
+        expect(document.schema("AgencyMetadataLouisiana").valid?(louisiana.merge("date_of_birth" => nil))).to be(true)
+      end
     end
 
     context "when one agency's configuration changes" do
@@ -64,6 +85,26 @@ RSpec.describe InvitationSchemas do
         expect(schemas.fetch("AgencyMetadataV2SandboxCommunityEngagement")[:properties]).to have_key(:first_name)
         expect(schemas.fetch("AgencyMetadataV2LouisianaEmployment")[:properties]).to have_key(:first_name)
         expect(schemas.fetch("AgencyMetadataSandbox")[:properties]).to have_key(:middle_name)
+      end
+
+      it "rejects null for a field made required by the agency configuration" do
+        schema = document.schema("AgencyMetadataV2SandboxEmployment")
+
+        expect(schema.valid?({ "individual_id" => "INDIVIDUAL-123", "case_number" => "EXAMPLE-123" })).to be(true)
+        expect(schema.valid?({ "individual_id" => "INDIVIDUAL-123", "case_number" => nil })).to be(false)
+      end
+
+      context "when the field is optional" do
+        before do
+          allow(agency).to receive(:api_required_metadata).with("employment").and_return(%i[individual_id])
+        end
+
+        it "preserves the optional field's nullable type" do
+          schema = document.schema("AgencyMetadataV2SandboxEmployment")
+
+          expect(schema.valid?({ "individual_id" => "INDIVIDUAL-123", "case_number" => nil })).to be(true)
+          expect(schema.valid?({ "individual_id" => "INDIVIDUAL-123" })).to be(true)
+        end
       end
     end
   end
@@ -112,22 +153,8 @@ RSpec.describe InvitationSchemas do
     expect(schema.valid?(sandbox)).to be(true)
     expect(schema.valid?(louisiana)).to be(true)
     expect(schema.valid?({ "case_number" => "EXAMPLE-123" })).to be(true)
-    expect(schema.valid?(sandbox.merge("doc_id" => "EXAMPLE-DOC-123"))).to be(true)
   end
 
-  it "explicitly allows additional properties on every object, including nested schemas" do
-    check = lambda do |value|
-      case value
-      when Hash
-        expect(value[:additionalProperties]).to be(true), "Object schema must allow future fields: #{value.inspect}" if value[:type] == :object
-        value.each_value { |child| check.call(child) }
-      when Array
-        value.each { |child| check.call(child) }
-      end
-    end
-
-    check.call(described_class.schemas)
-  end
 
   it "does not advertise removed activity invitation fields or models" do
     schemas = described_class.schemas
@@ -204,15 +231,19 @@ RSpec.describe InvitationSchemas do
     end
   end
 
-  it "accepts future fields in requests, responses, metadata, and errors" do
-    metadata = sandbox.merge("future_metadata" => { "value" => true })
-    request = { "language" => "en", "agency_partner_metadata" => metadata, "future_request" => true }
-    response = request.merge("tokenized_url" => "https://example.org/start/token", "expiration_date" => "2026-10-07T23:59:59-04:00", "future_response" => true)
+  it "enforces additionalProperties: false on requests, responses, and errors" do
+    request = { "language" => "en", "agency_partner_metadata" => sandbox, "future_request" => true }
+    response = {
+      "tokenized_url" => "https://example.org/start/token",
+      "expiration_date" => "2026-10-07T23:59:59-04:00",
+      "language" => "en",
+      "agency_partner_metadata" => sandbox,
+      "future_response" => true
+    }
     errors = { "errors" => [ { "field" => "language", "message" => "Invalid", "future_detail" => true } ], "future_error" => true }
 
-    expect(document.schema("InvitationRequest").valid?(request)).to be(true)
-    expect(document.schema("InvitationResponse").valid?(response)).to be(true)
-    expect(document.schema("AgencyMetadataLouisiana").valid?(louisiana.merge("future_metadata" => true))).to be(true)
-    expect(document.schema("InvitationErrors").valid?(errors)).to be(true)
+    expect(document.schema("InvitationRequest").valid?(request)).to be(false)
+    expect(document.schema("InvitationResponse").valid?(response)).to be(false)
+    expect(document.schema("InvitationErrors").valid?(errors)).to be(false)
   end
 end

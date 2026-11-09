@@ -257,19 +257,19 @@ RSpec.describe Activities::Employment::MonthSelectionsController, type: :control
       rendered = Capybara.string(response.body)
       expect(response).to have_http_status(:unprocessable_content)
       expect(rendered).to have_text(
-        I18n.t("activities.employment.month_selections.edit.error_heading")
+        I18n.t("activities.employment.month_selections.edit.error_body")
       )
       expect(employment_activity.reload.selected_months).to be_empty
       expect(rendered).to have_css(
         'form#employment_month_selection_form[data-controller~="error-summary"]'
       )
       expect(rendered).to have_css(
-        '.usa-alert[data-error-summary-form-id-value="employment_month_selection_form"]' \
-        '[aria-labelledby="employment_month_selection_form_error_heading"]'
+        '.usa-alert--slim[data-error-summary-form-id-value="employment_month_selection_form"]' \
+        '[aria-describedby="employment_month_selection_form_error_body"]'
       )
       expect(rendered).to have_css(
-        "#employment_month_selection_form_error_heading",
-        text: I18n.t("activities.employment.month_selections.edit.error_heading")
+        "#employment_month_selection_form_error_body",
+        text: I18n.t("activities.employment.month_selections.edit.error_body")
       )
       expect(rendered).to have_no_css(".usa-error-message")
     end

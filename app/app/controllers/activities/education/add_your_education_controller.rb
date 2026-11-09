@@ -1,6 +1,8 @@
 class Activities::Education::AddYourEducationController < Activities::BaseController
   ADD_EDUCATION_METHODS = EducationActivity::EDUCATION_TYPES
 
+  after_action :track_viewed_event, only: :show
+
   def show
   end
 
@@ -12,10 +14,18 @@ class Activities::Education::AddYourEducationController < Activities::BaseContro
       return redirect_to activities_flow_education_add_your_education_path
     end
 
+    track_event(TrackEvent::EducationAddYourEducationSubmitted, education_type: add_education_method)
+
     redirect_to next_step_path(add_education_method)
   end
 
   private
+
+  def track_viewed_event
+    return unless response.successful?
+
+    track_event(TrackEvent::EducationAddYourEducationViewed)
+  end
 
   def next_step_path(add_education_method)
     case add_education_method

@@ -81,6 +81,12 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     # Add a Community Service activity
     within("[data-activity-type='community_service']") { click_button I18n.t("activities.hub.add") }
     verify_page(page, title: I18n.t("activities.community_service.new_title"))
+    organization_field = find_field(I18n.t("activities.community_service.organization_name"))
+    expect(organization_field[:required]).to be_truthy
+    click_button I18n.t("activities.community_service.continue")
+    verify_page(page, title: I18n.t("activities.community_service.new_title"))
+    expect(page).to have_selector("#volunteering_activity_organization_name_error",
+      text: I18n.t("activerecord.errors.models.volunteering_activity.attributes.organization_name.blank"))
     fill_in I18n.t("activities.community_service.organization_name"), with: "Helping Hands"
     fill_in I18n.t("activities.community_service.street_address"), with: "123 Main St"
     fill_in I18n.t("activities.community_service.city"), with: "Springfield"
@@ -381,7 +387,9 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
     verify_page(page, title: I18n.t("activities.summary.title"))
-    expect(page).to have_content I18n.t("activities.submit.consent_required")
+    expect(page).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("activities.submit.consent_required"))
+    expect(page).to have_selector("#activity_flow_consent_to_submit[aria-invalid='true'][aria-describedby='activity_flow_consent_to_submit_error']:focus", visible: :all)
+    expect(page).to have_no_selector(".usa-alert--error")
     find("label[for='activity_flow_consent_to_submit']").click
     click_button I18n.t("activities.summary.submit", agency_name: I18n.t("shared.agency_full_name.sandbox"))
 
@@ -542,7 +550,8 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     click_button I18n.t("activities.hub.save")
 
     # Should stay on hours input with an error
-    expect(page).to have_content I18n.t("activities.community_service.hours_input.error_heading")
+    expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.community_service.hours_input.field_error"))
+    expect(page).to have_no_selector(".usa-alert--error")
 
     # Fix it — set to a valid value and save
     fill_in I18n.t("activities.community_service.hours_input.hours_label", month: month1_label), with: "5"

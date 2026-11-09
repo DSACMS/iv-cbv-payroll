@@ -101,6 +101,69 @@ RSpec.describe EnrollmentDetailsComponent, type: :component do
     end
   end
 
+  context "when the latest status is enrolled" do
+    before { latest.update!(enrollment_status: :enrolled) }
+
+    it "shows the enrollment details without a status row" do
+      enrollment_table = rendered.css("table").first
+
+      expect(enrollment_table).to have_text(latest.school_name.titlecase)
+      expect(enrollment_table).to have_text(I18n.l(latest.term_begin, format: :long))
+      expect(enrollment_table).to have_text(I18n.l(latest.term_end, format: :long))
+      expect(enrollment_table).to have_no_selector("tr", text: I18n.t("components.enrollment_term_table_component.enrollment_status"))
+    end
+
+    it "keeps other statuses in enrollment history" do
+      expect(rendered).to have_button(I18n.t("activities.education.edit.enrollment_history"))
+      expect(rendered).to have_selector(".usa-accordion__content", text: older.enrollment_status_display)
+    end
+
+    context "when the previous status is also enrolled" do
+      before { older.update!(enrollment_status: :enrolled) }
+
+      it "hides status rows and the empty history accordion" do
+        expect(rendered).to have_no_selector("tr", text: I18n.t("components.enrollment_term_table_component.enrollment_status"))
+        expect(rendered).to have_no_button(I18n.t("activities.education.edit.enrollment_history"))
+      end
+    end
+  end
+
+  context "when the only historical status is enrolled" do
+    before { older.update!(enrollment_status: :enrolled) }
+
+    it "shows the latest status without a history accordion" do
+      expect(rendered).to have_text(latest.enrollment_status_display)
+      expect(rendered).to have_no_button(I18n.t("activities.education.edit.enrollment_history"))
+    end
+  end
+
+  context "with enrolled and other historical statuses" do
+    let(:enrolled_history) do
+      create(:nsc_enrollment_term, :enrolled, education_activity: education,
+        school_certified_on: Date.new(2026, 9, 5))
+    end
+    let(:terms) { [ latest, enrolled_history, older ] }
+
+    it "shows other historical statuses and hides enrolled" do
+      expect(rendered).to have_selector(".usa-accordion__content", text: older.enrollment_status_display)
+      expect(rendered).to have_no_text(enrolled_history.enrollment_status_display)
+    end
+  end
+
+  context "with enrolled and other terms" do
+    let(:enrolled_term) do
+      create(:nsc_enrollment_term, :enrolled, education_activity: education, school_name: "Other College")
+    end
+    let(:terms) { [ latest, enrolled_term ] }
+
+    it "keeps both enrollments and shows only the other status row" do
+      expect(rendered).to have_text(enrolled_term.school_name)
+      expect(rendered).to have_selector("tr", text: I18n.t("components.enrollment_term_table_component.enrollment_status"), count: 1)
+      expect(rendered).to have_text(latest.enrollment_status_display)
+      expect(rendered).to have_no_text(enrolled_term.enrollment_status_display)
+    end
+  end
+
   context "when the same status was certified on different dates" do
     before { older.update!(enrollment_status: :withdrawn) }
 

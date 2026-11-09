@@ -13,8 +13,8 @@ by the same build; do not maintain or commit a separate copy.
 
 Contact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) for onboarding and an API key
 for each environment. Keep keys server-side and send requests over HTTPS.
-The Dev environment is `https://verify-demo.navapbc.cloud`; the Demo environment
-is `https://demo.reportmyincome.org`. Production access is arranged during onboarding.
+See [API environments](introduction.md#api-environments) for base URLs and agency
+environment mappings, including legacy environments that support Emmy Income only.
 
 The generated reference covers `POST /api/v1/invitations`,
 `POST /api/v2/{invitation_type}/invitations`, the document delivery webhook, and the CE Activity Report webhook, including self-attested and validated employment and
@@ -98,11 +98,11 @@ V2 agency metadata fields and required fields are read from each agency's
 [client-agency-config.yml](../../app/config/client-agency-config.yml).
 Update that configuration and rebuild the reference rather than maintaining a
 separate V2 field list in the invitation schemas.
-The reference uses OpenAPI 3.1. Use `additionalProperties: true` on objects so
-integrations can tolerate additive schema changes. Month-keyed activity maps
-also use `patternProperties` to validate arrays under `YYYY-MM` keys while
-allowing future fields with other names. Nullable fields include `null` in their
-`type` array.
+The reference uses OpenAPI 3.1. Objects do not allow undocumented fields; new
+fields are communicated via updated schemas rather than allowing additive
+schema changes. Month-keyed activity maps also use `patternProperties` to
+validate arrays under `YYYY-MM` keys while allowing future fields with other
+names. Nullable fields include `null` in their `type` array.
 Request examples come from real test requests using synthetic data and fixed
 tokens. The CE model example comes from the transmission specs; model examples
 and webhook request and response examples are validated during the build.

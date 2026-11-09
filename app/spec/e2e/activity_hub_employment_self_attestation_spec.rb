@@ -13,7 +13,8 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
   it "supports editing an employment activity through the full flow" do # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
     visit URI(root_url).request_uri
-    invitation = create(:activity_flow_invitation, client_agency_id: "sandbox", verification_range: "last_12_complete_months")
+    applicant = create(:cbv_applicant, first_name: "Example", last_name: "Member")
+    invitation = create(:activity_flow_invitation, client_agency_id: "sandbox", verification_range: "last_12_complete_months", cbv_applicant: applicant)
     visit activities_flow_start_path(token: invitation.auth_token)
     click_link I18n.t("activities.entries.show.continue")
     verify_page(page, title: I18n.t("activities.hub.title"))
@@ -23,6 +24,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: flow.required_month_count)}",
       normalize_ws: true)
     flow.update!(employment_focused: true)
+    flow.set_required_month_count!(2)
     expect(flow.reporting_months.size).to eq(12)
     first_selected_month = flow.reporting_months.first
     unselected_month = flow.reporting_months.second
@@ -90,7 +92,8 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
     expect(page).to have_no_selector("[data-controller='activity-flow-header']")
     expect(page).to have_content(flow.reporting_window_display)
     click_button I18n.t("activities.employment.month_selections.edit.continue")
-    expect(page).to have_content(I18n.t("activities.employment.month_selections.edit.error_heading"))
+    expect(page).to have_selector(".usa-alert--error",
+      text: I18n.t("activities.employment.month_selections.edit.error_body"))
 
     [ first_selected_month_label, second_selected_month_label ].each do |month_label|
       find("label", text: month_label, exact_text: true).click
@@ -256,13 +259,32 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       'input[name="employment_activity_month[gross_income]"][required]'
     )
     expect(page).to have_selector(
-      ".usa-alert--error",
-      text: I18n.t("activities.employment.hours_input.error_body")
+      ".usa-alert--info",
+      text: ActionView::Base.full_sanitizer.sanitize(I18n.t("activities.employment.hours_input.error_body_html", month_selection_url: ""))
     )
+    expect(page).to have_no_selector(".usa-alert--error")
+    reporting_for = find("div", text: I18n.t("activities.reporting_for.text_html", name: "Example Member"), exact_text: true)
+    banner = find(".usa-alert--info")
+    expect(banner.native.rect.y + banner.native.rect.height).to be <= reporting_for.native.rect.y
+    expect(page).to have_link("edit the months you selected",
+      href: edit_activities_flow_income_employment_month_selection_path(employment_id: flow.employment_activities.last))
     expect(page).to have_selector(
       'input[name="employment_activity_month[gross_income]"].usa-input--error'
     )
     expect(page).to have_selector(".usa-error-message", count: 1)
+    expect(page).to have_selector(".usa-error-message", text: I18n.t("activities.employment.hours_input.field_error"), exact_text: true)
+
+    # Zero income is valid when the only invalid field is hours.
+    fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: "0"
+    fill_in I18n.t("activities.employment.hours_input.hours_label", month: first_selected_month_name), with: "-1"
+    click_button I18n.t("activities.hub.save")
+    expect(page).to have_selector('input[name="employment_activity_month[hours]"].usa-input--error')
+    verify_page(page, title: updated_monthly_details_title)
+    expect(page).to have_no_selector('input[name="employment_activity_month[gross_income]"].usa-input--error')
+    expect(page).to have_no_selector(".usa-alert--info")
+    expect(page).to have_no_selector(".usa-alert--error")
+    expect(page).to have_selector("#employment_activity_month_hours:focus")
+    expect(page).to have_no_text(I18n.t("activities.employment.hours_input.field_error"))
 
     # Fix it — set to valid values and save
     fill_in I18n.t("activities.employment.hours_input.gross_income_label", month: first_selected_month_name), with: "200"

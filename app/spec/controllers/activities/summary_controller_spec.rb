@@ -416,18 +416,66 @@ RSpec.describe Activities::SummaryController, type: :controller do
       )
 
       get :show
-      expect(Capybara.string(response.body).all("table").find { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }.all("tbody tr").first).to have_text("#{I18n.t("activities.summary.education.type")} #{I18n.t("activities.education.types.college_or_university")}", normalize_ws: true)
-
       doc = Capybara.string(response.body)
+
+      education_info_tables = doc.all("table").select { |table| table.has_text?(I18n.t("shared.table_headers.education_information")) }
+      expect(education_info_tables.size).to eq(2)
+      expect(education_info_tables.first.all("tbody tr").first).to have_text(I18n.t("components.enrollment_term_table_component.student_name_label"), normalize_ws: true)
+
       expect(response.body).to include(half_time_school_name)
       expect(response.body).to include(less_than_half_time_school_name)
       expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.half_time"))
       expect(response.body).to include(I18n.t("components.enrollment_term_table_component.status.less_than_half_time"))
     end
 
+    it "renders multiple enrollment statuses with their certification dates for the same school and term" do
+      school_name = "Harborview College"
+      activity = create(
+        :education_activity,
+        activity_flow: activity_flow,
+        data_source: :validated,
+        status: :succeeded
+      )
+      first_month = activity_flow.reporting_months.first
+      second_month = activity_flow.reporting_months.second
+      earlier_certified_on = first_month.beginning_of_month
+      later_certified_on = second_month.beginning_of_month
+      create(
+        :nsc_enrollment_term,
+        :full_time,
+        education_activity: activity,
+        school_name: school_name,
+        term_begin: first_month,
+        term_end: second_month.end_of_month,
+        school_certified_on: earlier_certified_on
+      )
+      create(
+        :nsc_enrollment_term,
+        :less_than_half_time,
+        education_activity: activity,
+        school_name: school_name,
+        term_begin: first_month,
+        term_end: second_month.end_of_month,
+        school_certified_on: later_certified_on,
+        credit_hours: 2
+      )
+
+      get :show
+      doc = Capybara.string(response.body)
+
+      enrollment_table = doc.all("table").find { |table| table.has_text?(I18n.t("activities.summary.education.enrollment_details")) }
+      term_row = enrollment_table.all("tbody tr").first
+
+      expect(term_row).to have_text(I18n.t("components.enrollment_term_table_component.status.full_time"), normalize_ws: true)
+      expect(term_row).to have_text(I18n.t("components.enrollment_term_table_component.status.less_than_half_time"), normalize_ws: true)
+      expect(term_row).to have_text(I18n.l(earlier_certified_on, format: :long), normalize_ws: true)
+      expect(term_row).to have_text(I18n.l(later_certified_on, format: :long), normalize_ws: true)
+    end
+
     context "with self-attested employment activities" do
       it "includes self-attested employment in all_activities list" do
-        employment_activity = create(:employment_activity, activity_flow: activity_flow)
+        employment_activity = create(
+          :employment_activity, activity_flow: activity_flow)
         create(
           :employment_activity_month,
           employment_activity: employment_activity,
@@ -442,6 +490,27 @@ RSpec.describe Activities::SummaryController, type: :controller do
         income_activity = all_activities.find { |a| a[:type] == :employment && a[:employment_activity].present? }
         expect(income_activity).to be_present
         expect(income_activity[:employment_activity]).to eq(employment_activity)
+      end
+
+      it "omits gross income for unpaid or in-kind employment" do
+        employment_activity = create(
+          :employment_activity,
+          activity_flow: activity_flow,
+          employer_name: "Example Nonprofit",
+          compensation_type: :unpaid_or_in_kind
+        )
+        create(
+          :employment_activity_month,
+          employment_activity: employment_activity,
+          month: activity_flow.reporting_months.first.beginning_of_month,
+          hours: 40,
+          gross_income: 0
+        )
+
+        get :show
+
+        expect(response.body).to include(employment_activity.employer_name)
+        expect(response.body).not_to include(I18n.t("activities.summary.employment.gross_income"))
       end
 
       it "renders self-attested employment details and monthly values in the summary table" do
@@ -786,7 +855,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(response).to redirect_to(household_start_path(token: member.household.auth_token))
     end
 
-    it "re-renders summary with alert when consent is missing and keeps activity table content" do
+    it "re-renders summary with an inline consent error and keeps activity table content" do
       create(
         :volunteering_activity,
         activity_flow: activity_flow,
@@ -797,9 +866,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
 
       expect(activity_flow.reload.completed_at).to be_nil
       expect(response).to have_http_status(:unprocessable_content)
-      expect(flash.now[:alert]).to eq(I18n.t("activities.submit.consent_required"))
-      expect(response.body).to include("Helping Hands")
-      expect(response.body).to include(I18n.t("activities.summary.legal_agreement"))
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("activities.submit.consent_required"))
+      expect(rendered).to have_selector("#activity_flow_consent_to_submit[aria-invalid='true'][aria-describedby='activity_flow_consent_to_submit_error']")
+      expect(rendered).to have_no_selector(".usa-alert--error")
+      expect(rendered).to have_text("Helping Hands")
+      expect(rendered).to have_selector("h2", text: I18n.t("activities.summary.legal_agreement"))
     end
 
     it "keeps an added-activity flash when consent is missing" do
@@ -832,10 +904,12 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(activity_flow.reload.completed_at).to be_nil
         expect(response).to have_http_status(:unprocessable_content)
         expect(response).to render_template("activities/activities/employment_focused_review")
-        expect(flash.now[:alert]).to eq(I18n.t("activities.submit.consent_required"))
-        expect(response.body).to include("Gainesville Wrecking")
-        expect(response.body).to include(CGI.escapeHTML(I18n.t("activities.activities.employment_focused_review.header")))
-        expect(response.body).not_to include(CGI.escapeHTML(I18n.t("activities.summary.title")))
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("activities.submit.consent_required"))
+        expect(rendered).to have_selector("#activity_flow_consent_to_submit[aria-invalid='true'][aria-describedby='activity_flow_consent_to_submit_error']")
+        expect(rendered).to have_no_selector(".usa-alert--error")
+        expect(rendered).to have_text("Gainesville Wrecking")
+        expect(rendered).to have_selector("h1", text: I18n.t("activities.activities.employment_focused_review.header"))
       end
     end
 

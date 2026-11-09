@@ -57,7 +57,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         end
 
         it "routes the applicant to the fallback page" do
-          expect(response).to redirect_to(activities_flow_education_error_path(education_type: "college_or_university"))
+          expect(response).to redirect_to(activities_flow_education_error_path(education_type: "college_or_university", education_id: activity_flow.education_activities.last.id))
         end
 
         it "preserves the original type when the applicant enters education manually" do
@@ -223,7 +223,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       it "redirects to the error page" do
         get :show, params: { id: education_activity.id }
 
-        expect(response).to redirect_to(activities_flow_education_error_path)
+        expect(response).to redirect_to(activities_flow_education_error_path(education_id: education_activity.id))
       end
     end
 
@@ -237,7 +237,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       it "redirects to the error page" do
         get :show, params: { id: education_activity.id }
 
-        expect(response).to redirect_to(activities_flow_education_error_path)
+        expect(response).to redirect_to(activities_flow_education_error_path(education_id: education_activity.id))
       end
     end
 
@@ -381,7 +381,7 @@ RSpec.describe Activities::EducationController, type: :controller do
       expect(rendered).to have_field(I18n.t("activities.education.new.contact_email"))
       expect(rendered).to have_field(I18n.t("activities.education.new.contact_phone_number"))
       expect(rendered).to have_selector("label[for='education_activity_contact_title']",
-        text: "#{I18n.t('activities.education.new.contact_title')} (#{I18n.t('us_form_with.optional').downcase})")
+        exact_text: I18n.t("activities.education.new.contact_title"))
     end
   end
 
@@ -774,6 +774,54 @@ RSpec.describe Activities::EducationController, type: :controller do
         expect(response.body).to include(I18n.t("activities.education.review.community_engagement_hours"))
       end
 
+      context "with supplemental enrollment details" do
+        let(:supplemental_status) { "unknown" }
+        let(:credit_hours) { BigDecimal("2.5") }
+        let!(:enrolled_term) do
+          create(:nsc_enrollment_term, :enrolled, education_activity: education_activity,
+            supplemental_enrollment_status: supplemental_status, credit_hours: credit_hours)
+        end
+        let(:review_content) { Capybara.string(response.body) }
+
+        before { get :review, params: { id: education_activity.id, from_edit: 1 } }
+
+        it "renders the supplemental status and fractional hours in the term details" do
+          expect(review_content).to have_selector("td[data-label='#{I18n.t('components.enrollment_term_table_component.enrollment_status')}']",
+            text: I18n.t("activities.education.add_your_term.edit.enrollment_status_options.unknown"))
+          expect(review_content).to have_selector("td[data-label='#{I18n.t('activities.education.review.credit_hours')}']", text: ApplicationHelper.format_decimal_amount(credit_hours).to_s, exact_text: true)
+          expect(review_content).to have_selector("td[data-label='#{I18n.t('activities.education.review.community_engagement_hours')}']",
+            text: ApplicationHelper.format_decimal_amount(credit_hours * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER).to_s, exact_text: true)
+        end
+
+        context "with sufficient supplemental enrollment" do
+          let(:supplemental_status) { "half_time" }
+          let(:credit_hours) { nil }
+
+          it "shows the supplemental status and the monthly hours threshold" do
+            expect(review_content).to have_text(I18n.t("activities.education.add_your_term.edit.enrollment_status_options.half_time"))
+            expect(review_content).to have_selector("td[data-label='#{I18n.t('activities.education.review.credit_hours')}']", text: I18n.t("shared.not_applicable"))
+            expect(review_content).to have_selector("td[data-label='#{I18n.t('activities.education.review.community_engagement_hours')}']",
+              text: ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD.to_s, exact_text: true)
+          end
+        end
+
+        context "with term display order different from input order" do
+          before do
+            create(:nsc_enrollment_term, :enrolled, education_activity: education_activity,
+              term_begin: enrolled_term.term_begin, term_end: enrolled_term.term_end,
+              school_name: "A College", supplemental_enrollment_status: "half_time")
+          end
+
+          it "uses the input queue index in each review edit link" do
+            get :review, params: { id: education_activity.id, from_edit: 1 }
+
+            first_section = review_content.all("table")[1]
+            expect(first_section).to have_link(I18n.t("activities.education.review.edit"),
+              href: edit_activities_flow_education_term_credit_hour_path(education_id: education_activity, id: 1, from_review: 1, from_edit: 1))
+          end
+        end
+      end
+
       it "renders term-hours edit link to the term credit-hours screen" do
         create(
           :nsc_enrollment_term,
@@ -1047,6 +1095,18 @@ RSpec.describe Activities::EducationController, type: :controller do
 
   describe "PATCH #update" do
     let(:education_activity) { create(:education_activity, activity_flow: activity_flow) }
+
+    context "when editing a partially self-attested activity from the hub" do
+      before do
+        education_activity.update!(data_source: :partially_self_attested)
+        create(:nsc_enrollment_term, :enrolled, education_activity: education_activity)
+        patch :update, params: { id: education_activity.id, from_edit: 1, education_activity: { additional_comments: "" } }
+      end
+
+      it "preserves the edit context when collecting supplemental details" do
+        expect(response).to redirect_to(edit_activities_flow_education_term_credit_hour_path(education_id: education_activity, id: 0, from_edit: 1))
+      end
+    end
 
     context "when publishing newly verified education" do
       let(:education_activity) { create(:education_activity, activity_flow: activity_flow, data_source: :validated, draft: true) }

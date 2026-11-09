@@ -6,6 +6,51 @@ RSpec.describe LauncherController, type: :controller do
   render_views
 
   describe "GET #advanced" do
+    context "with the enrollment-only scenario" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("enrollment_only_jordan") }
+      let(:rendered) { Capybara.string(response.body) }
+
+      before { get :advanced }
+
+      it "lists the enrolled test user in the fake scenario options" do
+        scenarios = rendered.find("#fake-test-scenarios-content", visible: :all)
+
+        expect(scenarios).to have_field("test_scenario_enrollment_only_jordan", type: "radio", with: profile.scenario_key, visible: :all)
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.enrollment_only.title"))
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.enrollment_only.description"))
+      end
+    end
+
+    context "with the mixed enrollment history scenario" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("mixed_enrollment_history_harper") }
+      let(:rendered) { Capybara.string(response.body) }
+
+      before { get :advanced }
+
+      it "lists the mixed enrollment test user in the fake scenario options" do
+        scenarios = rendered.find("#fake-test-scenarios-content", visible: :all)
+
+        expect(scenarios).to have_field("test_scenario_mixed_enrollment_history_harper", type: "radio", with: profile.scenario_key, visible: :all)
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.mixed_enrollment_history.title"))
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.mixed_enrollment_history.description"))
+      end
+    end
+
+    context "with the mixed partial enrollment scenario" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("partial_enrollment_riley") }
+      let(:rendered) { Capybara.string(response.body) }
+
+      before { get :advanced }
+
+      it "lists the test user and describes the supplemental details flow" do
+        scenarios = rendered.find("#fake-test-scenarios-content", visible: :all)
+
+        expect(scenarios).to have_field("test_scenario_partial_enrollment_riley", type: "radio", with: profile.scenario_key, visible: :all)
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.mixed_partial_enrollment.title"))
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.mixed_partial_enrollment.description"))
+      end
+    end
+
     context "with the duplicate enrollment scenario" do
       let(:profile) { Launcher::FakeNscScenarios.by_key("duplicate_enrollments_dedupe") }
       let(:rendered) { Capybara.string(response.body) }
@@ -172,15 +217,16 @@ RSpec.describe LauncherController, type: :controller do
         expect(location).not_to include("launcher_timeout")
       end
 
-      it "does not include renewal_required_months for non-renewal reporting windows" do
+      it "includes renewal_required_months for application reporting windows too" do
         post :create, params: {
           client_agency_id: "sandbox",
           launch_type: "generic",
           reporting_window: "application",
-          renewal_required_months: "2"
+          reporting_window_months: "12",
+          renewal_required_months: "1"
         }
 
-        expect(response.location).not_to include("renewal_required_months")
+        expect(response.location).to include("renewal_required_months=1")
       end
 
       it "returns the generated URL as JSON" do
