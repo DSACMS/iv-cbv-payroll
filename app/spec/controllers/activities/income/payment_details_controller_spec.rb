@@ -136,6 +136,7 @@ RSpec.describe Activities::Income::PaymentDetailsController do
       end
 
       it "tracks viewed payment details with activity_flow_id" do
+        expect(controller).to receive(:track_event).with(TrackEvent::ApplicantViewedPaymentDetails, anything).and_call_original
         allow(EventTrackingJob).to receive(:perform_later).with(TrackEvent::CbvPageView, anything, anything)
         expect(EventTrackingJob).to receive(:perform_later).with(TrackEvent::ApplicantViewedPaymentDetails, anything, hash_including(
           activity_flow_id: flow.id,
@@ -262,6 +263,7 @@ RSpec.describe Activities::Income::PaymentDetailsController do
     end
 
     it "tracks saved payment details with activity_flow_id" do
+      expect(controller).to receive(:track_event).with(TrackEvent::ApplicantSavedPaymentDetails, anything).and_call_original
       allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantSavedPaymentDetails", anything, hash_including(
         activity_flow_id: flow.id,
@@ -273,6 +275,12 @@ RSpec.describe Activities::Income::PaymentDetailsController do
         user: { account_id: account_id },
         payroll_account: { additional_information: comment }
       }
+    end
+
+    it "does not track saving an inaccessible payroll account" do
+      expect(EventTrackingJob).not_to receive(:perform_later).with(TrackEvent::ApplicantSavedPaymentDetails, anything, anything)
+
+      patch :update, params: { user: { account_id: "another-account" }, payroll_account: { additional_information: comment } }
     end
   end
 end
