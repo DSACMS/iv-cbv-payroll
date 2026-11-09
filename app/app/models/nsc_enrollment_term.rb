@@ -97,6 +97,8 @@ class NscEnrollmentTerm < ApplicationRecord
     month_format = abbreviated ? :abbreviated_month : :month
     month_year_format = abbreviated ? :abbreviated_month_year : :month_year
 
+    return I18n.l(term_begin, format: month_year_format) if term_begin.beginning_of_month == term_end.beginning_of_month
+
     if term_begin.year == term_end.year
       "#{I18n.l(term_begin, format: month_format)} - #{I18n.l(term_end, format: month_year_format)}"
     else
