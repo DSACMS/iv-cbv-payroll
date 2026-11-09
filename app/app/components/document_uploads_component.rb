@@ -35,7 +35,7 @@ class DocumentUploadsComponent < ViewComponent::Base
   end
 
   def edit_label
-    @edit_label || I18n.t("activities.hub.edit")
+    @edit_label || I18n.t("activities.document_uploads.edit")
   end
 
   def filename_for(document)
