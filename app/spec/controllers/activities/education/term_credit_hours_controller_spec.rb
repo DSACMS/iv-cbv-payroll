@@ -296,6 +296,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       }
 
       expect(response).to have_http_status(:unprocessable_content)
+      expect(page_content).to have_selector(".usa-alert--error", text: I18n.t("activities.education.term_credit_hours.error_heading"))
       expect(enrollment_term.reload.credit_hours).to be_nil
     end
 
@@ -581,6 +582,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
     it "rejects negative hours" do
       expect(response).to have_http_status(:unprocessable_content)
       expect(page_content).to have_selector("input[aria-invalid='true']")
+      expect(page_content).to have_no_selector(".usa-alert--error", text: I18n.t("activities.education.term_credit_hours.error_heading"))
       expect(enrollment_term.reload.credit_hours).to be_nil
     end
 
@@ -590,6 +592,7 @@ RSpec.describe Activities::Education::TermCreditHoursController, type: :controll
       it "rejects nonnumeric hours" do
         expect(response).to have_http_status(:unprocessable_content)
         expect(page_content).to have_selector("input[aria-invalid='true']")
+        expect(page_content).to have_no_selector(".usa-alert--error", text: I18n.t("activities.education.term_credit_hours.error_heading"))
       end
     end
   end

@@ -82,8 +82,7 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
       return true
     end
 
-    @current_term.errors.add(:credit_hours, I18n.t("activities.education.term_credit_hours.field_error"))
-    @no_hours_error = true
+    @current_term.errors.add(:credit_hours, :no_hours, message: I18n.t("activities.education.term_credit_hours.field_error"))
     false
   end
 

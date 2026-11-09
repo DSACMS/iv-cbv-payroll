@@ -24,7 +24,7 @@
   <%= t("activities.education.term_credit_hours.body") %>
 </p>
 
-<% if @no_hours_error %>
+<% if @current_term.errors.of_kind?(:credit_hours, :no_hours) %>
   <%= render Uswds::Alert.new(
     type: :error,
     heading: t("activities.education.term_credit_hours.error_heading"),
