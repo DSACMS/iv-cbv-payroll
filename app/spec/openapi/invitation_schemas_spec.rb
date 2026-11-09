@@ -152,23 +152,28 @@ RSpec.describe InvitationSchemas do
     end
   end
 
-  context "with a case number on the shared metadata schema" do
-    let(:schema) { document.schema("AgencyPartnerMetadata") }
+  it "keeps agency-specific fields off the shared metadata schema" do
+    expect(described_class.schemas[:AgencyPartnerMetadata]).not_to have_key(:properties)
+    expect(described_class.schemas["AgencyMetadataLouisiana"][:properties].keys).to contain_exactly(:doc_id)
+  end
 
-    it "rejects numeric values even when the Louisiana branch matches" do
-      expect(schema.valid?(louisiana.merge("case_number" => 123))).to be(false)
+  context "with a case number on the sandbox metadata schema" do
+    let(:schema) { document.schema("AgencyMetadataSandbox") }
+
+    it "rejects numeric values" do
+      expect(schema.valid?(sandbox.merge("case_number" => 123))).to be(false)
     end
 
     it "accepts string values" do
-      expect(schema.valid?(louisiana.merge("case_number" => "EXAMPLE-123"))).to be(true)
+      expect(schema.valid?(sandbox.merge("case_number" => "EXAMPLE-123"))).to be(true)
     end
 
     it "accepts null values" do
-      expect(schema.valid?(louisiana.merge("case_number" => nil))).to be(true)
+      expect(schema.valid?(sandbox.merge("case_number" => nil))).to be(true)
     end
 
     it "does not require a case number" do
-      expect(schema.valid?(louisiana)).to be(true)
+      expect(schema.valid?(sandbox.except("case_number"))).to be(true)
     end
   end
 

@@ -15,7 +15,6 @@ module InvitationSchemas
     schemas = {
       AgencyPartnerMetadata: {
         type: :object,
-        properties: { case_number: metadata_fields[:case_number] },
         description: InvitationDocumentation.read("agency-partner-metadata"),
         anyOf: %w[Sandbox NewHampshire Louisiana Research Accenture].map { |agency| { "$ref" => "#/components/schemas/AgencyMetadata#{agency}" } }
       },
