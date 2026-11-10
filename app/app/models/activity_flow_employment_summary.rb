@@ -11,6 +11,11 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
     employment_type: :string,
     employer_phone_number: :string,
     employer_address: :string,
+    employer_address_line1: :string,
+    employer_address_line2: :string,
+    employer_address_city: :string,
+    employer_address_state: :string,
+    employer_address_postal_code: :string,
     employment_status: :string,
     employment_start_date: :date,
     employment_termination_date: :date,
@@ -41,7 +46,7 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
         employer_name: row.employer_name,
         employment_type: row.employment_type,
         employer_phone_number: row.employer_phone_number,
-        employer_address: row.employer_address,
+        employer_address: employer_address_from_summary(row),
         employment_status: row.employment_status,
         employment_start_date: row.employment_start_date,
         employment_termination_date: row.employment_termination_date,
@@ -67,6 +72,23 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
     load_complete_summary_data(activity_flow: activity_flow) || {}
   end
 
+  def self.employer_address_from_summary(row)
+    fields = {
+      line1: row.employer_address_line1,
+      line2: row.employer_address_line2,
+      city: row.employer_address_city,
+      state: row.employer_address_state,
+      postal_code: row.employer_address_postal_code
+    }
+
+    return fields if fields.values.any?(&:present?)
+
+    # Legacy rows have only the original adress column; preserve it as line1.
+    return { line1: row.employer_address, line2: nil, city: nil, state: nil, postal_code: nil } if row.employer_address.present?
+
+    nil
+  end
+
   def self.persist_from_report(activity_flow:, payroll_account:, report:)
     return unless report.has_fetched?
 
@@ -74,7 +96,25 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
     employment = account_report&.employment
     income = account_report&.income
     address = employment&.employer_address
-    address = address.to_json if address.is_a?(Hash)
+    address = address.with_indifferent_access if address.is_a?(Hash)
+    address_fields =
+      if address.is_a?(Hash)
+        {
+          employer_address_line1: address[:line1],
+          employer_address_line2: address[:line2],
+          employer_address_city: address[:city],
+          employer_address_state: address[:state],
+          employer_address_postal_code: address[:postal_code]
+        }
+      else
+        {
+          employer_address_line1: address,
+          employer_address_line2: nil,
+          employer_address_city: nil,
+          employer_address_state: nil,
+          employer_address_postal_code: nil
+        }
+      end
 
     upsert(
       {
@@ -83,7 +123,8 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
         employer_name: employment&.employer_name,
         employment_type: employment&.employment_type&.to_s,
         employer_phone_number: employment&.employer_phone_number,
-        employer_address: address,
+        employer_address: address.is_a?(String) ? address : nil,
+        **address_fields,
         employment_status: employment&.status,
         employment_start_date: employment&.start_date,
         employment_termination_date: employment&.termination_date,
@@ -95,6 +136,8 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
       unique_by: :index_activity_flow_employment_summaries_on_flow_account,
       update_only: %i[
         employer_name employment_type employer_phone_number employer_address
+        employer_address_line1 employer_address_line2 employer_address_city
+        employer_address_state employer_address_postal_code
         employment_status employment_start_date employment_termination_date
         pay_frequency compensation_amount compensation_unit redacted_at
       ]
