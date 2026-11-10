@@ -170,7 +170,7 @@ GEM
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
     csv (3.3.7)
-    datadog (2.47.0)
+    datadog (2.48.0)
       cgi
       datadog-ruby_core_source (~> 3.5, >= 3.5.6)
       libdatadog (~> 46.1.0.1.1)
@@ -669,7 +669,7 @@ DEPENDENCIES
   css_parser (~> 3.3.0)
   cssbundling-rails
   csv
-  datadog (~> 2.43)
+  datadog (~> 2.48)
   debase (~> 0.2.9)
   debase-ruby_core_source (~> 4.0)
   debug
