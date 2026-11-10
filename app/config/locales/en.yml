@@ -241,7 +241,7 @@ en:
           term_end_hint: If you’re not sure, enter when your current classes are expected to end
           term_start: Term start date
           title: Add your term for %{school_name}
-      document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
+      document_upload_term_label: "%{school_name} %{start_date} to %{end_date}:"
       edit:
         additional_information_header: Additional comments (optional)
         additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
