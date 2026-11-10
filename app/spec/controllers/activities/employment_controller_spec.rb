@@ -719,7 +719,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         table = Capybara.string(response.body).find("table.activity-review-hours-table")
         links = table.all("a.usa-link")
         expected_labels = [ first_month, third_month ].map do |month|
-          I18n.t("shared.edit_month", month: month)
+          I18n.t("shared.edit_month", month: I18n.l(month, format: :month_year))
         end
 
         expect(links.size).to eq(4)
