@@ -16,7 +16,7 @@ RSpec.describe PersistedReportAdapter do
       employer_name: "Acme Corp",
       employment_type: "w2",
       employer_phone_number: "6045551234",
-      employer_address: "123 Main St",
+      employer_address_line1: "123 Main St",
       employment_status: "employed",
       employment_start_date: Date.new(2024, 1, 15),
       employment_termination_date: nil,
@@ -56,7 +56,13 @@ RSpec.describe PersistedReportAdapter do
 
       expect(report.employment).to have_attributes(
         employer_phone_number: "6045551234",
-        employer_address: "123 Main St",
+        employer_address: {
+          line1: "123 Main St",
+          line2: nil,
+          city: nil,
+          state: nil,
+          postal_code: nil
+        },
         status: "employed",
         start_date: Date.new(2024, 1, 15),
         termination_date: nil

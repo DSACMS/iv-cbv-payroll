@@ -116,7 +116,13 @@ RSpec.describe Aggregators::AggregatorReports::ArgyleReport, type: :service do
       end
 
       it 'has an employer address' do
-        expect(argyle_report.employments.first.employer_address).to eq("202 Westlake Ave N, Seattle, WA 98109")
+        expect(argyle_report.employments.first.employer_address).to eq(
+          "line1" => "202 Westlake Ave N",
+          "line2" => nil,
+          "city" => "Seattle",
+          "state" => "WA",
+          "postal_code" => "98109"
+        )
       end
 
       it 'sets @has_fetched to true on success' do
