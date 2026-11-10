@@ -44,7 +44,13 @@
         <%= format_date(enrollment_term.term_begin) %>
         &dash;
         <%= format_date(enrollment_term.term_end) %>
-        <%= link_to t("activities.education.review.edit"), edit_path, class: "usa-link mobile-edit-link" %>
+        <%= link_to t("activities.education.review.edit"), edit_path, class: "usa-link mobile-edit-link",
+          aria: {
+            label: t(
+              "activities.education.review.edit_term_details",
+              school_name: enrollment_term.school_name
+            )
+          } %>
       <% end %>
       <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_status")) do %>
         <% enrollment_status_key = "components.enrollment_term_table_component.status.#{enrollment_term.enrollment_status}" %>
@@ -55,7 +61,13 @@
       <%= row.with_data_cell(data_label: t("activities.education.review.community_engagement_hours"))
              .with_content(@education_activity.community_engagement_hours(@education_activity.review_term_credit_hours(enrollment_term))) %>
       <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
-        <%= link_to t("activities.education.review.edit"), edit_path, class: "usa-link" %>
+        <%= link_to t("activities.education.review.edit"), edit_path, class: "usa-link",
+          aria: {
+            label: t(
+              "activities.education.review.edit_term_details",
+              school_name: enrollment_term.school_name
+            )
+          } %>
       <% end %>
     <% end %>
   <% end %>

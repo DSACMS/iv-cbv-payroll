@@ -793,6 +793,32 @@ RSpec.describe Activities::EducationController, type: :controller do
         )
       end
 
+      it "gives both term edit links a school-specific accessible name" do
+        term = create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "University of Illinois"
+        )
+
+        get :review, params: { id: education_activity.id }
+
+        edit_path = edit_activities_flow_education_term_credit_hour_path(
+          education_id: education_activity.id,
+          id: 0,
+          from_review: 1
+        )
+        links = Capybara.string(response.body).all("a[href='#{edit_path}']")
+        expected_label = I18n.t(
+          "activities.education.review.edit_term_details",
+          school_name: term.school_name
+        )
+
+        expect(links.size).to eq(2)
+        expect(links.map { |link| link["aria-label"] }).to eq([expected_label, expected_label])
+        expect(links).to all(have_text(I18n.t("activities.education.review.edit")))
+      end
+
       it "renders multiple enrollments and only shows term-hours table for less-than-half-time terms" do
         create(
           :nsc_enrollment_term,

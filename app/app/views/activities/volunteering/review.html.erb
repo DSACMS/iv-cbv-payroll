@@ -20,7 +20,10 @@
   <h2 class="margin-y-0"><%= t("activities.community_service.review.organization_info") %></h2>
   <%= link_to t("activities.hub.edit"),
         edit_activities_flow_community_service_path(id: @volunteering_activity, from_review: 1, from_edit: params[:from_edit].presence),
-        class: "usa-link" %>
+        class: "usa-link",
+        aria: {
+          label: t("activities.employment.review.edit_employer", employer_name: @volunteering_activity.organization_name)
+        } %>
 </div>
 <%= render(ContactInfoReviewTableComponent.new(field_header: t("shared.table_headers.community_service_information"), value_header: t("shared.table_headers.your_details"), rows: [
   { label: t("activities.community_service.review.name"), value: @volunteering_activity.organization_name },
