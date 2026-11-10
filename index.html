@@ -329,7 +329,7 @@
                   "expire_community_engagement": {
                     "summary": "Expire a community engagement invitation",
                     "value": {
-                      "tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/4TZ6GW8mem"
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/Xs8yo7i122"
                     }
                   }
                 },
@@ -403,7 +403,7 @@
                         "first_name": "Jane",
                         "last_name": "Doe"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/4rcmaSGg6S"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/s8VGQ1afxG"
                     }
                   },
                   "community_engagement": {
@@ -419,7 +419,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/XXHnND65Cg"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/AT9E1gqA1z"
                     }
                   },
                   "louisiana_community_engagement": {
@@ -435,7 +435,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/txkbSS9RAH"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/9dNt4bQecB"
                     }
                   }
                 },
@@ -2055,8 +2055,15 @@
             "description": "UTC time the applicant completed the report, in ISO 8601 format."
           },
           "agency_partner_metadata": {
-            "$ref": "#/components/schemas/AgencyPartnerMetadata",
-            "description": "Agency-specific fields used to associate the report with the correct case, as agreed in the integration plan and shared with the Income Report API. Examples include case_number (string), date_of_birth (date string), and doc_id (string); which fields are required depends on the agency."
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AgencyPartnerMetadata"
+              },
+              {
+                "$ref": "#/components/schemas/AgencyPartnerMetadataV2"
+              }
+            ],
+            "description": "Agency-specific fields used to associate the report with the correct case. The accepted fields depend on the agency and invitation version."
           },
           "ce_report": {
             "$ref": "#/components/schemas/CeReport",
