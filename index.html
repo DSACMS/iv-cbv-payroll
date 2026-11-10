@@ -159,7 +159,7 @@
                       "language": "en",
                       "agency_partner_metadata": {
                         "case_number": null,
-                        "date_of_birth": "01/15/1990",
+                        "date_of_birth": null,
                         "doc_id": "EXAMPLE-DOC-123"
                       }
                     }
@@ -265,8 +265,7 @@
                   "value": {
                     "language": "en",
                     "agency_partner_metadata": {
-                      "doc_id": "EXAMPLE-DOC-123",
-                      "date_of_birth": "01/15/1990"
+                      "doc_id": "EXAMPLE-DOC-123"
                     }
                   }
                 }
@@ -329,7 +328,7 @@
                   "expire_community_engagement": {
                     "summary": "Expire a community engagement invitation",
                     "value": {
-                      "tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/Xs8yo7i122"
+                      "tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/g2JhCJJq2x"
                     }
                   }
                 },
@@ -403,7 +402,7 @@
                         "first_name": "Jane",
                         "last_name": "Doe"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/s8VGQ1afxG"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/W7zfCyhp2b"
                     }
                   },
                   "community_engagement": {
@@ -419,7 +418,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/AT9E1gqA1z"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/CcFu3vjHzj"
                     }
                   },
                   "louisiana_community_engagement": {
@@ -435,7 +434,7 @@
                         "last_name": "Doe",
                         "date_of_birth": "01/15/1990"
                       },
-                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/9dNt4bQecB"
+                      "activity_tokenized_url": "https://verify-demo.navapbc.cloud/activities/start/Zz17EjFbKH"
                     }
                   }
                 },
@@ -1202,7 +1201,7 @@
     "schemas": {
       "AgencyPartnerMetadata": {
         "type": "object",
-        "description": "Metadata links a submitted report to the agency's records. Select the schema\nfor the API version, invitation type, and agency associated with your API key.\nSome agency schemas overlap, so matching a schema alone does not identify the\nagency.\n\nFor V1 income invitations, the response contains all accepted metadata fields\nfor the agency, with `null` for omitted values. Unrecognized fields are\nignored.\n\nFor V2 invitations, the response echoes the accepted metadata fields supplied\nin the request. Unrecognized fields are ignored, and omitted optional fields\nare not added to the response. Select the agency's community engagement or\nemployment schema to see the accepted and required fields, including\n`individual_id`.\n\nBoth JSON report webhooks include the agency's V1 metadata field set when no individual_id was supplied. When an individual_id was supplied during V2 invitation creation, they include the agency's V2 metadata field set, including that exact ID. Unavailable values are sent as null; individual_id is omitted when it was not supplied.\n\nSupply dates of birth as `MM/DD/YYYY`. Invitation responses echo date strings\nas supplied. **Louisiana Emmy CE requests require `date_of_birth`** in\n`agency_partner_metadata`, along with `individual_id`, `first_name`, and\n`last_name`. This applies to `POST /api/v2/community-engagement/invitations`;\nV2 employment invitations do not accept `date_of_birth`.",
+        "description": "Metadata links a submitted report to the agency's records. Select the schema\nfor the API version, invitation type, and agency associated with your API key.\nSome agency schemas overlap, so matching a schema alone does not identify the\nagency.\n\nFor Louisiana, use the following metadata fields for each Emmy flow:\n\n| Emmy flow | Tokenized Link API endpoint | Metadata fields |\n| --- | --- | --- |\n| Employment | `POST /api/v2/employment/invitations` | `individual_id`, `first_name`, `last_name` |\n| CE | `POST /api/v2/community-engagement/invitations` | `individual_id`, `first_name`, `last_name`, `date_of_birth` |\n| Income | `POST /api/v1/invitations` | `doc_id` |\n\nFor V1 income invitations, the response contains all accepted metadata fields\nfor the agency, with `null` for omitted values. Unrecognized fields are\nignored.\n\nFor V2 invitations, the response echoes the accepted metadata fields supplied\nin the request. Unrecognized fields are ignored, and omitted optional fields\nare not added to the response. Select the agency's community engagement or\nemployment schema to see the accepted and required fields, including\n`individual_id`.\n\nBoth JSON report webhooks include the agency's V1 metadata field set when no individual_id was supplied. When an individual_id was supplied during V2 invitation creation, they include the agency's V2 metadata field set, including that exact ID. Unavailable values are sent as null; individual_id is omitted when it was not supplied.\n\nSupply dates of birth as `MM/DD/YYYY`. Invitation responses echo date strings\nas supplied. **Louisiana Emmy CE requests require `date_of_birth`** in\n`agency_partner_metadata`, along with `individual_id`, `first_name`, and\n`last_name`. This applies to `POST /api/v2/community-engagement/invitations`;\nV2 employment invitations do not accept `date_of_birth`.",
         "anyOf": [
           {
             "$ref": "#/components/schemas/AgencyMetadataSandbox"
@@ -1223,7 +1222,7 @@
       },
       "AgencyPartnerMetadataV2": {
         "type": "object",
-        "description": "Metadata links a submitted report to the agency's records. Select the schema\nfor the API version, invitation type, and agency associated with your API key.\nSome agency schemas overlap, so matching a schema alone does not identify the\nagency.\n\nFor V1 income invitations, the response contains all accepted metadata fields\nfor the agency, with `null` for omitted values. Unrecognized fields are\nignored.\n\nFor V2 invitations, the response echoes the accepted metadata fields supplied\nin the request. Unrecognized fields are ignored, and omitted optional fields\nare not added to the response. Select the agency's community engagement or\nemployment schema to see the accepted and required fields, including\n`individual_id`.\n\nBoth JSON report webhooks include the agency's V1 metadata field set when no individual_id was supplied. When an individual_id was supplied during V2 invitation creation, they include the agency's V2 metadata field set, including that exact ID. Unavailable values are sent as null; individual_id is omitted when it was not supplied.\n\nSupply dates of birth as `MM/DD/YYYY`. Invitation responses echo date strings\nas supplied. **Louisiana Emmy CE requests require `date_of_birth`** in\n`agency_partner_metadata`, along with `individual_id`, `first_name`, and\n`last_name`. This applies to `POST /api/v2/community-engagement/invitations`;\nV2 employment invitations do not accept `date_of_birth`.",
+        "description": "Metadata links a submitted report to the agency's records. Select the schema\nfor the API version, invitation type, and agency associated with your API key.\nSome agency schemas overlap, so matching a schema alone does not identify the\nagency.\n\nFor Louisiana, use the following metadata fields for each Emmy flow:\n\n| Emmy flow | Tokenized Link API endpoint | Metadata fields |\n| --- | --- | --- |\n| Employment | `POST /api/v2/employment/invitations` | `individual_id`, `first_name`, `last_name` |\n| CE | `POST /api/v2/community-engagement/invitations` | `individual_id`, `first_name`, `last_name`, `date_of_birth` |\n| Income | `POST /api/v1/invitations` | `doc_id` |\n\nFor V1 income invitations, the response contains all accepted metadata fields\nfor the agency, with `null` for omitted values. Unrecognized fields are\nignored.\n\nFor V2 invitations, the response echoes the accepted metadata fields supplied\nin the request. Unrecognized fields are ignored, and omitted optional fields\nare not added to the response. Select the agency's community engagement or\nemployment schema to see the accepted and required fields, including\n`individual_id`.\n\nBoth JSON report webhooks include the agency's V1 metadata field set when no individual_id was supplied. When an individual_id was supplied during V2 invitation creation, they include the agency's V2 metadata field set, including that exact ID. Unavailable values are sent as null; individual_id is omitted when it was not supplied.\n\nSupply dates of birth as `MM/DD/YYYY`. Invitation responses echo date strings\nas supplied. **Louisiana Emmy CE requests require `date_of_birth`** in\n`agency_partner_metadata`, along with `individual_id`, `first_name`, and\n`last_name`. This applies to `POST /api/v2/community-engagement/invitations`;\nV2 employment invitations do not accept `date_of_birth`.",
         "anyOf": [
           {
             "$ref": "#/components/schemas/AgencyMetadataV2SandboxCommunityEngagement"
@@ -1669,25 +1668,8 @@
       "AgencyMetadataLouisiana": {
         "title": "AgencyMetadataLouisiana",
         "type": "object",
-        "description": "Accepted metadata for Louisiana. The API ignores fields outside this schema.",
+        "description": "Metadata for Louisiana Emmy Income invitations: doc_id only.",
         "properties": {
-          "case_number": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "example": "EXAMPLE-123",
-            "description": "Agency case identifier.",
-            "maxLength": 13
-          },
-          "date_of_birth": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "example": "01/15/1990",
-            "description": "MM/DD/YYYY. Echoed as supplied, not converted to an ISO date in the response."
-          },
           "doc_id": {
             "type": [
               "string",
@@ -3075,9 +3057,12 @@
             "description": "Whether the applicant marked the work as self-employment. Employer contact fields are null when true."
           },
           "gross_income": {
-            "type": "number",
+            "type": [
+              "number",
+              "null"
+            ],
             "minimum": 0,
-            "description": "Self-attested monthly gross income in dollars, including cents as a decimal."
+            "description": "Optional self-attested monthly gross income in dollars, including cents as a decimal. Null for unpaid or in-kind work because the applicant is not prompted to enter income."
           }
         },
         "additionalProperties": false,
@@ -3089,8 +3074,7 @@
           "employer_name",
           "employment_type",
           "is_self_employed",
-          "hours",
-          "gross_income"
+          "hours"
         ],
         "description": "Published self-attested work appears once per reported month, including months with zero hours or income. Draft activities are excluded. Includes address components, applicant comments, monthly hours, and supporting document IDs. Employer contact details are null for self-employment."
       },
