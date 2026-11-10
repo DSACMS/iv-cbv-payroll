@@ -73,6 +73,8 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
     account_report = report.find_account_report(payroll_account.aggregator_account_id)
     employment = account_report&.employment
     income = account_report&.income
+    address = employment&.employer_address
+    address = address.to_json if address.is_a?(Hash)
 
     upsert(
       {
@@ -81,7 +83,7 @@ class ActivityFlowEmploymentSummary < ApplicationRecord
         employer_name: employment&.employer_name,
         employment_type: employment&.employment_type&.to_s,
         employer_phone_number: employment&.employer_phone_number,
-        employer_address: employment&.employer_address,
+        employer_address: address,
         employment_status: employment&.status,
         employment_start_date: employment&.start_date,
         employment_termination_date: employment&.termination_date,

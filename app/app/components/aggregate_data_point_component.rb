@@ -155,6 +155,15 @@ class AggregateDataPointComponent < ViewComponent::Base
   end
 
   def employer_address(address)
+    if address.is_a?(String)
+      begin
+        parsed_address = JSON.parse(address)
+        address = parsed_address if parsed_address.is_a?(Hash)
+      rescue JSON::ParserError
+        # Do nothing
+      end
+    end
+
     formatted_address =
       if address.is_a?(Hash)
         address = address.with_indifferent_access
