@@ -815,7 +815,7 @@ RSpec.describe Activities::EducationController, type: :controller do
         )
 
         expect(links.size).to eq(2)
-        expect(links.map { |link| link["aria-label"] }).to eq([expected_label, expected_label])
+        expect(links.map { |link| link["aria-label"] }).to eq([ expected_label, expected_label ])
         expect(links).to all(have_text(I18n.t("activities.education.review.edit")))
       end
 

@@ -756,11 +756,11 @@ en:
         contact_email: Employer contact email
         contact_name: Employer contact name
         contact_phone: Employer contact phone number
+        edit_month: Edit %{month}
         employer: Employer
         employer_name: Employer name
         gross_income: Gross income
         month: Month
-        edit_month: 'Edit %{month}'
       job_training:
         address: Address
         community_engagement_hours: Community engagement hours

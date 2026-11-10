@@ -712,7 +712,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
 
       it "gives each month edit link a month-specific accessible name" do
         first_month, _second_month, third_month = activity_flow.reporting_months
-        employment_activity.update!(selected_months: [third_month, first_month])
+        employment_activity.update!(selected_months: [ third_month, first_month ])
 
         get :review, params: { id: employment_activity.id }
 
