@@ -811,7 +811,9 @@ RSpec.describe Activities::EducationController, type: :controller do
         links = Capybara.string(response.body).all("a[href='#{edit_path}']")
         expected_label = I18n.t(
           "activities.education.review.edit_term_details",
-          school_name: term.school_name
+          school_name: term.school_name,
+          term_begin: I18n.l(term.term_begin, format: :month_year),
+          term_end: I18n.l(term.term_end, format: :month_year)
         )
 
         expect(links.size).to eq(2)

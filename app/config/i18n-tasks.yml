@@ -162,6 +162,7 @@ ignore_missing:
     - "shared.footer.partnership"
     - "shared.subheader_agency_text"
     - "households.*"
+    - "shared.edit_month"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string

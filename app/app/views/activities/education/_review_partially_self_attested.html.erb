@@ -48,7 +48,9 @@
           aria: {
             label: t(
               "activities.education.review.edit_term_details",
-              school_name: enrollment_term.school_name
+              school_name: enrollment_term.school_name,
+              term_begin: I18n.l(enrollment_term.term_begin, format: :month_year),
+              term_end: I18n.l(enrollment_term.term_end, format: :month_year)
             )
           } %>
       <% end %>
@@ -65,7 +67,9 @@
           aria: {
             label: t(
               "activities.education.review.edit_term_details",
-              school_name: enrollment_term.school_name
+              school_name: enrollment_term.school_name,
+              term_begin: I18n.l(enrollment_term.term_begin, format: :month_year),
+              term_end: I18n.l(enrollment_term.term_end, format: :month_year)
             )
           } %>
       <% end %>
