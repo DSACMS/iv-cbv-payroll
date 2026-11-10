@@ -218,11 +218,17 @@ export default class extends Controller {
     } else {
       if (this.hasRenewalRequiredFieldTarget) {
         this.renewalRequiredFieldTarget.classList.add("advanced-launcher__renewal-required--hidden")
+        this.clearRenewalRequiredField()
       }
       this.monthButtonsTarget.classList.remove("advanced-launcher__month-buttons--hidden")
       this.monthsInputTarget.value = "2"
       this.highlightButton("2")
     }
+  }
+
+  clearRenewalRequiredField() {
+    if (!this.hasRenewalRequiredFieldTarget) return
+    this.renewalRequiredFieldTarget.querySelectorAll("input").forEach((input) => (input.value = ""))
   }
 
   highlightButton(activeMonths) {

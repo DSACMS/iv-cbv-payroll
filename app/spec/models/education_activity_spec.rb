@@ -218,6 +218,12 @@ RSpec.describe EducationActivity do
 
       expect(activity.review_term_credit_hours(term)).to eq(6)
     end
+
+    it "returns whole credit hours for review output" do
+      term = create(:nsc_enrollment_term, education_activity: activity, credit_hours: 2.5)
+
+      expect(activity.review_term_credit_hours(term)).to eq(2)
+    end
   end
 
   describe "#document_upload_title_i18n_key" do
@@ -345,6 +351,30 @@ RSpec.describe EducationActivity do
 
       expect(
         described_class.data_source_from_nsc_results([ spring_term, fall_term ], reporting_months: reporting_months)
+      ).to eq(:validated)
+    end
+
+    it "returns :validated when the required month count is met despite less-than-half-time months" do
+      reporting_months = 12.times.map { |offset| Date.new(2025, 1, 1) + offset.months }
+      half_time_term = term(
+        status: "half_time",
+        begin_date: reporting_months.first,
+        end_date: reporting_months.first.end_of_month
+      )
+      less_than_half_time_terms = reporting_months.drop(1).map do |month|
+        term(
+          status: "less_than_half_time",
+          begin_date: month,
+          end_date: month.end_of_month
+        )
+      end
+
+      expect(
+        described_class.data_source_from_nsc_results(
+          [ half_time_term, *less_than_half_time_terms ],
+          reporting_months: reporting_months,
+          required_month_count: 1
+        )
       ).to eq(:validated)
     end
   end

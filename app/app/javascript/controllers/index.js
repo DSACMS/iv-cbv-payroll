@@ -18,6 +18,7 @@ import ProgressIndicatorUnitsController from "./progress_indicator_units_control
 import DocumentUploadController from "./document_upload_controller.js"
 import ErrorSummaryController from "./error_summary_controller.js"
 import EducationTermController from "./education_term_controller.js"
+import EducationOtherController from "./education_other_controller.js"
 import DismissibleAlertController from "./dismissible_alert_controller.js"
 
 application.register("cbv-employer-search", CbvEmployerSearch)
@@ -38,6 +39,7 @@ application.register("progress-indicator-units", ProgressIndicatorUnitsControlle
 application.register("document-upload", DocumentUploadController)
 application.register("error-summary", ErrorSummaryController)
 application.register("education-term", EducationTermController)
+application.register("education-other", EducationOtherController)
 application.register("dismissible-alert", DismissibleAlertController)
 
 Turbo.StreamActions.redirect = function () {

@@ -13,7 +13,7 @@
 #      > make release-build OPTS="--tag iv-cbv-payroll:latest"
 # 5. Ensure that `wkhtmltopdf` runs:
 #      > docker run iv-cbv-payroll:latest bundle exec wkhtmltopdf --version
-ARG RUBY_VERSION=3.4.9
+ARG RUBY_VERSION=3.4.12
 
 
 ##########################################################################################
@@ -25,119 +25,18 @@ FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
 # We should be able to remove these after upgrading the base image to a version
 # that has the upgraded versions by default.
 # hadolint ignore=DL3008
-RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends \
-      # CVE-2026-28693 \
-      imagemagick \
-      # CVE-2026-33416 \
-      libpng-dev \
-      # CVE-2026-4775 \
-      libtiff-dev \
-      # CVE-2026-2673 \
-      libssl-dev \
-      # CVE-2026-3497 \
-      openssh-client \
-      # CVE-2026-4437 \
-      libc-bin libc-dev-bin libc6 libc6-dev \
-      # CVE-2025-68431 CVE-2026-32740 CVE-2026-32882 CVE-2026-47178 \
-      libheif1 \
-    && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+# RUN apt-get update -qq && \
+#     apt-get install -y --no-install-recommends \
+#       # Put packages here: \
+#     && \
+#     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Auto-fix: OS package vulnerabilities detected by Trivy and Grype (managed automatically)
+# Auto-fix: OS package vulnerabilities detected by Trivy and Grype (managed automatically).
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
-      bsdutils \
-      curl \
-      gir1.2-glib-2.0 \
-      gir1.2-glib-2.0-dev \
-      gir1.2-rsvg-2.0 \
-      girepository-tools \
-      gzip \
-      krb5-multidev \
-      libaprutil1t64 \
-      libblkid-dev \
-      libblkid1 \
-      libbrotli-dev \
-      libbrotli1 \
-      libcap2 \
-      libcurl3t64-gnutls \
-      libcurl4-openssl-dev \
-      libcurl4t64 \
-      libde265-0 \
-      libevent-2.1-7t64 \
-      libevent-core-2.1-7t64 \
-      libevent-dev \
-      libevent-extra-2.1-7t64 \
-      libevent-openssl-2.1-7t64 \
-      libevent-pthreads-2.1-7t64 \
-      libexif-dev \
-      libexif12 \
-      libexpat1 \
-      libexpat1-dev \
-      libgcrypt20 \
-      libgio-2.0-dev \
-      libgio-2.0-dev-bin \
-      libgirepository-2.0-0 \
-      libglib2.0-0t64 \
-      libglib2.0-bin \
-      libglib2.0-data \
-      libglib2.0-dev \
-      libglib2.0-dev-bin \
-      libgraphite2-3 \
-      libgraphite2-dev \
-      libgssapi-krb5-2 \
-      libgssrpc4t64 \
-      libk5crypto3 \
-      libkadm5clnt-mit12 \
-      libkadm5srv-mit12 \
-      libkdb5-10t64 \
-      libkrb5-3 \
-      libkrb5-dev \
-      libkrb5support0 \
-      liblastlog2-2 \
-      liblcms2-2 \
-      liblcms2-dev \
-      liblzma-dev \
-      liblzma5 \
-      libmount-dev \
-      libmount1 \
-      libnghttp2-14 \
-      libnghttp2-dev \
-      libpcre2-16-0 \
-      libpcre2-32-0 \
-      libpcre2-8-0 \
-      libpcre2-dev \
-      libpcre2-posix3 \
-      libperl5.40 \
-      libraw23t64 \
-      librsvg2-2 \
-      librsvg2-common \
-      librsvg2-dev \
-      libsmartcols1 \
-      libsqlite3-0 \
-      libsqlite3-dev \
-      libssh2-1-dev \
-      libssh2-1t64 \
-      libsystemd0 \
-      libtasn1-6 \
-      libtasn1-6-dev \
-      libudev1 \
-      libunbound8 \
-      libuuid1 \
-      libvips42t64 \
-      libxml2 \
-      libxml2-dev \
-      linux-libc-dev \
-      login \
-      mount \
-      perl \
-      perl-base \
-      perl-modules-5.40 \
-      util-linux \
-      uuid-dev \
-      xz-utils \
+      zlib1g \
+      zlib1g-dev \
     && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 

@@ -101,7 +101,10 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
   def complete_nsc_education!
     if education_activity.partially_self_attested?
       education_activity.less_than_half_time_terms_in_reporting_window.each do |term|
-        term.update!(credit_hours: 3)
+        term.update!(
+          credit_hours: 3,
+          supplemental_enrollment_status: term.enrollment_enrolled? ? "less_than_half_time" : nil
+        )
       end
     end
     education_activity.publish!
