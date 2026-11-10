@@ -63,10 +63,10 @@ RSpec.describe "Tokenized Link API", type: :request do
 
         context "with Louisiana metadata" do
           let(:agency_id) { "la_ldh" }
-          let(:invitation) { { language: "en", agency_partner_metadata: { doc_id: "EXAMPLE-DOC-123", date_of_birth: "01/15/1990" } } }
+          let(:invitation) { { language: "en", agency_partner_metadata: { doc_id: "EXAMPLE-DOC-123" } } }
 
           run_test! "returns the agency's metadata fields", example_summary: "Louisiana indexing metadata", openapi_example: :louisiana do
-            expect(response.parsed_body["agency_partner_metadata"]).to eq(invitation[:agency_partner_metadata].stringify_keys.merge("case_number" => nil))
+            expect(response.parsed_body["agency_partner_metadata"]).to eq(invitation[:agency_partner_metadata].stringify_keys.merge("case_number" => nil, "date_of_birth" => nil))
             expect(response.parsed_body["expiration_date"]).to start_with("2026-12-07T23:59:59")
           end
         end
