@@ -95,7 +95,7 @@
     <% end %>
 <% end %>
 
-<%= form_with model: @flow, url: activities_flow_summary_path, method: :patch, builder: UswdsFormBuilder, data: { controller: "error-summary" } do |f| %>
+<%= form_with model: @flow, url: activities_flow_summary_path, method: :patch, builder: UswdsFormBuilder, data: { controller: "error-summary", error_summary_defer_focus_value: @flow.activity_flow_invitation_id.present? && @consent_error.present? } do |f| %>
     <%= f.check_box :consent_to_submit, {
       error_message: @consent_error,
       label: t("activities.summary.consent_label_html",

@@ -21,17 +21,28 @@ function isVisible(element) {
 
 export default class extends Controller {
   static targets = ["body"]
-  static values = { formId: String }
+  static values = { formId: String, deferFocus: Boolean }
 
   connect() {
     this.frameId = requestAnimationFrame(() => {
-      if (this.element instanceof HTMLFormElement) {
-        this.focusFirstErrorWithoutSummary()
+      if (this.deferFocusValue) {
+        // Consent errors must receive focus after the shared turbo:render
+        // handler resets scrolling on its animation frame.
+        this.frameId = requestAnimationFrame(() => this.focusError())
         return
       }
 
-      this.focusSummary()
+      this.focusError()
     })
+  }
+
+  focusError() {
+    if (this.element instanceof HTMLFormElement) {
+      this.focusFirstErrorWithoutSummary()
+      return
+    }
+
+    this.focusSummary()
   }
 
   disconnect() {
@@ -42,7 +53,9 @@ export default class extends Controller {
     const form = document.getElementById(this.formIdValue)
 
     if (!(form instanceof HTMLFormElement)) {
-      console.error(`Error summary: form "${this.formIdValue}" was not found or is not a valid HTMLFormElement.`)
+      console.error(
+        `Error summary: form "${this.formIdValue}" was not found or is not a valid HTMLFormElement.`
+      )
       return
     }
 
@@ -69,10 +82,7 @@ export default class extends Controller {
       descriptionIds.push(error.id)
     })
 
-    this.element.setAttribute(
-      "aria-describedby",
-      [...new Set(descriptionIds)].join(" ")
-    )
+    this.element.setAttribute("aria-describedby", [...new Set(descriptionIds)].join(" "))
     this.element.focus()
   }
 
@@ -81,13 +91,11 @@ export default class extends Controller {
     const summaries = document.querySelectorAll(CONTROLLER_SELECTOR)
 
     const hasSummary = Array.from(summaries).some(
-      (summary) => 
-        form.id &&
-        summary.dataset.errorSummaryFormIdValue === form.id
+      (summary) => form.id && summary.dataset.errorSummaryFormIdValue === form.id
     )
 
     if (hasSummary) return
-    
+
     const errors = form.querySelectorAll(ERROR_MESSAGE_SELECTOR)
     if (errors.length === 0) return
 
@@ -102,19 +110,19 @@ export default class extends Controller {
       }
 
       const input = controls.find((control) => {
-        const descriptionIds = (
-          control.getAttribute("aria-describedby") || ""
-        ).split(/\s+/)
+        const descriptionIds = (control.getAttribute("aria-describedby") || "").split(/\s+/)
 
         return (
-          descriptionIds.includes(error.id) &&
-          !control.matches(":disabled") &&
-          isVisible(control)
+          descriptionIds.includes(error.id) && !control.matches(":disabled") && isVisible(control)
         )
       })
 
       if (input) {
         input.focus()
+        if (this.deferFocusValue) {
+          const container = error.closest(".usa-checkbox") || error
+          container.scrollIntoView({ block: "nearest", behavior: "instant" })
+        }
         return
       }
     }
