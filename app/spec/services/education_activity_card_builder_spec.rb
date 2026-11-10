@@ -35,4 +35,51 @@ RSpec.describe EducationActivityCardBuilder do
       expect(card[:months].pluck(:month)).to eq(reporting_months)
     end
   end
+
+  context "with supplemental NSC enrollment details" do
+    let(:enrollment_status) { "half_time" }
+    let(:credit_hours) { nil }
+    let(:activity) { create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded) }
+
+    before do
+      create(:nsc_enrollment_term, :enrolled, education_activity: activity,
+        supplemental_enrollment_status: enrollment_status, credit_hours: credit_hours)
+    end
+
+    it "shows months covered by the supplemental enrollment status" do
+      expect(card[:months]).to eq(reporting_months.map do |month|
+        { month: month, enrollment_status: I18n.t("activities.education.add_your_term.edit.enrollment_status_options.half_time") }
+      end)
+    end
+
+    context "when the applicant is unsure" do
+      let(:enrollment_status) { "unknown" }
+      let(:credit_hours) { 0.5 }
+
+      it "shows the reported enrollment status for fractional credit hours" do
+        expect(card[:months]).to eq(reporting_months.map do |month|
+          { month: month, enrollment_status: I18n.t("activities.education.add_your_term.edit.enrollment_status_options.unknown") }
+        end)
+      end
+    end
+
+    context "when no classes were taken" do
+      let(:enrollment_status) { nil }
+      let(:credit_hours) { 0 }
+
+      it "omits the term's month rows" do
+        expect(card[:months]).to eq([])
+      end
+    end
+
+    context "with an overlapping less-than-half-time NSC term" do
+      before { create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity) }
+
+      it "shows months covered by sufficient supplemental enrollment" do
+        expect(card[:months]).to eq(reporting_months.map do |month|
+          { month: month, enrollment_status: I18n.t("activities.education.add_your_term.edit.enrollment_status_options.half_time") }
+        end)
+      end
+    end
+  end
 end

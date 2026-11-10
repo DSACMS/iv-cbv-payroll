@@ -1,6 +1,105 @@
 require "rails_helper"
 
 RSpec.describe NscEnrollmentTerm do
+  describe "supplemental enrollment details" do
+    subject(:term) { described_class.new(education_activity: education_activity, enrollment_status: "enrolled", supplemental_enrollment_status: supplemental_status, credit_hours: credit_hours) }
+
+    let(:education_activity) { create(:education_activity) }
+    let(:supplemental_status) { "less_than_half_time" }
+    let(:credit_hours) { "2.5" }
+
+    it "validates fractional credit hours without changing NSC's status" do
+      expect(term.valid?(:supplemental_details)).to be(true)
+      expect(term).to have_attributes(enrollment_status: "enrolled", supplemental_enrollment_status: "less_than_half_time", credit_hours: BigDecimal("2.5"))
+    end
+
+    context "with half-time enrollment" do
+      let(:supplemental_status) { "half_time" }
+
+      it "counts as sufficient supplemental enrollment and clears credit hours" do
+        expect(term.valid?(:supplemental_details)).to be(true)
+        expect(term).to be_supplemental_sufficient_enrollment
+        expect(term.credit_hours).to be_nil
+        expect(term.enrollment_status).to eq("enrolled")
+      end
+    end
+
+    context "with full-time enrollment" do
+      let(:supplemental_status) { "full_time" }
+
+      it "counts as sufficient supplemental enrollment" do
+        expect(term.valid?(:supplemental_details)).to be(true)
+        expect(term).to be_supplemental_sufficient_enrollment
+      end
+    end
+
+    context "when the applicant is unsure" do
+      let(:supplemental_status) { "unknown" }
+
+      it "uses the reported credit hours and displays the self-attested label" do
+        expect(term.valid?(:supplemental_details)).to be(true)
+        expect(term).to be_supplemental_credit_hours_applicable
+        expect(term.supplemental_enrollment_status_display).to eq(I18n.t("activities.education.add_your_term.edit.enrollment_status_options.unknown"))
+      end
+    end
+
+    context "without a selected enrollment status" do
+      let(:supplemental_status) { nil }
+
+      it "requires a supplemental status" do
+        expect(term.valid?(:supplemental_details)).to be(false)
+        expect(term.errors).to be_of_kind(:supplemental_enrollment_status, :inclusion)
+      end
+    end
+
+    context "with an unsupported enrollment status" do
+      let(:supplemental_status) { "three_quarter_time" }
+
+      it "requires one of the self-attested options" do
+        expect(term.valid?(:supplemental_details)).to be(false)
+        expect(term.errors).to be_of_kind(:supplemental_enrollment_status, :inclusion)
+      end
+    end
+
+    context "with negative credit hours" do
+      let(:credit_hours) { -1 }
+
+      it "requires nonnegative hours" do
+        expect(term.valid?(:supplemental_details)).to be(false)
+        expect(term.errors).to be_of_kind(:credit_hours, :greater_than_or_equal_to)
+      end
+    end
+
+    context "with nonnumeric credit hours" do
+      let(:credit_hours) { "abc" }
+
+      it "requires numeric hours" do
+        expect(term.valid?(:supplemental_details)).to be(false)
+        expect(term.errors).to be_of_kind(:credit_hours, :not_a_number)
+      end
+    end
+
+    context "when the applicant did not take any classes" do
+      before { term.no_hours = true }
+
+      it "records zero hours and clears the supplemental status" do
+        expect(term.valid?(:supplemental_details)).to be(true)
+        expect(term).to have_attributes(enrollment_status: "enrolled", supplemental_enrollment_status: nil, credit_hours: 0)
+        expect(term.supplemental_enrollment_status_display).to eq(I18n.t("shared.not_applicable"))
+      end
+    end
+
+    context "when NSC reports less than half-time" do
+      before { term.enrollment_status = "less_than_half_time" }
+
+      it "collects only credit hours and uses NSC's enrollment status" do
+        expect(term.valid?(:supplemental_details)).to be(true)
+        expect(term).to have_attributes(supplemental_enrollment_status: nil, credit_hours: BigDecimal("2.5"))
+        expect(term.supplemental_enrollment_status_display).to eq(term.enrollment_status_display)
+      end
+    end
+  end
+
   describe "new grouped NSC statuses" do
     subject(:term) { described_class.new(enrollment_status: status) }
 

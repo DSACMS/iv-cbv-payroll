@@ -167,6 +167,40 @@ RSpec.describe ActivityReportSchemas do
       expect(schema.valid?(report)).to be(false)
     end
 
+    context "with supplemental NSC enrollment details" do
+      before do
+        partial_education.merge!("enrollment_status" => "enrolled", "supplemental_enrollment_status" => "less_than_half_time")
+      end
+
+      it "accepts the original NSC status alongside the supplemental level and fractional credits" do
+        expect(schema.valid?(report)).to be(true)
+      end
+
+      it "accepts sufficient supplemental enrollment with inapplicable credits" do
+        partial_education.merge!("supplemental_enrollment_status" => "half_time", "hours" => nil, "credit_hours" => nil)
+
+        expect(schema.valid?(report)).to be(true)
+      end
+
+      it "accepts an unsure enrollment level" do
+        partial_education["supplemental_enrollment_status"] = "unknown"
+
+        expect(schema.valid?(report)).to be(true)
+      end
+
+      it "accepts zero credits when no classes were taken" do
+        partial_education.merge!("supplemental_enrollment_status" => nil, "hours" => 0, "credit_hours" => 0)
+
+        expect(schema.valid?(report)).to be(true)
+      end
+
+      it "rejects unsupported supplemental levels" do
+        partial_education["supplemental_enrollment_status"] = "three_quarter_time"
+
+        expect(schema.valid?(report)).to be(false)
+      end
+    end
+
     it "requires credit hours when the source is fully self-attested" do
       verified_education["data_source"] = "self_attested"
       verified_education["school_name"] = "Example University"

@@ -79,7 +79,7 @@ class EducationActivityCardBuilder
   def partial_self_attested_month_data(term:, month_start:)
     {
       month: month_start,
-      enrollment_status: term.enrollment_status_display
+      enrollment_status: term.supplemental_enrollment_status_display
     }
   end
 
@@ -90,9 +90,13 @@ class EducationActivityCardBuilder
   def partially_self_attested_months_for_school(school_terms)
     resolver = reporting_month_resolver(school_terms)
     @reporting_months.filter_map do |month_start|
-      effective_term = resolver.result_for(month_start).effective_term
+      month_enrollment = resolver.result_for(month_start)
+      effective_term = month_enrollment.effective_term
+      unless month_enrollment.sufficient_enrollment?
+        effective_term = month_enrollment.terms.find(&:supplemental_sufficient_enrollment?) || effective_term
+      end
       next unless effective_term
-      next if effective_term.less_than_half_time? && @activity.review_term_credit_hours(effective_term).zero?
+      next if effective_term.less_than_half_time? && !effective_term.supplemental_sufficient_enrollment? && (effective_term.credit_hours || 0).zero?
 
       if effective_term.less_than_half_time?
         partial_self_attested_month_data(term: effective_term, month_start: month_start)
