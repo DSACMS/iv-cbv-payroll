@@ -161,7 +161,11 @@ class EducationActivity < Activity
   end
 
   def document_upload_suggestion_text
-    "activities.education.document_upload_suggestion_text_html"
+    "activities.document_uploads.new.education.suggestions_html"
+  end
+
+  def document_upload_suggestion_title_i18n_key
+    "activities.document_uploads.new.education.suggestion_title"
   end
 
   def document_upload_title_i18n_key
@@ -180,25 +184,24 @@ class EducationActivity < Activity
     return [] unless partially_self_attested?
 
     nsc_enrollment_terms
-      .select(&:enrollment_less_than_half_time?)
+      .select do |term|
+        term.enrollment_less_than_half_time? ||
+          (term.enrollment_enrolled? && (term.supplemental_enrollment_status.present? || term.credit_hours.present?))
+      end
       .sort_by { |term| [ term.term_begin || Date.new(1900, 1, 1), term.term_end || Date.new(1900, 1, 1), term.school_name.to_s ] }
   end
 
-  def document_upload_term_credit_hours(term)
-    return I18n.t("shared.credit_hours", count: 0) unless term.has_attribute?(:credit_hours)
-
-    credit_hours = term[:credit_hours]
-    return I18n.t("shared.credit_hours", count: 0) if credit_hours.nil?
-
-    I18n.t("shared.credit_hours", count: credit_hours)
-  end
-
   def document_upload_verification_items
-    terms = document_upload_terms_to_verify
-    terms.map do |term|
+    document_upload_terms_to_verify.map do |term|
+      details = [ term.supplemental_enrollment_status_display ]
+      details << I18n.t("shared.credit_hours", count: ApplicationHelper.format_decimal_amount(term.credit_hours)) if term.credit_hours.present?
+
       {
-        label: "#{term.school_name} #{I18n.l(term.term_begin, format: :short)} to #{I18n.l(term.term_end, format: :short)}:",
-        details: "#{term.enrollment_status_display}, #{document_upload_term_credit_hours(term)}"
+        label: I18n.t("activities.education.document_upload_term_label",
+          school_name: term.school_name,
+          start_date: I18n.l(term.term_begin, format: :short),
+          end_date: I18n.l(term.term_end, format: :short)),
+        details: details.join(", ")
       }
     end
   end

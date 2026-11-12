@@ -35,7 +35,13 @@ module ActivityReportSchemas
         schema_version: { type: :string, pattern: '^\d+\.\d+\.\d+$', example: "1.0.0", description: "Semantic version of the CE compliance specification this payload conforms to." },
         confirmation_code: { type: :string, description: "Unique code assigned when the report was completed, shared with the applicant and used to debug report processing errors." },
         completed_at: { type: :string, format: :"date-time", description: "UTC time the applicant completed the report, in ISO 8601 format." },
-        agency_partner_metadata: ref("AgencyPartnerMetadata").merge(description: "Agency-specific fields used to associate the report with the correct case, as agreed in the integration plan and shared with the Income Report API. Examples include case_number (string), date_of_birth (date string), and doc_id (string); which fields are required depends on the agency."),
+        agency_partner_metadata: {
+          anyOf: [
+            ref("AgencyPartnerMetadata"),
+            ref("AgencyPartnerMetadataV2")
+          ],
+          description: "Agency-specific fields used to associate the report with the correct case. The accepted fields depend on the agency and invitation version."
+        },
       ce_report: { "$ref" => "#/components/schemas/CeReport", description: "Community engagement report containing the review period, supporting document metadata, and activities." }
     }, additionalProperties: false).merge(description: InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Model")),
       CeReport: object(%w[report_variant review_period documents activities], {
@@ -90,14 +96,14 @@ module ActivityReportSchemas
           }
         }
       },
-      CeSelfAttestedEmploymentActivity: activity(%w[employer_name employment_type is_self_employed hours gross_income], self_attested.merge(contact).merge(
+      CeSelfAttestedEmploymentActivity: activity(%w[employer_name employment_type is_self_employed hours], self_attested.merge(contact).merge(
         type: { type: :string, enum: %w[employment] },
         data_source: { type: :string, enum: %w[self_attested] },
         employer_name: { type: :string, description: "Name of the employer or business." },
         employer_address: nullable_string.merge(description: "Combined address, also supplied as individual address fields."),
         employment_type: { type: :null, description: "Always null for self-attested employment. Populated only for Argyle-sourced employment." },
         is_self_employed: { type: :boolean, description: "Whether the applicant marked the work as self-employment. Employer contact fields are null when true." },
-        gross_income: { type: :number, minimum: 0, description: "Self-attested monthly gross income in dollars, including cents as a decimal." }
+        gross_income: { type: %w[number null], minimum: 0, description: "Optional self-attested monthly gross income in dollars, including cents as a decimal. Null for unpaid or in-kind work because the applicant is not prompted to enter income." }
       )).merge(description: "Published self-attested work appears once per reported month, including months with zero hours or income. Draft activities are excluded. Includes address components, applicant comments, monthly hours, and supporting document IDs. Employer contact details are null for self-employment."),
       CeValidatedEmploymentActivity: activity(%w[applicant_full_name employer_name paystubs], {
         type: { type: :string, enum: %w[employment] },
