@@ -7,6 +7,18 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.17.1
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Update document upload for the NSC partially self-attested flow [(#62)](https://github.com/CMS-Enterprise/emmy-app/pull/62) - Daphne Gold [[FFS-5026]](https://jiraent.cms.gov/browse/FFS-5026)
+- Configure Louisiana activity report delivery [(#71)](https://github.com/CMS-Enterprise/emmy-app/pull/71) - Tom Dooner [[FFS-5083]](https://jiraent.cms.gov/browse/FFS-5083)
+
+### Other/Maintenance (Not user facing)
+- Instrument Mixpanel events for the Employment Data-Backed flow in Emmy CE [(#66)](https://github.com/CMS-Enterprise/emmy-app/pull/66) - Jake Wheeler [[FFS-4640]](https://jiraent.cms.gov/browse/FFS-4640)
+
 ## 0.17.0
 
 ### Emmy Income only user facing changes
