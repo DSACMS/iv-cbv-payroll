@@ -5,7 +5,7 @@ RSpec.describe PdfRenderer do
     <<~HTML
       <!DOCTYPE html><html lang="en"><head><title>Synthetic report</title></head><body>
       <h1>Synthetic report</h1><h2>Enrollment</h2>
-      <p><span style="font-weight: bold;">Test School</span></p><span aria-hidden="true">|</span>
+      <p style="border-bottom: 1px solid black;"><span style="font-weight: bold;">Test School</span></p>
       <table><caption>Enrollment details</caption><thead><tr><th scope="col">School</th><th scope="col">Credits</th></tr></thead>
       <tbody><tr><th scope="row">Test School</th><td>3.5</td></tr></tbody></table>
       <ul><li>First item<span style="display: block; margin: 1em 0;">Additional detail</span></li></ul>
@@ -33,10 +33,11 @@ RSpec.describe PdfRenderer do
     expect(structure_tags(catalog[:StructTreeRoot])).to include(:H1, :H2, :Table, :TH, :TD, :L, :LI)
   end
 
-  it "returns Grover's output unchanged", :skip_pdf_accessibility_export do
+  it "finalizes Grover's output", :skip_pdf_accessibility_export do
     original = File.binread(Rails.root.join("spec/fixtures/files/document_upload.pdf"))
     allow(Grover).to receive(:new).and_return(instance_double(Grover, to_pdf: original))
+    expect(PdfAccessibilityFinalizer).to receive(:call).with(original, footer: nil).and_return("finalized PDF")
 
-    expect(content).to eq(original)
+    expect(content).to eq("finalized PDF")
   end
 end

@@ -5,6 +5,6 @@ class PdfRenderer
     if footer
       options.merge!(display_header_footer: true, header_template: "<span></span>", footer_template: footer)
     end
-    Grover.new(html, **options).to_pdf
+    PdfAccessibilityFinalizer.call(Grover.new(html, **options).to_pdf, footer: footer)
   end
 end
