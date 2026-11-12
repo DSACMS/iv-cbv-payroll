@@ -35,7 +35,11 @@
     <li>
       <strong><%= item[:label] %></strong>
       <% if item[:details].present? %>
-        (<%= item[:details] %>)
+        <% if @activity.is_a?(EducationActivity) %>
+          <%= item[:details] %>
+        <% else %>
+          (<%= item[:details] %>)
+        <% end %>
       <% end %>
     </li>
   <% end %>

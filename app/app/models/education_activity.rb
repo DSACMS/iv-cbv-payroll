@@ -198,7 +198,7 @@ class EducationActivity < Activity
     terms.map do |term|
       {
         label: "#{term.school_name} #{I18n.l(term.term_begin, format: :short)} to #{I18n.l(term.term_end, format: :short)}:",
-        details: document_upload_term_credit_hours(term)
+        details: "#{term.enrollment_status_display}, #{document_upload_term_credit_hours(term)}"
       }
     end
   end

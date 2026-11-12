@@ -498,6 +498,9 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: term.school_name))
       expect(response.body).to include("#{I18n.l(term.term_begin, format: :short)} to #{I18n.l(term.term_end, format: :short)}")
       rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector("li",
+        exact_text: "#{term.school_name} #{I18n.l(term.term_begin, format: :short)} to #{I18n.l(term.term_end, format: :short)}: #{term.enrollment_status_display}, #{I18n.t('shared.credit_hours', count: term.credit_hours || 0)}",
+        normalize_ws: true)
       expect(rendered).to have_text(I18n.t("activities.document_uploads.new.description"))
       expect(rendered).to have_selector("button", text: I18n.t("activities.document_uploads.new.suggestion_title"), exact_text: true, normalize_ws: true)
       expect(response.body).to include(I18n.t("activities.education.document_upload_suggestion_text_html"))
