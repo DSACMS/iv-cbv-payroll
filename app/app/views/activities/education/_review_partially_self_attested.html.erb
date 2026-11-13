@@ -1,6 +1,6 @@
 <% enrollment_terms = @education_activity.nsc_enrollment_terms.order(:term_begin, :term_end, :school_name) %>
 <% has_multiple_enrollments = enrollment_terms.length > 1 %>
-<% less_than_half_time_terms = enrollment_terms.select(&:less_than_half_time?) %>
+<% supplemental_terms = @education_activity.less_than_half_time_terms_in_reporting_window %>
 
 <% enrollment_terms.each_with_index do |enrollment_term, index| %>
   <h2>
@@ -11,9 +11,10 @@
     <% end %>
   </h2>
 
-  <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term)) %>
+  <%= render(EnrollmentTermTableComponent.new(nsc_enrollment_term: enrollment_term, show_enrollment_status: !enrollment_term.enrollment_enrolled?)) %>
 
-  <% next unless enrollment_term.less_than_half_time? %>
+  <% term_index = supplemental_terms.index { |term| term.id == enrollment_term.id } %>
+  <% next unless term_index %>
 
   <% term_details = t("activities.summary.education.term_details") %>
   <h3><%= term_details %></h3>
@@ -32,13 +33,15 @@
     <%= table.with_header_cell(is_header: true, class_names: "text-nowrap")
            .with_content(tag.span(t("activities.education.review.edit"), class: "usa-sr-only")) %>
 
-    <% term_index = less_than_half_time_terms.index { |term| term.id == enrollment_term.id } || 0 %>
     <% edit_path = edit_activities_flow_education_term_credit_hour_path(
           education_id: @education_activity,
           id: term_index,
           from_review: 1,
           from_edit: params[:from_edit].presence
         ) %>
+    <% credit_hours = enrollment_term.credit_hours || 0 %>
+    <% sufficient_enrollment = enrollment_term.supplemental_sufficient_enrollment? %>
+    <% community_engagement_hours = sufficient_enrollment ? ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD : @education_activity.community_engagement_hours(credit_hours) %>
     <%= table.with_row do |row| %>
       <%= row.with_data_cell(data_label: t("activities.education.review.term"), is_header: true) do %>
         <%= format_date(enrollment_term.term_begin) %>
@@ -55,13 +58,12 @@
           } %>
       <% end %>
       <%= row.with_data_cell(data_label: t("components.enrollment_term_table_component.enrollment_status")) do %>
-        <% enrollment_status_key = "components.enrollment_term_table_component.status.#{enrollment_term.enrollment_status}" %>
-        <%= I18n.exists?(enrollment_status_key) ? t(enrollment_status_key) : t("shared.not_applicable") %>
+        <%= enrollment_term.supplemental_enrollment_status_display %>
       <% end %>
       <%= row.with_data_cell(data_label: t("activities.education.review.credit_hours"))
-             .with_content(@education_activity.review_term_credit_hours(enrollment_term)) %>
+             .with_content(sufficient_enrollment ? t("shared.not_applicable") : format_decimal_amount(credit_hours)) %>
       <%= row.with_data_cell(data_label: t("activities.education.review.community_engagement_hours"))
-             .with_content(@education_activity.community_engagement_hours(@education_activity.review_term_credit_hours(enrollment_term))) %>
+             .with_content(format_decimal_amount(community_engagement_hours)) %>
       <%= row.with_data_cell(class_names: "desktop-edit-link") do %>
         <%= link_to t("activities.education.review.edit"), edit_path, class: "usa-link",
           aria: {
@@ -77,6 +79,6 @@
   <% end %>
 <% end %>
 
-<% if less_than_half_time_terms.any? %>
+<% if supplemental_terms.any?(&:supplemental_credit_hours_applicable?) %>
   <%= render "activities/education/credit_hours_explainer" %>
 <% end %>

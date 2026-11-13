@@ -52,12 +52,21 @@ RSpec.describe ActivityReportSchemas do
     expect(schema.valid?(report)).to be(false)
   end
 
-  it "accepts overlapping agency metadata shapes and validates their shared fields" do
+  it "accepts overlapping agency metadata shapes" do
     report["agency_partner_metadata"] = { "first_name" => "Jane", "last_name" => "Doe", "case_number" => "EXAMPLE-123" }
     expect(schema.valid?(report)).to be(true)
+  end
 
-    report["agency_partner_metadata"]["case_number"] = 123
+  it "requires agency metadata to be an object" do
+    report["agency_partner_metadata"] = []
+
     expect(schema.valid?(report)).to be(false)
+  end
+
+  it "allows undeclared fields in Louisiana metadata" do
+    report["agency_partner_metadata"] = { "doc_id" => "EXAMPLE-DOC-123", "case_number" => 123 }
+
+    expect(schema.valid?(report)).to be(true)
   end
 
   it "validates every month's entries, including months absent from documentation examples" do
@@ -78,6 +87,18 @@ RSpec.describe ActivityReportSchemas do
     expect(schema.valid?(report)).to be(false)
     payroll["data_source"] = "argyle"
     expect(schema.valid?(report)).to be(false)
+  end
+
+  it "accepts omitted self-attested gross income" do
+    self_attested.delete("gross_income")
+
+    expect(schema.valid?(report)).to be(true)
+  end
+
+  it "accepts null gross income for unpaid self-attested work" do
+    self_attested["gross_income"] = nil
+
+    expect(schema.valid?(report)).to be(true)
   end
 
   it "rejects negative self-attested income and missing hours" do
@@ -165,6 +186,40 @@ RSpec.describe ActivityReportSchemas do
       verified_education["enrollment_status"] = "unknown"
       verified_education["term"]["start_month"] = "2026-05-01"
       expect(schema.valid?(report)).to be(false)
+    end
+
+    context "with supplemental NSC enrollment details" do
+      before do
+        partial_education.merge!("enrollment_status" => "enrolled", "supplemental_enrollment_status" => "less_than_half_time")
+      end
+
+      it "accepts the original NSC status alongside the supplemental level and fractional credits" do
+        expect(schema.valid?(report)).to be(true)
+      end
+
+      it "accepts sufficient supplemental enrollment with inapplicable credits" do
+        partial_education.merge!("supplemental_enrollment_status" => "half_time", "hours" => nil, "credit_hours" => nil)
+
+        expect(schema.valid?(report)).to be(true)
+      end
+
+      it "accepts an unsure enrollment level" do
+        partial_education["supplemental_enrollment_status"] = "unknown"
+
+        expect(schema.valid?(report)).to be(true)
+      end
+
+      it "accepts zero credits when no classes were taken" do
+        partial_education.merge!("supplemental_enrollment_status" => nil, "hours" => 0, "credit_hours" => 0)
+
+        expect(schema.valid?(report)).to be(true)
+      end
+
+      it "rejects unsupported supplemental levels" do
+        partial_education["supplemental_enrollment_status"] = "three_quarter_time"
+
+        expect(schema.valid?(report)).to be(false)
+      end
     end
 
     it "requires credit hours when the source is fully self-attested" do

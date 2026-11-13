@@ -90,6 +90,10 @@ en:
           attributes:
             hours:
               greater_than_or_equal_to: Hours must be 0 or more
+        nsc_enrollment_term:
+          attributes:
+            supplemental_enrollment_status:
+              inclusion: Please select an option
         volunteering_activity:
           attributes:
             date:
@@ -238,7 +242,7 @@ en:
           term_end_hint: If you’re not sure, enter when your current classes are expected to end
           term_start: Term start date
           title: Add your term for %{school_name}
-      document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
+      document_upload_term_label: "%{school_name} %{start_date} to %{end_date}:"
       edit:
         additional_information_header: Additional comments (optional)
         additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
@@ -326,14 +330,12 @@ en:
         header: We're gathering your details from National Student Clearinghouse
         school_or_program: School or program
       term_credit_hours:
-        body_conversion: We will convert these credit hours into your community engagement progress.
-        body_html: Enter the number of credit hours you were taking in the term from %{term_begin} to %{term_end}.
+        body: Some of your enrollment details could not be gathered automatically.
         continue: Continue
         error_body_multi_month: You need to add credit hours for at least one month to continue.
         error_heading: No hours entered
         field_error: Add hours for at least one month
-        heading: Add your credit hours for %{school_name}
-        hours_label: Term credit hours
+        heading: Add more information for %{school_name}
         no_hours_checkbox: I didn't take any classes at %{school_name} this term
         term_date_range: 'Term: %{range}'
       title: Education
@@ -1470,6 +1472,9 @@ en:
       mixed_enrollment_history:
         description: 2 schools with Y (Enrolled) and half-time history. Y is latest at one school and historical at the other.
         title: Harper Testuser
+      mixed_partial_enrollment:
+        description: '2 schools: Y (enrollment level not reported) and less-than-half-time. Requires supplemental enrollment details.'
+        title: Riley Testuser
       settings:
         title: Agency settings
       unpaid_work_only:

@@ -90,6 +90,50 @@ RSpec.describe EducationActivityProgressCalculator do
         )
       end
 
+      context "with supplemental enrollment details" do
+        let(:supplemental_status) { "half_time" }
+        let(:credit_hours) { nil }
+
+        before do
+          create(:nsc_enrollment_term, :enrolled, education_activity: education_activity,
+            supplemental_enrollment_status: supplemental_status, credit_hours: credit_hours,
+            term_begin: month_start, term_end: month_start.end_of_month)
+        end
+
+        it "counts half-time enrollment toward progress while retaining supplemental routing" do
+          expect(calculator.progress_hours_for_month(month_start)).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
+          expect(calculator).to be_sufficient_enrollment_for_month(month_start)
+          expect(calculator.routing_hours_for_month(month_start)).to eq(0)
+        end
+
+        context "with full-time enrollment" do
+          let(:supplemental_status) { "full_time" }
+
+          it "meets the monthly enrollment requirement" do
+            expect(calculator.progress_hours_for_month(month_start)).to eq(ActivityFlowProgressCalculator::PER_MONTH_HOURS_THRESHOLD)
+            expect(calculator).to be_sufficient_enrollment_for_month(month_start)
+          end
+        end
+
+        context "with less-than-half-time enrollment" do
+          let(:supplemental_status) { "less_than_half_time" }
+          let(:credit_hours) { BigDecimal("2.5") }
+
+          it "converts fractional credits to community engagement hours" do
+            expect(calculator.progress_hours_for_month(month_start)).to eq(credit_hours * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER)
+          end
+        end
+
+        context "when the applicant is unsure" do
+          let(:supplemental_status) { "unknown" }
+          let(:credit_hours) { BigDecimal("3.5") }
+
+          it "converts the reported credit hours to community engagement hours" do
+            expect(calculator.progress_hours_for_month(month_start)).to eq(credit_hours * EducationActivity::CREDIT_HOUR_CE_MULTIPLIER)
+          end
+        end
+      end
+
       it "returns credit-hour-based CE hours for less-than-half-time terms" do
         create(
           :nsc_enrollment_term,

@@ -70,6 +70,26 @@ RSpec.describe Launcher::FakeNscDataFetcherService do
       end
     end
 
+    context "with mixed Y and less-than-half-time enrollment" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("partial_enrollment_riley") }
+      let(:identity) do
+        create(:identity, first_name: profile.first_name, last_name: profile.last_name, date_of_birth: profile.date_of_birth)
+      end
+      let(:reporting_window) { activity_flow.reporting_window_range }
+      let(:terms) { education_activity.less_than_half_time_terms_in_reporting_window }
+
+      before { service.fetch }
+
+      it "requires supplemental details for both schools across the reporting window" do
+        expect(education_activity.reload).to have_attributes(status: "succeeded", data_source: "partially_self_attested")
+        expect(terms).to contain_exactly(
+          have_attributes(school_name: profile.terms.first.fetch(:school_name), enrollment_status: "enrolled"),
+          have_attributes(school_name: profile.terms.last.fetch(:school_name), enrollment_status: "less_than_half_time")
+        )
+        expect(terms).to all(have_attributes(term_begin: reporting_window.begin, term_end: reporting_window.end))
+      end
+    end
+
     context "with duplicate enrollment records" do
       let(:profile) { Launcher::FakeNscScenarios.by_key("duplicate_enrollments_dedupe") }
       let(:identity) do

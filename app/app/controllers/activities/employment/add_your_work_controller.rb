@@ -38,6 +38,11 @@ class Activities::Employment::AddYourWorkController < Activities::BaseController
       return redirect_to activities_flow_income_add_jobs_path
     end
 
+    if @flow.payroll_accounts.published.any? { |account| account.type == "argyle" && account.sync_succeeded? }
+      track_event(TrackEvent::ApplicantContinuedFromAddJobsPage,
+        activity_flow_id: @flow.id, has_additional_jobs: params[:additional_jobs] == "true")
+    end
+
     if params[:additional_jobs] == "true"
       redirect_to activities_flow_income_add_your_work_path
     else
