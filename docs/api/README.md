@@ -98,11 +98,11 @@ V2 agency metadata fields and required fields are read from each agency's
 [client-agency-config.yml](../../app/config/client-agency-config.yml).
 Update that configuration and rebuild the reference rather than maintaining a
 separate V2 field list in the invitation schemas.
-The reference uses OpenAPI 3.1. Use `additionalProperties: true` on objects so
-integrations can tolerate additive schema changes. Month-keyed activity maps
-also use `patternProperties` to validate arrays under `YYYY-MM` keys while
-allowing future fields with other names. Nullable fields include `null` in their
-`type` array.
+The reference uses OpenAPI 3.1. Objects do not allow undocumented fields; new
+fields are communicated via updated schemas rather than allowing additive
+schema changes. Month-keyed activity maps also use `patternProperties` to
+validate arrays under `YYYY-MM` keys while allowing future fields with other
+names. Nullable fields include `null` in their `type` array.
 Request examples come from real test requests using synthetic data and fixed
 tokens. The CE model example comes from the transmission specs; model examples
 and webhook request and response examples are validated during the build.

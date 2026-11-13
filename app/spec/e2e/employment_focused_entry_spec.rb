@@ -10,8 +10,8 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
     I18n.t("activities.reporting_for.text_html", name: "#{applicant.first_name} #{applicant.last_name}")
   }
 
-  it "renders the employment-focused entry content and navigates to add-your-work screen" do
-    visit activities_flow_start_path(token: invitation.auth_token)
+  it "routes employment-focused in-kind work through manual income and hours entry" do
+    visit activities_flow_start_path(token: invitation.auth_token, reporting_window_months: 3)
 
     verify_page(page, title: I18n.t("activities.entries.show.employment_focused.header"))
     expect(page).to have_text(reporting_for_text, count: 1)
@@ -22,6 +22,21 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
     verify_page(page, title: "Choose how you want to add your job")
     expect(page).to have_selector("fieldset legend", text: I18n.t("activities.employment.add_your_work.show.legend"))
     expect(page).to have_text(reporting_for_text, count: 1)
+    choose I18n.t("activities.employment.add_your_work.show.employment_focused.options.unpaid.label"), allow_label_click: true
+    click_button I18n.t("continue")
+    verify_page(page, title: I18n.t("activities.employment_info.title"))
+    fill_in "employment_activity_employer_name", with: "Example Employer"
+    click_button I18n.t("activities.employment_info.continue")
+
+    verify_page(page, title: I18n.t("activities.employment.month_selections.edit.title", employer_name: "Example Employer"))
+    activity = invitation.activity_flows.last.employment_activities.last
+    month = activity.activity_flow.reporting_months.first
+    check I18n.l(month, format: :month_year), allow_label_click: true
+    click_button I18n.t("activities.employment.month_selections.edit.continue")
+
+    verify_page(page, title: I18n.t("activities.employment.hours_input.heading", organization: "Example Employer"))
+    expect(page).to have_field("employment_activity_month_gross_income")
+    expect(page).to have_field("employment_activity_month_hours")
   end
 
   it "renders the generic entry content when not employment_focused" do
@@ -43,6 +58,13 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
   end
 
   context "the add_jobs page" do
+    let(:applicant) do
+      create(:cbv_applicant, client_agency_id: "la_ldh", first_name: "Lisa", last_name: "Williams", date_of_birth: nil)
+    end
+    let(:invitation) do
+      create(:activity_flow_invitation, client_agency_id: "la_ldh", employment_focused: true, cbv_applicant: applicant)
+    end
+
     around do |ex|
       override_supported_providers([ :argyle ]) do
         e2e = E2e::MockingService.new(server_url: URI(page.server_url))
@@ -84,6 +106,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
         skip_axe_rules: %w[heading-order]
       )
       click_button I18n.t("activities.document_uploads.new.continue")
+      click_button I18n.t("activities.document_uploads.new.empty_confirmation.continue")
 
       verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: employer_name))
       expect(page).to have_text(reporting_for_text, count: 1)
@@ -136,6 +159,8 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
       click_button I18n.t("activities.employment.add_your_work.add_jobs.submit")
       expect(page).to have_text(reporting_for_text, count: 1)
       verify_page(page, title: I18n.t("activities.activities.employment_focused_review.header"))
+      expect(flow.reload.identity).to be_nil
+      expect(applicant.reload.date_of_birth).to be_nil
       expect(page).to have_content(
         I18n.t("activities.activities.employment_focused_review.employment_header", count: 1, employer_name: "Acme Co")
       )

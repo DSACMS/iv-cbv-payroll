@@ -18,7 +18,11 @@ import ProgressIndicatorUnitsController from "./progress_indicator_units_control
 import DocumentUploadController from "./document_upload_controller.js"
 import ErrorSummaryController from "./error_summary_controller.js"
 import EducationTermController from "./education_term_controller.js"
+import EducationOtherController from "./education_other_controller.js"
 import DismissibleAlertController from "./dismissible_alert_controller.js"
+import ActivityHubController from "./activity_hub_controller.js"
+import ExpiredInvitationController from "./expired_invitation_controller.js"
+import EmploymentPayrollNavigationController from "./employment_payroll_navigation_controller.js"
 
 application.register("cbv-employer-search", CbvEmployerSearch)
 application.register("polling", PollingController)
@@ -38,7 +42,11 @@ application.register("progress-indicator-units", ProgressIndicatorUnitsControlle
 application.register("document-upload", DocumentUploadController)
 application.register("error-summary", ErrorSummaryController)
 application.register("education-term", EducationTermController)
+application.register("education-other", EducationOtherController)
 application.register("dismissible-alert", DismissibleAlertController)
+application.register("activity-hub", ActivityHubController)
+application.register("expired-invitation", ExpiredInvitationController)
+application.register("employment-payroll-navigation", EmploymentPayrollNavigationController)
 
 Turbo.StreamActions.redirect = function () {
   Turbo.visit(this.target)

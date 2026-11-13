@@ -10,6 +10,15 @@ class NscEnrollmentTerm < ApplicationRecord
 
   belongs_to :education_activity
 
+  attr_accessor :no_hours
+
+  validates :supplemental_enrollment_status,
+    inclusion: { in: EducationActivity::SELF_ATTESTED_ENROLLMENT_STATUSES },
+    if: -> { enrollment_enrolled? && !no_hours }, on: :supplemental_details
+  validates :credit_hours, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true,
+    if: :supplemental_credit_hours_applicable?, on: :supplemental_details
+  before_validation :clear_inapplicable_supplemental_details, on: :supplemental_details
+
   SUMMER_MONTHS = [ 5, 6, 7, 8 ].freeze
   enum :enrollment_status, {
     full_time: "full_time",                     # F
@@ -44,6 +53,21 @@ class NscEnrollmentTerm < ApplicationRecord
 
   def less_than_half_time?
     !half_time_or_above?
+  end
+
+  def supplemental_sufficient_enrollment?
+    enrollment_enrolled? && HALF_TIME_OR_ABOVE_STATUSES.include?(supplemental_enrollment_status)
+  end
+
+  def supplemental_credit_hours_applicable?
+    !enrollment_enrolled? || EducationActivity::SELF_ATTESTED_CREDIT_HOURS_STATUSES.include?(supplemental_enrollment_status)
+  end
+
+  def supplemental_enrollment_status_display
+    return enrollment_status_display unless enrollment_enrolled?
+    return I18n.t("shared.not_applicable") if supplemental_enrollment_status.blank?
+
+    I18n.t("activities.education.add_your_term.edit.enrollment_status_options.#{supplemental_enrollment_status}")
   end
 
   def enrollment_status_display
@@ -97,10 +121,24 @@ class NscEnrollmentTerm < ApplicationRecord
     month_format = abbreviated ? :abbreviated_month : :month
     month_year_format = abbreviated ? :abbreviated_month_year : :month_year
 
+    return I18n.l(term_begin, format: month_year_format) if term_begin.beginning_of_month == term_end.beginning_of_month
+
     if term_begin.year == term_end.year
       "#{I18n.l(term_begin, format: month_format)} - #{I18n.l(term_end, format: month_year_format)}"
     else
       "#{I18n.l(term_begin, format: month_year_format)} - #{I18n.l(term_end, format: month_year_format)}"
+    end
+  end
+
+  private
+
+  def clear_inapplicable_supplemental_details
+    if no_hours
+      self.supplemental_enrollment_status = nil
+      self.credit_hours = 0
+    else
+      self.supplemental_enrollment_status = nil unless enrollment_enrolled?
+      self.credit_hours = nil unless supplemental_credit_hours_applicable?
     end
   end
 end

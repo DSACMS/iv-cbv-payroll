@@ -24,6 +24,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: flow.required_month_count)}",
       normalize_ws: true)
     flow.update!(employment_focused: true)
+    flow.set_required_month_count!(2)
     expect(flow.reporting_months.size).to eq(12)
     first_selected_month = flow.reporting_months.first
     unselected_month = flow.reporting_months.second
@@ -160,6 +161,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       skip_axe_rules: %w[heading-order]
     )
     click_button I18n.t("activities.document_uploads.new.continue")
+    click_button I18n.t("activities.document_uploads.new.empty_confirmation.continue")
 
     # Review page
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Gainesville Wrecking"))

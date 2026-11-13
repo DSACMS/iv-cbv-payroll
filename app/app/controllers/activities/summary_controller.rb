@@ -2,6 +2,7 @@ class Activities::SummaryController < Activities::BaseController
   include ConfirmationCodeGeneratable
 
   before_action :load_summary_data, only: %i[show]
+  after_action :track_review_viewed_event, only: :show
 
   def show
     flash.keep(:activity_added)
@@ -43,10 +44,17 @@ class Activities::SummaryController < Activities::BaseController
       enqueue_transmission
     end
 
+    track_event(TrackEvent::ActivityReportSubmitted)
     redirect_to after_submit_path
   end
 
   private
+
+  def track_review_viewed_event
+    return unless response.successful?
+
+    track_event(TrackEvent::ActivityReportReviewViewed)
+  end
 
   def after_submit_path
     household = @flow.household_member&.household

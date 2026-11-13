@@ -16,17 +16,12 @@ describe("ErrorSummaryController", () => {
 
     window.Stimulus.register("error-summary", ErrorSummaryController)
 
-    const elements = Array.from(
-      document.querySelectorAll('[data-controller~="error-summary"]')
-    )
+    const elements = Array.from(document.querySelectorAll('[data-controller~="error-summary"]'))
 
     await vi.waitFor(() => {
       elements.forEach((element) => {
         expect(
-          window.Stimulus.getControllerForElementAndIdentifier(
-            element,
-            "error-summary"
-          )
+          window.Stimulus.getControllerForElementAndIdentifier(element, "error-summary")
         ).not.toBeNull()
       })
       expect(frames.size).toBe(elements.length)
@@ -47,8 +42,8 @@ describe("ErrorSummaryController", () => {
     }
     frames = new Map()
     nextFrameId = 0
-    consoleError = vi.spyOn(console, "error").mockImplementation(() => { })
-    
+    consoleError = vi.spyOn(console, "error").mockImplementation(() => {})
+
     Object.defineProperty(globalThis, "HTMLFormElement", {
       configurable: true,
       writable: true,
@@ -109,7 +104,7 @@ describe("ErrorSummaryController", () => {
           <input id="income"
               aria-invalid="true"
               aria-describedby="income-error">
-            
+
           <label id="hours-label" for="hours">Hours worked</label>
           <span id="hours-error"
               class="usa-error-message"
@@ -128,9 +123,7 @@ describe("ErrorSummaryController", () => {
     it("describes the banner body followed by each field label and error", () => {
       runFrames()
 
-      expect(
-        document.getElementById("summary").getAttribute("aria-describedby")
-      ).toBe(
+      expect(document.getElementById("summary").getAttribute("aria-describedby")).toBe(
         "summary-body income-label income-error hours-label hours-error"
       )
       expect(consoleError).not.toHaveBeenCalled()
@@ -150,9 +143,9 @@ describe("ErrorSummaryController", () => {
     it("does not include errors from another form", () => {
       runFrames()
 
-      expect(
-        document.getElementById("summary").getAttribute("aria-describedby")
-      ).not.toContain("other-error")
+      expect(document.getElementById("summary").getAttribute("aria-describedby")).not.toContain(
+        "other-error"
+      )
     })
   })
 
@@ -263,7 +256,7 @@ describe("ErrorSummaryController", () => {
                    aria-invalid="true"
                    aria-describedby="applicant_date_of_birth_error">
           </fieldset>
-        </form>  
+        </form>
       `)
     })
 
@@ -305,6 +298,59 @@ describe("ErrorSummaryController", () => {
     })
   })
 
+  describe("with deferred consent focus", () => {
+    let container
+    let input
+    let controller
+
+    beforeEach(async () => {
+      await mount(`
+        <form data-controller="error-summary" data-error-summary-defer-focus-value="true">
+          <div class="usa-checkbox">
+            <span id="consent-error" class="usa-error-message">Consent is required</span>
+            <input id="consent" type="checkbox" aria-describedby="consent-error">
+          </div>
+        </form>
+      `)
+      container = document.querySelector(".usa-checkbox")
+      container.scrollIntoView = vi.fn()
+      input = document.getElementById("consent")
+      controller = window.Stimulus.getControllerForElementAndIdentifier(
+        document.querySelector("form"),
+        "error-summary"
+      )
+    })
+
+    it("focuses and reveals the consent error after the render scroll frame", () => {
+      const scrollReset = vi.fn()
+      requestAnimationFrame(scrollReset)
+
+      runFrames()
+
+      expect(scrollReset).toHaveBeenCalled()
+      expect(document.activeElement).not.toBe(input)
+      expect(container.scrollIntoView).not.toHaveBeenCalled()
+
+      runFrames()
+
+      expect(document.activeElement).toBe(input)
+      expect(container.scrollIntoView).toHaveBeenCalledWith({
+        block: "nearest",
+        behavior: "instant",
+      })
+    })
+
+    it("cancels deferred focus if the form disconnects after the first frame", () => {
+      runFrames()
+      controller.disconnect()
+      runFrames()
+
+      expect(frames.size).toBe(0)
+      expect(document.activeElement).not.toBe(input)
+      expect(container.scrollIntoView).not.toHaveBeenCalled()
+    })
+  })
+
   describe("when disconnected before the scheduled focus", () => {
     beforeEach(async () => {
       await mount('<form data-controller="error-summary"></form>')
@@ -312,9 +358,8 @@ describe("ErrorSummaryController", () => {
 
     it("cancels the pending animation frame", () => {
       const form = document.querySelector("form")
-      const controller =
-        window.Stimulus.getControllerForElementAndIdentifier(form, "error-summary")
-      
+      const controller = window.Stimulus.getControllerForElementAndIdentifier(form, "error-summary")
+
       controller.disconnect()
 
       expect(cancelAnimationFrame).toHaveBeenCalled(controller.frameId)

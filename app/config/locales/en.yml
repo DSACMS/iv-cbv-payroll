@@ -90,6 +90,10 @@ en:
           attributes:
             hours:
               greater_than_or_equal_to: Hours must be 0 or more
+        nsc_enrollment_term:
+          attributes:
+            supplemental_enrollment_status:
+              inclusion: Please select an option
         volunteering_activity:
           attributes:
             date:
@@ -128,6 +132,7 @@ en:
       modal:
         back_button: Back
         body: Your progress adding this activity will not be saved.
+        close: Close this window
         exit_link: Exit without saving
         heading: Are you sure you want to exit?
     community_service:
@@ -187,6 +192,13 @@ en:
           suggestions_html: "<ul><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li><li>Copy of class schedule for the current term</li><li>Transcript from most recent enrollment period</li></ul>"
           term_end: Term end date
           term_start: Term start date
+        empty_confirmation:
+          close: Close this window
+          continue: Continue without uploading
+          description: Uploading documents is the fastest way to show you meet the requirements.
+          go_back: Go back
+          heading: Are you sure you want to continue without uploading documents?
+          warning: Without documents, confirming your eligibility may take longer.
         errors:
           empty: That file is empty. Choose a different file.
           multiple_files: We could not upload one or more files. Check the files and try again.
@@ -237,7 +249,7 @@ en:
           term_end_hint: If you’re not sure, enter when your current classes are expected to end
           term_start: Term start date
           title: Add your term for %{school_name}
-      document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
+      document_upload_term_label: "%{school_name} %{start_date} to %{end_date}:"
       edit:
         additional_information_header: Additional comments (optional)
         additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
@@ -322,14 +334,12 @@ en:
         header: We're gathering your details from National Student Clearinghouse
         school_or_program: School or program
       term_credit_hours:
-        body_conversion: We will convert these credit hours into your community engagement progress.
-        body_html: Enter the number of credit hours you were taking in the term from %{term_begin} to %{term_end}.
+        body: Some of your enrollment details could not be gathered automatically.
         continue: Continue
         error_body_multi_month: You need to add credit hours for at least one month to continue.
         error_heading: No hours entered
         field_error: Add hours for at least one month
-        heading: Add your credit hours for %{school_name}
-        hours_label: Term credit hours
+        heading: Add more information for %{school_name}
         no_hours_checkbox: I didn't take any classes at %{school_name} this term
         term_date_range: 'Term: %{range}'
       title: Education
@@ -659,6 +669,7 @@ en:
         employment_details: Employment details
         employment_status: Employment status
         employment_summary: Employment summary
+        enrolled: Enrolled
         gig_payments_description: 'These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount:'
         heading: Community Engagement Report
         hourly_wage_hours_paid: 'Hourly wage: Hours paid'
@@ -681,6 +692,7 @@ en:
         school_contact_email: School contact email
         school_contact_name: School contact name
         school_contact_phone_number: School contact phone number
+        supplemental_enrollment_status: "%{status} (self-attested)"
         term_date_range: "%{start_date} to %{end_date}"
         title: Community Engagement Report
         total_hours_worked: Total hours worked
@@ -1463,6 +1475,9 @@ en:
       mixed_enrollment_history:
         description: 2 schools with Y (Enrolled) and half-time history. Y is latest at one school and historical at the other.
         title: Harper Testuser
+      mixed_partial_enrollment:
+        description: '2 schools: Y (enrollment level not reported) and less-than-half-time. Requires supplemental enrollment details.'
+        title: Riley Testuser
       settings:
         title: Agency settings
       unpaid_work_only:

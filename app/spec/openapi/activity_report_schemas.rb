@@ -12,7 +12,8 @@ module ActivityReportSchemas
     contact = {
       contact_name: nullable_string.merge(description: "Name of the contact at the work program, employer, or school."),
       contact_email: nullable_string.merge(description: "Email address of the contact at the work program, employer, or school."),
-      contact_phone_number: nullable_string.merge(description: "Phone number of the contact at the work program, employer, or school.")
+      contact_phone_number: nullable_string.merge(description: "Phone number of the contact at the work program, employer, or school."),
+      contact_title: nullable_string.merge(description: "Title of the contact person.")
     }
     comments = nullable_string.merge(description: "Optional free-text comments the applicant added at the review step.")
     self_attested = address.merge(
@@ -23,7 +24,7 @@ module ActivityReportSchemas
       education_type: education_type,
       type: { type: :string, enum: %w[education] },
       school_name: nullable_string.merge(description: "School name from the NSC enrollment term; null when unavailable."),
-      enrollment_status: { type: :string, enum: NscEnrollmentTerm.enrollment_statuses.keys, description: "NSC enrollment status for this term, including unknown when the status is unavailable." },
+      enrollment_status: { type: :string, enum: NscEnrollmentTerm.enrollment_statuses.keys, description: "NSC-mapped enrollment status for this term. NSC Y is reported as enrolled: it confirms enrollment without specifying a level. Unknown means the status is unavailable." },
       credit_hours: { type: %w[number null], minimum: 0, description: "Academic credits for the term, reported by the applicant where needed. Fractions are preserved; unknown credits stay null. NSC does not provide academic credits, so this is null for verified enrollment." },
       term: ref("CeEducationTerm").merge(description: "Original enrollment term, with required start_month and end_month in YYYY-MM format."),
       additional_comments: comments
@@ -34,14 +35,20 @@ module ActivityReportSchemas
         schema_version: { type: :string, pattern: '^\d+\.\d+\.\d+$', example: "1.0.0", description: "Semantic version of the CE compliance specification this payload conforms to." },
         confirmation_code: { type: :string, description: "Unique code assigned when the report was completed, shared with the applicant and used to debug report processing errors." },
         completed_at: { type: :string, format: :"date-time", description: "UTC time the applicant completed the report, in ISO 8601 format." },
-        agency_partner_metadata: ref("AgencyPartnerMetadata").merge(description: "Agency-specific fields used to associate the report with the correct case, as agreed in the integration plan and shared with the Income Report API. Examples include case_number (string), date_of_birth (date string), and doc_id (string); which fields are required depends on the agency."),
-        ce_report: ref("CeReport").merge(description: "Community engagement report containing the review period, supporting document metadata, and activities.")
-      }).merge(description: InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Model")),
+        agency_partner_metadata: {
+          anyOf: [
+            ref("AgencyPartnerMetadata"),
+            ref("AgencyPartnerMetadataV2")
+          ],
+          description: "Agency-specific fields used to associate the report with the correct case. The accepted fields depend on the agency and invitation version."
+        },
+      ce_report: { "$ref" => "#/components/schemas/CeReport", description: "Community engagement report containing the review period, supporting document metadata, and activities." }
+    }, additionalProperties: false).merge(description: InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Model")),
       CeReport: object(%w[report_variant review_period documents activities], {
         report_variant: { type: :string, enum: %w[employment community_engagement], description: "Reporting flow used to complete this report." },
-        review_period: ref("CeReviewPeriod").merge(description: "Full date range covered by this CE compliance determination, expressed as inclusive calendar months."),
-        documents: { type: :array, items: ref("CeDocument"), description: "All supporting documents uploaded for the activities in this report. The files are transmitted separately by the document transmission integration; this array describes what to expect." },
-        activities: ref("CeActivities").merge(description: "Activities grouped first by type, then by reporting month in YYYY-MM format.")
+        review_period: { "$ref" => "#/components/schemas/CeReviewPeriod", description: "Full date range covered by this CE compliance determination, expressed as inclusive calendar months." },
+        documents: { type: :array, items: { "$ref" => "#/components/schemas/CeDocument" }, description: "All supporting documents uploaded for the activities in this report. The files are transmitted separately by the document transmission integration; this array describes what to expect." },
+        activities: { "$ref" => "#/components/schemas/CeActivities", description: "Activities grouped first by type, then by reporting month in YYYY-MM format." }
       }).merge(description: "The report's review period, supporting documents, and reported activities."),
       CeReviewPeriod: object(%w[start_month end_month], {
         start_month: month.merge(description: "First calendar month of the review period, inclusive, in YYYY-MM format."),
@@ -58,12 +65,12 @@ module ActivityReportSchemas
         employment: months("CeEmploymentActivity"),
         education: months("CeEducationActivity")
       }).merge(description: "Keys are activity types, each containing a map of YYYY-MM months to activity arrays. Months with no reported activity are omitted; an activity type with no activities is an empty object. Activities spanning several months appear under each applicable month."),
-      CeActivity: object(%w[type month data_source document_ids], {
-        type: { type: :string, enum: %w[community_service work_program employment education], description: "Activity type, matching the enclosing activity-type key." },
-        month: month.merge(description: "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key."),
-        data_source: { type: :string, enum: %w[self_attested validated verified verified_enrollment_only], description: "Origin of the activity data: self_attested for manually reported activities, validated for linked Argyle or Pinwheel payroll, verified for NSC enrollment, or verified_enrollment_only for NSC enrollment with self-attested credits." },
-        document_ids: { type: :array, items: { type: :string }, description: "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities." }
-      }).merge(description: "Fields shared by all activity entries in the enclosing reporting month."),
+      CeActivity: {
+        type: :object,
+        properties: CeActivityProperties,
+        required: %w[type month data_source document_ids],
+        additionalProperties: false
+      }.merge(description: "Fields shared by all activity entries in the enclosing reporting month."),
       CeCommunityServiceActivity: activity(%w[hours], self_attested.merge(
         type: { type: :string, enum: %w[community_service] },
         data_source: { type: :string, enum: %w[self_attested] },
@@ -89,14 +96,14 @@ module ActivityReportSchemas
           }
         }
       },
-      CeSelfAttestedEmploymentActivity: activity(%w[employer_name employment_type is_self_employed hours gross_income], self_attested.merge(contact).merge(
+      CeSelfAttestedEmploymentActivity: activity(%w[employer_name employment_type is_self_employed hours], self_attested.merge(contact).merge(
         type: { type: :string, enum: %w[employment] },
         data_source: { type: :string, enum: %w[self_attested] },
         employer_name: { type: :string, description: "Name of the employer or business." },
         employer_address: nullable_string.merge(description: "Combined address, also supplied as individual address fields."),
         employment_type: { type: :null, description: "Always null for self-attested employment. Populated only for Argyle-sourced employment." },
         is_self_employed: { type: :boolean, description: "Whether the applicant marked the work as self-employment. Employer contact fields are null when true." },
-        gross_income: { type: :number, minimum: 0, description: "Self-attested monthly gross income in dollars, including cents as a decimal." }
+        gross_income: { type: %w[number null], minimum: 0, description: "Optional self-attested monthly gross income in dollars, including cents as a decimal. Null for unpaid or in-kind work because the applicant is not prompted to enter income." }
       )).merge(description: "Published self-attested work appears once per reported month, including months with zero hours or income. Draft activities are excluded. Includes address components, applicant comments, monthly hours, and supporting document IDs. Employer contact details are null for self-employment."),
       CeValidatedEmploymentActivity: activity(%w[applicant_full_name employer_name paystubs], {
         type: { type: :string, enum: %w[employment] },
@@ -106,7 +113,18 @@ module ActivityReportSchemas
         applicant_extra_comments: nullable_string.merge(description: "Applicant's comments about this employment."),
         employer_name: nullable_string.merge(description: "Employer name from the payroll provider."),
         employer_phone: nullable_string.merge(description: "Employer phone number from the payroll provider."),
-        employer_address: nullable_string.merge(description: "Employer address from the payroll provider."),
+        employer_address: {
+          type: %i[object null],
+          properties: {
+            line1: nullable_string,
+            line2: nullable_string,
+            city: nullable_string,
+            state: nullable_string,
+            postal_code: nullable_string
+          },
+          additionalProperties: false,
+          description: "Employer address from the payroll provider."
+        },
         employment_status: nullable_enum(%w[employed inactive terminated]).merge(description: "Employment status reported by the payroll provider."),
         employment_type: nullable_enum(%w[w2 gig]).merge(description: "Argyle employment classification: w2 for W-2 work or gig for gig work; null for Pinwheel or when unavailable."),
         employment_start_date: nullable_string.merge(format: :date, description: "Employment start date reported by the payroll provider."),
@@ -117,7 +135,7 @@ module ActivityReportSchemas
         paystubs: { type: :array, minItems: 1, items: ref("CePaystub"), description: "Only payments dated within the enclosing month and review period. Grouped by pay_date, even when the work period falls in another month. Undated paychecks and paychecks outside the review period are omitted." }
       }).merge(description: "Only published, successfully synchronized Argyle or Pinwheel accounts are included. Each employer appears once per month with a paycheck in the review period; employers without dated paychecks in that period have no entry. Payroll money values are in cents, and nullable provider fields remain null. Hours are reported on each paystub as hours_paid; there is no calculated employment-level hours field. A failed payroll fetch fails transmission so the job can retry rather than sending a partial report."),
       CeEducationActivity: {
-        description: "Only published education activities are included: self-attested credits, verified NSC enrollment, or verified enrollment with self-attested credits. Fully self-attested education appears under each reported month. NSC term entries appear under each applicable reporting month, including eligible summer carryover. A month can contain multiple schools or terms.",
+        description: "Only published education activities are included: self-attested credits, verified NSC enrollment, or verified enrollment with supplemental self-attested enrollment details. Fully self-attested education appears under each reported month. NSC term entries appear under each applicable reporting month, including eligible summer carryover. A month can contain multiple schools or terms.",
         oneOf: [ ref("CeSelfAttestedEducationActivity"), ref("CeVerifiedEducationActivity"), ref("CeVerifiedEnrollmentOnlyEducationActivity") ],
         discriminator: {
           propertyName: "data_source",
@@ -139,9 +157,10 @@ module ActivityReportSchemas
         data_source: { type: :string, enum: %w[verified], description: "NSC-verified enrollment." }
       )).merge(description: "NSC-verified enrollment and original term details. NSC does not provide academic credit hours, so credit_hours is null."),
       CeVerifiedEnrollmentOnlyEducationActivity: activity(%w[school_name hours enrollment_status term education_type], self_attested.merge(contact).merge(education_term).merge(
-        data_source: { type: :string, enum: %w[verified_enrollment_only], description: "NSC-verified enrollment, but whether the user was enrolled full-time, half-time, or less-than-half-time was not provided. The term credit_hours field is populated with self-attested values." },
-        hours: { type: %w[number null], minimum: 0, description: "Self-attested academic credit hours for the term, matching credit_hours. Fractions and zero are preserved; null when not reported." }
-      )).merge(description: "Partially self-attested education combines NSC enrollment and term details with applicant-reported academic credits, retaining self-attested address and contact fields. Every term entry uses verified_enrollment_only, including terms with half-time or greater enrollment."),
+        data_source: { type: :string, enum: %w[verified_enrollment_only], description: "NSC enrollment supplemented by applicant-reported enrollment details." },
+        supplemental_enrollment_status: nullable_enum(EducationActivity::SELF_ATTESTED_ENROLLMENT_STATUSES).merge(description: "Applicant-reported enrollment level when NSC reports Y (enrolled): full_time, half_time, less_than_half_time, or unknown (the applicant is unsure). Null for other NSC statuses, when the applicant reports no classes, or when no supplemental level was supplied. The original NSC status remains in enrollment_status."),
+        hours: { type: %w[number null], minimum: 0, description: "Self-attested academic credit hours for the term, matching credit_hours. Fractions and reported zero values are preserved. Null for supplemental full_time/half_time or when not reported." }
+      )).merge(description: "Partially self-attested education combines NSC enrollment and term details with applicant-reported enrollment levels and applicable academic credits, retaining self-attested address and contact fields. Every term entry uses verified_enrollment_only, including terms with half-time or greater enrollment. Credits are collected for NSC less_than_half_time terms and enrolled terms with a supplemental level of less_than_half_time or unknown. Reporting no classes for an enrolled term produces zero credits and a null supplemental level."),
       CeEducationTerm: object(%w[start_month end_month], {
         start_month: month.merge(description: "Start month of the original enrollment term in YYYY-MM format."),
         end_month: month.merge(description: "End month of the original enrollment term in YYYY-MM format.")
@@ -169,8 +188,8 @@ module ActivityReportSchemas
     }
   end
 
-  def self.object(required, properties)
-    { type: :object, additionalProperties: true, properties: properties }.tap do |schema|
+  def self.object(required, properties, **options)
+    { type: :object, additionalProperties: false, properties: properties }.merge(options).tap do |schema|
       schema[:required] = required if required.any?
     end
   end
@@ -180,14 +199,26 @@ module ActivityReportSchemas
   end
 
   def self.activity(required, properties)
-    { allOf: [ ref("CeActivity"), object(required, properties) ] }
+    {
+      type: :object,
+      properties: CeActivityProperties.merge(properties),
+      additionalProperties: false
+    }.tap do |schema|
+      schema[:required] = (%w[type month data_source document_ids] + required).uniq
+    end
   end
+
+  CeActivityProperties = {
+    type: { type: :string, enum: %w[community_service work_program employment education], description: "Activity type, matching the enclosing activity-type key." },
+    month: { type: :string, pattern: '^\d{4}-\d{2}$', description: "Calendar month this activity applies to in YYYY-MM format; repeats the enclosing month key." },
+    data_source: { type: :string, enum: %w[self_attested validated verified verified_enrollment_only], description: "Origin of the activity data: self_attested for manually reported activities, validated for linked Argyle or Pinwheel payroll, verified for NSC enrollment, or verified_enrollment_only for NSC enrollment with supplemental self-attested enrollment details." },
+    document_ids: { type: :array, items: { type: :string }, description: "Supporting document_id values from the report's documents array. Empty for linked payroll; self-attested documents are referenced from their own activities." }
+  }.freeze
 
   def self.months(name)
     {
       type: :object,
       description: "Map of YYYY-MM calendar months to activity arrays. Months with no reported activity are omitted; no activities is an empty object.",
-      additionalProperties: true,
       patternProperties: { '^\d{4}-\d{2}$' => { type: :array, items: ref(name) } }
     }
   end

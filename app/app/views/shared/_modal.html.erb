@@ -1,0 +1,23 @@
+<%# Shared USWDS modal shell. Desktop spacing adjustments are opt-in. %>
+<% balanced_spacing = local_assigns.fetch(:balanced_spacing, false) %>
+<div class="<%= class_names("usa-modal", "shared-modal": balanced_spacing) %>"
+     id="<%= id %>"
+     aria-labelledby="<%= heading_id %>"
+     aria-describedby="<%= description_id %>">
+  <div class="usa-modal__content">
+    <div class="<%= class_names("usa-modal__main", "desktop:padding-top-0": balanced_spacing) %>">
+      <h2 class="usa-modal__heading" id="<%= heading_id %>">
+        <%= heading %>
+      </h2>
+      <%= yield %>
+    </div>
+    <%= tag.button type: "button",
+          class: "usa-button usa-modal__close",
+          aria: { label: close_label },
+          data: local_assigns.fetch(:close_data, {}).merge(close_modal: true) do %>
+      <svg class="usa-icon" aria-hidden="true" focusable="false">
+        <use href="<%= uswds_sprite_icon_href("close") %>"></use>
+      </svg>
+    <% end %>
+  </div>
+</div>

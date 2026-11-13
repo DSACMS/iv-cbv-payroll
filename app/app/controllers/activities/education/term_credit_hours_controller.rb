@@ -1,5 +1,6 @@
 class Activities::Education::TermCreditHoursController < Activities::BaseController
   include NavigationTracking
+  include NscEducationTracking
 
   before_action :redirect_if_nsc_disabled
   before_action :set_education_activity
@@ -16,7 +17,6 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
 
     if !valid_term_credit_hours_submission?
       @error = true
-      add_term_credit_hours_submission_errors
       render :edit, status: :unprocessable_content
       return
     end
@@ -34,11 +34,11 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
     next_index = @term_index + 1
     if next_index < @terms.length
       redirect_to edit_activities_flow_education_term_credit_hour_path(
-        education_id: @education_activity, id: next_index
+        education_id: @education_activity, id: next_index, from_edit: params[:from_edit].presence
       )
     else
       redirect_to new_activities_flow_education_document_upload_path(
-        education_id: @education_activity
+        education_id: @education_activity, from_edit: params[:from_edit].presence
       )
     end
   end
@@ -70,27 +70,21 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
   end
 
   def assign_term_credit_hours_submission_values
-    if params[:no_hours] == "1"
-      @current_term.credit_hours = 0
-    else
-      @current_term.credit_hours = term_credit_hours_params[:credit_hours].presence || 0
-    end
+    @current_term.assign_attributes(term_credit_hours_params)
+    @current_term.no_hours = params[:no_hours] == "1"
+    @current_term.credit_hours = 0 if @current_term.credit_hours_before_type_cast.blank?
   end
 
   def valid_term_credit_hours_submission?
-    hours = @current_term.credit_hours || 0
+    return false unless @current_term.valid?(:supplemental_details)
+    return true if params[:from_review].blank? && @term_index < @terms.length - 1
 
-    if @terms.length == 1
-      hours > 0
-    elsif params[:from_review].present? || @term_index == @terms.length - 1
-      @terms.sum { |term| term.id == @current_term.id ? hours : (term.credit_hours || 0) } > 0
-    else
-      true
+    if @terms.any?(&:supplemental_sufficient_enrollment?) || @terms.sum { |term| term.credit_hours || 0 } > 0
+      return true
     end
-  end
 
-  def add_term_credit_hours_submission_errors
-    @current_term.errors.add(:credit_hours, I18n.t("activities.education.term_credit_hours.field_error"))
+    @current_term.errors.add(:credit_hours, :no_hours, message: I18n.t("activities.education.term_credit_hours.field_error"))
+    false
   end
 
   def set_education_activity
@@ -115,6 +109,7 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
     end
 
     @current_term = @terms[@term_index]
+    @current_term.no_hours = @current_term.credit_hours == 0 && @current_term.supplemental_enrollment_status.blank?
     @show_no_hours_checkbox = @terms.many? || mixed_enrollment_in_window?
   end
 
@@ -126,15 +121,15 @@ class Activities::Education::TermCreditHoursController < Activities::BaseControl
                   )
                 elsif @term_index > 0
                   edit_activities_flow_education_term_credit_hour_path(
-                    education_id: @education_activity, id: @term_index - 1
+                    education_id: @education_activity, id: @term_index - 1, from_edit: params[:from_edit].presence
                   )
                 else
-                  edit_activities_flow_education_path(id: @education_activity)
+                  edit_activities_flow_education_path(id: @education_activity, from_edit: params[:from_edit].presence)
                 end
   end
 
   def term_credit_hours_params
-    params.require(:nsc_enrollment_term).permit(:credit_hours)
+    params.require(:nsc_enrollment_term).permit(:credit_hours, :supplemental_enrollment_status)
   end
 
   def mixed_enrollment_in_window?

@@ -432,9 +432,10 @@ RSpec.describe ActivityReportSerializer do
       )
       create(
         :nsc_enrollment_term,
-        :less_than_half_time,
+        :enrolled,
         education_activity: education,
         school_name: "South College",
+        supplemental_enrollment_status: "unknown",
         credit_hours: 4,
         term_begin: first_month,
         term_end: second_month.end_of_month
@@ -446,6 +447,7 @@ RSpec.describe ActivityReportSerializer do
           "hours" => 3.25,
           "data_source" => "verified_enrollment_only",
           "enrollment_status" => "less_than_half_time",
+          "supplemental_enrollment_status" => nil,
           "credit_hours" => 3.25,
           "term" => {
             "start_month" => "2026-06",
@@ -455,17 +457,91 @@ RSpec.describe ActivityReportSerializer do
         hash_including(
           "school_name" => "South College",
           "hours" => 4.0,
-          "data_source" => "verified_enrollment_only"
+          "data_source" => "verified_enrollment_only",
+          "enrollment_status" => "enrolled",
+          "supplemental_enrollment_status" => "unknown"
         )
       )
       expect(education_entries["2026-07"].sole).to include(
         "school_name" => "South College",
         "hours" => 4.0,
         "data_source" => "verified_enrollment_only",
+        "enrollment_status" => "enrolled",
+        "supplemental_enrollment_status" => "unknown",
         "contact_name" => nil,
         "street_address" => nil
       )
       expect(education_entries.values.flatten).to all(include("document_ids" => [ "DOC-#{document.id}" ]))
+    end
+
+    context "with supplemental NSC enrollment details" do
+      let(:supplemental_status) { "less_than_half_time" }
+      let(:credit_hours) { 2.5 }
+      let(:education) { create(:education_activity, activity_flow: activity_flow, data_source: :partially_self_attested, status: :succeeded) }
+
+      before do
+        create(:nsc_enrollment_term, :enrolled, education_activity: education,
+          supplemental_enrollment_status: supplemental_status, credit_hours: credit_hours)
+      end
+
+      it "reports the supplemental answer alongside NSC's original status in each month" do
+        expect(education_entries.keys).to eq(%w[2026-06 2026-07])
+        expect(education_entries.values.flatten).to all(include(
+          "data_source" => "verified_enrollment_only",
+          "enrollment_status" => "enrolled",
+          "supplemental_enrollment_status" => supplemental_status,
+          "credit_hours" => credit_hours,
+          "hours" => credit_hours
+        ))
+      end
+
+      context "when the applicant is unsure" do
+        let(:supplemental_status) { "unknown" }
+        let(:credit_hours) { 0.5 }
+
+        it "preserves the unsure answer and fractional credits" do
+          expect(education_entries["2026-06"].sole).to include(
+            "enrollment_status" => "enrolled", "supplemental_enrollment_status" => "unknown",
+            "credit_hours" => 0.5, "hours" => 0.5
+          )
+        end
+      end
+
+      context "with half-time enrollment" do
+        let(:supplemental_status) { "half_time" }
+        let(:credit_hours) { nil }
+
+        it "reports half-time enrollment with inapplicable credits" do
+          expect(education_entries["2026-06"].sole).to include(
+            "enrollment_status" => "enrolled", "supplemental_enrollment_status" => "half_time",
+            "credit_hours" => nil, "hours" => nil
+          )
+        end
+      end
+
+      context "with full-time enrollment" do
+        let(:supplemental_status) { "full_time" }
+        let(:credit_hours) { nil }
+
+        it "reports full-time enrollment with inapplicable credits" do
+          expect(education_entries["2026-06"].sole).to include(
+            "enrollment_status" => "enrolled", "supplemental_enrollment_status" => "full_time",
+            "credit_hours" => nil, "hours" => nil
+          )
+        end
+      end
+
+      context "when no classes were taken" do
+        let(:supplemental_status) { nil }
+        let(:credit_hours) { 0 }
+
+        it "preserves zero credits and the original NSC status" do
+          expect(education_entries["2026-06"].sole).to include(
+            "enrollment_status" => "enrolled", "supplemental_enrollment_status" => nil,
+            "credit_hours" => 0.0, "hours" => 0.0
+          )
+        end
+      end
     end
 
     it "preserves enrollment with unknown credit hours in a partially self-attested activity" do
@@ -487,6 +563,7 @@ RSpec.describe ActivityReportSerializer do
       expect(education_entries["2026-07"].sole).to include(
         "data_source" => "verified_enrollment_only",
         "enrollment_status" => "half_time",
+        "supplemental_enrollment_status" => nil,
         "hours" => nil,
         "credit_hours" => nil
       )
@@ -626,8 +703,18 @@ RSpec.describe ActivityReportSerializer do
 
         expect(employment_months.keys).to eq([ "2026-07" ])
         entry = employment_months["2026-07"].sole
+        expected_employment = income_employment.except("paystubs").merge(
+          "employment_type" => nil,
+          "employer_address" => {
+            "line1" => income_employment["employer_address"],
+            "line2" => nil,
+            "city" => nil,
+            "state" => nil,
+            "postal_code" => nil
+          }
+        )
         expect(entry.except("type", "month", "data_source", "document_ids", "paystubs"))
-          .to eq(income_employment.except("paystubs").merge("employment_type" => nil))
+          .to eq(expected_employment)
         expect(entry).to include("data_source" => "validated", "document_ids" => [], "month" => "2026-07")
         expect(entry["paystubs"].sole).to include(
           "pay_date" => "2026-07-01", "pay_period_start" => "2026-06-15", "pay_gross" => 12345,

@@ -79,6 +79,10 @@ RSpec.describe Activities::SummaryController, type: :controller do
       it "keeps the reporting banner on requests without a token parameter" do
         expect(Capybara.string(response.body)).to have_text(reporting_for_text, count: 1)
       end
+
+      it "keeps normal focus timing when there is no consent error" do
+        expect(Capybara.string(response.body)).to have_no_selector("[data-error-summary-defer-focus-value='true']")
+      end
     end
 
     it "only shows activities belonging to the current activity flow" do
@@ -790,6 +794,17 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(response.body).not_to include(new_activities_flow_education_document_upload_path(education_id: education))
       end
     end
+
+    it "marks the back link to track ActivityBackClicked" do
+      get :show
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_css(
+        ".back-nav[data-controller='activity-flow-header']" \
+        "[data-activity-flow-header-track-event-prefix-value='Activity'] " \
+        "a[data-activity-flow-header-target='backButton']"
+      )
+    end
   end
 
   describe "PATCH #update" do
@@ -872,6 +887,29 @@ RSpec.describe Activities::SummaryController, type: :controller do
       expect(rendered).to have_no_selector(".usa-alert--error")
       expect(rendered).to have_text("Helping Hands")
       expect(rendered).to have_selector("h2", text: I18n.t("activities.summary.legal_agreement"))
+      expect(rendered).to have_no_selector("[data-error-summary-defer-focus-value='true']")
+    end
+
+    context "with a tokenized consent error" do
+      let(:invitation) { create(:activity_flow_invitation, cbv_applicant: activity_flow.cbv_applicant) }
+
+      before do
+        activity_flow.update!(activity_flow_invitation: invitation)
+        patch :update
+      end
+
+      it "opts the CE consent form into deferred focus" do
+        expect(Capybara.string(response.body)).to have_selector("form[data-controller='error-summary'][data-error-summary-defer-focus-value='true'] #activity_flow_consent_to_submit[aria-invalid='true']")
+      end
+
+      context "for Employment" do
+        let(:activity_flow) { create(:activity_flow, employment_focused: true) }
+
+        it "opts the Employment consent form into deferred focus" do
+          expect(response).to render_template("activities/activities/employment_focused_review")
+          expect(Capybara.string(response.body)).to have_selector("form[data-controller='error-summary'][data-error-summary-defer-focus-value='true'] #activity_flow_consent_to_submit[aria-invalid='true']")
+        end
+      end
     end
 
     it "keeps an added-activity flash when consent is missing" do
@@ -908,6 +946,7 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(rendered).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("activities.submit.consent_required"))
         expect(rendered).to have_selector("#activity_flow_consent_to_submit[aria-invalid='true'][aria-describedby='activity_flow_consent_to_submit_error']")
         expect(rendered).to have_no_selector(".usa-alert--error")
+        expect(rendered).to have_no_selector("[data-error-summary-defer-focus-value='true']")
         expect(rendered).to have_text("Gainesville Wrecking")
         expect(rendered).to have_selector("h1", text: I18n.t("activities.activities.employment_focused_review.header"))
       end

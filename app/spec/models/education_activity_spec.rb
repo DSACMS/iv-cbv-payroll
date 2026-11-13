@@ -122,7 +122,7 @@ RSpec.describe EducationActivity do
     it "returns the education suggestion translation key" do
       activity = build(:education_activity, school_name: "University of Illinois")
 
-      expect(activity.document_upload_suggestion_text).to eq("activities.education.document_upload_suggestion_text_html")
+      expect(activity.document_upload_suggestion_text).to eq("activities.document_uploads.new.education.suggestions_html")
     end
   end
 
@@ -218,6 +218,12 @@ RSpec.describe EducationActivity do
 
       expect(activity.review_term_credit_hours(term)).to eq(6)
     end
+
+    it "returns whole credit hours for review output" do
+      term = create(:nsc_enrollment_term, education_activity: activity, credit_hours: 2.5)
+
+      expect(activity.review_term_credit_hours(term)).to eq(2)
+    end
   end
 
   describe "#document_upload_title_i18n_key" do
@@ -225,7 +231,7 @@ RSpec.describe EducationActivity do
 
     it "returns generic title key when partially self-attested with more than one school" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded)
-      create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "School A")
+      create(:nsc_enrollment_term, :enrolled, education_activity: activity, school_name: "School A", supplemental_enrollment_status: "half_time")
       create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "School B")
 
       expect(activity.document_upload_title_i18n_key).to eq("activities.document_uploads.new.title_generic")
@@ -233,7 +239,7 @@ RSpec.describe EducationActivity do
 
     it "returns default title key when partially self-attested with one school" do
       activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded)
-      create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, school_name: "School A")
+      create(:nsc_enrollment_term, :enrolled, education_activity: activity, school_name: "School A", supplemental_enrollment_status: "full_time")
 
       expect(activity.document_upload_title_i18n_key).to eq("activities.document_uploads.new.title")
     end
@@ -241,14 +247,33 @@ RSpec.describe EducationActivity do
 
   describe "#document_upload_terms_to_verify" do
     let(:flow) { create(:activity_flow, reporting_window_months: 1, education_activities_count: 0) }
+    let(:activity) { create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded) }
+    let!(:later_term) do
+      create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, term_begin: Date.new(2026, 2, 1))
+    end
+    let!(:earlier_term) do
+      create(:nsc_enrollment_term, :enrolled, education_activity: activity, term_begin: Date.new(2026, 1, 1),
+        supplemental_enrollment_status: supplemental_status, credit_hours: credit_hours)
+    end
+    let(:supplemental_status) { "full_time" }
+    let(:credit_hours) { nil }
 
-    it "returns only less-than-half-time terms in sorted order" do
-      activity = create(:education_activity, activity_flow: flow, data_source: :partially_self_attested, status: :succeeded)
-      later_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, term_begin: Date.new(2026, 2, 1))
-      earlier_term = create(:nsc_enrollment_term, :less_than_half_time, education_activity: activity, term_begin: Date.new(2026, 1, 1))
+    before do
       create(:nsc_enrollment_term, education_activity: activity, enrollment_status: :half_time, term_begin: Date.new(2026, 1, 15))
+      create(:nsc_enrollment_term, :enrolled, education_activity: activity)
+    end
 
+    it "returns less-than-half-time and supplemented enrolled terms in sorted order" do
       expect(activity.document_upload_terms_to_verify).to eq([ earlier_term, later_term ])
+    end
+
+    context "when the applicant reports no classes for an enrolled term" do
+      let(:supplemental_status) { nil }
+      let(:credit_hours) { 0 }
+
+      it "includes the term with reported zero credits" do
+        expect(activity.document_upload_terms_to_verify).to eq([ earlier_term, later_term ])
+      end
     end
   end
 
@@ -345,6 +370,30 @@ RSpec.describe EducationActivity do
 
       expect(
         described_class.data_source_from_nsc_results([ spring_term, fall_term ], reporting_months: reporting_months)
+      ).to eq(:validated)
+    end
+
+    it "returns :validated when the required month count is met despite less-than-half-time months" do
+      reporting_months = 12.times.map { |offset| Date.new(2025, 1, 1) + offset.months }
+      half_time_term = term(
+        status: "half_time",
+        begin_date: reporting_months.first,
+        end_date: reporting_months.first.end_of_month
+      )
+      less_than_half_time_terms = reporting_months.drop(1).map do |month|
+        term(
+          status: "less_than_half_time",
+          begin_date: month,
+          end_date: month.end_of_month
+        )
+      end
+
+      expect(
+        described_class.data_source_from_nsc_results(
+          [ half_time_term, *less_than_half_time_terms ],
+          reporting_months: reporting_months,
+          required_month_count: 1
+        )
       ).to eq(:validated)
     end
   end

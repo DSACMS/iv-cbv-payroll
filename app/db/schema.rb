@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_28_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_10_190733) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -59,6 +59,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_28_000000) do
     t.string "pay_frequency"
     t.integer "compensation_amount"
     t.string "compensation_unit"
+    t.string "employer_address_line1"
+    t.string "employer_address_line2"
+    t.string "employer_address_city"
+    t.string "employer_address_state"
+    t.string "employer_address_postal_code"
     t.index ["activity_flow_id", "payroll_account_id"], name: "index_activity_flow_employment_summaries_on_flow_account", unique: true
     t.index ["activity_flow_id"], name: "index_activity_flow_employment_summaries_on_activity_flow_id"
     t.index ["payroll_account_id"], name: "index_activity_flow_employment_summaries_on_payroll_account_id"
@@ -332,6 +337,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_28_000000) do
     t.datetime "updated_at", null: false
     t.datetime "redacted_at"
     t.date "school_certified_on"
+    t.string "supplemental_enrollment_status"
     t.index ["education_activity_id"], name: "index_nsc_enrollment_terms_on_education_activity_id"
   end
 

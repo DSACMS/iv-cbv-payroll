@@ -76,13 +76,14 @@ RSpec.describe "e2e CBV flow test", :js, type: :feature do
     # The heading is unchanged, so wait for the validation response before checking accessibility.
     expect(page).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("cbv.submits.update.consent_to_authorize_warning"))
     verify_page(page, title: I18n.t("cbv.submits.show.page_header"))
-    expect(page).to have_selector("#cbv_flow_consent_to_authorized_use[aria-invalid='true'][aria-describedby='cbv_flow_consent_to_authorized_use_error']:focus", visible: :all)
+    verify_consent_error_in_view(checkbox_id: "cbv_flow_consent_to_authorized_use")
     expect(page).to have_no_selector(".usa-alert--error")
     find(:css, "label[for=cbv_flow_consent_to_authorized_use]").click
     click_on I18n.t("cbv.submits.show.share_report_button", agency_acronym: I18n.t("shared.agency_acronym.sandbox"))
 
     # /cbv/success
     verify_page(page, title: I18n.t("cbv.successes.show.header", agency_acronym: I18n.t("shared.agency_acronym.sandbox")))
+    expect(page.evaluate_script("window.scrollY")).to eq(0)
     # TODO: Test PDF rendering by writing it to a file
   end
 end

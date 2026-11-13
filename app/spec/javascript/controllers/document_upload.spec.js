@@ -75,7 +75,7 @@ describe("DocumentUploadController", () => {
                data-document-upload-target="input"
                data-action="change->document-upload#select">
         <div class="usa-error-message" hidden data-document-upload-target="error"></div>
-        <input type="submit" value="Continue">
+        <input type="submit" id="upload-continue" value="Continue" data-document-upload-target="submit">
       </form>
     `
 
@@ -102,6 +102,106 @@ describe("DocumentUploadController", () => {
     )
   const listItems = () => document.querySelectorAll("[data-document-upload-target=list] li")
   const submitButton = () => document.querySelector("input[type=submit]")
+
+  describe("empty upload confirmation", () => {
+    let controller
+    let event
+    let openModal
+
+    beforeEach(async () => {
+      const form = document.querySelector("form")
+      form.insertAdjacentHTML(
+        "beforeend",
+        `
+        <button type="button" data-document-upload-target="emptyUploadTrigger" aria-controls="empty-modal"></button>
+      `
+      )
+      document.body.insertAdjacentHTML("beforeend", '<div id="empty-modal"></div>')
+      await flush()
+      controller = window.Stimulus.getControllerForElementAndIdentifier(form, "document-upload")
+      event = { preventDefault: vi.fn(), submitter: submitButton() }
+      openModal = vi.spyOn(controller.emptyUploadTriggerTarget, "click")
+    })
+
+    it("opens confirmation for an empty upload and restores focus to Continue", () => {
+      controller.confirmEmptyUpload(event)
+      expect(event.preventDefault).toHaveBeenCalled()
+      expect(openModal).toHaveBeenCalledOnce()
+      expect(document.getElementById("empty-modal").dataset.opener).toBe("upload-continue")
+    })
+
+    it("allows the explicit confirmation submitter", () => {
+      event.submitter = { dataset: { confirmWithoutUpload: "true" } }
+      controller.confirmEmptyUpload(event)
+      expect(event.preventDefault).not.toHaveBeenCalled()
+      expect(openModal).not.toHaveBeenCalled()
+    })
+
+    it("does not prompt for a previously saved document", () => {
+      controller.element.insertAdjacentHTML(
+        "beforeend",
+        '<input type="hidden" name="activity[document_uploads][]" value="saved-document">'
+      )
+      controller.confirmEmptyUpload(event)
+      expect(event.preventDefault).not.toHaveBeenCalled()
+    })
+
+    it("does not prompt after a successful new upload", async () => {
+      fetch
+        .mockResolvedValueOnce(
+          jsonResponse({ uploads: [presignedUploadFor("proof.pdf", "new-id")] })
+        )
+        .mockResolvedValueOnce({ ok: true, status: 204 })
+      await selectFiles(buildFile("proof.pdf", "application/pdf", 1024))
+      controller.confirmEmptyUpload(event)
+      expect(event.preventDefault).not.toHaveBeenCalled()
+    })
+
+    it("prompts again after the new upload is removed", async () => {
+      fetch
+        .mockResolvedValueOnce(
+          jsonResponse({ uploads: [presignedUploadFor("proof.pdf", "new-id")] })
+        )
+        .mockResolvedValueOnce({ ok: true, status: 204 })
+      await selectFiles(buildFile("proof.pdf", "application/pdf", 1024))
+      document.querySelector("[data-signed-id] button").click()
+      controller.confirmEmptyUpload(event)
+      expect(openModal).toHaveBeenCalledOnce()
+    })
+
+    it("still prompts after a rejected file", async () => {
+      await selectFiles(buildFile("empty.pdf", "application/pdf", 0))
+      controller.confirmEmptyUpload(event)
+      expect(openModal).toHaveBeenCalledOnce()
+    })
+
+    it("blocks keyboard submission while a file is still uploading", async () => {
+      let finishUpload
+      fetch
+        .mockResolvedValueOnce(
+          jsonResponse({ uploads: [presignedUploadFor("proof.pdf", "new-id")] })
+        )
+        .mockImplementationOnce(
+          () =>
+            new Promise((resolve) => {
+              finishUpload = resolve
+            })
+        )
+      await selectFiles(buildFile("proof.pdf", "application/pdf", 1024))
+      controller.confirmEmptyUpload(event)
+      expect(event.preventDefault).toHaveBeenCalled()
+      expect(openModal).not.toHaveBeenCalled()
+      finishUpload({ ok: true, status: 204 })
+      await flush()
+    })
+
+    it("keeps generic flows without a modal trigger unchanged", async () => {
+      controller.emptyUploadTriggerTarget.remove()
+      await flush()
+      controller.confirmEmptyUpload(event)
+      expect(event.preventDefault).not.toHaveBeenCalled()
+    })
+  })
 
   it("uploads a selected file to the bucket and records a signed ID", async () => {
     fetch

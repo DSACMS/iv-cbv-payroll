@@ -169,6 +169,16 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
       expect(response).to redirect_to(activities_flow_income_add_your_work_path)
     end
 
+    context "with an employment-focused flow" do
+      let(:activity_flow) { create(:activity_flow, employment_focused: true) }
+
+      it "routes in-kind work to manual income and hours entry" do
+        post :create, params: { add_work_method: "enter_unpaid_manually" }
+
+        expect(response).to redirect_to(new_activities_flow_income_employment_path(compensation_type: "paid"))
+      end
+    end
+
     it "redirects back with an alert when the selection is not recognized" do
       post :create, params: { add_work_method: "something_else" }
       expect(flash[:add_work_method_error]).to eq(I18n.t("shared.next_path.notice_no_answer"))
@@ -240,6 +250,44 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
   end
 
   describe "#create_add_jobs" do
+    context "after linking Argyle employment" do
+      before { create(:payroll_account, :argyle_fully_synced, flow: activity_flow) }
+
+      it "tracks continuing with additional jobs" do
+        expect(EventTrackingJob).to receive(:perform_later).with(TrackEvent::ApplicantContinuedFromAddJobsPage, anything,
+          hash_including(activity_flow_id: activity_flow.id, has_additional_jobs: true))
+
+        post :create_add_jobs, params: { additional_jobs: "true" }
+      end
+
+      it "tracks continuing without additional jobs" do
+        expect(EventTrackingJob).to receive(:perform_later).with(TrackEvent::ApplicantContinuedFromAddJobsPage, anything,
+          hash_including(activity_flow_id: activity_flow.id, has_additional_jobs: false))
+
+        post :create_add_jobs, params: { additional_jobs: "false" }
+      end
+
+      it "does not track an invalid answer" do
+        expect(EventTrackingJob).not_to receive(:perform_later).with(TrackEvent::ApplicantContinuedFromAddJobsPage, anything, anything)
+
+        post :create_add_jobs
+      end
+    end
+
+    it "does not add payroll events to a self-attested flow" do
+      create(:employment_activity, activity_flow: activity_flow)
+      expect(EventTrackingJob).not_to receive(:perform_later).with(TrackEvent::ApplicantContinuedFromAddJobsPage, anything, anything)
+
+      post :create_add_jobs, params: { additional_jobs: "false" }
+    end
+
+    it "does not add Argyle decision tracking to Pinwheel-only flows" do
+      create(:payroll_account, :pinwheel_fully_synced, flow: activity_flow)
+      expect(EventTrackingJob).not_to receive(:perform_later).with(TrackEvent::ApplicantContinuedFromAddJobsPage, anything, anything)
+
+      post :create_add_jobs, params: { additional_jobs: "true" }
+    end
+
     it "redirects back to add_your_work when answering yes" do
       post :create_add_jobs, params: { additional_jobs: "true" }
       expect(response).to redirect_to(activities_flow_income_add_your_work_path)

@@ -31,6 +31,7 @@ RSpec.describe ClientAgencyConfig do
       - id: foo
         agency_name: Foo Agency Name
         renewal_required_months: 2
+        application_required_months: 2
         pinwheel:
           environment: foo
         argyle:
@@ -112,6 +113,11 @@ RSpec.describe ClientAgencyConfig do
       it "returns renewal_required_months when configured" do
         config = described_class.new(sample_config_path)
         expect(config["foo"].renewal_required_months).to eq(2)
+      end
+
+      it "returns application_required_months when configured" do
+        config = described_class.new(sample_config_path)
+        expect(config["foo"].application_required_months).to eq(2)
       end
 
       it "defaults allowed_iframe_ancestors to an empty array" do
@@ -246,6 +252,117 @@ RSpec.describe ClientAgencyConfig do
           "bucket" => "outbound-bucket",
           "s3_directory" => "outbound-directory"
         )
+      end
+    end
+
+    context "LA activity delivery" do
+      let(:agency) { described_class.new(Rails.root.join("config/client-agency-config.yml"))["la_ldh"] }
+      let(:transmission_method) { "json" }
+      let(:json_api_url) { "https://activity.example.gov/reports" }
+
+      around do |example|
+        ClimateControl.modify(
+          LA_LDH_ACTIVITY_FLOW_TRANSMISSION_METHOD: transmission_method,
+          LA_LDH_ACTIVITY_JSON_API_URL: json_api_url,
+          LA_LDH_ACTIVITY_DOCUMENTS_API_URL: "https://activity.example.gov/documents",
+          LA_LDH_ACTIVITY_APIKEY: "synthetic: gateway # key",
+          LA_LDH_ACTIVITY_ACCOUNTCODE: "00123",
+          LA_LDH_TRANSMISSION_METHOD: "json_and_pdf",
+          LA_LDH_INCOME_REPORT_URL: "https://income.example.gov/reports",
+          LA_LDH_INCOME_REPORT_APIKEY: "legacy-key",
+          LA_LDH_INCOME_REPORT_ACCOUNTCODE: "legacy-account"
+        ) { example.run }
+      end
+
+      it "loads the activity method, endpoints, and gateway headers from the environment" do
+        expect(agency.activity_flow_transmission_method).to eq("json")
+        expect(agency.activity_transmission_method_configuration).to include(
+          "json_api_url" => "https://activity.example.gov/reports",
+          "documents_api_url" => "https://activity.example.gov/documents",
+          "custom_headers" => {
+            "X-Gateway-APIKey" => "synthetic: gateway # key",
+            "AccountCode" => "00123"
+          },
+          "silently_retry_error_codes" => [ 403, 408, 502 ]
+        )
+      end
+
+      it "keeps legacy income delivery settings separate" do
+        expect(agency.income_flow_transmission_method).to eq("json_and_pdf")
+        expect(agency.income_transmission_method_configuration).to include(
+          "json_api_url" => "https://income.example.gov/reports",
+          "custom_headers" => {
+            "X-Gateway-APIKey" => "legacy-key",
+            "AccountCode" => "legacy-account"
+          }
+        )
+      end
+
+      context "with document delivery enabled" do
+        let(:transmission_method) { "http" }
+
+        it "loads the document delivery configuration" do
+          expect(agency.activity_flow_transmission_method).to eq("http")
+          expect(agency.activity_transmission_method_configuration["documents_api_url"])
+            .to eq("https://activity.example.gov/documents")
+        end
+      end
+
+      context "without an activity transmission method" do
+        let(:transmission_method) { nil }
+
+        it "disables delivery even when endpoints and credentials are configured" do
+          expect(agency.activity_flow_transmission_method).to eq("none")
+          expect(agency.activity_transmission_method_configuration["json_api_url"]).to eq(json_api_url)
+        end
+
+        context "without a JSON receiver URL" do
+          let(:json_api_url) { nil }
+
+          it "loads with delivery disabled" do
+            expect(agency.activity_flow_transmission_method).to eq("none")
+            expect(agency.activity_transmission_method_configuration["json_api_url"]).to be_nil
+          end
+        end
+      end
+
+      context "with an empty activity transmission method" do
+        let(:transmission_method) { "" }
+
+        it "rejects configuration without a transmission method" do
+          expect { agency }.to raise_error(
+            ArgumentError,
+            "Client Agency la_ldh sets `activity_transmission_method_configuration` but is missing `activity_flow_transmission_method`"
+          )
+        end
+      end
+
+      context "with activity delivery explicitly disabled" do
+        let(:transmission_method) { "none" }
+        let(:json_api_url) { nil }
+
+        it "loads without requiring a JSON receiver URL" do
+          expect(agency.activity_flow_transmission_method).to eq("none")
+          expect(agency.activity_transmission_method_configuration["json_api_url"]).to be_nil
+        end
+      end
+
+      context "with JSON delivery enabled but no JSON receiver URL" do
+        let(:json_api_url) { nil }
+
+        it "rejects the missing endpoint at boot" do
+          expect { agency }.to raise_error(ArgumentError, /Client Agency la_ldh `json_api_url` must be an absolute HTTP\(S\) URL/)
+        end
+      end
+
+      it "loads the client agency configuration without environment variables" do
+        ClimateControl.modify(ENV.to_h.transform_values { nil }) do
+          expect(agency.activity_flow_transmission_method).to eq("none")
+          expect(agency.activity_transmission_method_configuration).to include(
+            "json_api_url" => nil,
+            "documents_api_url" => nil
+          )
+        end
       end
     end
   end
@@ -617,6 +734,44 @@ RSpec.describe ClientAgencyConfig do
           expect do
             described_class.new(sample_config_path)
           end.to raise_error(ArgumentError, "Client Agency foo invalid value for renewal_required_months")
+        end
+      end
+
+      context "invalid application required months" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            application_required_months: 0
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo invalid value for application_required_months")
+        end
+      end
+
+      context "application required months above the max" do
+        let(:sample_config) { <<~YAML }
+          - id: foo
+            agency_name: foo
+            application_required_months: 13
+            pinwheel:
+              environment: foo
+            argyle:
+              environment: foo
+            income_flow_transmission_method: shared_email
+        YAML
+
+        it "raises an error" do
+          expect do
+            described_class.new(sample_config_path)
+          end.to raise_error(ArgumentError, "Client Agency foo invalid value for application_required_months")
         end
       end
 

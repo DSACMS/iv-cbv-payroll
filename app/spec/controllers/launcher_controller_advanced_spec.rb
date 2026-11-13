@@ -36,6 +36,21 @@ RSpec.describe LauncherController, type: :controller do
       end
     end
 
+    context "with the mixed partial enrollment scenario" do
+      let(:profile) { Launcher::FakeNscScenarios.by_key("partial_enrollment_riley") }
+      let(:rendered) { Capybara.string(response.body) }
+
+      before { get :advanced }
+
+      it "lists the test user and describes the supplemental details flow" do
+        scenarios = rendered.find("#fake-test-scenarios-content", visible: :all)
+
+        expect(scenarios).to have_field("test_scenario_partial_enrollment_riley", type: "radio", with: profile.scenario_key, visible: :all)
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.mixed_partial_enrollment.title"))
+        expect(scenarios).to have_text(I18n.t("launcher.advanced.mixed_partial_enrollment.description"))
+      end
+    end
+
     context "with the duplicate enrollment scenario" do
       let(:profile) { Launcher::FakeNscScenarios.by_key("duplicate_enrollments_dedupe") }
       let(:rendered) { Capybara.string(response.body) }
@@ -202,15 +217,16 @@ RSpec.describe LauncherController, type: :controller do
         expect(location).not_to include("launcher_timeout")
       end
 
-      it "does not include renewal_required_months for non-renewal reporting windows" do
+      it "includes renewal_required_months for application reporting windows too" do
         post :create, params: {
           client_agency_id: "sandbox",
           launch_type: "generic",
           reporting_window: "application",
-          renewal_required_months: "2"
+          reporting_window_months: "12",
+          renewal_required_months: "1"
         }
 
-        expect(response.location).not_to include("renewal_required_months")
+        expect(response.location).to include("renewal_required_months=1")
       end
 
       it "returns the generated URL as JSON" do

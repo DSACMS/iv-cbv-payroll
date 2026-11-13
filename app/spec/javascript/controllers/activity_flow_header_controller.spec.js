@@ -12,7 +12,7 @@ describe("ActivityFlowHeaderController", () => {
            data-activity-flow-header-track-event-prefix-value="${prefix}">
         <a data-action="click->activity-flow-header#handleExit"
            data-activity-flow-header-target="exitButton">Exit</a>
-        <button data-activity-flow-header-target="backButton">Back</button>
+        <a data-activity-flow-header-target="backButton">Back</a>
         <button data-open-modal id="open-exit-modal-button"></button>
       </div>
     `
@@ -60,5 +60,75 @@ describe("ActivityFlowHeaderController", () => {
     document.querySelector('[data-activity-flow-header-target="exitButton"]').click()
 
     expect(trackUserAction).toHaveBeenCalledWith(`${prefix}ExitClicked`, { modal_shown: true })
+  })
+
+  describe("payroll navigation", () => {
+    beforeEach(() => {
+      const header = document.querySelector('[data-controller="activity-flow-header"]')
+      header.dataset.activityFlowHeaderTrackEventPrefixValue = "Employment"
+    })
+
+    it("tracks the exit click and whether the warning opens", () => {
+      document.querySelector('[data-activity-flow-header-target="exitButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EmploymentExitClicked", { modal_shown: true })
+    })
+
+    it("tracks back clicks", () => {
+      document.querySelector('[data-activity-flow-header-target="backButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EmploymentBackClicked", {})
+    })
+
+    it("tracks cancelling the exit warning", () => {
+      document.querySelector('[data-activity-flow-header-target="modalCancelButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EmploymentExitModalCancelled", {})
+    })
+
+    it("tracks confirming exit", () => {
+      document.querySelector('[data-activity-flow-header-target="modalConfirmButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EmploymentExitModalConfirmed", {})
+    })
+
+    it("tracks closing the warning as cancellation", () => {
+      document.querySelector('[data-activity-flow-header-target="modalCloseButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EmploymentExitModalCancelled", {})
+    })
+  })
+
+  describe("education navigation", () => {
+    beforeEach(() => {
+      const header = document.querySelector('[data-controller="activity-flow-header"]')
+      header.dataset.activityFlowHeaderTrackEventPrefixValue = "Education"
+    })
+
+    it("tracks the exit click and whether the modal is shown", () => {
+      document.querySelector('[data-activity-flow-header-target="exitButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EducationExitClicked", {
+        modal_shown: true,
+      })
+    })
+
+    it("tracks back clicks", () => {
+      document.querySelector('[data-activity-flow-header-target="backButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EducationBackClicked", {})
+    })
+
+    it("tracks cancelling the exit warning", () => {
+      document.querySelector('[data-activity-flow-header-target="modalCancelButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EducationExitModalCancelled", {})
+    })
+
+    it("tracks confirming exit", () => {
+      document.querySelector('[data-activity-flow-header-target="modalConfirmButton"]').click()
+
+      expect(trackUserAction).toHaveBeenCalledWith("EducationExitModalConfirmed", {})
+    })
   })
 })

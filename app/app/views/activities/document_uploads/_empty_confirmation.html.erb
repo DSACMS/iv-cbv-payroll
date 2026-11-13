@@ -1,0 +1,28 @@
+<%= render layout: "shared/modal", locals: {
+      id: "empty-document-upload-modal",
+      balanced_spacing: true,
+      heading_id: "empty-document-upload-heading",
+      description_id: "empty-document-upload-description",
+      heading: t("activities.document_uploads.new.empty_confirmation.heading"),
+      close_label: t("activities.document_uploads.new.empty_confirmation.close")
+    } do %>
+  <div id="empty-document-upload-description">
+    <p>
+      <%= t("activities.document_uploads.new.empty_confirmation.description") %>
+    </p>
+    <p>
+      <%= t("activities.document_uploads.new.empty_confirmation.warning") %>
+    </p>
+  </div>
+  <div class="usa-modal__footer display-flex flex-column flex-align-center">
+    <button type="button" class="usa-button width-full margin-right-0" data-close-modal>
+      <%= t("activities.document_uploads.new.empty_confirmation.go_back") %>
+    </button>
+    <button type="submit"
+            form="document-upload-form"
+            class="usa-button usa-button--unstyled margin-top-2 text-center"
+            data-confirm-without-upload="true">
+      <%= t("activities.document_uploads.new.empty_confirmation.continue") %>
+    </button>
+  </div>
+<% end %>
