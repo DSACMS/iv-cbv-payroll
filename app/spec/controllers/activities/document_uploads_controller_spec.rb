@@ -34,6 +34,33 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
     allow_any_instance_of(LinkWithIconComponent).to receive(:asset_path).and_return("/assets/sprite.svg")
   end
 
+  describe "empty upload confirmation" do
+    let(:activity) { create(:job_training_activity, activity_flow: activity_flow) }
+    let(:rendered) { Capybara.string(response.body) }
+
+    context "in a tokenized flow" do
+      before do
+        activity_flow.update!(activity_flow_invitation: create(:activity_flow_invitation))
+        get :new, params: { job_training_id: activity.id }
+      end
+
+      it "renders a confirmation dialog whose submit button belongs to the upload form" do
+        expect(rendered).to have_selector("#empty-document-upload-modal", visible: :all,
+          text: I18n.t("activities.document_uploads.new.empty_confirmation.heading"))
+        expect(rendered).to have_selector("button[type='submit'][form='document-upload-form'][data-confirm-without-upload='true']", visible: :all)
+      end
+    end
+
+    context "in a generic flow" do
+      before { get :new, params: { job_training_id: activity.id } }
+
+      it "does not add the confirmation modal" do
+        expect(rendered).to have_no_selector("#empty-document-upload-modal", visible: :all)
+        expect(rendered).to have_no_selector("[data-document-upload-target='emptyUploadTrigger']", visible: :all)
+      end
+    end
+  end
+
   describe "work program tracking" do
     let(:activity) { create(:job_training_activity, activity_flow: activity_flow) }
 

@@ -132,6 +132,7 @@ en:
       modal:
         back_button: Back
         body: Your progress adding this activity will not be saved.
+        close: Close this window
         exit_link: Exit without saving
         heading: Are you sure you want to exit?
     community_service:
@@ -191,6 +192,13 @@ en:
           suggestions_html: "<ul><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li><li>Copy of class schedule for the current term</li><li>Transcript from most recent enrollment period</li></ul>"
           term_end: Term end date
           term_start: Term start date
+        empty_confirmation:
+          close: Close this window
+          continue: Continue without uploading
+          description: Uploading documents is the fastest way to show you meet the requirements.
+          go_back: Go back
+          heading: Are you sure you want to continue without uploading documents?
+          warning: Without documents, confirming your eligibility may take longer.
         errors:
           empty: That file is empty. Choose a different file.
           multiple_files: We could not upload one or more files. Check the files and try again.

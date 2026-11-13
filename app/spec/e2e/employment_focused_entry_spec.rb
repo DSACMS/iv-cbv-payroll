@@ -106,6 +106,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
         skip_axe_rules: %w[heading-order]
       )
       click_button I18n.t("activities.document_uploads.new.continue")
+      click_button I18n.t("activities.document_uploads.new.empty_confirmation.continue")
 
       verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: employer_name))
       expect(page).to have_text(reporting_for_text, count: 1)

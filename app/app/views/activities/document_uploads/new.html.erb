@@ -51,8 +51,9 @@
   <%= render "previous_uploads" %>
 <% end %>
 
-<%= form_with(builder: UswdsFormBuilder, scope: :activity, model: @activity, url: upload_path, method: :post, data: {
+<%= form_with(builder: UswdsFormBuilder, scope: :activity, model: @activity, url: upload_path, method: :post, id: "document-upload-form", data: {
       controller: "document-upload",
+      action: "submit->document-upload#confirmEmptyUpload",
       document_upload_presign_url_value: activities_flow_presigned_uploads_path,
       document_upload_max_file_size_value: upload_max_file_size,
       document_upload_allowed_types_value: upload_allowed_content_types,
@@ -102,5 +103,18 @@
   <% end %>
 
   <% submit_label = params[:from_review].present? ? t("activities.hub.save") : t(".continue") %>
-  <%= f.submit submit_label %>
+  <%= f.submit submit_label, id: "document-upload-continue", data: { document_upload_target: "submit" } %>
+  <% if @flow.activity_flow_invitation_id.present? %>
+    <button type="button"
+            class="display-none"
+            aria-controls="empty-document-upload-modal"
+            data-open-modal
+            data-document-upload-target="emptyUploadTrigger">
+      <%= t(".empty_confirmation.heading") %>
+    </button>
+  <% end %>
+<% end %>
+
+<% if @flow.activity_flow_invitation_id.present? %>
+  <%= render "empty_confirmation" %>
 <% end %>
