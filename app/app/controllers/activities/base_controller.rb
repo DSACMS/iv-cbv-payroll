@@ -34,6 +34,13 @@ class Activities::BaseController < FlowController
     newly_added = activity.draft?
     activity.publish!
     flash[:activity_added] = activity_type if newly_added
+
+    if newly_added
+      track_event(
+        TrackEvent::HubActivityMarkedComplete,
+        activity_type: activity_type
+      )
+    end
   end
 
   def redirect_if_nsc_disabled

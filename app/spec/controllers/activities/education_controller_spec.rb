@@ -999,6 +999,10 @@ RSpec.describe Activities::EducationController, type: :controller do
       patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
     end
 
+    before do
+      allow(EventTrackingJob).to receive(:perform_later)
+    end
+
     it_behaves_like "tracks an event", TrackEvent::EducationReviewSubmitted,
       extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
 
@@ -1010,6 +1014,15 @@ RSpec.describe Activities::EducationController, type: :controller do
     end
 
     it "publishes the new activity and queues the added alert" do
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::HubActivityMarkedComplete,
+        anything,
+        hash_including(
+          cbv_flow_id: activity_flow.id,
+          activity_type: :education
+        )
+      )
+
       patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
 
       expect(education_activity.reload.draft).to be(false)

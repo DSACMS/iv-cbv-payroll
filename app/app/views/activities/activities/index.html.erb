@@ -18,7 +18,9 @@
   <% end %>
 <% end %>
 
-<div class="activity-hub-columns">
+<div class="activity-hub-columns"
+     data-controller="activity-hub"
+     data-action="click->activity-hub#trackClick">
   <div class="activity-hub-columns__progress">
     <h1>
       <%= t("activities.hub.title") %>
@@ -38,7 +40,10 @@
 
     <% if any_activities_added %>
       <div class="display-none tablet:display-block">
-        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+        <%= button_to t("activities.hub.review_and_submit"), next_path,
+          class: "btn btn-primary usa-button width-full margin-top-4",
+          method: :get,
+          form: { data: { hub_action: "review" } } %>
       </div>
     <% end %>
   </div>
@@ -66,7 +71,8 @@
                     label: t("activities.hub.edit_activity",
                     activity_type: t("activities.unpaid_work.title"),
                     activity_name: card_data[:name])
-                  } %>
+                  },
+                  data: { hub_action: "edit" } %>
               <% end %>
               <% card.with_body do %>
                 <% if card_data[:months].none? %>
@@ -103,7 +109,8 @@
                     label: t("activities.hub.edit_activity",
                     activity_type: t("activities.employment.title"),
                     activity_name: card_data[:name])
-                  } %>
+                  },
+                  data: { hub_action: "edit" } %>
               <% end %>
               <% card.with_body do %>
                 <% if card_data[:months].none? %>
@@ -146,7 +153,8 @@
                       activity_type: t("activities.education.title"),
                       activity_name: card_data[:name]
                     )
-                } %>
+                },
+                data: { hub_action: "edit" } %>
             <% end %>
             <% card.with_body do %>
               <% card_data[:months].each do |month_data| %>
@@ -186,7 +194,8 @@
                     label: t("activities.hub.edit_activity",
                     activity_type: t("activities.community_service.title"),
                     activity_name: card_data[:name])
-                } %>
+                },
+                data: { hub_action: "edit" } %>
             <% end %>
             <% card.with_body do %>
               <% card_data[:months].each do |month_data| %>
@@ -221,7 +230,8 @@
                   label: t("activities.hub.edit_activity",
                   activity_type: t("activities.work_programs.title"),
                   activity_name: card_data[:name])
-                } %>
+                },
+                data: { hub_action: "edit" } %>
             <% end %>
             <% card.with_body do %>
               <% card_data[:months].each do |month_data| %>
@@ -242,7 +252,10 @@
 
     <% if any_activities_added %>
       <div class="tablet:display-none">
-        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+        <%= button_to t("activities.hub.review_and_submit"), next_path,
+          class: "btn btn-primary usa-button width-full margin-top-4",
+          method: :get,
+          form: { data: { hub_action: "review" } } %>
       </div>
     <% end %>
   </div>

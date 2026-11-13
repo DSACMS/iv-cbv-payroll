@@ -794,6 +794,17 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(response.body).not_to include(new_activities_flow_education_document_upload_path(education_id: education))
       end
     end
+
+    it "marks the back link to track ActivityBackClicked" do
+      get :show
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_css(
+        ".back-nav[data-controller='activity-flow-header']" \
+        "[data-activity-flow-header-track-event-prefix-value='Activity'] " \
+        "a[data-activity-flow-header-target='backButton']"
+      )
+    end
   end
 
   describe "PATCH #update" do
