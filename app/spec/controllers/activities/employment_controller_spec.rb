@@ -619,7 +619,7 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         id: 0,
         from_review: 1
       )
-      expected_label = I18n.t("shared.edit_month", month: month)
+      expected_label = I18n.t("shared.edit_month", month: I18n.l(month, format: :month_year))
 
       links = Capybara.string(response.body).all("a[href='#{edit_path}']")
 
