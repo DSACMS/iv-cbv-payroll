@@ -364,6 +364,21 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           exact_text: true, normalize_ws: true)
       end
     end
+
+    it "marks hub controls for click tracking" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_css(
+        "[data-controller='activity-hub'][data-action='click->activity-hub#trackClick']"
+      )
+      expect(rendered).to have_css(
+        "[data-activity-type='community_service'] form[data-hub-action='add']"
+      )
+      expect(rendered).to have_css(
+        "[data-activity-type='community_service'] a[data-hub-action='edit']"
+      )
+      expect(rendered).to have_css("form[data-hub-action='review']", count: 2)
+    end
   end
 
   describe "hiding draft activities on the hub" do

@@ -268,6 +268,14 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
         anything,
         hash_including(cbv_flow_id: activity_flow.id, volunteering_activity_id: volunteering_activity.id)
       )
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::HubActivityMarkedComplete,
+        anything,
+        hash_including(
+          cbv_flow_id: activity_flow.id,
+          activity_type: :community_service
+        )
+      )
 
       patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "Some notes" } }
     end
@@ -282,6 +290,31 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
     it "publishes the new activity and queues the added alert" do
       volunteering_activity.update!(draft: true)
 
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::CommunityServiceReviewSubmitted,
+        anything,
+        hash_including(
+          cbv_flow_id: activity_flow.id,
+          volunteering_activity_id: volunteering_activity.id
+        )
+      )
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::CommunityServiceFlowCompleted,
+        anything,
+        hash_including(
+          cbv_flow_id: activity_flow.id,
+          volunteering_activity_id: volunteering_activity.id
+        )
+      )
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::HubActivityMarkedComplete,
+        anything,
+        hash_including(
+          cbv_flow_id: activity_flow.id,
+          activity_type: :community_service
+        )
+      )
+
       patch :save_review, params: { id: volunteering_activity.id, volunteering_activity: { additional_comments: "" } }
 
       expect(volunteering_activity.reload.draft).to be(false)
@@ -292,6 +325,11 @@ RSpec.describe Activities::VolunteeringController, type: :controller do
       patch :save_review, params: { id: volunteering_activity.id, from_edit: 1, volunteering_activity: { additional_comments: "Updated notes" } }
 
       expect(flash[:activity_added]).to be_nil
+      expect(EventTrackingJob).not_to receive(:perform_later).with(
+        TrackEvent::HubActivityMarkedComplete,
+        anything,
+        anything
+      )
     end
 
     it "does not track CommunityServiceFlowCompleted when saving an already-published activity" do

@@ -1,8 +1,15 @@
 <% content_for :title, t("activities.summary.title") %>
 
 <% content_for :activity_flow_header do %>
-  <div class="back-nav">
-    <%= link_to activities_flow_root_path, class: "back-nav__link", data: { turbo_prefetch: false } do %>
+  <div class="back-nav"
+       data-controller="activity-flow-header"
+       data-activity-flow-header-track-event-prefix-value="Activity">
+    <%= link_to activities_flow_root_path,
+      class: "back-nav__link",
+      data: {
+        turbo_prefetch: false,
+        activity_flow_header_target: "backButton"
+      } do %>
       <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
         <use xlink:href="<%= asset_path("@uswds/uswds/dist/img/sprite.svg#navigate_before") %>"></use>
       </svg>
