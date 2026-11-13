@@ -661,6 +661,7 @@ en:
         employment_details: Employment details
         employment_status: Employment status
         employment_summary: Employment summary
+        enrolled: Enrolled
         gig_payments_description: 'These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount:'
         heading: Community Engagement Report
         hourly_wage_hours_paid: 'Hourly wage: Hours paid'
@@ -683,6 +684,7 @@ en:
         school_contact_email: School contact email
         school_contact_name: School contact name
         school_contact_phone_number: School contact phone number
+        supplemental_enrollment_status: "%{status} (self-attested)"
         term_date_range: "%{start_date} to %{end_date}"
         title: Community Engagement Report
         total_hours_worked: Total hours worked

@@ -207,18 +207,21 @@
               t("activities.summary.education.community_engagement_hours")
             ] %>
           <% end %>
-          <% term_groups = enrollment_terms
-            .sort_by { |term| [ term.term_begin, term.term_end, term.school_certified_on || Date::Infinity.new ] }
-            .group_by { |term| [ term.term_begin, term.term_end ] }
-            .values %>
+          <% sorted_terms = enrollment_terms.sort_by { |term| [ term.term_begin, term.term_end, term.school_certified_on || Date::Infinity.new ] } %>
+          <% if show_credit_hours %>
+            <% term_groups = sorted_terms.map { |term| [ term ] } %>
+          <% else %>
+            <% term_groups = sorted_terms.group_by { |term| [ term.term_begin, term.term_end ] }.values %>
+          <% end %>
           <% rows = term_groups.map do |terms_for_range|
             status_lines = terms_for_range.map do |term|
+              enrollment_status = term.enrollment_enrolled? ? t("activities.submit.pdf.enrolled") : term.enrollment_status_display
               if term.school_certified_on.present?
                 t("components.enrollment_term_table_component.status_as_of_date",
-                  status: term.enrollment_status_display,
+                  status: enrollment_status,
                   date: format_date(term.school_certified_on))
               else
-                term.enrollment_status_display
+                enrollment_status
               end
             end
 
@@ -232,16 +235,22 @@
             ]
 
             if show_credit_hours
-              credit_hours_lines, ce_hours_lines = terms_for_range.map do |term|
-                if term.less_than_half_time?
-                  credit_hours = activity.review_term_credit_hours(term)
-                  [ format_decimal_amount(credit_hours), format_decimal_amount(activity.community_engagement_hours(credit_hours)) ]
-                else
-                  [ t("shared.not_applicable"), t("shared.not_applicable") ]
-                end
-              end.transpose
+              term = terms_for_range.first
+              if term.supplemental_enrollment_status.present?
+                row[1] = safe_join([
+                  row[1],
+                  t("activities.submit.pdf.supplemental_enrollment_status", status: term.supplemental_enrollment_status_display)
+                ], tag.br)
+              end
 
-              row += [ safe_join(credit_hours_lines, tag.br), safe_join(ce_hours_lines, tag.br) ]
+              if term.supplemental_sufficient_enrollment?
+                row += [ t("shared.not_applicable"), t("shared.not_applicable") ]
+              elsif term.less_than_half_time?
+                credit_hours = term.credit_hours || 0
+                row += [ format_decimal_amount(credit_hours), format_decimal_amount(activity.community_engagement_hours(credit_hours)) ]
+              else
+                row += [ t("shared.not_applicable"), t("shared.not_applicable") ]
+              end
             end
             row
           end %>
