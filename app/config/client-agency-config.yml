@@ -11,6 +11,17 @@
   argyle:
     environment: <%= ENV["LA_LDH_ARGYLE_ENVIRONMENT"] %>
   income_flow_transmission_method: <%= ENV.fetch("LA_LDH_TRANSMISSION_METHOD", "json") %>
+  activity_flow_transmission_method: <%= ENV.fetch("LA_LDH_ACTIVITY_FLOW_TRANSMISSION_METHOD", "none") %>
+  activity_transmission_method_configuration:
+    json_api_url: <%= ENV["LA_LDH_ACTIVITY_JSON_API_URL"].to_json %>
+    documents_api_url: <%= ENV["LA_LDH_ACTIVITY_DOCUMENTS_API_URL"].to_json %>
+    silently_retry_error_codes:
+      - 403
+      - 408
+      - 502
+    custom_headers:
+      X-Gateway-APIKey: <%= ENV["LA_LDH_ACTIVITY_APIKEY"].to_json %>
+      AccountCode: <%= ENV["LA_LDH_ACTIVITY_ACCOUNTCODE"].to_json %>
   income_transmission_method_configuration:
     json_api_url: <%= ENV["LA_LDH_INCOME_REPORT_URL"] %>
     pdf_api_url: <%= ENV["LA_LDH_PDF_API_URL"] %>
@@ -44,11 +55,6 @@
   invitation_valid_days: 75
   # Defaults to true when omitted. Applies only to tokenized CE and Employment links.
   allow_activity_invitation_reuse: false
-  activity_types:
-    education: true
-    community_service: true
-    work_programs: true
-    employment: true
   weekly_report:
     recipient: <%= ENV['LA_LDH_WEEKLY_REPORT_RECIPIENTS'] %>
     report_variant: flows

@@ -1,6 +1,6 @@
 class Api::ArgyleController < ApplicationController
   before_action :set_cbv_flow, :resume_previous_argyle_account_connection
-  after_action :track_event
+  after_action :track_linking_started_event
 
   # This API endpoint is used to fetch a `user_token` to allow the user to open
   # the Argyle modal.
@@ -78,8 +78,18 @@ class Api::ArgyleController < ApplicationController
 
   private
 
-  def track_event
+  def track_linking_started_event
     return unless @flow.present?
+
+    if @flow.is_a?(ActivityFlow)
+      return unless response.successful?
+
+      @cbv_flow = @flow # Required by current_agency's legacy flow alias.
+      track_event(TrackEvent::ApplicantBeganLinkingEmployer,
+        time: Time.now.to_i, activity_flow_id: @flow.id,
+        item_id: params[:item_id], aggregator_name: "argyle")
+      return
+    end
 
     event_logger.track(TrackEvent::ApplicantBeganLinkingEmployer, request, {
       time: Time.now.to_i,

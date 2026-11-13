@@ -115,6 +115,26 @@ locals {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-transmission-method"
     },
+    LA_LDH_ACTIVITY_FLOW_TRANSMISSION_METHOD = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-activity-flow-transmission-method"
+    },
+    LA_LDH_ACTIVITY_JSON_API_URL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-activity-json-api-url"
+    },
+    LA_LDH_ACTIVITY_DOCUMENTS_API_URL = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-activity-documents-api-url"
+    },
+    LA_LDH_ACTIVITY_APIKEY = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-activity-apikey"
+    },
+    LA_LDH_ACTIVITY_ACCOUNTCODE = {
+      manage_method     = "manual"
+      secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-activity-accountcode"
+    },
     LA_LDH_INCLUDE_REPORT_PDF = {
       manage_method     = "manual"
       secret_store_name = "/service/${var.app_name}-${var.environment}/la-ldh-include-report-pdf"

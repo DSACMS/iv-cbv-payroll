@@ -2,6 +2,7 @@ class Activities::SummaryController < Activities::BaseController
   include ConfirmationCodeGeneratable
 
   before_action :load_summary_data, only: %i[show]
+  after_action :track_review_viewed_event, only: :show
 
   def show
     flash.keep(:activity_added)
@@ -27,15 +28,33 @@ class Activities::SummaryController < Activities::BaseController
     end
 
     @flow.transaction do
+      invitation = @flow.activity_flow_invitation
+      if invitation && !Rails.application.config.client_agencies[invitation.client_agency_id].allow_activity_invitation_reuse
+        # Different sessions have different flows, so serialize on their shared
+        # invitation and check usage only after acquiring the database lock.
+        invitation.lock!
+        if invitation.used?
+          track_expired_event(invitation)
+          return redirect_to(expired_invitation_path(invitation))
+        end
+      end
+
       ensure_confirmation_code
       mark_as_completed
       enqueue_transmission
     end
 
+    track_event(TrackEvent::ActivityReportSubmitted)
     redirect_to after_submit_path
   end
 
   private
+
+  def track_review_viewed_event
+    return unless response.successful?
+
+    track_event(TrackEvent::ActivityReportReviewViewed)
+  end
 
   def after_submit_path
     household = @flow.household_member&.household

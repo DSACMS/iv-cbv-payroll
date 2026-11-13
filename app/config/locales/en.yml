@@ -132,6 +132,7 @@ en:
       modal:
         back_button: Back
         body: Your progress adding this activity will not be saved.
+        close: Close this window
         exit_link: Exit without saving
         heading: Are you sure you want to exit?
     community_service:
@@ -191,6 +192,13 @@ en:
           suggestions_html: "<ul><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li><li>Copy of class schedule for the current term</li><li>Transcript from most recent enrollment period</li></ul>"
           term_end: Term end date
           term_start: Term start date
+        empty_confirmation:
+          close: Close this window
+          continue: Continue without uploading
+          description: Uploading documents is the fastest way to show you meet the requirements.
+          go_back: Go back
+          heading: Are you sure you want to continue without uploading documents?
+          warning: Without documents, confirming your eligibility may take longer.
         errors:
           empty: That file is empty. Choose a different file.
           multiple_files: We could not upload one or more files. Check the files and try again.
@@ -241,7 +249,7 @@ en:
           term_end_hint: If you’re not sure, enter when your current classes are expected to end
           term_start: Term start date
           title: Add your term for %{school_name}
-      document_upload_suggestion_text_html: "<ul><li>Copy of class schedule for the current term</li><li>Tuition receipt</li><li>Student portal screenshot</li><li>Official course enrollment for the current term from the Office of the Registrar</li></ul>"
+      document_upload_term_label: "%{school_name} %{start_date} to %{end_date}:"
       edit:
         additional_information_header: Additional comments (optional)
         additional_information_label: Share any additional information that you’d like %{agency_name} to know. This will be included in your community engagement report.
@@ -661,6 +669,7 @@ en:
         employment_details: Employment details
         employment_status: Employment status
         employment_summary: Employment summary
+        enrolled: Enrolled
         gig_payments_description: 'These were the dates that the client was paid for their work at %{employer_name} and the gross pay amount:'
         heading: Community Engagement Report
         hourly_wage_hours_paid: 'Hourly wage: Hours paid'
@@ -683,6 +692,7 @@ en:
         school_contact_email: School contact email
         school_contact_name: School contact name
         school_contact_phone_number: School contact phone number
+        supplemental_enrollment_status: "%{status} (self-attested)"
         term_date_range: "%{start_date} to %{end_date}"
         title: Community Engagement Report
         total_hours_worked: Total hours worked

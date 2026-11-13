@@ -2,6 +2,7 @@ class ActivityFlowTransmitterJob < ApplicationJob
   queue_as :default
 
   RETRY_WAITS = [ 5.minutes, 10.minutes, 30.minutes, 1.hour, 4.hours ].freeze
+  DISABLED_TRANSMISSION_METHOD_NAME = "none"
 
   retry_on Exception,
     attempts: RETRY_WAITS.size + 1,
@@ -15,10 +16,13 @@ class ActivityFlowTransmitterJob < ApplicationJob
 
   def perform(activity_flow_id)
     activity_flow = ActivityFlow.find(activity_flow_id)
-    current_agency = Rails.application.config.client_agencies[activity_flow.cbv_applicant.client_agency_id]
+    current_agency = agency_for(activity_flow)
     transmission_method = current_agency.activity_flow_transmission_method
 
-    return if transmission_method.blank?
+    if transmission_method.blank? || transmission_method == DISABLED_TRANSMISSION_METHOD_NAME
+      Rails.logger.warn "Skipping transmission of ActivityFlow ID #{activity_flow_id}: No transmission method configured for #{current_agency.id}"
+      return
+    end
 
     with_flow_tags(activity_flow) do
       transmitter_class(transmission_method).new(activity_flow, current_agency).deliver
@@ -39,5 +43,9 @@ class ActivityFlowTransmitterJob < ApplicationJob
     else
       raise "Unsupported activity flow transmission method: #{transmission_method}"
     end
+  end
+
+  def agency_for(activity_flow)
+    Rails.application.config.client_agencies[activity_flow.cbv_applicant.client_agency_id]
   end
 end

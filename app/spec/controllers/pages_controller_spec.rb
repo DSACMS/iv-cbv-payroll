@@ -188,6 +188,34 @@ RSpec.describe PagesController do
         )
       end
     end
+
+    context "when tracking timeout page views" do
+      before do
+        stub_client_agency_config_value("sandbox", "agency_domain", "sandbox.reportmyincome.org")
+        stub_client_agency_config_value("sandbox", "pilot_ended", false)
+        request.host = "sandbox.reportmyincome.org"
+      end
+
+      it "tracks activity-flow timeout page views" do
+        expect(EventTrackingJob).to receive(:perform_later).with(
+          TrackEvent::ActivityTimeoutPageViewed,
+          anything,
+          hash_including(client_agency_id: "sandbox")
+        )
+
+        get :home, params: { activity_flow_timeout: true, client_agency_id: "sandbox" }
+      end
+
+      it "does not track CBV timeout pages as activity-flow timeout views" do
+        expect(EventTrackingJob).not_to receive(:perform_later).with(
+          TrackEvent::ActivityTimeoutPageViewed,
+          anything,
+          anything
+        )
+
+        get :home, params: { cbv_flow_timeout: true }
+      end
+    end
   end
 
   describe "#error_404" do

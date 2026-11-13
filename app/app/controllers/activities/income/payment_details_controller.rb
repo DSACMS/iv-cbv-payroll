@@ -42,7 +42,7 @@ class Activities::Income::PaymentDetailsController < Activities::BaseController
       return redirect_to(activities_flow_entry_url, flash: { slim_alert: { message: t("activities.income.error_no_access"), type: "error" } })
     end
 
-    @payroll_account.update(payroll_account_params)
+    @payment_details_saved = @payroll_account.update(payroll_account_params)
     publish_activity(@payroll_account, activity_type: :employment)
 
     redirect_to next_path
@@ -113,14 +113,11 @@ class Activities::Income::PaymentDetailsController < Activities::BaseController
   end
 
   def track_viewed_event
-    return if @payroll_account.nil? || @payroll_account_report.nil?
+    return unless response.successful? && @payroll_account_report.present?
 
-    event_logger.track(TrackEvent::ApplicantViewedPaymentDetails, request, {
+    track_event(TrackEvent::ApplicantViewedPaymentDetails, {
       time: Time.now.to_i,
-      cbv_applicant_id: @flow.cbv_applicant_id,
       activity_flow_id: @flow.id,
-      client_agency_id: current_agency&.id,
-      invitation_id: @flow.invitation_id,
       aggregator_account_id: @payroll_account.id,
       payments_length: @payroll_account_report.paystubs&.length,
       has_employment_data: has_employment_data?,
@@ -130,14 +127,13 @@ class Activities::Income::PaymentDetailsController < Activities::BaseController
   end
 
   def track_saved_event
+    return unless response.redirect? && @payment_details_saved
+
     comment_data = @payroll_account&.additional_information
 
-    event_logger.track(TrackEvent::ApplicantSavedPaymentDetails, request, {
+    track_event(TrackEvent::ApplicantSavedPaymentDetails, {
       time: Time.now.to_i,
-      cbv_applicant_id: @flow.cbv_applicant_id,
       activity_flow_id: @flow.id,
-      client_agency_id: current_agency&.id,
-      invitation_id: @flow.invitation_id,
       additional_information_length: comment_data ? comment_data.length : 0
     })
   end

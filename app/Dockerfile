@@ -35,6 +35,8 @@ FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
+      libopenexr-3-1-30 \
+      libopenexr-dev \
       zlib1g \
       zlib1g-dev \
     && \

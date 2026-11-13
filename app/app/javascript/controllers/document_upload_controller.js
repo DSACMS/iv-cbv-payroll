@@ -3,7 +3,16 @@ import CSRF from "../utilities/csrf"
 import fileChecksum from "../utilities/file_checksum"
 
 export default class extends Controller {
-  static targets = ["input", "listSection", "list", "listHeading", "error", "signedIds"]
+  static targets = [
+    "input",
+    "listSection",
+    "list",
+    "listHeading",
+    "error",
+    "signedIds",
+    "emptyUploadTrigger",
+    "submit",
+  ]
 
   static values = {
     presignUrl: String,
@@ -21,6 +30,32 @@ export default class extends Controller {
 
   connect() {
     this.clearing = false
+    this.uploading = false
+  }
+
+  confirmEmptyUpload(event) {
+    if (this.uploading) {
+      event.preventDefault()
+      return
+    }
+    if (
+      !this.hasEmptyUploadTriggerTarget ||
+      event.submitter?.dataset.confirmWithoutUpload === "true"
+    )
+      return
+
+    const hasDocuments = Array.from(
+      this.element.querySelectorAll('input[type="hidden"][name="activity[document_uploads][]"]')
+    ).some((input) => input.value.trim() !== "")
+    if (hasDocuments) return
+
+    event.preventDefault()
+    this.emptyUploadTriggerTarget.click()
+    // USWDS returns focus to its opener. Use the visible submit button rather
+    // than the hidden trigger, including when the modal closes with Escape.
+    document
+      .getElementById(this.emptyUploadTriggerTarget.getAttribute("aria-controls"))
+      .setAttribute("data-opener", this.submitTarget.id)
   }
 
   async select() {
@@ -76,6 +111,7 @@ export default class extends Controller {
   }
 
   #blockSubmit(blocked) {
+    this.uploading = blocked
     this.element.querySelectorAll("input[type=submit], button[type=submit]").forEach((button) => {
       button.disabled = blocked
     })

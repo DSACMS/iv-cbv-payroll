@@ -1,6 +1,6 @@
 # Guide to the Emmy Repository Structure
 
-The [`EMMY`](https://github.com/DSACMS/iv-cbv-payroll) repository is a monorepo. The [README](https://github.com/DSACMS/iv-cbv-payroll/blob/main/README.md) identifies the main application as the Rails-based [**Emmy App**](./app/), while the API-only implementation lives in a separate repository.
+The [`EMMY`](https://github.com/CMS-Enterprise/emmy-app) repository is a monorepo. The [README](https://github.com/CMS-Enterprise/emmy-app/blob/main/README.md) identifies the main application as the Rails-based [**Emmy App**](./app/), while the API-only implementation lives in a separate repository.
 
 At the root, start with the main folders:
 
@@ -11,7 +11,7 @@ At the root, start with the main folders:
 - `infra/` contains Terraform and environment replication material.
 - `load_testing/` stores load testing resources.
 
-The most important directory is `app/`. Its [app-level guidance](https://github.com/DSACMS/iv-cbv-payroll/blob/main/app/AGENTS.md) describes a conventional Rails layout: application code under `app/app/`, configuration in `app/config/`, migrations in `app/db/`, support code in `app/lib/` and `app/services/`, and tests in `app/spec/`.
+The most important directory is `app/`. Its [app-level guidance](https://github.com/CMS-Enterprise/emmy-app/blob/main/app/AGENTS.md) describes a conventional Rails layout: application code under `app/app/`, configuration in `app/config/`, migrations in `app/db/`, support code in `app/lib/` and `app/services/`, and tests in `app/spec/`.
 
 Inside `app/app/`, expect the usual Rails neighborhoods: `controllers`, `models`, `views`, `helpers`, `services`, `jobs`, and `javascript`. Business logic should generally live in service objects or library classes so controllers stay thin. Frontend behavior uses Hotwire/Stimulus, with JavaScript bundled into Rails assets.
 

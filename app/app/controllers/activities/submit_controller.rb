@@ -1,5 +1,6 @@
 class Activities::SubmitController < Activities::BaseController
   skip_before_action :ensure_activity_flow_not_yet_complete, only: :show
+  after_action :track_report_pdf_viewed_event, only: :show
 
   def show
     respond_to do |format|
@@ -38,5 +39,11 @@ class Activities::SubmitController < Activities::BaseController
       left: 0,
       right: 0
     }
+  end
+
+  def track_report_pdf_viewed_event
+    return unless request.format.pdf? && response.successful?
+
+    track_event(TrackEvent::ActivityReportPdfViewed)
   end
 end

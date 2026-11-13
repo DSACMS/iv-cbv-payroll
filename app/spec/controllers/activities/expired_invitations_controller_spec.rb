@@ -18,8 +18,12 @@ RSpec.describe Activities::ExpiredInvitationsController, type: :controller do
     end
 
     it "opens the agency website in a new tab with secure link attributes" do
+      link = document.find_link("Visit LDH website")
+
       expect(document).to have_link("Visit LDH website", href: agency.agency_contact_website, target: "_blank")
       expect(document.find_link("Visit LDH website")[:rel].split).to contain_exactly("noopener", "noreferrer")
+      expect(link["data-controller"]).to eq("expired-invitation")
+      expect(link["data-action"]).to eq("click->expired-invitation#trackAgencyWebsiteClick")
     end
 
     it "uses the Emmy layout" do
