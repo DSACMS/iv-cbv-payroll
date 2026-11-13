@@ -16,6 +16,20 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     end
   end
 
+  def expect_activity_edit_label(section:, translation_key:, activity_name:)
+    within("[data-activity-type='#{section}']") do
+      edit_link = find("a.usa-link", text: I18n.t("activities.hub.edit"), exact_text: true)
+
+      expect(edit_link["aria-label"]).to eq(
+        I18n.t(
+          "activities.hub.edit_activity",
+          activity_type: I18n.t(translation_key),
+          activity_name: activity_name
+        )
+      )
+    end
+  end
+
   context "common questions" do
     let(:invitation) { create(:activity_flow_invitation, client_agency_id: "sandbox") }
     let(:requirements_question) { I18n.t("activities.hub.common_questions.requirements_title") }
@@ -79,7 +93,15 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     flow = ActivityFlow.last
 
     # Add a Community Service activity
-    within("[data-activity-type='community_service']") { click_button I18n.t("activities.hub.add") }
+    within("[data-activity-type='community_service']") do
+      add_button = find("button", text: I18n.t("activities.hub.add"), exact_text: true)
+
+      expect(add_button["aria-label"]).to eq(
+        I18n.t("activities.hub.add_activity", activity_type: I18n.t("activities.community_service.title"))
+      )
+
+      add_button.click
+    end
     verify_page(page, title: I18n.t("activities.community_service.new_title"))
     organization_field = find_field(I18n.t("activities.community_service.organization_name"))
     expect(organization_field[:required]).to be_truthy
@@ -183,6 +205,22 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 6)
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 4)
 
+    expect_activity_edit_label(
+      section: "community_service",
+      translation_key: "activities.community_service.title",
+      activity_name: "Helping Hands"
+    )
+    expect_activity_edit_label(
+      section: "work_programs",
+      translation_key: "activities.work_programs.title",
+      activity_name: "Resume Workshop"
+    )
+    expect_activity_edit_label(
+      section: "employment",
+      translation_key: "activities.employment.title",
+      activity_name: "Gainesville Wrecking"
+    )
+
     click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))
 
@@ -267,6 +305,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
 
 
   it "completes the generic flow for the income activity" do
+    allow(EventTrackingJob).to receive(:perform_later).and_call_original
     visit URI(root_url).request_uri
 
     visit activities_flow_entry_path(client_agency_id: "sandbox") # This would normally be inferred
@@ -282,6 +321,18 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.employment.add_your_work.show.header"))
     find("label[for='add_work_method_connect_automatically']").click
     click_button I18n.t("continue")
+    verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
+    click_link I18n.t("activities.activity_header_component.exit")
+    within("#exit-confirmation-modal") do
+      click_button I18n.t("activities.activity_header_component.modal.back_button")
+    end
+    expect(page).to have_no_selector("#exit-confirmation-modal.is-visible")
+    click_link I18n.t("activities.activity_header_component.exit")
+    within("#exit-confirmation-modal") do
+      click_link I18n.t("activities.activity_header_component.modal.exit_link")
+    end
+    verify_page(page, title: I18n.t("activities.hub.title"))
+    visit activities_flow_income_employer_search_path
     verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
     @e2e.replay_modal_callbacks(page.driver.browser) do
       click_button "Paychex"
@@ -306,6 +357,11 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     # /activities/income/payment_details
     @e2e.replay_webhooks
     verify_page(page, title: I18n.t("activities.income.payment_details.show.header", employer_name: ""), wait: 60)
+    payment_details_url = page.current_url
+    click_link I18n.t("activities.activity_header_component.back")
+    verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
+    visit payment_details_url
+    verify_page(page, title: I18n.t("activities.income.payment_details.show.header", employer_name: ""))
     fill_in "payroll_account[additional_information]",
       with: "Some kind of additional information"
     click_button I18n.t("activities.income.payment_details.show.continue")
@@ -321,6 +377,15 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     # /activities/success
     verify_page(page, title: I18n.t("activities.success.show.title", agency_name: agency_name))
     expect(page).to have_content I18n.t("activities.success.show.download_pdf")
+    flow = ActivityFlow.last
+    event_context = hash_including(cbv_flow_id: flow.id, cbv_applicant_id: flow.cbv_applicant_id, flow_type: "ce")
+    expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::ApplicantBeganLinkingEmployer, anything, event_context).once
+    expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::ApplicantViewedPaymentDetails, anything, event_context).twice
+    expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::ApplicantSavedPaymentDetails, anything, event_context).once
+    expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::EmploymentExitClicked, anything, hash_including(modal_shown: true)).twice
+    expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::EmploymentExitModalCancelled, anything, event_context).once
+    expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::EmploymentExitModalConfirmed, anything, event_context).once
+    expect(EventTrackingJob).to have_received(:perform_later).with(TrackEvent::EmploymentBackClicked, anything, event_context).once
   end
 
   it "returns to hub with empty state for education when no records are found" do

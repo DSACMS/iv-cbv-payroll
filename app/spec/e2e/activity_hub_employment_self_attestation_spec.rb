@@ -178,8 +178,13 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
 
     # --- Step 2: Edit all employer info fields from the review page ---
     # The review page has multiple "Edit" links; target the one next to the employer info heading
-    edit_links = all("a", text: I18n.t("activities.hub.edit"))
-    edit_links.first.click
+    within(".activity-review-edit-header", text: I18n.t("activities.employment.review.employer_info")) do
+      edit_link = find("a.usa-link", text: I18n.t("activities.hub.edit"), exact_text: true)
+      expect(edit_link["aria-label"]).to eq(
+        I18n.t("activities.employment.review.edit_employer", employer_name: "Gainesville Wrecking")
+      )
+      edit_link.click
+    end
 
     verify_page(page, title: I18n.t("activities.employment_info.edit_title"))
 

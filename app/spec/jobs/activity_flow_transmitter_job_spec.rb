@@ -15,6 +15,7 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
   let(:current_agency) do
     instance_double(
       ClientAgencyConfig::ClientAgency,
+      id: "sandbox",
       activity_flow_transmission_method: transmission_method,
       applicant_attribute_names: [],
       applicant_attributes: {}
@@ -56,6 +57,42 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
       expect {
         described_class.new.perform(activity_flow.id)
       }.not_to change { activity_flow.reload.transmitted_at }
+    end
+  end
+
+  context "when the activity flow transmission method is empty" do
+    let(:transmission_method) { "" }
+
+    it "leaves the flow untransmitted" do
+      expect { described_class.new.perform(activity_flow.id) }
+        .not_to change { activity_flow.reload.transmitted_at }
+    end
+  end
+
+  context "when activity flow transmission is explicitly disabled" do
+    let(:transmission_method) { "none" }
+
+    before do
+      allow(Rails.logger).to receive(:warn)
+    end
+
+    it "skips delivery and leaves the flow untransmitted" do
+      expect(transmitter).not_to receive(:deliver)
+
+      expect { described_class.new.perform(activity_flow.id) }
+        .not_to change { activity_flow.reload.transmitted_at }
+    end
+
+    it "does not schedule a retry" do
+      expect { described_class.perform_now(activity_flow.id) }
+        .not_to have_enqueued_job(described_class)
+    end
+
+    it "logs the skipped flow and agency ID" do
+      described_class.new.perform(activity_flow.id)
+
+      expect(Rails.logger).to have_received(:warn)
+        .with("Skipping transmission of ActivityFlow ID #{activity_flow.id}: No transmission method configured for sandbox")
     end
   end
 

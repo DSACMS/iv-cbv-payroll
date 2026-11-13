@@ -4,6 +4,26 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
   include_context "activity_hub"
   render_views
 
+  context "when a CE flow needs an identity for education verification" do
+    let(:flow) { create(:activity_flow, with_identity: false) }
+
+    before do
+      session[:flow_id] = flow.id
+      session[:flow_type] = :activity
+    end
+
+    it "creates an identity from the applicant's complete information" do
+      get :index
+
+      expect(response).to have_http_status(:ok)
+      expect(flow.reload.identity).to have_attributes(
+        first_name: flow.cbv_applicant.first_name,
+        last_name: flow.cbv_applicant.last_name,
+        date_of_birth: flow.cbv_applicant.date_of_birth
+      )
+    end
+  end
+
   describe "activity added alert" do
     let(:current_flow) { create(:activity_flow) }
     let(:rendered) { Capybara.string(response.body) }
@@ -343,6 +363,21 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
           text: "#{I18n.t("activities.hub.months_required_label")} #{I18n.t("activities.hub.months_required_any", count: current_flow.required_month_count)}",
           exact_text: true, normalize_ws: true)
       end
+    end
+
+    it "marks hub controls for click tracking" do
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_css(
+        "[data-controller='activity-hub'][data-action='click->activity-hub#trackClick']"
+      )
+      expect(rendered).to have_css(
+        "[data-activity-type='community_service'] form[data-hub-action='add']"
+      )
+      expect(rendered).to have_css(
+        "[data-activity-type='community_service'] a[data-hub-action='edit']"
+      )
+      expect(rendered).to have_css("form[data-hub-action='review']", count: 2)
     end
   end
 
@@ -1172,6 +1207,50 @@ RSpec.describe Activities::ActivitiesController, type: :controller do
       allow(AggregatorReportFetcher).to receive(:new)
         .with(current_flow)
         .and_return(instance_double(AggregatorReportFetcher, report: report))
+    end
+
+    context "with a Louisiana employment invitation without date of birth" do
+      let(:applicant) do
+        create(:cbv_applicant, client_agency_id: "la_ldh", first_name: "Jane", last_name: "Doe", date_of_birth: nil)
+      end
+      let(:invitation) do
+        create(:activity_flow_invitation, client_agency_id: "la_ldh", employment_focused: true, cbv_applicant: applicant)
+      end
+      let(:current_flow) do
+        create(:activity_flow, cbv_applicant: applicant, activity_flow_invitation: invitation,
+          employment_focused: true, with_identity: false, volunteering_activities_count: 0,
+          job_training_activities_count: 0, education_activities_count: 0)
+      end
+
+      context "with a manual job" do
+        before { create(:employment_activity, activity_flow: current_flow) }
+
+        it "renders the review without attempting to create an identity" do
+          expect(IdentityService).not_to receive(:new)
+
+          expect { get :index }.not_to change(Identity, :count)
+
+          expect(response).to have_http_status(:ok)
+          expect(response).to render_template(:employment_focused_review)
+          expect(current_flow.reload.identity).to be_nil
+        end
+      end
+
+      context "with an Argyle job" do
+        let!(:payroll_account) { create(:payroll_account, :argyle_fully_synced, flow: current_flow) }
+
+        before { stub_aggregator_report_for(payroll_account, employment_type: :w2) }
+
+        it "renders the review without attempting to create an identity" do
+          expect(IdentityService).not_to receive(:new)
+
+          expect { get :index }.not_to change(Identity, :count)
+
+          expect(response).to have_http_status(:ok)
+          expect(response).to render_template(:employment_focused_review)
+          expect(current_flow.reload.identity).to be_nil
+        end
+      end
     end
 
     context "with a self-attested employment activity" do

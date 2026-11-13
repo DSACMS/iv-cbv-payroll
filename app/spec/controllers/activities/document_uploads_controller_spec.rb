@@ -484,45 +484,120 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       )
     end
 
-    it "renders the upload form for a partially self-attested education activity" do
-      term = create_partial_term(
-        activity: partial_education_activity,
-        school_name: "University of Illinois",
-        term_begin: Date.new(2026, 1, 5),
-        term_end: Date.new(2026, 5, 15)
-      )
+    context "with partially self-attested education upload details" do
+      let(:activity_flow) do
+        create(:activity_flow, activity_flow_invitation: create(:activity_flow_invitation),
+          reporting_window_months: 1, education_activities_count: 0,
+          volunteering_activities_count: 0, job_training_activities_count: 0)
+      end
+      let(:enrollment_status) { "enrolled" }
+      let(:supplemental_status) { "less_than_half_time" }
+      let(:credit_hours) { 2.5 }
+      let(:term) do
+        create(:nsc_enrollment_term, education_activity: partial_education_activity, school_name: "University of Illinois",
+          enrollment_status: enrollment_status, supplemental_enrollment_status: supplemental_status, credit_hours: credit_hours)
+      end
+      let(:term_label) do
+        I18n.t("activities.education.document_upload_term_label", school_name: term.school_name,
+          start_date: I18n.l(term.term_begin, format: :short), end_date: I18n.l(term.term_end, format: :short))
+      end
+      let(:rendered) { Capybara.string(response.body) }
 
-      get :new, params: { education_id: partial_education_activity.id }
+      before do
+        term
+        get :new, params: { education_id: partial_education_activity.id }
+      end
 
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.document_uploads.new.title", name: term.school_name))
-      expect(response.body).to include("#{I18n.l(term.term_begin, format: :short)} to #{I18n.l(term.term_end, format: :short)}")
-      rendered = Capybara.string(response.body)
-      expect(rendered).to have_text(I18n.t("activities.document_uploads.new.description"))
-      expect(rendered).to have_selector("button", text: I18n.t("activities.document_uploads.new.suggestion_title"), exact_text: true, normalize_ws: true)
-      expect(response.body).to include(I18n.t("activities.education.document_upload_suggestion_text_html"))
-      expect(rendered).to have_no_text(Capybara.string(I18n.t("activities.document_uploads.new.education.suggestions_html")).all("li").last.text)
-    end
+      it "shows the school's upload title" do
+        expect(rendered).to have_selector("h1", text: I18n.t("activities.document_uploads.new.title", name: term.school_name))
+      end
 
-    it "uses the simplified title when partially self-attested education has multiple schools" do
-      create_partial_term(
-        activity: partial_education_activity,
-        school_name: "University A",
-        term_begin: Date.new(2026, 1, 5),
-        term_end: Date.new(2026, 5, 15)
-      )
-      create_partial_term(
-        activity: partial_education_activity,
-        school_name: "College B",
-        term_begin: Date.new(2026, 1, 10),
-        term_end: Date.new(2026, 5, 20)
-      )
+      it "shows the school, term dates, supplied enrollment level, and fractional credits" do
+        expect(rendered).to have_selector("li strong", text: term_label)
+        expect(rendered).to have_selector("li",
+          text: "#{term_label} #{I18n.t("activities.education.add_your_term.edit.enrollment_status_options.less_than_half_time")}, #{I18n.t("shared.credit_hours", count: credit_hours)}",
+          exact_text: true, normalize_ws: true)
+      end
 
-      get :new, params: { education_id: partial_education_activity.id }
+      it "suggests the five education supporting documents" do
+        suggestions = rendered.find("#document-upload-suggestions", visible: :all)
+        expect(suggestions).to have_text(I18n.t("activities.document_uploads.new.education.suggestion_title"))
+        expected_documents = Capybara.string(I18n.t("activities.document_uploads.new.education.suggestions_html"))
+        expect(suggestions.all("li", visible: :all).map(&:text)).to eq(expected_documents.all("li").map(&:text))
+      end
 
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("activities.document_uploads.new.title_generic"))
-      expect(response.body).not_to include(I18n.t("activities.document_uploads.new.title", name: "University A"))
+      context "when the applicant is unsure of their enrollment level" do
+        let(:supplemental_status) { "unknown" }
+
+        it "shows the unsure answer and fractional credits" do
+          expect(rendered).to have_selector("li",
+            text: "#{term_label} #{I18n.t("activities.education.add_your_term.edit.enrollment_status_options.unknown")}, #{I18n.t("shared.credit_hours", count: credit_hours)}",
+            exact_text: true, normalize_ws: true)
+        end
+      end
+
+      context "when the applicant supplies half-time enrollment" do
+        let(:supplemental_status) { "half_time" }
+        let(:credit_hours) { nil }
+
+        it "shows the supplied status on its own" do
+          expect(rendered).to have_selector("li",
+            text: "#{term_label} #{I18n.t("activities.education.add_your_term.edit.enrollment_status_options.half_time")}",
+            exact_text: true, normalize_ws: true)
+        end
+      end
+
+      context "when the applicant supplies full-time enrollment" do
+        let(:supplemental_status) { "full_time" }
+        let(:credit_hours) { nil }
+
+        it "shows the supplied status on its own" do
+          expect(rendered).to have_selector("li",
+            text: "#{term_label} #{I18n.t("activities.education.add_your_term.edit.enrollment_status_options.full_time")}",
+            exact_text: true, normalize_ws: true)
+        end
+      end
+
+      context "when the applicant reports no classes for an enrolled term" do
+        let(:supplemental_status) { nil }
+        let(:credit_hours) { 0 }
+
+        it "shows the saved zero credits and an inapplicable enrollment level" do
+          expect(rendered).to have_selector("li",
+            text: "#{term_label} #{I18n.t("shared.not_applicable")}, #{I18n.t("shared.credit_hours", count: credit_hours)}",
+            exact_text: true, normalize_ws: true)
+        end
+      end
+
+      context "when NSC reports less-than-half-time enrollment" do
+        let(:enrollment_status) { "less_than_half_time" }
+        let(:supplemental_status) { nil }
+
+        it "shows NSC's enrollment status and the supplied credits" do
+          expect(rendered).to have_selector("li",
+            text: "#{term_label} #{I18n.t("components.enrollment_term_table_component.status.less_than_half_time")}, #{I18n.t("shared.credit_hours", count: credit_hours)}",
+            exact_text: true, normalize_ws: true)
+        end
+      end
+
+      context "with multiple schools" do
+        let(:other_term) do
+          create(:nsc_enrollment_term, :less_than_half_time, education_activity: partial_education_activity,
+            school_name: "College B", credit_hours: 3.25)
+        end
+
+        before do
+          other_term
+          get :new, params: { education_id: partial_education_activity.id }
+        end
+
+        it "uses the generic title and lists both schools on the same upload page" do
+          expect(rendered).to have_selector("h1", text: I18n.t("activities.document_uploads.new.title_generic"), exact_text: true)
+          expect(rendered).to have_selector("li", text: term.school_name)
+          expect(rendered).to have_selector("li", text: other_term.school_name)
+          expect(rendered).to have_text(I18n.t("shared.credit_hours", count: ApplicationHelper.format_decimal_amount(other_term.credit_hours)))
+        end
+      end
     end
 
     it "renders previously uploaded documents in the uploaded documents area" do
@@ -873,16 +948,5 @@ RSpec.describe Activities::DocumentUploadsController, type: :controller do
       expect(ActiveStorage::Blob.where(id: blob.id)).to be_empty
       expect(volunteering_activity.reload.document_uploads).to be_empty
     end
-  end
-
-  def create_partial_term(activity:, school_name:, term_begin:, term_end:)
-    create(
-      :nsc_enrollment_term,
-      :less_than_half_time,
-      education_activity: activity,
-      school_name: school_name,
-      term_begin: term_begin,
-      term_end: term_end
-    )
   end
 end
