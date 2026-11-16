@@ -185,5 +185,16 @@ RSpec.describe Activities::SuccessController, type: :controller do
         end
       end
     end
+
+    context "with a completed flow" do
+      let(:tracked_flow) { activity_flow }
+      let(:perform_tracked_action) { get :show }
+
+      before do
+        activity_flow.update!(completed_at: Time.current)
+      end
+
+      it_behaves_like "tracks an event", TrackEvent::ActivityReportConfirmationViewed
+    end
   end
 end

@@ -1,5 +1,4 @@
 class NscDataFetcherService
-  CURRENTLY_ENROLLED = "CC"
   ENROLLMENT_STATUSES = {
     # Raw NSC codes mapped to the grouped NscEnrollmentTerm status.
     # W and S describe the same grouped status, regardless of who reported it.
@@ -57,10 +56,9 @@ class NscDataFetcherService
 
   def update_education_activity(education_activity, response_data)
     enrollments = Array(response_data["enrollmentDetails"])
-    current_enrollments = enrollments.find_all { |enrollment_detail| enrollment_detail["currentEnrollmentStatus"] == CURRENTLY_ENROLLED }
 
-    if current_enrollments.any?
-      @logger.info "Found #{current_enrollments.length} current enrollments (total enrollments: #{enrollments.length})"
+    if enrollments.any?
+      @logger.info "Found #{enrollments.length} enrollments"
       @education_activity.update(status: :succeeded)
     else
       @logger.info("No enrollments found for EducationActivity ID #{education_activity.id}")
@@ -83,8 +81,6 @@ class NscDataFetcherService
     activity_flow = @education_activity.activity_flow
 
     enrollment_details.flat_map do |enrollment_detail|
-      next [] unless enrollment_detail["currentEnrollmentStatus"] == CURRENTLY_ENROLLED
-
       enrollment_detail["enrollmentData"].filter_map do |enrollment_data|
         term_begin = Date.parse(enrollment_data["termBeginDate"])
         term_end = Date.parse(enrollment_data["termEndDate"])

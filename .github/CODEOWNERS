@@ -3,10 +3,10 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Default owners for everything not matched by a more specific rule below.
-* @DSACMS/emmy-app-committers
+* @CMS-Enterprise/emmy-dev
 
 # Rails application
-/app/ @DSACMS/emmy-app-committers
+/app/ @CMS-Enterprise/emmy-dev
 
 # Infrastructure
-/infra/ @DSACMS/emmy-app-committers
+/infra/ @CMS-Enterprise/emmy-dev

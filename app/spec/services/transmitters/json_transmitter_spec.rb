@@ -40,6 +40,15 @@ RSpec.describe Transmitters::JsonTransmitter do
     let(:schema_path) { Rails.root.join("spec/fixtures/income-report-2026-06-18.json") }
     let(:schema) { JSON.parse(schema_path.read) }
     let(:schema_report) { build(:pinwheel_report, :hydrated, :with_pinwheel_account) }
+    let(:address) do
+      {
+        "line1" => "942 W Harlan Ave",
+        "line2" => nil,
+        "city" => "Gainesville",
+        "state" => "FL",
+        "postal_code" => "32611"
+      }
+    end
 
     before do
       cbv_flow.update!(has_other_jobs: false)
@@ -70,11 +79,44 @@ RSpec.describe Transmitters::JsonTransmitter do
 
       expect(errors).to eq([])
     end
+
+    it "sends employer_address as a string in the income report" do
+      allow(schema_report).to receive(:income_report).and_return(
+        has_other_jobs: false,
+        employments: [
+          { employer_address: address }
+        ]
+      )
+
+      payload = JSON.parse(
+        described_class.new(cbv_flow, mock_client_agency, schema_report).payload
+      )
+
+      expect(payload.dig("income_report", "employments", 0, "employer_address")).to eq("942 W Harlan Ave, Gainesville, FL 32611")
+    end
+
+    it "send employer_address as a string in the income report when line2 is present" do
+      allow(schema_report).to receive(:income_report).and_return(
+        has_other_jobs: false,
+        employments: [
+          { employer_address: address.merge("line2" => "Suite 100") }
+        ]
+      )
+
+      payload = JSON.parse(
+        described_class.new(cbv_flow, mock_client_agency, schema_report).payload
+      )
+
+      expect(payload.dig("income_report", "employments", 0, "employer_address")).to eq("942 W Harlan Ave, Suite 100, Gainesville, FL 32611")
+    end
   end
 
   context 'agency responds with 200' do
     it 'posts to the endpoint with the expected data' do
-      expect(aggregator_report).to receive(:income_report).and_return({ cool: "report" })
+      expect(aggregator_report).to receive(:income_report).and_return({
+        has_other_jobs: false,
+        employments: [],
+        cool: "report" })
       VCR.use_cassette("json_transmitter_200") do
         described_class.new(cbv_flow, mock_client_agency, aggregator_report).deliver
       end

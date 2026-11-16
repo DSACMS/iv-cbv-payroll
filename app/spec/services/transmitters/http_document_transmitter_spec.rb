@@ -21,11 +21,22 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
     )
   end
   let(:transmitter) { described_class.new(activity_flow, current_agency) }
+  let(:report) do
+    ActivityReportPdfService::Report.new(
+      content: "%PDF-1.4 report",
+      file_name: "HR1_Report_2026-08-04.pdf",
+      document_id: "REPORT-#{activity_flow.id}"
+    )
+  end
 
   before do
     allow(ProcessedDownloadService).to receive(:new).and_return(processed_download_service)
     allow(User).to receive(:api_key_for_agency).with("sandbox").and_return("api-key")
     allow(Rails.logger).to receive(:info)
+    allow(ActivityReportPdfService).to receive(:new)
+      .with(activity_flow)
+      .and_return(instance_double(ActivityReportPdfService, generate: report))
+    stub_request(:post, api_url).to_return(status: 200)
   end
 
   it "posts each cleared document with its normalized filename, content type, and document ID" do
@@ -62,11 +73,37 @@ RSpec.describe Transmitters::HttpDocumentTransmitter do
     expect(image_request).to have_been_made.once
   end
 
-  it "does not make HTTP requests when the flow has no supporting documents" do
+  it "sends the report PDF when the flow has no supporting documents" do
     expect(processed_download_service).not_to receive(:download_file)
-    expect(Rails.logger).to receive(:info).with(include("document_count=0"))
+
+    pdf_request = stub_request(:post, api_url).with(
+      body: report.content,
+      headers: {
+        "Content-Type" => "application/pdf",
+        "Content-Disposition" => %(attachment; filename="#{report.file_name}"),
+        "X-IVAAS-Document-Id" => report.document_id,
+        "X-IVAAS-Confirmation-Code" => "SANDBOX123"
+      }
+    )
 
     transmitter.deliver
+
+    expect(pdf_request).to have_been_made.once
+    expect(Rails.logger).to have_received(:info).with(include("document_count=0"))
+  end
+
+  it "signs the report PDF bytes" do
+    request = stub_request(:post, api_url).with do |http_request|
+      timestamp = http_request.headers.fetch("X-Ivaas-Timestamp")
+      signature = http_request.headers.fetch("X-Ivaas-Signature")
+
+      http_request.body == report.content &&
+        JsonApiSignature.verify(http_request.body, timestamp, signature, "api-key")
+    end
+
+    transmitter.deliver
+
+    expect(request).to have_been_made.once
   end
 
   it "does not transmit later documents when downloading a document fails" do

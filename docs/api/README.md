@@ -4,11 +4,11 @@ Emmy helps agencies collect income and community engagement information from
 applicants. Its Tokenized Link API creates personalized reporting links that
 an agency can deliver through its own website, email, or SMS workflow.
 
-The official [Emmy Platform API Documentation](https://DSACMS.github.io/iv-cbv-payroll/index.html)
+The official [Emmy Platform API Documentation](https://cms-enterprise.github.io/emmy-app/index.html)
 contains authentication guidance, environment URLs, agency-specific schemas,
 and tested request and response examples.
 
-The accompanying [OpenAPI JSON](https://DSACMS.github.io/iv-cbv-payroll/openapi.json) is generated
+The accompanying [OpenAPI JSON](https://cms-enterprise.github.io/emmy-app/openapi.json) is generated
 by the same build; do not maintain or commit a separate copy.
 
 Contact [emmy@cms.hhs.gov](mailto:emmy@cms.hhs.gov) for onboarding and an API key
@@ -113,7 +113,7 @@ The response example is extracted from the CE guide's Response section. Add futu
 methods under the same receiving-data tag. Authorization headers are never captured.
 
 Pull request CI builds an `api-reference` artifact for review. After this change
-is merged into `DSACMS/iv-cbv-payroll`, the
+is merged into `CMS-Enterprise/emmy-app`, the
 [publication workflow](../../.github/workflows/api-docs.yml) rebuilds on `main`
 updates (or manual dispatch from `main`), commits the generated files to
 `gh-pages` (creating the branch on its first run), and requests a Pages build.

@@ -25,6 +25,13 @@ as `w2` or `gig`; self-attested and Pinwheel entries retain the field as `null`.
 self-employment across both sources, use
 `employment_type == "gig" OR is_self_employed == true`.
 
+For combined activity JSON and document delivery, `ce_report.documents` also
+lists the generated activity report PDF, even when there are no supporting
+uploads. Its `document_id` is `REPORT-<flow id>`, its `document_name` is the
+transmitted filename, and its `file_type` is `pdf`. The PDF is a report-level
+document and is not referenced by an activity's `document_ids`. Its bytes are
+sent separately after the JSON. JSON-only delivery does not include this entry.
+
 ## Transmission
 
 Emmy sends a completed CE Activity Report as an HTTP `POST` to an endpoint

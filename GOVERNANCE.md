@@ -39,7 +39,7 @@ See [COMMUNITY.md](./COMMUNITY.md)
 
 Nava describes the existing process here.
 
-(We describe an ideal future state we would like to get to in the future, and point to a specific section [CONTRIBUTING.md](./CONTRIBUTING.md) or other doc here, e.g. [Release Format and Platform](https://github.com/DSACMS/iv-cbv-payroll/blob/main/CONTRIBUTING.md#writing-pull-requests))
+(We describe an ideal future state we would like to get to in the future, and point to a specific section [CONTRIBUTING.md](./CONTRIBUTING.md) or other doc here, e.g. [Release Format and Platform](https://github.com/CMS-Enterprise/emmy-app/blob/main/CONTRIBUTING.md#writing-pull-requests))
 
 ### Release Format & Platform
 
@@ -90,11 +90,11 @@ Feature requests should be made through GitHub issues using the [feature_request
 
 ### Accepting General Feedback
 
-We will create an email address to accept feedback from users. Additionally, feedback can be given through [GitHub Issues](https://github.com/DSACMS/iv-cbv-payroll/issues).
+We will create an email address to accept feedback from users. Additionally, feedback can be given through [GitHub Issues](https://github.com/CMS-Enterprise/emmy-app/issues).
 
 ### Communicating roadmap
 
-Active work can be tracked by the public through repository [issues](https://github.com/DSACMS/iv-cbv-payroll/issues) and GitHub project boards. The project page will communicate planned milestones and labels on GitHub issues.
+Active work can be tracked by the public through repository [issues](https://github.com/CMS-Enterprise/emmy-app/issues) and GitHub project boards. The project page will communicate planned milestones and labels on GitHub issues.
 
 ### User-specific tech support
 

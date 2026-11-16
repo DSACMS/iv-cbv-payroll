@@ -106,6 +106,7 @@ RSpec.describe "Unpaid employment information", :js, type: :feature do
     suggestions = Capybara.string(I18n.t("activities.employment.unpaid_or_in_kind.document_upload_suggestion_text_html"))
     suggestions.all("li").each { |item| expect(page).to have_text(item.text) }
     click_button I18n.t("activities.document_uploads.new.continue")
+    click_button I18n.t("activities.document_uploads.new.empty_confirmation.continue")
 
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Example work"))
     expect(page).to have_selector("h2", text: I18n.t("activities.employment.review.unpaid_or_in_kind.work_hours"))

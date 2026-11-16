@@ -130,8 +130,9 @@ To acceptance test the JSON API, you can run the independent **reference server 
    LA_LDH_INCLUDE_REPORT_PDF=false
    LA_LDH_INCOME_REPORT_ACCOUNTCODE=foobar
 
-   # For activity supporting documents
-   SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=http
+   # For combined activity report JSON and document (including PDF) delivery
+   SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=json_and_documents
+   SANDBOX_ACTIVITY_JSON_API_URL=http://localhost:4567/activities
    SANDBOX_ACTIVITY_DOCUMENTS_API_URL=http://localhost:4567/documents
 
    # For the community engagement (CE) activity report JSON
@@ -510,7 +511,7 @@ This repo's `main` branch automatically deploys to our demo environment via [a G
 
 ## Production
 
-To deploy to production, go to the repo's "Actions" tab on Github, [click "Deploy App"](https://github.com/DSACMS/iv-cbv-payroll/actions/workflows/cd-app.yml), and "Run Workflow".
+To deploy to production, go to the repo's "Actions" tab on Github, [click "Deploy App"](https://github.com/CMS-Enterprise/emmy-app/actions/workflows/cd-app.yml), and "Run Workflow".
 
 # Credentials and other Secrets
 

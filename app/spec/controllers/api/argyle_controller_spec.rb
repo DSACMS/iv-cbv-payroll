@@ -179,6 +179,22 @@ RSpec.describe Api::ArgyleController do
         argyle_stub_request_empty_accounts_response
       end
 
+      it "tracks linking through the shared helper with CE context" do
+        expect(controller).to receive(:track_event).with(TrackEvent::ApplicantBeganLinkingEmployer,
+          hash_including(activity_flow_id: flow.id, item_id: argyle_item_id, aggregator_name: "argyle")).and_call_original
+        expect(EventTrackingJob).to receive(:perform_later).with(TrackEvent::ApplicantBeganLinkingEmployer, anything,
+          hash_including(cbv_flow_id: flow.id, cbv_applicant_id: flow.cbv_applicant_id,
+            client_agency_id: flow.cbv_applicant.client_agency_id, flow_type: "ce"))
+
+        post :create, params: valid_params
+      end
+
+      it "does not count an invalid token request as a flow start" do
+        expect(EventTrackingJob).not_to receive(:perform_later).with(TrackEvent::ApplicantBeganLinkingEmployer, anything, anything)
+
+        post :create, params: {}
+      end
+
       it "creates a user with Argyle, returning its token" do
         post :create, params: valid_params
 

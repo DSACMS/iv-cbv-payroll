@@ -72,6 +72,9 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
       title: I18n.t("activities.document_uploads.new.title", name: "University of Illinois"),
       skip_axe_rules: %w[heading-order]
     )
+    click_button I18n.t("activities.document_uploads.new.continue")
+    expect(page).to have_text(I18n.t("activities.document_uploads.new.empty_confirmation.heading"))
+    click_button I18n.t("activities.document_uploads.new.empty_confirmation.go_back")
     attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
     click_button I18n.t("activities.document_uploads.new.continue")
 

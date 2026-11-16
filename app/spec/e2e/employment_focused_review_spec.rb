@@ -84,9 +84,9 @@ RSpec.describe "e2e Employment-focused review page", :js, type: :feature do
     # --- Submitting is blocked until the consent checkbox is checked ---
     click_button I18n.t("activities.activities.employment_focused_review.submit", agency_name: "Test Agency")
     # --- The error re-renders the same employment-focused review page, not the generic summary ---
-    verify_page(page, title: I18n.t("activities.activities.employment_focused_review.header"))
     expect(page).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("activities.submit.consent_required"))
-    expect(page).to have_selector("#activity_flow_consent_to_submit[aria-invalid='true'][aria-describedby='activity_flow_consent_to_submit_error']:focus", visible: :all)
+    verify_page(page, title: I18n.t("activities.activities.employment_focused_review.header"))
+    verify_consent_error_in_view(checkbox_id: "activity_flow_consent_to_submit")
     expect(page).to have_no_selector(".usa-alert--error")
     expect(page).to have_content(
       I18n.t("activities.activities.employment_focused_review.employment_header", count: 1, employer_name: "Gainesville Wrecking")
@@ -96,6 +96,7 @@ RSpec.describe "e2e Employment-focused review page", :js, type: :feature do
     click_button I18n.t("activities.activities.employment_focused_review.submit", agency_name: "Test Agency")
 
     verify_page(page, title: I18n.t("activities.success.show.employment_focused.title", agency_name: "Test Agency"))
+    expect(page.evaluate_script("window.scrollY")).to eq(0)
     expect(page).to have_text(I18n.t("activities.success.show.subheading"))
     expect(page).to have_text(I18n.t("activities.success.show.employment_focused.whats_next.head_of_household.subheading"))
     expect(page).to have_link(I18n.t("activities.success.show.download_pdf"), href: activities_flow_submit_path(format: :pdf))

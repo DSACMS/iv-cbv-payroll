@@ -58,6 +58,7 @@ RSpec.describe "Unpaid-only community engagement", :js, type: :feature do
       # Documents: continue without uploading a document.
       verify_page(page, title: I18n.t("activities.document_uploads.new.title", name: "Example unpaid work"), skip_axe_rules: %w[heading-order])
       click_button I18n.t("activities.document_uploads.new.continue")
+      click_button I18n.t("activities.document_uploads.new.empty_confirmation.continue")
 
       # Review: save the unpaid work activity.
       verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Example unpaid work"))

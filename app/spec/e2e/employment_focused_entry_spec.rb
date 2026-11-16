@@ -58,6 +58,13 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
   end
 
   context "the add_jobs page" do
+    let(:applicant) do
+      create(:cbv_applicant, client_agency_id: "la_ldh", first_name: "Lisa", last_name: "Williams", date_of_birth: nil)
+    end
+    let(:invitation) do
+      create(:activity_flow_invitation, client_agency_id: "la_ldh", employment_focused: true, cbv_applicant: applicant)
+    end
+
     around do |ex|
       override_supported_providers([ :argyle ]) do
         e2e = E2e::MockingService.new(server_url: URI(page.server_url))
@@ -99,6 +106,7 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
         skip_axe_rules: %w[heading-order]
       )
       click_button I18n.t("activities.document_uploads.new.continue")
+      click_button I18n.t("activities.document_uploads.new.empty_confirmation.continue")
 
       verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: employer_name))
       expect(page).to have_text(reporting_for_text, count: 1)
@@ -151,6 +159,8 @@ RSpec.describe "Employment-focused entry navigation", :js, type: :feature do
       click_button I18n.t("activities.employment.add_your_work.add_jobs.submit")
       expect(page).to have_text(reporting_for_text, count: 1)
       verify_page(page, title: I18n.t("activities.activities.employment_focused_review.header"))
+      expect(flow.reload.identity).to be_nil
+      expect(applicant.reload.date_of_birth).to be_nil
       expect(page).to have_content(
         I18n.t("activities.activities.employment_focused_review.employment_header", count: 1, employer_name: "Acme Co")
       )

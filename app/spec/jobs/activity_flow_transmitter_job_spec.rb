@@ -15,6 +15,7 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
   let(:current_agency) do
     instance_double(
       ClientAgencyConfig::ClientAgency,
+      id: "sandbox",
       activity_flow_transmission_method: transmission_method,
       applicant_attribute_names: [],
       applicant_attributes: {}
@@ -56,6 +57,42 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
       expect {
         described_class.new.perform(activity_flow.id)
       }.not_to change { activity_flow.reload.transmitted_at }
+    end
+  end
+
+  context "when the activity flow transmission method is empty" do
+    let(:transmission_method) { "" }
+
+    it "leaves the flow untransmitted" do
+      expect { described_class.new.perform(activity_flow.id) }
+        .not_to change { activity_flow.reload.transmitted_at }
+    end
+  end
+
+  context "when activity flow transmission is explicitly disabled" do
+    let(:transmission_method) { "none" }
+
+    before do
+      allow(Rails.logger).to receive(:warn)
+    end
+
+    it "skips delivery and leaves the flow untransmitted" do
+      expect(transmitter).not_to receive(:deliver)
+
+      expect { described_class.new.perform(activity_flow.id) }
+        .not_to change { activity_flow.reload.transmitted_at }
+    end
+
+    it "does not schedule a retry" do
+      expect { described_class.perform_now(activity_flow.id) }
+        .not_to have_enqueued_job(described_class)
+    end
+
+    it "logs the skipped flow and agency ID" do
+      described_class.new.perform(activity_flow.id)
+
+      expect(Rails.logger).to have_received(:warn)
+        .with("Skipping transmission of ActivityFlow ID #{activity_flow.id}: No transmission method configured for sandbox")
     end
   end
 
@@ -145,6 +182,62 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
         .to have_enqueued_job(described_class)
         .with(activity_flow.id)
         .at(retry_test_time + 5.minutes)
+
+      expect(activity_flow.reload.transmitted_at).to be_nil
+    end
+  end
+
+  context "when the agency uses combined JSON and document transmissions" do
+    let(:transmission_method) do
+      Transmitters::ActivityJsonAndDocumentsTransmitter::TRANSMISSION_METHOD
+    end
+    let(:combined_transmitter) do
+      instance_double(Transmitters::ActivityJsonAndDocumentsTransmitter)
+    end
+
+    before do
+      allow(Transmitters::ActivityJsonAndDocumentsTransmitter).to receive(:new)
+        .with(activity_flow, current_agency)
+        .and_return(combined_transmitter)
+    end
+
+    it "marks the flow transmitted after combined delivery succeeds" do
+      allow(combined_transmitter).to receive(:deliver)
+
+      expect {
+        described_class.new.perform(activity_flow.id)
+      }.to change { activity_flow.reload.transmitted_at }.from(nil)
+    end
+
+    it "tracks ApplicantSharedActivityReport after successful delivery" do
+      event_logger = instance_double(GenericEventTracker, track: nil)
+      allow(combined_transmitter).to receive(:deliver)
+
+      job = described_class.new
+      allow(job).to receive(:event_logger).and_return(event_logger)
+
+      job.perform(activity_flow.id)
+
+      expect(event_logger).to have_received(:track).with(
+        TrackEvent::ApplicantSharedActivityReport,
+        nil,
+        hash_including(
+          client_agency_id: activity_flow.cbv_applicant.client_agency_id,
+          cbv_applicant_id: activity_flow.cbv_applicant_id,
+          activity_flow_id: activity_flow.id,
+          confirmation_code: "SANDBOX123",
+          transmission_method: transmission_method
+        )
+      )
+    end
+
+    it "leaves the flow untransmitted when combined delivery fails" do
+      allow(combined_transmitter).to receive(:deliver)
+        .and_raise(StandardError, "document delivery failed")
+
+      expect {
+        described_class.new.perform(activity_flow.id)
+      }.to raise_error(StandardError, "document delivery failed")
 
       expect(activity_flow.reload.transmitted_at).to be_nil
     end

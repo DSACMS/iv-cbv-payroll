@@ -35,9 +35,10 @@ class ActivityReportSerializer
     }
   }.freeze
 
-  def initialize(activity_flow, current_agency)
+  def initialize(activity_flow, current_agency, include_report_pdf_metadata: false)
     @activity_flow = activity_flow
     @current_agency = current_agency
+    @include_report_pdf_metadata = include_report_pdf_metadata
   end
 
   def as_json
@@ -80,13 +81,23 @@ class ActivityReportSerializer
   end
 
   def documents
-    all_documents.map do |document, document_id|
+    result = all_documents.map do |document, document_id|
       {
         "document_id" => document_id,
         "document_name" => document.file_name,
         "file_type" => File.extname(document.file_name).delete_prefix(".")
       }
     end
+
+    if @include_report_pdf_metadata
+      result << {
+        "document_id" => ActivityReportPdfService.document_id_for(@activity_flow),
+        "document_name" => ActivityReportPdfService.file_name_for(@activity_flow),
+        "file_type" => "pdf"
+      }
+    end
+
+    result
   end
 
   def all_documents
@@ -170,6 +181,7 @@ class ActivityReportSerializer
   def employment_payroll_entries(report)
     report.income_report_employments.flat_map do |employment|
       employment = employment.as_json
+      employment["employer_address"] = ce_employer_address(employment["employer_address"])
       paystubs = employment.fetch("paystubs").select do |paystub|
         pay_date = paystub["pay_date"]&.to_date
         pay_date && @activity_flow.reporting_window_range.cover?(pay_date)
@@ -256,7 +268,10 @@ class ActivityReportSerializer
 
   def education_term_entry(activity, month, term)
     base = if activity.partially_self_attested?
-             self_attested_education_entry(activity, month, term.credit_hours).merge("data_source" => "verified_enrollment_only")
+             self_attested_education_entry(activity, month, term.credit_hours).merge(
+               "data_source" => "verified_enrollment_only",
+               "supplemental_enrollment_status" => term.supplemental_enrollment_status
+             )
            else
              education_entry(activity, month).merge("data_source" => "verified")
            end
@@ -281,6 +296,19 @@ class ActivityReportSerializer
         "end_month" => activity.self_attested_term_end.strftime("%Y-%m")
       }
     )
+  end
+
+  def ce_employer_address(employer_address)
+    return if employer_address.blank?
+
+    fields = %w[line1 line2 city state postal_code]
+
+    if employer_address.is_a?(Hash)
+      employer_address = employer_address.with_indifferent_access
+      fields.index_with { |field| employer_address[field] }
+    else
+      fields.index_with { |field| field == "line1" ? employer_address : nil }
+    end
   end
 
   def json_value(value)

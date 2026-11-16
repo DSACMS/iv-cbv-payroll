@@ -18,7 +18,9 @@
   <% end %>
 <% end %>
 
-<div class="activity-hub-columns">
+<div class="activity-hub-columns"
+     data-controller="activity-hub"
+     data-action="click->activity-hub#trackClick">
   <div class="activity-hub-columns__progress">
     <h1>
       <%= t("activities.hub.title") %>
@@ -38,7 +40,10 @@
 
     <% if any_activities_added %>
       <div class="display-none tablet:display-block">
-        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+        <%= button_to t("activities.hub.review_and_submit"), next_path,
+          class: "btn btn-primary usa-button width-full margin-top-4",
+          method: :get,
+          form: { data: { hub_action: "review" } } %>
       </div>
     <% end %>
   </div>
@@ -61,7 +66,9 @@
           <% employment_card_data.each do |card_data| %>
             <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
               <% card.with_header do %>
-                <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+                <%= link_to t("activities.hub.edit"), card_data[:edit_path],
+                  class: "usa-link",
+                  data: { hub_action: "edit" } %>
               <% end %>
               <% card.with_body do %>
                 <% if card_data[:months].none? %>
@@ -93,7 +100,9 @@
           <% employment_card_data.each do |card_data| %>
             <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
               <% card.with_header do %>
-                <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+                <%= link_to t("activities.hub.edit"), card_data[:edit_path],
+                  class: "usa-link",
+                  data: { hub_action: "edit" } %>
               <% end %>
               <% card.with_body do %>
                 <% if card_data[:months].none? %>
@@ -130,7 +139,9 @@
         <% education_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
-              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path],
+                class: "usa-link",
+                data: { hub_action: "edit" } %>
             <% end %>
             <% card.with_body do %>
               <% card_data[:months].each do |month_data| %>
@@ -165,7 +176,9 @@
         <% community_service_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
-              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path],
+                class: "usa-link",
+                data: { hub_action: "edit" } %>
             <% end %>
             <% card.with_body do %>
               <% card_data[:months].each do |month_data| %>
@@ -195,7 +208,9 @@
         <% work_programs_card_data.each do |card_data| %>
           <%= render(Uswds::Card.new(heading_text: card_data[:name], heading_level: 3, class: "activity-hub-card")) do |card| %>
             <% card.with_header do %>
-              <%= link_to t("activities.hub.edit"), card_data[:edit_path], class: "usa-link" %>
+              <%= link_to t("activities.hub.edit"), card_data[:edit_path],
+                class: "usa-link",
+                data: { hub_action: "edit" } %>
             <% end %>
             <% card.with_body do %>
               <% card_data[:months].each do |month_data| %>
@@ -216,7 +231,10 @@
 
     <% if any_activities_added %>
       <div class="tablet:display-none">
-        <%= button_to t("activities.hub.review_and_submit"), next_path, class: "btn btn-primary usa-button width-full margin-top-4", method: :get %>
+        <%= button_to t("activities.hub.review_and_submit"), next_path,
+          class: "btn btn-primary usa-button width-full margin-top-4",
+          method: :get,
+          form: { data: { hub_action: "review" } } %>
       </div>
     <% end %>
   </div>

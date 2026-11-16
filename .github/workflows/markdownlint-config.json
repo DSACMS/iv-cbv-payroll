@@ -2,9 +2,6 @@
     "fallbackRetryDelay": "5000ms",
     "ignorePatterns" : [
         {
-            "pattern": "0005-example.md"
-        },
-        {
             "pattern": "localhost"
         },
         {
@@ -27,6 +24,12 @@
         },
         {
           "pattern": "^https://hhs.responsibledisclosure.com/$"
+        },
+        {
+          "pattern": "^https://github.com/DSACMS/iv-cbv-payroll/pull/([\\d]+)$"
+        },
+        {
+          "pattern": "^https://github.com/CMS-Enterprise/emmy-app/pull/([\\d]+)$"
         }
     ],
     "replacementPatterns": [

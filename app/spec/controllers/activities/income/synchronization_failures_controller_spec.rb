@@ -24,5 +24,13 @@ RSpec.describe Activities::Income::SynchronizationFailuresController do
       expect(response.body).to include(I18n.t("activities.employment.title_singular"))
       expect(response.body).to include("exit-confirmation-modal")
     end
+
+    it "enables the existing exit and retry navigation events" do
+      get :show
+
+      rendered = Capybara.string(response.body)
+      expect(rendered).to have_selector("[data-activity-flow-header-track-event-prefix-value='Employment']")
+      expect(rendered).to have_selector("a[data-action='click->employment-payroll-navigation#back']")
+    end
   end
 end

@@ -161,6 +161,7 @@ RSpec.describe "e2e Employment self-attestation review flow", :js, type: :featur
       skip_axe_rules: %w[heading-order]
     )
     click_button I18n.t("activities.document_uploads.new.continue")
+    click_button I18n.t("activities.document_uploads.new.empty_confirmation.continue")
 
     # Review page
     verify_page(page, title: I18n.t("activities.employment.review.title", employer_name: "Gainesville Wrecking"))

@@ -1,5 +1,6 @@
 class PagesController < ApplicationController
   before_action :redirect_to_client_agency_entries, only: %i[home]
+  after_action :track_activity_timeout_page_viewed, only: :home
   helper_method :activity_flow_timeout?
 
   def home
@@ -61,5 +62,11 @@ class PagesController < ApplicationController
       session[:cbv_origin] = params[:origin] || agency&.default_origin
       redirect_to cbv_flow_new_path(client_agency_id: client_agency_id)
     end
+  end
+
+  def track_activity_timeout_page_viewed
+    return unless activity_flow_timeout? && response.successful?
+
+    track_event(TrackEvent::ActivityTimeoutPageViewed)
   end
 end

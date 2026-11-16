@@ -49,6 +49,26 @@ module E2e
       run_axe_check(page, current_path, skip_axe_rules)
     end
 
+    def verify_consent_error_in_view(checkbox_id:)
+      # A later render callback must not scroll the focused checkbox away.
+      page.evaluate_async_script("const done = arguments[0]; requestAnimationFrame(() => requestAnimationFrame(done))")
+      expect(page).to have_selector("##{checkbox_id}[aria-invalid='true'][aria-describedby='#{checkbox_id}_error']:focus", visible: :all)
+
+      bounds = page.evaluate_script(<<~JS, find(".usa-checkbox"))
+        ((container) => {
+          const error = container.querySelector('.usa-error-message').getBoundingClientRect()
+          const label = container.querySelector('label').getBoundingClientRect()
+          return { errorTop: error.top, errorBottom: error.bottom,
+            checkboxTop: label.top, viewportHeight: window.innerHeight }
+        })(arguments[0])
+      JS
+      # Allow subpixel rounding. The legal text can extend below the viewport,
+      # but the checkbox and entire inline error must remain visible.
+      expect(bounds["errorTop"]).to be >= -1
+      expect(bounds["errorBottom"]).to be <= bounds["viewportHeight"] + 1
+      expect(bounds["checkboxTop"]).to be_between(0, bounds["viewportHeight"] - 24)
+    end
+
     # Check accessibility with Axe matchers.
     #
     # E2E_AXE_MODE controls coverage:

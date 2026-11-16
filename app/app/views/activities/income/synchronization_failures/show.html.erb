@@ -2,7 +2,8 @@
   <% content_for :activity_flow_header do %>
     <%= render ActivityFlowHeaderComponent.new(
       title: t("activities.employment.title_singular"),
-      exit_url: activities_flow_root_path
+      exit_url: activities_flow_root_path,
+      track_event_prefix: "Employment"
     ) %>
   <% end %>
 <% end %>
@@ -20,9 +21,9 @@
   <li><%= t(".option_3", agency_acronym: agency_translation("shared.agency_acronym")) %></li>
 </ol>
 
-<ul class="usa-button-group margin-top-5">
+<ul class="usa-button-group margin-top-5" data-controller="employment-payroll-navigation">
   <li class="usa-button-group__item margin-bottom-0">
-    <%= link_to t(".back_to_search"), @back_to_search_path, class: "usa-button usa-button--outline" %>
+    <%= link_to t(".back_to_search"), @back_to_search_path, class: "usa-button usa-button--outline", data: { action: "click->employment-payroll-navigation#back" } %>
   </li>
   <li class="usa-button-group__item margin-bottom-0">
     <%= link_to t(".add_employment_manually"), new_activities_flow_income_employment_path, class: "usa-button", data: { turbo_frame: "_top" } %>

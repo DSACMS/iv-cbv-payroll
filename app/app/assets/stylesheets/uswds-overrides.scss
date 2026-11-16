@@ -1,6 +1,17 @@
 @forward "uswds";
 @use "uswds" as *;
 
+// Keep the shared modal's desktop top and bottom padding balanced without
+// reserving an extra row for the close button. Mobile keeps the USWDS layout.
+.shared-modal .usa-modal__close {
+  @include at-media("desktop") {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 0;
+  }
+}
+
 .usa-alert__heading {
   line-height: 1.2 !important;
 }

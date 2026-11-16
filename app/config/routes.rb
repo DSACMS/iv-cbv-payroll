@@ -83,6 +83,7 @@ Rails.application.routes.draw do
         get "add_your_work/add_jobs", to: "employment/add_your_work#add_jobs", as: :add_jobs
         post "add_your_work/add_jobs", to: "employment/add_your_work#create_add_jobs"
         resource :employer_search, only: %i[show], controller: "income/employer_searches"
+        resource :payroll_consent, only: %i[show create], controller: "income/payroll_consents"
         resource :synchronizations, only: %i[show update], controller: "income/synchronizations"
         resource :synchronization_failures, only: %i[show], controller: "income/synchronization_failures"
         resource :payment_details, only: %i[show update], controller: "income/payment_details"

@@ -84,7 +84,13 @@ RSpec.describe Aggregators::FormatMethods::Argyle, type: :service do
         "postal_code" => "12345"
         }
       }
-      expect(described_class.format_employer_address(a_paystub_json)).to eq("123 Main St, Anytown, NY 12345")
+      expect(described_class.format_employer_address(a_paystub_json)).to eq(
+        "line1" => "123 Main St",
+        "line2" => nil,
+        "city" => "Anytown",
+        "state" => "NY",
+        "postal_code" => "12345"
+      )
     end
 
     it 'formats address properly with line2' do
@@ -97,7 +103,13 @@ RSpec.describe Aggregators::FormatMethods::Argyle, type: :service do
           "postal_code" => "12345"
         }
       }
-      expect(described_class.format_employer_address(a_paystub_json)).to eq("123 Main St, Unit 2, Anytown, NY 12345")
+      expect(described_class.format_employer_address(a_paystub_json)).to eq(
+        "line1" => "123 Main St",
+        "line2" => "Unit 2",
+        "city" => "Anytown",
+        "state" => "NY",
+        "postal_code" => "12345"
+      )
     end
   end
 
