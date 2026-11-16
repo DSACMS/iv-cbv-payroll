@@ -373,7 +373,7 @@ GEM
     orm_adapter (0.5.0)
     ostruct (0.6.3)
     parallel (2.3.0)
-    parallel_tests (5.8.0)
+    parallel_tests (5.9.0)
       parallel
     parser (3.3.13.0)
       ast (~> 2.4.1)
@@ -695,7 +695,7 @@ DEPENDENCIES
   net-sftp
   net-ssh
   newrelic_rpm
-  parallel_tests (~> 5.8)
+  parallel_tests (~> 5.9)
   pdf-reader (~> 2.16.0)
   pg (~> 1.7)
   pg-aws_rds_iam (~> 0.8.0)
