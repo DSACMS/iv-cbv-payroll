@@ -3,6 +3,14 @@ require "open3"
 require "fileutils"
 require "rexml/document"
 
+# Accepted native Chromium limitations; keep the complete veraPDF evidence.
+expected_rules = [
+  [ "ISO 14289-1:2014", "7.1", "3" ], # Untagged content
+  [ "ISO 14289-1:2014", "7.1", "8" ], # Missing XMP metadata
+  [ "ISO 14289-1:2014", "7.1", "5" ], # Unmapped structure roles
+  [ "ISO 14289-1:2014", "7.2", "20" ] # List-item structure
+].freeze
+
 files = ARGV.flat_map { |path| File.directory?(path) ? Dir.glob(File.join(path, "*.pdf")) : [ path ] }
 abort "Usage: bin/check-pdf-accessibility PDF_OR_DIRECTORY [...] (at least one PDF required)" if files.empty?
 report, error, status = Open3.capture3(ENV.fetch("VERAPDF", "verapdf"), "--flavour", "ua1", "--format", "xml", *files)
@@ -13,8 +21,20 @@ File.write(report_path, report)
 warn error unless error.empty?
 document = REXML::Document.new(report)
 results = REXML::XPath.match(document, "//validationReport")
-failures = results.reject { |result| result.attributes["isCompliant"] == "true" }
-unless status.success? && results.length == files.length && failures.empty?
-  abort "PDF/UA validation failed; see #{report_path}"
+failed_rules = results.flat_map { |result| REXML::XPath.match(result, "details/rule[@status='failed']") }
+unexpected_rules = failed_rules.reject do |rule|
+  expected_rules.include?(%w[specification clause testNumber].map { |key| rule.attributes[key] })
 end
-puts "#{results.length} PDFs passed veraPDF PDF/UA-1 validation. Manual assistive-technology review is still required."
+complete_results = results.all? do |result|
+  rules = REXML::XPath.match(result, "details/rule[@status='failed']")
+  result.attributes["jobEndStatus"] == "normal" &&
+    (result.attributes["isCompliant"] == "true" ||
+      (result.attributes["isCompliant"] == "false" && !rules.empty? &&
+        result.elements["details"]&.attributes&.[]("failedRules") == rules.length.to_s))
+end
+unless status.success? && results.length == files.length && complete_results && unexpected_rules.empty?
+  abort "PDF/UA validation failed with unexpected violations or incomplete results; see #{report_path}"
+end
+puts "#{results.length} PDFs checked: #{failed_rules.length} expected rule failures, no unexpected failures."
+puts "This does not establish PDF/UA compliance. Manual assistive-technology review is still required."
+puts "Full veraPDF evidence: #{report_path}"

@@ -61,8 +61,9 @@ VERAPDF=/tmp/emmy-verapdf/verapdf bundle exec ruby bin/check-pdf-accessibility \
 ```
 
 The validator writes `verapdf.xml` under `~/.local/share/emmy/pdf-accessibility`
-(or `PDF_ACCESSIBILITY_REPORT_DIR` when set) and fails on any noncompliant
-document, parse error, or missing report.
+(or `PDF_ACCESSIBILITY_REPORT_DIR` when set) and fails on unexpected rule violations, validator errors, or missing/incomplete
+results. The four accepted native Chromium rule failures are listed below; they
+remain visible in the XML evidence and do not establish PDF/UA compliance.
 The RSpec CI job validates all exported PDFs and uploads the synthetic PDFs and
 `verapdf.xml` in the `pdf-accessibility` artifact. Exporting reports is a test-only
 facility; do not export real beneficiary data into CI artifacts. Passing veraPDF's
@@ -96,8 +97,10 @@ been replaced by a CSS border, matching the report-template approach.
 The deliberately mocked PDF in the renderer unit test is
 excluded from export; actual generated PDFs are always validated.
 
-The veraPDF CI gate remains enabled and is expected to report the native
-Chromium failures above. A screen-reader review is still needed to
+The veraPDF CI gate accepts ISO 14289-1:2014 rules 7.1/3, 7.1/8, 7.1/5, and
+7.2/20 as expected native Chromium failures. All other failed rules still fail
+the job. These exceptions apply to all generated reports, regardless of failure
+counts; newly introduced issues within those four rules require manual review. A screen-reader review is still needed to
 establish the practical impact on reading order, tables, lists, and report content.
 In particular, the reported Preview/VoiceOver navigation-order issue is not fixed
 by adding metadata or marking decorations as artifacts.
