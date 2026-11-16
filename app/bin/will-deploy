@@ -21,7 +21,7 @@ VERSION_PATH = File.join(APP_ROOT, "version.txt")
 
 def linkify_jira(text)
   linked_text = text.gsub(/\(#(\d+)\)/) do
-    "[(##{$1})](https://github.com/DSACMS/iv-cbv-payroll/pull/#{$1})"
+    "[(##{$1})](https://github.com/CMS-Enterprise/emmy-app/pull/#{$1})"
   end
 
   linked_text.gsub(/^\[?(?:FFS-)?(\d{3,4})(-[0-9]+)?\]?:?\s+(.*)$/) do
@@ -215,10 +215,10 @@ commits.each do |commit_line|
 
   if (match = commit.match(/\(#(\d+)\)/))
     warn "Change: #{commit}"
-    warn "PR: https://github.com/DSACMS/iv-cbv-payroll/pull/#{match[1]}"
+    warn "PR: https://github.com/CMS-Enterprise/emmy-app/pull/#{match[1]}"
   else
     warn "Change: #{commit}"
-    warn "Commit: https://github.com/DSACMS/iv-cbv-payroll/commit/#{commit_hash}"
+    warn "Commit: https://github.com/CMS-Enterprise/emmy-app/commit/#{commit_hash}"
   end
 
   if commit.end_with?("[bot]")
@@ -263,7 +263,7 @@ release_version = next_version(current_version, version_bump)
 
 output = +""
 output << "🚀 Will deploy `#{release_version}` to production: 🚀 (cc #{tags})\n"
-output << "🧪 *Open the launcher →* https://verify-demo.navapbc.cloud/launcher\n\n"
+output << "🧪 *Open the launcher →* https://test.emmy.cms.gov/launcher\n\n"
 append_changes(output, "👥 *User facing changes to Emmy Income + Emmy CE*", both_changes)
 append_changes(
   output,
@@ -279,7 +279,7 @@ append_changes(
 )
 append_changes(output, "⚙️ *Other/Maintenance (Not user facing)*", other_changes)
 output << "\n"
-output << "See the full diff: https://github.com/DSACMS/iv-cbv-payroll/compare/v#{prod_version}..#{current_sha[0, 7]}\n"
+output << "See the full diff: https://github.com/CMS-Enterprise/emmy-app/compare/v#{prod_version}..#{current_sha[0, 7]}\n"
 
 update_release_files(
   release_version,

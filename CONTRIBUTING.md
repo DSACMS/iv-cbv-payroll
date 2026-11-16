@@ -510,7 +510,7 @@ This repo's `main` branch automatically deploys to our demo environment via [a G
 
 ## Production
 
-To deploy to production, go to the repo's "Actions" tab on Github, [click "Deploy App"](https://github.com/DSACMS/iv-cbv-payroll/actions/workflows/cd-app.yml), and "Run Workflow".
+To deploy to production, go to the repo's "Actions" tab on Github, [click "Deploy App"](https://github.com/CMS-Enterprise/emmy-app/actions/workflows/cd-app.yml), and "Run Workflow".
 
 # Credentials and other Secrets
 
