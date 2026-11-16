@@ -27,7 +27,7 @@
     "format:precommit": "prettier --write"
   },
   "devDependencies": {
-    "@scalar/api-reference": "^1.77.0",
+    "@scalar/api-reference": "^1.78.1",
     "happy-dom": ">=20.14.6",
     "jsdom": "^31.0.0",
     "prettier": "^3.10.1",
