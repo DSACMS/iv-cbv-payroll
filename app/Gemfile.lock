@@ -410,7 +410,7 @@ GEM
       pry (~> 0.11)
       yard (~> 0.9.21)
     public_suffix (7.0.5)
-    puma (8.0.2)
+    puma (8.0.3)
       nio4r (~> 2.0)
     raabro (1.5.0)
     racc (1.8.1)
