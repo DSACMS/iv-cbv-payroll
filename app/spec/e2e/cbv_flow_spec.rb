@@ -73,6 +73,7 @@ RSpec.describe "e2e CBV flow test", :js, type: :feature do
     # /cbv/submits
     verify_page(page, title: I18n.t("cbv.submits.show.page_header"), wait: 10)
     click_button I18n.t("cbv.submits.show.share_report_button", agency_acronym: I18n.t("shared.agency_acronym.sandbox"))
+    # The heading is unchanged, so wait for the validation response before checking accessibility.
     expect(page).to have_selector(".usa-checkbox > .usa-error-message", text: I18n.t("cbv.submits.update.consent_to_authorize_warning"))
     verify_page(page, title: I18n.t("cbv.submits.show.page_header"))
     verify_consent_error_in_view(checkbox_id: "cbv_flow_consent_to_authorized_use")
