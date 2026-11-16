@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_10_190733) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_13_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -124,6 +124,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_190733) do
     t.datetime "transmitted_at"
     t.datetime "updated_at", null: false
     t.datetime "redacted_at"
+    t.datetime "payroll_consented_at"
     t.index ["activity_flow_invitation_id"], name: "index_activity_flows_on_activity_flow_invitation_id"
     t.index ["cbv_applicant_id"], name: "index_activity_flows_on_cbv_applicant_id"
     t.index ["identity_id"], name: "index_activity_flows_on_identity_id"

@@ -1,7 +1,8 @@
 module AutoTitleTestHelper
   def assert_title_contains_h1(response_body)
     parsed_body = Nokogiri::HTML(response_body)
-    h1_elements = parsed_body.xpath("//body//h1")
+    # Closed dialogs are not displayed and their headings do not label the page.
+    h1_elements = parsed_body.xpath("//body//h1[not(ancestor::dialog[not(@open)])]")
     expect(h1_elements.length).to eq(1)
 
     title_elements = parsed_body.xpath("//head//title")

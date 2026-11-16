@@ -565,6 +565,13 @@ en:
           search_subheader: Select your employer from the list. Then, follow the screens to sign in. Use the login credentials you use to view your pay stubs online.
           select: Select
           select_employer: Select %{name}
+        payroll_consent:
+          close: Close and return to employer selection
+          continue: Continue to log in
+          description: We'll gather your payroll information to verify your employment.
+          disclosure: By continuing, you agree to allow us to access your payment information and share it with %{agency_name}.
+          error: We couldn't confirm your consent. Please try again.
+          heading: Log in to your payroll account
         show:
           add_employment_manually: Add employment manually
           alert:

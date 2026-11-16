@@ -12,7 +12,10 @@
 
 <%= render "application/aggregator_outage_alert" %>
 
-<div data-controller="cbv-employer-search" data-cbv-employer-search-cbv-flow-id-value="<%= @flow.id %>">
+<div data-controller="cbv-employer-search"
+     data-cbv-employer-search-cbv-flow-id-value="<%= @flow.id %>"
+     data-cbv-employer-search-consent-url-value="<%= activities_flow_income_payroll_consent_path %>">
+  <%= render "payroll_consent" %>
   <div data-cbv-employer-search-target="helpAlert" class="display-none margin-bottom-4">
     <%= render Uswds::Alert.new(type: :info, heading: t(".alert.heading")) do %>
       <%= link_to t(".add_employment_manually"), new_activities_flow_income_employment_path, class: "usa-link", data: { turbo_frame: "_top" } %>

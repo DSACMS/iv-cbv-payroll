@@ -298,6 +298,7 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     verify_page(page, title: I18n.t("activities.income.employer_searches.show.header"))
     @e2e.replay_modal_callbacks(page.driver.browser) do
       click_button "Paychex"
+      click_button I18n.t("activities.income.employer_searches.payroll_consent.continue")
     end
     @e2e.record_modal_callbacks(page.driver.browser) do
       argyle_container = find("div[id*=\"argyle-link-root\"]", visible: :all)
