@@ -84,7 +84,7 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
       end
 
       it_behaves_like "an education report", {
-        "rick" => "verified", "lynette" => "verified_enrollment_only", "dominique" => nil, "linda" => nil
+        "rick" => "verified", "lynette" => "verified_enrollment_only", "dominique" => "verified", "linda" => nil
       }.fetch(key)
     end
   end
