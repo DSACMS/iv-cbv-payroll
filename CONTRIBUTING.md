@@ -130,8 +130,9 @@ To acceptance test the JSON API, you can run the independent **reference server 
    LA_LDH_INCLUDE_REPORT_PDF=false
    LA_LDH_INCOME_REPORT_ACCOUNTCODE=foobar
 
-   # For activity supporting documents
-   SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=http
+   # For combined activity report JSON and document (including PDF) delivery
+   SANDBOX_ACTIVITY_FLOW_TRANSMISSION_METHOD=json_and_documents
+   SANDBOX_ACTIVITY_JSON_API_URL=http://localhost:4567/activities
    SANDBOX_ACTIVITY_DOCUMENTS_API_URL=http://localhost:4567/documents
 
    # For the community engagement (CE) activity report JSON

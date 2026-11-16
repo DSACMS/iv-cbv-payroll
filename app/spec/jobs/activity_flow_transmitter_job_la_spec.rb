@@ -119,11 +119,11 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
       end
     end
 
-    it "delivers the document using LA's configured URL and gateway headers" do
+    it "delivers the document and report PDF using LA's configured URL and gateway headers" do
       expect { described_class.perform_now(activity_flow.id) }
         .to change { activity_flow.reload.transmitted_at }.from(nil)
 
-      expect(request_stub).to have_been_requested.once
+      expect(request_stub).to have_been_requested.twice
     end
 
     context "when LA returns 403" do

@@ -123,6 +123,24 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
     it "omits extended_attributes throughout the report" do
       expect(transmitter.payload).not_to include('"extended_attributes"')
     end
+
+    it "does not list a report PDF for JSON-only delivery" do
+      document_ids = JSON.parse(transmitter.payload)
+        .fetch("ce_report").fetch("documents")
+        .map { |document| document.fetch("document_id") }
+
+      expect(document_ids).not_to include("REPORT-#{activity_flow.id}")
+    end
+
+    context "when report PDF metadata is requested" do
+      let(:transmitter) do
+        described_class.new(activity_flow, current_agency, include_report_pdf_metadata: true)
+      end
+
+      it "matches the CE Activity Report schema" do
+        expect(schema.validate(JSON.parse(transmitter.payload)).to_a).to be_empty
+      end
+    end
   end
 
   describe "employment OpenAPI examples" do

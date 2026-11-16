@@ -369,6 +369,8 @@ RSpec.describe ClientAgencyConfig do
 
   context "activity flow transmission endpoints" do
     def config_for(activity_method, activity_configuration)
+      activity_configuration = activity_configuration.strip_heredoc.indent(4)
+
       allow(File).to receive(:read).with(sample_config_path).and_return(<<~YAML)
         - id: foo
           agency_name: foo
@@ -498,6 +500,45 @@ RSpec.describe ClientAgencyConfig do
       config = described_class.new(sample_config_path)
 
       expect(config["foo"].activity_transmission_method_configuration).to be_nil
+    end
+
+    it "accepts both endpoints for combined activity transmission" do
+      config = config_for(
+        "json_and_documents",
+        <<~YAML
+          json_api_url: https://api.example.gov/v1/ce-activity-report
+          documents_api_url: https://api.example.gov/v1/documents
+        YAML
+      )
+
+      expect(config["foo"].activity_transmission_method_configuration).to eq(
+        "json_api_url" => "https://api.example.gov/v1/ce-activity-report",
+        "documents_api_url" => "https://api.example.gov/v1/documents"
+      )
+    end
+
+    it "requires a JSON endpoint for combined activity transmission" do
+      expect do
+        config_for(
+          "json_and_documents",
+          "   documents_api_url: https://api.example.gov/v1/documents"
+        )
+      end.to raise_error(
+        ArgumentError,
+        "Client Agency foo `json_api_url` must be an absolute HTTP(S) URL, got nil"
+      )
+    end
+
+    it "requires a documents endpoint for combined activity transmission" do
+      expect do
+        config_for(
+          "json_and_documents",
+          "    json_api_url: https://api.example.gov/v1/ce-activity-report"
+        )
+      end.to raise_error(
+        ArgumentError,
+        "Client Agency foo `documents_api_url` must be an absolute HTTP(S) URL, got nil"
+      )
     end
   end
 

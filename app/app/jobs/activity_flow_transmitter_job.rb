@@ -27,6 +27,7 @@ class ActivityFlowTransmitterJob < ApplicationJob
     with_flow_tags(activity_flow) do
       transmitter_class(transmission_method).new(activity_flow, current_agency).deliver
       activity_flow.touch(:transmitted_at)
+      track_transmitted_event(activity_flow, transmission_method)
     end
   end
 
@@ -40,6 +41,8 @@ class ActivityFlowTransmitterJob < ApplicationJob
       Transmitters::HttpDocumentTransmitter
     when Transmitters::ActivityJsonTransmitter::TRANSMISSION_METHOD
       Transmitters::ActivityJsonTransmitter
+    when Transmitters::ActivityJsonAndDocumentsTransmitter::TRANSMISSION_METHOD
+      Transmitters::ActivityJsonAndDocumentsTransmitter
     else
       raise "Unsupported activity flow transmission method: #{transmission_method}"
     end
@@ -47,5 +50,19 @@ class ActivityFlowTransmitterJob < ApplicationJob
 
   def agency_for(activity_flow)
     Rails.application.config.client_agencies[activity_flow.cbv_applicant.client_agency_id]
+  end
+
+  def track_transmitted_event(activity_flow, transmission_method)
+    event_logger.track(TrackEvent::ApplicantSharedActivityReport, nil, {
+      time: Time.now.to_i,
+      client_agency_id: activity_flow.cbv_applicant.client_agency_id,
+      cbv_applicant_id: activity_flow.cbv_applicant_id,
+      activity_flow_id: activity_flow.id,
+      confirmation_code: activity_flow.confirmation_code,
+      device_id: activity_flow.device_id,
+      invitation_id: activity_flow.activity_flow_invitation_id,
+      transmission_method: transmission_method,
+      locale: I18n.locale
+    })
   end
 end

@@ -42,20 +42,20 @@ module ActivityReportSchemas
           ],
           description: "Agency-specific fields used to associate the report with the correct case. The accepted fields depend on the agency and invitation version."
         },
-      ce_report: { "$ref" => "#/components/schemas/CeReport", description: "Community engagement report containing the review period, supporting document metadata, and activities." }
+      ce_report: { "$ref" => "#/components/schemas/CeReport", description: "Community engagement report containing the review period, document metadata, and activities." }
     }, additionalProperties: false).merge(description: InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Model")),
       CeReport: object(%w[report_variant review_period documents activities], {
         report_variant: { type: :string, enum: %w[employment community_engagement], description: "Reporting flow used to complete this report." },
         review_period: { "$ref" => "#/components/schemas/CeReviewPeriod", description: "Full date range covered by this CE compliance determination, expressed as inclusive calendar months." },
-        documents: { type: :array, items: { "$ref" => "#/components/schemas/CeDocument" }, description: "All supporting documents uploaded for the activities in this report. The files are transmitted separately by the document transmission integration; this array describes what to expect." },
+        documents: { type: :array, items: { "$ref" => "#/components/schemas/CeDocument" }, description: "Supporting uploads and, for combined JSON and document delivery, the report PDF. The files are transmitted separately." },
         activities: { "$ref" => "#/components/schemas/CeActivities", description: "Activities grouped first by type, then by reporting month in YYYY-MM format." }
-      }).merge(description: "The report's review period, supporting documents, and reported activities."),
+      }).merge(description: "The report's review period, documents, and reported activities."),
       CeReviewPeriod: object(%w[start_month end_month], {
         start_month: month.merge(description: "First calendar month of the review period, inclusive, in YYYY-MM format."),
         end_month: month.merge(description: "Last calendar month of the review period, inclusive, in YYYY-MM format.")
       }).merge(description: "Inclusive calendar months covered by the report."),
       CeDocument: object(%w[document_id document_name file_type], {
-        document_id: { type: :string, description: "Identifier based on the Emmy Active Storage attachment ID, referenced by an activity's document_ids." },
+        document_id: { type: :string, description: "DOC-<attachment id> for a supporting upload, or REPORT-<flow id> for the report PDF. Only supporting document IDs are referenced by an activity." },
         document_name: { type: :string, description: "Filename used when transmitting the document separately." },
         file_type: { type: :string, description: "File extension without the leading dot." }
       }).merge(description: "Metadata for a supporting document. The document itself is transmitted separately."),

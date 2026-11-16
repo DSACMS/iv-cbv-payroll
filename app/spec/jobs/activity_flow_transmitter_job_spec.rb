@@ -186,4 +186,60 @@ RSpec.describe ActivityFlowTransmitterJob, type: :job do
       expect(activity_flow.reload.transmitted_at).to be_nil
     end
   end
+
+  context "when the agency uses combined JSON and document transmissions" do
+    let(:transmission_method) do
+      Transmitters::ActivityJsonAndDocumentsTransmitter::TRANSMISSION_METHOD
+    end
+    let(:combined_transmitter) do
+      instance_double(Transmitters::ActivityJsonAndDocumentsTransmitter)
+    end
+
+    before do
+      allow(Transmitters::ActivityJsonAndDocumentsTransmitter).to receive(:new)
+        .with(activity_flow, current_agency)
+        .and_return(combined_transmitter)
+    end
+
+    it "marks the flow transmitted after combined delivery succeeds" do
+      allow(combined_transmitter).to receive(:deliver)
+
+      expect {
+        described_class.new.perform(activity_flow.id)
+      }.to change { activity_flow.reload.transmitted_at }.from(nil)
+    end
+
+    it "tracks ApplicantSharedActivityReport after successful delivery" do
+      event_logger = instance_double(GenericEventTracker, track: nil)
+      allow(combined_transmitter).to receive(:deliver)
+
+      job = described_class.new
+      allow(job).to receive(:event_logger).and_return(event_logger)
+
+      job.perform(activity_flow.id)
+
+      expect(event_logger).to have_received(:track).with(
+        TrackEvent::ApplicantSharedActivityReport,
+        nil,
+        hash_including(
+          client_agency_id: activity_flow.cbv_applicant.client_agency_id,
+          cbv_applicant_id: activity_flow.cbv_applicant_id,
+          activity_flow_id: activity_flow.id,
+          confirmation_code: "SANDBOX123",
+          transmission_method: transmission_method
+        )
+      )
+    end
+
+    it "leaves the flow untransmitted when combined delivery fails" do
+      allow(combined_transmitter).to receive(:deliver)
+        .and_raise(StandardError, "document delivery failed")
+
+      expect {
+        described_class.new.perform(activity_flow.id)
+      }.to raise_error(StandardError, "document delivery failed")
+
+      expect(activity_flow.reload.transmitted_at).to be_nil
+    end
+  end
 end

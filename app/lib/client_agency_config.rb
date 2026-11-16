@@ -31,8 +31,9 @@ class ClientAgencyConfig
   MAX_DOCUMENT_UPLOAD_SIZE_MB = 40
 
   ACTIVITY_TRANSMISSION_URL_KEYS = {
-    "http" => "documents_api_url",
-    "json" => "json_api_url"
+    "http" => [ "documents_api_url" ],
+    "json" => [ "json_api_url" ],
+    "json_and_documents" => [ "json_api_url", "documents_api_url" ]
   }.freeze
 
   def initialize(config_path)
@@ -241,13 +242,15 @@ class ClientAgencyConfig
 
       return unless has_method
 
-      config_key = ACTIVITY_TRANSMISSION_URL_KEYS[@activity_flow_transmission_method]
-      return if config_key.nil?
+      config_keys = ACTIVITY_TRANSMISSION_URL_KEYS[@activity_flow_transmission_method]
+      return if config_keys.nil?
 
-      url = @activity_transmission_method_configuration[config_key]
-      return if absolute_http_url?(url)
+      config_keys.each do |config_key|
+        url = @activity_transmission_method_configuration[config_key]
+        next if absolute_http_url?(url)
 
-      raise ArgumentError.new("Client Agency #{@id} `#{config_key}` must be an absolute HTTP(S) URL, got #{url.inspect}")
+        raise ArgumentError.new("Client Agency #{@id} `#{config_key}` must be an absolute HTTP(S) URL, got #{url.inspect}")
+      end
     end
 
     def absolute_http_url?(url)

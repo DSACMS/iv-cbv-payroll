@@ -1,13 +1,19 @@
 ## Overview
 
 This API lets your agency receive documents from the Emmy platform, including
-income report PDFs and supporting activity documents.
+income report PDFs, activity report PDFs, and supporting activity documents.
 It is an alternative to other file delivery methods, such as SFTP, S3, or shared
 email. Your agency hosts the receiving endpoint and ensures that documents are
 added to the correct case in its eligibility management system.
 
 For agencies that also receive income data through the Income Report JSON API,
-Emmy sends the PDF after the JSON delivery succeeds.
+Emmy sends the income report PDF after the JSON delivery succeeds.
+
+For Emmy Employment and Emmy CE activity reports, Emmy sends one document request
+for each uploaded file and one for the activity report PDF. The activity report
+PDF is sent even when the person uploaded no documents. Agencies using combined
+activity delivery receive these document requests only after the CE Activity
+Report JSON request succeeds.
 
 ## Receive a Document
 
@@ -29,8 +35,8 @@ format, such as `application/pdf`, `image/jpeg`, or `application/octet-stream`.
 
 ## Content-Type
 
-MIME type of the document. Any MIME type is supported; income report PDFs use
-`application/pdf`.
+MIME type of the document. Any MIME type is supported; income and activity
+report PDFs use `application/pdf`.
 
 ## Content-Length
 
@@ -38,14 +44,25 @@ Size of the document in bytes.
 
 ## Content-Disposition
 
-Sent with supporting activity documents as `attachment; filename="<filename>"`
-to identify the transmitted file's name. Not sent with income report PDFs.
+Sent with activity report PDFs and supporting activity documents as
+`attachment; filename="<filename>"` to identify the transmitted file's name.
+Activity report PDFs use `HR1_Report_<completion date>.pdf`, for example
+`HR1_Report_2026-08-04.pdf`. Not sent with income report PDFs.
 
 ## X-IVAAS-Document-Id
 
-Sent with supporting activity documents to identify the document, matching its
-`document_id` in the CE Activity Report. For example, `DOC-123`. Not sent with
-income report PDFs.
+Sent with activity report PDFs and supporting activity documents to identify
+the document. Supporting documents match their `document_id` in the CE Activity
+Report, for example `DOC-123`. Activity report PDFs use `REPORT-<flow id>`,
+for example `REPORT-456`. Not sent with income report PDFs.
+
+Retries resend every activity document with the same `X-IVAAS-Document-Id` and
+filename. Use `X-IVAAS-Confirmation-Code` and `X-IVAAS-Document-Id` together to
+deduplicate. The activity report PDF is regenerated for each attempt, so its
+bytes, timestamp, and signature can differ between retries.
+
+For combined activity delivery, the report PDF is also listed in
+`ce_report.documents` with the same document ID and filename.
 
 ## Response and error handling
 

@@ -70,6 +70,7 @@ module TrackEvent
   ApplicantSavedPaymentDetails = "ApplicantSavedPaymentDetails"
   ApplicantSearchedForEmployer = "ApplicantSearchedForEmployer"
   ApplicantSelectedEmployerOrPlatformItem = "ApplicantSelectedEmployerOrPlatformItem"
+  ApplicantSharedActivityReport = "ApplicantSharedActivityReport"
   ApplicantSharedIncomeSummary = "ApplicantSharedIncomeSummary"
   ApplicantSubmittedInformationPage = "ApplicantSubmittedInformationPage"
   ApplicantSucceededWithArgyleLogin = "ApplicantSucceededWithArgyleLogin"
