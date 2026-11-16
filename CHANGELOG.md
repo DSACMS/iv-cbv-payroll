@@ -7,6 +7,26 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.18.0
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Combined JSON + documents delivery for activity flows [(#79)](https://github.com/CMS-Enterprise/emmy-app/pull/79) - Chris [[FFS-5081]](https://jiraent.cms.gov/browse/FFS-5081)
+- Implement new employer consent modal [(#76)](https://github.com/CMS-Enterprise/emmy-app/pull/76) - krista-skylight [[FFS-4485]](https://jiraent.cms.gov/browse/FFS-4485)
+- Update more documentation references to CMS-Enterprise repo [(#67)](https://github.com/CMS-Enterprise/emmy-app/pull/67) - Tom Dooner [[FFS-4721]](https://jiraent.cms.gov/browse/FFS-4721)
+- Allow single-digit months in DateFormatter.parse_month_year - Update … [(#82)](https://github.com/CMS-Enterprise/emmy-app/pull/82) - iannorriswork [[FFS-5074]](https://jiraent.cms.gov/browse/FFS-5074)
+- Add confirmation modal on document upload pages to Emmy CE flow [(#72)](https://github.com/CMS-Enterprise/emmy-app/pull/72) - krista-skylight [[FFS-4809]](https://jiraent.cms.gov/browse/FFS-4809)
+- Update PDF for the NSC partially self-attested flow [(#73)](https://github.com/CMS-Enterprise/emmy-app/pull/73) - Jake Wheeler [[FFS-5025]](https://jiraent.cms.gov/browse/FFS-5025)
+
+### Other/Maintenance (Not user facing)
+- Bump @scalar/api-reference, go_modules, tornado, rspec-rails, prettier, parallel_tests, sass, vite, vcr, postcss-import, puma, selenium-webdriver, soupsieve, net-ssh
+- fix: patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore [(#97)](https://github.com/CMS-Enterprise/emmy-app/pull/97) - github-actions[bot]
+- Remove currentEnrollmentStatus filtering in NSC data fetching [(#83)](https://github.com/CMS-Enterprise/emmy-app/pull/83) - iannorriswork [[FFS-4967]](https://jiraent.cms.gov/browse/FFS-4967)
+- Split employer_address into separate line1, line2, city, state, and postal_code fields [(#69)](https://github.com/CMS-Enterprise/emmy-app/pull/69) - Chris [[FFS-5057]](https://jiraent.cms.gov/browse/FFS-5057)
+- Instrument Mixpanel events for the shared hub-and-spoke pages in Emmy CE [(#70)](https://github.com/CMS-Enterprise/emmy-app/pull/70) - Chris [[FFS-4641]](https://jiraent.cms.gov/browse/FFS-4641)
+
 ## 0.17.1
 
 ### Emmy Income only user facing changes

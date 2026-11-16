@@ -9,7 +9,7 @@ Report JSON first. If the JSON request fails, Emmy sends no documents on that
 attempt. After the JSON succeeds, Emmy sends each uploaded document and the
 activity report PDF. If a document request fails, the retry does not resend the
 JSON. It resends every activity document, including the report PDF, with the
-same `X-IVAAS-Document-Id` and filename. See [Documents](#tag/documents).
+same `X-IVAAS-Document-Id` and filename. See [Documents](pdf-transmission.md).
 
 If the final attempt fails, the job remains failed for investigation by the Emmy
 team in partnership with your agency's technical team.
