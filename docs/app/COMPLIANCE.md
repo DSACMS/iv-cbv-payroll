@@ -11,31 +11,18 @@ The rendered output is saved to docs/app/rendered/database-schema.pdf.
 
 ## Generated report PDFs (FFS-4894)
 
-Application PDFs use `PdfRenderer`: Grover/Puppeteer renders semantic HTML into
-Chromium's tagged PDF, then `PdfAccessibilityFinalizer` uses HexaPDF to add XMP
-metadata (including PDF/UA-1 identification), display the document title, and
-use structure order for tab navigation. It marks untagged vector drawings as
-artifacts: our report templates use these for decorative backgrounds, borders,
-and icons. Whitespace is also marked as an artifact. Chromium's page footer is
-marked as a pagination artifact only when the decoded untagged text matches
-the supplied footer template, including the page number and total page count.
-Other text, images, tagged content, and forms containing text or tagged content
-are not automatically hidden as artifacts. Untagged input is rejected.
-Python and pypdf are not used. The finalizer maps Chromium's `Em` and `Strong`
-roles to `Span` for PDF/UA-1 and groups list-item structure children under
-`LBody`, preserving their content order and parent links. The document outline,
-title, language, and visible content are retained; this does not repair
-Preview/VoiceOver navigation order. The metadata declaration does not establish
-full compliance.
+Application PDFs use `PdfRenderer` to return Grover/Puppeteer's native Chromium
+PDF output. Tagged PDFs and document outlines are enabled. Accessibility comes
+from the HTML source: retain semantic headings, table headers, document titles,
+language, and alternative text for meaningful images. Decorative text separators
+use CSS borders, and visual bold labels use styled spans to avoid Chromium's
+unmapped emphasis roles. Hiding meaningful HTML with `aria-hidden` also hides it
+from the PDF's accessibility tree.
 
-This finalizer is specific to the application's report templates, not a general
-PDF remediation tool. New meaningful graphics must be tagged at the HTML source
-and checked manually; untagged vector graphics would be treated as decorative.
-HexaPDF is distributed under AGPL-3.0 with a commercial licensing alternative;
-see its bundled license for distribution obligations.
-Changes to PDF templates must retain accessible
-DOM content and be checked against the final PDF; hiding meaningful HTML with
-`aria-hidden` also hides it from the PDF's accessibility tree.
+There is no PDF post-processing or PDF/UA conformance metadata declaration.
+Chromium's untagged decorations, pagination footers, and missing XMP metadata can
+still fail PDF/UA validation. Native tagging does not establish full compliance
+or resolve the reported Preview/VoiceOver navigation-order issue.
 
 The renderer embeds application CSS, fonts, and images. A PDF-specific Content
 Security Policy prevents remote resource requests. PDFs contain a title and
@@ -64,7 +51,6 @@ Install Java 21 and veraPDF, then generate and validate synthetic test reports:
 ruby bin/install-verapdf /tmp/emmy-verapdf
 PDF_ACCESSIBILITY_OUTPUT_DIR="$HOME/.local/share/emmy/pdf-accessibility/pdfs" bundle exec rspec \
   spec/services/pdf_renderer_spec.rb \
-  spec/services/pdf_accessibility_finalizer_spec.rb \
   spec/services/pdf_service_spec.rb \
   spec/services/transmitters/activity_s3_transmitter_spec.rb \
   spec/controllers/activities/submit_controller_spec.rb \
@@ -84,7 +70,7 @@ machine-checkable PDF/UA-1 rules does not establish complete Section 508 complia
 Manual reading-order, accuracy, contrast, and assistive-technology checks remain
 required. See [veraPDF validation scope](https://docs.verapdf.org/validation/).
 
-### Native Chromium baseline before HexaPDF
+### Known native Chromium limitations
 
 A local veraPDF 1.30.3 audit of 21 synthetic PDFs exported by the renderer,
 income report, activity report, activity transmitter, and activity submit specs
@@ -105,26 +91,13 @@ screenshots were identical, and a new veraPDF run confirmed that 7.2 / 20 no
 longer fails. Replacing the fixture's `strong` element with a bold-styled span
 also preserved identical screenshots and removed the 7.1 / 5 failure. Only
 untagged content (7.1 / 3) and missing XMP metadata (7.1 / 8) remained in that fixture
-before HexaPDF post-processing. The fixture's decorative text separator has since
+with native Chromium output. The fixture's decorative text separator has since
 been replaced by a CSS border, matching the report-template approach.
 The deliberately mocked PDF in the renderer unit test is
 excluded from export; actual generated PDFs are always validated.
 
-The veraPDF CI gate remains enabled. A screen-reader review is still needed to
+The veraPDF CI gate remains enabled and is expected to report the native
+Chromium failures above. A screen-reader review is still needed to
 establish the practical impact on reading order, tables, lists, and report content.
 In particular, the reported Preview/VoiceOver navigation-order issue is not fixed
 by adding metadata or marking decorations as artifacts.
-
-### HexaPDF validation results (2026-11-10)
-
-With HexaPDF 1.11.2, all 70 examples in the PDF suites listed above passed.
-All 44 exported synthetic reports passed veraPDF 1.30.3 PDF/UA-1 validation,
-including CE reports, Income reports with pagination footers, and transmitted
-reports. No machine-checkable failures remained in this sample set.
-
-A synthetic before/after PDFKit render containing text, a table, a highlighted
-cell, a border, and a decorative vector icon had zero differing pixels at
-1000-pixel width. Unit tests also verify unchanged extracted text and page count,
-list-parent relationships, footer matching, and preservation of unknown untagged
-text. These checks do not certify Section 508 compliance or replace manual
-screen-reader testing of the final PDFs.
