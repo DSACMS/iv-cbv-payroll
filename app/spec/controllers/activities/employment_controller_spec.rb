@@ -87,6 +87,12 @@ RSpec.describe Activities::EmploymentController, type: :controller do
       expect(response.body).to include(I18n.t("activities.employment_info.employer_name"))
     end
 
+    it "omits the unpaid work accordion for paid work" do
+      get :new, params: { compensation_type: "paid" }
+
+      expect(Capybara.string(response.body)).to have_no_selector("#unpaid-or-in-kind-work-button")
+    end
+
     it "associates the self-employed instructions with their fields" do
       get :new
 

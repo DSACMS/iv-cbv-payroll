@@ -11,6 +11,31 @@ RSpec.describe UswdsFormBuilder do
   let(:object) { TestModel.new }
   let(:builder) { described_class.new(:object, object, template, {}) }
 
+  describe "#required_fields_notice?" do
+    before { builder.text_field(:first_name, label: "Name", required: true) }
+
+    it "does not count a field twice when its label is rendered repeatedly" do
+      builder.text_field(:first_name, label: "Name", required: true)
+      expect(builder.required_fields_notice?).to be false
+    end
+
+    it "does not count radio options for the same field separately" do
+      builder.radio_button(:first_name, "first", label: "First")
+      builder.radio_button(:first_name, "second", label: "Second")
+      expect(builder.required_fields_notice?).to be false
+    end
+
+    it "counts a checkbox as an additional field" do
+      builder.check_box(:start_date, label: "Include date")
+      expect(builder.required_fields_notice?).to be true
+    end
+
+    it "does not count an input explicitly rendered as hidden" do
+      builder.text_field(:start_date, label: "Date", type: :hidden)
+      expect(builder.required_fields_notice?).to be false
+    end
+  end
+
   describe '#text_field' do
     let(:result) { builder.text_field(:first_name, label: 'Name') }
 

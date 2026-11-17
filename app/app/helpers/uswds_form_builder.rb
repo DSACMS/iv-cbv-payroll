@@ -10,6 +10,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
   def initialize(*args)
     super
+    @rendered_fields = {}
     self.options[:html] ||= {}
     self.options[:html][:class] ||= "usa-form usa-form--large"
   end
@@ -166,6 +167,10 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
   ########################################
   # Custom helpers
   ########################################
+
+  def required_fields_notice?
+    @rendered_fields.size >= 2 && @rendered_fields.values.any?
+  end
 
   def tax_id_field(attribute, options = {})
     options[:inputmode] = "numeric"
@@ -382,6 +387,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
   # Render the label, hint text, and error message for a form field
   def us_text_field_label(attribute, text = nil, options = {}, show_error_message: true)
+    record_field(attribute, required: options[:required]) unless options[:type].to_s == "hidden"
     hint_option = options.delete(:hint)
     classes = "usa-label"
     for_attr = options[:for] || field_id(attribute)
@@ -430,6 +436,7 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
   # Label for a checkbox or radio
   def us_toggle_label(type, attribute, text = nil, options = {})
+    record_field(attribute)
     hint_text = options.delete(:hint)
     label_text = text || object.class.human_attribute_name(attribute)
     options = options.merge({ class: "usa-#{type}__label" })
@@ -444,5 +451,11 @@ class UswdsFormBuilder < ActionView::Helpers::FormBuilder
 
   def hint_id(attribute)
     "#{attribute}_hint"
+  end
+
+  def record_field(attribute, required: false)
+    # Composite inputs and radio options still represent one field per name.
+    name = field_name(attribute)
+    @rendered_fields[name] = @rendered_fields[name] || !!required
   end
 end
