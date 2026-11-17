@@ -45,27 +45,34 @@ Docker/CI explicitly disable Chromium's OS sandbox because those container
 runtimes do not provide Chrome's required sandbox support; Chrome runs as the
 application's non-root user in the release image. Local runs retain the sandbox.
 
-Install Java 21 and veraPDF, then generate and validate synthetic test reports:
+Install Java 21 and ensure `java` is on your PATH, then run from `app/`:
 
 ```sh
-ruby bin/install-verapdf /tmp/emmy-verapdf
-PDF_ACCESSIBILITY_OUTPUT_DIR="$HOME/.local/share/emmy/pdf-accessibility/pdfs" bundle exec rspec \
-  spec/services/pdf_renderer_spec.rb \
-  spec/services/pdf_service_spec.rb \
-  spec/services/transmitters/activity_s3_transmitter_spec.rb \
-  spec/controllers/activities/submit_controller_spec.rb \
-  spec/controllers/cbv/submits_controller_spec.rb \
-  spec/mailers/caseworker_mailer_spec.rb
-VERAPDF=/tmp/emmy-verapdf/verapdf bundle exec ruby bin/check-pdf-accessibility \
-  "$HOME/.local/share/emmy/pdf-accessibility/pdfs"
+make pdf-accessibility-setup
+make pdf-accessibility-check
 ```
 
-The validator writes `verapdf.xml` under `~/.local/share/emmy/pdf-accessibility`
+Setup uses the checksum-verified, pinned veraPDF installer. These targets run
+locally and require the application's test dependencies and database. The check
+runs the PDF-generating specs and validates their synthetic reports. Each run
+exports PDFs into a fresh directory so old reports cannot mask missing output.
+By default, veraPDF is installed in `app/tmp/verapdf` and reports are saved under
+`app/tmp/pdf-accessibility`. Override `VERAPDF_HOME`, `VERAPDF`, or
+`PDF_ACCESSIBILITY_REPORT_DIR` as Make variables when needed. The existing
+`bin/install-verapdf` and `bin/check-pdf-accessibility` scripts can also be run
+directly.
+
+When invoked directly, the validator writes `verapdf.xml` and a readable
+`summary.md` under `~/.local/share/emmy/pdf-accessibility`
 (or `PDF_ACCESSIBILITY_REPORT_DIR` when set) and fails on unexpected rule violations, validator errors, or missing/incomplete
 results. The four accepted native Chromium rule failures are listed below; they
 remain visible in the XML evidence and do not establish PDF/UA compliance.
 The RSpec CI job validates all exported PDFs and uploads the synthetic PDFs and
-`verapdf.xml` in the `pdf-accessibility` artifact. Exporting reports is a test-only
+`verapdf.xml` and `summary.md` in the `pdf-accessibility` artifact. Open the
+Actions workflow run's summary page to see failed rules by PDF, their descriptions
+and failed-check counts, and whether each is an accepted Chromium limitation or
+an unexpected failure. The summary is published even when validation fails;
+missing output or validator errors are called out explicitly. Exporting reports is a test-only
 facility; do not export real beneficiary data into CI artifacts. Passing veraPDF's
 machine-checkable PDF/UA-1 rules does not establish complete Section 508 compliance.
 Manual reading-order, accuracy, contrast, and assistive-technology checks remain

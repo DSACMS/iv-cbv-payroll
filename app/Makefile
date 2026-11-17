@@ -173,6 +173,31 @@ db-console: ## Access the rails db console
 # Testing
 ##################################################
 
+# PDF accessibility tooling runs locally; Java and veraPDF are host tools.
+PDF_ACCESSIBILITY_REPORT_DIR ?= $(CURDIR)/tmp/pdf-accessibility
+VERAPDF_HOME ?= $(CURDIR)/tmp/verapdf
+VERAPDF ?= $(VERAPDF_HOME)/verapdf
+
+.PHONY: pdf-accessibility-setup pdf-accessibility-check
+
+pdf-accessibility-setup: ## Check Java and install pinned veraPDF locally
+	@java -version >/dev/null 2>&1 || { echo "Install Java 21 and ensure java is on PATH."; exit 1; }
+	ruby bin/install-verapdf "$(VERAPDF_HOME)"
+
+pdf-accessibility-check: ## Generate synthetic PDFs and validate accessibility locally
+	@test -x "$(VERAPDF)" || { echo "Run make pdf-accessibility-setup first, or set VERAPDF to an installed executable."; exit 1; }
+	@mkdir -p "$(PDF_ACCESSIBILITY_REPORT_DIR)"
+	@output_dir=$$(mktemp -d "$(PDF_ACCESSIBILITY_REPORT_DIR)/pdfs.XXXXXX") || exit 1; \
+	PDF_ACCESSIBILITY_OUTPUT_DIR="$$output_dir" bundle exec rspec \
+	  spec/services/pdf_renderer_spec.rb \
+	  spec/services/pdf_service_spec.rb \
+	  spec/services/transmitters/activity_s3_transmitter_spec.rb \
+	  spec/controllers/activities/submit_controller_spec.rb \
+	  spec/controllers/cbv/submits_controller_spec.rb \
+	  spec/mailers/caseworker_mailer_spec.rb && \
+	PDF_ACCESSIBILITY_REPORT_DIR="$(PDF_ACCESSIBILITY_REPORT_DIR)" VERAPDF="$(VERAPDF)" \
+	  bundle exec ruby bin/check-pdf-accessibility "$$output_dir"
+
 test: ## Run the test suite
 	$(RUBY_RUN_CMD) ./bin/rspec
 
