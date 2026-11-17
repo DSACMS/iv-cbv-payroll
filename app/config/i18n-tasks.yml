@@ -163,6 +163,7 @@ ignore_missing:
     - "shared.footer.partnership"
     - "shared.subheader_agency_text"
     - "households.*"
+    - "time.formats.default"
 
     # Currently awaiting translation:
     # - "example.strings.*"   # Tag with ticket number that created or modified the string
@@ -189,6 +190,14 @@ ignore_unused:
     - "activities.employment.hours_input.*" # scope passed as t_scope in shared _hours_input partial
     - "activities.employment.unpaid_or_in_kind.*" # dynamically used on employment screens
     - "activities.submit.pdf.unpaid_or_in_kind.*"
+    - "activities.education.add_your_term.edit.enrollment_status_options.*"
+    - "activities.education.types.*"
+    - "activities.submit.pdf.activity_types.*"
+    - "cbv.applicant_informations.*"
+    - "help.*"
+    - "components.enrollment_term_table_component.*"
+    - "launcher.advanced.duplicate_enrollments.*"
+    - "shared.languages.*"
     - "api.v2.*"
 
 csv:
