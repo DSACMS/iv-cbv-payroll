@@ -6,9 +6,9 @@ name: Check infra deploy status
 
 on:
   workflow_dispatch:
-  schedule:
-    # Run every day at 07:00 UTC (3am ET, 12am PT) after engineers are likely done with work
-    - cron: "0 7 * * *"
+  # schedule:
+  #   # Run every day at 07:00 UTC (3am ET, 12am PT) after engineers are likely done with work
+  #   - cron: "0 7 * * *"
 
 jobs:
   collect-configs:

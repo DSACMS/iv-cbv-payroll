@@ -2,13 +2,14 @@ name: Deploy CMS App
 run-name: Deploy ${{ github.ref_name }} to CMS dev and test
 
 on:
-  push:
-    branches:
-      - "main"
-    paths:
-      - "app/**"
-      - "bin/**"
-      - "infra/**"
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - "main"
+  #   paths:
+  #     - "app/**"
+  #     - "bin/**"
+  #     - "infra/**"
 
 permissions:
   contents: read

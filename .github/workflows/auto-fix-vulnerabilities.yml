@@ -5,8 +5,8 @@ on:
     workflows: [ "CI Vulnerability Scans" ]
     types: [ completed ]
   workflow_dispatch:
-  schedule:
-    - cron: '0 9 * * *' # Daily 9am UTC
+  # schedule:
+  #   - cron: '0 9 * * *' # Daily 9am UTC
 
 # Prevent parallel runs from creating conflicting Dockerfile edits or duplicate PRs.
 concurrency:

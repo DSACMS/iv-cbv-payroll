@@ -5,8 +5,8 @@ on:
     workflows: [ "Ruby and Javascript dependency scans" ]
     types: [ completed ]
   workflow_dispatch:
-  schedule:
-    - cron: '0 12 * * *' # Daily noon UTC, matches the dependency scan schedule
+  # schedule:
+  #   - cron: '0 12 * * *' # Daily noon UTC, matches the dependency scan schedule
 
 # Prevent parallel runs from creating conflicting lockfile edits or duplicate PRs.
 concurrency:

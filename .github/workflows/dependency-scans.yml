@@ -16,10 +16,10 @@ on:
       - '.github/workflows/dependency-scans.yml'
       - '.github/actions/ruby-dependency-audit/**'
       - '.github/actions/js-dependency-audit/**'
-  schedule:
-    # cron format: 'minute hour dayofmonth month dayofweek'
-    # this will run at noon UTC every day (7am EST / 8am EDT)
-    - cron: '0 12 * * *'
+  # schedule:
+  #   # cron format: 'minute hour dayofmonth month dayofweek'
+  #   # this will run at noon UTC every day (7am EST / 8am EDT)
+  #   - cron: '0 12 * * *'
 
 jobs:
   bundle-audit:

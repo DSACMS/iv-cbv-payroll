@@ -1,13 +1,13 @@
 name: CI Infra Checks
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - bin/**
-      - infra/**
-      - .github/workflows/**
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - bin/**
+  #     - infra/**
+  #     - .github/workflows/**
   pull_request:
     paths:
       - bin/**

@@ -2,8 +2,8 @@ name: Scan orphaned CMS Cloud review environments
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "30 7 * * *"
+  # schedule:
+  #   - cron: "30 7 * * *"
 
 permissions:
   contents: read
