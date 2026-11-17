@@ -53,11 +53,12 @@ module Aggregators::FormatMethods::Argyle
 
   def self.format_employer_address(a_paystub)
     return unless a_paystub.present? && a_paystub["employer_address"].present?
-
-    address = a_paystub["employer_address"]
-    %w[line1 line2 city state postal_code].to_h do |field|
-      [ field, address[field] ]
-    end
+    employer_address = a_paystub["employer_address"]
+    [
+      employer_address["line1"],
+      employer_address["line2"],
+      "#{employer_address['city']}, #{employer_address['state']} #{employer_address['postal_code']}"
+    ].compact.join(", ")
   end
 
   def self.seconds_to_hours(seconds)

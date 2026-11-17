@@ -334,7 +334,7 @@
           <% payroll_details = @report.payroll_details_for(entry.record) %>
           <% employer_name = employment[:employer_name].presence || not_provided %>
           <% details = [
-            [ t("activities.summary.employment.address"), @report.formatted_employer_address(employment[:employer_address]) ],
+            [ t("activities.summary.employment.address"), employment[:employer_address] ],
             [
               t("activities.summary.employment.contact_phone"),
               number_to_phone(employment[:employer_phone_number], area_code: true)
