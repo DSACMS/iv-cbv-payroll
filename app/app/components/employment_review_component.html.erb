@@ -4,7 +4,13 @@
   </h2>
   <%= link_to t("activities.hub.edit"),
     edit_activities_flow_income_employment_path(id: employment_activity, from_review: 1, from_edit: params[:from_edit].presence),
-      class: "usa-link" %>
+      class: "usa-link",
+      aria: {
+        label: t(
+          "activities.employment.review.edit_employer",
+          employer_name: employment_activity.employer_name
+        )
+      } %>
 </div>
 
 <%= render partial: summary_partial, locals: { employment_activity: employment_activity, params: params } %>

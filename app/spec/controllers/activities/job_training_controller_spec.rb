@@ -197,6 +197,20 @@ RSpec.describe Activities::JobTrainingController, type: :controller do
       )
     end
 
+    it "gives the organization edit link an accessible name when there is an organization name" do
+      job_training_activity.update!(organization_name: "Goodwill")
+
+      get :review, params: { id: job_training_activity.id }
+
+      rendered = Capybara.string(response.body)
+      edit_link = rendered.find(".activity-review-edit-header a.usa-link")
+
+      expect(edit_link.text).to eq(I18n.t("activities.hub.edit"))
+      expect(edit_link["aria-label"]).to eq(
+        I18n.t("activities.employment.review.edit_employer", employer_name: "Goodwill")
+      )
+    end
+
     context "with previously uploaded documents" do
       before do
         Rails.application.config.active_storage.service = :local
