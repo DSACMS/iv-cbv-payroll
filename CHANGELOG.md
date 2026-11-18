@@ -7,6 +7,22 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.18.1
+
+### User facing changes to Emmy Income + Emmy CE
+- Clarify that red asterisks indicate required form fields [(#96)](https://github.com/CMS-Enterprise/emmy-app/pull/96) - Jake Wheeler [[FFS-5102]](https://jiraent.cms.gov/browse/FFS-5102)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Add unique aria-labels to CE flow Add/Edit links for better accessibility [(#78)](https://github.com/CMS-Enterprise/emmy-app/pull/78) - Chris [[FFS-4888]](https://jiraent.cms.gov/browse/FFS-4888)
+- Revert FFS-5057 (splitting of employer_address into line1/line2/city/state/postal_code) [(#104)](https://github.com/CMS-Enterprise/emmy-app/pull/104) - Chris [[FFS-5116]](https://jiraent.cms.gov/browse/FFS-5116)
+- Update spanish employer search copy [(#101)](https://github.com/CMS-Enterprise/emmy-app/pull/101) - iannorriswork [[FFS-5049]](https://jiraent.cms.gov/browse/FFS-5049)
+
+### Other/Maintenance (Not user facing)
+- Bump i18n-tasks
+
 ## 0.18.0
 
 ### Emmy Income only user facing changes
