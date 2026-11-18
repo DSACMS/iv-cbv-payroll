@@ -37,7 +37,7 @@ The CD workflow uses these reusable workflows:
 - [`build-and-publish`](./build-and-publish.yml): builds a container image for an application and publishes it to an image repository
 - [`deploy-cms`](./deploy-cms.yml): builds and publishes a SHA-tagged CMS image, then runs migrations and deploys that same image tag to CMS (build → migrate → deploy)
 - [`database-migrations-cms`](./database-migrations-cms.yml): runs CMS database migrations by rendering the `emmy-<env>-migrate` task definition with the new image and running it as a one-off task, using `aws-actions/amazon-ecs-render-task-definition` and `aws-actions/amazon-ecs-deploy-task-definition` (run-task mode)
-- [`deploy-ecs`](./deploy-ecs.yml): updates the CMS ECS `app` and `solid-queue` services to an existing image tag, using `aws-actions/amazon-ecs-render-task-definition` and `aws-actions/amazon-ecs-deploy-task-definition`
+- [`deploy-ecs`](./deploy-ecs.yml): updates the CMS ECS `app` and `solid-queue` services in parallel to an existing image tag, using `aws-actions/amazon-ecs-render-task-definition` and `aws-actions/amazon-ecs-deploy-task-definition`. When called by `deploy-cms`, both deployments start after migrations succeed. Each job waits for its service to stabilize, and a failure in one job does not cancel the other
 - [`build-and-publish-to-cms`](./build-and-publish-to-cms.yml): builds and publishes a SHA-tagged image to the CMS image repository
 - [`cms-pr-environment-checks`](./cms-pr-environment-checks.yml): provisions or updates a CMS Cloud dev review app, reusing the dev task configuration with a PR image and isolated database schema
 - [`cms-pr-environment-destroy`](./cms-pr-environment-destroy.yml): removes a CMS Cloud review app and its database schema
