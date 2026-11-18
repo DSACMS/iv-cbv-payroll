@@ -143,7 +143,7 @@
         <% else %>
           <% activity = entry.record %>
           <% employer_name = activity.employer_name %>
-          <% unpaid = activity.unpaid_or_in_kind? %>
+          <% unpaid = activity.uses_unpaid_work_flow? %>
           <% columns = [ t("activities.summary.employment.month") ] %>
           <% columns << t("activities.summary.employment.gross_income") unless unpaid %>
           <% columns << t("activities.summary.employment.community_engagement_hours") %>
@@ -352,7 +352,7 @@
         <% else %>
           <% activity = entry.record %>
           <% employer_name = activity.employer_name %>
-          <% unpaid = activity.unpaid_or_in_kind? %>
+          <% unpaid = activity.uses_unpaid_work_flow? %>
           <% details = [
             [ t("activities.summary.employment.address"), activity.formatted_address ]
           ] %>

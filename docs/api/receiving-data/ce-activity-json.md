@@ -20,9 +20,17 @@ This revision covers `community_service`, `work_program`, `employment`, and `edu
 `agency_partner_metadata` identifies the applicant in the agency's records.
 When no individual_id was supplied, the webhook includes the agency's V1 metadata field set. When an individual_id was supplied during V2 invitation creation, it includes the agency's V2 metadata field set, including that exact ID. Unavailable values are sent as null; individual_id is omitted when it was not supplied. Dates of birth are serialized as YYYY-MM-DD, rather than echoed from the invitation request.
 
-For employment, `employment_type` is populated only for Argyle-sourced records
-as `w2` or `gig`; self-attested and Pinwheel entries retain the field as `null`. To identify
-self-employment across both sources, use
+For self-attested employment in Emmy Employment reports
+(`ce_report.report_variant == "employment"`), `employment_type` is `paid` for
+manually entered paid work, including manual fallback from an automatic
+connection, or `in_kind` for work added through "Enter in-kind work".
+Self-attested employment in Community Engagement reports
+(`ce_report.report_variant == "community_engagement"`) retains `employment_type`
+as `null`.
+
+For validated employment in either report variant, Argyle-sourced records use
+`w2` or `gig`; Pinwheel entries retain `employment_type` as `null`. To identify
+self-employment across self-attested and validated records, use
 `employment_type == "gig" OR is_self_employed == true`.
 
 For combined activity JSON and document delivery, `ce_report.documents` also

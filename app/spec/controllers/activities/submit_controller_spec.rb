@@ -109,6 +109,24 @@ RSpec.describe Activities::SubmitController, type: :controller do
       end
     end
 
+    context "with Employment-focused in-kind work" do
+      let(:employment) do
+        create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
+      end
+
+      before do
+        activity_flow.update!(employment_focused: true)
+        create(:employment_activity_month, employment_activity: employment,
+          month: activity_flow.reporting_months.first, hours: 10, gross_income: 125)
+      end
+
+      it "keeps income in the existing PDF layout" do
+        get :show, format: :pdf
+
+        expect(extract_pdf_text(response)).to include(I18n.t("activities.summary.employment.gross_income"), "$125.00")
+      end
+    end
+
     it "omits gross income for unpaid or in-kind employment in the PDF" do
       employment = create(
         :employment_activity,

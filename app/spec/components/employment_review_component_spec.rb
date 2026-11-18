@@ -26,4 +26,18 @@ RSpec.describe EmploymentReviewComponent, type: :component do
       expect(page).to have_text(I18n.t("activities.employment.review.unpaid_or_in_kind.work_information"))
     end
   end
+
+  context "when Employment-focused work is in-kind" do
+    let(:flow) { create(:activity_flow, employment_focused: true) }
+    let(:employment_activity) do
+      create(:employment_activity, activity_flow: flow, compensation_type: :unpaid_or_in_kind).tap do |activity|
+        create(:employment_activity_month, employment_activity: activity, month: flow.reporting_months.first, gross_income: 125)
+      end
+    end
+
+    it "keeps the employer and income summary" do
+      expect(page).to have_text(I18n.t("activities.employment.review.employer_info"))
+      expect(page).to have_text(I18n.t("activities.employment.review.gross_income"))
+    end
+  end
 end

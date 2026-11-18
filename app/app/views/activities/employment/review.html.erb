@@ -1,4 +1,4 @@
-<% other = @employment_activity.unpaid_or_in_kind? %>
+<% other = @employment_activity.uses_unpaid_work_flow? %>
 <% unpaid = @flow.unpaid_work_only? %>
 <%# i18n-tasks-use t('activities.employment.review.description') %>
 <%# i18n-tasks-use t('activities.employment.review.unpaid_or_in_kind.description') %>

@@ -34,6 +34,14 @@ RSpec.describe Activities::EmploymentController, type: :controller do
         end
       end
 
+      it "omits unpaid-work help when entering in-kind employment" do
+        get :new, params: { compensation_type: "unpaid_or_in_kind" }
+
+        rendered = Capybara.string(response.body)
+        expect(rendered).to have_text(I18n.t("activities.employment_info.title"))
+        expect(rendered).to have_no_button(I18n.t("activities.employment_info.unpaid_or_in_kind.accordion.title"))
+      end
+
       it "bolds the unpaid_or_in_kind field labels and preserves the employer name requirement" do
         get :new, params: { compensation_type: "unpaid_or_in_kind" }
 

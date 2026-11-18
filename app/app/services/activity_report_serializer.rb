@@ -209,7 +209,7 @@ class ActivityReportSerializer
       "document_ids" => document_ids_for(activity),
       "additional_comments" => json_value(activity.additional_comments),
       "employer_address" => activity.formatted_address.presence,
-      "employment_type" => nil,
+      "employment_type" => @activity_flow.employment_focused? ? (activity.paid? ? "paid" : "in_kind") : nil,
       "gross_income" => activity_month.gross_income.to_f
     )
   end
