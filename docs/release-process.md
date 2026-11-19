@@ -1,5 +1,7 @@
 # Manual GitHub Release Process
 
+
+
 Releases are published manually in GitHub using the output of the
 [`app/bin/will-deploy`](../app/bin/will-deploy) script as the release body.
 
