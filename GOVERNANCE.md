@@ -37,9 +37,7 @@ See [COMMUNITY.md](./COMMUNITY.md)
 
 ### Release Lifecycle
 
-Nava describes the existing process here.
-
-(We describe an ideal future state we would like to get to in the future, and point to a specific section [CONTRIBUTING.md](./CONTRIBUTING.md) or other doc here, e.g. [Release Format and Platform](https://github.com/DSACMS/iv-cbv-payroll/blob/main/CONTRIBUTING.md#writing-pull-requests))
+The Emmy project is on a weekly release cycle. See [CONTRIBUTING.MD](./CONTRIBUTING.md) and [release-process.md](./docs/release-process.md) for further detail about the process.
 
 ### Release Format & Platform
 

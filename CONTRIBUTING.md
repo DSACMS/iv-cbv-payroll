@@ -24,8 +24,8 @@ Most developers on the team code using macOS, so we recommend that platform if p
 1. Install homebrew dependencies: `brew bundle`
    * rbenv
    * nodenv
-   * [redis]()
-   * [jq](https://stedolan.github.io/jq/)
+   * [redis](https://github.com/redis/redis)
+   * [jq](https://jqlang.org/)
    * [PostgreSQL](https://www.postgresql.org/)
    * [Dockerize](https://github.com/jwilder/dockerize)
    * [ADR Tools](https://github.com/npryce/adr-tools)
