@@ -28,7 +28,7 @@ RSpec.configure do |config|
         { name: "Overview", description: InvitationDocumentation.read("receiving-data/README", section: "Overview") },
         { name: "Report delivery flow", description: InvitationDocumentation.read("receiving-data/report-delivery-flow") },
         { name: "Webhook signatures", description: InvitationDocumentation.read("receiving-data/webhook-signatures") },
-        { name: "Retry logic", description: InvitationDocumentation.read("receiving-data/retry-logic") },
+        { name: "Retry logic", description: InvitationDocumentation.read("receiving-data/retry-logic").sub("(pdf-transmission.md)", "(#tag/documents)") },
         { name: ActivityReportWebhook::TAG, description: InvitationDocumentation.read("receiving-data/ce-activity-json", section: "Overview") },
         { name: "Income Reports (JSON)", description: InvitationDocumentation.read("receiving-data/income-reports") },
         { name: DocumentWebhook::TAG, description: InvitationDocumentation.read("receiving-data/pdf-transmission", section: "Overview") }

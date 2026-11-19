@@ -35,16 +35,22 @@ class EmploymentActivity < Activity
   has_many :employment_activity_months, dependent: :destroy
   has_activity_months :employment_activity_months
 
+  # Employment reports collect income and hours for both paid and in-kind work.
+  # Compensation type still records the applicant's choice for JSON reporting.
+  def uses_unpaid_work_flow?
+    unpaid_or_in_kind? && !activity_flow.employment_focused?
+  end
+
   def self.activity_type
     :employment
   end
 
   validates :employer_name,
     presence: { message: I18n.t("activities.employment_info.employer_name_error") },
-    if: :paid?
+    unless: :uses_unpaid_work_flow?
   validates :employer_name,
     presence: { message: I18n.t("activities.employment_info.unpaid_or_in_kind.employer_name_error") },
-    if: :unpaid_or_in_kind?
+    if: :uses_unpaid_work_flow?
 
   before_save :clear_contact_fields_if_self_employed
 
@@ -101,7 +107,7 @@ class EmploymentActivity < Activity
     return unless activity_month
 
     hours = I18n.t("shared.hours", count: ApplicationHelper.format_decimal_amount(activity_month.hours))
-    return hours if unpaid_or_in_kind?
+    return hours if uses_unpaid_work_flow?
 
     I18n.t(
       "activities.employment.document_upload_month_detail",
@@ -111,13 +117,13 @@ class EmploymentActivity < Activity
   end
 
   def document_upload_suggestion_text
-    return "activities.employment.unpaid_or_in_kind.document_upload_suggestion_text_html" if unpaid_or_in_kind?
+    return "activities.employment.unpaid_or_in_kind.document_upload_suggestion_text_html" if uses_unpaid_work_flow?
 
     "activities.employment.document_upload_suggestion_text_html"
   end
 
   def document_upload_suggestion_title_i18n_key
-    return "activities.employment.unpaid_or_in_kind.document_upload_suggestion_title" if unpaid_or_in_kind?
+    return "activities.employment.unpaid_or_in_kind.document_upload_suggestion_title" if uses_unpaid_work_flow?
 
     super
   end

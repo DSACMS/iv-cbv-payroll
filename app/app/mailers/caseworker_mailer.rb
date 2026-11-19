@@ -1,6 +1,6 @@
 class CaseworkerMailer < ApplicationMailer
   helper "cbv/aggregator_data"
-  helper :view, :application
+  helper :view, :application, :pdf
   helper_method :current_agency
   before_action :set_params
 
@@ -31,9 +31,9 @@ class CaseworkerMailer < ApplicationMailer
   def generate_pdf
     I18n.with_locale(:en) do
       # caseworkers should receive the report in English
-      WickedPdf.new.pdf_from_string(
+      PdfRenderer.render(
         render_to_string(template: "cbv/submits/show", layout: "pdf", formats: [ :pdf ], locals: { is_caseworker: true, aggregator_report: @aggregator_report }),
-        footer: { right: "Income Verification Report | Page [page] of [topage]", font_size: 10 }
+        footer: view_context.pdf_page_footer
       )
     end
   end

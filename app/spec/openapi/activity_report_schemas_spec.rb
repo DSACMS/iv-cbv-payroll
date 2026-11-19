@@ -46,10 +46,32 @@ RSpec.describe ActivityReportSchemas do
     expect(schema.validate(report).to_a).to be_empty
   end
 
-  it "requires null employment types for self-attested work" do
+  it "rejects validated employment types for self-attested work" do
     self_attested["employment_type"] = "w2"
 
     expect(schema.valid?(report)).to be(false)
+  end
+
+  context "with an Emmy Employment report" do
+    before { report["ce_report"]["report_variant"] = "employment" }
+
+    it "accepts self-attested paid work" do
+      self_attested["employment_type"] = "paid"
+
+      expect(schema.validate(report).to_a).to be_empty
+    end
+
+    it "accepts self-attested in-kind work" do
+      self_attested["employment_type"] = "in_kind"
+
+      expect(schema.validate(report).to_a).to be_empty
+    end
+
+    it "rejects unsupported self-attested employment types" do
+      self_attested["employment_type"] = "unpaid"
+
+      expect(schema.valid?(report)).to be(false)
+    end
   end
 
   it "accepts overlapping agency metadata shapes" do

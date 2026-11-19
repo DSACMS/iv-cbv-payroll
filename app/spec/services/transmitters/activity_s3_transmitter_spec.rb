@@ -28,13 +28,23 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
   let(:destination_s3_service) { instance_double(S3Service) }
   let(:pdf_content) { "%PDF-1.4 report" }
   let(:transmitter) { described_class.new(activity_flow, current_agency) }
+  let(:pdf_report) do
+    ActivityReportPdfService::Report.new(
+      content: pdf_content,
+      file_name: report_file_name,
+      document_id: "REPORT-#{activity_flow.id}"
+    )
+  end
 
   before do
     allow(ProcessedDownloadService).to receive(:new).and_return(processed_download_service)
     allow(S3Service).to receive(:new)
       .with({ "bucket" => destination_bucket_name })
       .and_return(destination_s3_service)
-    allow(transmitter).to receive(:pdf_content).and_return(pdf_content)
+    allow(ActivityReportPdfService).to receive(:new)
+      .with(activity_flow)
+      .and_return(instance_double(ActivityReportPdfService, generate: pdf_report))
+    transmitter
   end
 
   it "uses the processed download service and agency destination bucket by default" do
@@ -44,7 +54,10 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
   end
 
   it "renders the existing CE report as a PDF" do
-    allow(transmitter).to receive(:pdf_content).and_call_original
+    allow(ActivityReportPdfService).to receive(:new)
+      .with(activity_flow)
+      .and_call_original
+
     expect(destination_s3_service).to receive(:upload_directory) do |directory, _prefix|
       expect(File.binread(File.join(directory, report_file_name))).to start_with("%PDF")
     end
@@ -58,7 +71,10 @@ RSpec.describe Transmitters::ActivityS3Transmitter do
     allow(processed_download_service).to receive(:download_file) do |_key, file_path|
       File.binwrite(file_path, "cleared document")
     end
-    allow(transmitter).to receive(:pdf_content).and_call_original
+    allow(ActivityReportPdfService).to receive(:new)
+      .with(activity_flow)
+      .and_call_original
+
     expect(destination_s3_service).to receive(:upload_directory) do |directory, _prefix|
       content = File.binread(File.join(directory, report_file_name))
       pdf_text = PDF::Reader.new(StringIO.new(content)).pages.map(&:text).join(" ").gsub(/\s+/, " ")

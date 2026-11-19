@@ -22,7 +22,8 @@ class HealthCheckController < ActionController::Base
         render inline: "Missing .pdf extension in the URL!"
       end
       format.pdf do
-        render pdf: "test_rendering", inline: "<strong>The PDF <em>works</em>!</strong>"
+        html = render_to_string(template: "health_check/test_rendering", formats: [ :pdf ], layout: "pdf")
+        send_data PdfRenderer.render(html), filename: "test_rendering.pdf", type: "application/pdf", disposition: "inline"
       end
     end
   end

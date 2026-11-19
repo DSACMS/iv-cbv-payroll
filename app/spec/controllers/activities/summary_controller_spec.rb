@@ -794,6 +794,17 @@ RSpec.describe Activities::SummaryController, type: :controller do
         expect(response.body).not_to include(new_activities_flow_education_document_upload_path(education_id: education))
       end
     end
+
+    it "marks the back link to track ActivityBackClicked" do
+      get :show
+      rendered = Capybara.string(response.body)
+
+      expect(rendered).to have_css(
+        ".back-nav[data-controller='activity-flow-header']" \
+        "[data-activity-flow-header-track-event-prefix-value='Activity'] " \
+        "a[data-activity-flow-header-target='backButton']"
+      )
+    end
   end
 
   describe "PATCH #update" do
@@ -1012,13 +1023,28 @@ RSpec.describe Activities::SummaryController, type: :controller do
             create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current)
           end
 
-          it "accepts the report from a separate in-progress flow" do
+          it "rejects the report from a separate in-progress flow" do
             expect {
               patch :update, params: { activity_flow: { consent_to_submit: "1" } }
-            }.to have_enqueued_job(ActivityFlowTransmitterJob).with(activity_flow.id)
+            }.not_to have_enqueued_job(ActivityFlowTransmitterJob)
 
-            expect(activity_flow.reload.completed_at).to be_present
-            expect(response).to redirect_to(activities_flow_success_path)
+            expect(activity_flow.reload).to have_attributes(completed_at: nil, confirmation_code: nil)
+            expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: "sandbox"))
+          end
+
+          context "when reuse is allowed" do
+            before do
+              allow(Rails.application.config.client_agencies["sandbox"])
+                .to receive(:allow_activity_invitation_reuse).and_return(true)
+            end
+
+            it "still accepts another report" do
+              expect {
+                patch :update, params: { activity_flow: { consent_to_submit: "1" } }
+              }.to have_enqueued_job(ActivityFlowTransmitterJob).with(activity_flow.id)
+
+              expect(response).to redirect_to(activities_flow_success_path)
+            end
           end
         end
 

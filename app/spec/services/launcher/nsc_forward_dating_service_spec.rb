@@ -114,12 +114,12 @@ RSpec.describe Launcher::NscForwardDatingService do
         nsc_stub_request_education_search_response("dominique_ricardo")
       end
 
-      it "preserves the no-enrollments result for CN enrollments" do
+      it "forwards-dates terms for CN enrollments" do
         expect { service.fetch }
           .to change { education_activity.reload.status }
-          .from("unknown").to("no_enrollments")
+          .from("unknown").to("succeeded")
 
-        expect(education_activity.nsc_enrollment_terms).to be_empty
+        expect(education_activity.nsc_enrollment_terms).not_to be_empty
       end
     end
   end

@@ -223,6 +223,17 @@ html {
   @include u-bg("yellow-5v");
 }
 
+// Keep PDF field labels visually unchanged when rendered as semantic row headers.
+.pdf-report .income-report-information tbody th {
+  width: auto;
+  line-height: inherit;
+  background-clip: border-box;
+}
+
+.pdf-report .income-report-information tbody tr:first-child th {
+  border-top-width: 0;
+}
+
 .cbv-gross-pay-line-item-label {
   font-weight: normal;
 }

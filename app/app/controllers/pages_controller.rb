@@ -1,6 +1,9 @@
 class PagesController < ApplicationController
   before_action :redirect_to_client_agency_entries, only: %i[home]
+  after_action :track_activity_timeout_page_viewed, only: :home
   helper_method :activity_flow_timeout?
+
+  before_action :ensure_csp_policy
 
   def home
     return unless flow_timeout?
@@ -18,7 +21,6 @@ class PagesController < ApplicationController
     # in config/development.rb for these pages to actually show up.
     @flow = flow_class.find_by(id: session[:flow_id])
     @invitation = @flow&.is_a?(ActivityFlow) ? @flow&.activity_flow_invitation : @flow&.cbv_flow_invitation
-
     render status: :not_found, formats: %i[html]
   end
 
@@ -61,5 +63,21 @@ class PagesController < ApplicationController
       session[:cbv_origin] = params[:origin] || agency&.default_origin
       redirect_to cbv_flow_new_path(client_agency_id: client_agency_id)
     end
+  end
+
+  def ensure_csp_policy
+    # Ensure CSP is set even when called via exceptions_app
+    # ActionDispatch::ContentSecurityPolicy::Middleware might not be applied
+    # when self.routes is used as exceptions_app.
+    if Rails.application.config.content_security_policy.present?
+      policy = Rails.application.config.content_security_policy.clone
+      response.headers["Content-Security-Policy"] = policy.build(self, request.content_security_policy_nonce)
+    end
+  end
+
+  def track_activity_timeout_page_viewed
+    return unless activity_flow_timeout? && response.successful?
+
+    track_event(TrackEvent::ActivityTimeoutPageViewed)
   end
 end

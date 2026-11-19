@@ -614,14 +614,16 @@ RSpec.describe NscDataFetcherService do
         let(:identity) { create(:identity, first_name: "Dominique", last_name: "Ricardo", date_of_birth: "1978-01-12") }
 
         before do
+          # Dominique's fixture data includes a term that overlaps with 2024
+          education_activity.activity_flow.update!(created_at: Date.new(2024, 12, 1), reporting_window_months: 12)
           nsc_stub_request_education_search_response("dominique_ricardo")
         end
 
-        it "does not save CN enrollments even when window overlaps" do
+        it "saves CN enrollments when window overlaps" do
           service.fetch
 
-          expect(education_activity.reload.status).to eq("no_enrollments")
-          expect(education_activity.nsc_enrollment_terms).to be_empty
+          expect(education_activity.reload.status).to eq("succeeded")
+          expect(education_activity.nsc_enrollment_terms).not_to be_empty
         end
       end
     end

@@ -1,4 +1,4 @@
-<% title = @employment_activity.unpaid_or_in_kind? ? t("activities.employment_info.unpaid_or_in_kind.title") : t("activities.employment_info.title") %>
+<% title = @employment_activity.uses_unpaid_work_flow? ? t("activities.employment_info.unpaid_or_in_kind.title") : t("activities.employment_info.title") %>
 <% content_for :title, title %>
 
 <% unless @flow.employment_focused? %>
@@ -16,7 +16,7 @@
   <%= title %>
 </h1>
 
-<% if @employment_activity.unpaid_or_in_kind? %>
+<% if @employment_activity.uses_unpaid_work_flow? %>
   <% t("activities.employment_info.unpaid_or_in_kind.description").split("\n\n").each do |paragraph| %>
     <p><%= paragraph %></p>
   <% end %>

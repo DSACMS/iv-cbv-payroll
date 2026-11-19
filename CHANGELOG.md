@@ -7,6 +7,97 @@ All notable changes to Emmy App are documented here. Each entry is classified
 MAJOR entries mean states should expect to update training materials or
 integrations, and are accompanied by a notification.
 
+## 0.18.2
+
+### User facing changes to Emmy Income + Emmy CE
+- Fix security issue in switch_locale_link (Open Redirect) [(#106)](https://github.com/CMS-Enterprise/emmy-app/pull/106) - iannorriswork [[FFS-5117]](https://jiraent.cms.gov/browse/FFS-5117)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Set employment_type for manual Emmy Employment work [(#105)](https://github.com/CMS-Enterprise/emmy-app/pull/105) - Jake Wheeler [[FFS-5094]](https://jiraent.cms.gov/browse/FFS-5094)
+
+### Other/Maintenance (Not user facing)
+- Speed up deploys by doing App and Solid Queue in parallel [(#112)](https://github.com/CMS-Enterprise/emmy-app/pull/112) - Tom Dooner
+
+## 0.18.1
+
+### User facing changes to Emmy Income + Emmy CE
+- Clarify that red asterisks indicate required form fields [(#96)](https://github.com/CMS-Enterprise/emmy-app/pull/96) - Jake Wheeler [[FFS-5102]](https://jiraent.cms.gov/browse/FFS-5102)
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Add unique aria-labels to CE flow Add/Edit links for better accessibility [(#78)](https://github.com/CMS-Enterprise/emmy-app/pull/78) - Chris [[FFS-4888]](https://jiraent.cms.gov/browse/FFS-4888)
+- Revert FFS-5057 (splitting of employer_address into line1/line2/city/state/postal_code) [(#104)](https://github.com/CMS-Enterprise/emmy-app/pull/104) - Chris [[FFS-5116]](https://jiraent.cms.gov/browse/FFS-5116)
+- Update spanish employer search copy [(#101)](https://github.com/CMS-Enterprise/emmy-app/pull/101) - iannorriswork [[FFS-5049]](https://jiraent.cms.gov/browse/FFS-5049)
+
+### Other/Maintenance (Not user facing)
+- Bump i18n-tasks
+
+## 0.18.0
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Combined JSON + documents delivery for activity flows [(#79)](https://github.com/CMS-Enterprise/emmy-app/pull/79) - Chris [[FFS-5081]](https://jiraent.cms.gov/browse/FFS-5081)
+- Implement new employer consent modal [(#76)](https://github.com/CMS-Enterprise/emmy-app/pull/76) - krista-skylight [[FFS-4485]](https://jiraent.cms.gov/browse/FFS-4485)
+- Update more documentation references to CMS-Enterprise repo [(#67)](https://github.com/CMS-Enterprise/emmy-app/pull/67) - Tom Dooner [[FFS-4721]](https://jiraent.cms.gov/browse/FFS-4721)
+- Allow single-digit months in DateFormatter.parse_month_year - Update … [(#82)](https://github.com/CMS-Enterprise/emmy-app/pull/82) - iannorriswork [[FFS-5074]](https://jiraent.cms.gov/browse/FFS-5074)
+- Add confirmation modal on document upload pages to Emmy CE flow [(#72)](https://github.com/CMS-Enterprise/emmy-app/pull/72) - krista-skylight [[FFS-4809]](https://jiraent.cms.gov/browse/FFS-4809)
+- Update PDF for the NSC partially self-attested flow [(#73)](https://github.com/CMS-Enterprise/emmy-app/pull/73) - Jake Wheeler [[FFS-5025]](https://jiraent.cms.gov/browse/FFS-5025)
+
+### Other/Maintenance (Not user facing)
+- Bump @scalar/api-reference, go_modules, tornado, rspec-rails, prettier, parallel_tests, sass, vite, vcr, postcss-import, puma, selenium-webdriver, soupsieve, net-ssh
+- fix: patch Dockerfile for OS-level CVEs flagged by Trivy/Anchore [(#97)](https://github.com/CMS-Enterprise/emmy-app/pull/97) - github-actions[bot]
+- Remove currentEnrollmentStatus filtering in NSC data fetching [(#83)](https://github.com/CMS-Enterprise/emmy-app/pull/83) - iannorriswork [[FFS-4967]](https://jiraent.cms.gov/browse/FFS-4967)
+- Split employer_address into separate line1, line2, city, state, and postal_code fields [(#69)](https://github.com/CMS-Enterprise/emmy-app/pull/69) - Chris [[FFS-5057]](https://jiraent.cms.gov/browse/FFS-5057)
+- Instrument Mixpanel events for the shared hub-and-spoke pages in Emmy CE [(#70)](https://github.com/CMS-Enterprise/emmy-app/pull/70) - Chris [[FFS-4641]](https://jiraent.cms.gov/browse/FFS-4641)
+
+## 0.17.1
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Update document upload for the NSC partially self-attested flow [(#62)](https://github.com/CMS-Enterprise/emmy-app/pull/62) - Daphne Gold [[FFS-5026]](https://jiraent.cms.gov/browse/FFS-5026)
+- Configure Louisiana activity report delivery [(#71)](https://github.com/CMS-Enterprise/emmy-app/pull/71) - Tom Dooner [[FFS-5083]](https://jiraent.cms.gov/browse/FFS-5083)
+
+### Other/Maintenance (Not user facing)
+- Instrument Mixpanel events for the Employment Data-Backed flow in Emmy CE [(#66)](https://github.com/CMS-Enterprise/emmy-app/pull/66) - Jake Wheeler [[FFS-4640]](https://jiraent.cms.gov/browse/FFS-4640)
+
+## 0.17.0
+
+### Emmy Income only user facing changes
+- No changes, nothing to review!
+
+### Emmy CE only user facing changes
+- Fix 500 error on "Add more jobs?" page [(#63)](https://github.com/CMS-Enterprise/emmy-app/pull/63) - Krista Chan [[FFS-5067]](https://jiraent.cms.gov/browse/FFS-5067)
+- Keep consent errors visible on Review and Submit [(#2309)](https://github.com/DSACMS/iv-cbv-payroll/pull/2309) - Jake Wheeler [[FFS-5048]](https://jiraent.cms.gov/browse/FFS-5048)
+- Add individual id to report [(#2314)](https://github.com/DSACMS/iv-cbv-payroll/pull/2314) - Chris [[FFS-5050]](https://jiraent.cms.gov/browse/FFS-5050)
+- Update JSON for the NSC partially self-attested flow [(#2331)](https://github.com/DSACMS/iv-cbv-payroll/pull/2331) - Daphne Gold [[FFS-5024]](https://jiraent.cms.gov/browse/FFS-5024)
+- Fix button width on employment month-selection screen [(#2311)](https://github.com/DSACMS/iv-cbv-payroll/pull/2311) - krista-skylight [[FFS-5021]](https://jiraent.cms.gov/browse/FFS-5021)
+- Collect missing details in the NSC partially self-attested flow [(#2315)](https://github.com/DSACMS/iv-cbv-payroll/pull/2315) - Daphne Gold [[FFS-5023]](https://jiraent.cms.gov/browse/FFS-5023)
+- 1 day of half-time+ enrollment in a month doesn't route users to Review and Submit [(#2297)](https://github.com/DSACMS/iv-cbv-payroll/pull/2297) - Chris [[FFS-5039]](https://jiraent.cms.gov/browse/FFS-5039)
+- Cleanup API protocol to make new fields communicated more clearly in specs [(#2310)](https://github.com/DSACMS/iv-cbv-payroll/pull/2310) - iannorriswork [[FFS-5065]](https://jiraent.cms.gov/browse/FFS-5065)
+- Display single month in blue sub-header  [(#2300)](https://github.com/DSACMS/iv-cbv-payroll/pull/2300) - krista-skylight [[FFS-5037]](https://jiraent.cms.gov/browse/FFS-5037)
+- Fix partially self-attested Education flow Doc Upload "Back" button [(#2295)](https://github.com/DSACMS/iv-cbv-payroll/pull/2295) - Jake Wheeler [[FFS-4877]](https://jiraent.cms.gov/browse/FFS-4877)
+- Emmy Employment in-kind work routes to unpaid work flow [(#2294)](https://github.com/DSACMS/iv-cbv-payroll/pull/2294) - krista-skylight [[FFS-5042]](https://jiraent.cms.gov/browse/FFS-5042)
+
+### Other/Maintenance (Not user facing)
+- Bump css_parser, sass, datadog, aws-sdk-s3, @rails/actioncable, csv, @scalar/api-reference, vitest, solid_queue, jsdom, sass
+- Switch development repository to CMS-Enterprise/emmy-app [(#61)](https://github.com/DSACMS/iv-cbv-payroll/pull/61) - Tom Dooner [[FFS-4721]](https://jiraent.cms.gov/browse/FFS-4721)
+- Correct API metadata and self-attested employment documentation for LA [(#2316)](https://github.com/DSACMS/iv-cbv-payroll/pull/2316) - krista-skylight [[FFS-5013]](https://jiraent.cms.gov/browse/FFS-5013)
+- Cut over Nava deploy permissions to CMS-Enterprise/emmy-app repo [(#2330)](https://github.com/DSACMS/iv-cbv-payroll/pull/2330) - Tom Dooner [[FFS-4721]](https://jiraent.cms.gov/browse/FFS-4721)
+- Upgrade ruby 3.4.9 -> 3.4.12 [(#2329)](https://github.com/DSACMS/iv-cbv-payroll/pull/2329) - Tom Dooner
+- Bump rails 8.1.4 -> 8.1.4.1 for vulnerability scan [(#2296)](https://github.com/DSACMS/iv-cbv-payroll/pull/2296) - github-actions[bot]
+- Add analytics for the Education Type Selection and "Other" pages [(#2304)](https://github.com/DSACMS/iv-cbv-payroll/pull/2304) - Jake Wheeler [[FFS-4793]](https://jiraent.cms.gov/browse/FFS-4793)
+- Update FDSH OAuth token URL to the new one [(#2313)](https://github.com/DSACMS/iv-cbv-payroll/pull/2313) - Tom Dooner
+- Instrument Mixpanel events for the Education Data-Backed flow in Emmy CE [(#2289)](https://github.com/DSACMS/iv-cbv-payroll/pull/2289) - Jake Wheeler [[FFS-4639]](https://jiraent.cms.gov/browse/FFS-4639)
+
 ## 0.16.0
 
 ### User facing changes to Emmy Income + Emmy CE

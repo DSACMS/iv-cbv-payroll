@@ -16,7 +16,7 @@
 
 set -euo pipefail
 
-readonly REPOSITORY="DSACMS/iv-cbv-payroll"
+readonly REPOSITORY="CMS-Enterprise/emmy-app"
 readonly NAVA_DEV_HEALTH_URL="${NAVA_DEV_HEALTH_URL:-https://verify-demo.navapbc.cloud}"
 readonly NAVA_DEMO_HEALTH_URL="${NAVA_DEMO_HEALTH_URL:-https://demo.reportmyincome.org}"
 readonly NAVA_PROD_HEALTH_URL="${NAVA_PROD_HEALTH_URL:-https://reportmyincome.org}"

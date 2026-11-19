@@ -1,4 +1,4 @@
-<% other = @employment_activity.unpaid_or_in_kind? %>
+<% other = @employment_activity.uses_unpaid_work_flow? %>
 <% unpaid = @flow.unpaid_work_only? %>
 <% unless @flow.employment_focused? %>
   <% content_for :activity_flow_header do %>

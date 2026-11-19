@@ -35,9 +35,10 @@ class ActivityReportSerializer
     }
   }.freeze
 
-  def initialize(activity_flow, current_agency)
+  def initialize(activity_flow, current_agency, include_report_pdf_metadata: false)
     @activity_flow = activity_flow
     @current_agency = current_agency
+    @include_report_pdf_metadata = include_report_pdf_metadata
   end
 
   def as_json
@@ -80,13 +81,23 @@ class ActivityReportSerializer
   end
 
   def documents
-    all_documents.map do |document, document_id|
+    result = all_documents.map do |document, document_id|
       {
         "document_id" => document_id,
         "document_name" => document.file_name,
         "file_type" => File.extname(document.file_name).delete_prefix(".")
       }
     end
+
+    if @include_report_pdf_metadata
+      result << {
+        "document_id" => ActivityReportPdfService.document_id_for(@activity_flow),
+        "document_name" => ActivityReportPdfService.file_name_for(@activity_flow),
+        "file_type" => "pdf"
+      }
+    end
+
+    result
   end
 
   def all_documents
@@ -198,7 +209,7 @@ class ActivityReportSerializer
       "document_ids" => document_ids_for(activity),
       "additional_comments" => json_value(activity.additional_comments),
       "employer_address" => activity.formatted_address.presence,
-      "employment_type" => nil,
+      "employment_type" => @activity_flow.employment_focused? ? (activity.paid? ? "paid" : "in_kind") : nil,
       "gross_income" => activity_month.gross_income.to_f
     )
   end

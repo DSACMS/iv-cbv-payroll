@@ -32,8 +32,8 @@ on:
         type: string
 
 jobs:
-  deploy:
-    name: Deploy
+  deploy-app:
+    name: Deploy app
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -42,7 +42,6 @@ jobs:
       EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
       CLUSTER_NAME: emmy-${{ inputs.environment }}
       APP_TASK_FAMILY: emmy-${{ inputs.environment }}
-      SOLID_QUEUE_TASK_FAMILY: emmy-${{ inputs.environment }}-solid-queue
 
     steps:
       - uses: actions/checkout@v7
@@ -88,6 +87,37 @@ jobs:
           service: emmy-${{ inputs.environment }}-app
           cluster: ${{ env.CLUSTER_NAME }}
           wait-for-service-stability: true
+
+  deploy-solid-queue:
+    name: Deploy Solid Queue
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      EMMY_IMAGE_REPO: ${{ vars.EMMY_IMAGE_REPO }}
+      CLUSTER_NAME: emmy-${{ inputs.environment }}
+      SOLID_QUEUE_TASK_FAMILY: emmy-${{ inputs.environment }}-solid-queue
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Configure AWS credentials
+        uses: ./.github/actions/configure-cms-aws-credentials
+        with:
+          environment: ${{ inputs.environment }}
+          nonprod-role-to-assume: ${{ vars.AWS_NONPROD_ROLE_TO_ASSUME }}
+          default-role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME || format('arn:aws:iam::{0}:role/{1}', vars.AWS_ACCOUNT_ID, vars.AWS_ROLE_NAME) }}
+
+      - name: Verify image is published to ECR
+        run: |
+          is_image_published=$(./bin/is-ecr-image-published "${EMMY_IMAGE_REPO}" "${{ inputs.image_tag }}")
+          echo "Is image published: ${is_image_published}"
+          if [ "${is_image_published}" != "true" ]; then
+            echo "Error: image tag not found in ECR: ${EMMY_IMAGE_REPO}:${{ inputs.image_tag }}" >&2
+            echo "Run Deploy to CMS, or build-and-publish with publish_to_cms=true, before deploying." >&2
+            exit 1
+          fi
 
       - name: Download latest solid-queue task definition
         run: |

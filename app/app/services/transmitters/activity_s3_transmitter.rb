@@ -4,8 +4,6 @@ class Transmitters::ActivityS3Transmitter
   TRANSMISSION_METHOD = "encrypted_s3"
   include ActivityTransmitter
 
-  PDF_MARGIN = { top: 8, bottom: 8, left: 0, right: 0 }.freeze
-
   def initialize(activity_flow, current_agency)
     super
     @processed_s3_service = ProcessedDownloadService.new
@@ -14,9 +12,10 @@ class Transmitters::ActivityS3Transmitter
 
   def deliver
     documents = supporting_documents
+    report = ActivityReportPdfService.new(@activity_flow).generate
 
     Dir.mktmpdir("activity-flow-transmission-") do |directory|
-      File.binwrite(File.join(directory, report_file_name), pdf_content)
+      File.binwrite(File.join(directory, report.file_name), report.content)
 
       documents.each do |document|
         @processed_s3_service.download_file(
@@ -40,30 +39,11 @@ class Transmitters::ActivityS3Transmitter
     ActivityDocumentsService.new(@activity_flow).all
   end
 
-  def report_file_name
-    "HR1_Report_#{@activity_flow.completed_at.to_date.iso8601}.pdf"
-  end
-
   def destination_prefix
     File.join(
       transmission_configuration.fetch("s3_directory", "outfiles"),
       @activity_flow.confirmation_code,
       ""
     )
-  end
-
-  def pdf_content
-    html = I18n.with_locale(:en) do
-      Activities::SubmitController.new.render_to_string(
-        template: "activities/submit/show",
-        formats: [ :pdf ],
-        layout: "layouts/pdf",
-        assigns: {
-          report: ActivityPdfReport.new(flow: @activity_flow, caseworker: true)
-        }
-      )
-    end
-
-    WickedPdf.new.pdf_from_string(html, margin: PDF_MARGIN)
   end
 end

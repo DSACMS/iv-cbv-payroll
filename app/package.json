@@ -13,11 +13,12 @@
     "load-script": "^2.0.0",
     "postcss": "^8.5.32",
     "postcss-cli": "^12.0.0",
-    "postcss-import": "^16.2.0",
+    "postcss-import": "^17.0.1",
     "postcss-minify": "^1.2.0",
     "postcss-nesting": "^14.0.3",
     "postcss-scss": "^4.0.9",
-    "sass": "^1.108.0"
+    "puppeteer": "25.16.0",
+    "sass": "^1.108.2"
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets",
@@ -27,11 +28,11 @@
     "format:precommit": "prettier --write"
   },
   "devDependencies": {
-    "@scalar/api-reference": "^1.77.0",
-    "happy-dom": ">=20.14.6",
+    "@scalar/api-reference": "^1.78.1",
+    "happy-dom": "^21.0.4",
     "jsdom": "^31.0.0",
-    "prettier": "^3.9.10",
-    "vite": "^8.3.5",
+    "prettier": "^3.10.1",
+    "vite": "^8.3.8",
     "vitest": "^5.1.0"
   },
   "resolutions": {
@@ -40,6 +41,6 @@
   },
   "overrides": {
     "serialize-javascript": "^7.0.3",
-    "undici": "^8.10.2"
+    "undici": "^8.12.2"
   }
 }

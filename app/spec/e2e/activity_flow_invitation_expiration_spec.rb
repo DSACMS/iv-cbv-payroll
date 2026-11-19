@@ -16,6 +16,28 @@ RSpec.describe "Activity invitation expiration", :js, type: :feature do
     expect(page).to have_current_path(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
   end
 
+  context "when another session submits a single-use invitation" do
+    let(:invitation) { create(:activity_flow_invitation) }
+
+    before do
+      allow(agency).to receive(:allow_activity_invitation_reuse).and_return(false)
+      visit activities_flow_start_path(token: invitation.auth_token)
+      verify_page(page, title: I18n.t("activities.entries.show.title", benefit: I18n.t("shared.benefit.sandbox")))
+      click_link I18n.t("activities.entries.show.continue")
+      verify_page(page, title: I18n.t("activities.hub.title"))
+      create(:activity_flow, activity_flow_invitation: invitation, completed_at: Time.current)
+    end
+
+    it "shows the expired-link page as soon as the user tries to add education" do
+      within("[data-activity-type='education']") do
+        click_button I18n.t("activities.hub.add")
+      end
+
+      verify_page(page, title: I18n.t("activities.expired_invitations.show.title"))
+      expect(page).to have_current_path(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
+    end
+  end
+
   context "when the invitation has no expiration" do
     before { invitation.update_columns(expires_at: nil) }
 

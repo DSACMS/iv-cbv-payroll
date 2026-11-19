@@ -841,6 +841,34 @@ RSpec.describe Activities::EducationController, type: :controller do
         )
       end
 
+      it "gives both term edit links a school-specific accessible name" do
+        term = create(
+          :nsc_enrollment_term,
+          :less_than_half_time,
+          education_activity: education_activity,
+          school_name: "University of Illinois"
+        )
+
+        get :review, params: { id: education_activity.id }
+
+        edit_path = edit_activities_flow_education_term_credit_hour_path(
+          education_id: education_activity.id,
+          id: 0,
+          from_review: 1
+        )
+        links = Capybara.string(response.body).all("a[href='#{edit_path}']")
+        expected_label = I18n.t(
+          "activities.education.review.edit_term_details",
+          school_name: term.school_name,
+          term_begin: I18n.l(term.term_begin, format: :month_year),
+          term_end: I18n.l(term.term_end, format: :month_year)
+        )
+
+        expect(links.size).to eq(2)
+        expect(links.map { |link| link["aria-label"] }).to eq([ expected_label, expected_label ])
+        expect(links).to all(have_text(I18n.t("activities.education.review.edit")))
+      end
+
       it "renders multiple enrollments and only shows term-hours table for less-than-half-time terms" do
         create(
           :nsc_enrollment_term,
@@ -971,6 +999,10 @@ RSpec.describe Activities::EducationController, type: :controller do
       patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
     end
 
+    before do
+      allow(EventTrackingJob).to receive(:perform_later)
+    end
+
     it_behaves_like "tracks an event", TrackEvent::EducationReviewSubmitted,
       extra_attributes: -> { { education_activity_id: kind_of(Integer) } }
 
@@ -982,6 +1014,15 @@ RSpec.describe Activities::EducationController, type: :controller do
     end
 
     it "publishes the new activity and queues the added alert" do
+      expect(EventTrackingJob).to receive(:perform_later).with(
+        TrackEvent::HubActivityMarkedComplete,
+        anything,
+        hash_including(
+          cbv_flow_id: activity_flow.id,
+          activity_type: :education
+        )
+      )
+
       patch :save_review, params: { id: education_activity.id, education_activity: { additional_comments: "" } }
 
       expect(education_activity.reload.draft).to be(false)

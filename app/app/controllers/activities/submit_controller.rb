@@ -1,5 +1,6 @@
 class Activities::SubmitController < Activities::BaseController
   skip_before_action :ensure_activity_flow_not_yet_complete, only: :show
+  after_action :track_report_pdf_viewed_event, only: :show
 
   def show
     respond_to do |format|
@@ -20,11 +21,9 @@ class Activities::SubmitController < Activities::BaseController
       caseworker: internal_environment? && params[:is_caseworker] == "true"
     )
 
-    render pdf: pdf_filename,
-      layout: "pdf",
-      template: "activities/submit/show",
-      margin: pdf_margins,
-      disposition: "inline"
+    html = render_to_string(template: "activities/submit/show", formats: [ :pdf ], layout: "pdf")
+    send_data PdfRenderer.render(html, margin: pdf_margins),
+      filename: "#{pdf_filename}.pdf", type: "application/pdf", disposition: "inline"
   end
 
   def pdf_filename
@@ -38,5 +37,11 @@ class Activities::SubmitController < Activities::BaseController
       left: 0,
       right: 0
     }
+  end
+
+  def track_report_pdf_viewed_event
+    return unless request.format.pdf? && response.successful?
+
+    track_event(TrackEvent::ActivityReportPdfViewed)
   end
 end

@@ -62,7 +62,9 @@ RSpec.describe DocumentWebhook do
     receiving = document["x-tagGroups"].find { |group| group[:name] == "Receiving data from the Emmy Platform" }
     expect(receiving[:tags]).to include("Retry logic")
     retry_tag = document[:tags].find { |tag| tag[:name] == "Retry logic" }
-    expect(retry_tag[:description]).to eq(InvitationDocumentation.read("receiving-data/retry-logic"))
+    expect(retry_tag[:description]).to eq(
+      InvitationDocumentation.read("receiving-data/retry-logic").sub("(pdf-transmission.md)", "(#tag/documents)")
+    )
     expect(operation[:description]).not_to include("## Retry logic", retry_tag[:description])
   end
 end

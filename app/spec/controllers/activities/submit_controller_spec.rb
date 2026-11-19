@@ -109,6 +109,24 @@ RSpec.describe Activities::SubmitController, type: :controller do
       end
     end
 
+    context "with Employment-focused in-kind work" do
+      let(:employment) do
+        create(:employment_activity, activity_flow: activity_flow, compensation_type: :unpaid_or_in_kind)
+      end
+
+      before do
+        activity_flow.update!(employment_focused: true)
+        create(:employment_activity_month, employment_activity: employment,
+          month: activity_flow.reporting_months.first, hours: 10, gross_income: 125)
+      end
+
+      it "keeps income in the existing PDF layout" do
+        get :show, format: :pdf
+
+        expect(extract_pdf_text(response)).to include(I18n.t("activities.summary.employment.gross_income"), "$125.00")
+      end
+    end
+
     it "omits gross income for unpaid or in-kind employment in the PDF" do
       employment = create(
         :employment_activity,
@@ -170,7 +188,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       expect(response).to have_http_status(:ok)
       expect(response.header["Content-Type"]).to include("pdf")
       pdf_text = extract_pdf_text(response)
-      expect(pdf_text).to include("Emmy Community Engagement | Test Agency")
+      expect(pdf_text).to match(/Emmy Community Engagement\s+Test Agency/)
       expect(pdf_text).to include("Client and report information: Jordan Taylor")
       expect(pdf_text).to include("Food Pantry")
       expect(pdf_text).to include("Career Prep")
@@ -407,7 +425,7 @@ RSpec.describe Activities::SubmitController, type: :controller do
       pdf_text = extract_pdf_text(response)
       expect(pdf_text).to include("Payments from Payroll Employer")
       expect(pdf_text).to include("These were the dates that the client was paid")
-      expect(pdf_text).to include("11/15/2025 - $450.00")
+      expect(pdf_text).to match(/11\/15\/2025\s*-\s*\$450\.00/)
       expect(pdf_text).not_to include("Mileage expenses")
     end
 

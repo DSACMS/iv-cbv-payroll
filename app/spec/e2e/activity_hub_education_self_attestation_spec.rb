@@ -72,6 +72,9 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
       title: I18n.t("activities.document_uploads.new.title", name: "University of Illinois"),
       skip_axe_rules: %w[heading-order]
     )
+    click_button I18n.t("activities.document_uploads.new.continue")
+    expect(page).to have_text(I18n.t("activities.document_uploads.new.empty_confirmation.heading"))
+    click_button I18n.t("activities.document_uploads.new.empty_confirmation.go_back")
     attach_file I18n.t("activities.document_uploads.new.input_label"), upload_path, make_visible: true
     click_button I18n.t("activities.document_uploads.new.continue")
 
@@ -114,13 +117,27 @@ RSpec.describe "e2e Education self-attestation review flow", :js, type: :feature
     # --- Step 3: Edit from the hub card → review (no back button) → edit school info → review ---
     visit activities_flow_root_path
     within("[data-activity-type='education']") do
-      click_link I18n.t("activities.hub.edit")
+      edit_link = find("a.usa-link", text: I18n.t("activities.hub.edit"), exact_text: true)
+
+      expect(edit_link["aria-label"]).to eq(
+        I18n.t(
+          "activities.hub.edit_activity",
+          activity_type: I18n.t("activities.education.title"),
+          activity_name: "University of Illinois"
+        )
+      )
+
+      edit_link.click
     end
     verify_page(page, title: I18n.t("activities.education.review.title", school_name: "University of Illinois"))
     expect(page).to have_button I18n.t("activities.hub.save")
 
     # Edit school info from review
     within(".activity-review-edit-header", text: I18n.t("activities.education.review.school_info")) do
+      edit_link = find("a.usa-link", text: I18n.t("activities.hub.edit"), exact_text: true)
+      expect(edit_link["aria-label"]).to eq(
+        I18n.t("activities.education.review.edit_school_information", school_name: "University of Illinois")
+      )
       click_link I18n.t("activities.hub.edit")
     end
     verify_page(page, title: I18n.t("activities.education.new.edit_title"))

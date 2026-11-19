@@ -53,7 +53,7 @@
   <% end %>
 <% end %>
 
-<% unpaid = activity.unpaid_or_in_kind? %>
+<% unpaid = activity.uses_unpaid_work_flow? %>
 <% monthly_details = t("activities.summary.monthly_details") %>
 <h3><%= monthly_details %></h3>
 <%= render(TableComponent.new(caption: monthly_details, multi_column: true)) do |table| %>

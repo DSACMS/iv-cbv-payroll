@@ -56,6 +56,13 @@ RSpec.describe ActivityFlowHeaderComponent, type: :component do
     expect(page).not_to have_css(".back-nav")
   end
 
+  it "preserves the default modal spacing and close-button tracking hook" do
+    rendered = render_inline(component)
+    expect(rendered).to have_selector("#exit-confirmation-modal.usa-modal")
+    expect(rendered).to have_no_selector(".shared-modal")
+    expect(rendered).to have_selector("button.usa-modal__close[data-close-modal][data-activity-flow-header-target='modalCloseButton'][aria-label='Close this window']")
+  end
+
   context "when back_url is provided" do
     subject(:component) { described_class.new(title: title, exit_url: exit_url, back_url: "/previous") }
 

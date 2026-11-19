@@ -1,5 +1,5 @@
 module InvitationDocumentation
-  SITE_URL = "https://DSACMS.github.io/iv-cbv-payroll/index.html".freeze
+  SITE_URL = "https://CMS-Enterprise.github.io/emmy-app/index.html".freeze
 
   def self.code_block(name, section:, language:)
     markdown = read(name, section: section)

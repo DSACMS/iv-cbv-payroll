@@ -2,6 +2,11 @@ class Transmitters::ActivityJsonTransmitter
   TRANSMISSION_METHOD = "json"
   include ActivityTransmitter
 
+  def initialize(activity_flow, current_agency, include_report_pdf_metadata: false)
+    super(activity_flow, current_agency)
+    @include_report_pdf_metadata = include_report_pdf_metadata
+  end
+
   def deliver
     api_url = destination_url("json_api_url")
     request = Net::HTTP::Post.new(api_url)
@@ -27,6 +32,7 @@ class Transmitters::ActivityJsonTransmitter
 
     case response
     when Net::HTTPSuccess, Net::HTTPRedirection
+      @activity_flow.touch(:json_transmitted_at)
       "ok"
     else
       raise_response_error!(response, ActivityJsonTransmitterError)
@@ -34,7 +40,11 @@ class Transmitters::ActivityJsonTransmitter
   end
 
   def payload
-    @payload ||= ActivityReportSerializer.new(@activity_flow, @current_agency).as_json.to_json
+    @payload ||=
+      ActivityReportSerializer.new(
+        @activity_flow,
+        @current_agency,
+        include_report_pdf_metadata: @include_report_pdf_metadata).as_json.to_json
   end
 
   class ActivityJsonTransmitterError < StandardError; end

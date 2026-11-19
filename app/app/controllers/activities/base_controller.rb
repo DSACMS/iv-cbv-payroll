@@ -1,6 +1,7 @@
 class Activities::BaseController < FlowController
   before_action :redirect_unless_activity_hub_enabled, :set_flow
   before_action :ensure_activity_flow_not_yet_complete
+  before_action :redirect_if_activity_invitation_used
 
   helper_method :current_identity, :progress_calculator
 
@@ -34,6 +35,13 @@ class Activities::BaseController < FlowController
     newly_added = activity.draft?
     activity.publish!
     flash[:activity_added] = activity_type if newly_added
+
+    if newly_added
+      track_event(
+        TrackEvent::HubActivityMarkedComplete,
+        activity_type: activity_type
+      )
+    end
   end
 
   def redirect_if_nsc_disabled
@@ -88,6 +96,19 @@ class Activities::BaseController < FlowController
 
   def ensure_activity_flow_not_yet_complete
     redirect_to activities_flow_success_path if @flow&.complete?
+  end
+
+  def redirect_if_activity_invitation_used
+    return if @flow.nil? || @flow.complete?
+
+    invitation = @flow.activity_flow_invitation
+    return unless invitation
+
+    agency = Rails.application.config.client_agencies[invitation.client_agency_id]
+    return if agency.allow_activity_invitation_reuse || !invitation.used?
+
+    track_expired_event(invitation)
+    redirect_to expired_invitation_path(invitation)
   end
 
   def expired_invitation_path(invitation)

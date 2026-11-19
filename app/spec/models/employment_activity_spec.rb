@@ -11,6 +11,28 @@ RSpec.describe EmploymentActivity, type: :model do
     end
   end
 
+  describe "Employment-focused in-kind work" do
+    let(:flow) { build(:activity_flow, employment_focused: true) }
+    let(:activity) do
+      build(:employment_activity, activity_flow: flow, compensation_type: :unpaid_or_in_kind, employer_name: "")
+    end
+
+    it "preserves the compensation type while using the income-and-hours experience" do
+      expect(activity).to be_unpaid_or_in_kind
+      expect(activity).not_to be_uses_unpaid_work_flow
+    end
+
+    it "uses employer or business validation" do
+      activity.validate
+
+      expect(activity.errors[:employer_name]).to contain_exactly(I18n.t("activities.employment_info.employer_name_error"))
+    end
+
+    it "keeps the paid-work document suggestions" do
+      expect(activity.document_upload_suggestion_text).to eq("activities.employment.document_upload_suggestion_text_html")
+    end
+  end
+
   describe "employer name validation" do
     it "uses the employer or business error for paid work" do
       activity = build(:employment_activity, employer_name: "")

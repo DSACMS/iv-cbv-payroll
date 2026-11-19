@@ -194,7 +194,7 @@ es:
         alert:
           heading: "¿Necesita ayuda para conectarse a su proveedor de nómina?"
           help_options: Obtenga ayuda aquí.
-        app_based_providers: Empleadores basados
+        app_based_providers: Empleadores de plataformas digitales
         can_not_find_employer: No puedo encontrar a mi empleador o proveedor de nómina
         common_questions_header: Preguntas frecuentes
         employer_not_listed: "¿Su empleador no está en la lista?"
@@ -211,7 +211,7 @@ es:
         no_results_steps_title: 'Intente estos pasos primero:'
         no_results_title: No pudimos encontrar su empleador ni su proveedor de nómina.
         payroll_providers: Proveedores de nómina
-        popular_providers: O elija entre los proveedores o aplicaciones de nómina más populares
+        popular_providers: O elija entre los proveedores de nómina o las aplicaciones más populares.
         provider_types_label: Tipo de proveedor
         query_label: Busque a su empleador
         results:

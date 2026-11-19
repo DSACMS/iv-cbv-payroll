@@ -1,0 +1,51 @@
+@use "uswds" as *;
+
+.payroll-consent {
+  border: 0;
+  padding: units(2);
+  width: min(360px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  color: color("ink");
+
+  &::backdrop { background: rgba(0, 0, 0, 0.7); }
+
+  [hidden] { display: none; }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    min-height: min(608px, calc(100dvh - 64px));
+  }
+
+  &__close {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    color: color("ink");
+  }
+
+  &__close .usa-icon,
+  &__icon .usa-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  &__introduction {
+    text-align: center;
+    padding: units(2) units(1);
+
+    h1 { margin: units(2) auto; max-width: 9em; }
+    p { margin: 0; }
+  }
+
+  &__footer {
+    margin-top: auto;
+    padding-top: units(4);
+    text-align: center;
+    p { font-size: size("body", "3xs"); }
+  }
+}

@@ -58,7 +58,7 @@ The script will:
 
 ## 4. Create the GitHub release
 
-1. Go to <https://github.com/DSACMS/iv-cbv-payroll/releases/new>.
+1. Go to <https://github.com/CMS-Enterprise/emmy-app/releases/new>.
 2. **Tag**: create a new `v<version>` tag (e.g. `v0.1.0`) on `main`, pointing at
    the deploy SHA — the short SHA from the first line of the will-deploy output
    is the commit being released. The version must match `app/version.txt` on

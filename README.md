@@ -24,11 +24,11 @@ A list of core team members responsible for the code and documentation in this r
 
 ### Repository Structure
 
-* [/.github](/.github) GitHub-specific settings files and testing, linting, and CI/CD workflows  
-* [/app](/app) the Emmy web application built using Rails  
-* [/bin](/bin) scripts for managing infrastructure  
-* [/docs](/docs) public documentation for developers  
-* [/infra](/infra) contains infrastructure-as-code and documentation of replication steps for Emmy environment  
+* [/.github](/.github) GitHub-specific settings files and testing, linting, and CI/CD workflows
+* [/app](/app) the Emmy web application built using Rails
+* [/bin](/bin) scripts for managing infrastructure
+* [/docs](/docs) public documentation for developers
+* [/infra](/infra) contains infrastructure-as-code and documentation of replication steps for Emmy environment
 * [/load\_testing](/load_testing) load testing resources
 
 See [AGENTS.md](/AGENTS.md) for some more information on repo structure.
@@ -57,7 +57,7 @@ For more information on how the Emmy team works with our community, see [COMMUNI
 
 ## Feedback
 
-If you would like to comment on the tool itself, please let us know by [filing an issue on our GitHub repository](https://github.com/DSACMS/iv-cbv-payroll/issues/new/choose).
+If you would like to comment on the tool itself, please let us know by [filing an issue on our GitHub repository](https://github.com/CMS-Enterprise/emmy-app/issues/new/choose).
 
 ## Policies
 
@@ -75,7 +75,7 @@ For more information about our Security, Vulnerability, and Responsible Disclosu
 
 A Software Bill of Materials (SBOM) is a formal record containing the details and supply chain relationships of various components used in building software.
 
-In the spirit of [Executive Order 14028 \- Improving the Nation's Cybersecurity](https://www.federalregister.gov/documents/2021/05/17/2021-10460/improving-the-nations-cybersecurity), an SBOM for this repository is provided here: [https\://github.com/DSACMS/iv-cbv-payroll/network/dependencies](https://github.com/DSACMS/iv-cbv-payroll/network/dependencies).
+In the spirit of [Executive Order 14028 \- Improving the Nation's Cybersecurity](https://www.federalregister.gov/documents/2021/05/17/2021-10460/improving-the-nations-cybersecurity), an SBOM for this repository is provided here: [https\://github.com/CMS-Enterprise/emmy-app/network/dependencies](https://github.com/CMS-Enterprise/emmy-app/network/dependencies).
 
 For more information and resources about SBOMs, visit [https\://www\.cisa.gov/sbom](https://www.cisa.gov/sbom).
 
@@ -83,4 +83,4 @@ For more information and resources about SBOMs, visit [https\://www\.cisa.gov/sb
 
 This project is in the public domain within the United States, and copyright and related rights in the work worldwide are waived through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/) as indicated in [LICENSE](/LICENSE).
 
-All contributions to this project will be released under the CC0 dedication. By submitting a pull request or issue, you are agreeing to comply with this waiver of copyright interest.  
+All contributions to this project will be released under the CC0 dedication. By submitting a pull request or issue, you are agreeing to comply with this waiver of copyright interest.

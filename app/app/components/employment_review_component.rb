@@ -9,7 +9,7 @@ class EmploymentReviewComponent < ViewComponent::Base
   attr_reader :employment_activity, :params
 
   def unpaid?
-    employment_activity.unpaid_or_in_kind?
+    employment_activity.uses_unpaid_work_flow?
   end
 
   def summary_partial

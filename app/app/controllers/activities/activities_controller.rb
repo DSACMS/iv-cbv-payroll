@@ -3,7 +3,9 @@ class Activities::ActivitiesController < Activities::BaseController
   after_action :track_hub_viewed_event, only: :index
 
   def index
-    unless @flow.identity
+    # Employment invitations do not require a date of birth and do not use
+    # the identity needed for education verification.
+    unless @flow.employment_focused? || @flow.identity
       @flow.identity = IdentityService.new(request, @flow.cbv_applicant).get_identity
       @flow.save
     end

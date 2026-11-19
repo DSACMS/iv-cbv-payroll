@@ -157,10 +157,10 @@ RSpec.describe Activities::EntriesController do
             session[:flow_type] = :activity
           end
 
-          it "allows a separate in-progress flow to continue" do
+          it "redirects a separate in-progress flow to the expired-link page" do
             get :show
 
-            expect(response).to have_http_status(:ok)
+            expect(response).to redirect_to(activities_flow_expired_invitation_path(client_agency_id: invitation.client_agency_id))
             expect(session[:flow_id]).to eq(incomplete_flow.id)
           end
         end

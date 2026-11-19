@@ -123,6 +123,60 @@ RSpec.describe Transmitters::ActivityJsonTransmitter do
     it "omits extended_attributes throughout the report" do
       expect(transmitter.payload).not_to include('"extended_attributes"')
     end
+
+    it "does not list a report PDF for JSON-only delivery" do
+      document_ids = JSON.parse(transmitter.payload)
+        .fetch("ce_report").fetch("documents")
+        .map { |document| document.fetch("document_id") }
+
+      expect(document_ids).not_to include("REPORT-#{activity_flow.id}")
+    end
+
+    context "with manual employment" do
+      let(:employment_focused) { true }
+      let(:paid) { create(:employment_activity, activity_flow: activity_flow, employer_name: "Paid Employer") }
+      let(:in_kind) do
+        create(:employment_activity, activity_flow: activity_flow, employer_name: "In-kind Employer", compensation_type: :unpaid_or_in_kind)
+      end
+      let(:payload) { JSON.parse(transmitter.payload) }
+      let(:entries) { payload.dig("ce_report", "activities", "employment").values.flatten }
+
+      before do
+        activity_flow.update!(employment_focused: employment_focused)
+        create(:employment_activity_month, employment_activity: paid, month: activity_flow.reporting_months.first, gross_income: 250)
+        create(:employment_activity_month, employment_activity: in_kind, month: activity_flow.reporting_months.first, gross_income: 125)
+      end
+
+      it "sends paid and in-kind classifications in Employment JSON" do
+        expect(payload.dig("ce_report", "report_variant")).to eq("employment")
+        expect(entries.map { |entry| entry.fetch("employment_type") }).to eq(%w[paid in_kind])
+        expect(entries.map { |entry| entry.fetch("gross_income") }).to eq([ 250.0, 125.0 ])
+      end
+
+      it "matches the OpenAPI schema" do
+        expect(schema.validate(payload).to_a).to be_empty
+      end
+
+      context "with Community Engagement" do
+        let(:employment_focused) { false }
+
+        it "sends explicit JSON null for both manual classifications" do
+          expect(payload.dig("ce_report", "report_variant")).to eq("community_engagement")
+          expect(entries.map { |entry| entry.fetch("employment_type") }).to eq([ nil, nil ])
+          expect(schema.validate(payload).to_a).to be_empty
+        end
+      end
+    end
+
+    context "when report PDF metadata is requested" do
+      let(:transmitter) do
+        described_class.new(activity_flow, current_agency, include_report_pdf_metadata: true)
+      end
+
+      it "matches the CE Activity Report schema" do
+        expect(schema.validate(JSON.parse(transmitter.payload)).to_a).to be_empty
+      end
+    end
   end
 
   describe "employment OpenAPI examples" do

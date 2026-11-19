@@ -1,0 +1,82 @@
+#!/usr/bin/env ruby
+require "open3"
+require "fileutils"
+require "rexml/document"
+require "cgi"
+
+# Accepted native Chromium limitations; keep the complete veraPDF evidence.
+expected_rules = [
+  [ "ISO 14289-1:2014", "7.1", "3" ], # Untagged content
+  [ "ISO 14289-1:2014", "7.1", "8" ], # Missing XMP metadata
+  [ "ISO 14289-1:2014", "7.1", "5" ], # Unmapped structure roles
+  [ "ISO 14289-1:2014", "7.2", "20" ] # List-item structure
+].freeze
+
+report_directory = ENV.fetch("PDF_ACCESSIBILITY_REPORT_DIR", File.expand_path("~/.local/share/emmy/pdf-accessibility"))
+FileUtils.mkdir_p(report_directory)
+report_path = File.join(report_directory, "verapdf.xml")
+summary_path = File.join(report_directory, "summary.md")
+summary = [ "## PDF accessibility", "", "This does not establish PDF/UA compliance. Manual assistive-technology review is still required.", "" ]
+# Escape validator-provided text before placing it in a Markdown table.
+cell = ->(value) { CGI.escapeHTML(value.to_s).gsub("|", "&#124;").gsub(/[\r\n]+/, " ") }
+accepted = ->(rule) { expected_rules.include?(%w[specification clause testNumber].map { |key| rule.attributes[key] }) }
+
+begin
+  files = ARGV.flat_map { |path| File.directory?(path) ? Dir.glob(File.join(path, "*.pdf")).sort : [ path ] }
+  abort "No PDFs found. Usage: bin/check-pdf-accessibility PDF_OR_DIRECTORY [...]" if files.empty?
+  report, error, status = Open3.capture3(ENV.fetch("VERAPDF", "verapdf"), "--flavour", "ua1", "--format", "xml", *files)
+  File.write(report_path, report)
+  warn error unless error.empty?
+  document = REXML::Document.new(report)
+  results = REXML::XPath.match(document, "//validationReport")
+  failed_rules = results.flat_map { |result| REXML::XPath.match(result, "details/rule[@status='failed']") }
+  unexpected_rules = failed_rules.reject(&accepted)
+
+  summary += [ "| PDF | Rule | Description | Failed checks | Classification |", "| --- | --- | --- | --- | --- |" ]
+  results.each_with_index do |result, index|
+    name = File.basename(result.parent.elements["item/name"]&.text || files[index] || "Unknown PDF")
+    rules = REXML::XPath.match(result, "details/rule[@status='failed']")
+    if rules.empty?
+      outcome = result.attributes["isCompliant"] == "true" && result.attributes["jobEndStatus"] == "normal" ? "No failed rules" : "Incomplete result"
+      summary << "| #{cell.call(name)} | — | #{outcome} | — | — |"
+    end
+    rules.each do |rule|
+      identifier = %w[specification clause testNumber].map { |key| rule.attributes[key] }.join(" / ")
+      classification = accepted.call(rule) ? "Accepted Chromium limitation" : "Unexpected failure"
+      summary << "| #{cell.call(name)} | #{cell.call(identifier)} | #{cell.call(rule.elements['description']&.text)} | #{cell.call(rule.attributes['failedChecks'] || 'Unknown')} | #{classification} |"
+    end
+  end
+  summary << ""
+  complete_results = results.all? do |result|
+    rules = REXML::XPath.match(result, "details/rule[@status='failed']")
+    result.attributes["jobEndStatus"] == "normal" &&
+      (result.attributes["isCompliant"] == "true" ||
+        (result.attributes["isCompliant"] == "false" && !rules.empty? &&
+          result.elements["details"]&.attributes&.[]("failedRules") == rules.length.to_s))
+  end
+  problems = []
+  problems << "veraPDF exited unsuccessfully." unless status.success?
+  problems << "Missing validation results: expected #{files.length}, received #{results.length}." unless results.length == files.length
+  problems << "Incomplete or abnormal validation results." unless complete_results
+  problems << "#{unexpected_rules.length} unexpected rule failures." unless unexpected_rules.empty?
+  abort problems.join(" ") unless problems.empty?
+
+  message = "#{results.length} PDFs checked: #{failed_rules.length} expected rule failures, no unexpected failures."
+  summary << "**Check passed:** #{message}"
+  puts message
+  puts "This does not establish PDF/UA compliance. Manual assistive-technology review is still required."
+  puts "Full veraPDF evidence: #{report_path}"
+rescue REXML::ParseException
+  summary << "**Check failed:** veraPDF returned malformed XML. See verapdf.xml for the original output."
+  abort "veraPDF returned malformed XML; see #{report_path}"
+rescue Errno::ENOENT => error
+  summary << "**Check failed:** Could not run veraPDF: #{cell.call(error.message)}"
+  abort "Could not run veraPDF: #{error.message}"
+rescue SystemExit => error
+  summary << "**Check failed:** #{cell.call(error.message)}" unless error.success?
+  raise
+ensure
+  summary += [ "", "Full evidence is in the pdf-accessibility artifact (verapdf.xml and synthetic PDFs)." ]
+  File.write(summary_path, summary.join("\n") + "\n")
+  puts "Readable summary: #{summary_path}"
+end

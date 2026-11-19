@@ -8,7 +8,7 @@ assignees: ''
 
 ## Role Change Request
 
-This issue is used to request role changes within the iv-cbv-payroll repository contributor ladder, including promotions from Contributor to Maintainer or transitions to Alumni status. Please fill out this issue to file the request AND make a pull request to the `COMMUNITY.md` file with the role update.
+This issue is used to request role changes within this repository's contributor ladder, including promotions from Contributor to Maintainer or transitions to Alumni status. Please fill out this issue to file the request AND make a pull request to the `COMMUNITY.md` file with the role update.
 
 ### Requester Information
 - **GitHub Username:** @username
@@ -19,9 +19,9 @@ This issue is used to request role changes within the iv-cbv-payroll repository 
 <!-- TODO: Link the pull request updating your role in COMMUNITY.md -->
 
 ### Justification
-<!-- TODO: Provide a reason for the individual's change of role. Some examples include but are not limited to: 
-    - Playing a larger role in the community 
-    - Change in commitment level 
+<!-- TODO: Provide a reason for the individual's change of role. Some examples include but are not limited to:
+    - Playing a larger role in the community
+    - Change in commitment level
     - Inactivity
 -->
 
