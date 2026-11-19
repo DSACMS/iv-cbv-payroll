@@ -181,7 +181,6 @@ class ActivityReportSerializer
   def employment_payroll_entries(report)
     report.income_report_employments.flat_map do |employment|
       employment = employment.as_json
-      employment["employer_address"] = ce_employer_address(employment["employer_address"])
       paystubs = employment.fetch("paystubs").select do |paystub|
         pay_date = paystub["pay_date"]&.to_date
         pay_date && @activity_flow.reporting_window_range.cover?(pay_date)
@@ -210,7 +209,7 @@ class ActivityReportSerializer
       "document_ids" => document_ids_for(activity),
       "additional_comments" => json_value(activity.additional_comments),
       "employer_address" => activity.formatted_address.presence,
-      "employment_type" => nil,
+      "employment_type" => @activity_flow.employment_focused? ? (activity.paid? ? "paid" : "in_kind") : nil,
       "gross_income" => activity_month.gross_income.to_f
     )
   end
@@ -296,19 +295,6 @@ class ActivityReportSerializer
         "end_month" => activity.self_attested_term_end.strftime("%Y-%m")
       }
     )
-  end
-
-  def ce_employer_address(employer_address)
-    return if employer_address.blank?
-
-    fields = %w[line1 line2 city state postal_code]
-
-    if employer_address.is_a?(Hash)
-      employer_address = employer_address.with_indifferent_access
-      fields.index_with { |field| employer_address[field] }
-    else
-      fields.index_with { |field| field == "line1" ? employer_address : nil }
-    end
   end
 
   def json_value(value)

@@ -38,6 +38,10 @@ class DocumentUploadsComponent < ViewComponent::Base
     @edit_label || I18n.t("activities.hub.edit")
   end
 
+  def aria_edit_label
+    @edit_label || I18n.t("activities.document_uploads.edit")
+  end
+
   def filename_for(document)
     document.fetch(:filename)
   end

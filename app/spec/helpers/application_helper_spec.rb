@@ -69,6 +69,86 @@ RSpec.describe ApplicationHelper do
 
       expect(rendered).to have_no_selector("form[novalidate]")
     end
+
+    context "with required-field guidance" do
+      let(:flow) { ActivityFlow.new }
+      let(:required) { true }
+      let(:include_second_field) { true }
+      let(:notice) { I18n.t("us_form_with.required_fields_notice_html", asterisk: "*") }
+      let(:rendered) do
+        html = helper.uswds_form_with(scope: :example, url: "/example") do |form|
+          helper.concat(helper.tag.p("Original form content"))
+          helper.concat(form.hidden_field(:record_id, value: "123"))
+          helper.concat(form.text_field(:name, label: "Name", required: required, value: "Taylor Example"))
+          helper.concat(form.text_field(:nickname, label: "Nickname")) if include_second_field
+          helper.concat(form.submit("Continue"))
+        end
+        Capybara.string(html)
+      end
+
+      before { helper.instance_variable_set(:@flow, flow) }
+
+      it "renders the notice once with a styled asterisk for a qualifying activity form" do
+        expect(rendered).to have_selector("p", exact_text: notice, count: 1)
+        expect(rendered).to have_selector("p .usa-hint--required", exact_text: "*")
+      end
+
+      it "places the notice immediately before the form" do
+        form = rendered.find("turbo-frame > form").native
+        expect(form.previous_element.name).to eq("p")
+        expect(form.previous_element.text).to eq(notice)
+      end
+
+      it "preserves the captured content, fields, and submit button inside the form" do
+        form = rendered.find("form")
+        expect(form).to have_selector("p", exact_text: "Original form content")
+        expect(form).to have_field("Name", with: "Taylor Example")
+        expect(form).to have_field("Nickname")
+        expect(form).to have_button("Continue")
+      end
+
+      context "with a single required field" do
+        let(:include_second_field) { false }
+
+        it "omits the notice despite the hidden field and submit button" do
+          expect(rendered).to have_no_text(notice)
+          expect(rendered).to have_field("Name", with: "Taylor Example")
+        end
+      end
+
+      context "with only optional fields" do
+        let(:required) { false }
+
+        it "omits the notice" do
+          expect(rendered).to have_no_text(notice)
+        end
+      end
+
+      context "with an employment-focused activity flow" do
+        let(:flow) { ActivityFlow.new(employment_focused: true) }
+
+        it "renders the notice" do
+          expect(rendered).to have_text(notice)
+        end
+      end
+
+      context "with a non-activity flow" do
+        let(:flow) { CbvFlow.new }
+
+        it "omits the notice and preserves the form content" do
+          expect(rendered).to have_no_text(notice)
+          expect(rendered.find("form")).to have_text("Original form content")
+        end
+      end
+
+      context "without a flow" do
+        let(:flow) { nil }
+
+        it "omits the notice" do
+          expect(rendered).to have_no_text(notice)
+        end
+      end
+    end
   end
 
   describe "#agency_translation" do

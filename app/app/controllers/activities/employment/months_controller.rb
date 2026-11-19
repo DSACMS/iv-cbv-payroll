@@ -23,7 +23,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def failed_fields
-    return %w[hours] if @employment_activity.unpaid_or_in_kind?
+    return %w[hours] if @employment_activity.uses_unpaid_work_flow?
 
     fields = @activity_month.errors.attribute_names.map(&:to_s) & %w[gross_income hours]
     fields.presence || %w[gross_income]
@@ -64,7 +64,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
 
   def assign_hours_submission_values
     month_params = hours_submission_params
-    if @employment_activity.unpaid_or_in_kind?
+    if @employment_activity.uses_unpaid_work_flow?
       @activity_month.hours = month_params[:hours].presence
       @activity_month.gross_income = 0
       return
@@ -79,7 +79,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def add_hours_submission_errors
-    if @employment_activity.unpaid_or_in_kind?
+    if @employment_activity.uses_unpaid_work_flow?
       @activity_month.errors.add(:hours, I18n.t("#{hours_input_t_scope}.unpaid_or_in_kind.field_error"))
     elsif @activity_month.gross_income.nil? ||
         (@activity_month.errors.empty? && @activity_month.gross_income.zero? && (@activity_month.hours || 0).zero?)
@@ -147,7 +147,7 @@ class Activities::Employment::MonthsController < Activities::BaseController
   end
 
   def valid_hours_submission?
-    if @employment_activity.unpaid_or_in_kind?
+    if @employment_activity.uses_unpaid_work_flow?
       return (@activity_month.hours || 0).positive?
     end
 

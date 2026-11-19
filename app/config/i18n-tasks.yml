@@ -130,6 +130,8 @@ ignore_missing:
   es:
     # Development-only PDF rendering diagnostic.
     - "health_check.pdf_rendering"
+    # FFS-5102: CE required-field guidance is English only. Spanish is not required yet.
+    - "us_form_with.required_fields_notice_html"
     # Government banner is currently supported in English only.
     - "application.government_banner.*"
     # Internal advanced launcher
@@ -165,6 +167,7 @@ ignore_missing:
     - "shared.footer.partnership"
     - "shared.subheader_agency_text"
     - "households.*"
+    - "shared.edit_month"
     - "time.formats.default"
 
     # Currently awaiting translation:

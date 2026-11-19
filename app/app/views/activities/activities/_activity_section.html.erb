@@ -4,6 +4,7 @@
     <%= button_to add_path,
       class: "usa-button usa-button--outline",
       method: :get,
+      aria: { label: t("activities.hub.add_activity", activity_type: section_title) },
       form: { data: { hub_action: "add" } } do %>
       <svg class="usa-icon" aria-hidden="true" focusable="false" role="img">
         <use xlink:href="<%= uswds_sprite_icon_href("add_circle_outline") %>"></use>

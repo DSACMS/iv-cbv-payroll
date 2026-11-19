@@ -125,7 +125,9 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
         get :show
 
         rendered = Capybara.string(response.body)
-        expect(rendered).to have_selector("label .text-bold", text: "Enter in-kind work", exact_text: true)
+        expect(rendered).to have_selector("label .text-bold", text: I18n.t("activities.employment.add_your_work.show.employment_focused.options.unpaid.label"), exact_text: true)
+        expect(rendered).to have_text(I18n.t("activities.employment.add_your_work.show.employment_focused.options.unpaid.hint"))
+        expect(rendered).to have_no_text(I18n.t("activities.employment.add_your_work.show.options.unpaid.hint"))
         expect(rendered).to have_no_text("Enter unpaid or in-kind work")
       end
 
@@ -172,8 +174,14 @@ RSpec.describe Activities::Employment::AddYourWorkController, type: :controller 
     context "with an employment-focused flow" do
       let(:activity_flow) { create(:activity_flow, employment_focused: true) }
 
-      it "routes in-kind work to manual income and hours entry" do
+      it "preserves the in-kind compensation type for manual entry" do
         post :create, params: { add_work_method: "enter_unpaid_manually" }
+
+        expect(response).to redirect_to(new_activities_flow_income_employment_path(compensation_type: "unpaid_or_in_kind"))
+      end
+
+      it "preserves the paid compensation type for manual entry" do
+        post :create, params: { add_work_method: "enter_paid_manually" }
 
         expect(response).to redirect_to(new_activities_flow_income_employment_path(compensation_type: "paid"))
       end

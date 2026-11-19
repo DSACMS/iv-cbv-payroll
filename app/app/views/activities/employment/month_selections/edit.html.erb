@@ -25,7 +25,7 @@
   <% if @flow.employment_focused? %>
     <%= t(".employment_focused.description") %>
   <% else %>
-    <%= @employment_activity.unpaid_or_in_kind? ? t(".unpaid_or_in_kind_description") : t(".paid_description") %>
+    <%= @employment_activity.uses_unpaid_work_flow? ? t(".unpaid_or_in_kind_description") : t(".paid_description") %>
   <% end %>
 </p>
 

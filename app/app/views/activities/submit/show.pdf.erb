@@ -140,7 +140,7 @@
         <% else %>
           <% activity = entry.record %>
           <% employer_name = activity.employer_name %>
-          <% unpaid = activity.unpaid_or_in_kind? %>
+          <% unpaid = activity.uses_unpaid_work_flow? %>
           <% columns = [ t("activities.summary.employment.month") ] %>
           <% columns << t("activities.summary.employment.gross_income") unless unpaid %>
           <% columns << t("activities.summary.employment.community_engagement_hours") %>
@@ -331,7 +331,7 @@
           <% payroll_details = @report.payroll_details_for(entry.record) %>
           <% employer_name = employment[:employer_name].presence || not_provided %>
           <% details = [
-            [ t("activities.summary.employment.address"), @report.formatted_employer_address(employment[:employer_address]) ],
+            [ t("activities.summary.employment.address"), employment[:employer_address] ],
             [
               t("activities.summary.employment.contact_phone"),
               number_to_phone(employment[:employer_phone_number], area_code: true)
@@ -349,7 +349,7 @@
         <% else %>
           <% activity = entry.record %>
           <% employer_name = activity.employer_name %>
-          <% unpaid = activity.unpaid_or_in_kind? %>
+          <% unpaid = activity.uses_unpaid_work_flow? %>
           <% details = [
             [ t("activities.summary.employment.address"), activity.formatted_address ]
           ] %>

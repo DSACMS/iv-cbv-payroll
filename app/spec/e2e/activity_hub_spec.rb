@@ -16,6 +16,20 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     end
   end
 
+  def expect_activity_edit_label(section:, translation_key:, activity_name:)
+    within("[data-activity-type='#{section}']") do
+      edit_link = find("a.usa-link", text: I18n.t("activities.hub.edit"), exact_text: true)
+
+      expect(edit_link["aria-label"]).to eq(
+        I18n.t(
+          "activities.hub.edit_activity",
+          activity_type: I18n.t(translation_key),
+          activity_name: activity_name
+        )
+      )
+    end
+  end
+
   context "common questions" do
     let(:invitation) { create(:activity_flow_invitation, client_agency_id: "sandbox") }
     let(:requirements_question) { I18n.t("activities.hub.common_questions.requirements_title") }
@@ -79,7 +93,15 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     flow = ActivityFlow.last
 
     # Add a Community Service activity
-    within("[data-activity-type='community_service']") { click_button I18n.t("activities.hub.add") }
+    within("[data-activity-type='community_service']") do
+      add_button = find("button", text: I18n.t("activities.hub.add"), exact_text: true)
+
+      expect(add_button["aria-label"]).to eq(
+        I18n.t("activities.hub.add_activity", activity_type: I18n.t("activities.community_service.title"))
+      )
+
+      add_button.click
+    end
     verify_page(page, title: I18n.t("activities.community_service.new_title"))
     organization_field = find_field(I18n.t("activities.community_service.organization_name"))
     expect(organization_field[:required]).to be_truthy
@@ -182,6 +204,22 @@ RSpec.describe 'e2e Activity Hub flow test', :js, type: :feature do
     expect(page).to have_content "Resume Workshop"
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 6)
     expect(page).to have_content I18n.t("activities.hub.cards.hours", count: 4)
+
+    expect_activity_edit_label(
+      section: "community_service",
+      translation_key: "activities.community_service.title",
+      activity_name: "Helping Hands"
+    )
+    expect_activity_edit_label(
+      section: "work_programs",
+      translation_key: "activities.work_programs.title",
+      activity_name: "Resume Workshop"
+    )
+    expect_activity_edit_label(
+      section: "employment",
+      translation_key: "activities.employment.title",
+      activity_name: "Gainesville Wrecking"
+    )
 
     click_button I18n.t("activities.hub.review_and_submit")
     verify_page(page, title: I18n.t("activities.summary.title"))
