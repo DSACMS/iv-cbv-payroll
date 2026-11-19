@@ -372,11 +372,12 @@ en:
         show:
           description: If you held multiple jobs during the reporting period, you'll need to add each job separately.
           employment_focused:
-            description: If you held multiple jobs during the reporting period, you will need to add each job separately. All three options are for paid work, whether you were paid in money or goods. You can report unpaid work later.
+            description: If you need to report multiple jobs, add each job separately. Only include paid and in-kind work. You can report unpaid work later.
             header: Choose how you want to add your job
             options:
               unpaid:
-                label: Enter in-kind work
+                hint: Add work where you received housing, food, or other goods instead of money.
+                label: Enter in-kind work manually
           header: Choose how you want to add your work
           legend: 'Please select an option:'
           options:
