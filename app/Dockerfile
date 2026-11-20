@@ -31,10 +31,12 @@ FROM registry.docker.com/library/ruby:$RUBY_VERSION AS base
 #     && \
 #     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Auto-fix: OS package vulnerabilities detected by Trivy and Grype (managed automatically).
+# Auto-fix: OS package vulnerabilities detected by Trivy and Grype (managed automatically)
 # hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
+      libopenexr-3-1-30 \
+      libopenexr-dev \
       zlib1g \
       zlib1g-dev \
     && \
