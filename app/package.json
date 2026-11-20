@@ -29,7 +29,7 @@
   "devDependencies": {
     "@scalar/api-reference": "^1.77.0",
     "happy-dom": ">=20.14.6",
-    "jsdom": "^31.0.0",
+    "jsdom": "^31.0.1",
     "prettier": "^3.9.10",
     "vite": "^8.3.5",
     "vitest": "^5.1.0"
