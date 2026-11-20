@@ -136,6 +136,28 @@ class ActivityPdfReport
     end
   end
 
+  def formatted_employer_address(address)
+    if address.is_a?(String)
+      begin
+        parsed_address = JSON.parse(address)
+        address = parsed_address if parsed_address.is_a?(Hash)
+      rescue JSON::ParserError
+        return address
+      end
+    end
+
+    return address unless address.is_a?(Hash)
+
+    address = address.with_indifferent_access
+    street = [ address[:line1], address[:line2] ].compact_blank.join(", ")
+    city_state_postal = [
+      address[:city],
+      [ address[:state], address[:postal_code] ].compact_blank.join(" ")
+    ].compact_blank.join(", ")
+
+    [ street, city_state_postal ].compact_blank.join(", ").presence
+  end
+
   private
 
   def grouped_enrollment_terms(activity)

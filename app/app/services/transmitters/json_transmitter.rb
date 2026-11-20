@@ -52,12 +52,35 @@ class Transmitters::JsonTransmitter
       confirmation_code: @cbv_flow.confirmation_code,
       completed_at: @cbv_flow.consented_to_authorized_use_at.iso8601,
       agency_partner_metadata: agency_partner_metadata,
-      income_report: @aggregator_report.income_report
+      income_report: income_report_for_json_webhook
     }.tap do |hash|
       if include_report_pdf
         hash[:report_pdf] = Base64.strict_encode64(pdf_output&.content)
       end
     end
+  end
+
+  def income_report_for_json_webhook
+    report = @aggregator_report.income_report.deep_dup
+    report[:employments] = report.fetch(:employments).map do |employment|
+      employment.merge(
+        employer_address: format_employer_address(employment[:employer_address])
+      )
+    end
+    report
+  end
+
+  def format_employer_address(address)
+    return address unless address.is_a?(Hash)
+
+    address = address.with_indifferent_access
+    street = [ address[:line1], address[:line2] ].compact_blank.join(", ")
+    city_state_postal = [
+      address[:city],
+      [ address[:state], address[:postal_code] ].compact_blank.join(" ")
+    ].compact_blank.join(", ")
+
+    [ street, city_state_postal ].compact_blank.join(", ").presence
   end
 
   class JsonTransmitterError < StandardError; end

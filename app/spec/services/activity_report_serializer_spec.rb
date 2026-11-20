@@ -703,8 +703,18 @@ RSpec.describe ActivityReportSerializer do
 
         expect(employment_months.keys).to eq([ "2026-07" ])
         entry = employment_months["2026-07"].sole
+        expected_employment = income_employment.except("paystubs").merge(
+          "employment_type" => nil,
+          "employer_address" => {
+            "line1" => income_employment["employer_address"],
+            "line2" => nil,
+            "city" => nil,
+            "state" => nil,
+            "postal_code" => nil
+          }
+        )
         expect(entry.except("type", "month", "data_source", "document_ids", "paystubs"))
-          .to eq(income_employment.except("paystubs").merge("employment_type" => nil))
+          .to eq(expected_employment)
         expect(entry).to include("data_source" => "validated", "document_ids" => [], "month" => "2026-07")
         expect(entry["paystubs"].sole).to include(
           "pay_date" => "2026-07-01", "pay_period_start" => "2026-06-15", "pay_gross" => 12345,

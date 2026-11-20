@@ -209,7 +209,7 @@
           <% end %>
           <% term_groups = enrollment_terms
             .sort_by { |term| [ term.term_begin, term.term_end, term.school_certified_on || Date::Infinity.new ] }
-            .group_by { |term| [ term.term_begin, term.term_end ] } 
+            .group_by { |term| [ term.term_begin, term.term_end ] }
             .values %>
           <% rows = term_groups.map do |terms_for_range|
             status_lines = terms_for_range.map do |term|
@@ -325,7 +325,7 @@
           <% payroll_details = @report.payroll_details_for(entry.record) %>
           <% employer_name = employment[:employer_name].presence || not_provided %>
           <% details = [
-            [ t("activities.summary.employment.address"), employment[:employer_address] ],
+            [ t("activities.summary.employment.address"), @report.formatted_employer_address(employment[:employer_address]) ],
             [
               t("activities.summary.employment.contact_phone"),
               number_to_phone(employment[:employer_phone_number], area_code: true)

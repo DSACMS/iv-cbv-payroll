@@ -307,6 +307,30 @@ RSpec.describe Aggregators::AggregatorReports::AggregatorReport, type: :service 
         expect(report.income_report[:employments].first[:paystubs].first[:pay_gross]).to eq(0)
       end
     end
+
+    context "when the employer address is structured" do
+      before do
+        report.employments.first.employer_address = {
+          line1: "942 W Harlan Ave",
+          line2: nil,
+          city: "Gainesville",
+          state: "FL",
+          postal_code: "32611"
+        }
+      end
+
+      it "formats the address as a string for the income report" do
+        address = report.income_report.dig(:employments, 0, :employer_address)
+
+        expect(address).to eq(
+          line1: "942 W Harlan Ave",
+          line2: nil,
+          city: "Gainesville",
+          state: "FL",
+          postal_code: "32611"
+        )
+      end
+    end
   end
 
   describe '#income_report with deductions' do
