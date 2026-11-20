@@ -20,6 +20,7 @@ import ErrorSummaryController from "./error_summary_controller.js"
 import EducationTermController from "./education_term_controller.js"
 import EducationOtherController from "./education_other_controller.js"
 import DismissibleAlertController from "./dismissible_alert_controller.js"
+import EmploymentPayrollNavigationController from "./employment_payroll_navigation_controller.js"
 
 application.register("cbv-employer-search", CbvEmployerSearch)
 application.register("polling", PollingController)
@@ -41,6 +42,7 @@ application.register("error-summary", ErrorSummaryController)
 application.register("education-term", EducationTermController)
 application.register("education-other", EducationOtherController)
 application.register("dismissible-alert", DismissibleAlertController)
+application.register("employment-payroll-navigation", EmploymentPayrollNavigationController)
 
 Turbo.StreamActions.redirect = function () {
   Turbo.visit(this.target)

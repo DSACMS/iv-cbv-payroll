@@ -107,11 +107,13 @@ RSpec.describe Activities::Income::EmployerSearchesController do
     end
 
     it "tracks an accessed search event with activity_flow_id" do
+      expect(controller).to receive(:track_event).with(TrackEvent::ApplicantAccessedSearchPage, anything).and_call_original
       allow(EventTrackingJob).to receive(:perform_later).with("CbvPageView", anything, anything)
       expect(EventTrackingJob).to receive(:perform_later).with("ApplicantAccessedSearchPage", anything, hash_including(
         time: be_a(Integer),
         cbv_applicant_id: activity_flow.cbv_applicant_id,
         activity_flow_id: activity_flow.id,
+        cbv_flow_id: activity_flow.id,
         invitation_id: activity_flow.activity_flow_invitation_id
       ))
 

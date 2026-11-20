@@ -49,46 +49,36 @@ class Activities::Income::EmployerSearchesController < Activities::BaseControlle
   end
 
   def track_clicked_popular_payroll_providers_event
-    event_logger.track(TrackEvent::ApplicantClickedPopularPayrollProviders, request, {
+    track_event(TrackEvent::ApplicantClickedPopularPayrollProviders, {
       time: Time.now.to_i,
-      cbv_applicant_id: @flow.cbv_applicant_id,
-      activity_flow_id: @flow.id,
-      client_agency_id: current_agency&.id,
-      invitation_id: @flow.invitation_id
+      activity_flow_id: @flow.id
     })
   end
 
   def track_clicked_popular_app_employers_event
-    event_logger.track(TrackEvent::ApplicantClickedPopularAppEmployers, request, {
+    track_event(TrackEvent::ApplicantClickedPopularAppEmployers, {
       time: Time.now.to_i,
-      cbv_applicant_id: @flow.cbv_applicant_id,
-      activity_flow_id: @flow.id,
-      client_agency_id: current_agency&.id,
-      invitation_id: @flow.invitation_id
+      activity_flow_id: @flow.id
     })
   end
 
   def track_accessed_search_event
+    return unless response.successful?
     return if @query.present?
 
-    event_logger.track(TrackEvent::ApplicantAccessedSearchPage, request, {
+    track_event(TrackEvent::ApplicantAccessedSearchPage, {
       time: Time.now.to_i,
-      cbv_applicant_id: @flow.cbv_applicant_id,
-      activity_flow_id: @flow.id,
-      client_agency_id: current_agency&.id,
-      invitation_id: @flow.invitation_id
+      activity_flow_id: @flow.id
     })
   end
 
   def track_applicant_searched_event
+    return unless response.successful?
     return if @query.blank?
 
-    event_logger.track(TrackEvent::ApplicantSearchedForEmployer, request, {
+    track_event(TrackEvent::ApplicantSearchedForEmployer, {
       time: Time.now.to_i,
-      cbv_applicant_id: @flow.cbv_applicant_id,
       activity_flow_id: @flow.id,
-      client_agency_id: current_agency&.id,
-      invitation_id: @flow.invitation_id,
       num_results: @employers.length,
       has_payroll_account: @has_payroll_account,
       pinwheel_result_count: @employers.count { |item| item.provider_name == :pinwheel },
